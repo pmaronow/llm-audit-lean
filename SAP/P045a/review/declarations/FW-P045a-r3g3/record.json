@@ -1,0 +1,71 @@
+[
+ {
+  "target_id": "P045-T11",
+  "decision": "restricted",
+  "theorem": "SAP.P045a.T11",
+  "restriction": "Retains the deterministic guarantees for every admissible choice sequence and existence of a completed run; marked vertices and admissible choices are specified by definition. Omits all of the uniform-choice four-path instance, namely center-set probabilities and the resulting cluster-treatment distribution, and actual software replacement/recomputation.",
+  "rows_used": [
+   "AronowAudit.P045.greedy_three_net_correction"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P045-T12",
+  "decision": "whole",
+  "theorem": "SAP.P045a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.naive_denominator_counterexample",
+   "SAP.P045a.WH.W2.T12_whole",
+   "SAP.P045a.WH.W2.T12_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P045a.T12WholeStatement"
+ },
+ {
+  "target_id": "P045-T13",
+  "decision": "whole",
+  "theorem": "SAP.P045a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.naive_bias_correction",
+   "AronowAudit.P045.naive_expansion_correct",
+   "AronowAudit.P045.spillover_cancellation_instance",
+   "SAP.P045a.WH.W2.T13_whole",
+   "SAP.P045a.WH.W2.T13_assembly",
+   "AronowAudit.P045.prob_nonneg",
+   "AronowAudit.P045.ht_total_unbiased",
+   "AronowAudit.P045.expect_div"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P045a.T13WholeStatement"
+ },
+ {
+  "target_id": "P045-T14",
+  "decision": "restricted",
+  "theorem": "SAP.P045a.T14",
+  "restriction": "Retains the actual 450-unit witness and its arm means, pooled and printed values and direct contrasts, the 20-design/8-empty-subclass counts and possible subclass sizes, undefined printed ratios with a defined pooled ratio, and the general discrepancy identity for positive counts. Omits the explicit count 12 of the other assignments, the strict-positivity conclusion for positive numerators, and the equal-subclass-mean doubling assertion.",
+  "rows_used": [
+   "AronowAudit.P045.pooling_counterexample",
+   "AronowAudit.P045.pooling_empty_subclass",
+   "AronowAudit.P045.pooling_population_counterexample"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P045-T15",
+  "decision": "whole",
+  "theorem": "SAP.P045a.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.Wave1.tract_mixture_bias_identified",
+   "AronowAudit.P045.pooled_ratio_correction",
+   "AronowAudit.P045.tract_partition",
+   "SAP.P045a.WH.W2.T15_whole",
+   "SAP.P045a.WH.W2.T15_assembly",
+   "AronowAudit.P045.Wave1.tract_mixture_expectation"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P045a.T15WholeStatement"
+ }
+]

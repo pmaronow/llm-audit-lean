@@ -5,7 +5,7 @@ import AronowAudit.P022.Wave1.SharpBounds.N2
 import AronowAudit.P022.Wave1.SharpBounds.N5
 import Mathlib.Probability.Moments.Covariance
 
-/-! Bridges between finite empirical CDF conventions and the general quantile library. -/
+/-! Bridges between the audit's finite/CDF conventions and the general quantile library. -/
 
 open MeasureTheory ProbabilityTheory Set Causalean.Stat AronowAudit.P022
 open AronowAudit.P022.Wave1
@@ -13,19 +13,19 @@ open scoped BigOperators
 
 noncomputable section
 
-/-- The treatment marginal CDF is the CDF of the first marginal measure. -/
+/-- The audit's treatment marginal CDF is the CDF of its first marginal measure. -/
 theorem TailB_lawCDF_eq_cdf_fst (H : JointLaw) (x : ℝ) :
     lawCDF H true x = cdf ((H : Measure (ℝ × ℝ)).map Prod.fst) x := by
   rw [cdf_eq_real, measureReal_def, Measure.map_apply measurable_fst measurableSet_Iic]
   rfl
 
-/-- The control marginal CDF is the CDF of the second marginal measure. -/
+/-- The audit's control marginal CDF is the CDF of its second marginal measure. -/
 theorem TailB_lawCDF_eq_cdf_snd (H : JointLaw) (x : ℝ) :
     lawCDF H false x = cdf ((H : Measure (ℝ × ℝ)).map Prod.snd) x := by
   rw [cdf_eq_real, measureReal_def, Measure.map_apply measurable_snd measurableSet_Iic]
   rfl
 
-/-- Equality of both marginal CDFs is exactly equality of both marginal measures. -/
+/-- Equality of both audit CDFs is exactly equality of both marginal measures. -/
 theorem TailB_compatibleLaws_iff_marginals (H J : JointLaw) :
     J ∈ compatibleLaws H ↔
       (J : Measure (ℝ × ℝ)).map Prod.fst = (H : Measure (ℝ × ℝ)).map Prod.fst ∧
@@ -92,7 +92,7 @@ theorem TailB_integral_Ioo_eq_intervalIntegral (f : ℝ → ℝ) :
   rw [intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1),
     integral_Ioc_eq_integral_Ioo]
 
-/-- The finite empirical marginal measure. -/
+/-- The finite empirical marginal measure used in the audit. -/
 noncomputable def TailB_empiricalLaw {N : ℕ} [NeZero N] (y : Fin N → ℝ) :
     ProbabilityMeasure ℝ :=
   (SharpBounds.unitLaw N).map y
@@ -213,7 +213,7 @@ theorem TailB_empiricalQuantile_product_integral_eq {m k : ℕ} [NeZero m] [NeZe
   · simp only [reduceCtorEq, if_false]
     rw [TailB_empiricalQuantile_eq_quantile b (by linarith [hu.2]) (by linarith [hu.1])]
 
-/-- The finite sharp-covariance formula expressed in general quantiles. -/
+/-- Exact version of the audit's finite sharp-covariance formula in general quantiles. -/
 theorem TailB_sharpCovariance_eq_quantile {m k : ℕ} [NeZero m] [NeZero k]
     (a : Fin m → ℝ) (b : Fin k → ℝ) (B : BoundSide) :
     sharpCovariance a b B =
@@ -222,7 +222,7 @@ theorem TailB_sharpCovariance_eq_quantile {m k : ℕ} [NeZero m] [NeZero k]
       finiteMean a * finiteMean b := by
   rw [sharpCovariance, TailB_empiricalQuantile_product_integral_eq]
 
-/-- General L2 Frechet bounds, with attained extrema over laws with the same marginals. -/
+/-- General L2 Frechet bounds, with attained extrema over the exact audit class. -/
 theorem TailB_frechet_covariance_L2
     (H : AronowAudit.P022.JointLaw)
     (h1 : MemLp (fun z : ℝ × ℝ => z.1) 2 (H : Measure (ℝ × ℝ)))
@@ -303,3 +303,21 @@ theorem TailB_frechet_covariance_L2
     rintro r ⟨J, hJ, rfl⟩
     exact (bounds J hJ).1
 
+/-- Compile-time fidelity check against the complete TB-QUANTILEPORT signature. -/
+example
+    (H : AronowAudit.P022.JointLaw)
+    (h1 : MemLp (fun z : ℝ × ℝ => z.1) 2 (H : Measure (ℝ × ℝ)))
+    (h0 : MemLp (fun z : ℝ × ℝ => z.2) 2 (H : Measure (ℝ × ℝ))) :
+    let μ := (H : Measure (ℝ × ℝ)).map Prod.fst
+    let ν := (H : Measure (ℝ × ℝ)).map Prod.snd
+    let cplus := (∫ u in Set.Ioo (0 : ℝ) 1,
+      Causalean.Stat.quantile μ u * Causalean.Stat.quantile ν u) -
+        AronowAudit.P022.lawMean H true * AronowAudit.P022.lawMean H false
+    let cminus := (∫ u in Set.Ioo (0 : ℝ) 1,
+      Causalean.Stat.quantile μ u * Causalean.Stat.quantile ν (1-u)) -
+        AronowAudit.P022.lawMean H true * AronowAudit.P022.lawMean H false
+    sSup (AronowAudit.P022.lawCovariance '' AronowAudit.P022.compatibleLaws H) = cplus ∧
+    sInf (AronowAudit.P022.lawCovariance '' AronowAudit.P022.compatibleLaws H) = cminus ∧
+    (∃ J ∈ AronowAudit.P022.compatibleLaws H, AronowAudit.P022.lawCovariance J = cplus) ∧
+    (∃ J ∈ AronowAudit.P022.compatibleLaws H, AronowAudit.P022.lawCovariance J = cminus) :=
+  TailB_frechet_covariance_L2 H h1 h0

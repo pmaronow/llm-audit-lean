@@ -1,0 +1,26 @@
+import SAP.P016b.Defs
+
+set_option autoImplicit false
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+open SAP.P016b
+noncomputable section
+
+-- Check representatives of all discrepancy classes using the actual Lean data.
+example :
+    discrepancy calibrationY calibrationZ (34/99) (413/396) 0 = 0 ∧
+    discrepancy calibrationY calibrationZ (34/99) (413/396) 128 = 0 ∧
+    discrepancy calibrationY calibrationZ (34/99) (413/396) 129 = (34/99)/8 ∧
+    discrepancy calibrationY calibrationZ (34/99) (413/396) 192 = 3*(34/99)/8 ∧
+    discrepancy calibrationY calibrationZ (34/99) (413/396) 255 = (34/99)/2 := by
+  norm_num [discrepancy, calibrationY, calibrationZ, multiplicativeGenerate,
+    additiveGenerate, bit]
+
+-- Check the sorted-median definition on a balanced, nonconstant example.
+-- One treated outcome matches and another does not; the median is zero.
+example : evenMedian (m := 2)
+    (discrepancy (![8,9,9,11] : Outcome 4) (![true,true,false,false])
+      (34/99) (413/396)) = 0 := by
+  norm_num [evenMedian, discrepancy, multiplicativeGenerate, additiveGenerate,
+    bit, List.ofFn_succ, List.mergeSort, List.merge]

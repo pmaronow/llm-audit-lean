@@ -1,0 +1,52 @@
+import SAP.P023.Defs
+import SAP.P023.Defs.WholeW1
+
+set_option autoImplicit false
+set_option linter.style.haveILetI false
+open SAP.P023 MeasureTheory Set Filter
+open scoped BigOperators ENNReal Topology
+
+namespace AuditProbability
+
+theorem uniform_probability : ProbabilityLaw uniformMargins := by
+  norm_num [ProbabilityLaw, uniformMargins, Measure.smul_apply,
+    Measure.restrict_apply, Real.volume_Icc]
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+theorem noise_probability : ProbabilityLaw noiseLaw := by
+  norm_num [ProbabilityLaw, noiseLaw, Measure.add_apply, Measure.smul_apply]
+  rw [← mul_two]
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+theorem uniform_witness_probability (h : ℝ → ℝ) (hm : Measurable h) :
+    ProbabilityLaw (witnessLaw uniformMargins h) := by
+  letI : IsProbabilityMeasure uniformMargins := ⟨uniform_probability⟩
+  letI : IsProbabilityMeasure noiseLaw := ⟨noise_probability⟩
+  have hmap : Measurable (fun z : ℝ × ℝ => (z.1, (1/2 : ℝ) + h z.1 + z.2)) := by
+    fun_prop
+  unfold ProbabilityLaw witnessLaw
+  rw [Measure.map_apply hmap MeasurableSet.univ]
+  simp
+
+-- Countably many independent coordinate draws, not repetitions of one draw.
+theorem iid_exists (ν : Measure (ℝ × ℝ)) (hν : ProbabilityLaw ν) :
+    IIDSample (Measure.infinitePi (fun _ : ℕ => ν)) ν
+      (fun i (ω : ℕ → ℝ × ℝ) => ω i) := by
+  letI : IsProbabilityMeasure ν := ⟨hν⟩
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · exact measure_univ
+  · intro i; fun_prop
+  · intro i; exact Measure.infinitePi_map_eval (fun _ : ℕ => ν) i
+  · exact ProbabilityTheory.iIndepFun_infinitePi (X := fun _ x => x)
+      (fun _ => measurable_id)
+
+example : IIDSample
+    (Measure.infinitePi (fun _ : ℕ => witnessLaw uniformMargins (sigmoid (1/20) (1/10000))))
+    (witnessLaw uniformMargins (sigmoid (1/20) (1/10000)))
+    (fun i (ω : ℕ → ℝ × ℝ) => ω i) := by
+  apply iid_exists
+  apply uniform_witness_probability
+  unfold sigmoid
+  fun_prop
+
+end AuditProbability

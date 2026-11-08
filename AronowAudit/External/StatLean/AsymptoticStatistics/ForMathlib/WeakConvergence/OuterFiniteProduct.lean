@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -28,6 +27,45 @@ private theorem outerMeasureStar_mono' {Ω : Type*} [MeasurableSpace Ω]
   · simp [hω, hAB hω]
   · simp [hω]
 
+private theorem outerMeasureStar_union_le' {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (A B : Set Ω) :
+    μ.outerMeasureStar (A ∪ B) ≤ μ.outerMeasureStar A + μ.outerMeasureStar B := by
+  refine le_trans (outerExpectation_mono (μ := μ) (X := (A ∪ B).indicator 1)
+    (Y := A.indicator 1 + B.indicator 1) (fun ω => ?_)) (outerExpectation_add_le _ _)
+  refine Set.indicator_apply_le (fun hω => ?_)
+  rcases hω with hA | hB
+  · simp [hA]
+  · simp [hB]
+
+private theorem limsup_add_le_atTop' (u v : ℕ → ℝ≥0∞) :
+    limsup (fun n => u n + v n) atTop ≤ limsup u atTop + limsup v atTop := by
+  rcases eq_or_ne (limsup u atTop) ⊤ with hu | hu
+  · rw [hu]
+    exact le_top
+  rcases eq_or_ne (limsup v atTop) ⊤ with hv | hv
+  · rw [hv, add_top]
+    exact le_top
+  rw [limsup_le_iff isCobounded_le_of_bot
+    (isBoundedUnder_of ⟨⊤, fun _ => le_top⟩)]
+  intro b hb
+  have hub : limsup u atTop < b - limsup v atTop := by
+    rw [lt_tsub_iff_right]
+    exact hb
+  obtain ⟨c, huc, hcb⟩ := exists_between hub
+  have hvbc : limsup v atTop < b - c := by
+    rw [lt_tsub_iff_left]
+    calc
+      c + limsup v atTop < (b - limsup v atTop) + limsup v atTop :=
+        (ENNReal.add_lt_add_iff_right hv).2 hcb
+      _ = b := by
+        rw [tsub_add_cancel_of_le (le_of_lt (lt_of_le_of_lt le_add_self hb))]
+  have hUev : ∀ᶠ n in atTop, u n < c := eventually_lt_of_limsup_lt huc
+  have hVev : ∀ᶠ n in atTop, v n < b - c := eventually_lt_of_limsup_lt hvbc
+  have hcb' : c ≤ b := le_of_lt (lt_of_lt_of_le hcb tsub_le_self)
+  filter_upwards [hUev, hVev] with n hUn hVn
+  calc
+    u n + v n < c + (b - c) := ENNReal.add_lt_add hUn hVn
+    _ = b := add_tsub_cancel_of_le hcb'
 
 /-- A finite vector of arbitrary coordinates drawn from a separating family on
 `D` and the standard coordinates on `EuclideanSpace ℝ (Fin k)`.
@@ -201,6 +239,63 @@ private theorem boundedClamp_norm_le {B : ℝ} (hB : 0 ≤ B) :
 
 namespace IsAsymptoticallyTight
 
+/-- Coordinatewise asymptotic tightness implies asymptotic tightness of the
+paired process. This is the finite-product tightness step. -/
+theorem prodMk
+    {Ω D E : Type*} [MeasurableSpace Ω]
+    [PseudoMetricSpace D] [PseudoMetricSpace E]
+    {μ : ℕ → Measure Ω} {Xn : ℕ → Ω → D} {Yn : ℕ → Ω → E}
+    (hX : IsAsymptoticallyTight μ Xn)
+    (hY : IsAsymptoticallyTight μ Yn) :
+    IsAsymptoticallyTight μ (fun n ω => (Xn n ω, Yn n ω)) := by
+  intro ε hε
+  obtain ⟨K, hK, hXK⟩ := hX (ε / 2) (by linarith)
+  obtain ⟨L, hL, hYL⟩ := hY (ε / 2) (by linarith)
+  refine ⟨K ×ˢ L, hK.prod hL, ?_⟩
+  intro δ hδ
+  let A : ℕ → Set Ω := fun n => Xn n ⁻¹' (Metric.thickening δ K)ᶜ
+  let B : ℕ → Set Ω := fun n => Yn n ⁻¹' (Metric.thickening δ L)ᶜ
+  have hsub : ∀ n,
+      (fun ω => (Xn n ω, Yn n ω)) ⁻¹' (Metric.thickening δ (K ×ˢ L))ᶜ
+        ⊆ A n ∪ B n := by
+    intro n ω hω
+    by_contra hnot
+    rw [Set.mem_union, not_or] at hnot
+    have hXmem : Xn n ω ∈ Metric.thickening δ K := by
+      simpa [A] using hnot.1
+    have hYmem : Yn n ω ∈ Metric.thickening δ L := by
+      simpa [B] using hnot.2
+    rw [Metric.mem_thickening_iff] at hXmem hYmem
+    obtain ⟨x, hxK, hx⟩ := hXmem
+    obtain ⟨y, hyL, hy⟩ := hYmem
+    apply hω
+    rw [Metric.mem_thickening_iff]
+    exact ⟨(x, y), ⟨hxK, hyL⟩, by simpa [Prod.dist_eq] using max_lt hx hy⟩
+  let U : ℕ → ℝ≥0∞ := fun n => (μ n).outerMeasureStar (A n)
+  let V : ℕ → ℝ≥0∞ := fun n => (μ n).outerMeasureStar (B n)
+  have hpoint : ∀ n,
+      (μ n).outerMeasureStar
+          ((fun ω => (Xn n ω, Yn n ω)) ⁻¹' (Metric.thickening δ (K ×ˢ L))ᶜ)
+        ≤ U n + V n := by
+    intro n
+    exact (outerMeasureStar_mono' (μ n) (hsub n)).trans
+      (outerMeasureStar_union_le' (μ n) (A n) (B n))
+  have hlim_mono : limsup (fun n => (μ n).outerMeasureStar
+        ((fun ω => (Xn n ω, Yn n ω)) ⁻¹' (Metric.thickening δ (K ×ˢ L))ᶜ)) atTop
+      ≤ limsup (fun n => U n + V n) atTop :=
+    limsup_le_limsup (Eventually.of_forall hpoint)
+      isCobounded_le_of_bot (isBoundedUnder_of ⟨⊤, fun _ => le_top⟩)
+  calc
+    limsup (fun n => (μ n).outerMeasureStar
+        ((fun ω => (Xn n ω, Yn n ω)) ⁻¹' (Metric.thickening δ (K ×ˢ L))ᶜ)) atTop
+        ≤ limsup (fun n => U n + V n) atTop := hlim_mono
+    _ ≤ limsup U atTop + limsup V atTop := limsup_add_le_atTop' U V
+    _ ≤ ENNReal.ofReal (ε / 2) + ENNReal.ofReal (ε / 2) :=
+      add_le_add (hXK δ hδ) (hYL δ hδ)
+    _ = ENNReal.ofReal ε := by
+      rw [← ENNReal.ofReal_add (by linarith) (by linarith)]
+      congr 1
+      ring
 
 end IsAsymptoticallyTight
 

@@ -499,7 +499,7 @@ lemma rmr_failure (m : ℕ) (hm : 0<m) (u : Fin (4*m) → Bool)
   have hab := le_abs_self (rmr_T m (rmr_Y m u)-2)
   nlinarith [sq_abs (rmr_B m u-rmr_A m u/(4*m:ℝ))]
 
-/-- Flip one source sign; uniform finite-source expectation is invariant. -/
+/-- Flip one inactive source sign; uniform finite-source expectation is invariant. -/
 def rmr_flip {n : ℕ} (i : Fin n) : (Fin n → Bool) ≃ (Fin n → Bool) where
   toFun u := Function.update u i (!(u i))
   invFun u := Function.update u i (!(u i))
@@ -630,6 +630,8 @@ theorem residual_missing_regularity_proof :
     have hl : (1/2:ℝ) ≤ 0 := ge_of_tendsto' ht (fun k =>
       rmr_failure_probability (k+1) (Nat.succ_pos k))
     norm_num at hl
+
+example : type_of% @AronowAudit.P011.residual_missing_regularity := residual_missing_regularity_proof
 
 end
 end AronowAudit.P011.Wave1

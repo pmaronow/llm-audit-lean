@@ -5,6 +5,7 @@ import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 /-!
 Finite-dimensional least squares, without an independence assumption on the generators.
+Drafted by source inspection only; Lean has not been run on this file.
 -/
 
 set_option autoImplicit false

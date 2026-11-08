@@ -1,0 +1,120 @@
+import SAP.P033.Defs
+
+open MeasureTheory ProbabilityTheory Set
+open scoped BigOperators
+
+namespace AuditP033
+
+-- These checks import definitions only, never the sorry-bearing Challenge stubs.
+
+-- Check the totalized values discussed in reading.md; theorem premises avoid them.
+example : sInf (∅ : Set ℝ) = 0 := by simp
+example : sInf (Set.univ : Set ℝ) = 0 := by simp
+example : SAP.P033.sampleMean (fun i : Fin 0 => Fin.elim0 i) = 0 := by
+  simp [SAP.P033.sampleMean]
+example : SAP.P033.sampleVariance (fun _ : Fin 1 => (7 : ℝ)) = 0 := by
+  norm_num [SAP.P033.sampleVariance]
+example : Real.sqrt (-1 : ℝ) = 0 := by norm_num
+
+-- T11: every family of local premises has ordinary nondegenerate inputs.
+example : ∃ β se s : ℝ, s ≠ 0 ∧ se ≠ 0 ∧ (β / s) / (se / s) = β / se := by
+  refine ⟨1, 2, 3, ?_⟩
+  norm_num
+
+example : ∃ x y ζ : ℝ, y ≠ 0 ∧ ζ ≠ 0 ∧ 0 < y ∧ 0 < ζ ∧ x / y = ζ := by
+  refine ⟨6, 3, 2, ?_⟩
+  norm_num
+
+example : ∃ v : ℝ, 0 ≤ v ∧ v ≠ 0 ∧ v ≠ 1 := by
+  exact ⟨1 / 2, by norm_num⟩
+
+example : ∃ n k : ℕ, 2 ≤ n ∧ k ≤ n ∧
+    ∃ y : Fin n → ℝ, (∀ i, y i = 0 ∨ y i = 1) ∧
+      (∑ i, y i) = (k : ℝ) ∧ SAP.P033.sampleVariance y = 1 / 2 := by
+  refine ⟨2, 1, by norm_num, by norm_num, ![0, 1], ?_, ?_, ?_⟩
+  · intro i
+    fin_cases i <;> norm_num
+  · norm_num [Fin.sum_univ_two]
+  · norm_num [SAP.P033.sampleVariance, SAP.P033.sampleMean, Fin.sum_univ_two]
+
+example : (2 : ℕ) ≤ 568 ∧ (82 : ℕ) ≤ 568 ∧
+    SAP.P033.binarySampleVariance 568 82 = 123 / 994 := by
+  norm_num [SAP.P033.binarySampleVariance]
+
+-- T12: null, bias, level, and the claimed Gaussian data law are realizable.
+example : (0 : ℝ) ≤ 1 ∧ |(1 : ℝ)| ≤ 1 ∧
+    (0 : ℝ) < 1 / 5 ∧ (1 / 5 : ℝ) < 1 := by norm_num
+
+example : (0 : ℝ) ≤ 1 / 2 ∧ |(1 / 2 : ℝ)| ≤ 1 / 2 ∧
+    (0 : ℝ) < 1 / 5 ∧ (1 / 5 : ℝ) < 1 := by norm_num
+
+example (θ b : ℝ) : IsProbabilityMeasure (SAP.P033.biasModelLaw θ b) := by
+  unfold SAP.P033.biasModelLaw
+  infer_instance
+
+example (θ b : ℝ) : SFinite (SAP.P033.biasModelLaw θ b) := by
+  unfold SAP.P033.biasModelLaw
+  infer_instance
+
+example (θ b : ℝ) : HasLaw id (SAP.P033.biasModelLaw θ b)
+    (SAP.P033.biasModelLaw θ b) := HasLaw.id
+
+example (θ b : ℝ) : HasLaw (fun x : ℝ => x + (θ + b))
+    (SAP.P033.biasModelLaw θ b) (gaussianReal 0 1) := by
+  simpa [SAP.P033.biasModelLaw] using
+    gaussianReal_add_const (HasLaw.id (μ := gaussianReal 0 1)) (θ + b)
+
+example (θ b : ℝ) : MemLp id 2 (SAP.P033.biasModelLaw θ b) := by
+  unfold SAP.P033.biasModelLaw
+  exact memLp_id_gaussianReal 2
+
+lemma phi_measurable : Measurable SAP.P033.normalCDF := by
+  have heq : SAP.P033.normalCDF = cdf (gaussianReal 0 1) := by
+    funext x
+    exact (cdf_eq_real (gaussianReal 0 1) x).symm
+  rw [heq]
+  exact (monotone_cdf _).measurable
+
+example (h : ℝ) : Measurable (fun t : ℝ => SAP.P033.pseudoP t h) := by
+  unfold SAP.P033.pseudoP
+  exact measurable_const.mul (phi_measurable.comp (by fun_prop))
+
+-- T13: positive half-length and all-level null families, including B = 0.
+example : ∃ t h : ℝ, 0 < h ∧ 0 ∉ Icc (t - h) (t + h) := by
+  exact ⟨2, 1, by norm_num⟩
+
+example : ∃ B b α : ℝ, 0 ≤ B ∧ |b| ≤ B ∧ |b| = B ∧ 0 < α ∧ α < 1 := by
+  exact ⟨1, -1, 1 / 5, by norm_num⟩
+
+example : (0 : ℝ) ≤ 0 ∧ |(0 : ℝ)| ≤ 0 ∧ |(0 : ℝ)| = 0 := by norm_num
+
+example (B : ℝ) : Measurable (SAP.P033.biasAwareP B) := by
+  unfold SAP.P033.biasAwareP
+  exact (phi_measurable.comp (by fun_prop)).add (phi_measurable.comp (by fun_prop))
+
+-- T14: both recorded intervals and gaps are positive; q = 1.96 is admissible.
+example : (0 : ℝ) < 49 / 25 ∧ (-213 / 1000 : ℝ) < -101 / 1000 ∧
+    (-3 / 20 : ℝ) < -101 / 1000 ∧
+    (27 / 1000 : ℝ) < 132 / 1000 ∧ (79 / 1000 : ℝ) < 132 / 1000 := by
+  norm_num
+
+example : SAP.P033.upperSE (-3 / 20) (-101 / 1000) (49 / 25) = 1 / 40 ∧
+    SAP.P033.widthSE (-213 / 1000) (-101 / 1000) (49 / 25) = 1 / 35 ∧
+    SAP.P033.absoluteT (-3 / 20)
+      (SAP.P033.widthSE (-213 / 1000) (-101 / 1000) (49 / 25)) = 21 / 4 ∧
+    (27 / 18 : ℝ) < 158 / 105 ∧ (158 / 105 : ℝ) < 28 / 18 ∧
+    (26 / 18 : ℝ) < 79 / 53 ∧ (79 / 53 : ℝ) < 27 / 18 := by
+  norm_num [SAP.P033.upperSE, SAP.P033.widthSE, SAP.P033.absoluteT]
+
+-- T15: the generic comparison and centered-interval recovery have actual inputs.
+example : ∃ β L U q s : ℝ, L < U ∧ 0 < q ∧ 0 < s ∧
+    L = β - q * s ∧ U = β + q * s ∧
+    SAP.P033.widthSE L U q = s ∧ SAP.P033.upperSE β U q = s := by
+  refine ⟨1, -5, 7, 2, 3, ?_⟩
+  norm_num [SAP.P033.widthSE, SAP.P033.upperSE]
+
+-- The nonquantile branch permits β = U but does not divide by upperSE there.
+example : SAP.P033.upperSE 1 1 2 = 0 ∧ SAP.P033.widthSE 0 1 2 = 1 / 4 := by
+  norm_num [SAP.P033.upperSE, SAP.P033.widthSE]
+
+end AuditP033

@@ -1,0 +1,275 @@
+import SAP.P030.Defs
+
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+open scoped BigOperators
+open SAP.P030
+
+namespace Audit
+noncomputable section
+
+-- T11: all four set hypotheses hold for a nonempty partition.
+theorem t11_partition :
+    (Finset.range 6 : Finset ℕ) = (({0, 1} ∪ {2, 3}) ∪ {4, 5}) ∧
+    Disjoint ({0, 1} : Finset ℕ) {2, 3} ∧
+    Disjoint ({0, 1} : Finset ℕ) {4, 5} ∧
+    Disjoint ({2, 3} : Finset ℕ) {4, 5} := by
+  decide
+
+-- The four asserted repairs are genuine, independent arithmetic equalities.
+theorem t11_repairs :
+    344055 = (114629 + 191228 + 38198 : ℕ) ∧
+    344056 = (114630 + 191228 + 38198 : ℕ) ∧
+    344056 = (114629 + 191229 + 38198 : ℕ) ∧
+    344056 = (114629 + 191228 + 38199 : ℕ) := by norm_num
+
+def point (j : Fin 4) : Assignment 4 := fun i => decide (i = j)
+def sample : AssignmentSet 4 := {point 0, point 1, point 2, point 3}
+def fixed : FixedIndicator 4 := fun i => decide (i = 0)
+def direct (i : Fin 4) (z : Assignment 4) : ℝ := treatment z i
+def score (y : {i // fixed i = true} → ℝ) (z : Assignment 4) : ℝ :=
+  y ⟨0, by decide⟩ + treatment z 1
+def reference : AssignmentSet 4 := {point 1, point 2, point 3}
+
+theorem point_injective : Function.Injective point := by
+  intro a b h
+  have := congrFun h a
+  simpa [point] using this.symm
+
+theorem conditioned : conditionalAssignments sample fixed (point 1) = reference := by
+  classical
+  ext z
+  simp only [conditionalAssignments, Finset.mem_filter, sample, reference,
+    Finset.mem_insert, Finset.mem_singleton]
+  constructor
+  · rintro ⟨hz, hc⟩
+    rcases hz with hz | hz | hz | hz
+    · subst z
+      have h := hc 0 (by decide)
+      norm_num [point] at h
+    · exact Or.inl hz
+    · exact Or.inr (Or.inl hz)
+    · exact Or.inr (Or.inr hz)
+  · intro hz
+    constructor
+    · exact Or.inr hz
+    · intro i hi
+      have hi0 : i = 0 := by simpa [fixed] using hi
+      subst i
+      rcases hz with hz | hz | hz <;> subst z <;> norm_num [point]
+
+theorem conditional_nonempty : (conditionalAssignments sample fixed (point 1)).Nonempty := by
+  rw [conditioned]
+  exact ⟨point 1, Finset.mem_insert_self _ _⟩
+
+-- T12: every hypothesis holds; the schedule has genuine direct effects.
+theorem t12_hypotheses :
+    (conditionalAssignments sample fixed (point 1)).Nonempty ∧
+    (NoInterference sample direct ∨
+      FixedOutcomeNull (conditionalAssignments sample fixed (point 1)) fixed direct) ∧
+    direct 0 (point 0) ≠ direct 0 (point 1) := by
+  refine ⟨conditional_nonempty, Or.inl ?_, ?_⟩
+  · intro i z hz w hw hi
+    simp only [direct, treatment, hi]
+  · norm_num [direct, treatment, point]
+
+theorem reference_card : reference.card = 3 := by
+  classical
+  have h12 : point 1 ≠ point 2 := fun h => by
+    have := point_injective h
+    norm_num at this
+  have h13 : point 1 ≠ point 3 := fun h => by
+    have := point_injective h
+    norm_num at this
+  have h23 : point 2 ≠ point 3 := fun h => by
+    have := point_injective h
+    norm_num at this
+  simp [reference, h12, h13, h23]
+
+theorem score_values :
+    statistic fixed direct score (point 1) = 1 ∧
+    statistic fixed direct score (point 2) = 0 ∧
+    statistic fixed direct score (point 3) = 0 := by
+  norm_num [statistic, score, fixedOutcomes, direct, treatment, point]
+
+-- A tied, nonconstant statistic: two assignments have p=2/3 and one has p=1.
+theorem t12_tied_pvalues :
+    uniformProbability reference
+      (fun w => statistic fixed direct score w ≤ statistic fixed direct score (point 2)) = 2/3 ∧
+    uniformProbability reference
+      (fun w => statistic fixed direct score w ≤ statistic fixed direct score (point 1)) = 1 := by
+  classical
+  have h12 : point 1 ≠ point 2 := fun h => by
+    have := point_injective h
+    norm_num at this
+  have h13 : point 1 ≠ point 3 := fun h => by
+    have := point_injective h
+    norm_num at this
+  have h23 : point 2 ≠ point 3 := fun h => by
+    have := point_injective h
+    norm_num at this
+  norm_num [uniformProbability, reference, Finset.filter_insert, Finset.filter_singleton,
+    h12, h13, h23,
+    statistic, score, fixedOutcomes, direct, treatment, point]
+
+-- The weaker disjunct is usable even when full no-interference fails.
+def interfering (i : Fin 4) (z : Assignment 4) : ℝ :=
+  if i = 1 then treatment z 2 else 0
+
+theorem t12_weaker_null :
+    (conditionalAssignments sample fixed (point 1)).Nonempty ∧
+    FixedOutcomeNull (conditionalAssignments sample fixed (point 1)) fixed interfering ∧
+    ¬ NoInterference sample interfering := by
+  classical
+  refine ⟨conditional_nonempty, ?_, ?_⟩
+  · intro i hi z hz w hw
+    have hi0 : i = 0 := by simpa [fixed] using hi
+    subst i
+    norm_num [interfering]
+  · intro h
+    have h0 : point 0 ∈ sample := by simp [sample]
+    have h2 : point 2 ∈ sample := by simp [sample]
+    have heq : point 0 1 = point 2 1 := by norm_num [point]
+    have hc := h 1 (point 0) h0 (point 2) h2 heq
+    norm_num [interfering, treatment, point] at hc
+
+-- T13: base and every interior side condition have a joint model.
+def z5 : Assignment 5 := ![true, true, false, false, false]
+def w5 : Assignment 5 := ![false, true, true, false, false]
+
+theorem z5_mem : z5 ∈ completeAssignments 5 2 := by
+  simp only [completeAssignments, Finset.mem_filter, Finset.mem_univ, true_and, z5]
+  decide
+
+theorem w5_mem : w5 ∈ completeAssignments 5 2 := by
+  simp only [completeAssignments, Finset.mem_filter, Finset.mem_univ, true_and, w5]
+  decide
+
+theorem t13_hypotheses :
+    2 ≤ (5 : ℕ) ∧ (2 : ℕ) ≤ 5 ∧
+    (0 : Fin 5) ∉ ({1, 2} : Finset (Fin 5)) ∧
+    (1 : ℕ) ≤ 2 ∧ (2 : ℕ) ≤ 5 - 1 ∧
+    1 ≤ ({1, 2} : Finset (Fin 5)).card ∧
+    (0 : Fin 5) ∉ ({1, 2, 3} : Finset (Fin 5)) ∧
+    ({1, 2} : Finset (Fin 5)).card < ({1, 2, 3} : Finset (Fin 5)).card ∧
+    ((completeAssignments 5 2).filter (fun z => z 0 = true)).Nonempty ∧
+    ((completeAssignments 5 2).filter (fun z => z 0 = false)).Nonempty := by
+  classical
+  refine ⟨by decide, by decide, by decide, by decide, by decide,
+    by decide, by decide, by decide, ?_, ?_⟩
+  · exact ⟨z5, Finset.mem_filter.mpr ⟨z5_mem, by decide⟩⟩
+  · exact ⟨w5, Finset.mem_filter.mpr ⟨w5_mem, by decide⟩⟩
+
+-- T14: the actual outcome schedule and all observed fixed outcomes are computed
+-- from the adjacency definitions, without invoking the Challenge theorem.
+theorem t14_observation :
+    (fun i : Fin 10 => tenPsi i) = ![1,2,2,2,2,2,2,2,2,1] ∧
+    (fun i : Fin 10 => tenTheta i (tenAssignment 6)) = ![0,0,0,0,0,1,0,1,0,0] ∧
+    (fun i : Fin 10 => tenYexample i (tenAssignment 6)) = ![1,2,2,2,2,3,2,3,2,1] ∧
+    (fun i : Fin 4 => tenYexample (tenFixed i) (tenAssignment 6)) = ![1,3,2,1] := by
+  classical
+  have hp : tenPsi = ![1,2,2,2,2,2,2,2,2,1] := by
+    funext i
+    fin_cases i <;> unfold tenPsi tenX <;> rw [Finset.card_filter] <;>
+      simp only [Fin.sum_univ_succ, Fin.sum_univ_zero] <;> norm_num
+  have ht : (fun i : Fin 10 => tenTheta i (tenAssignment 6)) = ![0,0,0,0,0,1,0,1,0,0] := by
+    funext i
+    fin_cases i <;> unfold tenTheta tenX tenAssignment <;> rw [Finset.card_filter] <;>
+      simp only [Fin.sum_univ_succ, Fin.sum_univ_zero] <;> norm_num
+  refine ⟨hp, ht, ?_, ?_⟩
+  · funext i
+    fin_cases i <;> norm_num [tenYexample, hp, show tenTheta _ (tenAssignment 6) = _ from congrFun ht _]
+  · funext i
+    fin_cases i <;> norm_num [tenYexample, hp, tenFixed,
+      show tenTheta _ (tenAssignment 6) = _ from congrFun ht _]
+
+theorem t14_reference_support :
+    tableΩ.card = 6 ∧
+    (∀ r : Fin 6, (Finset.univ.filter
+      (fun j => tenS j = false ∧ tenAssignment (tableTreatment r) j = true)).Nonempty) := by
+  classical
+  have hinj : Function.Injective (fun r : Fin 6 => tenAssignment (tableTreatment r)) := by
+    intro a b h
+    have hab : tableTreatment a = tableTreatment b := by
+      have hx := congrFun h (tableTreatment a)
+      simpa [tenAssignment] using hx.symm
+    have hv := congrArg Fin.val hab
+    apply Fin.ext
+    simpa [tableTreatment] using hv
+  refine ⟨?_, ?_⟩
+  · simp [tableΩ, Finset.card_image_of_injective _ hinj]
+  · intro r
+    refine ⟨tableTreatment r, Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_, ?_⟩⟩
+    · fin_cases r <;> norm_num [tenS, tableTreatment]
+    · simp [tenAssignment]
+
+theorem t14_positive_outcome_variance :
+    rankSquares (![1,3,2,1] : Fin 4 → ℝ) = 9/2 := by
+  classical
+  simp only [rankSquares, centeredRanks, averageRank, Finset.card_filter,
+    Fin.sum_univ_succ, Fin.sum_univ_zero]
+  norm_num
+
+-- T15: interior maximizers for both parities and the C=1 boundary.
+theorem t15_even :
+    (1 : ℤ) ≤ 4 ∧ (1 : ℤ) ≤ 3 ∧
+    ∀ g : ℤ, 0 ≤ g → g ≤ 4 → fixedSizeObjective 4 3 g ≤ fixedSizeObjective 4 3 2 := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  intro g hg hgc
+  interval_cases g <;> norm_num [fixedSizeObjective]
+
+theorem t15_odd :
+    (1 : ℤ) ≤ 5 ∧ (1 : ℤ) ≤ 3 ∧
+    ∀ g : ℤ, 0 ≤ g → g ≤ 5 →
+      fixedSizeObjective 5 3 g ≤ fixedSizeObjective 5 3 2 ∧
+      fixedSizeObjective 5 3 g ≤ fixedSizeObjective 5 3 3 := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  intro g hg hgc
+  interval_cases g <;> norm_num [fixedSizeObjective]
+
+theorem t15_boundary :
+    ∀ g : ℤ, 0 ≤ g → g ≤ 1 →
+      fixedSizeObjective 1 1 g = fixedSizeObjective 1 1 0 ∧
+      fixedSizeObjective 1 1 g = fixedSizeObjective 1 1 1 := by
+  intro g hg hgc
+  interval_cases g <;> norm_num [fixedSizeObjective]
+
+-- Explicit existential examples constructing all base hypotheses.
+example : ∃ U F C T : Finset ℕ,
+    U = (F ∪ C) ∪ T ∧ Disjoint F C ∧ Disjoint F T ∧ Disjoint C T :=
+  ⟨Finset.range 6, {0,1}, {2,3}, {4,5}, t11_partition⟩
+
+example : ∃ (Ω : AssignmentSet 4) (S : FixedIndicator 4) (a : Assignment 4)
+    (Y : PotentialOutcomes 4)
+    (_g : ({i // S i = true} → ℝ) → Assignment 4 → ℝ),
+    (conditionalAssignments Ω S a).Nonempty ∧
+      (NoInterference Ω Y ∨ FixedOutcomeNull (conditionalAssignments Ω S a) S Y) :=
+  ⟨sample, fixed, point 1, direct, score, t12_hypotheses.1, t12_hypotheses.2.1⟩
+
+example : ∃ (N M : ℕ) (i : Fin N) (neighbors : Finset (Fin N)),
+    2 ≤ N ∧ M ≤ N ∧ i ∉ neighbors :=
+  ⟨5, 2, 0, {1,2}, t13_hypotheses.1, t13_hypotheses.2.1,
+    t13_hypotheses.2.2.1⟩
+
+example : ∃ C M k f : ℤ, 1 ≤ C ∧ 1 ≤ M ∧ C = 2*k ∧ 0 ≤ f ∧ f ≤ C := by
+  exact ⟨4,3,2,2, by norm_num, by norm_num, by norm_num, by norm_num, by norm_num⟩
+
+example : ∃ C M k f : ℤ, 1 ≤ C ∧ 1 ≤ M ∧ C = 2*k+1 ∧ 0 ≤ f ∧ f ≤ C := by
+  exact ⟨5,3,2,2, by norm_num, by norm_num, by norm_num, by norm_num, by norm_num⟩
+
+#print axioms t11_partition
+#print axioms t11_repairs
+#print axioms t12_hypotheses
+#print axioms t12_tied_pvalues
+#print axioms t12_weaker_null
+#print axioms t13_hypotheses
+#print axioms t14_observation
+#print axioms t14_reference_support
+#print axioms t14_positive_outcome_variance
+#print axioms t15_even
+#print axioms t15_odd
+#print axioms t15_boundary
+
+end
+end Audit

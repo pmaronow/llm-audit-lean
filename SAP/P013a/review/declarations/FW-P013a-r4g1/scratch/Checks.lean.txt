@@ -1,0 +1,102 @@
+import SAP.P013a.Defs
+
+open scoped BigOperators
+open SAP.P013a Finset Filter
+noncomputable section
+set_option maxRecDepth 10000
+set_option maxHeartbeats 4000000
+
+lemma sum_fin2fun (f : (Fin 2 → Fin 4) → ℝ) :
+    (∑ z, f z) = ∑ a, ∑ b, f ![a,b] := by
+  rw [← (finTwoArrowEquiv (Fin 4)).symm.sum_comp f]
+  simp only [Fintype.sum_prod_type, finTwoArrowEquiv_symm_apply]
+
+-- T1: the smallest nonempty paired design has the stated positive marginals.
+example : ∀ i d, SAP.P013a.pi (pairedPopulation 2 (by omega)) i d = 1/2 := by
+  intro i d
+  fin_cases i <;> fin_cases d <;>
+    norm_num [SAP.P013a.pi, expectation, indicator, pairedPopulation, pairedDesign,
+      replicateDesign, pairAtomDesign, pairEpsilon, pairExposure, pairIndex,
+      sum_fin2fun, Fin.sum_univ_succ, Fin.prod_univ_succ]
+
+-- Signed outcomes, two genuinely independent assignment draws, R=1.
+example : ∀ i d, 0 < SAP.P013a.pi (signedReplicationPopulation 2) i d ∧
+    SAP.P013a.pi (signedReplicationPopulation 2) i d < 1 := by
+  intro i d
+  fin_cases i <;> fin_cases d <;>
+    norm_num [SAP.P013a.pi, expectation, indicator, signedReplicationPopulation,
+      signedReplicationDesign, Fin.sum_univ_succ]
+
+example : expectation
+    (independentProduct signedReplicationDesign signedReplicationDesign)
+    (signedOneReplicate 2) = 2/9 := by
+  norm_num [expectation, independentProduct, signedReplicationDesign,
+    signedOneReplicate, indicator, observed, signedReplicationPopulation,
+    Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+example : expectation
+    (independentProduct signedReplicationDesign signedReplicationDesign)
+    (signedOneReplicate 1) = -1/3 := by
+  norm_num [expectation, independentProduct, signedReplicationDesign,
+    signedOneReplicate, indicator, observed, signedReplicationPopulation,
+    Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+-- T4: a concrete input satisfies every input hypothesis, also at zero total.
+example : ∀ a : ℝ,
+    (0 < (2 : ℕ)) ∧ Positivity (signedReplicationPopulation a) 1 ∧
+    (1 ≤ (1 : ℕ)) ∧ IsMinimumPi (signedReplicationPopulation a) 1 (1/3) := by
+  intro a
+  refine ⟨by omega, ?_, by omega, ?_⟩
+  · intro i
+    fin_cases i <;>
+      norm_num [SAP.P013a.pi, expectation, indicator, signedReplicationPopulation,
+        signedReplicationDesign, Fin.sum_univ_succ]
+  · constructor
+    · exact ⟨0, by norm_num [SAP.P013a.pi, expectation, indicator, signedReplicationPopulation,
+        signedReplicationDesign, Fin.sum_univ_succ]⟩
+    · intro i
+      fin_cases i <;>
+        norm_num [SAP.P013a.pi, expectation, indicator, signedReplicationPopulation,
+          signedReplicationDesign, Fin.sum_univ_succ]
+
+example : ∀ a : ℝ, ∀ z : Fin 4 × (Fin 1 → Fin 4),
+    simulatedHTTotal (signedReplicationPopulation a) 1 1 z =
+      signedOneReplicate a (z.1, z.2 0) := by
+  intro a z
+  simp [simulatedHTTotal, signedOneReplicate, simulatedPi, replicateCount,
+    Fin.sum_univ_succ]
+
+example : signedReplicationDesign.weight =
+    fun z : Fin 4 =>
+      ((if z.val < 2 then 2/3 else 1/3) : ℝ) *
+      (if z.val % 2 = 0 then 1/3 else 2/3) := by
+  funext z
+  fin_cases z <;> norm_num [signedReplicationDesign]
+
+-- T5: positive, finite shared exposures really are dependent.
+example : ∀ (N : ℕ) (i : Fin N) (d : Fin 2), SAP.P013a.pi (sharedPopulation N) i d = 1/2 := by
+  intro N i d
+  fin_cases d <;>
+    norm_num [SAP.P013a.pi, expectation, indicator, sharedPopulation, sharedDesign,
+      Fin.sum_univ_succ]
+
+example : ∀ (N : ℕ) (i j : Fin N), ¬ PairIndependent (sharedPopulation N) i j := by
+  intro N i j h
+  have h' := h 1 1
+  norm_num [jointPi, SAP.P013a.pi, expectation, indicator, sharedPopulation, sharedDesign,
+    Fin.sum_univ_succ] at h'
+
+example : ∀ (N : ℕ) (g : Fin N → Fin N → Bool),
+    (∀ i j, g i j = false → PairIndependent (sharedPopulation N) i j) →
+    (∑ i, ∑ j, (if g i j = true then 1 else 0 : ℕ)) = N^2 := by
+  intro N g hg
+  have allTrue : ∀ i j, g i j = true := by
+    intro i j
+    cases h : g i j
+    · have bad := hg i j h 1 1
+      norm_num [jointPi, SAP.P013a.pi, expectation, indicator, sharedPopulation, sharedDesign,
+        Fin.sum_univ_succ] at bad
+    · rfl
+  simp [allTrue, pow_two]
+
+-- Empty or nonintegrable functions play no role in these tests.

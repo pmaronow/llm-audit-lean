@@ -1,7 +1,7 @@
 import AronowAudit.P031.Wave1.LargeSampleRefutationBlueprint
 import Mathlib.Topology.MetricSpace.Pseudo.Defs
 
-/-! Bracket the moving threshold by two fixed thresholds, use
+/-! Node 9: bracket the moving threshold by two fixed thresholds, use
 pointwise convergence along the subsequence there, and absorb the comparison
 error. All four errors are bounded explicitly by one quarter of the target
 tolerance. -/

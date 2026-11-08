@@ -1,16 +1,19 @@
 import AronowAudit.P031.P031_Variance
 
 /-!
-# P031-T11: corrected footnote 3, stochastic clauses
+# Blueprint: P031-T11 (probability declaration), corrected footnote 3, stochastic clauses
 
-Corrected footnote 3 (p. 369) with explicit conditions: `N → ∞`,
-`M/N → p ∈ (0,1)`, and convergent population variances and covariance.
-Uniformly bounded potential outcomes imply consistency of both centred arm
-sample variances. This sample condition (or bounded outcomes) gives
-`N V̂_OLS →p v1/(1-p) + v0/p` and, when the limiting leading true variance
-`D` is positive, `V̂_OLS / V →p U/D`, where `U = v1/(1-p) + v0/p`.
-All probabilities are the rows' actual finite uniform designs; no common
-probability space is used.
+Record P031-T11 / `AronowAudit.P031.corrected_footnote_three_probability` (resolution
+`repair_and_prove`). Corrected footnote 3 (p. 369) with the validator's explicit
+conditions: `N → ∞`, `M/N → p ∈ (0,1)`, convergent population variances and covariance.
+The final statement proves that uniformly bounded potential outcomes imply consistency
+of both centred arm sample variances, and that this sample condition (or bounded
+outcomes) gives `N V̂_OLS →p v1/(1-p) + v0/p` and, when the limiting leading true variance
+`D` is positive, `V̂_OLS / V →p U/D`. All probabilities are the rows' actual finite
+uniform designs; no common probability space is used. The frozen admitted declaration is
+not used.
+
+Imports: the P031 module (which itself imports Mathlib); no direct Mathlib import.
 -/
 
 namespace AronowAudit.P031.Wave1.FootnoteThreeProbability
@@ -18,7 +21,7 @@ noncomputable section
 open scoped BigOperators Matrix Topology
 open Filter
 
-/-- Sample-variance consistency and the OLS probability limits for corrected footnote 3. -/
+/-- Frozen final statement of `AronowAudit.P031.Wave1.footnote_three_probability_complete`. -/
 def Target : Prop :=
   ∀ (P : ℕ → Population), GrowingPopulations P →
     ∀ (p v1 v0 c : ℝ), 0 < p → p < 1 →
@@ -43,7 +46,7 @@ def olsWeightC (Q : Population) : ℝ :=
   (Q.N : ℝ) / ((Q.N : ℝ) - 2) * (1 / (Q.M : ℝ) + 1 / ((Q.N : ℝ) - Q.M)) *
     (((Q.N : ℝ) - Q.M) - 1)
 
-/-! ## Auxiliary statements -/
+/-! ## Statements used by the nodes -/
 
 /-- Pointwise bound on the centred sample-variance error of one size-`M` sample:
 `|s²-σ²| ≤ 2|ν̂-ν| + 4B|μ̂-μ| + B²/(M-1)` (exact identity
@@ -74,10 +77,9 @@ def EventCalculus : Prop :=
     (∀ E : Finset (Fin Q.N) → Prop,
       eventProbability Q (fun s => ¬ E s) = 1 - eventProbability Q E)
 
-/-- Bounded centred sample-variance L1 bound:
+/-- Bounded centred sample-variance L1 bound (map node `bounded_centered_sample_variance_L1`):
 `E|s² - σ²| ≤ 6B²√f + B²/(m-1)`, `f = (N-m)/(m(N-1))`, for the uniform size-`m` design.
-The proof uses the exact identity
-`s²-σ² = m/(m-1)((ν̂-ν)-(μ̂²-μ²)) + σ²/(m-1)`,
+Route: exact identity `s²-σ² = m/(m-1)((ν̂-ν)-(μ̂²-μ²)) + σ²/(m-1)`, the proved
 `bounded_raw_sample_moment_errors`, and `E|X| ≤ √(E X²)` for the finite uniform average. -/
 def SampleVarianceL1 : Prop :=
   ∀ (N M : ℕ) (v : Fin N → ℝ) (B : ℝ), 2 ≤ M → M ≤ N → 0 ≤ B → (∀ i, |v i| ≤ B) →
@@ -85,21 +87,22 @@ def SampleVarianceL1 : Prop :=
       6 * B ^ 2 * Real.sqrt (((N : ℝ) - M) / ((M : ℝ) * ((N : ℝ) - 1))) +
         B ^ 2 / ((M : ℝ) - 1)
 
-/-- Bounded outcomes suffice for the sample condition, under growth and interior allocation only. -/
+/-- Bounded outcomes suffice for the sample condition (map node
+`bounded_outcomes_arm_consistency`), under growth and interior allocation only. -/
 def BoundedArmConsistency : Prop :=
   ∀ (P : ℕ → Population), GrowingPopulations P →
     ∀ p : ℝ, 0 < p → p < 1 →
     Tendsto (fun n => ((P n).M : ℝ) / (P n).N) atTop (nhds p) →
     UniformlyBoundedOutcomes P → ArmSecondMomentsConverge P
 
-/-- Exact assignmentwise identity `N V̂_OLS = A_N s1² + B_N s0²`,
-using `residual_sse` and `gramInverse`. -/
+/-- Exact assignmentwise identity `N V̂_OLS = A_N s1² + B_N s0²` (map node
+`weighted_ols_scaled_limit`, identity half; `residual_sse`, `gramInverse`). -/
 def OLSWeightedIdentity : Prop :=
   ∀ (Q : Population) (s : Finset (Fin Q.N)), s ∈ (Finset.univ).powersetCard Q.M →
     (Q.N : ℝ) * olsEstimator Q s =
       olsWeightT Q * sampleVariance s Q.y1 + olsWeightC Q * sampleVariance sᶜ Q.y0
 
-/-- Limits of the two deterministic weights. -/
+/-- Limits of the two deterministic weights (map node `weighted_ols_scaled_limit`). -/
 def OLSWeightLimits : Prop :=
   ∀ (P : ℕ → Population), GrowingPopulations P →
     ∀ p : ℝ, 0 < p → p < 1 →
@@ -107,9 +110,9 @@ def OLSWeightLimits : Prop :=
     Tendsto (fun n => olsWeightT (P n)) atTop (nhds (1 / (1 - p))) ∧
     Tendsto (fun n => olsWeightC (P n)) atTop (nhds (1 / p))
 
-/-- Finite-row probability calculus for weighted sums: bounded convergent
-deterministic weights times errors tending to zero in row probability,
-plus a convergent deterministic term. -/
+/-- Finite-row probability calculus for weighted sums (map node
+`finite_row_probability_calculus`): bounded convergent deterministic weights times
+errors tending to zero in row probability, plus a convergent deterministic term. -/
 def WeightedSumLimit : Prop :=
   ∀ (P : ℕ → Population) (F G H : Population → ℝ) (e1 e0 : VarianceEstimator)
     (a b h : ℝ),
@@ -119,37 +122,38 @@ def WeightedSumLimit : Prop :=
     ConvergesInProbability P e1 0 → ConvergesInProbability P e0 0 →
     ConvergesInProbability P (fun Q s => F Q * e1 Q s + G Q * e0 Q s + H Q) h
 
-/-- Ratio with a positive deterministic limit. -/
+/-- Ratio with a positive deterministic limit (map node `positive_true_variance_ratio`). -/
 def RatioLimit : Prop :=
   ∀ (P : ℕ → Population) (X : VarianceEstimator) (D : Population → ℝ) (U D0 : ℝ),
     ConvergesInProbability P X U →
     Tendsto (fun n => D (P n)) atTop (nhds D0) → 0 < D0 →
     ConvergesInProbability P (fun Q s => X Q s / D Q) (U / D0)
 
-/-! ## Implications between auxiliary statements -/
+/-! ## Nodes -/
 
-/-- Pointwise sample-variance error bound. -/
+/-- Node 1 (pointwise sample-variance error bound). -/
 def N1 : Prop := SampleVariancePointwise
-/-- `E|X| ≤ √(E X²)`. -/
+/-- Node 2 (`E|X| ≤ √(E X²)`). -/
 def N2 : Prop := ExpectationAbsSqrt
-/-- Combine the pointwise bound and finite Cauchy–Schwarz inequality with
-`bounded_raw_sample_moment_errors`. -/
+/-- Node 3 (map node `bounded_centered_sample_variance_L1`): combine Nodes 1-2 with the
+proved `bounded_raw_sample_moment_errors`. -/
 def N3 : Prop := SampleVariancePointwise → ExpectationAbsSqrt → SampleVarianceL1
-/-- Treat the treated arm directly and the control arm through `expectation_compl`;
-apply Markov's inequality through `probability_limit_of_mean_absolute_error`. -/
+/-- Node 4 (map node `bounded_outcomes_arm_consistency`): treated arm directly, control
+arm through `expectation_compl`, Markov through the proved
+`probability_limit_of_mean_absolute_error`. -/
 def N4 : Prop := SampleVarianceL1 → BoundedArmConsistency
-/-- Assignmentwise OLS identity. -/
+/-- Node 5 (assignmentwise OLS identity). -/
 def N5 : Prop := OLSWeightedIdentity
-/-- Weight limits. -/
+/-- Node 6 (weight limits). -/
 def N6 : Prop := OLSWeightLimits
-/-- Finite row-probability calculus. -/
+/-- Node 7 (finite row-probability calculus). -/
 def N7 : Prop := EventCalculus
-/-- Weighted-sum convergence in row probability, two-event union bound. -/
+/-- Node 8 (weighted-sum convergence in row probability, two-event union bound). -/
 def N8 : Prop := EventCalculus → WeightedSumLimit
-/-- Ratio convergence in row probability. -/
+/-- Node 9 (ratio convergence in row probability). -/
 def N9 : Prop := EventCalculus → RatioLimit
 
-/-- The auxiliary statements imply the target (with the proved `scaled_true_variance_limit`,
+/-- The nodes suffice (with the proved `scaled_true_variance_limit`,
 `probability_limit_congr` and `population_sizes`). -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7 : N7)
     (h8 : N8) (h9 : N9) : Target := by
@@ -190,6 +194,31 @@ theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7
     linarith
   exact (mul_div_mul_left _ _ hN0).symm
 
+/-- Nonvacuity: the proved E003 sign sequence `footnotePopulation 1`
+(`N = 4(n+2)`, `M = n+2`, `y0 = z`, `y1 = z + 2`) satisfies every hypothesis of the target
+with `p = 1/4`, `v1 = v0 = c = 1`, the bounded-outcome alternative (`B = 3`), and
+`D = 16/3 > 0`. (Referees also give the balanced sequence `N = 4(n+1)`, `M = 2(n+1)`.) -/
+theorem nonvacuous_hypotheses :
+    ∃ (P : ℕ → Population) (p v1 v0 c : ℝ), GrowingPopulations P ∧ 0 < p ∧ p < 1 ∧
+      Tendsto (fun n => ((P n).M : ℝ) / (P n).N) atTop (nhds p) ∧
+      Tendsto (fun n => popVariance (P n).y1) atTop (nhds v1) ∧
+      Tendsto (fun n => popVariance (P n).y0) atTop (nhds v0) ∧
+      Tendsto (fun n => popCovariance (P n).y1 (P n).y0) atTop (nhds c) ∧
+      UniformlyBoundedOutcomes P ∧ 0 < (1 - p) / p * v1 + p / (1 - p) * v0 + 2 * c := by
+  refine ⟨footnotePopulation 1, 1/4, 1, 1, 1, (footnote_population_growth 1).1,
+    by norm_num, by norm_num, ?_, ?_, ?_, ?_, ?_, by norm_num⟩
+  · exact tendsto_const_nhds.congr (fun n => ((footnote_population_moments 1 n).1).symm)
+  · refine tendsto_const_nhds.congr (fun n => ?_)
+    rw [(footnote_population_moments 1 n).2.2.2.2.2.1]
+    norm_num
+  · exact tendsto_const_nhds.congr
+      (fun n => ((footnote_population_moments 1 n).2.2.2.2.1).symm)
+  · exact tendsto_const_nhds.congr
+      (fun n => ((footnote_population_moments 1 n).2.2.2.2.2.2).symm)
+  · refine ⟨3, fun n i => ?_⟩
+    change |1 * footnoteSigns (n + 2) i + 2| ≤ 3 ∧ |footnoteSigns (n + 2) i| ≤ 3
+    unfold footnoteSigns
+    split_ifs <;> norm_num
 
 end
 end AronowAudit.P031.Wave1.FootnoteThreeProbability

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P005-T15",
+    "theorem": "SAP.P005b.T15",
+    "fingerprint": "4933d4f649e9c551713e238021019a6a4185db8be2cbba1d402a8b01412dba4a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:15: t=2,c=3,n=5,d=1,S={0,1}, x=(1,0,0,0,2), yT=(2,0,0,0,0), yC=(0,0,1,2,3). Both size hypotheses and design membership hold. Treated and control covariances are 1/2 and 4/3, both nonzero; the combination is 5/18 and the coefficients are 1/3,-1/3. No standardization is required by this algebraic assertion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T16",
+    "theorem": "SAP.P005b.T16",
+    "fingerprint": "715d161a6efdc5851a6608153c5ffaf890a34f8a6296223e4d405dde954752b4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:35: n=4,m=3,a=b=c=(1,1,1,-3). Every size and zero-sum hypothesis holds. The treated third moment is 2/9 and the mixed treated-control third moment is -2/3, so the conclusion is not merely tested on zero arrays or zero third moments.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T17",
+    "theorem": "SAP.P005b.T17",
+    "fingerprint": "d006992dedbae063d1cacfdccfa7394445647313119458d4357cc16108197af4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:60: n=4,d=1,m=1,x=(1,-1,1,-1), yT=(1,0,0,0), yC=0, S={0}; xbar=0, Gram=1, both outcome second moments are at most 1, and the actual common-residual star is 1/6. Compiled scratch/SequenceCheck.lean:58 and :78: all hypotheses of both sequence groups hold for d_n=1,m_n=floor(n/2), x=(sqrt(n/2),-sqrt(n/2),0,...), zero outcomes, uniform K=1, and ratio constants 1/4,3/4. Also compiled the d_n=0 sequence at :102, zero kappa at :119 and zero-rate stochasticO at :123; no empty-supremum convention is needed at positive n.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T18",
+    "theorem": "SAP.P005b.T18",
+    "fingerprint": "829d46385cc6331ab2ddc08bf685ef9bc14fc4133184a1b04febcd661f4c3a3f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:60: n=4,d=1,m=1,S={0}, standardized x=(1,-1,1,-1), yT=(1,0,0,0), yC=0. Both nonempty-arm conditions and design membership hold. Using the actual common residuals as eT,eC, the weighted normal equation is proved at :89 and the residual star is computed as 1/6 at :83. This supplies the hypotheses of both independently quantified groups.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T19",
+    "theorem": "SAP.P005b.T19",
+    "fingerprint": "d83aeac59ec5183af6ec3a65273799f86bf0949c6f0d750411c97b667c8f3a94",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The printed reading and condition-by-condition check were written in scratch/t19-witness.md before accepting the refutation. Compiled scratch/Check.lean:100: n=6,m=5,t=treated,a=(20,1,1,1,1,1),b=(1,20,20,20,20,20). All six assignments are enumerated exactly, both arms are nonempty, and every variable is fixed and finite. The expectation identity holds with mean -722/15. The variance 521284/1125 exceeds covarianceBound=54027/125 by 35041/1125>0. The witness violates the canonical conjunction itself and satisfies every printed premise; centering is not one of those premises.",
+    "confidence": "high"
+  }
+]

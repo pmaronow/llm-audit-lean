@@ -790,5 +790,7 @@ theorem combined_asymptotic_inference_proof (S : Study Ω) (hs : S.standing) (c1
   filter_upwards [t19_consistency_ae S hs c1 c0 cV] with ω hω
   exact hω.2
 
+example : type_of% @AronowAudit.P019.combined_asymptotic_inference := combined_asymptotic_inference_proof
+
 end
 end AronowAudit.P019.Wave1

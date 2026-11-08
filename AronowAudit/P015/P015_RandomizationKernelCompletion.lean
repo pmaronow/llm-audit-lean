@@ -62,5 +62,6 @@ theorem condIndepFun_of_indep_joint {Ω A B C : Type*}
     simp [mul_comm]
   simpa only [hfg_eq] using hresult
 
+#print axioms condIndepFun_of_indep_joint
 end
 end AronowAudit.P015.RandomizationKernelCompletion

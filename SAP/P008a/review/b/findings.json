@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P008-T1",
+    "theorem": "SAP.P008a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The recorded observation O={0,...,4} union {10,...,64} has 60 elements, five in the first block and 55 in the second, so both supports have positive size and give it positive mass. O-prime replaces 10 by 5 and has 60 elements but six in the first block. The four-node supports have six and four distinct balanced assignments. Exact checks: scratch/arithmetic_checks.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T2",
+    "theorem": "SAP.P008a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=2, nodes (0,0) and (2,0), whole-plane field, radius set {1}, zeta=delta_(1,0), and Y identically 1. Every evaluated circle has mass 1, all schedules are integrable and the sharp null holds. Under uniform independent Bernoulli(1/2) assignments, condition on treatedCount=1; two of the four assignments qualify, so Q(A)=1/2, and both arm counts equal 1. The Bernoulli and circle hypotheses, count cardinality and arm counts are compiled in scratch/Check.lean. General finite-law clauses also have ordinary two-point law witnesses.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P008-T3",
+    "theorem": "SAP.P008a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The model in Defs/Part2.lean is an explicit rectangle with four distinct nodes and 24 unit atoms. Each of the 20 node/radius pairs selects exactly one atom of positive mass; its outcome is the prescribed node value. The six design assignments are distinct and have two nodes in each arm. The exact checker verifies circle selection, both type-7 quantiles and the two rejecting assignments, giving rejection mass 2/6.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T4",
+    "theorem": "SAP.P008a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the linear-functional clause take J=1, weight 1 and node data (0,1,2,3); the six balanced assignments are nonempty. For the nonempty rejection-set clause take R={0}. For IID sampling take Omega=Fin 2, Q=(1/3,2/3), any B>=0, and the genuine product law on B+1 coordinates. Such laws normalize and satisfy hIID. The exact checker verifies sample-rank calibration for B=0,...,4; this is a witness check, not a proof of the universal claim.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T5",
+    "theorem": "SAP.P008a.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the stated two-node model, or any positive replicated pair count, starting with M=1. Every radius-one circle has two points and every uniform assignment law has positive total cardinality. The nodes are in the field, the node distances are at least 2, and all outcomes are in [0,2]. Exact enumeration for M=1,2,3,4 verifies the circle means and full versus diagonal variance; for M=1 these are 1/4 and 1/8. The asymptotic remark is expressly outside the required formalization.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T6",
+    "theorem": "SAP.P008a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the matrix/HC0 clause take four nodes (0,0),(2,0),(4,0),(6,0), z=0011, M=(0,2,4,6), D their distances and c=2/5. Both arm counts are 2, all off-diagonal distances exceed c, the binary regression is nonsingular, and the variance is nonzero (1). A two-node version of these hypotheses is compiled in scratch/Check.lean. For the geometric clause use its unitCircleModel with d=1,r=0,c=1 and g_ik(x)=1{x=node_k}; g is nonzero at its centre, its evaluated circle integral is zero and the distinct-node distance 2 exceeds c. The canonical pair example supplies nonzero additive cross-covariance.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P008-T7",
+    "theorem": "SAP.P008a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are four nodes, four radius labels and 40000 point labels in each cell, together with all 16 equiprobable assignments. The treated thresholds are 79 or 679, and untreated thresholds 400 or 1000; all lie strictly inside [0,40000], so the subtraction never truncates and both binary values occur. Observed assignment 1100 has probability 1/16 and two nodes in each arm. Radius weights 1/4 each are admissible. This witnesses the labelled counting model only, as disclosed, without asserting a planar realization.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T8",
+    "theorem": "SAP.P008a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled two-node unitCircleModel has measurable field, positive finite circle masses, binary Y identically 1 and integrable overrides for every assignment, so it satisfies the spatial component for the uniform assignment law. For mixtures take J=4, w_j=1/4, q0_j=0,q1_j=1,L=U=1. These satisfy every bound hypothesis. For scaling take the sorted six-value sample (-2,-1,0,0,1,2), q=1/40 and m=4. Weight sum 1 precludes an empty index set. The nonprobability-difference witness uses the explicit nonempty companion counting model.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P008-T9",
+    "theorem": "SAP.P008a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The bandwidth construction has four distinct nodes, 16 unit atoms and three positive radii; each evaluated circle has mass exactly 1. Assignment 0011 has both arm counts 2 and score (1/2,-1/2,-1/2,1/2), and radius 1/5 occurs on each grid at the asserted position. Exact checks give archived variances 1 and 1/2. The reconstructed toy nodes satisfy the squared-distance bound, and the sixth archived threshold includes every pair; its zero variance is a consequence of score orthogonality, with no zero-arm convention used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T10",
+    "theorem": "SAP.P008a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the same balanced four-node assignment, nonconstant means and distance array as T9. The physical cutoff 2/5 gives positive variance 1 at both positions. For the all-pairs subclause choose c=32/5 on those nodes; every pair distance is at most 6, so hall holds and the zero score sum yields variance zero. Toy-node balanced assignments also exist. The relevant nonempty-arm hypotheses are compiled in scratch/Check.lean, and the fixed variance values are checked exactly in scratch/arithmetic_checks.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T11",
+    "theorem": "SAP.P008a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take a=1.491,b=c=1.550,e=1.691,f=1.714. All five rounding-error bounds hold with error zero, and the sum is 7.996. These numerical hypothesis witnesses are also compiled in scratch/Check.lean. Exact rational arithmetic verifies the five-number and eight-number sums and interval endpoints.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T12",
+    "theorem": "SAP.P008a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The grid has five indices and the quantile sample has n+1>=1 indices. For example choose n=5, any nonzero array M(z,j)=100+z.val+j.val, and q=1/40. Every selected sum is nevertheless zero because the explicitly asserted selected radius set is empty. Thus the empty radius selection is the actual counterexample, while the permutation sample itself is nonempty.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T13",
+    "theorem": "SAP.P008a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The corrected grid contains 41 actual indices and selects exactly 2,3,4,5, corresponding to 1,1.5,2,2.5 kilometres. These are four distinct nonempty sample locations. Any real estimate vector, for example f(k)=k, witnesses the unrestricted summation clause. Exact rational checks verify selection, endpoint and spacing.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T14",
+    "theorem": "SAP.P008a.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=2, mu1=(3,7), mu0=(0,2) and tau=(3,5). Every defining equality holds and N is positive. The average is 4, while the literal product is 16. This is a definitional finite-mean target, so no extra spatial hypotheses or realizations are required.",
+    "confidence": 0.99
+  }
+]

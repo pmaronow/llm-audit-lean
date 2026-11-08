@@ -1,0 +1,194 @@
+[
+  {
+    "target_id": "P001-T39",
+    "theorem": "SAP.P001c.T39",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the normal-combination antecedent, take a finite product of standard normal laws with coordinate variables, all means 0, all variances 1, and a coefficient vector containing a 1. For the bivariate part take mx=my=0, sx=sy=1, rho=0. Both parameter ranges are nonempty.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T40",
+    "theorem": "SAP.P001c.T40",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "X=id under N(0,1) is square integrable. The fair-coin assertions have no antecedents and use weights (1/2,1/2), which are normalized; see compiled scratch/Check.lean:17 and :25.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T41",
+    "theorem": "SAP.P001c.T41",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. The three outcomes actually exist, with normalized nonnegative weights (1/2,1/2,0), checked in scratch/Check.lean:10. Each variable has positive variance 1/4, so correlation is defined. The null outcome is the intended witness against everywhere equality.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T42",
+    "theorem": "SAP.P001c.T42",
+    "verdict": "correct_whole",
+    "severity": "minor",
+    "issues": [
+      "SAP/P001c/Challenge/Part1.lean:32-33 calls the correlation range the 'unit interval', which conventionally means [0,1]. The actual theorem correctly uses [-1,1]; this is a docstring wording error, not a defect in the formal statement or its whole-claim coverage."
+    ],
+    "fix": "Replace the descriptive sentence with: For square-integrable variables with positive variances, correlation lies in [-1,1], and its values 1 and -1 characterize the corresponding almost-sure affine relations.",
+    "nonvacuity": "On the real line with measure N(0,1), take X=Y=id, or X=id,Y=-id. Both variables have finite variance 1, and the two choices attain correlations 1 and -1. The L2 and positive-variance facts are compiled in scratch/Check.lean:25.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T43",
+    "theorem": "SAP.P001c.T43",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take X=Y=id under N(0,1), and the supplied conditional-mean version m=id. The actual isConditionalMean and L2 requirements are checked in scratch/Check.lean:32; positive regressor variance is checked at :25. Thus the extra conditional-mean block is not vacuous.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T44",
+    "theorem": "SAP.P001c.T44",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. On two equally weighted outcomes let X=Y=(-1,1). The displayed vectors are the affine predictors X and X+1. The weights are normalized, checked in scratch/Check.lean:17, and Var(X)=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T45",
+    "theorem": "SAP.P001c.T45",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "X=Y=id under N(0,1) satisfies all assumptions, with alpha=0 and beta=1. L2 and positive variance are checked in scratch/Check.lean:25.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T46",
+    "theorem": "SAP.P001c.T46",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The probability space U[0,1] times N(0,1), with the coordinate maps X,W, realizes every input hypothesis. The equality of intervalUniform 0 1 with restricted Lebesgue measure, probability normalization, independence and exact pushforwards are compiled in scratch/Check.lean:88 and :104.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T47",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is present. Independent normal coordinates and Borel transformations realize regular subcases. The composition-only transformation scope is strictly more permissive than the rejected rows: nonvacuity.md gives independent uniform X,Y and composition-measurable non-Borel transformations with identical nonconstant transformed values, explaining why the missing measurability condition cannot be inferred.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T48",
+    "theorem": "SAP.P001c.T48",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take K=2, mu=N(0,1), and coordinates X_0(omega)=omega, X_1(omega)=2*omega. Both are square integrable, the covariance matrix is [[1,2],[2,4]], and the variance of their sum is 9. Positive-dimensional instances exist; K=0 does not do the work.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T49",
+    "theorem": "SAP.P001c.T49",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. With K=1, b=(2,3), x=(4), the affine function is 2+3*x, its value at zero is 2, and its coordinate increment and derivative are both 3. Fin K is nonempty in this instance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T50",
+    "theorem": "SAP.P001c.T50",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=4 and the displayed vector (3,4,3,10) give a nonempty finite population. X=id under N(0,1) realizes the population L2 part. For the empirical part take n=4 and those first four observations. The strict sample-size hypotheses exclude division by zero and the empty empirical law.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T51",
+    "theorem": "SAP.P001c.T51",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Any probability space with constant measurable Z_n=c meets the hypotheses; nonconstant measurable choices such as Z_n(omega)=omega/(n+1) under N(0,1) also do. Measurability makes both complementary events legitimate probabilities. There is no assumption of convergence in either direction of the equivalence.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T52",
+    "theorem": "SAP.P001c.T52",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the countable standard-normal product, coordinate variables, a Borel D, and x=0. IID is checked generically at scratch/Check.lean:45 and for normals at :74. The fixed-point indicator has variance 1/4, and the theorem also covers the degenerate indicator cases.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T53",
+    "theorem": "SAP.P001c.T53",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. The masses are p_k=(7/8)*(1/8)^k; their total and first two moment series have ratios 1/8, 1/4, 1/2. The fourth-moment summands are (7/8)*2^k, so the nonnegative extended-real sum is infinite. A realization on natural numbers is described in nonvacuity.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T54",
+    "theorem": "SAP.P001c.T54",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "IID standard-normal coordinates on the countable product have finite positive variance 1. All hypotheses are jointly compiled in scratch/Check.lean:74. The heavy-tailed law of T53 also supplies a mathematical finite-second/infinite-fourth-moment instance, so no fourth moment is implicitly needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T55",
+    "theorem": "SAP.P001c.T55",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let mu=nu=N(0,1), theta=0, thetahat_n(omega)=omega/sqrt(n), and Vhat_n=1/n for n>0 with Vhat_0=0. Both sequences are measurable and Vhat is nonnegative. For n>0 the root-n statistic equals omega, giving the nondegenerate limit; the actual distribution-convergence predicate is checked in scratch/Check.lean:117.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T56",
+    "theorem": "SAP.P001c.T56",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The countable product with marginal (delta_0+delta_1)/2, using coordinate observations, satisfies every IID and law hypothesis. This is compiled in scratch/Check.lean:65 without importing any Challenge stub. Thus the constant example really refutes the printed positive-variance-normal implication on an existing probability space.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T57",
+    "theorem": "SAP.P001c.T57",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use Bernoulli(1/2) IID coordinates, T(G)=G(0), L(h)=h(0), and the Borel bridge law of h(x)=Z*1_[0,1)(x), Z~N(0,1/4). Every path meets cdfTangent, the covariance form is (sum_j a_j*1_[0,1)(x_j))^2/4, and L(h)=Z has positive variance 1/4. The scalar empirical evaluation is measurable. The IID and Hadamard parts are compiled in scratch/Check.lean:65 and :138; the complete joint instance is justified in nonvacuity.md without assuming either limit conclusion.",
+    "confidence": 0.96
+  }
+]

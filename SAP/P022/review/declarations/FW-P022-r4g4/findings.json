@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P022-T1",
+    "theorem": "SAP.P022.T1",
+    "fingerprint": "5f59fbc7cd785af9c3b0197abd1c48354dbc546a82ae4c4a8a7bf0129eb0a0a6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Witnesses.lean compiled successfully: for every row, marginal and assignment it checks the reciprocal and perturbed witnesses lie below their stated thresholds, hence population/sample CDFs equal 1, while the corresponding limiting-law CDFs are 0 and 1/2. It also checks strict perturbed-outcome bounds and an explicit nonempty partition mesh (-infinity,0,+infinity). Nestedness, allocation limits, weak limits, atom convergence, square integrability and nonsingularity are justified in claim-checks.md. No Challenge theorem is used by these checks; printed axiom dependencies have no sorryAx.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T6",
+    "theorem": "SAP.P022.T6",
+    "fingerprint": "3205fb899e9e4631a577890101d7ca8efcc92c4c10b340791a6bf9f783389999",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully. The nested zeroWitness with originLaw, theta=1, rho=1/2, C=1 satisfies Conditions123 and Lemma2Conclusions, and EarlierSixRates for every positive tuple. Concrete upper data are epsilon1=1, xi=1/32, nu_i=1/16; lower data are epsilon1=epsilon2=epsilon3=1, xi2=xi3=1/16, nu_i=1/8. This also satisfies the universally quantified earlier-rate hypothesis of the optimized conclusion. Finite probabilities and both C=0 last-integral identities are checked. The printed axiom sets for the constructed conditions and rate lemmas are exactly propext, Classical.choice and Quot.sound, with no sorryAx.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P022-T7",
+    "theorem": "SAP.P022.T7",
+    "fingerprint": "56b8c994b21e3e47134da41ba251e33235ac890a22a86e0bbda29dcaa868bec6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Witnesses.lean compiled successfully: checks the exact four-corner outcome bound, finite N=4 means 1/2, variances 1/4 and covariance zero, the positive split 1+1+1=3, and the probability-one event in (23) for every row. claim-checks.md verifies the complete fixed nested witness, both kinds of CDF convergence, the printed preceding-bound conditions for the separate small-epsilon refutation, and the genuine 1/2 centering gap. The asymptotic argument uses the canonical finite centered-error bound and does not assume independence across rows.",
+    "confidence": 0.99
+  }
+]

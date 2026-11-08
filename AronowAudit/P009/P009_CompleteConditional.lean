@@ -1,4 +1,4 @@
-/- Exact complete-randomization conditional finite-law identities, proved by coordinate permutations outside the mask. -/
+/- Exact complete-randomization conditional finite-law identities, proved by coordinate permutations outside the mask. All declarations are supporting; no complete variance or consistency theorem is credited here. -/
 import AronowAudit.P009.P009_CompleteMixing
 namespace AronowAudit.P009.CompleteConditional
 open scoped BigOperators
@@ -237,6 +237,10 @@ lemma complete_conditional_mean_bound {n : ℕ} (E : Experiment n) (m : ℕ) (hC
         split_ifs <;> rfl) hp.le
     _ = _ := by ring
 
+#print axioms conditional_weighted_count
+#print axioms complete_centered_weighted_bound
+#print axioms complete_conditional_mean_bound
+#print axioms complete_marginal_true
 end
 end AronowAudit.P009.CompleteConditional
 

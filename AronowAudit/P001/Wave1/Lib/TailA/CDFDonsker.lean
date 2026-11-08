@@ -5,7 +5,7 @@ import Mathlib.Probability.Independence.InfinitePi
 import Mathlib.Topology.TietzeExtension
 import Mathlib.Topology.Order.LeftRightLim
 
-/-! The half-line Donsker law in the uniform-norm path space. -/
+/-! The half-line Donsker law in the audit's uniform-norm path space. -/
 
 noncomputable section
 open MeasureTheory ProbabilityTheory Filter Set
@@ -17,7 +17,7 @@ open AsymptoticStatistics.EmpiricalProcess
 universe u v
 set_option maxHeartbeats 1000000
 
-/-- The CDF defined by threshold probabilities agrees with the Mathlib probability CDF. -/
+/-- The audit and Mathlib probability CDFs agree. -/
 theorem cdf_donsker_cdf (P : Measure ℝ) [IsProbabilityMeasure P] :
     cdf P id = ProbabilityTheory.cdf P := by
   funext t
@@ -184,7 +184,7 @@ theorem cdf_donor_endpoint_fiber (P : Measure ℝ) [IsProbabilityMeasure P]
     exact he.trans hzt
   · exact ae_of_all ν (fun z x hx => (hex ⟨x, hx⟩).elim)
 
-/-- The transported donor law is supported on the CDF tangent space. -/
+/-- The transported donor law has exactly the audit's tangent support. -/
 theorem cdf_donor_tangent [MeasurableSpace KolmogorovSpace] [BorelSpace KolmogorovSpace]
     (P : Measure ℝ) [IsProbabilityMeasure P]
     {ν : Measure (LinfF halfLineIndicatorClass)}
@@ -225,6 +225,30 @@ theorem cdf_donor_bridge [MeasurableSpace KolmogorovSpace] [BorelSpace Kolmogoro
   simpa only [cdf_donsker_cdf, hc] using
     cdf_donor_projection P hν r x a
 
+/-- A tangent path is a continuous function of the CDF value, with a global extension. -/
+theorem cdf_donsker_continuous_extension (F : ℝ → ℝ) {h : KolmogorovSpace}
+    (hh : h ∈ CDFTangent F) : ∃ g : C(ℝ, ℝ), ∀ x, g (F x) = h x := by
+  obtain ⟨g, hg⟩ := cdf_tangent_extension F hh
+  obtain ⟨G, hG⟩ := g.exists_extension' isClosed_closure.isClosedEmbedding_subtypeVal
+  refine ⟨G, fun x => ?_⟩
+  exact (congrFun hG ⟨F x, subset_closure (mem_range_self x)⟩).trans (hg x)
+
+/-- CDF-tangent regularity gives both finite one-sided limits and finite endpoint limits. -/
+theorem cdf_donsker_cadlag (P : Measure ℝ) [IsProbabilityMeasure P]
+    {h : KolmogorovSpace} (hh : h ∈ CDFTangent (cdf P id)) :
+    AronowAudit.Literature.extendedCadlag h := by
+  rw [cdf_donsker_cdf] at hh
+  obtain ⟨g, hg⟩ := cdf_donsker_continuous_extension (ProbabilityTheory.cdf P) hh
+  have he : (fun x => h x) = fun x => g (ProbabilityTheory.cdf P x) :=
+    funext fun x => (hg x).symm
+  rw [AronowAudit.Literature.extendedCadlag, he]
+  refine ⟨fun x => g.continuous.continuousAt.comp_continuousWithinAt
+    ((ProbabilityTheory.cdf P).right_continuous x), ?_, ?_, ?_⟩
+  · intro x
+    exact ⟨g (Function.leftLim (ProbabilityTheory.cdf P : ℝ → ℝ) x),
+      g.continuous.continuousAt.tendsto.comp ((monotone_cdf P).tendsto_leftLim x)⟩
+  · exact ⟨g 0, g.continuous.continuousAt.tendsto.comp (tendsto_cdf_atBot P)⟩
+  · exact ⟨g 1, g.continuous.continuousAt.tendsto.comp (tendsto_cdf_atTop P)⟩
 
 /-- The actual empirical CDF has exactly the literature's normalized-count formula. -/
 theorem cdf_donsker_empirical_formula {Ω : Type u} [MeasurableSpace Ω]
@@ -276,8 +300,11 @@ theorem cdf_donsker_empirical_embedding {Ω : Type u}
     exact (cdf_donsker_empirical_bound X n ω x).2
   simp [AronowAudit.Literature.boundedRealEmbedding, hb]
 
+/-- Both bounded-path embeddings are the same construction. -/
+theorem cdf_donsker_embeddings (f : ℝ → ℝ) :
+    AronowAudit.Literature.boundedRealEmbedding f = kolmogorovEmbed f := rfl
 
-/-- The half-line empirical process and the empirical CDF process are equal as bounded paths. -/
+/-- Donor and audit empirical processes are equal as bounded paths. -/
 theorem cdf_donsker_path {Ω : Type u} [MeasurableSpace Ω]
     (P : Measure ℝ) [IsProbabilityMeasure P] (X : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω)
     (hmem : Memℓp (fun f : halfLineIndicatorClass =>
@@ -305,7 +332,7 @@ theorem cdf_donsker_path {Ω : Type u} [MeasurableSpace Ω]
   rw [he]
   ring
 
-/-- The empirical CDF element and the bounded normalized-count path are identical. -/
+/-- The audit empirical element and the bounded normalized-count path are identical. -/
 theorem cdf_donsker_empirical_element {Ω : Type u} [MeasurableSpace Ω]
     (X : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) :
     empiricalCDFElement X n ω = AronowAudit.Literature.boundedRealEmbedding
@@ -451,5 +478,30 @@ theorem cdf_donsker_supported {Ω : Type u} [MeasurableSpace Ω]
   simp_rw [he] at htrans
   simpa only [hF] using htrans
 
+/-- Exact proof of the literature interface, retaining its tight extended-cadlag law. -/
+theorem cdf_donsker_literature : AronowAudit.Literature.VanDerVaart1998Donsker.{u} := by
+  intro mK bK Ω mΩ μ pμ X hm hi hid
+  have hiid : IID μ X := ⟨hm, hi, fun i =>
+    ⟨(hm i).aemeasurable, (hm 0).aemeasurable, hid i⟩⟩
+  obtain ⟨ν, hp, ht, hb, hw⟩ := cdf_donsker_supported μ X hiid
+  let P : Measure ℝ := μ.map (X 0)
+  have hP : IsProbabilityMeasure P := by dsimp [P]; infer_instance
+  have hF : cdf μ (X 0) = cdf P id := CondP001cd_cdf_law μ (X 0) (hm 0)
+  have hFlit : AronowAudit.Literature.realLawCDF μ (X 0) = cdf μ (X 0) := rfl
+  refine ⟨ν, hp, ht, ?_, ?_, ?_⟩
+  · apply measure_mono_null (t := (CDFTangent (cdf μ (X 0)))ᶜ) _ hb.1
+    intro h hn hh
+    exact hn (cdf_donsker_cadlag P (hF ▸ hh))
+  · intro r x a
+    have hc (s t : ℝ) : cdf μ (X 0) (min s t) = min (cdf μ (X 0) s) (cdf μ (X 0) t) := by
+      rw [hF, cdf_donsker_cdf]
+      exact (monotone_cdf P).map_min
+    simpa only [hFlit, hc] using hb.2 r x a
+  · intro f hf hfbd
+    have he := (hw f hf hfbd).1
+    simpa only [cdf_donsker_empirical_element, hFlit, cdf_donsker_embeddings,
+      outer_mean_literature_eq, mean] using he
+
+example : AronowAudit.Literature.VanDerVaart1998Donsker.{u} := cdf_donsker_literature
 
 end AronowAudit.P001.Wave1.TailA

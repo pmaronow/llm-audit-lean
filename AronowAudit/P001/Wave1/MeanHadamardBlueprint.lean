@@ -1,22 +1,28 @@
 import AronowAudit.P001.P001_Foundations
 
 /-!
-# Counterexample to mean Hadamard differentiability (P001-T118)
+# Blueprint: refutation of `AronowAudit.P001.printed_finite_variance_mean_hadamard` (P001-T118)
 
-Finite second moment alone does not make `cdfMeanFunctional` Hadamard differentiable
-at every embedded CDF in `KolmogorovSpace`, with its sup norm, on the domain of
-finite-second-moment CDFs with all bounded tangent directions.
-`Target` is the negation of this universal assertion.
+Record 17 of group P001a: P001-T118 / `AronowAudit.P001.printed_finite_variance_mean_hadamard`;
+resolution `refute`. Frozen contract (P001_Foundations.lean:6993): for every probability law
+`ν` on `ℝ` with `id ∈ L²(ν)`, the mean functional `cdfMeanFunctional` is Hadamard
+differentiable (`HadamardAt`, :421) at the embedded CDF of `ν` in `KolmogorovSpace` (sup
+norm), on the domain of finite-second-moment CDFs, with all bounded tangent directions.
 
-The base law is `ν₀ = (δ₀ + δ₂)/2`, with mean `1` and variance `1`.
-For `r_n = n + 2`, `a_n = r_n⁻³`, and `t_n = r_n⁻²`, the finite-support contamination
+`Target` is the negation of exactly that contract; the `example` checks by `Iff.rfl` that it
+is the negation of the frozen declaration's type.
+
+Witness (paper proof, record 17): `ν₀ = (δ₀ + δ₂)/2` (mean `1`, variance `1`). For
+`r_n = n + 2`, `a_n = r_n⁻³`, `t_n = r_n⁻²`, the finite-support contamination
 `ν_n = (1 - a_n) ν₀ + a_n δ_{r_n + 1}` has mean `1 + t_n`, and its CDF differs from that of
 `ν₀` by at most `a_n` in sup norm. The directions `h_n = t_n⁻¹ (F_n - F)` have norm
-`≤ 1/r_n → 0`, and `F + t_n h_n = F_n` lies in the domain. Every mean difference quotient
-equals `1`, whereas a Hadamard derivative would force the limit `L 0 = 0`.
+`≤ 1/r_n → 0`, `F + t_n h_n = F_n` lies in the domain, and every difference quotient of the
+mean equals `1`; a Hadamard derivative would force the limit `L 0 = 0`.
+The sorry-bearing `geometric_mean_perturbation` (:1043) is not used.
 
-The intermediate statements identify the functional with the actual law's mean,
-construct the contamination laws, and bound the sup norm.
+Nodes: `N1` (the functional evaluates the mean of the actual law; CDF uniqueness), `N2` (the
+contamination laws), `N3` (the sup-norm bound). The assembly is fully proved.
+Writers prove `theorem nk_proof : Nk` in `AronowAudit/P001/Wave1/MeanHadamard/Nk.lean`.
 -/
 
 set_option autoImplicit false
@@ -28,12 +34,18 @@ open scoped BigOperators ENNReal Topology
 
 noncomputable section
 
-/-- Negation of the universal assertion. -/
+/-- The frozen statement to be resolved: the negation of the exact recorded contract
+`printed_finite_variance_mean_hadamard`. -/
 def Target : Prop :=
   ¬ ∀ (ν : Measure ℝ) [IsProbabilityMeasure ν], MemLp id 2 ν →
     ∃ L : KolmogorovSpace →L[ℝ] ℝ,
       HadamardAt {F | finiteSecondCDF F} Set.univ cdfMeanFunctional
         (kolmogorovEmbed (cdf ν id)) L
+
+/-- Fidelity check: `Target` is literally `¬` (type of the frozen declaration). Only the
+frozen theorem's *type* is read; its `sorry` proof is never used. -/
+example : Target ↔ ¬ (type_of% @AronowAudit.P001.printed_finite_variance_mean_hadamard) :=
+  Iff.rfl
 
 /-- The base law `ν₀ = (δ₀ + δ₂)/2`. -/
 def baseLaw : Measure ℝ :=
@@ -61,21 +73,44 @@ def contCDF (n : ℕ) : KolmogorovSpace := kolmogorovEmbed (cdf (contam n) id)
 /-- The tangent directions `h_n = t_n⁻¹ (F_n - F)`. -/
 def dirSeq (n : ℕ) : KolmogorovSpace := (contT n)⁻¹ • (contCDF n - baseCDF)
 
-/-- For a probability law with finite second moment, its embedded CDF lies in
-`finiteSecondCDF` and `cdfMeanFunctional` returns its mean. -/
+/-- **Node N1** (paper proof, record 17, third paragraph: "A probability law on ℝ is
+determined by its CDF ... Hence the law chosen inside cdfMeanFunctional at each embedded
+CDF must equal its actual law ... with no ambiguity from Classical.choose"). For every
+probability law with finite second moment, its embedded CDF is in the domain and the
+functional returns its mean.
+Suggested route: the witness `ν` itself for `finiteSecondCDF`, with the proved
+`kolmogorov_embedding_preserves_cdf_supporting` (:6775); for the value, unfold
+`cdfMeanFunctional` (`dif_pos`), take `h.choose_spec`, show
+`ProbabilityTheory.cdf h.choose = ProbabilityTheory.cdf ν` (`StieltjesFunction.ext`,
+`ProbabilityTheory.cdf_eq_real`/`cdf_eq_toReal`, `prob`, `Set.Iic`) and conclude with
+`MeasureTheory.Measure.eq_of_cdf`. -/
 def N1 : Prop :=
   ∀ (ν : Measure ℝ) [IsProbabilityMeasure ν], MemLp id 2 ν →
     finiteSecondCDF (kolmogorovEmbed (cdf ν id)) ∧
       cdfMeanFunctional (kolmogorovEmbed (cdf ν id)) = mean ν id
 
-/-- The base and contamination laws are probability measures with finite second
-moments and means `1` and `1 + contT n`, respectively. -/
+/-- **Node N2** (paper proof, record 17, first two paragraphs: "Its nonnegative masses sum
+to one, so it is a probability law. E_ν[X]=(0+2)/2=1, E_ν[X²]=(0+4)/2=2 ... Since r_n≥2,
+0<a_n≤1/8<1. Thus ν_n is a probability measure on the three finite points 0,2,r_n+1; all
+its second moments are finite. Its mean is (1-a_n)·1+a_n(r_n+1)=1+a_nr_n=1+t_n").
+Suggested route: `Measure.add_apply`, `Measure.smul_apply`, `measure_univ` of Dirac masses,
+`ENNReal.ofReal_add` (`0 ≤ a_n ≤ 1`); `MemLp` on a finite sum of Diracs
+(`memLp_add_measure`/`MemLp.smul_measure`, `memLp_dirac`-type lemmas or
+`MemLp.of_bound` on the a.s. bounded identity); `integral_add_measure`,
+`integral_smul_measure`, `integral_dirac`; field arithmetic `(1 - r⁻³) + r⁻³ (r + 1) = 1 + r⁻²`. -/
 def N2 : Prop :=
   IsProbabilityMeasure baseLaw ∧ MemLp id 2 baseLaw ∧ mean baseLaw id = 1 ∧
     ∀ n : ℕ, IsProbabilityMeasure (contam n) ∧ MemLp id 2 (contam n) ∧
       mean (contam n) id = 1 + contT n
 
-/-- Under `N2`, the directions have sup norm at most `(contR n)⁻¹`. -/
+/-- **Node N3** (paper proof, record 17, second paragraph: "Its CDF is
+F_n=(1-a_n)F+a_nH_{r_n+1} ... Therefore |F_n(x)-F(x)|≤a_n for every x, because both CDF
+values in the difference H_z-F lie in [0,1] ... ‖h_n‖∞≤a_n/t_n=1/r_n"). Under `N2`, the
+directions have sup norm at most `1/r_n`.
+Suggested route: `kolmogorov_embedding_preserves_cdf_supporting` for both probability laws;
+pointwise `cdf (contam n) id x - cdf baseLaw id x = a_n (1_{r_n+1 ≤ x} - cdf baseLaw id x)`
+(`Measure.add_apply`, `Measure.smul_apply`, `ENNReal.toReal_add`, `ENNReal.toReal_ofReal`);
+`lp.norm_le_of_forall_le` (`0 ≤ a_n`), `norm_smul`, `contA n / contT n = (contR n)⁻¹`. -/
 def N3 : Prop :=
   N2 → ∀ n : ℕ, ‖dirSeq n‖ ≤ (contR n)⁻¹
 
@@ -100,8 +135,8 @@ theorem base_add_dir (n : ℕ) : baseCDF + contT n • dirSeq n = contCDF n := b
   simp only [dirSeq, smul_smul, mul_inv_cancel₀ (contT_pos n).ne', one_smul,
     add_sub_cancel]
 
-/-- The admissible sequences converge to the zero tangent while every mean
-difference quotient equals `1`, contradicting the required limit `L 0 = 0`. -/
+/-- The nodes suffice: at the zero tangent, the admissible sequence `t_n`, `h_n` has every
+mean difference quotient equal to `1`, while `HadamardAt` forces the limit `L 0 = 0`. -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) : Target := by
   intro H
   have hp0 : IsProbabilityMeasure baseLaw := h2.1
@@ -127,6 +162,11 @@ theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) : Target := by
   have key' : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 (L 0)) := Tendsto.congr hq key
   rw [map_zero] at key'
   exact one_ne_zero (tendsto_nhds_unique tendsto_const_nhds key')
+
+/-- Nonvacuity record: the base law satisfies the contract's hypotheses (probability law
+with finite second moment), with positive variance (mean `1`, second moment `2`). -/
+example (h2 : N2) : IsProbabilityMeasure baseLaw ∧ MemLp id 2 baseLaw ∧ mean baseLaw id = 1 :=
+  ⟨h2.1, h2.2.1, h2.2.2.1⟩
 
 end
 

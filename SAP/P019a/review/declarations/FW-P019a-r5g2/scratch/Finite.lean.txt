@@ -1,0 +1,66 @@
+import SAP.P019a.Challenge
+open SAP.P019a
+open scoped BigOperators
+open Classical
+noncomputable section
+set_option maxRecDepth 30000
+set_option maxHeartbeats 4000000
+
+namespace AuditFinite
+
+theorem eight_monotone : wholeDiagnosisEight.monotone := by
+  intro ω hp hy
+  rfl
+
+theorem eight_noLiars : wholeDiagnosisEight.noLiarsDesign := by
+  intro ω hp
+  fin_cases ω <;> norm_num [wholeDiagnosisEight, fairBit, bitVal]
+
+theorem eight_nondegenerate : wholeDiagnosisEight.nondegenerate := by
+  constructor
+  · intro z y
+    cases z <;> cases y <;>
+      norm_num [Study.cell, FiniteLaw.prob, FiniteLaw.mean, FiniteLaw.ce,
+        FiniteLaw.cv, wholeDiagnosisEight, uniformFin, fairBit, Fin.sum_univ_succ]
+  · norm_num [FiniteLaw.variance, FiniteLaw.mean, wholeDiagnosisEight, uniformFin,
+      fairBit, bitVal, Fin.sum_univ_succ]
+
+theorem eight_values : wholeDiagnosisEight.delta = 0 ∧ wholeDiagnosisEight.beta = 2 := by
+  norm_num [Study.delta, Study.beta, Study.listMean, Study.cell, FiniteLaw.prob,
+    FiniteLaw.mean, FiniteLaw.ce, wholeDiagnosisEight, uniformFin, fairBit, bitVal,
+    Fin.sum_univ_succ]
+
+theorem eight_not_independent : ¬ wholeDiagnosisEight.treatmentIndependent := by
+  intro h
+  have hf := h (fun w x y => if w = 0 ∧ x = true ∧ y = false then 1 else 0) false
+  norm_num [wholeDiagnosisEight, FiniteLaw.mean, FiniteLaw.prob, uniformFin,
+    fairBit, Fin.sum_univ_succ] at hf
+
+theorem sequential_monotone (j : Fin 5) : (sequentialStudy j).monotone := by
+  intro ω hp hy
+  change fairBit ω 0 = true
+  change (fairBit ω 0 && decide (suffixSign ω j.val = 1)) = true at hy
+  cases hx : fairBit ω 0 <;> simp_all
+
+theorem sequential_noLiars (j : Fin 5) : (sequentialStudy j).noLiarsDesign := by
+  intro ω hp
+  cases hx : fairBit ω 0 <;> cases hz : fairBit ω (j.val+2) <;>
+    simp [sequentialStudy, Nat.cast_add, bitVal, hx, hz]
+
+-- The full finite enumeration (all cells, all triple-independence tests, all
+-- influence second moments) is performed with exact fractions in Enumerate.py.
+-- These additional Lean tests check the first/fifth-list distinction directly.
+example : (sequentialStudy 0).law.prob (fun ω => (sequentialStudy 0).Y ω = true) = 1/4 := by
+  have hI : Finset.Ico (1 : ℕ) 5 = {1, 2, 3, 4} := by decide
+  norm_num [sequentialStudy, FiniteLaw.prob, FiniteLaw.mean, uniformFin, fairBit,
+    suffixSign, bitSign, Fin.sum_univ_succ, hI]
+
+example : (sequentialStudy 4).law.prob (fun ω => (sequentialStudy 4).Y ω = true) = 1/2 := by
+  norm_num [sequentialStudy, FiniteLaw.prob, FiniteLaw.mean, uniformFin, fairBit,
+    suffixSign, bitSign, Fin.sum_univ_succ]
+
+-- Explicitly ordered sign products agree with the intended boundary conventions.
+example (ω : Fin 128) : prefixSign ω 0 = 1 ∧ suffixSign ω 4 = 1 := by
+  simp [prefixSign, suffixSign]
+
+end AuditFinite

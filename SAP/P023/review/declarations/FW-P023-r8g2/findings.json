@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P023-T6",
+    "theorem": "SAP.P023.T6",
+    "fingerprint": "b534b6f8508adc8c5381061428b5d6e103c58e0d151481f7877af1d133ce7036",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/UniformChecks.lean compiled successfully: uniformMargins is a probability supported on [-1,1] with no atom at zero, and the anchored continuous unit-ball class contains the zero function. The full diverging h has no closed-form finite witness: its nonvacuity is the analytic existence assertion being certified. It can be constructed by the canonical gliding-hump scheme: choose anchored polynomials p_m with norm at most one, degrees below the later J_m, amplification at least 6*m*4^m and T_(J_m)(p_m) at least half the amplification; h=(1/4) sum_(m>=1) 4^(-m) p_m is continuous, anchored, norm at most 1/12, and has T_(J_m)h at least m/4. Thus the universal non-Lipschitz clause has genuine antecedents. No separate explicit infinite-series Lean witness was compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P023-T7",
+    "theorem": "SAP.P023.T7",
+    "fingerprint": "d86bd7cd6a5f6833387dc338f1cd469720471145a8a6d5fc61f871e35afb02e6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/PopulationChecks.lean compiled all population hypotheses at J=1 using the equal-weight law on ((-3/4,0),(-1/4,0),(1/4,0),(3/4,0)), with alpha=beta=0 and h=0. Positive definite moments are proved from full rank and a strictly positive sum of squared predictions. scratch/FiniteChecks.lean independently compiled full rank of the four-election design, correct party indicators, and all finite conditional-bias hypotheses using a Dirac probability space and constant outcomes 1/2. General finite-degree population nonvacuity also follows for uniform margins, because a polynomial cannot equal two distinct constants on the negative and positive open intervals.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P023-T8",
+    "theorem": "SAP.P023.T8",
+    "fingerprint": "59d7a51fbbbaa16c97526a17b1a86a09d83665d352e090a91747024f2721e0f8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/UniformChecks.lean compiled an example satisfying every hypothesis: X uniform on [-1,1], Y=0, alpha=beta=0, h=0, c=1/2, delta=1, L=sigma2=0; P is the countable infinite product of this pair law and samples are coordinate evaluations. The check proves the maps have the stated laws and are mutually independent. k_0=1 and k_N=1/sqrt(N) for N>0 have positive terms, tend to zero, and N*k_N tends to infinity. No Challenge theorem is used.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P023-T9",
+    "theorem": "SAP.P023.T9",
+    "fingerprint": "fd68d065add68f53eb3fdf3be83a9ee0a9a1e789638ae6190c4e226de6e52917",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/PairChecks.lean compiled all hypotheses with the nonrectangular three-pair set {(0,0),(0,1),(1,0)}, k=1/2, margins -1/4 for first coordinate zero and +1/4 otherwise, corresponding binary parties, outcomes equal to parties, all bin intercepts zero, and coefficient 1. Both strict-interior observations exist, and the normal equations hold. Empty nuisance bins are permitted and do not enter any observed-pair mean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P023-T10",
+    "theorem": "SAP.P023.T10",
+    "fingerprint": "d4456d74381514b7469b9bb54bc2ffc0b1ed32d0d3399867bb9377400bdf40d3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean compiled the genuine positive-degree witness n=4, J=1, x=(-3/4,-1/4,1/4,3/4), d=(0,0,1,1), k=1/2. Full rank, Condition 1, positive close counts and strictly bounded model predictions/outcomes are checked. Outcomes y=(1/2,1/2,1/2,1/2) and yprime=(51/100,1/2,1/2,1/2) agree on the close elections but have chosen party coefficients 0 and 1/200. A four-equiprobable-atom model with row-zero outcomes (49/100,1/2,1/2,51/100) and the other rows constant 1/2 has expectation 1/2 at every row, so the degree-one regression is correctly specified and both outcome vectors have positive probability. scratch/RefutationCheck.md writes the printed reading and checks its conditions individually.",
+    "confidence": 0.97
+  }
+]

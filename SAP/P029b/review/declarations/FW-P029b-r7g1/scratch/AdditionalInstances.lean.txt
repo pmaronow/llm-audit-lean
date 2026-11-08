@@ -1,0 +1,94 @@
+import SAP.P029b.Challenge
+
+open SAP.P029b MeasureTheory ProbabilityTheory Filter Set
+open scoped BigOperators Topology
+noncomputable section
+
+lemma mass_zero (n : ℕ) (k : Fin (n+1)) :
+    binomialMass n 0 k = if k.val = 0 then 1 else 0 := by
+  by_cases h : k.val = 0 <;> simp [binomialMass, h]
+
+lemma mass_one (n : ℕ) (k : Fin (n+1)) :
+    binomialMass n 1 k = if k.val = n then 1 else 0 := by
+  by_cases h : k.val = n
+  · simp [binomialMass, h]
+  · have hsub : n-k.val ≠ 0 := by have := k.isLt; omega
+    simp [binomialMass, h, hsub]
+
+def topCounts (n : ℕ) : Fin (n+2) × Fin (n+2) := (⟨n+1, by omega⟩, 0)
+
+-- T14: every hypothesis of the simultaneous-consistency component on
+-- two actual strata, with growing nonempty arms and complier share one.
+example :
+    (∀ (_ : Bool) (n : ℕ), 0 < n+1 ∧ 0 < n+1) ∧
+    (∀ _ : Bool, Tendsto (fun n : ℕ => n+1) atTop atTop ∧
+      Tendsto (fun n : ℕ => n+1) atTop atTop) ∧
+    (∀ _ : Bool, (0 : ℝ) ≤ 0 ∧ (0 : ℝ) ≤ 1 ∧ (1 : ℝ) ≤ 1) ∧
+    (∀ (_ : Bool) (n : ℕ), Measurable (fun _ : Unit => topCounts n)) ∧
+    (∀ (_ : Bool) (n : ℕ) (k : Fin (n+2) × Fin (n+2)),
+      mP (Measure.dirac ()) {ω : Unit | topCounts n = k} =
+        binomialArmLaw (n+1) (n+1) 1 0 k) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro g n; omega
+  · intro g; exact ⟨tendsto_add_atTop_nat 1, tendsto_add_atTop_nat 1⟩
+  · norm_num
+  · intro g n; exact measurable_const
+  · intro g n k
+    rw [binomialArmLaw, mass_one, mass_zero]
+    have hk : topCounts n = k ↔ k.1.val = n+1 ∧ k.2.val = 0 := by
+      constructor
+      · intro h
+        rw [← h]
+        simp [topCounts]
+      · rintro ⟨h1, h0⟩
+        apply Prod.ext
+        · exact Fin.ext h1.symm
+        · exact Fin.ext h0.symm
+    by_cases h1 : k.1.val = n+1 <;> by_cases h0 : k.2.val = 0 <;>
+      simp [mP, hk, h1, h0]
+
+def fairA : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+instance : IsProbabilityMeasure fairA := by unfold fairA; infer_instance
+def rho : Measure (Bool × Bool) := fairA.prod fairA
+instance : IsProbabilityMeasure rho := by unfold rho; infer_instance
+def halfUnit (q : Bool × Bool) : PotentialUnit Unit := ⟨(), false, q.1, 0, 1⟩
+
+lemma fairA_true : mP fairA {b | b = true} = 1/2 := by
+  norm_num [mP, fairA, PMF.toMeasure_apply_fintype, PMF.uniformOfFintype_apply,
+    Set.indicator]
+
+lemma rho_fst : mP rho {q | q.1 = true} = 1/2 := by
+  have hs : {q : Bool × Bool | q.1 = true} = ({true} : Set Bool) ×ˢ Set.univ := by
+    ext q; simp
+  unfold mP rho
+  rw [hs, Measure.prod_prod, measure_univ, mul_one]
+  exact fairA_true
+
+lemma rho_snd : mP rho {q | q.2 = true} = 1/2 := by
+  have hs : {q : Bool × Bool | q.2 = true} = Set.univ ×ˢ ({true} : Set Bool) := by
+    ext q; simp
+  unfold mP rho
+  rw [hs, Measure.prod_prod, measure_univ, one_mul]
+  exact fairA_true
+
+-- T18(iii): all the discrepancy antecedents hold together, with genuinely
+-- independent type and assignment coins, not three half-probabilities.
+example : ReceiptConditionsW1 rho halfUnit Prod.snd ∧
+    0 < mP rho {q | (halfUnit q).x = ()} ∧
+    rho {q | (halfUnit q).d0 = true} = 0 ∧
+    scoreAt rho halfUnit () = 1/2 ∧
+    mP rho {q | q.2 = true} = 1/2 := by
+  refine ⟨?_, ?_, ?_, ?_, rho_snd⟩
+  · refine ⟨measurable_const, measurable_const, measurable_fst, measurable_snd,
+      ?_, ?_, ?_, ?_⟩
+    · simp [halfUnit, PotentialUnit.defier]
+    · exact (indepFun_prod (μ := fairA) (ν := fairA)
+        (X := fun b : Bool => ((), false, b)) (Y := id)
+        (by fun_prop) measurable_id).symm
+    · change 0 < mP rho {q | q.2 = true}
+      rw [rho_snd]; norm_num
+    · change mP rho {q | q.2 = true} < 1
+      rw [rho_snd]; norm_num
+  · simp [halfUnit, mP]
+  · simp [halfUnit]
+  · simpa [scoreAt, halfUnit, PotentialUnit.complier, mP] using rho_fst

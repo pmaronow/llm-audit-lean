@@ -1,0 +1,67 @@
+import SAP.P009a.Challenge
+
+open Filter MeasureTheory
+open scoped BigOperators Topology ENNReal NNReal
+open SAP.P009a
+
+noncomputable section
+namespace AuditMeasure
+
+def fair : Measure Bool := ProbabilityTheory.bernoulliMeasure true false
+  ⟨(1/2 : ℝ), by constructor <;> norm_num⟩
+
+instance : IsProbabilityMeasure fair := by unfold fair; infer_instance
+
+def rad (b : Bool) : ℝ := if b then 1 else -1
+
+lemma rad_mean : (∫ b, rad b ∂fair) = 0 := by
+  rw [fair, ProbabilityTheory.integral_bernoulliMeasure]
+  norm_num [rad]
+
+lemma rad_variance : (∫ b, (rad b - 0)^2 ∂fair) = 1 := by
+  rw [fair, ProbabilityTheory.integral_bernoulliMeasure]
+  norm_num [rad]
+
+-- T2: all general hypotheses simultaneously, with a positive variance floor.
+-- At every index: Ω=Bool, T=±1, theta=0, V=Vhat=1, delta=t+1, alpha=1/20.
+example :
+    (∀ t : ℕ, Integrable rad fair ∧ Integrable (fun b => rad b ^ 2) fair ∧
+      Measurable rad ∧ Measurable (fun _ : Bool => (1:ℝ)) ∧
+      (∫ b, rad b ∂fair) = 0 ∧ (1:ℝ) = ∫ b, (rad b - 0)^2 ∂fair) ∧
+    (∀ t : ℕ, (0:ℝ) < 1 ∧ (∀ _ : Bool, (0:ℝ) ≤ 1) ∧ 0 < ((t+1:ℕ):ℝ)) ∧
+    ((0:ℝ) < 1/20 ∧ (1/20:ℝ) < 1) ∧
+    EventuallyPositiveLowerBound (fun t => ((t+1:ℕ):ℝ) / ((t+1:ℕ):ℝ) * 1) ∧
+    (∀ ε : ℝ, 0 < ε → Tendsto
+      (fun t : ℕ => (fair {b : Bool |
+        ((t+1:ℕ):ℝ) / ((t+1:ℕ):ℝ) * ((1:ℝ)-1) ≤ -ε}).toReal)
+      atTop (nhds 0)) := by
+  refine ⟨?_, ?_, by norm_num, ?_, ?_⟩
+  · intro t
+    exact ⟨Integrable.of_finite, Integrable.of_finite,
+      measurable_of_countable _, measurable_const, rad_mean, rad_variance.symm⟩
+  · intro t
+    exact ⟨by norm_num, by intro b; norm_num, by positivity⟩
+  · refine ⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩
+    intro t
+    have ht : ((t+1:ℕ):ℝ) ≠ 0 := by positivity
+    simp only [div_self ht, mul_one, le_refl]
+  · intro ε hε
+    have h : ¬ (0:ℝ) ≤ -ε := by linarith
+    simpa only [sub_self, mul_zero, h, Set.ofPred_false, measure_empty,
+      ENNReal.toReal_zero] using (tendsto_const_nhds :
+        Tendsto (fun _ : ℕ => (0:ℝ)) atTop (nhds 0))
+
+-- T4: two nonconstant square-integrable variables and positive unequal weights.
+def X (i : Fin 2) (b : Bool) : ℝ := (i.val+1:ℝ) * rad b
+def w (i : Fin 2) : ℝ := i.val+1
+
+example : (∀ i, MemLp (X i) 2 fair) ∧ (∀ i, 0 < w i ∧ w i ≤ 2) := by
+  constructor
+  · intro i
+    apply MemLp.of_bound ((measurable_of_countable _).aestronglyMeasurable) 2
+    apply Filter.Eventually.of_forall
+    intro b
+    fin_cases i <;> cases b <;> norm_num [X, rad]
+  · intro i; fin_cases i <;> norm_num [w]
+
+end AuditMeasure

@@ -1,0 +1,913 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.design_six_four",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.expectation_six_four",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.univ_six",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.covariance_counterexample",
+      "SAP.P005a.WH.W1.T1_whole",
+      "SAP.P005a.WH.W1.T1_assembly",
+      "AronowAudit.P005.univ_six",
+      "AronowAudit.P005.covariance_location_invariant",
+      "AronowAudit.P005.Wave1.CondP002P005P006_variance_congr"
+    ],
+    "statement_definition": "SAP.P005a.T1WholeStatement",
+    "target_id": "P005-T1",
+    "theorem": "SAP.P005a.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.Wave1.corrected_covariance_lemma_conditional",
+        "reason": "Its literature premise is not a canonical hypothesis; the unconditional centered bound and expectation are instead supplied by existing supporting declarations."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.covariance_location_invariant",
+      "AronowAudit.P005.variance_difference_bound",
+      "SAP.P005a.WH.W1.T2_whole",
+      "SAP.P005a.WH.W1.T2_assembly",
+      "SAP.P005a.WH.W1.T2_L1_proof",
+      "SAP.P005a.WH.W1.product_uniform",
+      "SAP.P005a.WH.W1.variance_control",
+      "AronowAudit.P005.Wave1.qtc_corrected_covariance_lemma",
+      "AronowAudit.P005.Wave1.qtc_expectation_positive",
+      "AronowAudit.P005.Wave1.qtc_matrix_second_moment",
+      "AronowAudit.P005.Wave1.GP005B4c_four_coefficients",
+      "AronowAudit.P005.Wave1.GP005B4c_variance_identity",
+      "AronowAudit.P005.Wave1.GP005B4c_centered_sum",
+      "AronowAudit.P005.Wave1.CondP002P005P006_centered_mean",
+      "AronowAudit.P005.Wave1.control_arm_complement_card",
+      "AronowAudit.P005.Wave1.GP005B4c_variance_mean",
+      "AronowAudit.P005.Wave1.CondP002P005P006_outer"
+    ],
+    "statement_definition": "SAP.P005a.T2WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P005.Wave1.GP005B4c_covariance_arm",
+      "AronowAudit.P005.Wave1.control_arm_covariance_expectation",
+      "AronowAudit.P005.Wave1.control_arm_transport"
+    ],
+    "target_id": "P005-T2",
+    "theorem": "SAP.P005a.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.leverage_variance_counterexample_proof",
+      "SAP.P005a.WH.W1.T3_whole",
+      "SAP.P005a.WH.W1.T3_assembly",
+      "SAP.P005a.WH.W1.T3_L1_proof",
+      "AronowAudit.P005.Wave1.GP005B4b_T3_univ16",
+      "AronowAudit.P005.Wave1.GP005B4b_T3_leverage_values",
+      "AronowAudit.P005.Wave1.GP005B4b_T3_fiber_bound",
+      "AronowAudit.P005.Wave1.GP005B4b_T3_control_card",
+      "AronowAudit.P005.Wave1.GP005B4b_T3_arm_cov_pos",
+      "AronowAudit.P005.Wave1.GP005B4b_T3_covariance_formula",
+      "AronowAudit.P005.Wave1.GP005B4b_T3_expectation_const",
+      "AronowAudit.P005.Wave1.GP005B4b_T3_pair_inclusion",
+      "AronowAudit.P005.indicator_expectation",
+      "AronowAudit.P005.sampleCov_scale_both"
+    ],
+    "statement_definition": "SAP.P005a.T3WholeStatement",
+    "target_id": "P005-T3",
+    "theorem": "SAP.P005a.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.centered_leverage_moment_bounds",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.leverage_le_maximum",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.leverage_nonneg",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.leverage_population_mean",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.mean_add",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.mean_const",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.mean_mono",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.mean_mul",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.mean_nonneg",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.mean_square_centering",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.mean_sub",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.corrected_leverage_variance_chain_proof",
+      "AronowAudit.P005.Wave1.corrected_leverage_variance_order_proof",
+      "SAP.P005a.WH.W1.T4_whole",
+      "SAP.P005a.WH.W1.T4_assembly",
+      "SAP.P005a.WH.W1.T4_L1_proof",
+      "SAP.P005a.WH.W1.finite_chain",
+      "SAP.P005a.WH.W1.variance_div",
+      "AronowAudit.P005.mean_mono",
+      "AronowAudit.P005.mean_mul",
+      "AronowAudit.P005.kappa_bounds",
+      "AronowAudit.P005.Wave1.t4_variance_nonneg"
+    ],
+    "statement_definition": "SAP.P005a.T4WholeStatement",
+    "target_id": "P005-T4",
+    "theorem": "SAP.P005a.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.design_six_two",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.expectation_six_two",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.interacted_sign_counterexample",
+      "SAP.P005a.WH.W2.T5_whole",
+      "SAP.P005a.WH.W2.T5_assembly",
+      "SAP.P005a.WH.W2.T5_complete",
+      "AronowAudit.P005.design_six_two",
+      "AronowAudit.P005.expectation_six_two"
+    ],
+    "statement_definition": "SAP.P005a.T5WholeStatement",
+    "target_id": "P005-T5",
+    "theorem": "SAP.P005a.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.corrected_interacted_third_bias_proof"
+    ],
+    "statement_definition": "SAP.P005a.T6Statement",
+    "supporting_declarations": [
+      "AronowAudit.P005.Wave1.t6_nu3_sign",
+      "AronowAudit.P005.expectation_mul"
+    ],
+    "target_id": "P005-T6",
+    "theorem": "SAP.P005a.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.univariate_endpoint_counterexample_proof",
+      "AronowAudit.P005.univariate_printed_condition",
+      "SAP.P005a.WH.W2.T7_whole",
+      "SAP.P005a.WH.W2.T7_assembly",
+      "SAP.P005a.WH.W2.T7_L1_proof",
+      "SAP.P005a.WH.W2.T7_L2_proof",
+      "SAP.P005a.WH.W2.T7_L3_proof",
+      "SAP.P005a.WH.W2.T7_L4_proof",
+      "SAP.P005a.WH.W2.T7_L5_proof",
+      "SAP.P005a.WH.W2.T7_L6_proof",
+      "SAP.P005a.WH.W2.spikeVariance_pos",
+      "SAP.P005a.WH.W2.spikeFit_eq",
+      "SAP.P005a.WH.W2.spikeLowFit",
+      "AronowAudit.P005.Wave1.InteractedExpansion.n1_proof",
+      "AronowAudit.P005.Wave1.InteractedExpansion.n4_proof",
+      "AronowAudit.P005.Wave1.InteractedExpansion.n5_proof",
+      "AronowAudit.P005.Wave1.InteractedExpansion.n7_proof",
+      "AronowAudit.P005.Wave1.InteractedExpansion.spikeQ_pos_of_S1",
+      "AronowAudit.P005.Wave1.InteractedExpansion.spikeV_abs",
+      "AronowAudit.P005.Wave1.InteractedExpansion.spikeA_bounds",
+      "AronowAudit.P005.Wave1.InteractedExpansion.balanced_cards",
+      "AronowAudit.P005.Wave1.InteractedExpansion.mean_abs_le_bound",
+      "AronowAudit.P005.Wave1.t7_standardized",
+      "AronowAudit.P005.kappa_bounds"
+    ],
+    "statement_definition": "SAP.P005a.T7WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P005.Wave1.InteractedExpansion.n1_proof",
+      "AronowAudit.P005.Wave1.InteractedExpansion.spikeQ_pos_of_S1"
+    ],
+    "target_id": "P005-T7",
+    "theorem": "SAP.P005a.T7"
+  },
+  {
+    "axioms": null,
+    "decision": "omitted",
+    "proof_plan": null,
+    "proof_status": null,
+    "restriction": "The only credited expansion theorem requires the unproved proposition Tropp2011RowSampling. The canonical claim has no such hypothesis, and no unconditional estimator expansion is available from this row. Do not turn the cited proposition into an assumption. The separately targeted logarithm equivalences are retained in T9.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.Wave1.corrected_interacted_expansion_max_conditional",
+        "reason": "The only credited expansion theorem requires the unproved proposition Tropp2011RowSampling. The canonical claim has no such hypothesis, and no unconditional estimator expansion is available from this row. Do not turn the cited proposition into an assumption. The separately targeted logarithm equivalences are retained in T9."
+      }
+    ],
+    "rows_used": [],
+    "target_id": "P005-T8",
+    "theorem": null
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.Wave1.corrected_interacted_expansion_two_conditional",
+        "reason": "Requires unproved Tropp2011RowSampling; the stochastic expansion is dropped and only the independently proved canonical log-equivalence clauses are retained."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.repaired_log_bounds",
+      "AronowAudit.P005.repaired_log_conditions",
+      "SAP.P005a.WH.W2.T9_whole",
+      "SAP.P005a.WH.W2.T9_assembly",
+      "SAP.P005a.WH.W2.T9_L1_proof",
+      "SAP.P005a.WH.W2.T9_L2_proof",
+      "SAP.P005a.WH.W2.T9_L3_proof",
+      "SAP.P005a.WH.W2.T9_L4_proof",
+      "SAP.P005a.WH.W2.T9_L5_proof",
+      "SAP.P005a.WH.W2.T9_L6_proof",
+      "SAP.P005a.WH.W2.T9_L7_proof",
+      "SAP.P005a.WH.W2.T9_L8_proof",
+      "SAP.P005a.WH.W2.T9_L9_proof",
+      "SAP.P005a.WH.W2.T9_L10_proof",
+      "SAP.P005a.WH.W2.T9_L11_proof",
+      "SAP.P005a.WH.W2.T9_L12_proof",
+      "SAP.P005a.WH.W2.T9_L13_proof",
+      "SAP.P005a.WH.W2.T9_L14_proof",
+      "SAP.P005a.WH.W2.T9_L15_proof",
+      "SAP.P005a.WH.W2.goldenThompson_of_leaves",
+      "AronowAudit.P005.Wave1.CondT8T9_markov",
+      "AronowAudit.P005.Wave1.CondT8T9_probability_mono",
+      "AronowAudit.P005.Wave1.CondT8T9_probability_union",
+      "AronowAudit.P005.Wave1.CondT8T9_probability_control",
+      "AronowAudit.P005.Wave1.CondT8T9_chernoff_uniform",
+      "AronowAudit.P005.Wave1.CondT8T9_augmented_orthogonal",
+      "AronowAudit.P005.Wave1.CondT8T9_augmented_row_bound",
+      "AronowAudit.P005.Wave1.CondT8T9_sample_threshold",
+      "AronowAudit.P005.Wave1.CondT8T9_score_nonneg",
+      "AronowAudit.P005.Wave1.CondT8T9_score_expectation",
+      "AronowAudit.P005.Wave1.CondT8T9_remainder_bound",
+      "AronowAudit.P005.Wave1.t4_expectation_add",
+      "AronowAudit.P005.Wave1.t4_complement_expectation",
+      "AronowAudit.P005.kappa_bounds"
+    ],
+    "statement_definition": "SAP.P005a.T9WholeStatement",
+    "target_id": "P005-T9",
+    "theorem": "SAP.P005a.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.sampleCov_scale_both",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.sampleCov_scale_left",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.scalar_armL_det",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.scalar_dot_armN",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.scalar_leverage",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.standardized_scalar",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.interacted_weight_counterexample",
+      "SAP.P005a.WH.W2.T10_whole",
+      "SAP.P005a.WH.W2.T10_assembly",
+      "SAP.P005a.WH.W2.T10_complete",
+      "AronowAudit.P005.interacted_inverse_counterexample",
+      "AronowAudit.P005.sampleCov_scale_both",
+      "AronowAudit.P005.sampleCov_scale_left",
+      "AronowAudit.P005.scalar_leverage",
+      "AronowAudit.P005.scalar_dot_armN",
+      "AronowAudit.P005.expectation_six_two"
+    ],
+    "statement_definition": "SAP.P005a.T10WholeStatement",
+    "target_id": "P005-T10",
+    "theorem": "SAP.P005a.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.dot_comm",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.kappa_bounds",
+        "reason": "The standalone leverage-range conclusion is not retained; the rate theorem is used directly."
+      },
+      {
+        "lean_name": "AronowAudit.P005.leverage_le_population_size",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.control_arm_expectation_proof",
+      "AronowAudit.P005.Wave1.corrected_arm_debiased_order_proof",
+      "AronowAudit.P005.Wave1.treated_arm_expectation_proof",
+      "AronowAudit.P005.treated_arm_cancellation",
+      "SAP.P005a.WH.W2.T11_whole",
+      "SAP.P005a.WH.W2.T11_assembly",
+      "SAP.P005a.WH.W2.wholeArmOrder_proof",
+      "AronowAudit.P005.Wave1.control_arm_generic_expectation",
+      "AronowAudit.P005.Wave1.control_arm_unbiased_any_size",
+      "AronowAudit.P005.Wave1.control_arm_coefficient_unique",
+      "AronowAudit.P005.Wave1.GP005B1b_remainder_first",
+      "AronowAudit.P005.Wave1.GP005B1b_markov",
+      "AronowAudit.P005.kappa_bounds",
+      "AronowAudit.P005.leverage_le_population_size"
+    ],
+    "statement_definition": "SAP.P005a.T11WholeStatement",
+    "target_id": "P005-T11",
+    "theorem": "SAP.P005a.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.scalar_inverse_product_scale",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.scalar_slope_product_scale",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.interacted_inverse_counterexample",
+      "SAP.P005a.WH.W3.T12_whole",
+      "SAP.P005a.WH.W3.T12_assembly",
+      "AronowAudit.P005.univ_six",
+      "AronowAudit.P005.standardized_scalar",
+      "AronowAudit.P005.sampleCov_scale_both",
+      "AronowAudit.P005.scalar_leverage",
+      "AronowAudit.P005.mean_unbiased",
+      "AronowAudit.P005.Wave1.t13_dot_mean_E",
+      "AronowAudit.P005.Wave1.corrected_control_bias_estimator_proof",
+      "AronowAudit.P005.scalar_slope_product_scale",
+      "AronowAudit.P005.scalar_dot_armN",
+      "AronowAudit.P005.scalar_inverse_product_scale",
+      "AronowAudit.P005.arm_slope_decomposition",
+      "AronowAudit.P005.sampleCov_scale_left"
+    ],
+    "statement_definition": "SAP.P005a.T12WholeStatement",
+    "target_id": "P005-T12",
+    "theorem": "SAP.P005a.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.corrected_control_bias_estimator_proof"
+    ],
+    "statement_definition": "SAP.P005a.T13Statement",
+    "target_id": "P005-T13",
+    "theorem": "SAP.P005a.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.mean_congr",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      },
+      {
+        "lean_name": "AronowAudit.P005.mean_dot",
+        "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.noninteracted_exact_decomposition_proof",
+      "AronowAudit.P005.control_minus_treated_mean_identities",
+      "AronowAudit.P005.inverse_component_observable",
+      "AronowAudit.P005.noninteracted_debiased_expansion",
+      "SAP.P005a.WH.W1.T14_whole",
+      "SAP.P005a.WH.W1.T14_assembly",
+      "SAP.P005a.WH.W1.T14_L1_proof",
+      "SAP.P005a.WH.W1.t14_existing",
+      "SAP.P005a.WH.W1.observable_general",
+      "AronowAudit.P005.mean_congr"
+    ],
+    "statement_definition": "SAP.P005a.T14WholeStatement",
+    "target_id": "P005-T14",
+    "theorem": "SAP.P005a.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.collected_covariance_coefficients"
+    ],
+    "target_id": "P005-T15",
+    "theorem": "SAP.P005b.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.expectation_congr",
+        "reason": "Supporting sampling or linearity fact already incorporated in the aggregate third-moment row; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.expectation_mul",
+        "reason": "Supporting sampling or linearity fact already incorporated in the aggregate third-moment row; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.expectation_sum",
+        "reason": "Supporting sampling or linearity fact already incorporated in the aggregate third-moment row; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.inclusion_count",
+        "reason": "Supporting sampling or linearity fact already incorporated in the aggregate third-moment row; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.indicator_expectation",
+        "reason": "Supporting sampling or linearity fact already incorporated in the aggregate third-moment row; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.indicator_sum",
+        "reason": "Supporting sampling or linearity fact already incorporated in the aggregate third-moment row; not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.corrected_third_moment_calculation_proof",
+      "AronowAudit.P005.third_moment_coefficient"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P005.Wave1.t13_pair_sum",
+      "AronowAudit.P005.Wave1.t13_complement_mean"
+    ],
+    "target_id": "P005-T16",
+    "theorem": "SAP.P005b.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.dot_population_slope",
+        "reason": "The contraction-chain row already includes the needed dot/average contraction; this helper is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.corrected_contraction_order",
+      "AronowAudit.P005.common_residual_difference_second_moment",
+      "AronowAudit.P005.corrected_contraction_chain",
+      "AronowAudit.P005.covariate_contraction",
+      "AronowAudit.P005.Wave1.GP005B3b_T25_mean_cauchy",
+      "AronowAudit.P005.mean_mono",
+      "AronowAudit.P005.leverage_le_maximum",
+      "AronowAudit.P005.leverage_nonneg",
+      "AronowAudit.P005.mean_mul",
+      "AronowAudit.P005.leverage_population_mean",
+      "AronowAudit.P005.mean_nonneg",
+      "AronowAudit.P005.expectation_congr",
+      "AronowAudit.P005.Wave1.principal_sum_variance_tailC",
+      "AronowAudit.P005.Wave1.t4_variance_div",
+      "AronowAudit.P005.Wave1.principal_sum_expectation_tailC",
+      "AronowAudit.P005.corrected_residual_term_identification",
+      "AronowAudit.P005.corrected_residual_brackets",
+      "AronowAudit.P005.common_residual_normal_equation",
+      "AronowAudit.P005.Wave1.t4_variance_le_second",
+      "AronowAudit.P005.Wave1.t4_complement_variance",
+      "AronowAudit.P005.kappa_bounds",
+      "AronowAudit.P005.Wave1.t4_variance_nonneg",
+      "AronowAudit.P005.Wave1.t4_variance_eq",
+      "AronowAudit.P005.Wave1.t4_expectation_nonneg",
+      "AronowAudit.P005.Wave1.tailC_probability_mono",
+      "AronowAudit.P005.Wave1.finite_markov"
+    ],
+    "statement_definition": "SAP.P005b.T17WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P005.mean_nonneg"
+    ],
+    "target_id": "P005-T17",
+    "theorem": "SAP.P005b.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.common_residual_normal_equation",
+        "reason": "Supporting residual algebra already incorporated in the two selected aggregate rows; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.complement_x_mean_identity",
+        "reason": "Supporting residual algebra already incorporated in the two selected aggregate rows; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.observed_residual_slope",
+        "reason": "Supporting residual algebra already incorporated in the two selected aggregate rows; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.popMean_sum",
+        "reason": "Supporting residual algebra already incorporated in the two selected aggregate rows; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.populationSlope_centered",
+        "reason": "Supporting residual algebra already incorporated in the two selected aggregate rows; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.populationSlope_common_residual",
+        "reason": "Supporting residual algebra already incorporated in the two selected aggregate rows; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P005.populationSlope_projection",
+        "reason": "Supporting residual algebra already incorporated in the two selected aggregate rows; not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.corrected_residual_brackets",
+      "AronowAudit.P005.corrected_residual_term_identification"
+    ],
+    "target_id": "P005-T18",
+    "theorem": "SAP.P005b.T18"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.ConfidenceFollowup02.printed_covariance_lemma_refuted"
+    ],
+    "target_id": "P005-T19",
+    "theorem": "SAP.P005b.T19"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.ConfidenceFollowup02.printed_interacted_third_bias_refuted",
+      "AronowAudit.P005.Wave1.interacted_exact_decomposition_completion",
+      "AronowAudit.P005.Wave1.printed_interacted_expansion_refuted"
+    ],
+    "target_id": "P005-T20",
+    "theorem": "SAP.P005b.T20"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.mean_unbiased",
+        "reason": "The exact-unbiasedness row already incorporates the sample-mean identity; not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.noninteracted_exact_unbiasedness_proof",
+      "AronowAudit.P005.Wave1.noninteracted_exact_decomposition_proof",
+      "AronowAudit.P005.noninteracted_debiased_expansion",
+      "AronowAudit.P005.collected_covariance_coefficients"
+    ],
+    "statement_definition": "SAP.P005b.T21WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P005.noninteracted_debiased_expansion",
+      "AronowAudit.P005.Wave1.noninteracted_exact_decomposition_proof",
+      "AronowAudit.P005.Wave1.control_arm_covariance_expectation",
+      "AronowAudit.P005.Wave1.control_arm_transport",
+      "AronowAudit.P005.expectation_mul",
+      "AronowAudit.P005.Wave1.t13_E_sub",
+      "AronowAudit.P005.collected_covariance_coefficients"
+    ],
+    "target_id": "P005-T21",
+    "theorem": "SAP.P005b.T21"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.interacted_exact_unbiasedness_proof",
+      "AronowAudit.P005.interacted_debiased_cancellation"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P005.Wave1.control_arm_unbiased_any_size",
+      "AronowAudit.P005.Wave1.control_arm_transport"
+    ],
+    "target_id": "P005-T22",
+    "theorem": "SAP.P005b.T22"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.noninteracted_slope_decomposition",
+        "reason": "The selected decomposition row already contains the slope decomposition."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.noninteracted_exact_decomposition_proof"
+    ],
+    "target_id": "P005-T23",
+    "theorem": "SAP.P005b.T23"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P005.armN_decomposition",
+        "reason": "The selected decomposition row already contains the two arm slope and numerator identities."
+      },
+      {
+        "lean_name": "AronowAudit.P005.arm_slope_decomposition",
+        "reason": "The selected decomposition row already contains the two arm slope and numerator identities."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.interacted_exact_decomposition_proof"
+    ],
+    "target_id": "P005-T24",
+    "theorem": "SAP.P005b.T24"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.noninteracted_stochastic_expansion_proof"
+    ],
+    "target_id": "P005-T25",
+    "theorem": "SAP.P005b.T25"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.noninteracted_debiased_linear_expansion_proof",
+      "AronowAudit.P005.Wave1.tailC_arm_debiased_order",
+      "AronowAudit.P005.Wave1.tailC_order_combine",
+      "AronowAudit.P005.Wave1.tailC_ratio_bounds",
+      "AronowAudit.P005.Wave1.tailC_weighted_remainder",
+      "AronowAudit.P005.noninteracted_debiased_expansion",
+      "AronowAudit.P005.Wave1.tailC_mean_residual"
+    ],
+    "statement_definition": "SAP.P005b.T26WholeStatement",
+    "target_id": "P005-T26",
+    "theorem": "SAP.P005b.T26"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P005.Wave1.interacted_debiased_linear_expansion_proof",
+      "AronowAudit.P005.Wave1.tailC_arm_debiased_order",
+      "AronowAudit.P005.Wave1.tailC_order_combine",
+      "AronowAudit.P005.Wave1.tailC_arm_remainder_difference"
+    ],
+    "statement_definition": "SAP.P005b.T27WholeStatement",
+    "target_id": "P005-T27",
+    "theorem": "SAP.P005b.T27"
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "theorem": "SAP.P027b.T14",
+    "target_id": "P027-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part4.lean:12-21 states exactly canonical C1: the M=5 fixed populations, all displayed variances/expectations/biases, and the reversal of the bias ranking. It has no outcome-model expectation, so does not state C2's model-averaged reversal or C3's M=500 quantities and relative biases. The simulation rows are comparative context, not identities claimed of simulations. The fixed populations and positive 25-outcome design exist; all C1 values pass exact rational enumeration. This tests the unqualified bias-ranking interpretation of the printed guidance, not every meaning of 'dominates'."
+  },
+  {
+    "theorem": "SAP.P027b.T15",
+    "target_id": "P027-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "StrataFixed, StrataModel, and the three limits express all five numbered canonical clauses, with M>=2, independent uniform stratum draws, the correct N^2 mean scale, arbitrary fixed outcomes, and zero-mean uncorrelated unit-variance errors on an actual probability space. NoiseMoments supplies integrability of every first and cross second moment; finite quadratic expansions make every resulting integral integrable. Gaussian independence is not an extra hypothesis: the canonical model-moment clause explicitly requires only second moments. Ratios have positive denominators (M-1, alpha^2+1/2, and E CS=alpha^2+1/2). Limit expressions at M=0 are irrelevant to convergence. Product standard Gaussians on R^(2M), e.g. M=2, satisfy the model assumptions. Exact fixed-design checks pass."
+  },
+  {
+    "theorem": "SAP.P027b.T16",
+    "target_id": "P027-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part4.lean:24-35 verifies C1-C2 with a concrete uniform product of three independent symmetric signs at alpha=1/2. It verifies all necessary zero means, variances, and cross moments, and the exact correlations 1/5 versus 1/3 and difference 2/15. It does not state C3's divisor-1/divisor-2 interpretation of the fixed means, nor realize the errors by the Gaussian law referenced in definitions_needed and the standing supplement model. Thus its C1-C2 numerical witness is valid on the stated moment reading, but its retained scope is smaller than the complete canonical target. The finite law has eight equally weighted points and both outcome variances are 5/4, so neither empty indices nor zero-denominator correlation is involved. The reading tested is ordinary common-stratum pair correlation, not an assertion that every interpretation of the printed heterogeneity label is false."
+  },
+  {
+    "theorem": "SAP.P027b.T17",
+    "target_id": "P027-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "PairMoments gives exactly a balanced sign S and the zero first/cross moments and unit error variances used by the canonical statement. Under a probability measure, S in {+1,-1} a.e. and E S=0 are equivalent to equal sign probabilities. PairCorrelation's second and cross moments are the claimed variances and covariance because it also asserts zero means. The remaining conjuncts state the divisor-1 two-mean variance, definition and comparison of the two parameters, both conversion identities, strict monotonicity, the one-sided limit, and all six exact labels. The q identities use q=heterogeneity(alpha), whose range is [0,1); every q in that range is attainable. All denominators are positive on their stated domains. A balanced independent sign and two independent standard Gaussians give a nonvacuity instance."
+  },
+  {
+    "theorem": "SAP.P027b.T18",
+    "target_id": "P027-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "For all M>0, Part4 states the first-order probabilities, the diagonal/distinct-same-stratum/cross-stratum joint probabilities, all covariance cases, the indicator variances, and the M=2 diagonal witness, exactly as canonical (c). strataDesign is the actual independent uniform two-stratum law. Part (d) is explicitly a definition with no claim to prove; stratumOutcomes in Part2 uses the same full unit index for its error and its output and the stratum coordinate for the mean. M=1 is a legitimate two-unit design, and M=2 realizes a genuine zero joint-inclusion pair; positivity at M=2 is compiled."
+  },
+  {
+    "theorem": "SAP.P027b.T19",
+    "target_id": "P027-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The eight Periodic* blocks in Part8 collectively state canonical (i)-(vi), including original-unit mean-scale V,H,C,W; genuine integrated second-moment formulas and calibration; the orthogonal direct-sum dimensions, existence and uniqueness and contrast diagonalization; Gaussian chi-square representation and positive contrast mean; the K-uniform lower-tail bound without independence across generated populations; all four exact numeric predictions, contrasts, rounding implications, exponents and decimal probability bounds. The phase construction is the periodic cumulative-size design up to relabeling: each residue class modulo q=2r has m units, with uniform-start interval length 6q and phase widths 2 or 10, hence probabilities 1/(3q) or 5/(3q). Positive V is required only for its relative-bias quotient and positive noise variance only for Gaussian/tail assertions, as the canonical statement specifies. N>m>0, q>=2, 9q-5>0 and positive k exclude zero-denominator artifacts. Natural dimension subtractions cannot truncate. At r=1 the zero-degree chi-squares are legitimate constant-zero components while N-q=2(m-1)>0, so no empty type makes the result vacuous. Product Gaussian coordinates give actual nonempty models, compiled in scratch/Models.lean; exact rational design identities, decomposition and all four rounding/exponent certificates pass scratch/verify.py. The final event concerns averages of exact conditional design expectations with tolerance .005; it asserts no deterministic exclusion or replacement simulation rows."
+  },
+  {
+    "theorem": "SAP.P027b.T20",
+    "target_id": "P027-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "Part3 states the full identity with ordered distinct zero-inclusion-pair sum A, the nonnegative-bias consequence for either common sign, and existence of both signs of actual bias. A finite weighted sample space with Boolean selections represents every distribution on subsets of a finite population; this is not a design restriction. Positive first-order inclusion is exactly the standing assumption. The concrete cluster3 law has all pi=1/2, and allOnes3/mixed3 give A=4 and A=-1 (compiled in scratch/Check.lean); enumeration also verifies actual biases. It needs no assumption that zero pairs exist for the universal identity."
+  },
+  {
+    "theorem": "SAP.P027b.T21",
+    "target_id": "P027-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal design, arbitrary signed population and pair-dependent exponent arrays match Proposition 2 and all four canonical proof-carrying clauses. Mathlib real HolderConjugate means positive finite reals with 1/a+1/b=1, hence a,b>1; the condition is imposed exactly where the zero-pair sums use it. A-star and its correction have both summands within each ordered pair, with the correct signs and inclusion denominators. Finite expectations and Young's inequality justify every conclusion. cluster3 with nonzero outcomes and constant exponents 2,2 is a nonvacuous instance with genuine zero pairs, and positivity/conjugacy are compiled."
+  },
+  {
+    "theorem": "SAP.P027b.T22",
+    "target_id": "P027-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "The hypotheses exactly match the inherited positive first-order inclusion and positive conjugate exponents, followed by equal conjugate powers and -y_k*y_l=|y_k||y_l| on each ordered distinct zero pair. The conclusion is the required sufficient unbiasedness identity, without claiming necessity. None of the assumptions is the desired expectation identity. The M=2 two-stratum design with outcomes (3,-3) and (5,-5), and exponents 2,2, has genuine zero pairs, satisfies every hypothesis, and has total variance and expected corrected estimate 136. Positivity and the nonzero pairwise equality hypotheses compile in scratch/Check.lean, and exact enumeration verifies the variance."
+  },
+  {
+    "theorem": "SAP.P027b.T23",
+    "target_id": "P027-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "The independent quadratic formula in Part1 is identified extensionally with the exponent-two conservative estimator, followed by the exact claimed expectation inequality, for all positive designs and arbitrary signed fixed populations. This covers the canonical specialization and Corollary 2; the erroneous printed proof cross-reference is textual history, not a theorem clause. The quadratic denominators are positive. cluster3 with all-one outcomes gives total variance 1 and expected C2=9, an actual strict-conservativeness instance."
+  },
+  {
+    "theorem": "SAP.P027b.T24",
+    "target_id": "P027-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "For every positive design, population and sample, the statement gives attainment at constant exponents (2,2) and comparison with every positive constant conjugate pair. This is equivalent to the canonical realized minimum and has the correct quantifier order. Pair-dependent arrays are not incorrectly included in the minimization. Symmetry of joint probabilities and the ordered zero-pair set makes symmetrization valid even on zero-weight outcomes, and Young's inequality applied to |y|,|y| yields the comparison. cluster3 with all-one or other nonzero outcomes and the genuine conjugate pairs (2,2) or (3,3/2) meets the assumptions."
+  }
+]

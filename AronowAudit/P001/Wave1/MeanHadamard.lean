@@ -19,6 +19,8 @@ theorem printed_finite_variance_mean_hadamard_refuted :
         (kolmogorovEmbed (cdf ν id)) L :=
   MeanHadamard.assemble MeanHadamard.n1_proof MeanHadamard.n2_proof MeanHadamard.n3_proof
 
+example : MeanHadamard.Target := printed_finite_variance_mean_hadamard_refuted
+
 end
 
 end AronowAudit.P001.Wave1

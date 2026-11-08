@@ -1,0 +1,152 @@
+[
+ {
+  "target_id": "P001-T6",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.TailB_sieve_consistency_stable_gram",
+   "AronowAudit.P001.Wave1.general_gram_rate_stability_proof",
+   "AronowAudit.P001.Wave1.uniform_cubic_gram_rate_stability_proof",
+   "AronowAudit.P001.Wave1.uniform_polynomial_gram_bound_proof",
+   "SAP.P001a.WH.W1.T6_whole",
+   "SAP.P001a.WH.W1.T6_assembly",
+   "SAP.P001a.WH.W1.T6_L1_proof",
+   "SAP.P001a.WH.W1.T6_L2_proof",
+   "SAP.P001a.WH.W1.T6_L3_proof",
+   "SAP.P001a.WH.W1.T6_L4_proof",
+   "SAP.P001a.WH.W1.support_envelope_attained",
+   "AronowAudit.P001.Wave1.general_gram_finite_probability_bound"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.general_polynomial_gram_probability_bound_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.random_design_noise_conditional_trace",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.sieve_consistency_full_interval_support_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.sieve_consistency_stable_gram_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.sieve_finite_sampling_noise_trace_bound_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.sieve_finite_approximation_coefficient_bound",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.sieve_finite_coefficient_decomposition",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.sieve_finite_l2_approximation_error_bound",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T6WholeStatement",
+  "bridge": "SAP.P001a.Bridge.T6_correspondence"
+ },
+ {
+  "target_id": "P001-T7",
+  "decision": "refuted",
+  "theorem": "SAP.P001a.T7",
+  "restriction": "States the four-atom wrong-target example, unique clipped likelihood maximization, finite probability bounds, incompatible conditional targets and the changed-covariate-marginal limit. Omits the displayed KL derivative formulas and the exact positive averaged-KL gap (1/2) log(4/3).",
+  "rows_used": [
+   "AronowAudit.P001.conditional_kl_mle_wrong_target",
+   "AronowAudit.P001.Wave1.pooled_mle_covariate_marginal_bridge"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.clipped_bernoulli_mle",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.conditional_kl_counterexample_finite",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T7Statement",
+  "bridge": "SAP.P001a.Bridge.T7_correspondence"
+ },
+ {
+  "target_id": "P001-T8",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.normalized_averaged_kl_entropy_identity",
+   "AronowAudit.P001.Wave1.separated_averaged_kl_approximate_ml_consistency",
+   "AronowAudit.P001.compact_unique_maximum_separated",
+   "AronowAudit.P001.Wave1.normalized_true_model_unique_kl_target",
+   "SAP.P001a.WH.W1.T8_whole",
+   "SAP.P001a.WH.W1.T8_assembly",
+   "SAP.P001a.WH.W1.T8_L1_proof",
+   "SAP.P001a.WH.W1.kernel_finite_identity",
+   "SAP.P001a.WH.W1.likelihood_argmax",
+   "AronowAudit.P001.Wave1.t8_section_kl",
+   "AronowAudit.P001.argmax_finite_gap"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.averaged_kl_entropy_loglikelihood_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.averaged_kl_ml_consistency_proof",
+    "reason": "Alternative restricted likelihood-consistency route is unnecessary for the chosen explicit envelope statement."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.product_averaged_kl_ml_consistency_proof",
+    "reason": "Alternative restricted likelihood-consistency route is unnecessary for the chosen explicit envelope statement."
+   },
+   {
+    "lean_name": "AronowAudit.P001.argmax_finite_gap",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.separated_argmax_consistency",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.true_model_averaged_kl_zero",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T8WholeStatement",
+  "bridge": "SAP.P001a.Bridge.T8_correspondence"
+ },
+ {
+  "target_id": "P001-T9",
+  "decision": "refuted",
+  "theorem": "SAP.P001a.T9",
+  "restriction": "States unboundedness on the exact three-point collapse path and absence of an admissible maximizer. Omits the displayed componentwise and C/scale lower bounds, the prescribed scale C/(|B|+1), and the general positive-sample path and bound (general positive-sample unboundedness is packaged under T10).",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.mixture_three_point_unbounded_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001a.T9Statement",
+  "bridge": "SAP.P001a.Bridge.T9_correspondence"
+ },
+ {
+  "target_id": "P001-T10",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.mixture_unbounded_positive_sample_proof",
+   "AronowAudit.P001.mixture_compact_attainment"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001a.T10Statement",
+  "bridge": "SAP.P001a.Bridge.T10_correspondence"
+ }
+]

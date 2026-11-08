@@ -1,0 +1,192 @@
+[
+  {
+    "target_id": "P001-T39",
+    "theorem": "SAP.P001c.T39",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Normal-sum antecedents: independent N(0,1) coordinates, a nonempty finite subfamily, and at least one nonzero coefficient; the generic IID-coordinate construction is Lean-checked in scratch/Check.lean. Density antecedents: mx=my=0, sx=sy=1, rho=0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T40",
+    "theorem": "SAP.P001c.T40",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the Borel probability space (R,N(0,1)) and X=id, which is Lean-checked L2 with variance one in scratch/Check.lean. The independent fair-coin portion uses the explicit probability weights (1/2,1/2).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T41",
+    "theorem": "SAP.P001c.T41",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No antecedents. On Fin 3 with the full sigma-algebra, use weights (1/2,1/2,0) and the three displayed vectors. All variances equal 1/4; each range equals its support {0,1}. The complete statement, including both failed pointwise affine representations, is Lean-checked in scratch/Counterexamples.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T42",
+    "theorem": "SAP.P001c.T42",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On (R,N(0,1)), take X=Y=id. Both functions are L2 with variance one; these moment hypotheses are Lean-checked in scratch/Check.lean. The positive-slope equality case is attained with a=0,b=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T43",
+    "theorem": "SAP.P001c.T43",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On (R,N(0,1)), take X=Y=id and m=id. The L2, positive-variance and full conditional-mean antecedents, including L2 of m composed with X, are Lean-checked in scratch/Check.lean. The regression coefficients are alpha=0,beta=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T44",
+    "theorem": "SAP.P001c.T44",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No antecedents. On the two-point full sigma-algebra with weights (1/2,1/2), take X=Y=(-1,1), g0(x)=x and g1(x)=x+1. The displayed predictor vectors are (-1,1) and (0,2). The complete T44Statement is Lean-checked in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T45",
+    "theorem": "SAP.P001c.T45",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On (R,N(0,1)), take X=Y=id. L2 and strictly positive regressor variance one are Lean-checked in scratch/Check.lean; the means and covariances are ordinary finite moments.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T46",
+    "theorem": "SAP.P001c.T46",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Omega=R x R with probability measure (intervalUniform 0 1) product (gaussianReal 0 1), X=fst and W=snd. The uniform density integrates to one on [0,1]. Coordinate projections are measurable, independent and have exactly the two specified laws.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T47",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Challenge theorem. The canonical hypotheses have ordinary nondegenerate examples, such as independent standard Gaussians with identity transformations. Such examples do not remove the record's measurability scope gap for arbitrary transformations.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P001-T48",
+    "theorem": "SAP.P001c.T48",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take K=2 and X(omega)=(omega,omega) on (R,N(0,1)). Both coordinates are L2 with variance one, as checked for id in scratch/Check.lean. Thus nonempty dimensions and nonzero covariances are covered.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T49",
+    "theorem": "SAP.P001c.T49",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No antecedents. For example K=2, b=(1,2,3), x=(4,5) gives a nonempty coordinate index type and the genuine affine function 1+2*x0+3*x1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T50",
+    "theorem": "SAP.P001c.T50",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=n=4 and responses (3,4,3,10). Their mean 5 and variance 17/2 are Lean-checked in scratch/Check.lean. The empirical measure is a normalized sum of four Dirac masses. For the general L2 clause take Z=id under N(0,1).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T51",
+    "theorem": "SAP.P001c.T51",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On any inhabited probability space take Z_n=c=0 for every n. All statistics are measurable, bad-event probabilities vanish and every stipulated eventual good-event lower bound holds. Nonconstant Gaussian statistics also satisfy the measurability antecedents.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T52",
+    "theorem": "SAP.P001c.T52",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the genuine IID Bernoulli(1/2) product constructed and Lean-checked in scratch/Check.lean, with x=0. Its CDF ordinate is 1/2, so the sampling clause has a nondegenerate instance. For the indicator identity use one coordinate and D=(-infinity,0].",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T53",
+    "theorem": "SAP.P001c.T53",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No antecedents. The explicit weights p_k=7/8^(k+1) are positive and normalized, with summable first/second moment series giving E X=7/6, E X^2=7/4 and Var X=7/18>0. Fourth-moment terms are (7/8)*2^k, so the nonnegative extended sum is infinite. Realize the law on the countable space N with X(k)=2^k; countable products give IID draws. For k>=1, (4^k-7/4)^2 >= 16^k/4, hence the centered second-moment series of X^2 also diverges. This refutes the inference that the sample-variance theorem hypotheses supply the cited finite-variance WLLN hypotheses for the squares. The theorem itself omits the formal measure-space/IID realization and the centered variance assertion exactly as its docstring discloses. The variance arithmetic is Lean-checked in scratch/Check.lean, recompiled against the revised Defs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T54",
+    "theorem": "SAP.P001c.T54",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The countable product of N(0,1), with coordinate observations, satisfies the complete IID, L2 and strictly positive variance hypotheses; this is Lean-checked in scratch/Check.lean. The variance is one. No fourth moment is assumed by the statement.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T55",
+    "theorem": "SAP.P001c.T55",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On (R,N(0,1)), take theta=0, thetahat_n(omega)=omega/sqrt(n) and Vhat_n=1/n for n>=1, and set both statistics to zero at n=0. All statistics are measurable, Vhat is nonnegative, and the root-n law is exactly N(0,1) at every positive sample size. The limiting variance is one.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T56",
+    "theorem": "SAP.P001c.T56",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The countable product of the real Bernoulli law (delta_0+delta_1)/2 has exactly the stipulated IID observations and marginal law. This full antecedent is Lean-checked in scratch/Check.lean. Both functional examples are evaluated at its genuine CDF.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T57",
+    "theorem": "SAP.P001c.T57",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use IID Bernoulli(1/2), F its CDF, e=1_[0,1), and the Borel bridge law of h_Z(x)=Z*e(x) with Z~N(0,1/4). Every path is in cdfTangent F; its covariance is e(s)*e(t)/4, exactly the prescribed kernel, and every finite linear combination is Gaussian. Take T(f)=f(0) and L(h)=h(0). Evaluation is continuous linear, gives the required Hadamard derivative, and has measurable scalar empirical plug-ins. L(h_Z)=Z is L2 with variance 1/4>0. Details are in nonvacuity.md; the complete bridge construction was checked mathematically, not compiled in Lean.",
+    "confidence": 0.94
+  }
+]

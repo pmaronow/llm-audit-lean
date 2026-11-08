@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P045-T1",
+    "theorem": "SAP.P045a.T1",
+    "fingerprint": "daea2fc2c2c4b87d92e83178d9b7020661be5b1d5ff1a383a90985f6ae6012f9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully with /home/ubuntu/sap/tools/sap-lean: the witness mass is nonnegative and sums to one directly from the finite-product definitions; the explicit outcome (true,1000,1000) lies on all four arm domains and has strictly positive mass. Independent Fraction arithmetic in scratch/finite_audit.py enumerates all 512 outcomes and confirms the conditional probabilities, means and overall contrast without evaluating empty-arm ratios.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T2",
+    "theorem": "SAP.P045a.T2",
+    "fingerprint": "5641739e81ba3f6ddae9dc857fe51016df25ec9dbc07a0ed8dadd82c6ed8e57b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully: G=2,C=1,n_g=2,p_h=1/2 has a normalized Q with mass 1/16 on all local assignment pairs and both required Bernoulli coordinate laws. A second normalized Q assigns mass 1/4 to the four pairs in which each group has exactly one treated unit; both fixed-count coordinate laws are proved, with k_hg=1 and positive counts in both arms. localFair supplies genuine arbitrary-law-overall instances. All group-size, regime-count, probability and count hypotheses are separately checked; y is unrestricted and can be coMembers or any real array. The coordinate-law examples in fact hold for every H and so also supply the C=G single-regime subcases. Independent products of the permitted local designs supply instances at distinct regime parameters as well.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T3",
+    "theorem": "SAP.P045a.T3",
+    "fingerprint": "4dcbafd2b398e328907aa51a8c191dae07d15ab11581c9ce5d57e13e78e2da7b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully: H={0,1,2}, z_g=110 for g in H and 100 otherwise is in w1ToySupport and has strictly positive w1ToyMass. The local counts and first-stage count are checked from the definitions. scratch/finite_audit.py independently enumerates all 14580 mixed-regime outcomes using independent fixed-count draws; both additive means/variances and expected variance estimates, both dilated pairs and the upward-bias pair agree exactly. Its sample_var refuses singletons, so only the explicitly stipulated dropping operation removes those terms.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T4",
+    "theorem": "SAP.P045a.T4",
+    "fingerprint": "a211cdbdcce84719d05afb9009be6a400732d1a3809848eeff864486650804f1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully: G=3,C=2,n_g=4,m_g=2 meets every proper-domain hypothesis, has positive mass on H={0,1} with local assignments 1100, and has nonconstant within-group effects for a_gi=2(i+1)+g, b_gi=i+1. It also constructs G=6,C=3 singleton-domain data, a nonconstant x=(1,2,3), admissible m=2 selected assignments and requiredDirectVariance=none. scratch/finite_audit.py checks all 648 outcomes of the regular-domain instance: true variance 49/24, bias 5/36, and the exact stated bias formula. An additive variant has variance 5/6 and zero bias, so both sides of the equality characterization have genuine examples.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T5",
+    "theorem": "SAP.P045a.T5",
+    "fingerprint": "c20932377c12e979e463982e868a29eb6cb2bd106c7f1e2ed2b76e8355781c8c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully: edgeNetwork is a symmetric loopless Boolean Network 2, its 10 assignment has closed-neighborhood count one and satisfies the coded event but not documented all-control, and the independent fair Bernoulli law is normalized and strictly positive on every assignment. scratch/finite_audit.py confirms all four values for each linear/threshold and coded/correct event combination, including the linear expectation 4/3 versus target 2 and threshold expectation 2 for both codings. The relevant event probabilities are 1/4,3/4,1/4, all positive.",
+    "confidence": "high"
+  }
+]

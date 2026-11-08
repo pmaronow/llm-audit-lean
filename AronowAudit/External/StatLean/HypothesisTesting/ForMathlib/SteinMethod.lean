@@ -1,8 +1,3 @@
-/-
-Documentation corrected for llm-audit-lean.
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.EsseenSmoothing
 import Mathlib.Probability.Distributions.Gaussian.Real
 import Mathlib.Probability.CDF
@@ -289,6 +284,11 @@ theorem integral_abs_mul_exp_neg_sq_half : ∫ x : ℝ, |x| * Real.exp (-x ^ 2 /
   rw [h, integral_Ioi_id_mul_exp_neg_sq_half]
   norm_num
 
+/-- The Gaussian tail is invariant under reflection. -/
+theorem integral_Iic_exp_neg_sq_half (w : ℝ) :
+    ∫ x in Iic w, Real.exp (-x ^ 2 / 2) = ∫ x in Ioi (-w), Real.exp (-x ^ 2 / 2) := by
+  have h := integral_comp_neg_Iic (c := w) (f := fun y : ℝ => Real.exp (-y ^ 2 / 2))
+  simpa using h
 
 /-- `-x^{-1}e^{-x²/2}` is an antiderivative of `(1 + x^{-2})e^{-x²/2}` away from the origin. -/
 private lemma hasDerivAt_mills {x : ℝ} (hx : x ≠ 0) :
@@ -603,9 +603,8 @@ private lemma nonneg_of_deriv_neg_mul_monotone {ψ ψ' q : ℝ → ℝ}
       linarith
     exact hantiOn (mem_Ici.2 le_rfl) (mem_Ici.2 hnw) hnw
 
-/-- **The tail integral of a bounded `L`-Lipschitz test function centred by its
-standard-normal expectation is at most `L e^{-w²/2}` in absolute value.**
-The sup-norm bound is proved in this form: `u(w) = ∫_{-∞}^w (h − 𝔼h)e^{-x²/2}`
+/-- **The tail integral of the centred test function is `L e^{-w²/2}` in absolute value.**
+This is the sup-norm bound in the form in which it is proved: `u(w) = ∫_{-∞}^w (h − 𝔼h)e^{-x²/2}`
 satisfies `u(±∞) = 0`, and `L e^{-w²/2} ∓ u` has derivative `-e^{-w²/2}(Lw ± (h − 𝔼h))` whose
 second factor is *monotone*, so both are unimodal with vanishing limits, hence nonnegative. -/
 theorem abs_gaussTail_le {h : ℝ → ℝ} {L : ℝ} (hL : 0 ≤ L)

@@ -8,9 +8,9 @@ open Finset Filter
 set_option maxRecDepth 3000
 set_option maxHeartbeats 2000000
 
-/-!
-Finite-sampling second and third moments and exact regression decompositions.
--/
+/-! Draft only: no Lean process has been run. Shared finite-sampling lemmas are
+prefixed `t13_` because the first record already needs second and third moments.
+No held proof is used below. -/
 
 lemma t13_E_add {n : ℕ} (m : ℕ) (f g : Finset (Fin n) → ℝ) :
     expectation m (fun S => f S + g S) = expectation m f + expectation m g := by
@@ -681,9 +681,10 @@ theorem corrected_control_bias_estimator_proof {n d m : ℕ} (P : Population n d
   · intro S hS
     rfl
 
-/-!
-The noninteracted decomposition.
--/
+example : type_of% @AronowAudit.P005.corrected_control_bias_estimator :=
+  corrected_control_bias_estimator_proof
+
+/-! Record 4: the noninteracted decomposition. -/
 
 lemma t14_mean_control_E {n m : ℕ} (hn : 0 < n) (hm : 0 < m) (hmn : m < n)
     (a : Fin n → ℝ) : expectation m (fun S => mean (control S) a) = popMean a := by
@@ -846,9 +847,11 @@ theorem noninteracted_exact_decomposition_proof {n d m : ℕ} (P : Population n 
     rw [hz1, hz2]
     simp
 
-/-!
-All nine exact third-moment identities.
--/
+example : type_of% @AronowAudit.P005.noninteracted_exact_decomposition :=
+  noninteracted_exact_decomposition_proof
+
+/-! Record 5: all nine exact third-moment assertions. The sampling machinery
+was proved before Record 3 because its control nu3 term already needs it. -/
 
 
 theorem corrected_third_moment_calculation_proof {n m : ℕ} (hn : 3 ≤ n)
@@ -886,6 +889,9 @@ theorem corrected_third_moment_calculation_proof {n m : ℕ} (hn : 3 ≤ n)
   · simp only [repeatedPair, expectation_sum, t13_E_sum, t13_E_right]
   · rw [t13_repeated_E hn hm hmn a b c hc]
     ring
+
+example : type_of% @AronowAudit.P005.corrected_third_moment_calculation :=
+  corrected_third_moment_calculation_proof
 
 end
 end AronowAudit.P005.Wave1

@@ -1,0 +1,32 @@
+[
+  {
+    "target_id": "P035-T1",
+    "theorem": "SAP.P035.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem has no hypotheses. Its explicit models D and C use the nonempty supports {1,...,6555}, {1,...,41605}, and {1,...,7104}, with strictly positive assignment probabilities and finite joint mass totaling 1. Independent scratch/Check.lean, importing only SAP.P035.Defs, compiles proofs that both models are calibrated, their observed laws agree, D has zero individual campaign effects, and C has assignment-1 campaign means 326/6555, 699/41605, and 449/7104, all positive. It also proves the overall effects are 0 and 83755728/5240292055 and checks the reduced-denominator LCMs. Exact rational recomputation separately checks all thresholds, frequencies, independence factorization, and mass normalization. Thus the calibrated model class is inhabited by distinct, consequential witnesses; neither empty quantification nor an assumed conclusion supplies nonidentification.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P035-T2",
+    "theorem": "SAP.P035.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Independent scratch/Check.lean compiles a proof of T2Statement using U=D and V=C without importing a Challenge theorem or a Solution. These models share the normalized independent design, match all six frequencies, and have identical observed laws. U has zero campaign effect for every year, assignment, and latent index. V has the stated positive yearly campaign means equal to the complete porch contrasts, and its two porch outcomes agree individually when the initiative is absent. The existential and the negation of CampaignIdentified are both proved. Challenge/Part1.lean:17-21 and record.json accurately disclose that the theorem covers mathematical campaign clauses (a)-(b), excludes the retained empirical estimate and the wording-replacement instruction, and has no separate health-message mediator.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P035-T3",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to an omitted empirical attribution. The printed assertion concerns the initiative's actual effect and supplies no mathematical identification assumptions. The supplied text and claims.json explicitly distinguish that empirical truth question from the invalid inference audited by T1. The concrete calibrated D,C worlds show why the observed law cannot decide it, while neither world establishes the actual campaign effect. The only proposed universal model-based rendering is already refuted by T1, so omitting a separate theorem for T3 is justified.",
+    "confidence": "high"
+  }
+]

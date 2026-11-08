@@ -399,7 +399,10 @@ theorem proposition2_printed_counterexample_proof :
     lastIntegralTerm (cornerWitness.design q) (rowOutcomes cornerWitness true q)
       (rowOutcomes cornerWitness false q) 1 π)
 
--- Union-grid geometry and discrepancy bounds.
+example : type_of% @AronowAudit.P022.proposition2_printed_counterexample := proposition2_printed_counterexample_proof
+
+
+-- Union-grid lemmas adapted from the proved GP022B3 discrepancy module.
 private def T8_grid (m k : ℕ) : Finset ℝ :=
   ((Finset.range (m + 1)).image (fun i : ℕ => (i : ℝ) / m)) ∪
     ((Finset.range (k + 1)).image (fun j : ℕ => (j : ℝ) / k))
@@ -571,6 +574,7 @@ private theorem T8_reflected_rank {m k s r : ℕ} (hm : 0 < m) (hk : 0 < k)
   apply (Nat.ceil_eq_iff (by omega : s + 1 - j ≠ 0)).2
   rw [hcastlm, hcastl]
   constructor <;> nlinarith [hjspec.1]
+
 
 
 private lemma T8_grid_reflect {m k : ℕ} (hm : 0 < m) (hk : 0 < k)
@@ -1060,6 +1064,8 @@ theorem appendixB_corrected_proof {m k : ℕ} (hm : 2 ≤ m) (hk : 2 ≤ k)
   intro N B
   rw [hcov]
   rfl
+
+example : type_of% @AronowAudit.P022.appendixB_corrected := appendixB_corrected_proof
 
 end
 end AronowAudit.P022.Wave1

@@ -1,0 +1,356 @@
+{
+ "work_id": "P004c",
+ "citation": {
+  "arxiv_id": "2010.13599",
+  "authors": [
+   "Ye Wang",
+   "Cyrus Samii",
+   "Haoge Chang",
+   "P. M. Aronow"
+  ],
+  "doi": "10.1214/24-AOAS1986",
+  "title": "Design-Based Inference for Spatial Experiments under Unknown Interference",
+  "type": "Journal article",
+  "venue": "Annals of Applied Statistics",
+  "year": "2025"
+ },
+ "standing_assumptions": "Source: Wang, Samii, Chang and Aronow, 'Design-Based Inference for Spatial Experiments under Unknown Interference', Annals of Applied Statistics (2025), printed pp. 744-768 (main.pdf, 25 pp.), and its Supplement A (supplements/supplement-a.pdf, 40 pp., which holds every proof). 'p. 754 (PDF p. 11)' is a page of the article; 'Supplement A p. 15' is the supplement's own page number (its PDF page has the same number). Quotations are verbatim from the page images; a bracketed remark inside a quotation is not the paper's text.\n\n(S1) Setting [Section 2, pp. 746-747 (PDF pp. 3-4)]. 'Suppose a set of intervention nodes $\\mathcal S=\\{1,\\ldots,N\\}$. Each node $i\\in\\mathcal S$ can be either a point or a collection of points (e.g., a polygon) that resides in a two-dimensional set $\\mathcal X$ indexed by $x=(x_1,x_2)$ (e.g., latitude and longitude). An experimental design assigns a binary treatment $Z_i\\in\\{0,1\\}$ to each intervention node. The ordered vector of experimental assignment variables is $\\mathbf Z\\equiv(Z_1,\\ldots,Z_N)$, and the ex post realized assignment from the experiment is given by $\\mathbf z\\equiv(z_1,\\ldots,z_N)\\in\\{0,1\\}^N$. The experimental design fixes the set of possible assignment vectors as well as a probability distribution over that set. Our analysis considers the case of Bernoulli randomization for each $Z_i$, that is, (possibly weighted) coin flips to determine treatment status at each node.' 'Potential outcomes at any point $x\\in\\mathcal X$ are defined for each value of $\\mathbf z$, $(Y_x(\\mathbf z))_{\\mathbf z\\in\\{0,1\\}^N}$. Given a realized treatment assignment $\\mathbf z$, we observe the corresponding potential outcome at $x$, (1) $Y_x=\\sum_{\\mathbf z\\in\\{0,1\\}^N}Y_x(\\mathbf z)I(\\mathbf Z=\\mathbf z)$, where $I(\\cdot)$ is the indicator function and $I(\\mathbf Z=\\mathbf z)$ takes on the value 1 if the random assignments $\\mathbf Z$ realize to be $\\mathbf z$ and 0 otherwise.' 'Let $\\mathbf Y(\\mathbf z)=(Y_x(\\mathbf z))_{x\\in\\mathcal X}$ denote the full set of potential outcomes when $\\mathbf Z=\\mathbf z$ and $\\mathbf Y=(Y_x)_{x\\in\\mathcal X}$ denote the full set of realized outcomes.' (pp. 747-748) 'For our design-based inference, the only source of stochastic variation is from $\\mathbf Z$.' Potential outcomes and (in Section 6.4) confounders are fixed; every expectation, variance and probability is over $\\mathbf Z$.\n\n(S2) Circle averages [Section 2, p. 747 (PDF p. 4)]. 'For $i\\in\\mathcal S$, we define (2) $\\mu_i(\\mathbf Y(\\mathbf z);\\Omega_d)=\\frac{\\int_{x:d_i(x)\\in\\Omega_d}Y_x(\\mathbf z)\\,\\mathrm d\\zeta}{\\int_{x:d_i(x)\\in\\Omega_d}\\mathrm d\\zeta}$. In the expression above, $d_i(x)$ measures the distance between point $x$ and intervention node $i$. When $i$ is a point located at $x(i)$, $d_i(x)=\\gamma(x(i),x)$, where $\\gamma(\\cdot,\\cdot)$ is a well-defined metric (e.g., Euclidean, geodesic, or a least-cost distance) that satisfies the triangular inequality. If $i$ is a collection of points, then $d_i(x)=\\min_{x'\\in i}\\|x'-x\\|$, the minimal distance between $x$ and points belonging to $i$. $\\Omega_d$ is a set of distance values, and $\\zeta$ is a suitable measure on $\\mathcal X$. Therefore, $\\mu_i(\\mathbf Y(\\mathbf z);\\Omega_d)$ is the average outcome across points whose distance to $i$ falls in $\\Omega_d$.' 'If the points in $\\mathcal X$ are dense and spaced evenly, then $\\Omega_d$ could be a singleton, $\\Omega_d=\\{d\\}$. ... $\\Omega_d$ could be a donut, where $\\Omega_d=[d-\\kappa,d]$ (with $\\kappa$ a user-chosen constant dictating the donut's thickness), or a disk, where $\\Omega_d=[0,d]$. ... When it does not cause confusion, we write $\\mu_i(\\mathbf Y(\\mathbf z);\\Omega_d)$ simply as $\\mu_i(\\mathbf Y(\\mathbf z);d)$. Similarly, the realized circle average for intervention node $i$ at $d$ is (3) $\\mu_i(\\mathbf Y;d)=\\sum_{\\mathbf z\\in\\{0,1\\}^N}\\mu_i(\\mathbf Y(\\mathbf z);d)I(\\mathbf Z=\\mathbf z)$.' The article notes (p. 747) that data 'may come in various formats including raster data or data on a discrete set of points in $\\mathcal X$'.\n\n(S3) Marginalized quantities and the AME [Section 3, pp. 748-750 (PDF pp. 5-7)]. 'To define the spatial AME, first rewrite the potential outcome at point $x$ as $Y_x(z_i,\\mathbf z_{-i})$, where $\\mathbf z_{-i}$ is a vector equaling $\\mathbf z$, except that the value for intervention node $i$ is omitted.' '(4) $Y_{ix}(z_i;\\eta)=\\mathrm E_{\\mathbf Z_{-i}}[Y_x(z_i,\\mathbf Z_{-i})]=\\sum_{\\mathbf z_{-i}\\in\\{0,1\\}^{N-1}}Y_x(z_i,\\mathbf z_{-i})\\Pr(\\mathbf Z_{-i}=\\mathbf z_{-i};\\eta)$, where $\\eta$ is an experimental design parameter indexing the distribution of $\\mathbf Z$ (i.e., the probability of treatment assignments).' '(5) $\\mu_i(z_i;d,\\eta)=\\mathrm E_{\\mathbf Z_{-i}}[\\mu_i(\\mathbf Y(z_i,\\mathbf Z_{-i});d)]=\\sum_{\\mathbf z_{-i}\\in\\{0,1\\}^{N-1}}\\mu_i(\\mathbf Y(z_i,\\mathbf z_{-i});d)\\Pr(\\mathbf Z_{-i}=\\mathbf z_{-i};\\eta)$, where we use $\\mathbf Y(z_i,\\mathbf z_{-i})$ to denote the vector of potential outcomes over points in $\\mathcal X$ that obtain under treatment assignment $(z_i,\\mathbf z_{-i})$.' 'Due to linearity of expectation, we also have (6) $\\mu_i(z_i;d,\\eta)=\\frac{\\int_{x:d_i(x)\\in\\Omega_d}Y_{ix}(z_i;\\eta)\\,\\mathrm d\\zeta}{\\int_{x:d_i(x)\\in\\Omega_d}\\mathrm d\\zeta}$.' '(7) $\\tau_{ix}(\\eta)=Y_{ix}(1;\\eta)-Y_{ix}(0;\\eta)$.' '(8) $\\tau_i(d;\\eta)=\\mu_i(1;d,\\eta)-\\mu_i(0;d,\\eta)$.' 'Finally, define the average marginalized effect (AME) for distance $d$ by taking the mean over the intervention nodes, (9) $\\mathrm{AME}(d;\\eta)=\\frac1N\\sum_{i=1}^N\\tau_i(d;\\eta)$.' (p. 750) 'our analysis focuses on experimental designs with Bernoulli assignment, in which case the possible assignments consist of the $2^N$ possible vectors that could be obtained from $N$ (possibly differentially weighted) coin flips.'\n\n(S4) Inferential assumptions [Section 4, pp. 751-753 (PDF pp. 8-10)]. 'Our asymptotic analysis considers a sequence of sets indexed by the sample size $N$. The set of intervention nodes is denoted as $\\mathcal S_N$ and the set of outcome points $\\mathcal X_N$. Note that assumptions below are assumed to hold uniformly for all large sample sizes.' 'C1 (Bernoulli design). $(Z_1,\\ldots,Z_N)$ is a vector of independent Bernoulli($p$) draws.' 'C2 (Bounded potential outcomes). $|Y_x(\\mathbf z)|<b$ for some finite constant $b$ and all $x\\in\\mathcal X$ and $\\mathbf z\\in\\{0,1\\}^N$.' 'We work with the assumption that the assignment probability, $p$, is constant over intervention nodes and discuss the extension to cases where assignment probabilities vary in Section 6.4 below.' 'Let $I_{ij}(d)$ be an indicator for whether assignment at intervention node $j$ interferes with the $d$-radius circle average at node $i$, (10) $I_{ij}(d)=1$ if $\\mu_i(\\mathbf Y(\\mathbf z);d)\\neq\\mu_i(\\mathbf Y(\\mathbf z');d)$ for some $\\mathbf z,\\mathbf z'\\in\\{0,1\\}^N$ such that $\\mathbf z_{-j}=\\mathbf z'_{-j}$; $I_{ij}(d)=1$ if $i=j$; $I_{ij}(d)=0$ otherwise. Then, let $s_{ij}(d)$ be an indicator for whether $d$-radius circle averages at $i$ and $j$ are subject to interference from treatment at some common intervention node $\\ell$ (which could be $i$, $j$, or some other third intervention node), (11) $s_{ij}(d)=1$ if $I_{i\\ell}(d)I_{j\\ell}(d)=1$ for some $\\ell\\in\\mathcal S_N$; $s_{ij}(d)=0$ otherwise.' 'Let's denote the distance between two intervention nodes $i$ and $j$ as $d_{ij}$.' Footnote 3: 'As before, under point intervention, $d_{ij}=\\gamma(x(i),x(j))$. Under polygon intervention, $d_{ij}=\\min_{x\\in i,x'\\in j}\\gamma(x,x')$.' 'C3 (Local interference.). Let $h:[0,\\infty)\\to[0,\\infty)$ be a function independent of sample sizes. For each $d$ and all large sample sizes $N$ and all pairs of intervention nodes $i$ and $j$ in $\\mathcal S_N$, there exists a constant $h(d)$ such that if $d_{ij}>h(d)$, then $s_{ij}(d)=0$.' 'This assumption hence implies that, for $i$, $j$ with $d_{ij}>h(d)$, $\\mu_i(Y(z,\\mathbf Z_{-i});d)$ and $\\mu_j(Y(z',\\mathbf Z_{-j});d)$ are independent of each other over $\\mathbf Z$.' 'Define $\\mathcal S_N(i;d)\\equiv\\{j\\in\\mathcal S_N:d_{ij}\\le d\\}$, the set of intervention nodes whose distance to node $i$ is less than $d$.' 'C4 (Intervention node spacing). Let $b:[0,\\infty)\\to[0,\\infty)$ be a function independent of sample sizes. For each $d$ and all large sample sizes $N$, the sequence of intervention nodes satisfies $\\sup_{i\\in\\mathcal S_N}|\\mathcal S_N(i;d)|\\le b(d)$.' 'Let's define the neighborhood $\\mathcal B(i;d)$ that includes all the nodes whose circle averages at $d$ may interfere with that of node $i$, (12) $\\mathcal B_N(i;d)=\\{j\\in\\mathcal S_N:d_{ij}\\le h(d)\\}$. From C3 we know that $s_{ij}(d)=0$ for $j\\notin\\mathcal B_N(i;d)$. From C4 we know that $|\\mathcal B_N(i;d)|\\le b(h(d))$. Define $c_i(d)=|\\mathcal B_N(i;d)|$ and $c_N(d)=\\max_{i\\in\\mathcal S_N}c_i(d)$. Conditions C3 and C4 imply the following condition: C4A (Limited local interference with respect to $d$). For each $d$, $c_N(d)=O(1)$.' 'In our analyses below, we suppress the subscripts for asymptotic sequences unless they are needed to add clarity.' Since $d_{ii}=0\\le h(d)$, $i\\in\\mathcal B_N(i;d)$.\n\n(S5) Estimators and variance estimators [Section 5, pp. 754-756 (PDF pp. 11-13)]. '(13) $\\hat\\tau_{\\mathrm{HT}}(d)=\\frac1{Np}\\sum_{i=1}^NZ_i\\mu_i(\\mathbf Y;d)-\\frac1{N(1-p)}\\sum_{i=1}^N(1-Z_i)\\mu_i(\\mathbf Y;d)$.' 'the Hajek estimator replaces them with $N_1=\\sum_{i=1}^nZ_i$ and $N_0=N-N_1$, respectively, (16) $\\hat\\tau_{\\mathrm{HA}}(d)=\\frac1{N_1}\\sum_{i=1}^NZ_i\\mu_i(\\mathbf Y;d)-\\frac1{N_0}\\sum_{i=1}^N(1-Z_i)\\mu_i(\\mathbf Y;d)$.' [The upper limit $n$ in $N_1$ is a misprint for $N$: finding P004-N001.] '(18) $\\binom{\\hat\\mu_0(d)}{\\hat\\tau_{\\mathrm{HA}}(d)}=\\arg\\min_{(\\mu_0,\\tau)}\\sum_{i=1}^N(\\mu_i(\\mathbf Y;d)-\\mu_0-\\tau Z_i)^2$.' '(19) $\\hat\\Sigma_{\\mathrm{HAC}}(d)=(\\mathbf X'\\mathbf X)^{-1}\\Big(\\sum_{i=1}^N\\sum_{j=1}^N\\mathbf X_i'\\mathbf X_j\\hat e_i\\hat e_jK\\big(\\frac{d_{ij}}{\\tilde d}\\big)\\Big)(\\mathbf X'\\mathbf X)^{-1}$, where $\\mathbf X=\\big(\\begin{smallmatrix}1&1&\\cdots&1\\\\Z_1&Z_2&\\cdots&Z_N\\end{smallmatrix}\\big)'\\in\\mathbb R^{N\\times2}$ and $\\mathbf X_i$ denotes the $i$th row of the matrix. The $\\hat e_i$'s are the residuals from the regression: $\\hat e_i=\\mu_i(\\mathbf Y;d)-\\hat\\mu_0(d)-\\hat\\tau_{\\mathrm{HA}}(d)Z_i$. $K(\\cdot)$ is a kernel function. $\\tilde d$ is a cutoff value, and our setup suggests setting it at $\\tilde d=h(d)$. The (2,2)-entry of the estimator $\\hat\\Sigma_{\\mathrm{HAC}}(d)$ is our estimator for the variance of $\\hat\\tau_{\\mathrm{HA}}(d)$, and we denote it as $\\hat{\\mathrm V}_{\\mathrm{HAC}}(d)$.' 'C5 (Homophily in treatment effects). For each value $d\\ge0$, $\\frac1N\\sum_{i=1}^N\\Big(\\big(\\tau_i(d;\\eta)-\\mathrm{AME}(d;\\eta)\\big)\\sum_{j\\in\\{i\\}\\cup\\mathcal B(i;d)}\\big(\\tau_j(d;\\eta)-\\mathrm{AME}(d;\\eta)\\big)\\Big)\\ge0$.' Footnote 10: 'Recall that $\\tau_i(d;\\eta)=\\mathrm E_{\\mathbf Z_{-i}}[\\mu_i(\\mathbf Y(1,\\mathbf Z_{-i});d)]-\\mathrm E_{\\mathbf Z_{-i}}[\\mu_i(\\mathbf Y(0,\\mathbf Z_{-i});d)]$.' '(20) $\\hat{\\mathrm V}_{\\mathrm{SAH}}(d)=\\frac1{N^2}\\sum_{i=1}^N\\frac{Z_ic_i(d)\\hat e_i^2}{p^2}+\\frac1{N^2}\\sum_{i=1}^N\\frac{(1-Z_i)c_i(d)\\hat e_i^2}{(1-p)^2}$.' Footnote 11: 'Recall that $c_i(d)=|\\mathcal B_N(i;d)|$.' Footnote 12: '$K(x)=I(x\\in[0,1])$.' 'For some $\\alpha<1$, let $z_{\\frac\\alpha2}$ and $z_{1-\\frac\\alpha2}$ be the $\\frac\\alpha2$th and $(1-\\frac\\alpha2)$th quantiles of the standard normal distribution, respectively.' (p. 756) '(21) $\\hat\\Sigma_{\\mathrm{HAC}}(d)=(\\mathbf X'\\mathbf X)^{-1}\\big(\\mathbf X'((\\hat e\\hat e')\\circ\\mathcal K)\\mathbf X\\big)(\\mathbf X'\\mathbf X)^{-1}$, where $\\hat e=(\\hat e_1,\\ldots,\\hat e_n)$, $\\mathcal K$ is a $n$-by-$n$ symmetric matrix with $\\mathcal K_{ij}=K(\\frac{d_{ij}}{\\tilde d})$, and $\\circ$ denotes the pointwise (Hadamard) matrix product. Denote the eigenvalue decomposition of the matrix $\\mathcal K$ as $\\mathcal K=\\sum_{i=1}^n\\lambda_iv_iv_i'$, where $\\{\\lambda_i\\}_{i=1}^n$ are the eigenvalues and $\\{v_i\\}_{i=1}^n$ are the eigenvectors. We define $\\mathcal K^{\\mathrm{PD}}=\\sum_{i=1}^n\\max\\{\\lambda_i,0\\}v_iv_i'$, and the corresponding positive semidefinite variance estimator (22) $\\hat\\Sigma^{\\mathrm{PD}}_{\\mathrm{HAC}}(d)=(\\mathbf X'\\mathbf X)^{-1}\\big(\\mathbf X'((\\hat e\\hat e')\\circ\\mathcal K^{\\mathrm{PD}})\\mathbf X\\big)(\\mathbf X'\\mathbf X)^{-1}$.' [Here too $n$ is a misprint for $N$: P004-N001.]\n\n(S6) Conventions of Supplement A [Supplement A p. 1]. 'Without noted otherwise, the expectation is always taken over random assignments $\\mathbf Z$.' 'We write $\\mathrm E[\\mu_i(\\mathbf Y(\\mathbf Z);d)|Z_i=1]=\\mathrm E[\\mu_i(\\mathbf 1;d)]$ and $\\mathrm E[\\mu_i(\\mathbf Y(\\mathbf Z);d)|Z_i=0]=\\mathrm E[\\mu_i(\\mathbf 0;d)]$.' 'We write $\\mathrm E[\\mu_i(\\mathbf Y(\\mathbf Z);d)|Z_i=a,Z_j=b]=\\mathrm E[\\mu_i(\\mathbf a_{\\mathbf i},\\mathbf b_{\\mathbf j};d)]$ for $a,b\\in\\{0,1\\}$.' 'We write $\\sum_{i=1}^N\\sum_{j\\in\\mathcal B(i;d)}$ as $\\sum_{i;j\\in\\mathcal B(i;d)}$.' So, under independent assignment, $\\mathrm E[\\mu_i(\\mathbf a;d)]=\\mu_i(a;d,\\eta)$ of (5), and an expression such as $\\mathrm E[(\\mu_i(\\mathbf a_{\\mathbf i},\\mathbf b_{\\mathbf j};d)-c)(\\mu_j(\\mathbf a_{\\mathbf i},\\mathbf b_{\\mathbf j};d)-c')]$ is the conditional expectation of $(\\mu_i(\\mathbf Y(\\mathbf Z);d)-c)(\\mu_j(\\mathbf Y(\\mathbf Z);d)-c')$ given $Z_i=a,Z_j=b$. [Supplement A p. 4, proof of Lemma A.3] 'Further define $\\bar\\mu^1(d)=\\frac1N\\sum_{i=1}^N\\mathrm E[\\mu_i(\\mathbf 1;d)]$ and $\\bar\\mu^0(d)=\\frac1N\\sum_{i=1}^N\\mathrm E[\\mu_i(\\mathbf 0;d)]$' (written $\\bar\\mu_1(d),\\bar\\mu_0(d)$ in Supplement A.5 and Appendix C); hence $\\mathrm{AME}(d;\\eta)=\\bar\\mu^1(d)-\\bar\\mu^0(d)$. [Supplement A p. 10] 'We use $\\mathrm{AVar}(\\hat\\tau_{\\mathrm{HA}}(d))$ to denote $\\mathrm{Var}(\\tau^{\\mathrm L}_{\\mathrm{HA}}(d))$', the variance of the linearized Hajek estimator $\\hat\\tau^{\\mathrm L}_{\\mathrm{HA}}(d)$ of Lemma A.3 (Supplement A p. 4). [Supplement A p. 11] The class '(27) $\\hat\\tau(\\mu_1,\\mu_0;d)=\\mu_1-\\mu_0+\\Big(\\frac1{Np}\\sum_{i=1}^n\\mathbf Z_i(\\mu_i(\\mathbf Y;d)-\\mu_1)-\\frac1{N(1-p)}\\sum_{i=1}^n(1-\\mathbf Z_i)(\\mu_i(\\mathbf Y;d)-\\mu_0)\\Big)$' (upper limits printed $n$; the sums run over the $N$ nodes).\n\n(S7) Observational setting [Section 6.4, p. 758 (PDF p. 15); Supplement A.6, pp. 13-15]. 'we denote a vector of confounder attributes for intervention node $i$ as $O_i$ and make the following independent assignment assumption: C6 (Probablistic Assignment). For all sample sizes $N$: (i) The random assignment variables $\\{Z_i\\}_{i=1}^N$ are jointly independent. (ii) There exists a treatment probability model $p(\\cdot):\\mathcal O\\to[0,1]$ such that, for each $i\\in\\mathcal S_N$, (30) $\\mathbf{Prob}(Z_i=1)=p(O_i)$. (iii) For an $\\epsilon\\in(0,\\frac12)$ and for all $i\\in\\mathcal S_N$, $\\mathbf{Prob}(Z_i=1)\\in(\\epsilon,1-\\epsilon)$.' Footnote 19 (p. 759): 'Note that the AME is defined by marginalizing over the independently but not identically distributed assignment variables generated by the assignment mechanism.' Supplement A.6 (pp. 13-14): 'C 1. The following properties hold for all sample size $N$ and for all $i\\in\\mathcal S_N$: (i) (Fixed Dimensionality)The confounder $O_i=(o_{1i},...,o_{ki})'$ is of dimension $k$. (ii) (Bounded Confounders) Confouders are uniformly bounded: there exists a constant $U$ such that $\\max_{i\\in\\mathcal S_N}||O_i||_\\infty\\le U$. (iii) (Logistic Model) The assignment probabilites follow a logistic model: for all $i\\in\\mathcal S_N$ there exists a $\\theta_0\\in\\mathbb R^k$ such that $P(Z_i=1)=p(O_i|\\theta)=\\frac{\\exp(O_i'\\theta_0)}{1+\\exp(O_i'\\theta_0)}$ (iv) Compact Parameter Space: $\\theta_0\\in\\Theta_0$ where $\\Theta_0\\subset\\mathbb R^k$ is a compact set. (v) (Nonsingularity) The smallest eigenvalue of $\\frac1N\\sum_{i=1}^NO_iO_i'$ is uniformly bounded below. (vi) The MLE estimator is used to estimate the coefficient vector $\\theta$: $\\hat\\theta_{\\mathrm{MLE}}=\\arg\\max_{\\theta\\in\\Theta_0}\\sum_{i=1}^N\\big(Z_iO_i'\\theta-\\log(1+\\exp(O_i'\\theta))\\big)$.' 'We defined the following IPW estimator: $\\hat\\tau_{\\mathrm{IPW}}(d)=\\frac1N\\sum_{i=1}^N\\frac{Z_i}{p(O_i|\\hat\\theta_{\\mathrm{MLE}})}\\mu_i(\\mathbf Y;d)-\\frac1N\\sum_{i=1}^N\\frac{1-Z_i}{1-p(O_i|\\hat\\theta_{\\mathrm{MLE}})}\\mu_i(\\mathbf Y;d)$. For brevity, we denote $p(O_i|\\theta_0)=p_0(O_i)$. We define the following coefficients: $\\beta_{1,N}=\\Big(\\frac1N\\sum_{i=1}^Np_0(O_i)(1-p_0(O_i))O_iO_i'\\Big)^{-1}\\Big(\\frac1N\\sum_{i=1}^N\\mathrm E[\\mu_i(1;d)p_0(O_i)(1-p_0(O_i))O_i]\\Big)$, and, $\\beta_{0,N}=\\Big(\\frac1N\\sum_{i=1}^Np_0(O_i)(1-p_0(O_i))O_iO_i'\\Big)^{-1}\\Big(\\frac1N\\sum_{i=1}^N\\mathrm E[\\mu_i(0;d)p_0(O_i)(1-p_0(O_i))O_i]\\Big)$.' 'C 2. For all sample size $N$, $\\frac1N\\sum_{i=1}^N\\big(\\tau_i(d;\\eta)-(O_i'\\beta_{1,N}-O_i'\\beta_{0,N})\\big)\\sum_{j\\in\\mathcal B(i;d)}\\big(\\tau_j(d;\\eta)-(O_i'\\beta_{1,N}-O_i'\\beta_{0,N})\\big)\\ge0$.' (p. 15) '$\\hat{\\mathrm V}^{\\mathrm{obs}}_{\\mathrm{HAC}}(d)=(\\mathbf X'\\mathbf X)^{-1}\\Big(\\sum_{i=1}^N\\sum_{j=1}^N\\mathbf X_i\\mathbf X_j'\\hat\\epsilon_i\\hat\\epsilon_j\\mathbf 1\\{j\\in\\mathcal B(i;d)\\}\\Big)(\\mathbf X'\\mathbf X)^{-1}$, where $\\hat\\epsilon_i=\\frac{N_1}N\\frac{Z_i}{p(O_j|\\hat\\theta_{\\mathrm{MLE}})}\\big(\\mu_i(\\mathbf Y;d)-O_i'\\hat\\beta_{1,N}\\big)+\\frac{N_0}N\\frac{1-Z_i}{1-p(O_j|\\hat\\theta_{\\mathrm{MLE}})}\\big(\\mu_i(\\mathbf Y;d)-O_i'\\hat\\beta_{0,N}\\big)$', with footnote 9: '$\\hat\\beta_{1,N}=\\Big(\\frac1N\\sum_{i=1}^Np(O_i|\\hat\\theta_{\\mathrm{MLE}})(1-p(O_i|\\hat\\theta_{\\mathrm{MLE}}))O_iO_i'\\Big)^{-1}\\Big(\\frac1N\\sum_{i=1}^N\\frac{Z_i\\mu_i(\\mathbf Y;d)}{p(O_i|\\hat\\theta_{\\mathrm{MLE}})}p(O_i|\\hat\\theta_{\\mathrm{MLE}})(1-p(O_i|\\hat\\theta_{\\mathrm{MLE}}))O_i\\Big)$ and $\\hat\\beta_{0,N}=\\Big(\\frac1N\\sum_{i=1}^Np(O_i|\\hat\\theta_{\\mathrm{MLE}})(1-p(O_i|\\hat\\theta_{\\mathrm{MLE}}))O_iO_i'\\Big)^{-1}\\Big(\\frac1N\\sum_{i=1}^N\\frac{(1-Z_i)\\mu_i(\\mathbf Y;d)}{1-p(O_i|\\hat\\theta_{\\mathrm{MLE}})}p(O_i|\\hat\\theta_{\\mathrm{MLE}})(1-p(O_i|\\hat\\theta_{\\mathrm{MLE}}))O_i\\Big)$'; and '$\\hat V^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)=\\frac1{N^2}\\sum_{i=1}^N\\frac{Z_ic_i(d)\\hat\\epsilon_i^2}{p^2(O_i|\\hat\\theta_{\\mathrm{MLE}})}+\\frac1{N^2}\\sum_{i=1}^N\\frac{(1-Z_i)c_i(d)\\hat\\epsilon_i^2}{(1-p(O_i|\\hat\\theta_{\\mathrm{MLE}}))^2}$'.\n\n(S8) Near-epoch dependence [Supplement A, Appendix C, pp. 25-34]. 'Let $\\mathcal S_N$ be a set of intervention nodes equipped with a distance metric $\\gamma$ that satisfies positivity and the triangle inequality. Let $H_N=\\{H_{i,N},i\\in\\mathcal S_N\\}$ and $V_N=\\{V_{i,N},i\\in\\mathcal S_N\\}$ be two arbitrary sets of random variables. Define $\\mathcal F_i(s)=\\sigma(V_{j,N},j\\in\\mathcal S_n,\\gamma(i,j)\\le s)$ ... Denote the $L_p$-norm of a random variable as $||X||_p=(E[|X|^p])^{\\frac1p}$.' 'Definition 1 ($L_2$-NED). Let $H_N=\\{H_{i,N},i\\in\\mathcal S_N,N\\ge1\\}$ be a random field with $||H_{i,N}||_2<\\infty$. Let $V_N=\\{V_{i,N},i\\in\\mathcal S_N,N\\ge1\\}$ be a random field, where $|\\mathcal S_N|=N$, and let $g_N=\\{g_{i,N},i\\in\\mathcal S_N,N\\ge1\\}$ be a set of positive constants. Then the random field $H_N$ is said to be $L_2(g_N)$-near-epoch dependent on the random field $V_N$ if, for all $i$, (51) $||H_{i,N}-\\mathrm E[H_{i,N}|\\mathcal F_{i,N}(s)]||_2\\le g_{i,N}\\psi(s)$, for a non-increasing sequence $\\psi(s)\\ge0$ with $\\lim_{s\\to\\infty}\\psi(s)=0$. $H_N$ is said to be $L_2$-NED on $V_N$ of size $-\\lambda$ if $\\psi(s)=O(s^{-\\mu})$ for some $\\mu>\\lambda>0$. Further more, if $\\sup_N\\sup_{i\\in\\mathcal S_N}g_{i,N}<\\infty$, then $H_N$ is said to be uniformly $L_2$-NED on $V_N$.' 'Let $\\mathcal F_i^c(s)=\\sigma(V_{j,N},j\\in\\mathcal S_n,\\gamma(i,j)>s)$'. (p. 26) 'We shall inherit C1 and C2. We relax C3 with the following weak-dependence assumption. C 3. For any $d$-circle average outcomes and for all sample sizes, $\\{\\mu_i(\\mathbf Y,d),i\\in\\mathcal S_N\\}$ is uniform $L_2$-NED of size -4 on the random field $\\{Z_i,i\\in\\mathcal S_N\\}$.' 'Denote the corresponding NED-coefficient function as $\\psi_d():\\mathbb R_+\\to\\mathbb R_+$.' (p. 27) 'C 4. For each radius $s\\ge0$ and all large sample sizes $N$, there exists a $C_b>0$ such that $\\sup_{i\\in\\mathcal S_N}|\\mathcal B_N(i;s)|\\le b(s)$, with $b(s)=C_bs^2$.' [In Appendix C, $\\mathcal B_N(i;s)$ is the set of nodes within distance $s$ of $i$.] (p. 32) 'C 5. The kernel function $K:\\mathbb R_+\\to\\mathbb R$ has the following properties: 1. $K(0)=1$. 2. It is supported on $[0,1]$. 3. It is uniformly bounded: there exists a $K_{max}<\\infty$ such that $\\sup_{x\\in\\mathbb R_+}|K(x)|<K_{max}$. 4. It is locally Lipschitz at 0: there exists a $\\epsilon\\in(0,1)$ and a positive constant $C>0$ such that (101) $|K(x)-1|\\le C|x|$, for any $x\\in[0,\\epsilon)$.' Footnote 19: 'This means that $K(x)=0$ for all $x>1$.' '(102) $\\hat\\epsilon_{i,N}(\\mu_1,\\mu_0;d)=\\frac{\\mathbf Z_i}{Np}(\\mu_i(\\mathbf Y;d)-\\mu_1)-\\frac{1-\\mathbf Z_i}{N(1-p)}(\\mu_i(\\mathbf Y;d)-\\mu_0)$.' '(107) $\\hat v_{i,N}(\\mu_1,\\mu_0;d,b_N)=\\sum_{j\\in\\mathcal B(i;b_N)}\\hat\\epsilon_{i,N}(\\mu_1,\\mu_0;d)\\hat\\epsilon_{j,N}(\\mu_1,\\mu_0;d)K(\\frac{d_{ij}}{b_N})$, and $v_{i,N}(\\mu_1,\\mu_0;d,b_N)=\\mathrm E[\\hat v_{i,N}(\\mu_1,\\mu_0;d,b_N)]$'. (p. 34) 'C 6. Given a kernel function $K$ and a sequence of bandwidth $\\{b_N\\}_{N=1}^\\infty$, (122) $\\liminf_N\\Big(\\frac1N\\sum_{i=1}^N\\sum_{j=1}^NK(\\frac{d_{ij}}{b_N})(\\tau_i(d)-\\mathrm{AME}(d;\\eta))(\\tau_j(d)-\\mathrm{AME}(d;\\eta))\\Big)\\ge0$.' Footnote 20: 'Note if $b_N$ is fixed and $K$ is the uniform kernel, this reduces to C5.'\n\n(S9) Label collisions (a reader's note, not the paper's text). Supplement A reuses the labels of the article for different statements: 'C 1' and 'C 2' of Supplement A.6 are the logistic-model block and a homophily condition of (S7), not C1 and C2 of (S4); 'C 3' to 'C 6' of Appendix C are the conditions of (S8), not C3-C6 of (S4), (S5) and (S7); and Supplement A has its own Propositions 1-6 (A.4.1 Proposition 1, A.4.2 Proposition 2, A.5 Proposition 3, A.6 Proposition 4, Appendix C Propositions 5 and 6), distinct from Propositions 1-4 of the article. Every target below says which is meant. In Supplement A.6 the hypothesis list 'Under C2, C3, C4, C6, and C1' means C2-C4 of (S4), C6 of (S7) and 'C 1' of Supplement A.6; 'additionally under C2' in items (i)-(ii) of its Proposition 4 means 'C 2' of Supplement A.6.",
+ "targets": [
+  {
+   "target_id": "P004-T35",
+   "canonical_claim": {
+    "target_id": "P004-T35",
+    "kind": "result_touched_by_finding",
+    "name_in_paper": "Supplement A, Appendix A.6, Proposition 4 (linearization, variance, normal limit and coverage for the IPW estimator with an estimated logistic propensity score), as printed",
+    "location": "Supplement A pp. 15-16 (Proposition 4, eqs. (36)-(40) and items (i)-(ii)); proof pp. 16-17; advertised in the article, Section 6.4, p. 759 (PDF p. 16)",
+    "statement": "Supplement A p. 15: 'Proposition 4. Define: $\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d)=\\frac1N\\sum_{i=1}^NO_i'\\beta_{1,N}-\\frac1N\\sum_{i=1}^NO_i'\\beta_{0,N}+\\frac1N\\sum_{i=1}^n\\frac{Z_i(\\mu_i(\\mathbf Y;d)-O_i'\\beta_{1,N})}{p(O_i|\\theta_0)}-\\frac1N\\sum_{i=1}^n\\frac{(1-Z_i)(\\mu_i(\\mathbf Y;d)-O_i'\\beta_{0,N})}{1-p(O_i|\\theta_0)}$. Under C2, C3, C4, C6, and C1, (36) $\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d)-\\hat\\tau_{\\mathrm{IPW}}(d)=o_p(N^{-\\frac12})$.' Supplement A p. 15: 'Define (37) $\\mathrm V(\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d))=\\frac1{N^2}\\sum_{i=1}^N\\frac{\\mathrm E[(\\mu_i(\\mathbf 1;d)-O_i'\\beta_{1,N})^2]}{p_0(O_i)}+\\frac1{N^2}\\sum_{i=1}^N\\frac{\\mathrm E[(\\mu_i(\\mathbf 0;d)-O_i'\\beta_{0,N})^2]}{1-p_0(O_i)}$ (38) $-\\frac1{N^2}\\sum_{i=1}^N\\big(\\mathrm E[\\mu_i(\\mathbf 1;d)-\\mu_i(\\mathbf 0;d)-(O_i'\\beta_{1,N}-O_i'\\beta_{0,N})]\\big)^2$ (39) $+\\frac1{N^2}\\sum_{i;j\\in\\mathcal B(i;d),j\\ne i}\\sum_{a=0}^1\\sum_{b=0}^1\\mathrm E[(\\mu_i(\\mathbf a_{\\mathbf i},\\mathbf b_{\\mathbf j};d)-O_i'\\beta_{a,N})(\\mu_j(\\mathbf a_{\\mathbf i},\\mathbf b_{\\mathbf j};d)-O_i'\\beta_{b,N})]$ (40) $-\\frac1{N^2}\\sum_{i;j\\in\\mathcal B(i;d),j\\ne i}\\sum_{a=0}^1\\sum_{b=0}^1(-1)^{a+b}\\mathrm E[\\mu_i(\\mathbf a;d)-O_i'\\beta_{a,N}]E[\\mu_j(\\mathbf b;d)-O_i'\\beta_{b,N}]$.' Supplement A p. 16: 'In addition under C2, $\\mathrm V(\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d))\\le\\frac1{N^2}\\sum_{i=1}^N\\frac{\\mathrm E[(\\mu_i(\\mathbf 1;d)-O_i'\\beta_{1,N})^2]}{p_0(O_i)}+\\frac1{N^2}\\sum_{i=1}^N\\frac{\\mathrm E[(\\mu_i(\\mathbf 0;d)-O_i'\\beta_{0,N})^2]}{1-p_0(O_i)}+\\frac1{N^2}\\sum_{i;j\\in\\mathcal B(i;d),j\\ne i}\\sum_{a=0}^1\\sum_{b=0}^1\\mathrm E[(\\mu_i(\\mathbf a_{\\mathbf i},\\mathbf b_{\\mathbf j};d)-O_i'\\beta_{a,N})(\\mu_j(\\mathbf a_{\\mathbf i},\\mathbf b_{\\mathbf j};d)-O_i'\\beta_{b,N})]$'. Supplement A p. 16: 'Provided that $N\\times\\mathrm V(\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d))$ is uniformly bounded below for all large $N$, $\\hat\\tau_{\\mathrm{IPW}}(d)$ follows the asymptotic distribution: $\\frac{\\hat\\tau_{\\mathrm{IPW}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\mathrm V(\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d))}}\\xrightarrow{d}N(0,1)$. Further more, for each $\\alpha<\\frac12$, (i) $\\lim_{N\\to\\infty}\\mathbf{Prob}\\Big(z_{\\frac\\alpha2}\\le\\Big|\\frac{\\hat\\tau_{\\mathrm{HA}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\hat{\\mathrm V}^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)}}\\Big|\\le z_{1-\\frac\\alpha2}\\Big)\\ge1-\\alpha$; (ii) additionally under C2, $\\lim_{N\\to\\infty}\\mathbf{Prob}\\Big(z_{\\frac\\alpha2}\\le\\Big|\\frac{\\hat\\tau_{\\mathrm{HA}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\hat{\\mathrm V}^{\\mathrm{obs}}_{\\mathrm{HAC}}(d)}}\\Big|\\le z_{1-\\frac\\alpha2}\\Big)\\ge1-\\alpha$.'\n\nArticle, p. 759: 'In Appendix A.6, we develop a complete inferential theory for the inverse probability weighted (IPW) estimator where propensity scores are modeled using a logistic model.'",
+    "definitions_needed": "(S1)-(S4); (S6); (S7): C6, 'C 1', $\\hat\\theta_{\\mathrm{MLE}}$, $\\hat\\tau_{\\mathrm{IPW}}(d)$, $p_0(O_i)$, $\\beta_{a,N}$, 'C 2', $\\hat{\\mathrm V}^{\\mathrm{obs}}_{\\mathrm{HAC}}(d)$, $\\hat\\epsilon_i$, $\\hat\\beta_{a,N}$, $\\hat V^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)$; (S9) for the meaning of 'C1' and 'C2' in this proposition. Upper limits printed $n$ in the definition of $\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d)$ are $N$.",
+    "finite_lemmas": "None is asked for: the statement as printed is refuted by target P004-T1 (eq. (36) and the normal limit) and by target P004-T3 (item (i)); the exact variance of the printed $\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d)$ is target P004-T22(a).",
+    "note": "The statement as printed for finding P004-E001 (Major), recorded so that the Lean statement of the printed proposition can be set beside its counterexample (P004-T1) and its correction (P004-T2). Besides the linearization error it carries the misprints of findings P004-E014 (sign and index in (39)-(40) and in the bound; P004-T22), P004-E015 ('C 2' index, $\\hat\\tau_{\\mathrm{HA}}$ for $\\hat\\tau_{\\mathrm{IPW}}$, matrix for its (2,2) entry; P004-T23), P004-E002 (the SAH estimator in item (i); P004-T3, P004-T4) and P004-E003 (interior $\\theta_0$; P004-T9, P004-T10). To state it at all, read $n$ as $N$, $\\hat{\\mathrm V}^{\\mathrm{obs}}_{\\mathrm{HAC}}(d)$ as the (2,2) entry of the displayed matrix, and $p(O_j|\\hat\\theta_{\\mathrm{MLE}})$ in $\\hat\\epsilon_i$ as $p(O_i|\\hat\\theta_{\\mathrm{MLE}})$; the estimator named in (i)-(ii) is printed as $\\hat\\tau_{\\mathrm{HA}}(d)$.",
+    "asymptotic": true,
+    "related_finding": "P004-E001"
+   },
+   "no_lean": false,
+   "rows": [
+    {
+     "lean_name": "AronowAudit.P004.Wave1.printed_ipw_bound_and_literal_coverage_refuted",
+     "file": "AronowAudit/P004/Wave1/IpwBoundCoverage.lean",
+     "line": 30,
+     "status": "counterexample_proved",
+     "final_status": "narrower",
+     "conditional_on": [],
+     "first_pass": {
+      "fidelity": "not_faithful",
+      "severity": "major",
+      "notes": "No claim-stage change. The record notes a Euclidean-plane witness inside the proof, which I had not misread: the problem is the larger domain in the exported negation. A plane-specific negation or an existential witness with the printed hypotheses would fix the statement. Coverage clauses remain unrefuted individually, as described.",
+      "differences": [
+       {
+        "what": "The negated universal quantifier ranges over Space : natural numbers -> Type with arbitrary MetricSpace and MeasurableSpace instances; it does not restrict Space_N to a two-dimensional geographic set as in S1.",
+        "effect": "substantive"
+       },
+       {
+        "what": "Negating the stronger all-spaces universal assertion does not imply its planar specialization is false, and no existential planar witness or planar-specialized negation is exported.",
+        "effect": "substantive"
+       },
+       {
+        "what": "The theorem negates the whole bound-and-two-coverage conjunction; falsity of the variance bound suffices and no separate coverage refutation is claimed.",
+        "effect": "cosmetic"
+       },
+       {
+        "what": "Finite variance inequalities and regularity are required only eventually; failure even eventually would be sufficient for the literal finite assertion if the counterexample domain were fixed.",
+        "effect": "minor"
+       }
+      ]
+     },
+     "flags": [],
+     "evidence": {
+      "source": "adjudication+second review",
+      "adjudicator": "Wave1/IpwBoundCoverage.lean:30 places the quantifier over every metric measurable Space inside the negation. S1 and the printed Proposition 4 concern populations in a two-dimensional spatial set, so this refutes a stronger all-spaces universal assertion and exports only a weaker counterexample assertion than the required planar refutation. The actual HA coverage numerators and the unsigned printed bound are retained, and refuting just the bound is sufficient to refute the conjunction the row says it covers. The planar paired construction available to the implementation does not restrict the domain of this credited conclusion or export its planar witness.",
+      "suggested_fix": "Specialize the inner universal assertion to planar spatial populations before negating it, preserving the printed variance-bound and literal-HA coverage conjunction. The existing paired population can instead be exported together with all paper-domain assumptions and failure of the bound.",
+      "second_review": "Wave1/IpwBoundCoverage.lean:31 places the universal quantifier over arbitrary metric measurable spaces inside the negation, while T35's printed proposition inherits S1's two-dimensional spatial setting. Its conclusion therefore certifies failure somewhere in a larger class without asserting a counterexample in the paper's domain. Refuting the variance-bound conjunct at :44 is sufficient for the credited conjunction, but the statement must restrict the population domain or export an admissible spatial witness.",
+      "severity": "major"
+     }
+    },
+    {
+     "lean_name": "AronowAudit.P004.Wave1.printed_ipw_proposition_refuted",
+     "file": "AronowAudit/P004/Wave1/IpwProposition.lean",
+     "line": 30,
+     "status": "counterexample_proved",
+     "final_status": "narrower",
+     "conditional_on": [],
+     "first_pass": {
+      "fidelity": "not_faithful",
+      "severity": "major",
+      "notes": "No claim-stage change. The record's fact that the supporting contradiction is planar does not change the type of this declaration; the statement still exports only a refutation of a stronger all-spaces universal conjunction. The same-domain eventual relaxation would be harmless.",
+      "differences": [
+       {
+        "what": "The exported full-refutation statement negates a universal assertion over arbitrary universe-zero metric measurable spatial spaces, including spaces outside the planar setting of S1.",
+        "effect": "substantive"
+       },
+       {
+        "what": "No negation restricted to planar populations or certified planar counterexample is part of this declaration's type, so the larger-domain negation is weaker than the requested printed-claim refutation.",
+        "effect": "substantive"
+       },
+       {
+        "what": "Only the conjunction is refuted; it does not separately negate linearization and normal convergence.",
+        "effect": "cosmetic"
+       },
+       {
+        "what": "The variance equality is asserted eventually rather than for each finite admissible N; failure even eventually is sufficient to refute the literal equality on the same domain.",
+        "effect": "minor"
+       }
+      ]
+     },
+     "flags": [],
+     "evidence": {
+      "source": "adjudication+second review",
+      "adjudicator": "Wave1/IpwProposition.lean:30 negates a universal linearization/variance/normal-limit conjunction over arbitrary metric measurable spaces. The printed T35 conjunction inherits S1's two-dimensional population domain, and negating an extension beyond that domain does not itself refute its planar restriction. Refutation through the variance-equality conjunct is enough for the conjunction and does not need separate linearization or CLT refutations; likewise failure of the eventual equality suffices to disprove an equality asserted for every admissible finite N. The material defect is the exported domain, even though a planar paired population is used elsewhere in constructing the contradiction.",
+      "suggested_fix": "Export the negation of this conjunction with its population type restricted to the paper's planar domain, or export the admissible planar paired sequence and its failure of the printed variance equality for arbitrarily large N.",
+      "second_review": "Wave1/IpwProposition.lean:31 negates a universal over arbitrary metric measurable population spaces, whereas T35's linearization, variance-equality and normal-limit assertions inherit S1's two-dimensional domain. A counterexample to this larger-domain conjunction need not belong to that domain, and no planar restriction or certified planar witness appears in the credited statement. Failure of the eventual variance equality at :46 would otherwise suffice to refute the printed conjunction, so a domain-specific statement repair addresses the material defect.",
+      "severity": "major"
+     }
+    }
+   ],
+   "coverage_judgments": [
+    {
+     "coverage": "none",
+     "covered_here": null,
+     "uncovered": [
+      "A full refutation of the printed IPW proposition within its two-dimensional spatial domain, or an exported counterexample certified to satisfy that domain's hypotheses."
+     ],
+     "notes": "Both credited rows refute conjunctions over arbitrary metric measurable spaces. This is a weaker negation than a refutation over the printed planar populations, and the plane witnesses mentioned in the record are not part of these statements. Separately refuting all conjuncts is not required: either a same-domain variance-equality or variance-bound refutation would suffice."
+    }
+   ]
+  },
+  {
+   "target_id": "P004-T36",
+   "canonical_claim": {
+    "target_id": "P004-T36",
+    "kind": "result_touched_by_finding",
+    "name_in_paper": "Supplement A, Appendix A.6: the inverse-propensity-weighted residual $\\hat\\epsilon_i$, the observational SAH variance estimator $\\hat V^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)$ and item (i) of Proposition 4, as printed",
+    "location": "Supplement A p. 15 (definitions of $\\hat\\epsilon_i$ and $\\hat V^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)$); p. 16 (Proposition 4, item (i))",
+    "statement": "Supplement A p. 15: 'where $\\hat\\epsilon_i=\\frac{N_1}N\\frac{Z_i}{p(O_j|\\hat\\theta_{\\mathrm{MLE}})}\\big(\\mu_i(\\mathbf Y;d)-O_i'\\hat\\beta_{1,N}\\big)+\\frac{N_0}N\\frac{1-Z_i}{1-p(O_j|\\hat\\theta_{\\mathrm{MLE}})}\\big(\\mu_i(\\mathbf Y;d)-O_i'\\hat\\beta_{0,N}\\big)$. The formula is similar to (6), except now that the residuals are weighted with the inverse propensity scores. Note that the covariates $O_i$ do not appear in the matrix $\\mathbf X$. Similarly, we can similarly define a Sävje, Aronow and Hudgens (2018) type variance estimator as in (20): $\\hat V^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)=\\frac1{N^2}\\sum_{i=1}^N\\frac{Z_ic_i(d)\\hat\\epsilon_i^2}{p^2(O_i|\\hat\\theta_{\\mathrm{MLE}})}+\\frac1{N^2}\\sum_{i=1}^N\\frac{(1-Z_i)c_i(d)\\hat\\epsilon_i^2}{(1-p(O_i|\\hat\\theta_{\\mathrm{MLE}}))^2}$'. Supplement A p. 16 (Proposition 4): 'Further more, for each $\\alpha<\\frac12$, (i) $\\lim_{N\\to\\infty}\\mathbf{Prob}\\Big(z_{\\frac\\alpha2}\\le\\Big|\\frac{\\hat\\tau_{\\mathrm{HA}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\hat{\\mathrm V}^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)}}\\Big|\\le z_{1-\\frac\\alpha2}\\Big)\\ge1-\\alpha$'.\n\nFormal reading (as printed): with $O_j$ read as $O_i$, $\\hat p_i=p(O_i|\\hat\\theta_{\\mathrm{MLE}})$ and $\\hat r_{ia}=\\mu_i(\\mathbf Y;d)-O_i'\\hat\\beta_{a,N}$, the display defines $\\hat V^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)=\\frac1{N^2}\\sum_ic_i(d)\\Big[\\frac{(N_1/N)^2Z_i\\hat r_{i1}^2}{\\hat p_i^4}+\\frac{(N_0/N)^2(1-Z_i)\\hat r_{i0}^2}{(1-\\hat p_i)^4}\\Big]$, and item (i) asserts, for $0<\\alpha<1/2$, under C2, C3, C4, C6, 'C 1' and the stated positive lower bound on $N\\times\\mathrm V(\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}(d))$, that $\\lim_{N\\to\\infty}\\Pr\\left(z_{\\alpha/2}\\le\\left|\\frac{\\hat\\tau_{\\mathrm{HA}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\hat V^{\\mathrm{obs}}_{\\mathrm{SAH}}(d)}}\\right|\\le z_{1-\\alpha/2}\\right)\\ge1-\\alpha$. This is the printed Hájek-centred assertion. The audit's separate fitted-IPW interpretation replaces $\\hat\\tau_{\\mathrm{HA}}$ by $\\hat\\tau_{\\mathrm{IPW}}$; a refutation of that interpretation does not establish a refutation of the assertion printed here.",
+    "definitions_needed": "(S4): $\\mathcal B(i;d)$, $c_i(d)$; (S5): $N_1$, $N_0$, $z_{\\alpha/2}$; (S7): C6, 'C 1', $\\hat\\theta_{\\mathrm{MLE}}$, $\\hat\\beta_{a,N}$ (footnote 9), $\\hat\\tau_{\\mathrm{IPW}}(d)$. The experimental estimator (20) (p. 755) to which the display refers divides the squared unweighted residuals $\\hat e_i^2$ by $p^2$ and $(1-p)^2$. $\\hat\\tau_{\\mathrm{HA}}(d)$ is the Hájek estimator, the treated-arm mean of the circle averages minus the control-arm mean. It is distinct from $\\hat\\tau_{\\mathrm{IPW}}(d)$, the fitted-propensity Horvitz–Thompson estimator. $\\mathrm{AME}(d;\\eta)$ is the average marginalized effect under assignment design $\\eta$, and $z_q$ is the standard-normal $q$ quantile. The lower variance bound in the proposition still concerns the printed linear form $\\hat\\tau^{\\mathrm L}_{\\mathrm{IPW}}$, even though its coverage numerator is $\\hat\\tau_{\\mathrm{HA}}$.",
+    "finite_lemmas": "No refutation of the as-printed Hájek coverage event is supplied by the credited declaration. The fourth-power algebra for the printed SAH display remains the component of P004-T4(a); the counterexample concerns the separate fitted-IPW interpretation.",
+    "note": "The statement as printed for finding P004-E002 (Moderate), with the Hájek numerator retained. The separate IPW interpretation is refuted by P004-T3 and by the credited fitted-IPW declaration. The variance correction in P004-T4 uses $N^{-2}\\sum_i c_i(d)\\{Z_i\\hat r_{i1}^2/\\hat p_i^2+(1-Z_i)\\hat r_{i0}^2/(1-\\hat p_i)^2\\}$, with raw residuals, so that inverse-propensity weighting enters only once before squaring. Valid IPW coverage also requires the corrected linearization and its assumptions; the variance algebra alone does not establish it. None of these results establishes the printed Hájek coverage assertion or its refutation. Finding P004-E015 distinguishes the estimator-name discrepancy from a proved result for Hájek.",
+    "asymptotic": true,
+    "related_finding": "P004-E002"
+   },
+   "no_lean": false,
+   "rows": [
+    {
+     "lean_name": "AronowAudit.P004.Wave1.printed_observational_coverage_refuted",
+     "file": "AronowAudit/P004/Wave1/ObservationalCoverage.lean",
+     "line": 29,
+     "status": "counterexample_proved",
+     "final_status": "wrong_credit",
+     "conditional_on": [],
+     "first_pass": {
+      "fidelity": "not_faithful",
+      "severity": "major",
+      "notes": "The theorem negates IPW-centered coverage, while the printed assertion explicitly has the Hájek numerator, so it refutes the validator's changed reading rather than the printed assertion as printed. Metadata inconsistency is recorded in targets.json; the description itself is honest about using the IPW reading.",
+      "differences": [
+       {
+        "what": "Inside the negated universal statement the numerator is fittedIPW, defined as HT using estimated propensities. The quoted printed numerator is the independently defined Hájek ratio estimator. They are different random variables under the allowed heterogeneous assignment mechanisms.",
+        "effect": "substantive"
+       },
+       {
+        "what": "The target metadata conflicts internally: name/location identify the assertion as printed, the quote uses HA, and the validator formal reading changes HA to IPW. The row accurately discloses that reading but does not refute the printed assertion as required for a full-refutation credit.",
+        "effect": "substantive"
+       },
+       {
+        "what": "Reading the unbound O_j as O_i and selecting the treatment variance scalar are the target-specified index conventions. The Wald rather than ratio event has harmless zero-variance exceptional cases on the actual positive-variance IPW witness.",
+        "effect": "minor"
+       }
+      ]
+     },
+     "flags": [
+      "claim_text"
+     ],
+     "evidence": {
+      "source": "dispute",
+      "reason": "T36 identifies an as-printed assertion and quotes a Hájek-centred coverage event, but its validator paragraph substitutes IPW; the [paper's observational coverage display](https://arxiv.org/pdf/2010.13599#page=71) retains the HA numerator. P004/Wave1/ObservationalCoverage.lean:29 negates the IPW assertion, specifically using fittedIPW at :47, which P004/P004_Spatial.lean:1402 defines as fitted-propensity HT, whereas :107 defines Hájek through the two arm means. These are different estimators under the allowed heterogeneous propensities, and the declaration supplies no implication from failure of IPW coverage to failure of the printed HA coverage. Thus the target has an internal claim-text problem and, for its as-printed component, the row refutes a different reading; its explicit disclosure of the IPW reading permits reassignment but does not establish the printed refutation. The additional objection that the counterexample is outside the plane is unsupported: linePopulation at P004/P004_Spatial.lean:1848 and activePopulation at :1927 use EuclideanSpace ℝ (Fin 2), and P004/Wave1/ObservationalCoverageBlueprint.lean:288 instantiates the contradiction with that population.",
+      "defensible_statement": "Over the encoded metric and measurable spatial populations satisfying the spatial, logistic-MLE, overlap and nondegeneracy conditions, the fitted-IPW interval using the displayed twice-weighted observational SAH variance does not universally have a limiting coverage of at least 1−α for every 0<α<1/2. This is a refutation of the explicitly specified IPW interpretation of the display.",
+      "claim_text_fix": "Replace the validator's formal-reading paragraph for the as-printed assertion with: 'With O_j read as O_i and the displayed residual and SAH definitions retained, Proposition 4(i) asserts, under C2, C3, C4, C6, C 1 and the stated lower bound on N Var(τ̂^L_IPW), that lim_{N→∞} Pr(z_{α/2} ≤ |(τ̂_HA(d)−AME(d;η))/sqrt(V̂^obs_SAH(d))| ≤ z_{1−α/2}) ≥ 1−α for 0<α<1/2.' A coverage assertion with τ̂_IPW in place of τ̂_HA must be labelled a separate IPW interpretation, not the as-printed assertion."
+     }
+    }
+   ],
+   "coverage_judgments": [
+    {
+     "coverage": "none",
+     "covered_here": null,
+     "uncovered": [
+      "A full refutation of the displayed assertion with its printed Hájek numerator."
+     ],
+     "notes": "Metadata inconsistency: target name and printed quote say as printed and HA, but its validator formal reading and the row substitute IPW; the theorem refutes that altered reading only."
+    }
+   ]
+  },
+  {
+   "target_id": "P004-T37",
+   "canonical_claim": {
+    "target_id": "P004-T37",
+    "kind": "result_touched_by_finding",
+    "name_in_paper": "Section 8.1, the sentence giving the summed Hajek estimates between zero and five km and its reading as a decline in deforested area, as printed",
+    "location": "p. 763 (PDF p. 20), last paragraph; continued on p. 764 (PDF p. 21)",
+    "statement": "p. 763: 'Alternatively, we use a randomization test to evaluate the cumulative effects between zero km and five km. The test statistic is the sum of the point Hajek estimates between zero and five km. The estimated value is $-0.034$ (a 3.4 percentage point decline in deforested area). For the randomization test, we use 10,000 random draws, and the p-value is around 0.065. Thus,' [p. 764] 'we would reject with 90% confidence the sharp null hypothesis. These results indicate that the net gains from the intervention were indeed beneficial, with no indication of substantial leakage.'\n\nFormal reading. Let $d_1<\\cdots<d_m$ be the distances at which the Hajek estimator is computed between zero and five km, with distance sets $\\Omega_{d_k}$ whose regions $\\{x:d_i(x)\\in\\Omega_{d_k}\\}$ partition the region $B_i$ within five km of node $i$, and let $T=\\sum_{k=1}^m\\hat\\tau_{\\mathrm{HA}}(d_k)$. The parenthesis asserts that $T$ estimates the effect on the share of deforested pixels in the region, that is, the average over nodes of $\\tau_{iB}(\\eta)=\\mu_{iB}(1;\\eta)-\\mu_{iB}(0;\\eta)$, where $\\mu_{iB}$ is the average (2) over $B_i$: in population terms, that $\\sum_{k=1}^m\\mathrm{AME}(d_k;\\eta)=\\frac1N\\sum_i\\tau_{iB}(\\eta)$.",
+    "definitions_needed": "(S2): the average (2) over a distance set; (S3): (8)-(9); (S5): (16). p. 763: 'We code a pixel as deforested if a pixel goes from forest coverage rate greater than 25% in 2012 to one that is below 25% in 2013. ... To construct the circle averages, we generate buffers around each of the village polygons. The distance range for estimating the AME is set to run from zero km to 15 km.' Sharp null and randomization test: Section 6.3, p. 758.",
+    "note": "The statement as printed for finding P004-E008 (Moderate, interpretive). It is a sentence reporting a number and a reading of it; the formal reading is refuted by target P004-T5 (already for a single node: equal sums $-0.034$ with area effects $-\\frac{17}{3000}$, $\\frac{121}{18000}$, $-\\frac7{1800}$) and replaced by target P004-T6. The numerical value $-0.034$ and the p-value are empirical and are not targets.",
+    "asymptotic": false,
+    "related_finding": "P004-E008"
+   },
+   "no_lean": false,
+   "rows": [
+    {
+     "lean_name": "AronowAudit.P004.ConfidenceFollowup02.printed_area_sum_refuted",
+     "file": "AronowAudit/P004/P004_ConfidenceCompletion.lean",
+     "line": 15,
+     "status": "counterexample_proved",
+     "final_status": "narrower",
+     "conditional_on": [],
+     "first_pass": {
+      "fidelity": "not_faithful",
+      "severity": "major",
+      "notes": "No claim-stage change. The record describes a positive-mass binary construction used in the proof, but the credited type does not assert that construction or any compatible spatial witness. This is a refutation of an enlarged finite-table contract, rather than the printed spatial universal assertion.",
+      "differences": [
+       {
+        "what": "The negated equality quantifies over arbitrary R : Fin m -> (Fin N -> Assignment N -> real) and arbitrary positive weights a_ik; there are no spatial population, ordered distance bands, common outcome field or partition assumptions.",
+        "effect": "substantive"
+       },
+       {
+        "what": "The statement does not require binary outcomes and exports neither the named positive-mass binary construction nor a counterexample satisfying the printed spatial hypotheses.",
+        "effect": "substantive"
+       }
+      ]
+     },
+     "flags": [],
+     "evidence": {
+      "source": "adjudication+second review",
+      "adjudicator": "P004_ConfidenceCompletion.lean:15 negates an equality for arbitrary real-valued CircleTable families and arbitrary positive bin weights. T37's formal reading instead uses averages of one common binary spatial outcome field over ordered distance bins partitioning each node's region within five km. None of the common field, spatial realization, partition, or binary-outcome conditions is asserted by this credited type. Consequently the negation alone does not certify a counterexample within the claim's domain, even though the source also contains a positive-mass binary construction.",
+      "suggested_fix": "Export a planar binary spatial population with well-defined positive-mass bin averages, the required distance-bin partition, and unequal unweighted AME sum and whole-region AME. The stronger statement Wave1.area_sum_spatial_caseB in Wave1/AreaSum.lean:23 already exposes the relevant spatial witness and can supply this repaired credit.",
+      "second_review": "P004_ConfidenceCompletion.lean:16 negates an identity for arbitrary real CircleTable families and positive bin weights; finiteAverage at P004_Spatial.lean:944 supplies only a weighted finite mean. T37's formal claim concerns distance bins partitioning each node's region within five km and averages of one common binary spatial outcome field, and those constraints are absent from the negated universal. Thus the credited type does not certify a counterexample in the target's domain; exporting the spatial binary witness, as Wave1/AreaSum.lean:23 does, repairs the gap.",
+      "severity": "major"
+     }
+    }
+   ],
+   "coverage_judgments": [
+    {
+     "coverage": "none",
+     "covered_here": null,
+     "uncovered": [
+      "A refutation with tables and bin masses certified to arise from a common spatial binary outcome population and distance sets partitioning each regional average."
+     ],
+     "notes": "R034-16 negates the unrestricted finite-table equality. The construction described in the record could support the intended spatial refutation, but that construction and its domain hypotheses are absent from this credited declaration's type; the empirical estimate and p-value are not mathematical proof obligations."
+    }
+   ]
+  },
+  {
+   "target_id": "P004-T43",
+   "canonical_claim": {
+    "target_id": "P004-T43",
+    "kind": "headline_result",
+    "name_in_paper": "Proposition 4 (asymptotically conservative Wald intervals for the Hajek estimator with the SAH variance estimator, and with the spatial HAC variance estimator under C5)",
+    "location": "p. 755 (PDF p. 12), eqs. (19)-(20), C5, Proposition 4, footnotes 10-12; proof: Supplement A pp. 6-11 (A.4.1 Proposition 1, A.4.2 Proposition 2, A.4.3)",
+    "statement": "'We summarize all the inferential results in the following proposition. For some $\\alpha<1$, let $z_{\\frac\\alpha2}$ and $z_{1-\\frac\\alpha2}$ be the $\\frac\\alpha2$th and $(1-\\frac\\alpha2)$th quantiles of the standard normal distribution, respectively. Proposition 4. Let $K(\\cdot)$ in (19) be the uniform kernel. Under C1-C4 and if $N\\times\\mathrm{AVar}(\\hat\\tau_{\\mathrm{HA}}(d))$ is uniformly bounded below for all large $N$, we have, for each $\\alpha<1$: (i) $\\lim_{N\\to\\infty}\\mathbf{Prob}\\Big(z_{\\frac\\alpha2}\\le\\frac{\\hat\\tau_{\\mathrm{HA}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\hat{\\mathrm V}_{\\mathrm{SAH}}(d)}}\\le z_{1-\\frac\\alpha2}\\Big)\\ge1-\\alpha$; (ii) additionally under C5, $\\lim_{N\\to\\infty}\\mathbf{Prob}\\Big(z_{\\frac\\alpha2}\\le\\frac{\\hat\\tau_{\\mathrm{HA}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\hat{\\mathrm V}_{\\mathrm{HAC}}(d)}}\\le z_{1-\\frac\\alpha2}\\Big)\\ge1-\\alpha$.' Footnote 12: '$K(x)=I(x\\in[0,1])$.'\n\nHere $\\hat{\\mathrm V}_{\\mathrm{HAC}}(d)$ is the (2,2) entry of $\\hat\\Sigma_{\\mathrm{HAC}}(d)$ in (19) with the uniform kernel and cutoff $\\tilde d=h(d)$ (Supplement A p. 6: 'With a uniform kernel and $\\tilde d=h(d)$'), $\\hat{\\mathrm V}_{\\mathrm{SAH}}(d)$ is (20), C5 is the homophily condition of p. 755, and the asymptotic framework is that of Proposition 2 (target P004-T41). The proof (Supplement A p. 10) is written 'for each $\\alpha<\\frac12$'.",
+    "definitions_needed": "(S1)-(S6): C1-C4, $\\mathcal B(i;d)$, $c_i(d)$, (16), (18), (19), residuals $\\hat e_i$, C5 with footnote 10, (20) with footnote 11, the quantiles, AVar. The supplement's intermediate results (Supplement A pp. 7 and 9): 'Proposition 1. If $N\\times\\tilde{\\mathrm V}_{\\mathrm{HA}}(d)$ is uniformly bounded below for large $N$, then we have $\\frac{\\hat{\\mathrm V}_{\\mathrm{HAC}}(\\hat\\tau_{\\mathrm{HA}}(d))-\\tilde{\\mathrm V}_{\\mathrm{HA}}(d)}{\\tilde{\\mathrm V}_{\\mathrm{HA}}(d)}\\xrightarrow{p}0$', with $\\tilde{\\mathrm V}_{\\mathrm{HA}}$ of Lemma A.4, lines (6)-(7) (target P004-T33); and Proposition 2 of A.4.2 (target P004-T21), with $\\bar{\\mathrm V}_{\\mathrm{HA}}(d)$ and the consistency of $\\hat{\\mathrm V}_{\\mathrm{SAH}}(d)$ for it. A.4.3 (p. 10): '$\\frac{\\hat\\tau_{\\mathrm{HA}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\hat{\\mathrm V}_{\\mathrm{HAC}}(d)}}=\\frac{\\hat\\tau_{\\mathrm{HA}}(d)-\\mathrm{AME}(d;\\eta)}{\\sqrt{\\mathrm{AVar}(\\hat\\tau_{\\mathrm{HA}}(d))}}\\times\\sqrt{\\frac{\\mathrm{AVar}(\\hat\\tau_{\\mathrm{HA}}(d))}{\\tilde{\\mathrm V}_{\\mathrm{HA}}(d)}}\\times\\sqrt{\\frac{\\tilde{\\mathrm V}_{\\mathrm{HA}}(d)}{\\hat{\\mathrm V}_{\\mathrm{HAC}}(d)}}$'.",
+    "finite_lemmas": "Exact for each fixed $N$: (1) the expansion of the (2,2) entry (Supplement A pp. 6-7, lines (8)-(11)): with $\\ell_i=\\frac{Z_i}{N_1}-\\frac{1-Z_i}{N_0}$, $\\hat{\\mathrm V}_{\\mathrm{HAC}}(d)=\\sum_i\\sum_{j\\in\\mathcal B(i;d)}\\ell_i\\ell_j\\hat e_i\\hat e_j=\\frac1{N_1^2}\\sum_iZ_i\\hat e_i^2+\\frac1{N_0^2}\\sum_i(1-Z_i)\\hat e_i^2+\\frac1{N_1^2}\\sum_i\\sum_{j\\in\\mathcal B(i;d),j\\ne i}Z_iZ_j\\hat e_i\\hat e_j-\\frac2{N_1N_0}\\sum_i\\sum_{j\\in\\mathcal B(i;d),j\\ne i}Z_i(1-Z_j)\\hat e_i\\hat e_j+\\frac1{N_0^2}\\sum_i\\sum_{j\\in\\mathcal B(i;d),j\\ne i}(1-Z_i)(1-Z_j)\\hat e_i\\hat e_j$ (this is target P004-T29(2) for the uniform kernel); (2) the exact variance of the linearized estimator and the identity $\\tilde{\\mathrm V}_{\\mathrm{HA}}-\\mathrm{AVar}(\\hat\\tau_{\\mathrm{HA}}(d))=\\frac1{N^2}\\sum_i(\\tau_i(d;\\eta)-\\mathrm{AME}(d;\\eta))\\sum_{j\\in\\mathcal B(i;d)}(\\tau_j(d;\\eta)-\\mathrm{AME}(d;\\eta))$, nonnegative under C5 (target P004-T33(a)-(c)); (3) the SAH bound $\\mathrm{AVar}(\\hat\\tau_{\\mathrm{HA}}(d))\\le\\bar{\\mathrm V}_{\\mathrm{HA}}(d)$ under C1 and C3, with no use of C5 (target P004-T21(b)); (4) for $0<\\alpha<1$ and $r\\ge1$, $\\{z_{\\frac\\alpha2}\\le x\\le z_{1-\\frac\\alpha2}\\}\\subset\\{rz_{\\frac\\alpha2}\\le x\\le rz_{1-\\frac\\alpha2}\\}$, the step 'because $\\sqrt{\\tilde{\\mathrm V}_{\\mathrm{HA}}(d)/\\mathrm{AVar}(\\hat\\tau_{\\mathrm{HA}}(d))}\\ge1$' of Supplement A p. 11. The limits rest on Proposition 3 (target P004-T42) and on the consistency of $\\hat{\\mathrm V}_{\\mathrm{HAC}}$ for $\\tilde{\\mathrm V}_{\\mathrm{HA}}$ and of $\\hat{\\mathrm V}_{\\mathrm{SAH}}$ for $\\bar{\\mathrm V}_{\\mathrm{HA}}$ (Supplement A, Propositions 1 and 2).",
+    "note": "Asymptotic headline result; the proposition as printed is not refuted. Both fresh readers recomputed the limit $\\tilde{\\mathrm V}_{\\mathrm{HA}}$ of the HAC estimator and the identity in item (2). It is touched by Minor misprints in the supplement's supporting displays: Proposition 2 of A.4.2 (P004-E013, target P004-T21), lines (6)-(7) of Lemma A.4 (P004-N015, target P004-T33) and cross-references (P004-N014, not a target). As printed the proposition asserts that the limits exist ('lim'); the supplement's own argument gives a lower bound on the liminf, and the validators' corrected statements elsewhere are written with liminf. The positive-semidefinite version (22) and its ordering are target P004-T31(c); the adjusted version recommended in Section 7 is not covered by this proposition (finding P004-N004).",
+    "asymptotic": true,
+    "related_finding": "P004-E013"
+   },
+   "no_lean": false,
+   "rows": [
+    {
+     "lean_name": "AronowAudit.P004.Wave1.experimental_wald_coverage_printed_false",
+     "file": "AronowAudit/P004/Wave1/Gap/DecideD.lean",
+     "line": 718,
+     "status": "counterexample_proved",
+     "final_status": "narrower",
+     "conditional_on": [],
+     "first_pass": {
+      "fidelity": "not_faithful",
+      "severity": "major",
+      "notes": "Changed from claim-stage faithful_with_notes: I had misread the effect of the unrestricted Space quantifier in a negated universal. The first recorded difference explicitly identifies arbitrary metric measurable spaces versus the paper’s two-dimensional spaces; on rereading, the planar witness used inside the proof cannot supply the missing restriction in the exported statement. The original row description accurately describes the broader recorded contract. Metadata inconsistency: the target note’s “as printed is not refuted” is stale relative to the full-refutation row.",
+      "differences": [
+       {
+        "what": "The negated universal quantifies over arbitrary metric spaces with arbitrary measurable structures, whereas the printed Proposition 4 concerns populations residing in a two-dimensional spatial set. Negating the larger-domain universal does not itself negate the paper-domain universal; the credited statement exports neither a planar counterexample nor a negation restricted to that domain.",
+        "effect": "substantive"
+       },
+       {
+        "what": "PrintedCoverage requires existence of an ordinary real coverage limit. Failure of that existence refutes the literal lim assertion, but says nothing against conservative liminf coverage or against the HAC clause separately.",
+        "effect": "minor"
+       },
+       {
+        "what": "WellDefined and 0<α<1 make the regularity of actual averages and the admissible Gaussian quantiles explicit; these are appropriate implicit conditions of the printed formulas.",
+        "effect": "cosmetic"
+       }
+      ]
+     },
+     "flags": [],
+     "evidence": {
+      "source": "adjudication+second review",
+      "adjudicator": "/home/ubuntu/sal/blind/lean/AronowAudit/P004/Wave1/Gap/DecideD.lean:718 negates a universal over arbitrary metric measurable spaces, whereas S1 places the paper's populations in a two-dimensional spatial set. A counterexample somewhere in the larger class does not entail a counterexample in that paper domain, and the credited declaration's statement contains no planar restriction or planar witness. The planar construction in supporting material does not strengthen this exported statement. The ordinary-limit interpretation itself matches the printed 'lim' claim: failure of its existence suffices to refute the conjunction, without separately refuting HAC coverage or conservative liminf coverage.",
+      "suggested_fix": "Restrict the negated universal to populations on the Euclidean plane (or its spatial subspaces), or export an explicit planar population sequence satisfying the paper's hypotheses and failing PrintedCoverage for SAH at alpha = 1/2. Retain the stated scope of refuting ordinary-limit existence.",
+      "second_review": "Wave1/Gap/DecideD.lean:719 places arbitrary metric measurable spaces inside the negated universal, while T43's Proposition 4 inherits S1's two-dimensional spatial domain. The credited conclusion therefore does not itself assert failure within that domain, even though supporting material uses a planar construction. PrintedCoverage at P004_Spatial.lean:224 correctly retains the ordinary limit required by the claim's printed 'lim', so failure of that limit is sufficient; the necessary repair is a domain-specific refutation statement.",
+      "severity": "major"
+     }
+    },
+    {
+     "lean_name": "AronowAudit.P004.hajek_homophily_identity",
+     "file": "AronowAudit/P004/P004_VarianceCompletion.lean",
+     "line": 105,
+     "status": "proved",
+     "final_status": "ok",
+     "conditional_on": [],
+     "first_pass": {
+      "fidelity": "broader_than_claim",
+      "severity": "none",
+      "notes": "This row covers the exact homophily-bias auxiliary component of the coverage argument, not the asymptotic coverage proposition itself. Positivity makes all conditional probabilities genuine and N>0 makes the iff division legitimate.",
+      "differences": [
+       {
+        "what": "The design probabilities p_i may vary by node, while the experimental C1 of Proposition 4 uses a common p. Constant p recovers the required identity and homophily iff.",
+        "effect": "minor"
+       },
+       {
+        "what": "Arbitrary finite outcome tables and self-containing neighborhoods excluding shared sources replace geometric circle averages and distance balls. No symmetry is required for this identity; the paper’s distance neighborhoods are included.",
+        "effect": "cosmetic"
+       }
+      ]
+     },
+     "flags": []
+    },
+    {
+     "lean_name": "AronowAudit.P004.hajek_sah_bound",
+     "file": "AronowAudit/P004/P004_VarianceCompletion.lean",
+     "line": 133,
+     "status": "proved",
+     "final_status": "ok",
+     "conditional_on": [],
+     "first_pass": {
+      "fidelity": "faithful",
+      "severity": "none",
+      "notes": "The credited component is the deterministic oracle SAH bound under C1/C3, not consistency of the fitted SAH estimator or the eventual Wald coverage guarantee.",
+      "differences": [
+       {
+        "what": "A finite table and abstract neighborhoods replace geometric averages and distance balls; self-inclusion, symmetry and absence of shared sources outside neighborhoods are all consequences of the paper’s C3 distance-neighborhood construction.",
+        "effect": "cosmetic"
+       }
+      ]
+     },
+     "flags": []
+    }
+   ],
+   "coverage_judgments": [
+    {
+     "coverage": "partial",
+     "covered_here": null,
+     "uncovered": [
+      "A full refutation restricted by its statement to the paper’s two-dimensional spatial populations: the credited negation instead concerns the stronger universal over arbitrary metric measurable spaces.",
+      "The positive ordinary-limit Wald coverage conclusions themselves are not proved by the two credited finite auxiliary lemmas."
+     ],
+     "notes": "The homophily-bias identity/iff and the SAH oracle bound are established. The source contains a genuine planar alternating sequence, but the credited closed negative statement does not require its counterexample to be planar, so its type alone does not establish the exact printed refutation. No separate HAC refutation or liminf-coverage refutation is claimed or needed for refuting the conjunction. The record’s target note saying the proposition is not refuted conflicts with the row’s full-refutation metadata."
+    }
+   ]
+  }
+ ]
+}

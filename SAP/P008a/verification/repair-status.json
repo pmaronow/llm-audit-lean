@@ -1,0 +1,67 @@
+{
+  "repair": "Factor finite Dirac-sum glue before specialization to Fin 40000",
+  "changed_lean_sources": [
+    "SAP/P008a/WH/W1/P/T7_L5.lean"
+  ],
+  "statements_changed": false,
+  "shared_definitions_changed": false,
+  "assumptions_changed": false,
+  "kernel_settings_changed": false,
+  "decisions": {
+    "whole": 8,
+    "restricted": 6,
+    "refuted": 0,
+    "omitted": 0
+  },
+  "local_rebuild": {
+    "exit_code": 0,
+    "sap_modules": 27,
+    "dependency_printouts": 14,
+    "permitted_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "strict_attempt": {
+    "command": "python3 /home/ubuntu/sap/tools/run_comparator.py . P008a",
+    "exit_code": 1,
+    "stage": "create certification directory",
+    "failure": "OSError: [Errno 30] Read-only file system",
+    "kernels_run": false,
+    "log": "scratch/certification-repair-comparator.log"
+  },
+  "current_snapshot_certified": false,
+  "next_check": "Run the unchanged strict comparator command in the writable orchestrator environment.",
+  "source_sha256": {
+    "SAP/P008a/Bridge.lean": "ceea684ee5391eb9c7d39d122c51924c70fda45c3ad81fd9f462b7720e57ce5a",
+    "SAP/P008a/Challenge/Part1.lean": "f9ddbd9d813810f5f85c0103d060e40f36c01a87f4ad9ad0b2ebaecf4c8a9f9f",
+    "SAP/P008a/Challenge.lean": "3411da2cc69c29074b59e2fc3c4fc4d315946a60fe52d2e9e0702c39ec0679ce",
+    "SAP/P008a/Defs/Part1.lean": "6e6e6fbc43078e8bc832c1bcacd30bb6523326f160ac2fc37515eb890ce7bd97",
+    "SAP/P008a/Defs/Part2.lean": "0184b327637cfb823912503d1037bb9276c738ef0fddc7b680f1d8fd9563d89f",
+    "SAP/P008a/Defs/Part3.lean": "9989e2d1b850e87df0c27266c992a2707b52495c7b1ee94dfc1db9bba690b16f",
+    "SAP/P008a/Defs/Part4.lean": "0ee828175e8df4c0c6bec6407f68211515bb26055c1913f2027af82882cb4fc3",
+    "SAP/P008a/Defs/Part5.lean": "3426adfc26b924ae96b8a9c462e2c4c599b3a7af370eed60422089f3b9b69db7",
+    "SAP/P008a/Defs/Part6.lean": "640be4145c2cf96e4710096ef57e2a0bbaf707270bdf29c9898742cb080846fe",
+    "SAP/P008a/Defs/Part7.lean": "dced568abe52d9d15a39fb04f07441224f981f2cc2c1b29ca0b7ffe76b8c001c",
+    "SAP/P008a/Defs/Part8.lean": "506964d2f9cc3b42301122618236bb7da88b5bac21081f3fa0fa5921dc7b1cef",
+    "SAP/P008a/Defs/WholeW1.lean": "4f5318d6627298005571dc9dd89fcf2bf26f2ea758a07ac67e160a0fe1cfab4e",
+    "SAP/P008a/Defs.lean": "12c0d24ce9fca2193aa424824f7a1a5cc479d1b2b8ed771e68197dd2cfcaa24f",
+    "SAP/P008a/Solution.lean": "6327b9c7a57772e58ab6f838d9281c90cbea5f49151412f08a16f51f57e88ebf",
+    "SAP/P008a/WH/W1/Common.lean": "fa8b2b910b9084468004faa4631e9249ba488d8d9c0d0961b6c211c6f8540bbb",
+    "SAP/P008a/WH/W1/Leaves.lean": "03454cfbb8137a9a5e854d53f4983edff602799cb3a5800250ef66996bb176db",
+    "SAP/P008a/WH/W1/P/T10_L1.lean": "f2b8688967c8284be3070a22079f0886456387e455d8b7254f8ca76debb6fed3",
+    "SAP/P008a/WH/W1/P/T7_L1.lean": "407ddd9903a94176fb3ec904ad8fed73c05575248f06a7cce9b57e4cf1a97ea3",
+    "SAP/P008a/WH/W1/P/T7_L2.lean": "24a517ad25ce5661d177c2fac82faf83a3a67c4c48cdce2d20a06c217f147768",
+    "SAP/P008a/WH/W1/P/T7_L3.lean": "5f74d68643427a1027bea51eeed0c7af9726b1904cccbcb83faa39429fa8129b",
+    "SAP/P008a/WH/W1/P/T7_L4.lean": "e3a7d8600072fda4fa19a881a1a3c624bcf8a43f8626f4c7416d34284a80371e",
+    "SAP/P008a/WH/W1/P/T7_L5.lean": "acb43faf545f611bf87b9b89df14eadcf2ebed397d0dbbbac580bf4ca49fefbc",
+    "SAP/P008a/WH/W1/P/T7_L6.lean": "2cde543ceeb497d12b30f573a3992efcd9ffa02263dff17c5c4797b5027c49a4",
+    "SAP/P008a/WH/W1/P/T9_L1.lean": "8a57d646a9d4c8cff9d4da3990f91b94d910c3216bf22d726b789683edd22f00",
+    "SAP/P008a/WH/W1/Proofs/T10.lean": "49ae1ac1c28cbd84976995c4af175608eaee470864dd2d750160e069c303cdd3",
+    "SAP/P008a/WH/W1/Proofs/T7.lean": "318dd36741909c26ce67d62fb282825a51ff91b2091971a0b876ee976bd2d552",
+    "SAP/P008a/WH/W1/Proofs/T9.lean": "f817c016393de472acfea54f56937824f94c275a41573d3e9b90993fda0db8cc"
+  },
+  "manifest_sha256": "c7da4fae8b980af61a26e1a8d76423ae871305840c65abc32d17975d16817927",
+  "config_sha256": "7e0042a6e851938fb32f54d3f2b4c7b6edab9b5143c23b9e5ca076876a5f0404"
+}

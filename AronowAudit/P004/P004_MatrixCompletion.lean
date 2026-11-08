@@ -173,5 +173,8 @@ theorem capped_pd_interval {N : ℕ} (values : Fin N → ℝ)
         (adjustmentMu z (spectralKernel values vectors true))) :=
       mul_le_mul hc.2 (Real.sqrt_le_sqrt (hKQ.trans hcap)) (Real.sqrt_nonneg _) (hc.1.trans hc.2)
 
+#print axioms sandwich_sum_identity
+#print axioms spectral_psd_order
+#print axioms capped_pd_interval
 end
 end AronowAudit.P004

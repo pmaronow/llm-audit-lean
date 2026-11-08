@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P009-T1",
+    "theorem": "SAP.P009a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified family exists at every n=t+1>=1: mass 2^-n on every assignment, y_0=z_0, other outcomes zero. Both arms have probability 1/2, all outcomes and forced outcomes are in [0,1], and the dependence matrix is the identity. Exact rational enumeration checked n=1,...,6, including coverage 1/2. The analogous one-unit identity product-design/regularity/positive-variance instance is proved in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T2",
+    "theorem": "SAP.P009a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general measure clause take Omega_t={-1,1} with its full sigma-algebra and uniform probability, T_t(omega)=omega, theta_t=0, V_t=Vhat_t=1, delta_t=t+1, alpha=1/20. All measurability/integrability premises hold, all scaled lower tails are zero, and the normalized variance is 1. For the scalar clause use a=V=c=1, eta=1/2, Vhat=0. For the Bernoulli application take n=t+1, independent fair assignments and y_i=z_i, with Vhat_t=1/n: Reg(2,4,1), dbar=1, Var(HT)=1/n, scaled variance=1, and Conservative with L identically zero.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T3",
+    "theorem": "SAP.P009a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All three explicitly prescribed distributions have nonnegative masses summing to one and marginals 1/4 and 3/4. Their full-cube outcomes have absolute value at most 1, so Reg(4,4,1) holds without a null-event convention. scratch/finite_checks.py independently verifies all three exact variances, covariance sums and strict violations.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T4",
+    "theorem": "SAP.P009a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the generic clause use a two-point uniform probability space, a singleton nonempty unit index, X equal to its fair Bernoulli indicator, and w=K=1. For every application clause use identityPopulation 1, k=2,q=4,s=1, either arm, and a=1 or 2; this also satisfies the Bernoulli and q>=4 premises. ProductDesign, Regularity and positive variance for this experiment compile in scratch/Check.lean. No empty probability space or index set is needed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T5",
+    "theorem": "SAP.P009a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every n=t+1>=1 use the specified independent fair law and y_i=z_0 on i<max(1,floor(n/2)-1), zero otherwise. The cluster size is between 1 and n; all outcomes are in [0,1]; Reg(3,2,1) holds. The dependence matrix has a clique on the cluster and otherwise only diagonal entries. Exact density and parity/threshold formulas were checked rationally at n=1,...,64.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T6",
+    "theorem": "SAP.P009a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the limsup clause take a_t=1, L=1, c=1/2; its finite limsup premises hold and the selected set is all naturals. For the construction clause take n=1, E=identityPopulation 1, k=2,q=4,s=1,L=1. Then M=1, the constructed outcome is z_0/2, HT=z_0, EATE=1/2, and the absolute error is 1/2. More generally 0<L<=1 and n>0 imply 1<=ceil(sqrt(L)n)<=n, so the construction uses no zero denominator or out-of-range cluster.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T7",
+    "theorem": "SAP.P009a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified sparse fair family on n=t+1 has bounded full-cube outcomes and dmax=1. Var(HT)=1/n^2 is strictly positive at every index. Its standardized error has the two atoms -1 and 1, each with probability 1/2. Exact finite checks cover n=1,...,6; the atom law is valid for every n, so the normal-limit obstruction is genuine.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T8",
+    "theorem": "SAP.P009a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take identitySequence: n=t+1, independent fair assignments, y_i=z_i. It has SeqReg(2,4,1), dmax=1 and Var(HT)=1/n>0 at every index, hence n Var(HT)=1. This meets all hypotheses simultaneously, including the extra all-index positivity. Exact finite checks cover n=1,...,6, and scratch/Check.lean proves the finite n=1 premises. At q=2 the theorem remains credible because bounded dmax bounds relevant input sets and product-law atoms, converting the uniform second-moment bound into a full-cube outcome bound.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T9",
+    "theorem": "SAP.P009a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each r>=1 the uniform law on assignments with 2r+1 treated units out of 4r+2 exists and has marginals 1/2. The prescribed two half-average outcomes and other identity outcomes lie in [0,1]. For r=1,2, exact enumeration verifies the full-cube interference aggregates and a common majority event of probability 1/2 witnessing alpha=1/4; the universal alpha upper bound gives equality. The same odd-half symmetry works for every r.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T10",
+    "theorem": "SAP.P009a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N_t=2t+2, m_t=t+1, uniform complete randomization, and y_i=z_i. Then dbar=1, J_t is precisely the N_t(N_t-1) ordered distinct pairs and is nonempty at every index. Choose exceptions empty. For distinct bits their alpha coefficient is 1/(4(N_t-1)), which tends to zero uniformly. Thus even the all-index nonemptiness restriction and all conclusion clauses have a concrete joint instance; fixed treatment fraction 1/2 suffices.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T11",
+    "theorem": "SAP.P009a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified fair block-star family exists for each m>=2, with n=m^2, m nonempty blocks of size m, outcomes in [0,2], and no modulo ambiguity in the chosen hub and leaf. It satisfies Reg(2,4,1), C1=2 and dbar=m, so along m=t+2 the ratio is m/2. Exact enumeration at m=2,3 verifies Q=1,B1=2/m^2>0,B2=0 and the retained comparison.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T12",
+    "theorem": "SAP.P009a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The finite hypotheses are realized by any fair identity population with k=2,q=4,s=1. For all asymptotic and conditional premises together, let m=t+3, n=m^2, partition into m blocks of m units, use independent fair assignments, set the hub outcome to its own treatment, and each leaf outcome to its own treatment times the hub treatment. Then all outcomes are in [0,1], Reg(2,4,1) holds, dbar=m,C1=2-1/m, Q=(m+3)/(4m), B1=(m-1)/m^2, and B2=(m-1)(m-2)/(4m^2)>0 tends to 1/4. Therefore dbar/C1 tends to infinity and C1/(dbar*abs(B2)) tends to zero. The nonzero-B2 clause is not vacuous. Exact enumeration verifies these bias formulas at m=3.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T13",
+    "theorem": "SAP.P009a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified full-support law on eight assignments of three fair bits exists; y_1=z_0(2z_2-1), others zero, has absolute value at most 1. Changing z_0 changes y_1 when z_2=0 or 1, while its mean effect is E(2Z_2-1)=0. Exact enumeration verifies Reg(2,4,1), the edge and all retained zero spillovers.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T14",
+    "theorem": "SAP.P009a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the no-edge and no-spillovers clauses take two independent fair units with y_i=z_i and distinct i,j: both arm probabilities are 1/2 and all relevant expected spillovers vanish. The converse-failure clause is realized by the explicit three-unit cancellation population. The nonzero-spillover implication also has a nonzero-premise instance: two fair units with y_1=z_0,y_0=0 have weightedSpillover(1,0)=1 and edge 0->1. Thus none of the implications relies on impossible hypotheses or null conditional events.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T15",
+    "theorem": "SAP.P009a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified growing fair identity family has n=t+1>=1, outcomes and forced outcomes in [0,1], and hence uniformly admissible infinite moment orders, which are automatically maximal. NoSpillovers and dbar=1 hold, external/internal mixing are actually zero, and dbar/n tends to zero. Full covariance and off-diagonal mixing sums are n/4 and zero respectively. Exact finite checks cover n=1,...,6, including positive variance and the full covariance sum.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T16",
+    "theorem": "SAP.P009a.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=1, the fair identity population, k=1 and either Boolean arm. The all-pairs covariance and alpha sums are both 1/4, dbar=1, and the external sum is zero. The displayed chain becomes 1/4<=1/4<=1, with genuine nonempty sums and positive n,k. There are no outcome or regularity premises to satisfy.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P009-T17",
+    "theorem": "SAP.P009a.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified complete-randomization law gives each of six assignments mass 1/6, both own arms probability 1/2, and the conditioning event Z_0=true positive probability. The full-cube outcome schedule has incoming causes 0,1 for outcome 0, so the incoming count is 2 and treatedIncomingCount_0=Z_1. Exact enumeration verifies Reg(2,4,1), P(T_0=0)=1/2, its conditional probability 2/3, both printed numbers and the ratio discrepancy. The two printed hypergeometric evaluations also compile in scratch/Check.lean; their binomial denominators are 6 and 3 and no natural subtraction underflows.",
+    "confidence": "high"
+  }
+]

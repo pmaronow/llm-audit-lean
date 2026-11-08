@@ -1,0 +1,87 @@
+{
+ "work_id": "P010",
+ "citation": {
+  "arxiv_id": "",
+  "authors": [
+   "P. M. Aronow",
+   "Jonathon Baron",
+   "Lauren Pinson"
+  ],
+  "doi": "10.1017/pan.2019.5",
+  "title": "A Note on Dropping Experimental Subjects who Fail a Manipulation Check",
+  "type": "Journal article",
+  "venue": "Political Analysis",
+  "year": "2019"
+ },
+ "standing_assumptions": "[Setting: Section 2, p. 573 (PDF p. 2)] “Suppose we have an i.i.d. sample from $(Y, S, Z)$, where $Y$ denotes the subject's response, $S$ denotes the result of a manipulation check (1 if the subject passed, 0 if the subject failed), and $Z$ denotes the subject's treatment assignment (1 for treatment 1, 2 for treatment 2, . . .). Without loss of generality, assume that the support of $Z$ is $\\{1, \\ldots, K\\}$, where $K$ is finite. We make three assumptions to proceed. First, we assume that both potential responses and potential results from the manipulation check are stable, by invoking SUTVA (Rubin 1980), which implies both no interference between units and no multiple unobserved versions of the treatment.” [p. 573] ASSUMPTION 1 (SUTVA). $Y = \\sum_{z=1}^{K} Y(z)\\mathbf{I}(Z = z)$ and $S = \\sum_{z=1}^{K} S(z)\\mathbf{I}(Z = z)$. [p. 573] “Second, we assume that the treatment is not systematically related to potential outcomes or potential manipulation check results, as would be ensured by random assignment of the treatment.” [p. 574 (PDF p. 3)] ASSUMPTION 2 (Ignorability). For all $z \\in \\{1, \\ldots, K\\}$, $(Y(z), S(z)) \\perp\\!\\!\\!\\perp Z$, with $\\Pr(Z = z) > 0$. “Assumption 2 can be ensured at the design stage by randomizing treatment assignment across subjects.” [p. 574] “Finally, we require that at least some subjects pass the manipulation check in both treatment and control.” ASSUMPTION 3 (Nonzero Passing Rates). For all $z \\in \\{1, \\ldots, K\\}$, $\\Pr[S|Z = z] > 0$. “Note that Assumption 3 is verifiable from the experimental data.” [As printed the event is missing; $\\Pr[S = 1|Z = z] > 0$ is meant (finding P010-N002, corrected in P010-T17). Every target uses the corrected form.] [Regularity: Section 2.1, p. 574] “As we proceed, plug-in estimators will be consistent given suitable regularity conditions (e.g., finite third moments, continuity), with the bootstrap providing a basis for asymptotic inference.” [The paper puts no moment condition inside its numbered results. Each conditional mean written in a target is taken to exist; finite first moments of $Y(1), \\ldots, Y(K)$ ensure this.] [Target parameter: Section 2.1, p. 574] “Here we consider one possible target that seems natural: $\\mathrm{E}[Y(z) - Y(z')|S(1) = S(2) = \\cdots = S(K) = 1]$, or the average treatment effect among subjects who would pass under all treatment conditions.” [Covariates: Section 2.3, p. 576 (PDF p. 5)] “Suppose that we had a vector of covariates $\\mathbf{X}$ associated with each unit, so that we now have an i.i.d. sample from $(Y, S, Z, \\mathbf{X})$. We can now write an assumption analogous to Assumption 2.” ASSUMPTION 4 (Ignorability with Covariates). For all $z \\in \\{1, \\ldots, K\\}$, $(Y(z), S(z), \\mathbf{X}) \\perp\\!\\!\\!\\perp Z$, with $\\Pr(Z = z) > 0$. [Notation] $Y(z)$ and $S(z)$ are the potential response and the potential result of the manipulation check under treatment $z$; the paper introduces them only through Assumption 1. $\\mathrm{E}$ and $\\Pr$ refer to the joint law of one draw $(Y(1), \\ldots, Y(K), S(1), \\ldots, S(K), Z)$ (with $\\mathbf{X}$ in Section 2.3), of which $(Y, S, Z)$ is the observed part. $\\perp\\!\\!\\!\\perp$ is independence, and $\\mathbf{X} \\perp\\!\\!\\!\\perp Z|S$ is conditional independence given $S$. $z$ and $z'$ range over $\\{1, \\ldots, K\\}$. Every numbered result is a statement about this population law; no target is asymptotic. The paper does not define ‘sharp bounds’. The targets use the usual meaning: the infimum and supremum of the target parameter over all joint laws of the potential variables and $Z$ that satisfy the assumptions and induce the given law of the observables $(Y, S, Z)$.",
+ "targets": [
+  {
+   "target_id": "P010-T16",
+   "canonical_claim": {
+    "target_id": "P010-T16",
+    "kind": "corrected_statement",
+    "name_in_paper": "Appendix A, proof of Corollary 3, closing arithmetic of the counterexample, corrected",
+    "location": "p. 580 (PDF p. 9)",
+    "statement": "[Printed, Appendix A, p. 580 (PDF p. 9)] “Proof of Corollary 3. We prove the claim via a simple counterexample. Suppose Supp$(Z) = \\{1, 2\\}$ and $$f(Y(1), Y(2), S(1), S(2)) = \\begin{cases} 1/3 : Y(1) = 1, Y(2) = 1, S(1) = 0, S(2) = 1 \\\\ 1/3 : Y(1) = 0, Y(2) = 0, S(1) = 1, S(2) = 0 \\\\ 1/3 : Y(1) = 0, Y(2) = 0, S(1) = 1, S(2) = 1 \\\\ 0 : \\text{otherwise.} \\end{cases}$$ Note that $\\mathrm{E}[S(2) - S(1)] = 0$ and $\\mathrm{E}[\\tau|S(1) = S(2) = 1] = \\mathrm{E}[\\tau|S(1) = 1, S(2) = 0] = \\mathrm{E}[\\tau|S(1) = 0, S(2) = 1] = 0$. $\\mathrm{E}[Y|S = 1, Z = 2] - \\mathrm{E}[Y|S = 1, Z = 1] = 0 - 1/2 = -1/2$.” [Corrected last sentence, from Sol's smallest repair; $\\tau$, which the paper uses without defining it, is $Y(2) - Y(1)$] $\\mathrm{E}[Y|S = 1, Z = 2] - \\mathrm{E}[Y|S = 1, Z = 1] = 1/2 - 0 = 1/2$. [Corrected statement in full] Let $K = 2$, let $(Y(1), Y(2), S(1), S(2))$ have the law $f$ displayed above, let $Z$ be independent of it with $0 < \\Pr(Z = 1) < 1$, and let $Y$ and $S$ be given by Assumption 1. Then: (a) Assumptions 1–3 hold and $\\Pr[S(1) = S(2) = 1] = 1/3 > 0$; (b) $\\mathrm{E}[S(2) - S(1)] = 0$ and $\\Pr[S = 1|Z = 1] = \\Pr[S = 1|Z = 2] = 2/3$, so $S \\perp\\!\\!\\!\\perp Z$; (c) $Y(2) - Y(1) = 0$ with probability one, so $\\mathrm{E}[\\tau|S(1) = S(2) = 1] = \\mathrm{E}[\\tau|S(1) = 1, S(2) = 0] = \\mathrm{E}[\\tau|S(1) = 0, S(2) = 1] = 0$ with $\\tau = Y(2) - Y(1)$; (d) $\\mathrm{E}[Y|S = 1, Z = 1] = 0$ and $\\mathrm{E}[Y|S = 1, Z = 2] = 1/2$, so $\\mathrm{E}[Y|S = 1, Z = 2] - \\mathrm{E}[Y|S = 1, Z = 1] = 1/2 - 0 = 1/2 \\ne 0 = \\mathrm{E}[Y(2) - Y(1)|S(1) = S(2) = 1]$.",
+    "definitions_needed": "[$Y$, $S$, $Z$, $Y(z)$, $S(z)$ and Assumptions 1–3: standing assumptions, pp. 573–574 (PDF pp. 2–3).] [Corollary 3, p. 575 (PDF p. 4): transcribed in P010-T21.] [$f$ is the joint probability mass function of $(Y(1), Y(2), S(1), S(2))$ displayed in the proof; $\\tau$ is not defined anywhere in the paper and stands for the unit-level effect $Y(2) - Y(1)$. The proof does not state the law of $Z$ beyond its support $\\{1, 2\\}$.]",
+    "note": "P010-E010 is rated an error, Minor: the two conditional means are interchanged in the printed arithmetic and the sign is wrong; the selected contrast is non-zero either way, which is what Corollary 3 needs. Arm 1 passers are the second and third types, with $Y(1) = 0$; arm 2 passers are the first and third types, with $Y(2) = 1$ and $0$. The law of $Z$ is left implicit in the proof: taking $Z$ independent of the potential variables with $0 < \\Pr(Z = 1) < 1$ satisfies Assumption 2, and the conditional means do not depend on $\\Pr(Z = 1)$. This target supplies the witness for the headline result Corollary 3 (P010-T21) and, with a constant covariate, for Corollary 5 (P010-T23).",
+    "asymptotic": false,
+    "related_finding": "P010-E010"
+   }
+  },
+  {
+   "target_id": "P010-T17",
+   "canonical_claim": {
+    "target_id": "P010-T17",
+    "kind": "corrected_statement",
+    "name_in_paper": "Assumption 3 (Nonzero Passing Rates), corrected",
+    "location": "p. 574 (PDF p. 3)",
+    "statement": "[Printed, p. 574 (PDF p. 3)] “Finally, we require that at least some subjects pass the manipulation check in both treatment and control.” ASSUMPTION 3 (Nonzero Passing Rates). For all $z \\in \\{1, \\ldots, K\\}$, $\\Pr[S|Z = z] > 0$. [Corrected, from Sol's smallest repair: the event $S = 1$ is written, and ‘both treatment and control’ becomes ‘every treatment arm’] “Finally, we require that at least some subjects pass the manipulation check in every treatment arm.” ASSUMPTION 3 (Nonzero Passing Rates). For all $z \\in \\{1, \\ldots, K\\}$, $\\Pr[S = 1|Z = z] > 0$.",
+    "definitions_needed": "[Section 2, p. 573 (PDF p. 2)] “$S$ denotes the result of a manipulation check (1 if the subject passed, 0 if the subject failed), and $Z$ denotes the subject's treatment assignment (1 for treatment 1, 2 for treatment 2, . . .). Without loss of generality, assume that the support of $Z$ is $\\{1, \\ldots, K\\}$, where $K$ is finite.” [After the Assumption, p. 574] “Note that Assumption 3 is verifiable from the experimental data.”",
+    "note": "P010-N002 is rated an error, Minor: a misprinted symbol in a formula; the name of the assumption and its use fix the meaning. This is an assumption and not a theorem: the Lean object is the hypothesis that every other target uses, stated as a definition. A consequence that the proof of Proposition 1 uses (p. 580: ‘the marginal distributions of $S(k)$ are each equivalent to $S|Z = k$’) can be proved with it: under Assumptions 1 and 2, $\\Pr[S = 1|Z = z] = \\Pr[S(z) = 1]$, so the corrected assumption is equivalent to $\\Pr[S(z) = 1] > 0$ for all $z$. The denominators $\\Pr[S = 1|Z = z]$ of Proposition 1 are positive by this assumption. The merge file relates the finding to headline claim P010-H4; the corollaries use the assumption as well. Validation was a page check in the batch validate/_batch/P010-B01, which has no derivation.",
+    "asymptotic": false,
+    "related_finding": "P010-N002"
+   }
+  },
+  {
+   "target_id": "P010-T18",
+   "canonical_claim": {
+    "target_id": "P010-T18",
+    "kind": "corrected_statement",
+    "name_in_paper": "Corollary 1, corrected (stray closing bracket removed)",
+    "location": "p. 574 (PDF p. 3); proof in Appendix A, pp. 579–580 (PDF pp. 8–9)",
+    "statement": "[Printed, p. 574 (PDF p. 3)] COROLLARY 1. If $\\Pr[S(1) = S(2) = \\cdots = S(K)] = 1$, then $\\mathrm{E}[Y|S = 1, Z = z] - \\mathrm{E}[Y|S = 1, Z = z'] = \\mathrm{E}[Y(z) - Y(z')]|S(1) = S(2) = \\cdots = S(K) = 1]$. [Corrected, from Sol's smallest repair: the closing bracket after $Y(z')$ is deleted, so that the conditioning event is inside the expectation; nothing else changes] COROLLARY 1. If $\\Pr[S(1) = S(2) = \\cdots = S(K)] = 1$, then $\\mathrm{E}[Y|S = 1, Z = z] - \\mathrm{E}[Y|S = 1, Z = z'] = \\mathrm{E}[Y(z) - Y(z')|S(1) = S(2) = \\cdots = S(K) = 1]$. [Hypotheses attached: Assumptions 1–3 (Assumption 3 as corrected in P010-T17); any $z, z' \\in \\{1, \\ldots, K\\}$; finite first moments of $Y(z)$ and $Y(z')$, so that the conditional means exist.]",
+    "definitions_needed": "[$Y$, $S$, $Z$, $Y(z)$, $S(z)$ and Assumptions 1–3: standing assumptions, pp. 573–574 (PDF pp. 2–3).] [Target parameter, p. 574] “Here we consider one possible target that seems natural: $\\mathrm{E}[Y(z) - Y(z')|S(1) = S(2) = \\cdots = S(K) = 1]$, or the average treatment effect among subjects who would pass under all treatment conditions.” [After the Corollary, p. 574] “Corollary 1 implies sufficient conditions for discarding subjects to be unproblematic if the inferential target is the average potential outcomes among those who pass the manipulation check. In short, the treatment cannot affect whether or not a subject passes the manipulation check [...]. Thus we can find cases where dropping subjects is acceptable: if a check precedes treatment (e.g., a pretreatment attention check), then discarding subjects is not a problem, at least for characterizing effects for a well-defined subpopulation of units.”",
+    "note": "P010-N003 is rated an error, Minor: a misprinted symbol in an identity. The corrected statement is the paper's headline result on dropping after a check that the treatment cannot affect (P010-H3), and both fresh readers found it true under Assumption 2 exactly as stated (ignorability separately for each $z$). Its printed proof has an invalid step (P010-E009): the counterexample to that step is P010-T7 and the corrected proof, which proves this statement arm by arm, is P010-T8. Under the premise $\\{S = 1\\}$ and $\\{S(1) = \\cdots = S(K) = 1\\}$ coincide almost surely, and Assumption 3 makes them non-null. Validation was a page check in the batch validate/_batch/P010-B01, which has no derivation.",
+    "asymptotic": false,
+    "related_finding": "P010-N003"
+   }
+  },
+  {
+   "target_id": "P010-T19",
+   "canonical_claim": {
+    "target_id": "P010-T19",
+    "kind": "headline_result",
+    "name_in_paper": "Lemma 1",
+    "location": "p. 574 (PDF p. 3)",
+    "statement": "[Section 2.1, p. 574 (PDF p. 3)] “Without discarding subjects, all mean potential outcomes are well identified, and their differences are also point identified. These differences are sometimes referred to as intent-to-treat effects (Gerber and Green 2012).” LEMMA 1. $\\mathrm{E}[Y|Z = z] - \\mathrm{E}[Y|Z = z'] = \\mathrm{E}[Y(z) - Y(z')]$. “A proof follows from linearity of expectations. Randomization ensures intent-to-treat effects are point identified, and can be estimated simply by examining differences in means.” [Hypotheses attached: Assumptions 1 and 2; any $z, z' \\in \\{1, \\ldots, K\\}$; finite first moments of $Y(z)$ and $Y(z')$. The first quoted sentence is the component identity $\\mathrm{E}[Y|Z = z] = \\mathrm{E}[Y(z)]$ for each $z$.]",
+    "definitions_needed": "[$Y$, $Z$, $Y(z)$ and Assumptions 1 and 2: standing assumptions, pp. 573–574 (PDF pp. 2–3).] [Regularity, p. 574] “As we proceed, plug-in estimators will be consistent given suitable regularity conditions (e.g., finite third moments, continuity), with the bootstrap providing a basis for asymptotic inference.”",
+    "note": "An exact population identity; both fresh readers derived it from consistency and per-arm ignorability and no finding touches it. By Assumption 1, $Y = Y(z)$ on $\\{Z = z\\}$; by Assumption 2, $Y(z) \\perp\\!\\!\\!\\perp Z$ with $\\Pr(Z = z) > 0$, so $\\mathrm{E}[Y|Z = z] = \\mathrm{E}[Y(z)|Z = z] = \\mathrm{E}[Y(z)]$; the Lemma follows by linearity. The sentence on consistency of plug-in estimators is not a numbered result and is not a target.",
+    "asymptotic": false
+   }
+  },
+  {
+   "target_id": "P010-T20",
+   "canonical_claim": {
+    "target_id": "P010-T20",
+    "kind": "headline_result",
+    "name_in_paper": "Corollary 2",
+    "location": "p. 574 (PDF p. 3); the proof remark is on p. 575 (PDF p. 4)",
+    "statement": "[p. 574 (PDF p. 3)] “Note that the condition in Corollary 1 has a testable implication.” COROLLARY 2. If $\\Pr[S(1) = S(2) = \\cdots = S(K)] = 1$, then $S \\perp\\!\\!\\!\\perp Z$. [p. 575 (PDF p. 4)] “A proof follows directly from Assumptions 1 and 2. That is, if the treatment does not affect whether a subject passes the manipulation check, then it must be the case that passing will be unrelated to the treatment condition. Thus, if $S \\not\\perp\\!\\!\\!\\perp Z$ (i.e., there is an effect of $Z$ on $S$), then we know that the condition for Corollary 1 to hold (and dropping subjects to be unproblematic) must be false.” [Hypotheses attached: Assumptions 1 and 2.]",
+    "definitions_needed": "[$S$, $Z$, $S(z)$ and Assumptions 1 and 2: standing assumptions, pp. 573–574 (PDF pp. 2–3).] [Corollary 1, p. 574: transcribed in P010-T18.]",
+    "note": "An exact population statement; no finding touches it. Under the premise, $S = S(1)$ almost surely by Assumption 1, and $S(1) \\perp\\!\\!\\!\\perp Z$ by Assumption 2 (marginalising the pair $(Y(1), S(1))$). The last quoted sentence is the contrapositive. It is step (iii) of the corrected proof of Corollary 1 (P010-T8).",
+    "asymptotic": false
+   }
+  }
+ ]
+}

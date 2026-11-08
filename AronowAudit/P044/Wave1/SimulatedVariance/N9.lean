@@ -10,8 +10,8 @@ open AronowAudit.P044
 
 noncomputable section
 
-/-- The abbreviated full-joint function agrees with the full count function,
-using N3 for its explicitly tabulated entries as well as its fallback.
+/-- The source's abbreviated full-joint function agrees with the full count
+function, using N3 for its explicitly tabulated entries as well as its fallback.
 This is valid at every ordered pair of labels. -/
 private theorem n9_full_joint (hN3 : N3) (i j : Fin 12) (a b : Exposure) :
     jointCount cliqueF i j a b = cliqueFullJoint i j a b := by

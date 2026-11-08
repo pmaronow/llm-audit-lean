@@ -125,6 +125,34 @@ theorem TailB_Ned_supported_sum_bound {N : ℕ} (hN : 0 < N)
     _ = _ := by simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
         nsmul_eq_mul]; ring
 
+/-- Substituting uniformly close scores in a supported quadratic form. -/
+theorem TailB_Ned_supported_pair_substitution {N : ℕ} (hN : 0 < N)
+    (D : Fin N → Fin N → ℝ) (K : ℝ → ℝ) (b Cb L Mx My δ : ℝ)
+    (hL : 0 ≤ L) (hMx : 0 ≤ Mx) (hMy : 0 ≤ My) (hδ : 0 ≤ δ)
+    (hsp : ∀ i, ((ball D i b).card : ℝ) ≤ Cb*(1+b^2))
+    (hK : ∀ i j, j ∈ ball D i b → |K (D i j/b)| ≤ L)
+    (x y : Fin N → ℝ) (hx : ∀ i, |x i| ≤ Mx) (hy : ∀ i, |y i| ≤ My)
+    (hxy : ∀ i, |x i-y i| ≤ δ) :
+    |((∑ i, ∑ j ∈ ball D i b, x i*x j*K (D i j/b)) -
+        (∑ i, ∑ j ∈ ball D i b, y i*y j*K (D i j/b))) / (N : ℝ)| ≤
+      Cb*(1+b^2)*(L*δ*(Mx+My)) := by
+  classical
+  rw [← Finset.sum_sub_distrib]
+  simp_rw [← Finset.sum_sub_distrib]
+  apply TailB_Ned_supported_sum_bound hN D b Cb (L*δ*(Mx+My)) (by positivity) hsp
+  intro i j hj
+  have he : x i*x j*K (D i j/b)-y i*y j*K (D i j/b) =
+      ((x i-y i)*x j+y i*(x j-y j))*K (D i j/b) := by ring
+  rw [he, abs_mul]
+  calc
+    _ ≤ (|x i-y i| * |x j|+|y i| * |x j-y j|)*|K (D i j/b)| := by
+      apply mul_le_mul_of_nonneg_right _ (abs_nonneg _)
+      simpa only [abs_mul] using abs_add_le ((x i-y i)*x j) (y i*(x j-y j))
+    _ ≤ (δ*Mx+My*δ)*L := mul_le_mul
+      (add_le_add (mul_le_mul (hxy i) (hx j) (abs_nonneg _) hδ)
+        (mul_le_mul (hy i) (hxy j) (abs_nonneg _) hMy))
+      (hK i j hj) (abs_nonneg _) (by positivity)
+    _ = _ := by ring
 
 /-- Unnormalized supported quadratic form. -/
 def TailB_Ned_form {N : ℕ} (D : Fin N → Fin N → ℝ) (K : ℝ → ℝ)
@@ -1200,39 +1228,9 @@ theorem TailB_Ned_oracle_bias
   rw [heq]
   linarith
 
-/-- The corrected NED HAC theorem, with all four approximation/bias
+/-- The held corrected NED HAC theorem, with all four approximation/bias
 clauses and the conservative liminf coverage conclusion. -/
-theorem TailB_ned_hac_correction : (∀ {Space : ℕ → Type*} [∀ N, MetricSpace (Space N)] [∀ N, MeasurableSpace (Space N)]
-      (P : PopulationSequence Space)
-      (p d : ℝ)
-      (K : ℝ → ℝ)
-      (bandwidth : ℕ → ℝ)
-      (hp : 0 < p ∧ p < 1)
-      (hd : 0 ≤ d)
-      (hb : BoundedOutcomes P)
-      (hWD : ∀ N, WellDefined (P N) d)
-      (hNED : NEDConditions P p d)
-      (hmetric : MetricNodeDistances P)
-      (hspacing : QuadraticSpacing P)
-      (hK : KernelConditions K)
-      (hbpos : ∀ N, 0 < bandwidth N)
-      (hbdiv : Tendsto bandwidth atTop atTop)
-      (hbrate : Asymptotics.IsLittleO atTop bandwidth (fun N => (N : ℝ)^(1/6 : ℝ)))
-      (hhom : LiminfAtLeast (kernelHomophily P p d K bandwidth) 0),
-      let R := circleSequence P d
-    let D := fun N => nodeSeparation (P N)
-    let Vhac := fun N z => kernelVariance z (residual (R N) z) (distanceKernel (D N) K (bandwidth N))
-    InProb (fun _ _ => p) (fun N z => N*(Vhac N z-nedV1 p (R N) (D N) K (bandwidth N) z)) ∧
-    InProb (fun _ _ => p) (fun N z => N*(nedV1 p (R N) (D N) K (bandwidth N) z-
-      nedV2 p (R N) (D N) K (bandwidth N) z)) ∧
-    InProb (fun _ _ => p) (fun N z => N*(nedV2 p (R N) (D N) K (bandwidth N) z-
-      expect (fun _ => p) (nedV2 p (R N) (D N) K (bandwidth N)))) ∧
-    LiminfAtLeast (fun N => (N : ℝ)*(expect (fun _ => p) (nedV2 p (R N) (D N) K (bandwidth N))-
-      variance (fun _ => p) (linearHajek (fun _ => p) (R N)))) 0 ∧
-    (Nondegenerate (fun N => variance (fun _ => p) (linearHajek (fun _ => p) (R N))) →
-      ∀ α : ℝ, 0 < α → α < 1 → Conservative (fun N => prob (fun _ => p) (fun z =>
-        normalQuantile (α/2) ≤ (hajek (R N) z-ame (fun _ => p) (R N))/Real.sqrt (Vhac N z) ∧
-          (hajek (R N) z-ame (fun _ => p) (R N))/Real.sqrt (Vhac N z) ≤ normalQuantile (1-α/2))) α)) := by
+theorem TailB_ned_hac_correction : type_of% @AronowAudit.P004.ned_hac_correction := by
   intro Space instMetric instMeas P p d K bandwidth hp hd hb hWD hNED hmetric hspacing hK
     hbpos hbdiv hbrate hhom
   dsimp only
@@ -1252,6 +1250,8 @@ theorem TailB_ned_hac_correction : (∀ {Space : ℕ → Type*} [∀ N, MetricSp
   funext N z
   dsimp only [circleSequence]
   ring
+
+example : type_of% @AronowAudit.P004.ned_hac_correction := AronowAudit.P004.Wave1.TailB_ned_hac_correction
 
 end
 end AronowAudit.P004.Wave1

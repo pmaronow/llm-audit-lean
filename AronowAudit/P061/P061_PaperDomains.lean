@@ -2,7 +2,8 @@ import AronowAudit.P061.P061_Foundations
 import AronowAudit.P061.P061_Refutations
 import AronowAudit.P061.P061_SamplingCompletion
 
-/-! P061 statements with explicit statistical moment domains and design laws.
+/-! P061 paper-domain statements. The original generic helpers are retained;
+these declarations state their statistical moment domains or actual design laws.
 Printed false general existence assertions are refuted, never used as premises. -/
 namespace AronowAudit.P061.PaperDomains
 open scoped BigOperators Classical
@@ -60,6 +61,34 @@ theorem finite_support_targets_T11 {Ω : Type} {N : ℕ} (D : Design Ω)
   exact ⟨hd,hd',fun i => ⟨epo_conditional D g y i d (hp i) (hd i),
     epo_conditional D g y i d' (hp' i) (hd' i)⟩,aeed_average_eed_algebra D g y d d'⟩
 
+/-- T17(b), the actual uniform fixed-count SRS law, with its realized count
+proved on every supported draw. No stability of raw outcomes is required. -/
+theorem sample_mean_SRS_T17 {N : ℕ} (D : Design (Fin N → Fin 2))
+    (y : OutcomeSchedule (Fin N → Fin 2) N) (n : ℕ) (hn : 0<n) (hn' : n<N)
+    (hd : CompleteRandomization D n) :
+    (∀ z, Support D z → (Finset.univ.filter (fun i => z i=1)).card=n) ∧
+    (∀ i, pi D (fun i z => (z i).val) i 1=(n:ℝ)/N) ∧
+    expectation D (sampleMean (fun i z => (z i).val) y 1 n)=
+      aepo D (fun i z => (z i).val) y 1 := by
+  refine ⟨?_,fun i => (complete_randomization_unbiased D y n hn hn' hd).1 i |>.1,
+    (complete_randomization_unbiased D y n hn hn' hd).2.1⟩
+  intro z hz
+  by_contra hc
+  have hp : D.p z=0 := by simp [hd z,hc]
+  exact (ne_of_gt hz) hp
+
+/-- T17(c) under the actual complete-randomization law; all nuisance
+dependence in the raw outcome schedule is retained. -/
+theorem difference_in_means_CR_T17 {N : ℕ} (D : Design (Fin N → Fin 2))
+    (y : OutcomeSchedule (Fin N → Fin 2) N) (n : ℕ) (hn : 0<n) (hn' : n<N)
+    (hd : CompleteRandomization D n) :
+    (∀ i, pi D (fun i z => (z i).val) i 1=(n:ℝ)/N ∧
+      pi D (fun i z => (z i).val) i 0=((N-n:ℕ):ℝ)/N) ∧
+    expectation D (fun z => sampleMean (fun i z => (z i).val) y 1 n z-
+      sampleMean (fun i z => (z i).val) y 0 (N-n) z)=
+      aeed D (fun i z => (z i).val) y 1 0 := by
+  exact ⟨(complete_randomization_unbiased D y n hn hn' hd).1,
+    (complete_randomization_unbiased D y n hn hn' hd).2.2⟩
 
 /-- General T17(b): actual SRS exposure-set law on arbitrary feasible raw
 assignments, retaining sampling order and all zero-probability interventions. -/
@@ -185,7 +214,7 @@ theorem variance_eq_covariance_T18 {Ω : Type} (D : Design Ω) (X : Ω → ℝ)
     variance D X=covariance D X X := variance_eq_covariance D X
 
 /-- The printed general claim is false; on its corrected moment domain the
-actual estimator is integrable and unbiased. -/
+actual estimator is integrable and unbiased. Both conclusions are checked. -/
 theorem ht_unbiased_T16_resolved {Ω : Type} {N : ℕ} (D : Design Ω)
     (g : ExposureMapping Ω N) (y : OutcomeSchedule Ω N) (d : ℝ) (hN : 0<N)
     (hp : ∀ i, 0<pi D g i d) (hy : TargetedMoment D g y d) :

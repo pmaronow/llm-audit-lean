@@ -11,7 +11,7 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 3000
 set_option autoImplicit false
 
-/-! P001-T129: the ratio is zero on the zero-density set by
+/-! Record 9 (P001-T129). The ratio is zero on the zero-density set by
 `div_zero`; no equality of the two supports is assumed. -/
 
 lemma t129_normalized_ratio {A : Type*} [MeasurableSpace A]
@@ -180,8 +180,11 @@ theorem true_model_log_likelihood_lemma_with_zeros_proof {Ω : Type*} [Measurabl
       filter_upwards [he] with ω hω
       rw [hω]
 
-/-! P001-T14: deterministic regrouping comes first, followed
-by moments under the finite product of fair sign measures. -/
+example : type_of% @AronowAudit.P001.true_model_log_likelihood_lemma_with_zeros :=
+  true_model_log_likelihood_lemma_with_zeros_proof
+
+/-! Record 13 (P001-T14). Deterministic regrouping comes first, followed
+by moments under the actual finite product of fair sign measures. -/
 
 lemma t14_donor_exists {n : ℕ} (p : Fin n → ℝ) (r : Fin n → Bool)
     (hr : ∃ j, r j = true) (i : Fin n) :
@@ -378,6 +381,9 @@ theorem hot_deck_conditional_reuse_variance_proof {n : ℕ} (hn : 0 < n) (p : Fi
     Measurable.aemeasurable (by fun_prop)), hTmean]
   simp_rw [hid, div_pow]
   rw [integral_div, t14_weighted_second]
+
+example : type_of% @AronowAudit.P001.hot_deck_conditional_reuse_variance :=
+  hot_deck_conditional_reuse_variance_proof
 
 end
 end AronowAudit.P001.Wave1

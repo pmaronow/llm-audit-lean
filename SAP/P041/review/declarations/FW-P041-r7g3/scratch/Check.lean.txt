@@ -1,0 +1,47 @@
+import SAP.P041.Challenge
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open SAP.P041
+
+-- All six rectangle hypotheses of T11 are simultaneously inhabited.
+example : ∃ h₁ s₁ h₂ s₂ h₃ s₃ : ℝ,
+    printedInterval 0.691 h₁ ∧ printedInterval 0.318 s₁ ∧
+    printedInterval 0.775 h₂ ∧ printedInterval 0.503 s₂ ∧
+    printedInterval 0.627 h₃ ∧ printedInterval 0.406 s₃ := by
+  refine ⟨0.691, 0.318, 0.775, 0.503, 0.627, 0.406, ?_⟩
+  norm_num [printedInterval]
+
+-- The full rectangles, not only their centers, avoid the log/division extensions.
+example :
+    (∀ h s : ℝ, printedInterval 0.691 h → printedInterval 0.318 s →
+      0 < h ∧ h < 1 ∧ 0 < s) ∧
+    (∀ h s : ℝ, printedInterval 0.775 h → printedInterval 0.503 s →
+      0 < h ∧ h < 1 ∧ 0 < s) ∧
+    (∀ h s : ℝ, printedInterval 0.627 h → printedInterval 0.406 s →
+      0 < h ∧ h < 1 ∧ 0 < s) := by
+  refine ⟨?_, ?_, ?_⟩ <;>
+    intro h s hh hs <;>
+    rcases hh with ⟨hh₁, hh₂⟩ <;>
+    rcases hs with ⟨hs₁, hs₂⟩ <;>
+    exact ⟨by linarith, by linarith, by linarith⟩
+
+-- Genuine observed proportions and nonzero denominators for T12.
+example :
+    (0 : ℝ) < 52/150 ∧ (52/150 : ℝ) < 75/150 ∧ (75/150 : ℝ) < 1 ∧
+    (0 : ℝ) < 69/150 ∧ (69/150 : ℝ) < 92/150 ∧ (92/150 : ℝ) < 1 ∧
+    (0 : ℝ) < 32/100 ∧ (32/100 : ℝ) < 62/100 ∧ (62/100 : ℝ) < 1 ∧
+    (0 : ℝ) < (75+52)/2 ∧ (0 : ℝ) < (92+69)/2 ∧ (0 : ℝ) < (62+32)/2 := by
+  norm_num
+
+-- Count feasibility and nesting of 12-hour removals in 72-hour removals.
+example :
+    (52 : ℕ) ≤ 69 ∧ 69 ≤ 150 ∧ (75 : ℕ) ≤ 92 ∧ 92 ≤ 150 ∧
+    (32 : ℕ) ≤ 100 ∧ (62 : ℕ) ≤ 100 := by
+  norm_num
+
+-- Independently verify the entire closed arithmetic assertion; no use of T12.
+example : T12WholeStatement := by
+  norm_num [T12WholeStatement, T12Statement, relativeIncrease,
+    symmetricDifference, roundsWhole]

@@ -1,0 +1,39 @@
+[
+ {
+  "target_id": "P061-T11",
+  "decision": "restricted",
+  "theorem": "SAP.P061a.T11",
+  "restriction": "Adds finiteness of the positive-probability assignment support. The feasible assignment type remains arbitrary and may contain infinitely many zero-mass assignments; no stability, independence or global outcome bound is assumed. All infinite-positive-support designs are excluded, including those with existing targeted moments. Retains the supported-atom exposure-probability formula, finite targeted absolute moments, conditional exposure-mean equalities, AEPO averaging, unit conditional-mean contrasts, and both AEED identities.",
+  "rows_used": [
+   "AronowAudit.P061.PaperDomains.finite_support_targets_T11_resolved"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P061.Refutations.printed_well_defined_claim_refuted",
+    "reason": "Supports the auxiliary positivity-only counterexample reading; the revised Challenge selects the positive finite-support component of the other credited row."
+   }
+  ],
+  "statement_definition": "SAP.P061a.T11Statement",
+  "bridge": "SAP.P061a.Bridge.finite_targets_correspondence",
+  "supporting_declarations": [
+   "tsum_congr",
+   "Finset.sum_congr",
+   "congrArg₂"
+  ],
+  "review_round_3": {
+   "finding": "not_faithful/major",
+   "disposition": "resolved by conservative positive restriction",
+   "action": "Replaced the disputed negation by the positive finite-support result from the credited declaration. Removed the printed-false claim and the refuted decision. The finite-support hypothesis supplies ordinary-mean existence, and no general infinite-support claim is made. This supersedes the round-2 refutation disposition.",
+   "citations": [
+    "AronowAudit/P061/P061_PaperDomains.lean:235",
+    "work.json:2383"
+   ],
+   "changed_definitions": [
+    "SAP.P061a.T11Statement"
+   ],
+   "affected_challenge_declarations": [
+    "SAP.P061a.T11"
+   ]
+  }
+ }
+]

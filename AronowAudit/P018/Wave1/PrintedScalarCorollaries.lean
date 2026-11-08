@@ -18,5 +18,7 @@ theorem printed_corollaries_scalar_refuted :
         4 / Dreal N)) :=
   PrintedScalarCorollaries.assemble PrintedScalarCorollaries.n1_proof PrintedScalarCorollaries.n2_proof
 
+example : AronowAudit.P018.Wave1.PrintedScalarCorollaries.Target := printed_corollaries_scalar_refuted
+
 end
 end AronowAudit.P018.Wave1

@@ -9,7 +9,11 @@ import AronowAudit.P001.Wave1.CausalIpwDr.N2
 import AronowAudit.P001.Wave1.MarBalance.N1
 import AronowAudit.P001.Wave1.MarBalance.N2
 
-/-! P001-T116: L1 identification and the moment-free propensity-score theorem. -/
+/-! P001-T116: separate L1 identification from the distributional score theorem.
+
+The verified GLP0011B2 module is absent from this checkout. The two prefixed helpers
+below reuse its proof bodies from the read-only audit source, with no new premises.
+-/
 
 namespace AronowAudit.P001.Wave1
 
@@ -76,8 +80,9 @@ lemma DecideP001T116_arm_cefs {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpa
       (fun ω => observedOutcome (Y0 ω) (Y1 ω) (D ω)) p m1
       hU hD measurable_snd.snd hbin hCI hp hpos1 hi1 hobs1 hm1 hmi1
 
-/-- An event-wise tower argument reduces conditional independence to the propensity
-score for an arbitrary measurable outcome space. The proof uses only outcome events. -/
+/-- Generalization of the event-wise tower proof in
+`AronowAudit/P001/Wave1/MarBalance/N3.lean` from a scalar outcome to an
+arbitrary measurable outcome space. The proof uses only outcome events. -/
 lemma DecideP001T116_reduce_ci {Ω E F : Type*} [MeasurableSpace Ω] [MeasurableSpace E]
     [MeasurableSpace F] (μ : Measure Ω) [IsProbabilityMeasure μ]
     (X : Ω → E) (hX : Measurable X) (U : Ω → F) (D : Ω → ℝ)
@@ -230,8 +235,15 @@ theorem strong_ignorability_repaired :
   exact ⟨@strong_ignorability_l1_identification,
     @strong_ignorability_propensity_score_moment_free⟩
 
-
+/- The brief's universe-implicit check below does not elaborate: Lean generalizes
+its eight fresh universe parameters independently. See the run report.
+example : type_of% @strong_ignorability_repaired = ((type_of% @strong_ignorability_l1_identification) ∧ (type_of% @strong_ignorability_propensity_score_moment_free)) := rfl
+-/
 universe u v w z
+
+example : type_of% @strong_ignorability_repaired.{u, v, w, z} =
+    ((type_of% @strong_ignorability_l1_identification.{u, v}) ∧
+      (type_of% @strong_ignorability_propensity_score_moment_free.{w, z})) := rfl
 
 end
 

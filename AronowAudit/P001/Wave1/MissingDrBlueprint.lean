@@ -1,17 +1,21 @@
 import AronowAudit.P001.Wave1.MarDiscreteBlueprint
 
 /-!
-# Double robustness for missing data (P001-T113)
+# Blueprint: double robustness for missing data, paper support (P001-T113)
 
-Theorem 6.2.9 (p. 229, proof pp. 229–230), with `Supp[R] = {0,1}` and
-a.e. binary values, positivity and bounds. The two printed alternatives are:
-(i) correct respondent regression with `η < q(X) < 1 - η`; or
-(ii) `q(X) = p(X)` a.e., where MAR already bounds `p(X)` below.
-The finite-expectation convention for `m(X)` is explicit (footnote 2, p. 45).
-No bounded outcome or L² assumption is imposed.
+Record 14 of group P001a: P001-T113 / held `AronowAudit.P001.missing_double_robustness`;
+resolution `repair_and_prove`. Theorem 6.2.9 (p. 229, proof pp. 229-230). The held draft
+(:4324, sorry) allows a constant response indicator and pointwise bounds. The repair
+(mapper's `missing_double_robustness_paper_support`) restores `Supp[R] = {0,1}`
+(`hR0`, `hR1`), uses a.e. binary values / positivity / bounds, keeps the two printed
+alternatives exactly ((i) correct respondent regression with `η < q(X) < 1 - η`; (ii)
+`q(X) = p(X)` a.e., where MAR already bounds `p(X)` below), and makes the finite-expectation
+convention for `m(X)` explicit (footnote 2, p. 45). No bounded outcome or L² assumption.
 
-The proof applies the augmented-arm identity with `U = Y`, `V = Y`, and
-`Z = censored Y R`. The two-sided bound on `q` supplies the lower bound `η ≤ q(X)`.
+Nodes: the shared `MarSelection` nodes (bundled `AllShared`); the record is the arm identity
+`N7` with `U = Y`, `V = Y`, `Z = censored Y R`. No record-specific node; the assembly is
+fully proved (it only converts the printed two-sided bound on `q` into the lower bound
+`η ≤ q(X)` that `N7` needs).
 -/
 
 set_option autoImplicit false
@@ -25,7 +29,8 @@ open scoped BigOperators ENNReal
 
 noncomputable section
 
-
+/-- The frozen statement the record is resolved by (mapper's
+`AronowAudit.P001.Wave1.missing_double_robustness_paper_support`). -/
 def Target : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] {K : ℕ} (μ : Measure Ω) [IsProbabilityMeasure μ]
     (X : Ω → Fin K → ℝ) (hX : Measurable X) (Y R : Ω → ℝ), Measurable Y → Measurable R →

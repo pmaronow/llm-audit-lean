@@ -1,0 +1,240 @@
+[
+  {
+    "target_id": "P010-T1",
+    "theorem": "SAP.P010.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The constants give positive sample sizes, passer counts (509,356,493), lower retained counts (284,281,278), and upper retained counts (285,282,279). Exact rational arithmetic in scratch/audit_numeric.py checks the two disjoint intervals; no antecedent is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T2",
+    "theorem": "SAP.P010.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All denominators are nonzero on the supplied data. scratch/audit_numeric.py verifies every exact rational endpoint and gap and enumerates all j=1,...,passers(a) for each cutoff equivalence. The fractional always-passer lower share is 40739821/77997088>0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T3",
+    "theorem": "SAP.P010.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both explicitly defined missingPassingPopulation laws are probability laws: stratum weights 1/4,1/4,1/2, independent fair assignment, exponential/Laplace outcome densities. All-pass mass is 1/4, passer rates are 1/2 and 3/4, and all outcome moments exist. This gives actual ordinary means rather than a nonintegrability convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T4",
+    "theorem": "SAP.P010.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take normalCommonPopulation: K=2,d=0, both rates 4/5, all-pass mass 4/5, focal passer law N(0,1), and r=1/4. All listed hypotheses hold and the compatible set contains this population. The r=0 subcase is realized by commonOutcomePopulation true (gaussianReal 0 1).",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P010-T5",
+    "theorem": "SAP.P010.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "boundedPasserPopulation is the explicitly specified probability mixture with all-pass mass 1/3 and rates 1/3. Its actual compatible all-passer mean is 1/2. At t=1/2 the approaching construction has weights (1/6,1/6,1/6,1/2), and lower always-passer mean 11/32. Exact moment and truncated-beta arithmetic is checked in scratch/audit_numeric.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T6",
+    "theorem": "SAP.P010.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "boundedPasserPopulation realizes K=2, all-pass mass 1/3, rate 1/3, and r=2>=1. Its observed law is atomless and its passer law is the integrable Beta(3,3) law on (0,1). Thus the else-branch hypotheses genuinely occur, with essential endpoints zero and one.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P010-T7",
+    "theorem": "SAP.P010.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The given four distinct states each have mass 1/4. scratch/audit_numeric.py verifies per-arm independence, positive assignment masses, joint-vector dependence and the finite conditional means by exact enumeration.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T8",
+    "theorem": "SAP.P010.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "jointDependencePopulation is a two-arm instance with common check status, passing rates one, all-pass mass one and both potential outcomes in {0,1}. Both focal first moments are finite. scratch/Check.lean additionally compiles a one-arm Dirac instance of the probability, independence, positive-passing, common-check and integrability premises.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T9",
+    "theorem": "SAP.P010.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two stated simulation laws have nonnegative stratum masses (2,3,3,17)/25 and (3,2,2,18)/25, respectively, and independent normal noise and fair assignment. Their all-pass masses are positive and both passer laws have finite moments and positive smooth densities. Independent float checks reproduce widths 1.7985772989680666 and 1.767983385221887; these checks do not certify rational enclosures.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P010-T10",
+    "theorem": "SAP.P010.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The outer hypotheses hold for p1=p2=4/5,rho=1/4,lambda=1,sigma=1, with stratum masses (2,3,3,17)/25. The fixed-observables clause has many instances, including two identical normalCommonPopulation laws. Interior p values make the correlation denominator strictly positive; sigma=0 is also a valid Dirac-noise boundary case.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P010-T11",
+    "theorem": "SAP.P010.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The eight-subject, two-cell design has both study-specific cell masses positive. The fitted probabilities (1/4,3/4) are interior, the displayed finite logits realize them, and the printed weighted total is 7/3>0. Exact weighting calculations pass in scratch/audit_numeric.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T12",
+    "theorem": "SAP.P010.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use Omega=Fin 2 with counting measure, pi=1/2, fR=(1/4,3/4) and fO=(3/4,1/4). Both positive densities integrate to one and all ratios are integrable; the squared-ratio normalizer is 7/3>0. This realizes both reciprocal transport and the nontrivial finite printed-odds branch.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T13",
+    "theorem": "SAP.P010.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "normalCommonPopulation is an explicit probability mixture with independent fair assignment and common Bernoulli(4/5) check. Each potential outcome and response is standard normal, all relevant conditional first moments are finite, and the all-pass mass is 4/5.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T14",
+    "theorem": "SAP.P010.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take normalCommonPopulation and arm 0. The conditional potential-passer law is standard normal and all-pass mass is 4/5. For example, the upper-tail selection coupling at p=1/4 has true-coordinate mass 3/4 and finite mean. The p=0 boundary retains the entire law.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T15",
+    "theorem": "SAP.P010.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "normalCommonPopulation and either arm give all-pass mass 4/5, an atomless integrable standard-normal passer law, and both trimming ratios 1/4. All means in the substantive upper-bound clause exist and all conditioning events there have positive probability.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T16",
+    "theorem": "SAP.P010.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take q=1/2, or any 0<q<1: independently assign each of the three strata with mass 1/3 to arms with probabilities q and 1-q. Outcomes are bounded in {0,1}; rates are 2/3, all-pass mass 1/3, and selected means 0 and 1/2. Exact finite checks at q=1/2,1/3,1/7 pass. scratch/Check.lean proves integrability for every real-valued integrand on this finite law for every q.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T17",
+    "theorem": "SAP.P010.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "selectionPopulation (1/2) has assignment mass 1/2 in each arm, rates 2/3 and potential-passing probabilities 2/3. A one-arm Dirac probability instance of randomAssignment and positivePassRates also compiles in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T18",
+    "theorem": "SAP.P010.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "jointDependencePopulation has all-pass mass one, both rates one, common checks and bounded potential outcomes. Both selected arm means are 1/2, and the always-passer mean effect is zero. It satisfies the assumptions despite dependence of the joint potential-outcome vector on assignment.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T19",
+    "theorem": "SAP.P010.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "jointDependencePopulation supplies nontrivial two-arm per-arm ignorability and bounded potential outcomes. Each potential and observed arm mean is 1/2 and the mean effect is zero. A Dirac one-arm instance of the premises compiles independently in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T20",
+    "theorem": "SAP.P010.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "normalCommonPopulation has nonconstant Bernoulli(4/5) common check, independent fair assignment and all required per-arm independence. Thus this implication has a model with both check values occurring and both assignments occurring.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T21",
+    "theorem": "SAP.P010.T21",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "Canonical standing_assumptions require each displayed conditional mean to exist. Defs/Part4.lean:115-119 omits Integrable response on each of passed intersect assigned 1 and passed intersect assigned 0, and Integrable (potentialOutcome 1 - potentialOutcome 0) on allPass. Defs/Part3.lean:25-30 instead returns zero for a nonintegrable restricted numerator.",
+      "With H standard Cauchy independent of fair assignment, Y0=H,Y1=H+1, both checks always true and X=0, all written hypotheses hold. Each selected meanOn is zero by integral_undef, while the integrable constant effect has mean one. The resulting 0!=1 is allowed despite nonexistent ordinary selected means and common check status. Thus the existential inequality does not certify the canonical finite-mean non-implication.",
+      "The restricted entry in record.json and Challenge/Part1.lean:91-97 accurately describe the literal total-function assertion. This changes the conditional-mean notion instead of restricting ordinary conditional means to a valid subclass, and fails the requested prohibition on nonintegrable-integral artifacts. The missing certificates can be supplied for the bounded T16 witness; their absence from an exported proof is not a mathematical obstruction."
+    ],
+    "fix": "In T21Statement, retain the current assumptions and inequality, and require the same existential mu to satisfy: Integrable response (mu.restrict (passed ∩ assigned 1)) ∧ Integrable response (mu.restrict (passed ∩ assigned 0)) ∧ Integrable (fun omega => potentialOutcome 1 omega - potentialOutcome 0 omega) (mu.restrict allPass). Witness: selectionPopulation (1/2). Replace the docstring by: An integrable population with observed check status independent of assignment has unequal selected-arm and always-passer ordinary conditional-mean contrasts. Remove the current totalization restriction.",
+    "nonvacuity": "selectionPopulation (1/2) is a genuine bounded witness: all-pass mass 1/3, positive rates 2/3, independent observed check and assignment, selected contrast 1/2 and always-passer mean effect zero. Exact enumeration verifies the finite example, and scratch/Check.lean proves all three missing restricted-integrability conditions for this witness. The current stub also admits the nonintegrable Cauchy artifact described in the issues.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T22",
+    "theorem": "SAP.P010.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let B,X,Z be mutually independent fair Boolean draws, set S0=S1=B, Y0=Y1=0, and use scalar covariate X in {0,1}. This is an eight-atom probability law with all positive arm masses, common check status and covariateRandomAssignment. Both check strata have nonconstant balanced X. This avoids using an empty covariate index or a zero-probability conditioning event.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T23",
+    "theorem": "SAP.P010.T23",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "Canonical standing_assumptions require existing conditional means at the positive-mass covariate value. Defs/Part4.lean:128-135 omits integrability of response on each selected-arm-and-X=0 event and of the potential effect on allPass intersect X=0. Its meanOn expressions use the zero-for-nonintegrability convention in Defs/Part3.lean:25-30.",
+      "The Cauchy model Y0=H,Y1=H+1, common always-true checks, fair independent assignment and X=0 satisfies probability, positive passing, covariate ignorability, conditional covariate balance and positive allPass-and-X=0 mass. The displayed totalized selected contrast is zero and totalized effect mean one, although neither ordinary selected conditional mean exists.",
+      "The restricted entry in record.json and Challenge/Part1.lean:103-109 disclose the literal change correctly, but replace the canonical ordinary-mean counterexample with a different total-function claim. Restricting an existential witness to K=2 and constant X is legitimate; allowing undefined ordinary means is the fidelity failure. The bounded T16 population supplies all missing integrability properties."
+    ],
+    "fix": "In T23Statement, put E1=(passed ∩ assigned 1) ∩ {omega | features omega = fun _ => 0}, E0=(passed ∩ assigned 0) ∩ {omega | features omega = fun _ => 0}, and EA=allPass ∩ {omega | features omega = fun _ => 0}. Require the same existential mu to satisfy Integrable response (mu.restrict E1) ∧ Integrable response (mu.restrict E0) ∧ Integrable (fun omega => potentialOutcome 1 omega - potentialOutcome 0 omega) (mu.restrict EA), in addition to the current assumptions and inequality. Witness: selectionPopulation (1/2). Replace the docstring by: An integrable covariate-balanced population has unequal selected-arm and always-passer ordinary conditional-mean contrasts at a positive-mass covariate value. Remove the current totalization restriction.",
+    "nonvacuity": "selectionPopulation (1/2), with its built-in scalar X=0, is a genuine bounded witness: all-pass-and-X=0 mass 1/3, selected contrast 1/2, and effect zero. Exact enumeration verifies the finite construction; scratch/Check.lean proves integrability of response and effect on every restriction of this population, including all three required X=0 events. The defect is failure to require this property of the existential witness.",
+    "confidence": 0.99
+  }
+]

@@ -6,7 +6,7 @@ open DenseCompletion
 noncomputable section
 
 /-- The absolute row-sum Schur estimate for a symmetric real matrix, in the
-Euclidean operator norm. -/
+actual Euclidean operator norm used by the original P011 contracts. -/
 theorem operatorNorm_le_abs_row_sum {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ)
     (hM : ∀ i j, M i j = M j i) (C : ℝ) (hC : 0 ≤ C)
     (hrow : ∀ i, (∑ j, |M i j|) ≤ C) : operatorNorm M ≤ C := by
@@ -55,5 +55,6 @@ theorem operatorNorm_le_abs_row_sum {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ)
   rw [he, l2_norm]
   simpa only [hxnorm] using hx (WithLp.ofLp x)
 
+#print axioms operatorNorm_le_abs_row_sum
 end
 end AronowAudit.P011.SchurSupport

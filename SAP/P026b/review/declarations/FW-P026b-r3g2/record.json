@@ -1,0 +1,106 @@
+[
+ {
+  "target_id": "P026-T18",
+  "decision": "refuted",
+  "theorem": "SAP.P026b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.Refutations.printed_pairwise_fitting_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.independent_comp",
+    "reason": "Composition under actual independence is a helper and is not needed for the pairwise-independence counterexample."
+   }
+  ]
+ },
+ {
+  "target_id": "P026-T19",
+  "decision": "refuted",
+  "theorem": "SAP.P026b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.Refutations.printed_table_columns_refuted"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P026-T20",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.ht_unbiased_T20",
+   "AronowAudit.P026.observed_mask"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.PaperScope.htTotal_unbiased_T20",
+    "reason": "The aggregate HT-unbiasedness row supplies all three expectations; this constituent expectation or single-total helper is not separately invoked for T20."
+   },
+   {
+    "lean_name": "AronowAudit.P026.expectation_add",
+    "reason": "The aggregate HT-unbiasedness row supplies all three expectations; this constituent expectation or single-total helper is not separately invoked for T20."
+   },
+   {
+    "lean_name": "AronowAudit.P026.expectation_const",
+    "reason": "The aggregate HT-unbiasedness row supplies all three expectations; this constituent expectation or single-total helper is not separately invoked for T20."
+   },
+   {
+    "lean_name": "AronowAudit.P026.expectation_div",
+    "reason": "The aggregate HT-unbiasedness row supplies all three expectations; this constituent expectation or single-total helper is not separately invoked for T20."
+   },
+   {
+    "lean_name": "AronowAudit.P026.expectation_mul_const",
+    "reason": "The aggregate HT-unbiasedness row supplies all three expectations; this constituent expectation or single-total helper is not separately invoked for T20."
+   },
+   {
+    "lean_name": "AronowAudit.P026.expectation_sub",
+    "reason": "The aggregate HT-unbiasedness row supplies all three expectations; this constituent expectation or single-total helper is not separately invoked for T20."
+   },
+   {
+    "lean_name": "AronowAudit.P026.expectation_sum",
+    "reason": "The aggregate HT-unbiasedness row supplies all three expectations; this constituent expectation or single-total helper is not separately invoked for T20."
+   },
+   {
+    "lean_name": "AronowAudit.P026.unit_ht_unbiased",
+    "reason": "The aggregate HT-unbiasedness row supplies all three expectations; this constituent expectation or single-total helper is not separately invoked for T20."
+   }
+  ]
+ },
+ {
+  "target_id": "P026-T21",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.complete_clusters_T21",
+   "AronowAudit.P026.complete_units",
+   "AronowAudit.P026.unequal_clusters_bias",
+   "AronowAudit.P026.indicator_complement",
+   "AronowAudit.P026.ht_unbiased",
+   "AronowAudit.P026.observed_mask",
+   "AronowAudit.P026.PaperScope.ClusterExperiment.unit_probability",
+   "AronowAudit.P026.PaperScope.ClusterExperiment.unit_marginals"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P026b.T21WholeStatement"
+ },
+ {
+  "target_id": "P026-T22",
+  "decision": "whole",
+  "theorem": "SAP.P026b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.fixed_prediction_unbiased_T22",
+   "AronowAudit.P026.PaperScope.generalized_adjustment_T22",
+   "AronowAudit.P026.PaperScope.generalized_unbiased_T22"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.PaperScope.unit_generalized_unbiased_T22",
+    "reason": "The selected generalized-unbiasedness row already supplies both totals and the ATE."
+   }
+  ]
+ }
+]

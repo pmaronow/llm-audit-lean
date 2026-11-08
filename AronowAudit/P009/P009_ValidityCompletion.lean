@@ -97,3 +97,4 @@ theorem assignment_ATE_hamming {n : ℕ} (hn : 0 < n) (E : Experiment n)
   exact ValidityCompletion.assignment_ATE_hamming_completed hn E K hK z z'
 end AronowAudit.P009
 
+#print axioms AronowAudit.P009.assignment_ATE_hamming

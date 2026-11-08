@@ -1,0 +1,99 @@
+import SAP.P014.Defs
+import SAP.P014.Defs.WholeW1
+
+open SAP.P014 MeasureTheory
+open scoped BigOperators ENNReal
+noncomputable section
+set_option maxRecDepth 4096
+set_option maxHeartbeats 1500000
+
+
+def coin : Measure Bool := (1/2 : ℝ≥0∞) • (Measure.dirac false + Measure.dirac true)
+
+instance : IsProbabilityMeasure coin := by
+  constructor
+  simp [coin, Measure.smul_apply, Measure.add_apply, ENNReal.inv_two_add_inv_two]
+
+example : (coin {false}).toReal = 1/2 ∧ (coin {true}).toReal = 1/2 := by
+  norm_num [coin, Measure.smul_apply, Measure.add_apply, Measure.dirac_apply]
+
+def S2 : Finset (Fin 2) := Finset.univ
+def v2 (i : S2) : ℝ := if (i : Fin 2) = 0 then -1 else 1
+def X2 (ω : Bool) (i : Fin 2) : ℝ :=
+  if ω then (if i = 0 then 1 else -1) else (if i = 0 then -1 else 1)
+
+-- Every premise of T6's two general implications is satisfied here.
+example :
+    0 < (2:ℝ) ∧ 2 ≤ S2.card ∧ Function.Injective v2 ∧
+    (∀ i, insideWindow 2 (v2 i)) ∧ 0 < (1:ℕ) ∧ 1 < S2.card ∧
+    (Finset.univ.filter (fun i : S2 => 0 ≤ v2 i)).card = 1 ∧
+    CorrectedLocalConditions coin X2 2 S2 v2 := by
+  classical
+  refine ⟨by norm_num, by norm_num [S2], ?_, ?_, by norm_num,
+    by norm_num [S2], ?_, ?_⟩
+  · intro i j h
+    apply Subtype.ext
+    fin_cases i <;> fin_cases j <;> norm_num [v2] at *
+  · intro i
+    fin_cases i <;> norm_num [insideWindow, v2]
+  · apply Finset.card_eq_one.mpr
+    refine ⟨⟨1, Finset.mem_univ _⟩, ?_⟩
+    ext i
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+    fin_cases i <;> norm_num [v2, Subtype.ext_iff]
+  · refine ⟨fun i => measurable_of_countable _, ?_, ?_⟩
+    · intro i
+      fin_cases i <;>
+        norm_num [eventProbability, coin, Measure.smul_apply, Measure.add_apply,
+          Measure.dirac_apply, Set.indicator, X2, S2, insideWindow,
+          ENNReal.inv_two_add_inv_two]
+    · intro σ
+      let a : S2 := ⟨0, by simp [S2]⟩
+      let b : S2 := ⟨1, by simp [S2]⟩
+      have hne : (σ a : Fin 2) ≠ (σ b : Fin 2) := by
+        intro h
+        have hab := σ.injective (Subtype.ext h)
+        have hh := congrArg Subtype.val hab
+        norm_num [a, b] at hh
+      have hb0 := (σ a : Fin 2).isLt
+      have hb1 := (σ b : Fin 2).isLt
+      have hs : (σ a : Fin 2) = 0 ∨ (σ a : Fin 2) = 1 := by omega
+      rcases hs with h0 | h0
+      · have h1 : (σ b : Fin 2) = 1 := by omega
+        dsimp [a, b] at h0 h1
+        norm_num [eventProbability, coin, Measure.smul_apply, Measure.add_apply,
+          Measure.dirac_apply, Set.indicator, X2, v2, S2,
+          Subtype.forall, Fin.forall_fin_succ, h0, h1]
+      · have h1 : (σ b : Fin 2) = 0 := by omega
+        dsimp [a, b] at h0 h1
+        norm_num [eventProbability, coin, Measure.smul_apply, Measure.add_apply,
+          Measure.dirac_apply, Set.indicator, X2, v2, S2,
+          Subtype.forall, Fin.forall_fin_succ, h0, h1]
+
+example : DiscreteScoreLaw coin X2 := by
+  filter_upwards [] with ω
+  cases ω <;>
+    norm_num [eventProbability, coin, Measure.smul_apply, Measure.add_apply,
+      Measure.dirac_apply, Set.indicator, X2, funext_iff, Fin.forall_fin_succ]
+
+example : ∀ x : Fin 2 → ℝ,
+    0 < eventProbability coin (fun ω => X2 ω = x) →
+    eventProbability coin (fun ω => X2 ω = x) = 1 / (S2.card.factorial : ℝ) := by
+  intro x hx
+  have hne : X2 false ≠ X2 true := by
+    intro h
+    have hh := congrFun h 0
+    norm_num [X2] at hh
+  by_cases h0 : X2 false = x
+  · have h1 : X2 true ≠ x := fun h => hne (h0.trans h.symm)
+    norm_num [eventProbability, coin, Measure.smul_apply, Measure.add_apply,
+      Measure.dirac_apply, Set.indicator, h0, h1, S2]
+  · by_cases h1 : X2 true = x
+    · norm_num [eventProbability, coin, Measure.smul_apply, Measure.add_apply,
+        Measure.dirac_apply, Set.indicator, h0, h1, S2]
+    · norm_num [eventProbability, coin, Measure.smul_apply, Measure.add_apply,
+        Measure.dirac_apply, Set.indicator, h0, h1] at hx
+
+example : ∀ᵐ ω ∂coin, ∀ j ∉ S2,
+    X2 ω j = (fun (_ : S2 → ℝ) (_ : Fin 2) => (0:ℝ)) (fun i : S2 => X2 ω i) j := by
+  simp [S2]

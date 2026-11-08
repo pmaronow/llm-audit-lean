@@ -1,0 +1,59 @@
+[
+ {
+  "target_id": "P004-T41",
+  "decision": "whole",
+  "theorem": "SAP.P004c.T41",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.ht_central_limit",
+   "AronowAudit.P004.ht_variance_order"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.design_dependency_graph",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   }
+  ],
+  "statement_definition": "SAP.P004c.T41Statement"
+ },
+ {
+  "target_id": "P004-T42",
+  "decision": "whole",
+  "theorem": "SAP.P004c.T42",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.Wave1.hajek_central_limit_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.design_dependency_graph",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.hajek_ratio_identity",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   }
+  ],
+  "statement_definition": "SAP.P004c.T42Statement"
+ },
+ {
+  "target_id": "P004-T44",
+  "decision": "restricted",
+  "theorem": "SAP.P004c.T44",
+  "restriction": "Uses the actual credited uniform QuadraticSpacing premise: one positive C_b and one eventual sample-size threshold valid simultaneously for all radii, with count bound C_b*(1+s^2). This replaces the canonical printed radiuswise-eventual C_b*s^2 premise; it does not establish the conclusions under the weaker radiuswise nonvacuous reading. Finite unbiasedness is asserted only for positive sample sizes with well-defined spatial averages. Eventual spatial regularity and the Appendix C metric node-distance premise are explicit. All four headline conclusions are retained under these premises.",
+  "rows_used": [
+   "AronowAudit.P004.Wave1.ned_headline_under_uniform_spacing"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.ht_unbiased",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.ned_exact_linear_variance",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   }
+  ],
+  "statement_definition": "SAP.P004c.T44Statement"
+ }
+]

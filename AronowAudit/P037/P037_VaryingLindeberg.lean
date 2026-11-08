@@ -1,9 +1,8 @@
 /-
-Adapted from StatLean/Stat-Lean, module
-`StatLean.HypothesisTesting.ForMathlib.LindebergCLT`.
-Upstream licence: Apache-2.0, see the file LICENSE-StatLean.txt in this
-directory and NOTICE at the repository root.
-The probability space and probability measure may differ in each row;
+Adapted from StatLean/Stat-Lean, commit e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2,
+StatLean/HypothesisTesting/ForMathlib/LindebergCLT.lean (lines 1–680).
+Upstream licence: Apache-2.0, see runs/_lean_completion/2026-10-18/research-external.md.
+Modification: allow a different probability space and probability measure in each row;
 all moment, independence and Lindeberg hypotheses remain explicit.
 -/
 import Mathlib.MeasureTheory.Order.Group.Lattice
@@ -22,40 +21,62 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 /-!
 # The Lindeberg central limit theorem for triangular arrays
 
-Suppose that, for each `n`, the finite row
-`X n 0, …, X n (m n − 1)` consists of independent, centered, square-integrable variables whose
+Mathlib's central limit theorem
+(`ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub`) covers a *single* i.i.d.
+sequence. The asymptotics of permutation, randomization and bootstrap distributions all
+need the strictly more general **triangular-array** form: for each `n` a finite row
+`X n 0, …, X n (m n − 1)` of independent, centered, square-integrable variables whose
 variances add up to `1` in the limit and which satisfy the **Lindeberg condition**
 $$\sum_i \mathbb E\bigl[X_{n,i}^2\,\mathbf 1\{|X_{n,i}| > \varepsilon\}\bigr] \to 0
   \qquad (\forall\,\varepsilon > 0),$$
-then the row sums `∑ᵢ Xₙ,ᵢ` converge in distribution to the standard normal law. Rows are
-unrelated to each other (no nesting, no common marginal), and their probability
-spaces and probability measures may vary with `n`.
+the row sums `∑ᵢ Xₙ,ᵢ` converge in distribution to the standard normal law. Rows are
+unrelated to each other (no nesting, no common marginal), which is exactly what the
+downstream applications need: after conditioning on the data, a permutation statistic is a
+row of independent summands whose law changes with `n`.
 
 ## Main results
 
 * `lindeberg_clt` — the triangular-array CLT under the Lindeberg condition.
 * `lindeberg_clt_of_bounded` — the uniformly-bounded corollary (`|Xₙ,ᵢ| ≤ cₙ`, `cₙ → 0`),
   which is the form most often applied.
+* `weighted_iid_clt` — weighted sums `∑ᵢ wₙ,ᵢ Yᵢ` of an i.i.d. sequence, under the
+  negligibility condition `maxᵢ wₙ,ᵢ² / ∑ⱼ wₙ,ⱼ² → 0`.
+* `triangular_wlln_of_L1` — the companion weak law: row-i.i.d. arrays whose row laws
+  converge weakly *and* whose first absolute moments converge have row averages converging
+  in probability to the limiting mean. **The frozen form of this statement was false** (the
+  `L¹` hypothesis was vacuous for non-integrable rows, because the Bochner integral takes its
+  junk value there); it carries one added hypothesis, `∀ n, Integrable id (G n)`, and is
+  proved. See its docstring for the counterexample and the repair.
 
-Convergence in distribution is stated in random-variable form, with the underlying
-probability space and measure allowed to vary across rows.
+Convergence in distribution is stated with Mathlib's `MeasureTheory.TendstoInDistribution`
+(random-variable form, constant family of underlying spaces `fun _ => P`), which is the
+convention already used by the multivariate CLT elsewhere in the project; convergence in
+probability with `MeasureTheory.TendstoInMeasure`.
 
 **Reference.** E.L. Lehmann and J.P. Romano, *Testing Statistical Hypotheses*, 4th ed.,
 Springer Nature Switzerland AG, 2022 (ISBN 978-3-030-70577-0), Chapter 11 (Basic Large-Sample
 Theory), §11.2 (Weak Convergence and Central Limit Theorems), **Theorem 11.2.5** (Lindeberg Central
 Limit Theorem) for triangular arrays. (`TSH4 §11.2 Thm 11.2.5`.)
 
-**Proof outline.**
-* Lindeberg's characteristic-function swapping/telescoping argument bounds
+**Proof formalization notes.**
+* Route: characteristic functions. Lindeberg's swapping/telescoping argument bounds
   `|∏ᵢ φₙ,ᵢ(t) − exp(−t²/2)|` by a sum of third-order remainders split at the level `ε`;
-  Lévy continuity converts pointwise characteristic-function convergence into weak convergence.
+  Lévy continuity (`MeasureTheory.ProbabilityMeasure.tendsto_iff_tendsto_charFun`) then
+  converts pointwise `charFun` convergence into weak convergence, exactly as in the
+  project's multivariate CLT.
 * The variance normalisation is stated as `∑ᵢ Var[Xₙ,ᵢ] → 1` rather than the textbook's
-  exact `= 1`; the swapping argument uses this limiting normalization.
+  exact `= 1`; this is strictly more general (rescaling a row by `sₙ` is not always
+  available downstream) and is what the swapping argument actually consumes.
 * The Lindeberg sums are stated with the *open* truncation set `{ε < |Xₙ,ᵢ|}`. Quantified
   over all `ε > 0` this is equivalent to the closed-set version, and it is the weaker
   hypothesis at each fixed `ε`.
-* `lindeberg_clt_of_bounded` does not carry a `MemLp _ 2` hypothesis: a bounded
-  measurable function on a probability space is automatically square-integrable.
+* `lindeberg_clt_of_bounded` does not carry an `MemLp _ 2` hypothesis: a bounded
+  measurable function on a probability space is automatically square-integrable, so
+  demanding it would be laundering.
+* In `weighted_iid_clt` the negligibility condition is written in `∀ ε > 0, ∀ᶠ n` form
+  rather than as `Tendsto (fun n => ⨆ i, …) atTop (𝓝 0)`: for an empty row `Fin 0` a real
+  `⨆` collapses to the junk value `0`, so the `iSup` spelling would silently weaken the
+  hypothesis; the two agree on nonempty rows.
 
 **Bibliographic comments.** The condition and the theorem are due to J. W. Lindeberg
 ("Eine neue Herleitung des Exponentialgesetzes in der Wahrscheinlichkeitsrechnung,"
@@ -82,7 +103,8 @@ Lindeberg's swapping argument:
 `‖exp (I y) − (1 + I y − y²/2)‖ ≤ min (|y|³/6) (y²)`.
 Both bounds are elementary: the cubic half comes from integrating the exponential's remainder
 three times, the quadratic half from `‖exp (I y) − 1 − I y‖ ≤ y²/2` and the triangle
-inequality. -/
+inequality. Mathlib only provides the non-uniform `taylor_charFun_two`, so this is proved from
+scratch here. -/
 private lemma norm_cexp_sub_taylor_le (y : ℝ) :
     ‖Complex.exp (I * y) - (1 + I * y - (y : ℂ) ^ 2 / 2)‖ ≤ min (|y| ^ 3 / 6) (y ^ 2) := by
   -- Derivative of `u ↦ exp (I u)` (as a function of a real variable).
@@ -212,7 +234,7 @@ private lemma norm_cexp_sub_taylor_le (y : ℝ) :
     rw [hnn, abs_of_neg hy, show (y : ℝ) ^ 2 = (-y) ^ 2 from by ring]
     exact key (-y) hz
 
--- Telescoping product bound.
+-- H1: telescoping product bound.
 private lemma norm_prod_sub_prod_le {ι : Type*} {𝕜 : Type*} [RCLike 𝕜] (s : Finset ι)
     (f g : ι → 𝕜) (hf : ∀ i ∈ s, ‖f i‖ ≤ 1) (hg : ∀ i ∈ s, ‖g i‖ ≤ 1) :
     ‖(∏ i ∈ s, f i) - ∏ i ∈ s, g i‖ ≤ ∑ i ∈ s, ‖f i - g i‖ := by
@@ -243,7 +265,7 @@ private lemma norm_prod_sub_prod_le {ι : Type*} {𝕜 : Type*} [RCLike 𝕜] (s
         _ = ‖f a - g a‖ := mul_one _
     linarith
 
--- Real quadratic remainder for `exp (-u)`.
+-- H2: real quadratic remainder for `exp (-u)`.
 private lemma abs_exp_neg_sub_one_sub_le {u : ℝ} (hu : |u| ≤ 1) :
     |Real.exp (-u) - (1 - u)| ≤ (3 / 4) * u ^ 2 := by
   have h := Real.exp_bound (x := -u) (by rwa [abs_neg]) (n := 2) (by norm_num)
@@ -254,7 +276,7 @@ private lemma abs_exp_neg_sub_one_sub_le {u : ℝ} (hu : |u| ≤ 1) :
   norm_num [Nat.factorial]
   ring
 
--- Convergence to zero from eventual bounds.
+-- H3: diagonal tendsto-to-zero.
 private lemma tendsto_zero_of_eventually_le {F : ℕ → ℝ}
     (hF : ∀ᶠ n in atTop, 0 ≤ F n) (h : ∀ δ : ℝ, 0 < δ → ∀ᶠ n in atTop, F n ≤ δ) :
     Tendsto F atTop (𝓝 0) := by
@@ -455,7 +477,7 @@ private lemma tendsto_prod_charFun_lindeberg
       intro n; rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intro i _; ring
     simpa [he, mul_one] using h
   ------------------------------------------------------------------
-  -- The sum of squared quadratic coefficients tends to zero: `∑ᵢ uᵢ² → 0`.
+  -- Claim G : `∑ᵢ uᵢ² → 0`.
   ------------------------------------------------------------------
   have hGsq : Tendsto (fun n => ∑ i, (t ^ 2 * Var[X n i; (P n)] / 2) ^ 2) atTop (𝓝 0) := by
     refine tendsto_zero_of_eventually_le (Eventually.of_forall fun n =>
@@ -589,23 +611,23 @@ For each `n` the row `(X n i)_{i < m n}` consists of independent, centered,
 square-integrable random variables; the row variances converge to `1` and the Lindeberg
 condition holds. Then the row sums converge in distribution to the standard normal law.
 
-The row sizes `m n` have no separately assumed growth condition; their divergence follows
-from the variance and Lindeberg conditions. Rows are unrelated across `n`. -/
+The row sizes `m n` are arbitrary (they need not tend to infinity, and rows are unrelated
+across `n`). -/
 theorem lindeberg_clt {m : ℕ → ℕ} {X : (n : ℕ) → Fin (m n) → (Ω n) → ℝ} {Z : Ω' → ℝ}
-    -- Every array entry is measurable (data regularity).
+    -- USER-INPUT: every array entry is measurable (data regularity).
     (hmeas : ∀ n i, Measurable (X n i))
-    -- Entries inside a row are jointly independent (rows are unconstrained).
+    -- USER-INPUT: entries inside a row are jointly independent (rows are unconstrained).
     (hindep : ∀ n, iIndepFun (X n) (P n))
-    -- Entries are square-integrable, so the row variances are finite.
+    -- USER-INPUT: entries are square-integrable, so the row variances are finite.
     (hL2 : ∀ n i, MemLp (X n i) 2 (P n))
-    -- Entries are centered.
+    -- USER-INPUT: entries are centered.
     (hmean : ∀ n i, ∫ ω, X n i ω ∂(P n) = 0)
-    -- The row variances add up to 1 in the limit (normalisation).
+    -- USER-INPUT: the row variances add up to 1 in the limit (normalisation).
     (hvar : Tendsto (fun n => ∑ i, Var[X n i; (P n)]) atTop (𝓝 1))
-    -- The Lindeberg condition.
+    -- USER-INPUT: the Lindeberg condition.
     (hlin : ∀ ε : ℝ, 0 < ε →
       Tendsto (fun n => ∑ i, ∫ ω in {ω | ε < |X n i ω|}, (X n i ω) ^ 2 ∂(P n)) atTop (𝓝 0))
-    -- `Z` realises the standard normal law on the limit space.
+    -- USER-INPUT: `Z` realises the standard normal law on the limit space.
     (hZ : HasLaw Z (gaussianReal 0 1) P') :
     TendstoInDistribution (fun n ω => ∑ i, X n i ω) atTop Z P P' where
   forall_aemeasurable n :=
@@ -631,19 +653,19 @@ No square-integrability hypothesis is needed: a bounded measurable function on a
 probability space lies in `L²`. -/
 theorem lindeberg_clt_of_bounded {m : ℕ → ℕ} {X : (n : ℕ) → Fin (m n) → (Ω n) → ℝ}
     {c : ℕ → ℝ} {Z : Ω' → ℝ}
-    -- Every array entry is measurable (data regularity).
+    -- USER-INPUT: every array entry is measurable (data regularity).
     (hmeas : ∀ n i, Measurable (X n i))
-    -- Entries inside a row are jointly independent.
+    -- USER-INPUT: entries inside a row are jointly independent.
     (hindep : ∀ n, iIndepFun (X n) (P n))
-    -- Entries are centered.
+    -- USER-INPUT: entries are centered.
     (hmean : ∀ n i, ∫ ω, X n i ω ∂(P n) = 0)
-    -- The row variances add up to 1 in the limit (normalisation).
+    -- USER-INPUT: the row variances add up to 1 in the limit (normalisation).
     (hvar : Tendsto (fun n => ∑ i, Var[X n i; (P n)]) atTop (𝓝 1))
-    -- The `n`-th row is bounded by `c n`.
+    -- USER-INPUT: the `n`-th row is bounded by `c n`.
     (hbdd : ∀ n i ω, |X n i ω| ≤ c n)
-    -- The bounds are asymptotically negligible.
+    -- USER-INPUT: the bounds are asymptotically negligible.
     (hc : Tendsto c atTop (𝓝 0))
-    -- `Z` realises the standard normal law on the limit space.
+    -- USER-INPUT: `Z` realises the standard normal law on the limit space.
     (hZ : HasLaw Z (gaussianReal 0 1) P') :
     TendstoInDistribution (fun n ω => ∑ i, X n i ω) atTop Z P P' := by
   -- Bounded measurable ⇒ `L²`.

@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P011c.T29",
+    "target_id": "P011-T29",
+    "my_reading_vs_claim": "whole",
+    "reason": "The two conjuncts give the stated OLS representation/unbiasedness and raw-coordinate covariance-sum variance identity. Positive n, finite expectations in MeanModel, invertible Gram matrices, and finite second moments express the ordinary domain of the canonical formulas. The representation is placed with MeanModel, but is independent of the law and follows for every design by instantiating a zero-mean Dirac model. No independence or equal-mean hypothesis is inserted."
+  },
+  {
+    "theorem": "SAP.P011c.T31",
+    "target_id": "P011-T31",
+    "my_reading_vs_claim": "different",
+    "reason": "This is the negation, rather than the assertion, of printed Proposition 1. It is a valid refutation of the printed universal claim: repeated K_{2,2} blocks, independent Rademacher errors, weighted means +2,+2,-2,-2, and unit-magnitude weights satisfy Scaling with constants (3,2,1,2); n var=1 and n V1 tends in probability to -3. The witness can have genuinely nested full and observed graphs, so the more restrictive observed-graph nesting in Scaling does not prevent a refutation of the printed claim."
+  },
+  {
+    "theorem": "SAP.P011c.T32",
+    "target_id": "P011-T32",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem negates the combined printed universal conservativeness contract. Its general conclusion and its homoskedastic implication have the same Conservative expression, so the latter is redundant inside the positive contract. It does not separately negate the homoskedastic-only assertion, as its docstring correctly warns. In the repeated K_{2,2} witness, set R=G and d=2, making G the unique compatible graph for all raw outcomes. Then n(var-V1) tends to 4, refuting the printed general conclusion; the witness is even homoskedastic."
+  },
+  {
+    "theorem": "SAP.P011c.T33",
+    "target_id": "P011-T33",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem refutes the printed universal coverage guarantee using an explicit nonnegativity conjunct in the event, accurately treating negative variance estimates as undefined and uncovered. In the same valid, nested K_{2,2} witness, n V1 tends to -3, so the printed coverage is at most Pr(V1>=0), which tends to zero. This refutes every nominal level 1-alpha>0 without relying on Mathlib's sqrt of a negative real or zero division."
+  },
+  {
+    "theorem": "SAP.P011c.T34",
+    "target_id": "P011-T34",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Only proof step P3 (the two degree-factor bounds) is asserted; P1, P2, P4 and P5 are omitted, as disclosed. There is also an undisclosed additional restriction: Defs/Part2.lean Nested requires induced embeddings of the observed G_S graphs into successive observed graphs. Standing assumption S5 nests the full graphs G and does not require the observed samples or their induced subgraphs to be nested. Thus the formal Scaling antecedent excludes some printed instances. For example, full graphs can accumulate disjoint blocks H_n while the observed sample is the newest block, with H_2 a single edge and H_3 empty. This satisfies printed scaling with independent bounded outcomes, but the observed H_2 cannot embed into H_3."
+  },
+  {
+    "theorem": "SAP.P011c.T35",
+    "target_id": "P011-T35",
+    "my_reading_vs_claim": "different",
+    "reason": "This negates the combined OLS variance/printed-coverage guarantee. The independent-error K_{2,2} construction is an actual OLS instance: D has rows (1,s_i), s=(+1,+1,-1,-1) repeated; Y_i=2+s_i epsilon_i; b=(2,0); the slope's olsTheta weights are s_i, giving X_i=2s_i+epsilon_i. The Gram matrix is n I_2, means are integrable and correct, and b is fixed across rows. With R=G and d=2 the unique maximizer has n V1 tending to -3 while n var=1. Both concluding guarantees fail, so this refutes the printed reading, not just an arbitrary linear-estimator variant."
+  },
+  {
+    "theorem": "SAP.P011c.T36",
+    "target_id": "P011-T36",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The displayed one-sided conservativeness limit is correct: under bounded-degree dependency and equal weighted variances, sampleVariance minus the common variance plus mean dispersion tends to zero in probability, and the oracle degree factor is bounded. The introductory assertion that V2 need not be consistent is omitted and that omission is disclosed. An additional restriction is not disclosed: Scaling requires induced nesting of the observed graphs, whereas S5 requires nested full graphs without requiring nested observed samples. The accumulating-full-blocks/newest-observed-block example satisfies the printed hypotheses and can be homoskedastic but fails formal Nested."
+  },
+  {
+    "theorem": "SAP.P011c.T37",
+    "target_id": "P011-T37",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both canonical conservativeness conclusions, valid constraints, maximization, and weighted homoskedasticity are rendered correctly; no bound on supplied degree caps is added. However Scaling imposes induced nesting of the observed graphs, beyond S5's nesting of full graphs. Accumulating disjoint full-graph blocks and observing only the newest block (an edge at n=2 and an empty graph at n=3) with independent Rademacher outcomes satisfies the canonical hypotheses, including valid constraints and homoskedasticity, but is excluded by Nested. The Challenge docstring does not disclose this extra assumption."
+  },
+  {
+    "theorem": "SAP.P011c.T38",
+    "target_id": "P011-T38",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Cdf convergence at every real t is equivalent to convergence in distribution to this continuous normal law, and eventual positive variance follows from n var -> c3>0. Bounded measurable weighted coordinates and genuine setwise dependency are appropriate hypotheses; no equal-coordinate-mean assumption is added. However formal Scaling also requires induced nesting of observed graphs. The canonical S5 nests full graphs and does not nest observed samples; the accumulating-full-blocks/newest-observed-block family satisfies the printed assumptions but is excluded. This restriction is absent from the Challenge docstring."
+  },
+  {
+    "theorem": "SAP.P011c.T39",
+    "target_id": "P011-T39",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two conditional implications and nonnegative clipping match the canonical interpretation, and all liminfs are bounded probabilities. Requiring raw Borel measurable V excludes statistics that are only measurable for the completed joint law; the docstring accurately discloses that restriction. It does not disclose the further induced-nesting condition on observed graphs in Scaling, which is stronger than S5's full-graph nesting. The independent bounded accumulating-full-blocks/newest-observed-block family, with deterministic V=1/n, satisfies both canonical consistency/conservativeness premises and is excluded by formal Nested."
+  },
+  {
+    "theorem": "SAP.P011c.T40",
+    "target_id": "P011-T40",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both printed V2 and V2prime coverage conclusions and all graph-constraint/homoskedasticity conditions match the canonical claim, and the estimates are everywhere nonnegative. However Scaling adds induced nesting of the observed graphs; canonical S5 only nests the full graphs and does not require nested observed samples. The independent bounded accumulating-full-blocks/newest-observed-block family meets the printed conditions, including valid constraints and weighted homoskedasticity, but fails this extra condition. It is not disclosed in the Challenge docstring."
+  },
+  {
+    "theorem": "SAP.P011c.T41",
+    "target_id": "P011-T41",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The capacity matrix, real subtraction, sufficient bound h_i>=2r_i-1, PSD, normalized nonnegativity, and exact preservation of all maximizers by a constant shift are correct. The unconditional displayed matrix decomposition is omitted and n>0 is required for normalization; both differences are disclosed in the docstring. The finite PSD assertion includes all real vectors, not just centered ones, and nonempty examples satisfy the hypotheses."
+  }
+]

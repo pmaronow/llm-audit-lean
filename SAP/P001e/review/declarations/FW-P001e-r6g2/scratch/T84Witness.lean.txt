@@ -1,0 +1,64 @@
+import SAP.P001e.Defs
+import SAP.P001e.Defs.WholeW2
+
+open MeasureTheory ProbabilityTheory Set
+open scoped BigOperators Classical
+
+namespace AuditT84
+noncomputable section
+
+def X : Fin 12 → Fin 3 := ![0,0,0,0,1,1,1,1,2,2,2,2]
+def R : Fin 12 → ℝ := ![1,1,0,0,1,1,1,0,1,1,0,0]
+-- Nonrespondents' latent outcomes are completed by 1/4.
+def Y : Fin 12 → ℝ := ![1/4,1/2,1/4,1/4,1/4,1/2,3/4,1/4,1/4,1/2,1/4,1/4]
+def cov (j : Fin 3) : ℝ := (![-1,0,1] : Fin 3 → ℝ) j
+def q (_ : Fin 3) : ℝ := 7/12
+
+example : ∀ i, R i = 0 ∨ R i = 1 := by
+  intro i; fin_cases i <;> norm_num [R]
+
+example : SAP.P001e.wholeCells X = Finset.univ := by decide
+
+-- The cell summaries in the Challenge come from the canonical twelve observations.
+example : ∀ j, SAP.P001e.wholeCellN X j = SAP.P001e.cellSize j ∧
+    SAP.P001e.wholeCellR X R j = SAP.P001e.cellResponses j ∧
+    SAP.P001e.wholeCellS X R Y j = SAP.P001e.cellOutcomeSum j := by
+  intro j; fin_cases j <;>
+    simp only [SAP.P001e.wholeCellN, SAP.P001e.wholeCellR, SAP.P001e.wholeCellS,
+      Fin.sum_univ_succ, Fin.sum_univ_zero] <;>
+    norm_num [SAP.P001e.wholeCellN, SAP.P001e.wholeCellR, SAP.P001e.wholeCellS,
+      SAP.P001e.recordedOutcome, SAP.P001e.cellSize, SAP.P001e.cellResponses,
+      SAP.P001e.cellOutcomeSum, X, R, Y, Fin.sum_univ_succ]
+
+-- The grouped likelihood is the actual Bernoulli sample log likelihood.
+example (a b : ℝ) :
+    (∑ i, (R i * Real.log (SAP.P001e.logisticProbability a b (cov (X i))) +
+      (1-R i)*Real.log (1-SAP.P001e.logisticProbability a b (cov (X i))))) =
+    SAP.P001e.cellLogLikelihood SAP.P001e.cellSize SAP.P001e.cellResponses a b := by
+  norm_num [SAP.P001e.cellLogLikelihood, SAP.P001e.cellSize, SAP.P001e.cellResponses,
+    X, R, cov, Fin.sum_univ_succ]
+  ring
+
+example : ∀ i, SAP.P001e.logisticProbability (Real.log (7/5)) 0 (cov (X i)) = q (X i) := by
+  intro i
+  norm_num [SAP.P001e.logisticProbability, Real.exp_log (by norm_num : (0 : ℝ) < 7/5), q]
+
+example : SAP.P001e.wholeSampleIPW X R Y q = 3/7 := by
+  norm_num [SAP.P001e.wholeSampleIPW, SAP.P001e.recordedOutcome, X, R, Y, q, Fin.sum_univ_succ]
+
+example : (∑ j : Fin 3,
+    (SAP.P001e.wholeCellS X R Y j / SAP.P001e.wholeCellR X R j) *
+      (SAP.P001e.wholeCellN X j / 12)) = 5/12 := by
+  simp only [SAP.P001e.wholeCellN, SAP.P001e.wholeCellR, SAP.P001e.wholeCellS,
+    Fin.sum_univ_succ, Fin.sum_univ_zero]
+  norm_num [SAP.P001e.wholeCellN, SAP.P001e.wholeCellR, SAP.P001e.wholeCellS,
+    SAP.P001e.recordedOutcome, X, R, Y, Fin.sum_univ_succ]
+
+example : (3/7 - 5/12 : ℝ) = 1/84 ∧ (3/7 : ℝ) ≠ 5/12 := by norm_num
+
+-- Under independent uniform three-valued X and Y and Bernoulli(7/12) R,
+-- this ordered iid sample has this strictly positive probability.
+example : (0 : ℝ) < (7/108)^7 * (5/108)^5 := by positivity
+
+end
+end AuditT84

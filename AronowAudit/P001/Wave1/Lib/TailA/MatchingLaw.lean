@@ -430,6 +430,13 @@ theorem matching_pinned_integral_measurable (n : ℕ)
     Measurable (fun p : ℝ => mean (MatchProduct n) (fun z => f (pin n p z))) := by
   exact ((hf.comp (matching_pin_measurable n)).stronglyMeasurable.integral_prod_right').measurable
 
+theorem matching_pinned_W_moment_measurable (n k : ℕ) :
+    Measurable (fun p : ℝ => mean (MatchProduct n) (fun z => (W (pin n p z) 0)^k)) :=
+  matching_pinned_integral_measurable n ((matching_W_measurable 0).pow_const k)
+
+theorem matching_pinned_U_moment_measurable (n k : ℕ) (a : Fin (n+1) → Fin (n+1)) :
+    Measurable (fun p : ℝ => mean (MatchProduct n) (fun z => (U (pin n p z) a 0)^k)) :=
+  matching_pinned_integral_measurable n ((matching_U_measurable a 0).pow_const k)
 
 theorem matching_bootMean_measurable {n : ℕ} {T : (Fin n → MatchUnit) → ℝ}
     (hT : Measurable T) : Measurable (bootMean T) := by
@@ -455,6 +462,10 @@ theorem matching_expectation {Ω : Type u} [MeasurableSpace Ω]
   have hm : Measurable (firstSample Z n) := Measurable.of_eval (fun (i : Fin n) => hiid.1 i)
   exact (integral_map hm.aemeasurable hf.aestronglyMeasurable).symm
 
+theorem matching_estimated_bootstrap_equal {n : ℕ} (z : Fin n → MatchUnit) :
+    bootMean causalMatchEstimated z = bootMean causalMatch z ∧
+    bootVar causalMatchEstimated z = bootVar causalMatch z := by
+  simp only [bootMean, bootVar, estimated_matching_statistic_equal, and_self]
 
 /-- Ordinary Fubini for the explicit design/sign product experiment. -/
 theorem matching_sign_expectation {n : ℕ} {f : (Fin n → MatchUnit) → ℝ}
@@ -501,6 +512,9 @@ def matchingReflection (u : MatchUnit) : MatchUnit := (1-u.1, !u.2.1, u.2.2)
 def matchingReflectSample {n : ℕ} (z : Fin n → MatchUnit) : Fin n → MatchUnit :=
   fun i => matchingReflection (z i)
 
+theorem matching_reflection_involutive : Function.Involutive matchingReflection := by
+  intro u
+  simp [matchingReflection]
 
 theorem matching_reflection_measurable : Measurable matchingReflection := by
   fun_prop [matchingReflection]

@@ -3,14 +3,14 @@ import Mathlib
 namespace AronowAudit.P034
 
 /-!
-P034-T3 and P034-T4. Appendix pp. 13-14, Tables OA5-OA6.
-The paper prints no regression formula. The formula below describes the
-fitted regression in the released code. It is not an assumption that the
-fitted regression is a causal response function.
+Targets P034-T3 and P034-T4. Appendix pp. 13-14, Tables OA5-OA6.
+The paper prints no regression formula. The formula below is supplied by the
+released-code analysis in the validator's derivation, section 3. It is not an
+assumption that the fitted regression is a causal response function.
 -/
 
-/-- The fitted function `m(w,v,z)=a+bw+cv+dwv+γ'z`.
-The paper calls the factors “Information” and “Deepfake”
+/-- The fitted function `m(w,v,z)=a+bw+cv+dwv+γ'z` (validator P034-A001,
+derivation.md §3). The paper calls the factors “Information” and “Deepfake”
 (Appendix Tables OA5-OA6, pp. 13-14). `w=0` means no information and `v=0`
 means real video. The covariate term uses an arbitrary finite real vector. -/
 def fittedOutcome {k : ℕ} (a b c d : ℝ) (γ z : Fin k → ℝ) (w v : ℝ) : ℝ :=
@@ -31,7 +31,7 @@ theorem deepfake_contrast {k : ℕ} (a b c d : ℝ) (γ z : Fin k → ℝ) (w : 
   ring
 
 /-- P034-T4(iii)-(iv): averaging the two fitted contrasts with any real weights
-gives `b+q*d` and `c+p*d`, correcting OA5-OA6 row labels. -/
+gives `b+q*d` and `c+p*d` (validator §3, correcting OA5-OA6 row labels). -/
 theorem averaged_contrasts {k : ℕ} (a b c d : ℝ) (γ z : Fin k → ℝ) (q p : ℝ) :
     (1-q) * (fittedOutcome a b c d γ z 1 0 - fittedOutcome a b c d γ z 0 0) +
       q * (fittedOutcome a b c d γ z 1 1 - fittedOutcome a b c d γ z 0 1) = b+q*d ∧
@@ -81,8 +81,8 @@ theorem corrected_factorial_contrasts {k : ℕ} (a b c d : ℝ) (γ z : Fin k �
       exact (mul_eq_zero.mp this).resolve_left (ne_of_gt hp)
     · intro h; simp [h]
 
-/-- The four cell outcomes `(0,0,0,2)` of the constructed factorial witness;
-this is not a transcription of actual outcomes. -/
+/-- The four cell outcomes `(0,0,0,2)` of the constructed factorial witness
+(validator P034-A001 §3); this is not a transcription of actual outcomes. -/
 def factorialCell (w v : Bool) : ℝ := if w && v then 2 else 0
 
 /-- P034-T3(i): the unique saturated fit to all four cell values is
@@ -122,3 +122,9 @@ theorem factorial_counterexample :
 
 end AronowAudit.P034
 
+#print axioms AronowAudit.P034.information_contrast
+#print axioms AronowAudit.P034.deepfake_contrast
+#print axioms AronowAudit.P034.averaged_contrasts
+#print axioms AronowAudit.P034.corrected_factorial_contrasts
+#print axioms AronowAudit.P034.factorial_fit_unique
+#print axioms AronowAudit.P034.factorial_counterexample

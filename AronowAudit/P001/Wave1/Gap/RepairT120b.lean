@@ -12,8 +12,9 @@ universe u
 
 /-- The printed fixed-covariate contract on the book's positive-PMF support
 (Definition 1.2.20, p. 31), expressed by positive singleton mass. This discrete
-case already refutes the universal printed claim.
-No topological-support premise occurs here. -/
+case already refutes the universal printed claim. Every binder other than the
+support premise is retained from `PrintedFixedCovariateKLMLESupported`.
+In particular, no topological-support premise occurs here. -/
 def PrintedFixedCovariateKLMLEPositiveSupport : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
    {K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
@@ -38,11 +39,12 @@ def PrintedFixedCovariateKLMLEPositiveSupport : Prop :=
      ∏ i ∈ Finset.range n,g (Y i ω) (X i ω) (that n ω)),
     CP μ that tstar
 
+def RepairT120bTarget : Prop := ¬ PrintedFixedCovariateKLMLEPositiveSupport.{u}
 
--- The imported private witness declarations have names with a numeric component.
--- The aliases expose these constants to elaboration without introducing
--- definitions, propositions, or proof assumptions.
-
+-- Reuse the imported, kernel-checked private witness declarations. Their
+-- internal names contain a numeric component and cannot be written as ordinary
+-- identifiers. These aliases only expose those existing constants to elaboration;
+-- they introduce no definitions, propositions, or proof assumptions.
 run_cmd do
   let witnessNames := ["binary", "binary_meas", "binary_nonneg", "binary_norm", "κ",
     "f", "g", "Θ", "f_meas", "kl", "law", "a", "b", "ν",
@@ -139,6 +141,9 @@ theorem printed_fixed_covariate_kl_mle_positive_support_refuted :
   have hp := probability_convergence_continuous_at μ _ _
     (fun t : Fin 1 → ℝ => t 0) hcp (continuous_apply 0).continuousAt
   exact (conditional_kl_mle_wrong_target_supporting μ A Y his hls).2.2.1 hp
+
+example : RepairT120bTarget.{u} ↔ ¬ PrintedFixedCovariateKLMLEPositiveSupport.{u} := Iff.rfl
+example : RepairT120bTarget.{u} := printed_fixed_covariate_kl_mle_positive_support_refuted
 
 end
 end AronowAudit.P001.Wave1

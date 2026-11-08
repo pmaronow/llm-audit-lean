@@ -39,6 +39,8 @@ theorem mar_discrete_paper_support_identification :
       MarSelection.n4_proof, MarSelection.n5_proof, MarSelection.n6_proof, MarSelection.n7_proof⟩
     MarDiscrete.n1_proof
 
+example : AronowAudit.P001.Wave1.MarDiscrete.Target := mar_discrete_paper_support_identification
+
 end
 
 end AronowAudit.P001.Wave1

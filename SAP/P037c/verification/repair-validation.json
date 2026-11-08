@@ -1,0 +1,40 @@
+{
+  "work": "P037c",
+  "checked_at": "2026-11-03T23:36:39.102153+00:00",
+  "repair": "Rename omission_reason to reason on all six omitted targets; preserve explanations.",
+  "theorem_statements_changed": false,
+  "decisions_changed": false,
+  "lean_sources_unchanged": true,
+  "comparator_configuration_unchanged": true,
+  "manifest_sha256": "131fa9dd8411cdb1861d859567a2ee15e1e4dc18568caea6164dcbbcd3d376d0",
+  "config_sha256": "031ba75e3ad568d24c84409e2aa0aa69f7652a5718ca1292e67f0d35cac30c0e",
+  "local_checks": {
+    "full_sap_lean_rebuild": {
+      "modules": 15,
+      "exit_code": 0,
+      "log": "scratch/rebuild-certification-repair.log"
+    },
+    "proof_dependencies": {
+      "theorems": 7,
+      "exit_code": 0,
+      "only_permitted_dependencies": true,
+      "log": "scratch/axioms.txt"
+    },
+    "metadata_completeness": {
+      "targets": 13,
+      "non_omitted": 7,
+      "omitted_with_reason": 6,
+      "passed": true
+    },
+    "json_parsing": true
+  },
+  "strict_wrapper_attempt": {
+    "command": "python3 /home/ubuntu/sap/tools/run_comparator.py /home/ubuntu/sap/wt/ARCH-P037c P037c",
+    "exit_code": 1,
+    "status": "could_not_create_snapshot",
+    "reason": "The certification wrapper cannot create a new directory under /home/ubuntu/sap/cert because that filesystem is read-only in this session.",
+    "log": "scratch/strict-certification-repair.log",
+    "certification_completed": false
+  },
+  "previous_comparator_record": "SAP/P037c/verification/comparator-result.json remains the pre-repair failed run; it does not describe the repaired manifest."
+}

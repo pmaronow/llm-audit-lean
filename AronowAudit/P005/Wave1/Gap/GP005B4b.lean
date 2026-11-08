@@ -9,9 +9,9 @@ set_option maxRecDepth 3000
 set_option maxHeartbeats 2000000
 
 /-!
-P005-T3. The leverage witness is normalized and regular on every
+Record 14, P005-T3. The leverage witness is normalized and regular on every
 size-eight assignment. Its variance is computed from the inclusion indicators
-of labels 0 and 1 under the fixed-size design.
+of labels 0 and 1 under the actual fixed-size design.
 -/
 
 lemma GP005B4b_T3_univ16 : (univ : Finset (Fin 16)) =
@@ -290,6 +290,9 @@ theorem leverage_variance_counterexample_proof :
     norm_num
   · rw [GP005B4b_T3_variance_value]
     norm_num
+
+example : type_of% @AronowAudit.P005.leverage_variance_counterexample :=
+  leverage_variance_counterexample_proof
 
 end
 end AronowAudit.P005.Wave1

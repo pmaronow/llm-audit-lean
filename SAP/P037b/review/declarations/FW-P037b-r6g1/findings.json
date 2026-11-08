@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P037-T18",
+    "theorem": "SAP.P037b.T18",
+    "fingerprint": "aa434cb58f410db0afce3aa5b04bcec1f2d63c2a6c608d8a96a7ea37b33bb449",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:11-66 using only SAP.P037b.Defs. On four equiprobable states, v takes (1,1),(1,-1),(-1,1),(-1,-1). The n=2,k=1 intercept design is injective; all coordinate/product integrability hypotheses, zero means and identity second moments are proved. This supplies both multiplier hypotheses and the homoskedastic error hypotheses with u=v, sigma squared=1 and any beta. The separate leverage premise n>0 and positive weighted-row norm are proved with h=(0,1), a=(1,2). For y=(0,2), HC0 is 1/2, so this is not a zero-residual-only instance.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T23",
+    "theorem": "SAP.P037b.T23",
+    "fingerprint": "6d389b343aecee361e91470b630934dd48a2ddd0348b09ceb009773fc38e4f30",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:70-116 from definitions without the target theorem. The concrete Gram determinant is 5488/25>0. Checked the inverse product, normal equations, every residual magnitude and the full HC0 sandwich. Independently checked the control residual sum is zero and its residual-square sum divided by 27 and 56 is 1/5400. There are no premises to make inconsistent, and all six positive integer multiplicities represent the stated 56 repeated rows.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T24",
+    "theorem": "SAP.P037b.T24",
+    "fingerprint": "ef494c9725ad71a74e4aeeca91038c9cad77b34252cc99f6d4c936a6e70d73d4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:120-159. With n=3,p=0,T=(0,1,1),C=(0,0,1), the exact piecewise design from the statement has rows (1,0,0),(1,1,0),(1,1,1); injectivity of its mulVec is proved directly. Any real c,y then instantiate the recentering clause. The symmetry premise has the compiled one-dimensional identity matrix instance. The prediction-expansion clause has no hypotheses; arbitrary real b,c,zbar instantiate it, including p=0.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T19",
+    "theorem": "SAP.P037b.T19",
+    "fingerprint": "adc379a7853bd24ec5341ddb5c84ab216a408260730075de23111ccf45bfef52",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:163-205 from the definitions. Verified the kept-set table, pointwise constant effects, both arm counts for every assignment, and all six contrast/weight values. Thus no finite contrast uses an empty arm, every weight is positive, and any positive-length block ratio has positive denominator. The auxiliary hypotheses have instances nT=2,nC=1,S=univ,epsilon=1/100. Checked normalization of the two-copy product law. For general B the theorem uses all functions Fin B -> Fin 6 with mass (1/6)^B, exactly independent uniform blocks. Complete recording and two-of-four treatment match the canonical witness. The totalized value at B=0 is irrelevant to the limit.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T20",
+    "theorem": "SAP.P037b.T20",
+    "fingerprint": "9f0aedf192c66a3d928cacd29fd0936d7f9935e7983548c0209f2f1c62cdbaa9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:209-240. ProbabilityDesign (Fin 2) with both masses 1/2 is normalized and strictly positive. Two units with D(z,0)=z and D(z,1)=1-z have both exposure probabilities positive; retaining both units gives positive retained cardinality and meets every fixed-inclusion premise for arbitrary finite potential outcomes. The constant recorded outcome 1/10 satisfies the same-side threshold premise. The varying-inclusion construction A(z)=1{z=1} has conditional inclusion factors 1 and 0 on two positive-probability exposures. No undefined conditional probability is used.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,128 @@
+[
+ {
+  "target_id": "P001-T16",
+  "decision": "restricted",
+  "theorem": "SAP.P001a.T16",
+  "restriction": "States estimated-score bootstrap failure, intercept consistency, equality of all sample and resample matches/statistics, and the conditional weighted-sign variance identity. Adds finite second-moment premises for the estimated statistic and bootstrap variance. Omits the separate claim that score consistency alone need not give a root-n rate, the first-step-adjusted parametric variance estimator and confidence-interval discussion, separate design admissibility predicates, root-n tightness, and a bootstrap-standard-error conclusion.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.TailA.estimated_matching_bootstrap_failure_final",
+   "AronowAudit.P001.estimated_score_matches_equal",
+   "AronowAudit.P001.estimated_matching_statistic_equal",
+   "AronowAudit.P001.Wave1.causal_matching_conditional_reuse_variance_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.TailA.matching_bootstrap_correction_final",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.TailA.matching_bootstrap_correction_supporting_final",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.nearest_donor_common_shift",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T16Statement",
+  "bridge": "SAP.P001a.Bridge.T16_correspondence",
+  "supporting_declarations": [
+   "AronowAudit.P001.Wave1.matching_score_intercept_consistent_proof"
+  ]
+ },
+ {
+  "target_id": "P001-T17",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.placebo_iid_f_wald_failure",
+   "AronowAudit.P001.placebo_full_finite_counterexample",
+   "SAP.P001a.WH.W2.T17_whole",
+   "SAP.P001a.WH.W2.T17_assembly",
+   "SAP.P001a.WH.W2.T17_L1_proof",
+   "SAP.P001a.WH.W2.T17_L2_proof",
+   "SAP.P001a.WH.W2.placebo_structural",
+   "SAP.P001a.WH.W2.placebo_moments",
+   "SAP.P001a.WH.W2.placebo_sample240_counts",
+   "SAP.P001a.WH.W2.placebo_sample240_transport",
+   "AronowAudit.P001.Wave1.placebo_linear_test_counterexample_proof",
+   "AronowAudit.P001.Wave1.placeboFTest_divergence",
+   "AronowAudit.P001.Wave1.placeboFTest_sampleSpace_iid",
+   "AronowAudit.P001.Wave1.placeboFTest_sampleSpace_law"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.placebo_linear_test_counterexample_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T17WholeStatement",
+  "bridge": "SAP.P001a.Bridge.T17_correspondence"
+ },
+ {
+  "target_id": "P001-T18",
+  "decision": "whole",
+  "theorem": "SAP.P001a.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.placebo_linear_cef_correction_proof",
+   "SAP.P001a.WH.W1.T18_whole",
+   "SAP.P001a.WH.W1.T18_assembly",
+   "SAP.P001a.WH.W1.T18_L1_proof",
+   "SAP.P001a.WH.W1.T18_L2_proof",
+   "SAP.P001a.WH.W1.T18_L3_proof",
+   "SAP.P001a.WH.W1.T18_L4_proof",
+   "SAP.P001a.WH.W1.T18_L5_proof",
+   "SAP.P001a.WH.W1.T18_L6_proof",
+   "SAP.P001a.WH.W1.T18_L7_proof",
+   "SAP.P001a.WH.W1.T18_L8_proof",
+   "SAP.P001a.WH.W1.T18_L9_proof",
+   "SAP.P001a.WH.W1.T18_L10_proof",
+   "SAP.P001a.WH.W1.T18_L11_proof",
+   "SAP.P001a.WH.W1.score_clt",
+   "SAP.P001a.WH.W1.placebo_test_null",
+   "AronowAudit.P001.placebo_full_finite_counterexample",
+   "AronowAudit.P001.Wave1.DecideB_vector_clt",
+   "AronowAudit.P001.cef_residual_orthogonality_correction",
+   "AronowAudit.P001.Wave1.CondP001b_gram_unique",
+   "AronowAudit.P015.OLSCompletion.ols_moment_limit",
+   "AronowAudit.P015.ConvergenceCompletion.finite_cmt",
+   "AronowAudit.P015.ConvergenceCompletion.sum_limit",
+   "AronowAudit.P015.ConvergenceCompletion.mul_limit",
+   "AronowAudit.P015.ConvergenceCompletion.constant_limit",
+   "AronowAudit.P015.ConvergenceCompletion.pair_cmt",
+   "AronowAudit.P015.ConvergenceCompletion.inverse_smul_real",
+   "AronowAudit.P001.Wave1.GLP0011B3.ProbabilityTheory.multivariateGaussian_map_rectangular",
+   "AsymptoticStatistics.ForMathlib.tendsto_setIntegral_tail_of_integrable",
+   "Causalean.Stat.noAtoms_chiSqDist"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P001.Wave1.placebo_linear_cef_correction_supporting_conditional",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   },
+   {
+    "lean_name": "AronowAudit.P001.Wave1.placebo_zero_coefficients_unique_proof",
+    "reason": "Auxiliary or overlapping declaration is unnecessary for the chosen statement; only the selected assembled results are used."
+   }
+  ],
+  "statement_definition": "SAP.P001a.T18WholeStatement",
+  "bridge": "SAP.P001a.Bridge.T18_correspondence",
+  "supporting_declarations": [
+   "AronowAudit.P001.placebo_full_finite_counterexample"
+  ]
+ },
+ {
+  "target_id": "P001-T19",
+  "decision": "refuted",
+  "theorem": "SAP.P001a.T19",
+  "restriction": "States the two summable positive countable cell-mass sequences with arm totals one half, pointwise interior propensities and no uniform positivity margin. Omits the explicit 4/(k+6) propensity rate and ceiling-selected covariate. Positive cells and equal discrete supports are represented by the mass sequences; no separate support predicate is asserted.",
+  "rows_used": [
+   "AronowAudit.P001.complete_overlap_without_uniform_positivity"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001a.T19Statement",
+  "bridge": "SAP.P001a.Bridge.T19_correspondence"
+ }
+]

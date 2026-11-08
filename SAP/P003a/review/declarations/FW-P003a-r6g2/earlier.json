@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P003a.T14",
+  "target_id": "P003-T14",
+  "round": 5,
+  "verdict": "label_wrong",
+  "severity": "minor",
+  "issues": [
+   "SAP/P003a/Defs/WholeW2.lean:217: the general source-lattice conjunct states pmf/pushforward/moment/mean facts, but no general lattice symmetry or SD definition/transport clause from the canonical statement. W2LatticeSymmetric (line 194) and W2LatticeSD (line 197) are defined adjacent to the statement but are unused and absent from its elaborated closure. The integer IsSD examples do not supply those source-lattice clauses.",
+   "record.json:92: decision \"whole\" with restriction null at line 94 overstates that scope. SAP/P003a/Challenge/Part2.lean:15 (duplicated at SAP/P003a/Defs/WholeW2.lean:210) says \"Symmetry and SD use this corrected rescaling\" without including those definitions in the audited statement. This is a scope/label defect, not an incorrect pushforward or moment formula."
+  ]
+ }
+]

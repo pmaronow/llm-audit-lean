@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P026-T6",
+    "theorem": "SAP.P026a.T6",
+    "fingerprint": "01793d8a1b9d9ecc019a6d96950655bd5d914ed44896cbe20de882b05e4d212d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No external hypotheses: the population and ninety-allocation law are fixed. Compiled scratch/PaperCheck.lean (exit 0) verifies normalization, positive marginals, directed and both same-arm support, computed residual totals, the X projection denominator 331/10, and positive residualized-treatment denominators on every assignment. Independent exact full real-OLS normal-equation arithmetic in scratch/enumerate.py checks both block fits and all ninety FE fits, moments and rounding refutations; results are in scratch/enumeration.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T7",
+    "theorem": "SAP.P026a.T7",
+    "fingerprint": "a59c01e2033cae543dbc859fcd63004240b0e7c091cb0af0303ee3645875ae00",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No external hypotheses: the same explicit finite population is used. Compiled scratch/PaperCheck.lean (exit 0) verifies the probability/support setting, residual sums, HT/prior fiber totals and both FE projection guards. scratch/enumerate.py independently solves the actual OLS/WLS systems on all ninety assignments, checks nonsingular Gram matrices and positive IPW arm weights, computes the HC1 sandwiches, and checks all fifty entries of the five complete columns with exact rational inequalities.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T8",
+    "theorem": "SAP.P026a.T8",
+    "fingerprint": "7ee71e86c206c8bc162586fb8227783c4190800aa9412d4411c1122f85eb9055",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean (exit 0), lines 32, 40, 54 and 70: U=C=Fin 2, identity partition, weight 1/4 on each of the four Boolean allocation vectors; the UnitLaw fields establish normalization and positive marginals, and separate examples prove positive disagreement and directed support. Potential outcomes (2,3) and (0,1) give a half-sum-of-squares gap 4, so equality is not forced by the hypotheses.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T9",
+    "theorem": "SAP.P026a.T9",
+    "fingerprint": "6751104385775b6ddb745ddf840a4400db3b6b2314d0acc3b34d73046ec46c48",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean (exit 0), lines 10, 15 and 19, independently of every Challenge theorem: the uniform two-of-four law is normalized with positive marginals and directed support; all distinct-cluster disagreement probabilities are 2/3; the literal appendix values are exactly (-68,-52,2,-62,-20,-52), their expectation is -42, and the covariance bound is -28. The identity partition realizes four singleton clusters. scratch/enumerate.py independently verifies both six-value lists, true covariance -28 and arm variance 28.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T10",
+    "theorem": "SAP.P026a.T10",
+    "fingerprint": "b802afa2bb88cff26c6416f78651184f376059eb129d84fe0d43b8e535725fdc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean (exit 0), lines 78, 87, 94 and 100: U=Fin 3, C=Fin 2, surjective partition (0,0,1), and weight 1/4 on all four cluster assignments. With y=(2,3,7), cluster totals are (5,7), every unit marginal is positive, and the direct HT total identity holds for both arms and every allocation. The population is nonempty and its ATE denominator is 3.",
+    "confidence": "high"
+  }
+]

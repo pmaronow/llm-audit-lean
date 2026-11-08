@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P005-T1",
+    "theorem": "SAP.P005a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed six-unit witness a=(0,-3,-1,2,-4,-3), b=(2,1,3,-3,1,1), m=4. Independent exact rational enumeration of all 15 assignments gives variance 16607/4800 and printed bound 3829/1440, with the stated means and expectation. Both arms and the design are nonempty. See scratch/exact-checks.json:T1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T2",
+    "theorem": "SAP.P005a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example n=6,m=2,t=treated or control, a=(-8/5,-1,0,3/5,4/5,6/5), b=a^2 gives nonconstant centered data and 15 assignments. The numerical expectation and centered bound were checked for both arms of two populations and every 1<=m<6. The design count and size hypotheses also compile in scratch/Check.lean. No extra centering, moment, literature or variance-bound hypothesis is present.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P005-T3",
+    "theorem": "SAP.P005a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed n=16,d=1,m=8 witness is standardized. Enumeration of all 12870 assignments gives minimum arm variances 7/142 in each arm and minimum pooled Lhat 343/568. Its exact outcome second moment is 28673/32768. The asserted variance and both strictly smaller printed expressions were independently recovered. See scratch/exact-checks.json:T3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T4",
+    "theorem": "SAP.P005a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Finite instance: n=6,d=1,m=2, signPopulation, K=28, either arm; standardization is proved independently in scratch/Check.lean. Sequence instance: for n>=3 put d=1, m=floor(n/2), a_i=i-(n-1)/2 for 0<=i<n, x_i=a_i/sqrt((n^2-1)/12), and yT=yC=0. This has mean x=0, M(x^2)=1, kappa=3(n-1)/(n(n+1)), K=1 and allocation constants lo=1/4,hi=3/4. Assign arbitrary zero data at n<3. Hence standingAssumptions is satisfiable with positive dimension. The finite chains passed the rational checks; the asymptotic bounds follow from positive allocation fractions and the stated finite chain.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T5",
+    "theorem": "SAP.P005a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed six-unit rational signPopulation is standardized, with outcome second moments 1059/625 and 17361/625, both <=28. Across all 15 assignments minimum treated/control variances are 1/100 and 3/16. Exact enumeration yields the actual difference 217/2500, opposite to the printed formula. The population's standardization and a positive-variance assignment also compile in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T6",
+    "theorem": "SAP.P005a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=6,d=1,m=2 with signPopulation satisfies the only data hypothesis, population-centered covariates, and has nonzero leverage-outcome covariances 434/625 and 868/625. Both third moments and signed nu3 expectations were checked for every allocation of two nonconstant standardized scalar populations. scratch/Check.lean verifies NTTT(6,2)=1/10 and NCCC(6,2)=-1/80, including the real subtraction signs. The finite third-moment identity requires neither invertibility nor the Gram condition.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T7",
+    "theorem": "SAP.P005a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the actual spike sequence, n>=3 gives Q=(n-1)/n^2*(1+1/(3(n-2)n^2))>0, mean x=0, M(x^2)=1, bounded outcomes and 1/4<floor(n/2)/n<3/4. For n>=6 the distinct covariates and arm sizes >=3 give ordinary invertible scalar OLS in both arms. kappa=3n(n-1)(n-2)/(3n^2(n-2)+1) tends to 1, while the ordinary real log(1) is zero. Rational enumeration at n=6,7,8,10,12 checks regularity and the even-n remainder bound, including minimum absolute remainders 4357386/779833 and 8690712840/752921287 at n=6,12. The all-assignment bound n-6 together with kappa<=1 supplies probability-one divergent remainder/rate along even n and genuinely negates the defined stochasticO. See scratch/exact-checks.json:T7.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P005-T8",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The canonical repaired expansion has satisfiable asymptotic hypotheses: the normalized scalar equally spaced grid x_i=(i-(n-1)/2)/sqrt((n^2-1)/12), zero potential outcomes and floor(n/2) allocation has distinct covariates, regular arms for n>=6, kappa=3(n-1)/(n(n+1)), and kappa*log(2)->0. Omission is justified on the visible record by the only credited expansion proof depending on an unproved Tropp2011RowSampling proposition; that proposition is not a canonical hypothesis. The external proof row itself is outside the supplied readable files, so its dependency is assessed from the record. T9 explicitly retains only the independent logarithm equivalences.",
+    "confidence": 0.87
+  },
+  {
+    "target_id": "P005-T9",
+    "theorem": "SAP.P005a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example d_n=1 and kappa_n=1/(n+1) satisfy both eventual hypotheses and the repaired limits. More generally the normalized scalar grid has genuine population leverages tending to zero. All substantive logarithms have arguments >=1 eventually, and log(2)>0 supplies the leverage implication. The paired logarithms differ by multiplicative factors between 1 and 2. The docstring correctly discloses removal of the entire estimator expansion and remainder rate.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T10",
+    "theorem": "SAP.P005a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed weightPopulation has n=6,d=1,m=2, centered normalized covariates sqrt(3/20)*(-3,-2,-1,0,1,5), treated second moment 362/3<=121 and p=1/3. Exact enumeration of all 15 assignments gives minimum treated/control variances 3/80 and 3/16, printed expectation 4913/1200 and repaired expectation/population mean 20/3. See scratch/exact-checks.json:T10 and T10_T12_nonvacuity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T11",
+    "theorem": "SAP.P005a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For all finite parts choose n=6,d=1,m=2 with the rational sign covariates and signPopulation outcomes; every arm covariance is nonsingular, both arm sizes >=2, and the covariates are population-centered. The exact expectation/cancellation checks pass for both arms of two scalar populations over all eligible allocations. A positive-dimensional sequence satisfying standingAssumptions is the normalized equally spaced scalar grid, floor(n/2) allocation and zero outcomes, with K=1 and lo=1/4,hi=3/4. The stochastic remainder then vanishes. The general order is compatible with the centered quadratic-sampling fluctuation bound, corrected covariance variance bound and d/n<=kappa<=1; it does not assume its own stochasticO conclusion.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P005-T12",
+    "theorem": "SAP.P005a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same six distinct normalized scalar weight covariates and y=a^2 give positive treatment/control variances on each of 15 assignments (minima 3/80 and 3/16), mean x=0 and mean x^2=1. Direct rational-coordinate enumeration recovers actual and repaired expectation 31085815448171/17062566567774 and wrong-treated-inverse expectation 12010469/846720. Hence all scalar divisions use positive variances. See scratch/exact-checks.json:T12.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T13",
+    "theorem": "SAP.P005a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=6,d=1,m=2 and signPopulation. Its standardization compiles in scratch/Check.lean, and all control variances are >=3/16 by exact enumeration. The full control expectation chain and its moment components pass the independent scalar checks. Thus positive-dimensional instances exist, and the universal assertion does not rely on empty coordinates. Its determinant premise protects every control inverse actually used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T14",
+    "theorem": "SAP.P005a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=6,d=1,m=2 and signPopulation every assignment has pooled Lhat>=31/200, and standardization is independently compiled. The inverse cancellation, mean identities and actual bias decomposition pass exact scalar checks on both six-unit populations at every allocation. For factorization one can explicitly define F from S,x and Yobs by forming each arm mean/cross-moment and Nhat using only Yobs on that arm, and applying the defined Lhat inverse. This has the required quantifier order and never uses an unobserved potential outcome. The additionally required standardization and all-assignment regularity are explicitly disclosed.",
+    "confidence": 0.98
+  }
+]

@@ -4,7 +4,11 @@ import AronowAudit.External.StatLean.MultipleTesting.ForMathlib.ChiSquared
 import Mathlib.Probability.Distributions.Exponential
 import Mathlib.MeasureTheory.Constructions.Pi
 
-
+/-!
+Draft for dd-GP019B1. Source-inspected only: no Lean executable was run.
+The original held proofs are never used. The `type_of%` examples refer only
+to their types. All analytic dependencies below are proved declarations.
+-/
 namespace AronowAudit.P019.Wave1
 
 set_option maxHeartbeats 4000000
@@ -20,7 +24,7 @@ variable {Ω : Type*} [Fintype Ω]
 local instance npu_normal_atomless : NullSingletonClass (gaussianReal 0 1) :=
   nullSingletonClass_gaussianReal (by norm_num : (1 : NNReal) ≠ 0)
 
-/-! ## Uniformity of normal p-values -/
+/-! ## Record 1: normal_pvalue_uniform -/
 
 lemma npu_cdf_eq (x : ℝ) : normalCDF x = cdf (gaussianReal 0 1) x := by
   rw [cdf_eq_real]
@@ -132,7 +136,9 @@ theorem normal_pvalue_uniform_proof (u : ℝ) (hu0 : 0 < u) (hu1 : u < 1) :
   rw [hq]
   ring
 
-/-! ## Fisher identity for independent uniforms -/
+example : type_of% @AronowAudit.P019.normal_pvalue_uniform := normal_pvalue_uniform_proof
+
+/-! ## Record 2: uniform_fisher_identity -/
 
 -- Restricting ordinary Lebesgue measure to [0,1] already has mass one.
 local instance ufi_uniform_probability :
@@ -332,11 +338,13 @@ theorem uniform_fisher_identity_proof :
       rw [ufi_flat_law]
       rfl
 
-/-! ## Corrected two-sided planning power -/
+example : type_of% @AronowAudit.P019.uniform_fisher_identity := uniform_fisher_identity_proof
 
-/-- With d=|p1-p2|, s=√(S/n), and t=c√(V/n), this is exactly the stated
-planning rejection event. The disjointness is part of the conclusion, not an
-implicit convention. -/
+/-! ## Record 4: two_sided_power_corrected -/
+
+/-- Referee 1's corrected split. With d=|p1-p2|, s=√(S/n),
+t=c√(V/n), this is exactly the stated planning rejection event.
+The disjointness is part of the conclusion, not an implicit convention. -/
 lemma tpc_rejection_tail_split (d s t : ℝ) (hs : 0 < s) (ht : 0 < t) :
     {g : ℝ | t < |d+s*g|} =
       Set.Ioi ((t-d)/s) ∪ Set.Iio ((-t-d)/s) ∧
@@ -469,6 +477,8 @@ theorem two_sided_power_corrected_proof (n p1 p2 α : ℝ) (hn : 0 < n)
       rw [hreflect, hT, hcdf]
       ring
   exact ⟨hc, hsum, hreflect, hpos, hbound, heq, by linarith [hsum]⟩
+
+example : type_of% @AronowAudit.P019.two_sided_power_corrected := two_sided_power_corrected_proof
 
 end
 end AronowAudit.P019.Wave1

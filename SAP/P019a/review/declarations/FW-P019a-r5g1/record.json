@@ -1,0 +1,104 @@
+[
+ {
+  "target_id": "P019-T1",
+  "decision": "restricted",
+  "theorem": "SAP.P019a.T1",
+  "restriction": "Uses the deterministic mixture after affected status has been integrated out; omits a joint random-variable model and its conditional-observable-mean identification. The counterexample concerns the mechanism description and contains no numerical power guarantee.",
+  "rows_used": [
+   "AronowAudit.P019.binomial_baseline_exact",
+   "AronowAudit.P019.ceiling_counterexample"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P019-T2",
+  "decision": "restricted",
+  "theorem": "SAP.P019a.T2",
+  "restriction": "Drops the assertion of about 80 percent power with 800 affirmative respondents and 20 percent affected. Uses the integrated deterministic mixture rather than constructing the joint population and identifying its observable conditional means.",
+  "rows_used": [
+   "AronowAudit.P019.ceiling_corrected",
+   "AronowAudit.P019.ceiling_response_increments"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P019-T3",
+  "decision": "whole",
+  "theorem": "SAP.P019a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.Wave1.finite_product_counterexample_proof",
+   "AronowAudit.P019.conditional_count_counterexample",
+   "AronowAudit.P019.lemma_two_counterexample",
+   "AronowAudit.P019.omitted_binomial_mass",
+   "AronowAudit.P019.realized_count_counterexample",
+   "SAP.P019a.WH.W1.T3_whole",
+   "SAP.P019a.WH.W1.T3_assembly",
+   "SAP.P019a.WH.W1.restrictedT3",
+   "SAP.P019a.WH.W1.t3_population",
+   "SAP.P019a.WH.W1.t3_singleton",
+   "SAP.P019a.WH.W1.T3_L1_proof",
+   "SAP.P019a.WH.W1.T3_L2_proof",
+   "AronowAudit.P019.estimator_product_identity",
+   "AronowAudit.P019.conditional_variance_shift"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P019a.T3WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P019.regularity_probabilities",
+   "AronowAudit.P019.probability_complement",
+   "AronowAudit.P019.empty_cell_probability"
+  ]
+ },
+ {
+  "target_id": "P019-T4",
+  "decision": "whole",
+  "theorem": "SAP.P019a.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.Wave1.corrected_cell_lemmas_proof",
+   "AronowAudit.P019.Wave1.corrected_conditional_means_proof",
+   "AronowAudit.P019.Wave1.corrected_covariance_order_proof",
+   "AronowAudit.P019.Wave1.corrected_product_variance_proof",
+   "AronowAudit.P019.empty_cell_probability",
+   "AronowAudit.P019.treatment_count_correction",
+   "SAP.P019a.WH.W1.T4_whole",
+   "SAP.P019a.WH.W1.T4_assembly",
+   "SAP.P019a.WH.W1.restrictedT4",
+   "SAP.P019a.WH.W1.t4_extras",
+   "SAP.P019a.WH.W1.T4_L1_proof",
+   "SAP.P019a.WH.W1.T4_L2_proof",
+   "SAP.P019a.WH.W1.T4_L3_proof",
+   "SAP.P019a.WH.W1.T4_L4_proof",
+   "SAP.P019a.WH.W1.T4_L5_proof",
+   "SAP.P019a.WH.W1.T4_L6_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.conditional_sample_factorization",
+    "reason": "Not invoked separately: the retained conditional moments are supplied by the composite cell and conditional-mean declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P019.covariance_taylor_coefficient",
+    "reason": "The complete covariance-order declaration already supplies the actual rate and limit coefficient."
+   }
+  ],
+  "statement_definition": "SAP.P019a.T4WholeStatement"
+ },
+ {
+  "target_id": "P019-T5",
+  "decision": "whole",
+  "theorem": "SAP.P019a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.distribution_sign_counterexample",
+   "SAP.P019a.WH.W1.T5_whole",
+   "SAP.P019a.WH.W1.T5_assembly",
+   "SAP.P019a.WH.W1.restrictedT5",
+   "SAP.P019a.WH.W1.t5_data",
+   "SAP.P019a.WH.W1.t5_cdf"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P019a.T5WholeStatement"
+ }
+]

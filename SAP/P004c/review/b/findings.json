@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P004-T31",
+    "theorem": "SAP.P004c.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, p=1/2, R_i(z)=(-1)^i+z_i, z=(true,false) gives two positive arm counts and a unique nonsingular OLS fit; these count premises compile in scratch/Nonvacuity.lean. For the spectral clause choose the identity eigenvector matrix, eigenvalues (-1,2), and any real residual vector, so truncation is nontrivial. Neither an empty node set nor a singular matrix supplies the result.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T32",
+    "theorem": "SAP.P004c.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles N=2, p=1/2, R_i(z)=(-1)^i+z_i, B_i={i}, strict bound |R_i(z)|<3, symmetric center-containing neighborhoods, no shared source outside B_i, and Var(HT)=5/2. For asymptotic clauses the genuine two-dimensional singleton-node sequence in REPORT.md has h(d)=2d, ball counts at most 2r+1, uniformly bounded outcomes, and N*Var(HT)>=5. Independent rational enumeration checks all finite identities and constants on interacting ring tables for N=2,3,4,5 and p=1/2,2/5.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T33",
+    "theorem": "SAP.P004c.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled two-node instance has Var(HT)=5/2>0 and Var(linearHajek)=2>0, with self neighborhoods and effect homophily zero. Exact rational checks also include R_i(z)=(1,-2,1)_i*z_i on three nodes with path neighborhoods: homophily=-2/3, Var(linearHajek)=2/3, secondMomentBound=4/9, and their difference is -2/9. Thus the iff statement meaningfully detects failure of C5 and does not silently assume the bound.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T34",
+    "theorem": "SAP.P004c.T34",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the finite identities take N=8, p=1/2 and five treated nodes. For the kernel bound take distinct line nodes within distance less than bandwidth 10, K(t)=1 on [0,1] and zero otherwise, Kmax=1, and e=(1,-1,0,0,0,0,0,0); the realized cross-sum is -1/4. Independent rational arithmetic confirms 9/25 versus -9/25. This realized witness is audit evidence, not an assertion supplied by T34, whose docstring accurately drops it and the composed bandwidth rate. The Bernoulli denominator rate has nonempty samples with probability tending to one; its zero extension on empty arms is explicit and harmless.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T35",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No challenge statement to test. On the supplied record, the two available negative declarations concern universality over arbitrary metric measurable spaces, not a certified counterexample in the paper's two-dimensional spatial domain. Negating a universal claim on a larger class does not negate it on the canonical subclass. The record supplies no positive theorem establishing the printed logistic-IPW proposition. Omitting rather than presenting that domain-mismatched negation as a refutation is justified on the visible evidence; source row bodies were not available in the allowed audit inputs.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P004-T36",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No challenge statement to test. The canonical claim explicitly retains the Hajek coverage numerator, while the only recorded row refutes fitted-IPW coverage. The two estimators differ under heterogeneous propensities; neither a proof nor a refutation transfers merely by changing their names. The fourth-power variance algebra alone also does not settle Hajek coverage. Omission is justified without deciding whether the printed coverage assertion itself is true.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T37",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No challenge statement to test. A negated equality for arbitrary real tables and positive weights is not itself a counterexample with binary spatial outcomes, one common potential-outcome field, and ordered distance-bin regions partitioning the specified area. The record says the available row exports none of those domain witnesses. A spatial realization might be possible, and the canonical text gives independent mathematical reasons to reject the unweighted-sum interpretation, but neither fact makes the recorded larger-domain negation alone a faithful certified refutation. Conservative omission is justified on the visible inputs.",
+    "confidence": 0.91
+  },
+  {
+    "target_id": "P004-T39",
+    "theorem": "SAP.P004c.T39",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled N=2, p=1/2 table R_i(z)=(-1)^i+z_i has AME=1 and E[HT]=1. Exact rational checks also verify forced-coordinate marginalization and HT unbiasedness for interacting ring tables of sizes 2 through 5 with p=1/2 and 2/5. All assignment weights are positive and normalized, and every conditional denominator is nonzero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T40",
+    "theorem": "SAP.P004c.T40",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles a one-node real spatial population with node {0}, measure dirac(0), bands equal to the full set of distances, outcome Y(x,z)=z_0, g_0(x)=1, f=0, and normalized weights 1/2 on each assignment. WellDefined and circleAverage=z_0 are proved from the SAP definitions, so its integral has mass one and nonzero treatment effect. The two-dimensional finite-node construction in REPORT.md also realizes nonzero additive point and circle effects in the paper's domain. Integrability of f and g_i follows from integrable all-control and single-treated potential outcomes, not from a totalized nonintegrable integral.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T41",
+    "theorem": "SAP.P004c.T41",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the two-dimensional sequence in REPORT.md: nodes (i,0), finite counting measure on those nodes, disk bands, and Y(x,z)=cos(pi*x_1)+sum_i z_i*1_{x=(i,0)}, with p=1/2 and tested radius d=0. Then R_i(z)=(-1)^i+z_i, outcomes have absolute value less than 3, h(d)=2d and the C4 bound 2r+1 work uniformly. For every N>0, N*Var(HT)=5+4*sum_i(-1)^i/N>=5. Genuine circle averages and the nondegenerate CLT premises hold together.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T42",
+    "theorem": "SAP.P004c.T42",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same genuine spatial sequence has AME=1 and N*Var(linearHajek)=4*(1-bar(c_N)^2), where c_i=(-1)^i and bar(c_N)=sum_i c_i/N. For N>=2 this is at least 32/9, so a fixed strictly positive lower bound exists. Both arms are nonempty with probability 1-2^(1-N); zero means on the remaining assignments have the disclosed supplement convention. The actual SAP two-node linearized variance 2 compiles in scratch/Nonvacuity.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T43",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No challenge statement to test. The canonical target is coverage with ordinary limits, not just finite oracle bounds or a lower bound on a liminf. The recorded negative declaration has no exported witness in the canonical two-dimensional domain, and the two finite oracle variance rows establish neither coverage limit nor its existence. The larger-domain negation therefore cannot be labeled a refutation of the printed claim on this evidence. Omitting it and the insufficient helper statements is justified; this does not certify the printed ordinary-limit coverage claim.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P004-T44",
+    "theorem": "SAP.P004c.T44",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same two-dimensional sequence satisfies metric node distances and, for every N and s>=0, ball cardinality <=2s+1<=2*(1+s^2), so the strengthened uniform spacing is satisfiable with Cb=2. At d=0 each R_i depends only on z_i, which is included in every ball with s>=0; hence all NED approximation errors are zero and psi=0, g_{N,i}=G=1 work with any exponent greater than 4. Outcomes and genuine disk averages satisfy the remaining regularity hypotheses, and N*Var(linearHajek)>=32/9 for N>=2. The docstring and record accurately disclose the uniform-threshold strengthening and the small-radius repair; all four conclusions remain.",
+    "confidence": 0.97
+  }
+]

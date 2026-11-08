@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P008-T20",
+    "theorem": "SAP.P008b.T20",
+    "fingerprint": "df3e762e0eb91fbd75bac436ad1be8ccc6376500d2cc286eeeb6ae2959e85488",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean independently constructs a nonempty eight-neighbour boundary (the singleton raster), checks that both explicit 5-by-5 polygons have 25 cells and 16 boundary cells, checks both Hajek arm counts are 1 at the displayed assignment, and constructs a nonempty continuous frontier. The fixed outcome is 1 on exactly nine interior cells of polygon 0 when z0=true and zero elsewhere; hence the two fixed contrasts are 0 and 9/25, and averaging the two own-treatment effects over two nodes under independent fair assignments gives 0 and 9/50. Nonempty-frontier closed polygons with nonempty interiors exist, for example a closed unit square; no continuous average or integral is needed in this theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T21",
+    "theorem": "SAP.P008b.T21",
+    "fingerprint": "d023a6b1bffd69f89eb6acc1eb7e3c0c7f5fe808efe8120ace44d32947980c47",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean proves the entire retained closed proposition with norm_num [T21Statement], without importing Challenge. It has no hypotheses and both denominators are strictly positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T22",
+    "theorem": "SAP.P008b.T22",
+    "fingerprint": "9e11ba3d3154caf5987377f6466ad3ab61ae87d80de1ee8f3c482a2a29134649",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean independently checks an injective exhaustive list of all six two-treated assignments, both arm counts equal to 2, the Hajek vector (-2,-1,0,0,1,2), its type-7 cutoffs +/-15/8 and strict rejection probability 1/3, the fivefold-vector cutoffs +/-75/8, and the printed numerical decision. scratch/SpatialEvidence.lean supplies an independent spatial model with nodes (10i,0), atoms (10i+(j+1)/10,0), and assignment-invariant Borel outcomes 0,1,2,3 on the respective node neighbourhoods. It proves that each required restricted circle measure is exactly one Dirac mass, all validCircle conditions hold, the sharp null holds, each circle mean is i, and total measure is 20. Thus the spatial and finite-statistic data satisfy the hypotheses jointly, with no use of nonintegrable outcomes, infinite/zero mass, empty arms, or dependent replicate draws. The general S2 design assertion permits this uniform fixed-count law; the six-state cardinality bound addresses the stated six-permutation calibration.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T23",
+    "theorem": "SAP.P008b.T23",
+    "fingerprint": "72bcf90960f6bc8d6a9642e67bcd8030a0a1452470eca86cda6db82329d9dfee",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean checks two positive-N finite-law instances: two identical Bernoulli contributions, cutoff 1, and summed variance 1; and two independent fair Boolean coordinates with diagonal distance 0, off-diagonal distance 1, cutoff 0, vanishing covariances for the actual pairs beyond the cutoff, and summed variance 1/2. All laws have normalized positive total mass. These demonstrate a genuinely active cutoff premise and positive variance, rather than only the N=0 case.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T25",
+    "theorem": "SAP.P008b.T25",
+    "fingerprint": "0f4be4131c8448b3249903d8489a2cfd46f22b6ccff34926bc2c3aac26bc3306",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean independently constructs a one-point counting-measure spatial field with one node, the Euclidean coordinate metric, radius zero, uniform assignment law, and outcome equal to own treatment. It proves positive node count and validCircle for every node (the circle is the entire one-point field with mass one and constant integrable outcomes), and proves pointEffect=1. Thus both families of circle-average hypotheses are jointly satisfiable with a nonzero causal effect. The toy-design clauses are unconditional universal finite-sum identities on the nonempty set of 16 assignments; both own-treatment slices have eight elements.",
+    "confidence": 0.99
+  }
+]

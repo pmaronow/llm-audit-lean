@@ -1,0 +1,86 @@
+[
+  {
+    "theorem": "SAP.P011a.T1",
+    "target_id": "P011-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "The explicit four-cycle laws, singleton compatibility, scaling and homoskedasticity, exact moments, failure probabilities, normal and coverage limits, and negative realization reproduce parts (a)-(g). The exact coverage expression supplies the approximate numerical observation. The constructions are genuine finite uniform laws; no premise assumes a claimed failure."
+  },
+  {
+    "theorem": "SAP.P011a.T2",
+    "target_id": "P011-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both path families and their genuine finite laws are retained, including scaling, singleton compatibility, covariance and block moments, exact expectations, both failure/coverage regimes, and OLS intercept representation. The sharper 27/5 outcome bound, explicit S/L/Q polynomials, multiblock samplewise identity, and decimal coverage evaluation are absent; the docstring identifies these omissions. The designs have nonzero Gram determinant for t=1,2 and K>0."
+  },
+  {
+    "theorem": "SAP.P011a.T3",
+    "target_id": "P011-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The shared Scaling premise includes Nested F (Defs/Part1.lean:119-130), requiring induced embeddings of successive observed dependency graphs. S5 nests the full graphs G, while S2 permits observed subsets V_S and does not require them to be nested. These are different conditions: take nested full matchings, independent signs with theta=1 and d=1, observe one endpoint from each of n edges for odd n (observed graph empty), and both endpoints of one edge plus single endpoints from n-2 other edges for even n (observed graph one edge). All printed scaling conditions hold with c1=c2=c3=1 and c4=2, but an even observed graph cannot embed into the next odd one. The Lean edge-to-empty obstruction is compiled in scratch/Check.lean. Thus the generic conclusions apply to a narrower class unless observed induced nesting is explicitly added or removed from Scaling. All six substantive formulas and criteria otherwise agree, including the bounded mean-bias liminf and the clique formula. Independent signs give a nonvacuous Scaling instance; meanBias is bounded by (1+c2)c1^2, so its real liminf is legitimate."
+  },
+  {
+    "theorem": "SAP.P011a.T4",
+    "target_id": "P011-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The shared Scaling premise includes Nested F (Defs/Part1.lean:119-130), requiring induced embeddings of successive observed dependency graphs. S5 nests the full graphs G, while S2 permits observed subsets V_S and does not require them to be nested. These are different conditions: take nested full matchings, independent signs with theta=1 and d=1, observe one endpoint from each of n edges for odd n (observed graph empty), and both endpoints of one edge plus single endpoints from n-2 other edges for even n (observed graph one edge). All printed scaling conditions hold with c1=c2=c3=1 and c4=2, but an even observed graph cannot embed into the next odd one. The Lean edge-to-empty obstruction is compiled in scratch/Check.lean. Thus the generic conclusions apply to a narrower class unless observed induced nesting is explicitly added or removed from Scaling. In addition, the trace-only sufficient condition and covariance-support observation of (iv) are omitted, as the docstring states. The deterministic bounded Euclidean operator norm, exact expectations, O(n) variance, probability expansion, PSD condition, clique characterization, and sign data-dependent failure are faithfully represented."
+  },
+  {
+    "theorem": "SAP.P011a.T5",
+    "target_id": "P011-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The shared Scaling premise includes Nested F (Defs/Part1.lean:119-130), requiring induced embeddings of successive observed dependency graphs. S5 nests the full graphs G, while S2 permits observed subsets V_S and does not require them to be nested. These are different conditions: take nested full matchings, independent signs with theta=1 and d=1, observe one endpoint from each of n edges for odd n (observed graph empty), and both endpoints of one edge plus single endpoints from n-2 other edges for even n (observed graph one edge). All printed scaling conditions hold with c1=c2=c3=1 and c4=2, but an even observed graph cannot embed into the next odd one. The Lean edge-to-empty obstruction is compiled in scratch/Check.lean. Thus the generic conclusions apply to a narrower class unless observed induced nesting is explicitly added or removed from Scaling. The degree correction uses the correct explicit zero-cap convention; the finite PSD, edge-objective, regular-graph and Young identities, all four asymptotic conclusions and common-cap V2-prime consequence otherwise match. Compatible maximizers exist because the graph set is finite; their quantified presence is not an assumption of conservativeness."
+  },
+  {
+    "theorem": "SAP.P011a.T6",
+    "target_id": "P011-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The shared Scaling premise includes Nested F (Defs/Part1.lean:119-130), requiring induced embeddings of successive observed dependency graphs. S5 nests the full graphs G, while S2 permits observed subsets V_S and does not require them to be nested. These are different conditions: take nested full matchings, independent signs with theta=1 and d=1, observe one endpoint from each of n edges for odd n (observed graph empty), and both endpoints of one edge plus single endpoints from n-2 other edges for even n (observed graph one edge). All printed scaling conditions hold with c1=c2=c3=1 and c4=2, but an even observed graph cannot embed into the next odd one. The Lean edge-to-empty obstruction is compiled in scratch/Check.lean. Thus the generic conclusions apply to a narrower class unless observed induced nesting is explicitly added or removed from Scaling. The finite clipping, PSD majorant, norm, nearest-matrix uniqueness, nonleast-majorant and nonaffinity results and all cycle formulas otherwise match. The nonsymmetric fallback in positivePart is never used by these assertions."
+  },
+  {
+    "theorem": "SAP.P011a.T7",
+    "target_id": "P011-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The shared Scaling premise includes Nested F (Defs/Part1.lean:119-130), requiring induced embeddings of successive observed dependency graphs. S5 nests the full graphs G, while S2 permits observed subsets V_S and does not require them to be nested. These are different conditions: take nested full matchings, independent signs with theta=1 and d=1, observe one endpoint from each of n edges for odd n (observed graph empty), and both endpoints of one edge plus single endpoints from n-2 other edges for even n (observed graph one edge). All printed scaling conditions hold with c1=c2=c3=1 and c4=2, but an even observed graph cannot embed into the next odd one. The Lean edge-to-empty obstruction is compiled in scratch/Check.lean. Thus the generic conclusions apply to a narrower class unless observed induced nesting is explicitly added or removed from Scaling. The graph characterization as two residual-sign cliques and the confidence-interval consequence are also omitted, as disclosed. Both finite comparison constants, arbitrary valid supplied caps, exact unbounded-cap sign values and unscaled limits are retained. The sign-family caps stored as zero do not enter the separate maximization using supplied caps k."
+  },
+  {
+    "theorem": "SAP.P011a.T8",
+    "target_id": "P011-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The shared Scaling premise includes Nested F (Defs/Part1.lean:119-130), requiring induced embeddings of successive observed dependency graphs. S5 nests the full graphs G, while S2 permits observed subsets V_S and does not require them to be nested. These are different conditions: take nested full matchings, independent signs with theta=1 and d=1, observe one endpoint from each of n edges for odd n (observed graph empty), and both endpoints of one edge plus single endpoints from n-2 other edges for even n (observed graph one edge). All printed scaling conditions hold with c1=c2=c3=1 and c4=2, but an even observed graph cannot embed into the next odd one. The Lean edge-to-empty obstruction is compiled in scratch/Check.lean. Thus the generic conclusions apply to a narrower class unless observed induced nesting is explicitly added or removed from Scaling. The four estimator classes, all validity and mean-bias conditions, clipped coverage, equal-mean and clique cases and the genuine original-estimator counterexamples otherwise match. Maximum values over finite graph sets are measurable even if an argmax selection is arbitrary."
+  },
+  {
+    "theorem": "SAP.P011a.T9",
+    "target_id": "P011-T9",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The shared Scaling premise includes Nested F (Defs/Part1.lean:119-130), requiring induced embeddings of successive observed dependency graphs. S5 nests the full graphs G, while S2 permits observed subsets V_S and does not require them to be nested. These are different conditions: take nested full matchings, independent signs with theta=1 and d=1, observe one endpoint from each of n edges for odd n (observed graph empty), and both endpoints of one edge plus single endpoints from n-2 other edges for even n (observed graph one edge). All printed scaling conditions hold with c1=c2=c3=1 and c4=2, but an even observed graph cannot embed into the next odd one. The Lean edge-to-empty obstruction is compiled in scratch/Check.lean. Thus the generic conclusions apply to a narrower class unless observed induced nesting is explicitly added or removed from Scaling. The docstring also discloses omission of the explicit slope-weight representation, exact per-size scaled true variance 2, samplewise residual-sum identity and n=4,8 numerical evaluations from (d), and makes fitted-coefficient measurability explicit. Both prediction-error routes and the misspecification term are otherwise correct. Independent signs, an intercept-only zero-mean model and fitted coefficient identically zero give a genuine rate/prediction instance; the unstable OLS example has full-rank design."
+  },
+  {
+    "theorem": "SAP.P011a.T10",
+    "target_id": "P011-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact fixed-mean and mixture constructions, finite moments, Scaling and finite mixture identity, impossibility for every deterministic infinite sign sequence and conservativeness tradeoff are represented. The separately stated universal-estimator consequence and unscaled-zero/additional-design observations are omitted, as disclosed. Measurable statistics are the ordinary statistical interpretation; a=b=1 yields nondegenerate models with distinct scaled variances 1 and 2."
+  },
+  {
+    "theorem": "SAP.P011a.T11",
+    "target_id": "P011-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "The alternating family, weighted means and variances, exact decomposition and remainder moments, even-size bounds, full-sequence limits refuting both printed inequality directions, one-sided conservativeness and V2-star/V2 identities reproduce the canonical claim. n=k+1 is positive, ceil/floor parity arithmetic is correct, and meanVariance=t_n^2 is strictly positive so rho does not exploit its zero convention."
+  },
+  {
+    "theorem": "SAP.P011a.T12",
+    "target_id": "P011-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The shared Scaling premise includes Nested F (Defs/Part1.lean:119-130), requiring induced embeddings of successive observed dependency graphs. S5 nests the full graphs G, while S2 permits observed subsets V_S and does not require them to be nested. These are different conditions: take nested full matchings, independent signs with theta=1 and d=1, observe one endpoint from each of n edges for odd n (observed graph empty), and both endpoints of one edge plus single endpoints from n-2 other edges for even n (observed graph one edge). All printed scaling conditions hold with c1=c2=c3=1 and c4=2, but an even observed graph cannot embed into the next odd one. The Lean edge-to-empty obstruction is compiled in scratch/Check.lean. Thus the generic conclusions apply to a narrower class unless observed induced nesting is explicitly added or removed from Scaling. All finite moment constants, the full gap chain, the explicit 4(1+c2)^3 c1^4/(n epsilon^2) tail bound and one-sided convergence otherwise match. SignFamily and AlternatingFamily both satisfy the homoskedastic conditions nonvacuously."
+  },
+  {
+    "theorem": "SAP.P011a.T13",
+    "target_id": "P011-T13",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The rational weighted edge problem, feasibility condition using forced degrees rather than truncated residual subtraction, existential optional decomposition, decoding and objective recovery for every maximum matching, exact gadget counts and both attained instances are correctly represented. The paper-program equivalence, explicit uniqueness, separate optional optimum identity, general maximum-existence/independently defined optimum equality, and runtime/complexity consequences are omitted as disclosed. No assertion about encoded bit length is made. The finite matching instances have real feasible sets; independent exact enumeration confirms objectives 3/4,-3/4 and gadget optima 166,200."
+  },
+  {
+    "theorem": "SAP.P011a.T14",
+    "target_id": "P011-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "The general certified relaxed upper bound specializes to every integer graph and both variance estimators with the correct factors of two. Exact six-unit and triangle fractional/integer optima, variance values, named integer witness and a strictly inferior feasible fractional point give the advertised distinction between an LP certificate and an arbitrary LP feasible value. Positive n excludes division by zero, and the examples have nonempty fractional and integer feasible sets."
+  }
+]

@@ -387,7 +387,7 @@ theorem qtc_symmetrize_sq_sum_le {n : ℕ} (Q : Matrix (Fin n) (Fin n) ℝ) :
       rw [ht]
       ring
 
-/-- P005 first moment for arbitrary real matrices and all sample sizes
+/-- Public P005 first moment for arbitrary real matrices and all sample sizes
 between zero and the population size. -/
 theorem qtc_principal_expectation {n s : ℕ} (hn : 4 ≤ n) (hsn : s ≤ n)
     (Q : Matrix (Fin n) (Fin n) ℝ) :
@@ -399,7 +399,7 @@ theorem qtc_principal_expectation {n s : ℕ} (hn : 4 ≤ n) (hsn : s ≤ n)
     simp [expectation, design, principalSum]
   · exact qtc_expectation_positive hn (Nat.pos_of_ne_zero hs) hsn Q
 
-/-- P005 variance bound for an arbitrary matrix with both vanishing row
+/-- Public P005 variance bound for an arbitrary matrix with both vanishing row
 and column sums. The empty and full samples are included. -/
 theorem qtc_principal_variance {n s : ℕ} (hn : 4 ≤ n) (hsn : s ≤ n)
     (Q : Matrix (Fin n) (Fin n) ℝ)
@@ -428,17 +428,42 @@ end AronowAudit.P005.Wave1
 
 namespace AronowAudit.Literature
 
-/-- The published quadratic sampling proposition for arbitrary matrices,
-including empty and full samples. -/
+/-- The complete published quadratic sampling proposition, proved for its
+existing definition without any added premise. -/
 theorem leiDing2021QuadraticSampling_proof : LeiDing2021QuadraticSampling := by
   intro N s hN hs Q
   exact ⟨AronowAudit.P005.Wave1.qtc_principal_expectation hN hs Q,
     AronowAudit.P005.Wave1.qtc_principal_variance hN hs Q⟩
 
+example : LeiDing2021QuadraticSampling := leiDing2021QuadraticSampling_proof
+
 end AronowAudit.Literature
 
 namespace AronowAudit.P005.Wave1
 
+/-- Discharge the frozen conditional covariance theorem's literature
+antecedent using the unconditional finite matrix sampling proof. -/
+theorem qtc_corrected_covariance_lemma {n m : ℕ} (hn : 4 ≤ n) (hm : 0 < m) (hmn : m < n)
+    (t : Arm) (a b : Fin n → ℝ) :
+    expectation m (fun S => sampleCov (armSet t S) a b) =
+      (((armSize n m t : ℕ) : ℝ) - 1) * n /
+        ((armSize n m t : ℝ) * (n - 1)) * popCov a b ∧
+    variance m (fun S => sampleCov (armSet t S) a b) ≤
+      covarianceBound (armSize n m t) (centered a) (centered b) := by
+  exact corrected_covariance_lemma_conditional
+    AronowAudit.Literature.leiDing2021QuadraticSampling_proof hn hm hmn t a b
+
+example : type_of% @AronowAudit.P005.corrected_covariance_lemma :=
+  qtc_corrected_covariance_lemma
+
+/-- First-moment corollary written entirely as a P005 design expectation of
+finite principal sums. No row, column, or symmetry premise is needed. -/
+theorem principal_sum_expectation_tailC {n s : ℕ} (hn : 4 ≤ n) (hsn : s ≤ n)
+    (Q : Matrix (Fin n) (Fin n) ℝ) :
+    expectation s (fun S => ∑ i ∈ S, ∑ j ∈ S, Q i j) =
+      (s : ℝ)*((n : ℝ)-s)/((n : ℝ)*(n-1)) * (∑ i, Q i i) +
+      (s : ℝ)*(s-1)/((n : ℝ)*(n-1)) * (∑ i, ∑ j, Q i j) := by
+  exact qtc_principal_expectation hn hsn Q
 
 /-- Variance corollary in P005 vocabulary, for every sample size `s ≤ n`
 and every matrix with vanishing row and column sums. -/

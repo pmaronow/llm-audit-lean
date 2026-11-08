@@ -1,0 +1,150 @@
+[
+ {
+  "target_id": "P053-T6",
+  "decision": "restricted",
+  "theorem": "SAP.P053.T6",
+  "restriction": "Retains the local variance difference and ratio conclusions, both constant-effect variance approximations, and the sharp-null normal Wald limit and nominal rejection probability. Omits the Introduction's equivalence of the FRT and Wald tests under local alternatives (conditional FRT distributions, quantiles, p-values and rejection rules). Additionally, variance-ratio and studentized conclusions require eventual positivity of the OLS variance at every supported assignment; no such condition is added to the unstudentized variance conclusions.",
+  "rows_used": [
+   "AronowAudit.P053.local_alternative_equivalence",
+   "AronowAudit.P053.constant_effect_asymptotics",
+   "AronowAudit.P053.sharp_null_wald_validity"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P053.centeredSS_add_constant",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.centeredSS_congr",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.constant_effect_finite",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.fixed_outcome_decomposition",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.imputation_population_variance",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.imputed_reference_variance",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.sampleMean_add_constant",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.sampleMean_congr",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.sampleVariance_add_constant",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   },
+   {
+    "lean_name": "AronowAudit.P053.sampleVariance_constant",
+    "reason": "Finite translation, constant-effect or imputation auxiliary is already used by the retained asymptotic declarations."
+   }
+  ],
+  "statement_definition": "SAP.P053.T6Statement"
+ },
+ {
+  "target_id": "P053-T8",
+  "decision": "whole",
+  "theorem": "SAP.P053.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P053.neyman_asymptotic_bound",
+   "AronowAudit.P053.constant_effect_limit_agreement",
+   "AronowAudit.P053.heterogeneous_witness_finite",
+   "AronowAudit.P053.anticonservative_limit_exists",
+   "AronowAudit.P053.witness_limit_numbers"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P053.actual_variance_limit_bound",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.constant_effect_deterministic_limits",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.constant_effect_variances",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.populationVariance_nonnegative",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.sampleVariance_scale",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.witness_actual_scaled_limit",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.witness_fourth_moments",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.witness_potential_moments",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.witness_regular",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.witness_size_diverges",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.witness_variance_base_limit",
+    "reason": "Auxiliary variance, moment or numerical-limit fact is already included in the bound, agreement and explicit-witness declarations used here."
+   }
+  ],
+  "statement_definition": "SAP.P053.T8Statement"
+ },
+ {
+  "target_id": "P053-T7",
+  "decision": "whole",
+  "theorem": "SAP.P053.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P053.wald_comparison_asymptotics",
+   "AronowAudit.P053.fisher_neyman_local_comparison",
+   "AronowAudit.P053.unequal_wald_limits_necessary"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P053.ols_neyman_exact",
+    "reason": "Finite/algebraic auxiliary is already included in the asymptotic comparison; the limit identity is exported there."
+   },
+   {
+    "lean_name": "AronowAudit.P053.pooled_minus_unpooled",
+    "reason": "Finite/algebraic auxiliary is already included in the asymptotic comparison; the limit identity is exported there."
+   },
+   {
+    "lean_name": "AronowAudit.P053.wald_leading_difference",
+    "reason": "Finite/algebraic auxiliary is already included in the asymptotic comparison; the limit identity is exported there."
+   },
+   {
+    "lean_name": "AronowAudit.P053.wald_leading_zero_iff",
+    "reason": "Finite/algebraic auxiliary is already included in the asymptotic comparison; the limit identity is exported there."
+   },
+   {
+    "lean_name": "AronowAudit.P053.wald_limit_identity",
+    "reason": "Finite/algebraic auxiliary is already included in the asymptotic comparison; the limit identity is exported there."
+   }
+  ],
+  "statement_definition": "SAP.P053.T7Statement"
+ }
+]

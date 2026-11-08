@@ -48,5 +48,8 @@ theorem corrected_E61_eigenvalue_paper {Ω : Type u} [MeasurableSpace Ω]
     E61Eigenvalue.n10_proof E61Eigenvalue.n11_proof E61Eigenvalue.n12_proof
     μ sizes hsizes k P Z δ e A B r hk hδ he hA hB hr hP hZ hIndependent sub hsub
 
+example : AronowAudit.P002.Wave1.E61Eigenvalue.Target.{u} :=
+  corrected_E61_eigenvalue_paper
+
 end
 end AronowAudit.P002.Wave1

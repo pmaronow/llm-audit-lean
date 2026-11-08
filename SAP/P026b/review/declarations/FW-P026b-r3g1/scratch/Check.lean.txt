@@ -1,0 +1,155 @@
+import SAP.P026b.Defs
+
+open Finset
+open scoped BigOperators
+open SAP.P026b
+
+set_option maxHeartbeats 1500000
+
+namespace Audit
+
+noncomputable def fairOne : UnitExperiment (Fin 1) where
+  weight := fun _ => 1/2
+  nonnegative := by intro w; norm_num
+  normalized := by norm_num
+  positive := by
+    intro i
+    have hs (b : Bool) : (1/2 : ℝ) ≤
+        ∑ w : Fin 1 → Bool, (1/2 : ℝ) * (if w i = b then 1 else 0) := by
+      simpa using (Finset.single_le_sum
+        (f := fun w : Fin 1 → Bool => (1/2 : ℝ) * (if w i = b then 1 else 0))
+        (s := univ) (a := fun _ => b)
+        (by intro w hw; split_ifs <;> norm_num) (Finset.mem_univ _))
+    constructor
+    · have := hs true; linarith
+    · have := hs false; linarith
+
+-- T13 and each universal block of T16 have an actual admissible experiment.
+example : probabilityDesign fairOne.design ∧ positiveMarginals fairOne.design := by
+  constructor
+  · exact ⟨fairOne.nonnegative, fairOne.normalized⟩
+  · exact fairOne.positive
+
+-- The T15 assignment law has exactly the claimed positive marginals.
+example : probabilityDesign oneOfThree ∧ positiveMarginals oneOfThree ∧
+    (∀ i, marginal oneOfThree true i = 1/3 ∧ marginal oneOfThree false i = 2/3) := by
+  norm_num [probabilityDesign, positiveMarginals, marginal, expectation,
+    indicator, oneOfThree, Fin.sum_univ_succ]
+  constructor <;> intro i <;> fin_cases i <;> norm_num
+
+-- The three-unit fits solve the ordinary, intercept-inclusive least squares problem.
+example : ∀ w : Fin 3,
+    IsLeastSquaresFitted 2
+      (designWithIntercept 1 (fun (i : Fin 3) (_ : Fin 1) => (i.val : ℝ)))
+      (fun i => (observed oneOfThree (fun _ => 1) (fun _ => 0) w i : ℚ))
+      (fun i => (packageFit w i : ℝ)) := by
+  intro w
+  fin_cases w
+  all_goals
+    constructor
+  case «0».left =>
+    refine ⟨![5/6, -1/2], ?_⟩
+    ext i
+    fin_cases i <;> norm_num [designWithIntercept, packageFit, Matrix.mulVec,
+      dotProduct, Fin.sum_univ_succ]
+  case «0».right =>
+    intro β
+    norm_num [designWithIntercept, packageFit, observed, oneOfThree,
+      Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (β 0 + β 1 - 1/3), sq_nonneg (β 1 + 1/2)]
+  case «1».left =>
+    refine ⟨![1/3, 0], ?_⟩
+    ext i
+    fin_cases i <;> norm_num [designWithIntercept, packageFit, Matrix.mulVec,
+      dotProduct, Fin.sum_univ_succ]
+  case «1».right =>
+    intro β
+    norm_num [designWithIntercept, packageFit, observed, oneOfThree,
+      Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (β 0 + β 1 - 1/3), sq_nonneg (β 1)]
+  case «2».left =>
+    refine ⟨![-1/6, 1/2], ?_⟩
+    ext i
+    fin_cases i <;> norm_num [designWithIntercept, packageFit, Matrix.mulVec,
+      dotProduct, Fin.sum_univ_succ]
+  case «2».right =>
+    intro β
+    norm_num [designWithIntercept, packageFit, observed, oneOfThree,
+      Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (β 0 + β 1 - 1/3), sq_nonneg (β 1 - 1/2)]
+
+-- Exact arithmetic checks of every displayed T15 scalar/vector moment.
+example :
+    (∀ w, generalized oneOfThree 3 (fun _ => 1) (fun _ => 0) packageFit w =
+      (![1/4,1,1/4] : Fin 3 → ℚ) w) ∧
+    (∀ i, covariance oneOfThree (fun w => indicator oneOfThree true w i)
+      (fun w => packageFit w i) = (![1/6,0,1/6] : Fin 3 → ℚ) i) ∧
+    expectation oneOfThree (generalized oneOfThree 3 (fun _ => 1) (fun _ => 0) packageFit) = 1/2 ∧
+    ate 3 (fun _ : Fin 3 => (1 : ℚ)) (fun _ => 0) = 1 ∧
+    (∀ w, ht oneOfThree 3 (fun _ => 1) (fun _ => 0) w = 1) := by
+  norm_num [generalized, generalizedTotal, marginal, expectation, indicator,
+    oneOfThree, packageFit, covariance, ate, populationTotal, ht, htTotal,
+    Fin.sum_univ_succ]
+  refine ⟨?_, ?_, ?_⟩ <;> intro i <;> fin_cases i <;> norm_num
+
+-- The fixed table law in T14 is normalized and has positive arm marginals.
+example : probabilityDesign realTableDesign ∧ positiveMarginals realTableDesign := by
+  constructor
+  · norm_num [probabilityDesign, realTableDesign, tableDesign,
+      Fintype.sum_prod_type, Fin.sum_univ_succ]
+  · intro i
+    fin_cases i <;> norm_num [positiveMarginals, marginal, expectation,
+      indicator, realTableDesign, tableDesign, twoOfFour, twoOfSix,
+      Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+-- The printed-reading hypotheses for the T17 witness, independently of T17.
+example : probabilityDesign realAsymmetricTwo ∧ positiveMarginals realAsymmetricTwo ∧
+    (∀ i j : Fin 2, i ≠ j →
+      0 < disagreement realAsymmetricTwo i j ∧
+      0 < joint realAsymmetricTwo true true i j ∧
+      0 < joint realAsymmetricTwo false false i j) := by
+  norm_num [probabilityDesign, positiveMarginals, marginal, expectation,
+    indicator, disagreement, joint, realAsymmetricTwo, Fin.sum_univ_succ]
+
+example : joint realAsymmetricTwo true false 0 1 = 0 ∧
+    disagreement realAsymmetricTwo 0 1 = 1/3 := by
+  norm_num [joint, disagreement, expectation, indicator, realAsymmetricTwo,
+    Fin.sum_univ_succ]
+
+lemma offSum_two (f : Fin 2 → Fin 2 → ℝ) : offSum f = f 0 1 + f 1 0 := by
+  simp [offSum, Fin.sum_univ_succ]
+  ring
+
+-- T17's counterexample violates conservativeness and sharp-null equality.
+example :
+    expectation realAsymmetricTwo
+      (printedVariance realAsymmetricTwo 2 (fun _ => 1) (fun _ => 1)) = 23/8 ∧
+    variance realAsymmetricTwo
+      (generalized realAsymmetricTwo 2 (fun _ => 1) (fun _ => 1) (fun _ _ => 0)) = 27/8 := by
+  norm_num [expectation, printedVariance, zeroSum, offSum_two, estimatedPair,
+    epsilon, joint, marginal, indicator, observed, realAsymmetricTwo,
+    variance, covariance, generalized, generalizedTotal, Fin.sum_univ_succ]
+
+-- A concrete response-only sharp-null rule and a zero-covariance instance for T16.
+example : (∀ i : Fin 1,
+    covariance fairOne.design (fun w => indicator fairOne.design true w i)
+      (fun _ => (0 : ℝ)) = 0) ∧
+    (∀ w : Fin 1 → Bool,
+      observed fairOne.design (fun _ => (2 : ℝ)) (fun _ => 2) w = fun _ => 2) := by
+  constructor
+  · intro i; simp [covariance, expectation]
+  · intro w; ext i; simp [observed]
+
+-- T15's estimator is also literally the branch's observed-outcome residual contrast.
+noncomputable def realOneOfThree : Design (Fin 3) (Fin 3) ℝ :=
+  ⟨fun _ => 1/3, oneOfThree.treatment⟩
+
+example : ∀ w : Fin 3,
+    residualContrast realOneOfThree 3 (fun _ => 1) (fun _ => 0)
+      (fun w i => (packageFit w i : ℝ)) w =
+        (![1/4,1,1/4] : Fin 3 → ℝ) w := by
+  intro w
+  fin_cases w <;> norm_num [residualContrast, marginal, expectation, indicator,
+    observed, realOneOfThree, oneOfThree, packageFit, Fin.sum_univ_succ]
+
+end Audit

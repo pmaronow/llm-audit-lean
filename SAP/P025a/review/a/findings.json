@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P025-T1",
+    "theorem": "SAP.P025a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. The nonconstant general branch is inhabited by n=2, y=(0,1), gamma=2; w=(2,1) is feasible and yields 1/3. The two-state design gives samples {1} and {0,1}, each with probability 1/2 and inclusions (1/2,1). The singleton n=1, gamma=1 boundary is also admissible. Compiled in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T2",
+    "theorem": "SAP.P025a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. Population outcomes (0,1) with inclusions (1/2,1) are realized by the two-state design. The class masses are (1/2,1), positive and within the prescribed bounds; gamma=2 satisfies separation at both cuts. Weights (2,1) give 1/2 below the printed value 2/3. Hypotheses, separation, feasible weights and numerical ratios compile in scratch/Check.lean; the theorem itself omits the design assertion as disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T3",
+    "theorem": "SAP.P025a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2, y=(0,1), alpha=1/2, beta=1 satisfies every hypothesis; corrected first cuts kL=kH=1 give endpoints 1/3 and 2/3. The n=1 constant sample with alpha=beta=1 also satisfies the hypotheses. scratch/Check.lean compiles the nonconstant and singleton hypotheses and proves in general that all feasible denominators are positive and the attainable sets are nonempty and bounded above and below.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T4",
+    "theorem": "SAP.P025a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "J=2, y=(0,1), mass=(1/2,1), alpha=1/2, beta=1 is an admissible strictly ordered, positive-mass instance, realized by a finite sampling design. Its two corrected cuts are 1, with endpoint values 1/2 and 4/5. J=1, y=7, mass=1, alpha=beta=1 is also admissible. Their hypotheses and the general endpoint safety lemmas compile in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T5",
+    "theorem": "SAP.P025a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. All seven quota pairs obey 0<s<=N, hence have nonempty draw sets and positive normalization constants. scratch/Check.lean compiles nonemptiness for every pair in applicationStrata and the positive equal-estimate witness pG=44/48, pE=291/579, (g1,g0,e1,e0)=(11/12,1/4,97/288,1). Exact binomial arithmetic verifies each marginal choose(N-1,s-1)/choose(N,s)=s/N. The populations contain 48+16 and 864+288 units in the first witness, and 48+12 and 1156+289 in the second.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T6",
+    "theorem": "SAP.P025a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "pG=44/48, pE=291/579, gamma=4 satisfies 0<pE<pG<1 and gamma>=1. Selection numbers (g1,g0,e1,e0)=(11/12,1/4,97/288,1) are positive, give equal reweighted estimates 3/4, and have both directional ratios <=4; this also inhabits the equality and common-cap antecedents. These facts compile in scratch/Check.lean. Both numerical square-root brackets were checked by exact rational squaring, with strictly positive odds-ratio inputs.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T7",
+    "theorem": "SAP.P025a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The negated universal assertion has an admissible finite-design counterexample: n=2, y=(0,1), alpha=1/2, beta=1. The printed first lower cut is zero, with value 1/2, whereas feasible weights (2,1) attain 1/3. scratch/Check.lean compiles the hypotheses, printed cut, feasible value and failure of leastness; the associated sample occurs with probability 1/2. Thus the refutation reaches the printed reading without empty domains or invalid arithmetic.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T8",
+    "theorem": "SAP.P025a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the two-unit population y=(0,1), inclusions and class masses (1/2,1), alpha=1/2, beta=1. Its finite design is normalized and its class order and masses satisfy all hypotheses. The printed lower cut is zero and its objective value 2/3 exceeds the feasible value 1/2 at (2,1). These facts compile in scratch/Check.lean. This refutes the printed optimizer assertion independently of the undefined-index Option convention.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T9",
+    "theorem": "SAP.P025a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "J=4, y=(0,1,2,3), all masses 1, alpha=1/2, beta=1 satisfies every hypothesis. The corrected first lower cut is 2 because the successive tests use 3/2>0, 6/5>1, and 7/6<=2. The discrepancy branch has the valid choice k=2, duplicating zero-based classes 0 and 1 and giving printed value 1. Feasibility, the 7/6 value, the printed value and positive denominators compile in scratch/Check.lean; k=0,1 are deliberately represented by None.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T10",
+    "theorem": "SAP.P025a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No outer hypotheses. The four equally likely states (r,t) in {0,1}^2 select {r,t+2,4,5} from outcomes (0,0,1,1,2,3). Exact finite enumeration gives inclusions (1/2,1/2,1/2,1/2,1,1), class totals (1,1,1,1), sizes and weights (2,2,1,1), and mean 7/6. scratch/Check.lean compiles feasibility of (2,2,1,1), its ratio 7/6, printed value 1, and positive denominator 6.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T11",
+    "theorem": "SAP.P025a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The sample branch admits n=2, y=(0,1), gamma=2 and the boundary instance n=1, y=7, gamma=1. The pair branch admits c1=c2=0, p=q=1, u=0, v=1, a=1, b=2; the equal-boundary branch uses the same data with b=1. All hypotheses compile in scratch/Check.lean. Every pair denominator c2+x*p+z*q used in the statement is positive because c2>=0, p,q,a>0 and b>=a.",
+    "confidence": "high"
+  }
+]

@@ -8,6 +8,8 @@ import Mathlib.Probability.Independence.Integration
 
 /-!
 Population identities, ICSW consistency, and the complier covariate law.
+Adapted from the dd-GP029B3 draft, with a direct proof of the previously
+missing ICSW raw-moment limit. Held declarations are used only for type checks.
 -/
 
 namespace AronowAudit.P029.Wave1
@@ -194,7 +196,7 @@ lemma GP029B3b_appendix_receipt_integrable (hiv : IVAssumptions μ U Z) (z : Boo
       (integrable_const (μ := μ) (0 : ℝ)).integrableOn
 
 /-- Weighted observed differences, with all response integrability obtained
-from the bound on the latent covariate weight. -/
+from the bound on the latent covariate weight. No LATE declaration is used. -/
 lemma GP029B3b_appendix_weighted_differences (hiv : IVAssumptions μ U Z)
     (b : X → ℝ) (hb : Measurable b) (K : ℝ)
     (hbound : ∀ᵐ ω ∂μ, ‖b (U ω).x‖ ≤ K) :
@@ -378,6 +380,9 @@ theorem appendix_population_identities_proof {Ω X : Type*}
         integral_congr_ae hA1
       _ = _ := integral_condExp hG
   exact hwal.trans hA
+
+example : type_of% @AronowAudit.P029.appendix_population_identities :=
+  appendix_population_identities_proof
 
 /-- The observed and latent joint variables are measurable. -/
 lemma GP029B3b_joint_measurable {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
@@ -669,7 +674,7 @@ lemma GP029B3b_icsw_limit {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X
     (fun _ => mWald μ (U 0) (Z 0) (fun ω => 1/c (U 0 ω).x)) at hlim
   simpa only [hpop.2.2.2.2.1] using hlim
 
-/-! Support-to-almost-everywhere transfer and the ATE substitution. -/
+/-! Record 11: support-to-AE transfer and the ATE substitution. -/
 
 lemma GP029B3b_icsw_support_version_transfer {Ω X : Type*}
     [MeasurableSpace Ω] [MeasurableSpace X]
@@ -718,7 +723,9 @@ theorem icsw_consistency_proof {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSp
       (fun _ => ∫ ω, m (U 0 ω).x ∂μ) := GP029B3b_icsw_limit h
   simpa only [hlimit] using hfull
 
-/-! Pushforward Bayes identity, with no overlap premise. -/
+example : type_of% @AronowAudit.P029.icsw_consistency := icsw_consistency_proof
+
+/-! Record 12: genuine pushforward Bayes identity, with no overlap premise. -/
 
 section ComplierHelpers
 
@@ -853,6 +860,9 @@ theorem complier_covariate_distribution_proof {Ω X : Type*} [MeasurableSpace Ω
   refine ⟨hlaw, ?_⟩
   rw [hlaw, hint, hmap, hqm]
   rfl
+
+example : type_of% @AronowAudit.P029.complier_covariate_distribution :=
+  complier_covariate_distribution_proof
 
 end
 end AronowAudit.P029.Wave1

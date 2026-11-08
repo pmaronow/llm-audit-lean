@@ -1,0 +1,134 @@
+import SAP.P001d.Challenge
+
+open MeasureTheory ProbabilityTheory SAP.P001d
+open scoped BigOperators ENNReal NNReal
+noncomputable section
+namespace Audit
+
+def fourLaw : Measure (Fin 4) :=
+  ∑ i : Fin 4, (1/4 : ℝ≥0) • Measure.dirac i
+
+instance fourProb : IsProbabilityMeasure fourLaw := by
+  constructor
+  apply (ENNReal.toReal_eq_one_iff _).mp
+  norm_num [fourLaw, Fin.sum_univ_succ, ENNReal.toReal_add]
+
+lemma four_integral (f : Fin 4 → ℝ) :
+    (∫ i, f i ∂fourLaw) = finiteMean f := by
+  rw [fourLaw, integral_finsetSum_measure]
+  · simp [finiteMean, NNReal.smul_def, smul_eq_mul]
+  · intro i _
+    exact Integrable.of_finite
+
+-- T73: independently verify the counterexample's principal numerical facts.
+example : T73Statement := by
+  norm_num [T73Statement, finiteProb, finiteCond, finiteCov, finiteMean,
+    heteroX, heteroY, heteroResidual, Fin.sum_univ_succ]
+
+example : wholeFiniteVariance heteroResidual = 5 ∧
+    wholeFiniteCondVariance heteroY heteroX 0 = 1 ∧
+    wholeFiniteCondVariance heteroY heteroX 1 = 9 := by
+  norm_num [wholeFiniteVariance, wholeFiniteCondVariance, finiteProb,
+    finiteCond, finiteMean, heteroX, heteroY, heteroResidual,
+    Fin.sum_univ_succ]
+
+example : ¬ IndepFun heteroX heteroResidual fourLaw := by
+  intro hind
+  have h := hind.measure_inter_preimage_eq_mul
+    ({0} : Set ℝ) ({-1, 1} : Set ℝ) (by measurability) (by measurability)
+  have ht := congrArg ENNReal.toReal h
+  norm_num [fourLaw, Fin.sum_univ_succ, heteroX, heteroY, heteroResidual,
+    ENNReal.toReal_add, ENNReal.toReal_mul] at ht
+
+-- T74: a genuine CEF in the probability measure of the four atoms.
+lemma four_cef : IsCEF fourLaw heteroX heteroY (fun x => 2+x) := by
+  classical
+  refine ⟨by fun_prop, Integrable.of_finite, Integrable.of_finite, ?_⟩
+  intro A hA
+  rw [← integral_indicator (measurable_heteroX hA),
+      ← integral_indicator (measurable_heteroX hA)]
+  rw [four_integral, four_integral]
+  by_cases h0 : (0 : ℝ) ∈ A <;> by_cases h1 : (1 : ℝ) ∈ A <;>
+    norm_num [finiteMean, Fin.sum_univ_succ, Set.indicator,
+      heteroX, heteroY, h0, h1]
+where
+  measurable_heteroX {A : Set ℝ} (hA : MeasurableSet A) :
+      MeasurableSet (heteroX ⁻¹' A) := (measurable_of_finite heteroX) hA
+
+example : Measurable heteroX ∧ Measurable heteroY ∧
+    IsCEF fourLaw heteroX heteroY (fun x => 2+x) ∧
+    Measurable (fun x : ℝ => x) ∧
+    Integrable ((fun x : ℝ => x) ∘ heteroX) fourLaw ∧
+    Integrable (fun i => heteroX i * heteroResidual i) fourLaw ∧
+    Integrable (fun i => (heteroResidual i)^2) fourLaw := by
+  exact ⟨measurable_of_finite _, measurable_of_finite _, four_cef,
+    measurable_id, Integrable.of_finite, Integrable.of_finite,
+    Integrable.of_finite⟩
+
+lemma conditional_of_indep
+    {Ω E : Type} [MeasurableSpace Ω] [MeasurableSpace E]
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (X : Ω → E) (Y : Ω → ℝ) (ν : Measure ℝ) [IsProbabilityMeasure ν]
+    (hX : Measurable X) (hY : Measurable Y)
+    (hi : IndepFun X Y μ) (hmap : μ.map Y = ν) :
+    WholeConditionalLaw μ X Y (fun _ => ν) := by
+  refine ⟨fun _ => inferInstance, fun _ _ => measurable_const, ?_⟩
+  intro A B hA hB
+  change μ (X ⁻¹' A ∩ Y ⁻¹' B) = _
+  rw [hi.measure_inter_preimage_eq_mul A B hA hB,
+    setLIntegral_const, Measure.map_apply hX hA]
+  have hb : μ (Y ⁻¹' B) = ν B := by
+    rw [← hmap, Measure.map_apply hY hB]
+  rw [hb, mul_comm]
+
+-- T74's normal branch: constant intercept and a genuinely N(0,1) response.
+example :
+    Measurable (fun _ : ℝ => (![1] : Fin 1 → ℝ)) ∧
+    Measurable (id : ℝ → ℝ) ∧
+    (∀ ω : ℝ, (![1] : Fin 1 → ℝ) 0 = 1) ∧
+    (0 : ℝ) < 1 ∧
+    WholeConditionalLaw (gaussianReal 0 1)
+      (fun _ : ℝ => (![1] : Fin 1 → ℝ)) id
+      (wholeNormalKernel (0 : Fin 1 → ℝ) 1) := by
+  refine ⟨measurable_const, measurable_id, by simp, by norm_num, ?_⟩
+  have hk : wholeNormalKernel (0 : Fin 1 → ℝ) 1 =
+      fun _ : Fin 1 → ℝ => gaussianReal 0 1 := by
+    funext x
+    simp [wholeNormalKernel, wholeLinearMean]
+    congr 1
+  rw [hk]
+  exact conditional_of_indep _ _ _ _ measurable_const measurable_id
+    (indepFun_const_left _ _) (by simp)
+
+-- T75: the universal algebraic claim, independently of the Challenge proof.
+example : T75Statement := by
+  intro K x b h hh
+  simpa [binaryChoiceMean] using
+    And.intro (rfl : h (∑ k, x k*b k) = h (∑ k, x k*b k))
+      (hh (∑ k, x k*b k))
+
+example : (∀ t : ℝ, 0 ≤ (fun _ : ℝ => (1/3 : ℝ)) t ∧
+    (fun _ : ℝ => (1/3 : ℝ)) t ≤ 1) ∧
+    binaryChoiceMean (fun _ : Fin 2 => 1) (fun _ => 1)
+      (fun _ => (1/3 : ℝ)) = 1/3 := by
+  norm_num [binaryChoiceMean]
+
+-- T76: two observations and two coefficients with a nonsingular design.
+def design : Matrix (Fin 2) (Fin 2) ℝ := !![1, 0; 1, 1]
+def response : Fin 2 → ℝ := ![0, 1]
+
+example : (0 : ℕ) < 2 ∧ (0 : ℝ) < 1 ∧
+    IsUnit (design.transpose * design).det := by
+  norm_num [design, Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_succ]
+
+example : ∀ b : Fin 2 → ℝ,
+    olsRSS design response (![0, 1] : Fin 2 → ℝ) ≤
+      olsRSS design response b := by
+  intro b
+  have h : olsRSS design response (![0, 1] : Fin 2 → ℝ) = 0 := by
+    norm_num [olsRSS, design, response, Matrix.mulVec, dotProduct,
+      Fin.sum_univ_succ]
+  rw [h]
+  exact Finset.sum_nonneg (fun i _ => sq_nonneg _)
+
+end Audit

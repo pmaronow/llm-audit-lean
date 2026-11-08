@@ -2,7 +2,10 @@ import AronowAudit.P003.P003_Audit
 import Mathlib.Data.List.Sort
 import Mathlib.Algebra.BigOperators.Intervals
 
-/-! P003-T7 and P003-T8: adaptive test budgets and the corrected Wald bound. -/
+/-!
+Drafts for records P003-T7 and P003-T8. No Lean process was run by the drafter.
+The original target declarations are used only by the final type checks.
+-/
 
 namespace AronowAudit.P003.Wave1
 
@@ -27,7 +30,7 @@ lemma T7_runTests_cost (reject : Counts → ℕ → Bool) (xs : List Counts) (id
         And.intro hi.1 (Nat.succ_le_succ hi.2)
     · simp [runTests, hv]
 
-/-- A uniform flat-map length bound. -/
+/-- A uniform flat-map length bound, kept local to this record. -/
 lemma T7_flatMap_length {α β : Type*} (xs : List α) (f : α → List β) (B : ℕ)
     (hf : ∀ x ∈ xs, (f x).length ≤ B) :
     (xs.flatMap f).length ≤ xs.length * B := by
@@ -79,7 +82,7 @@ lemma T7_zeroCredit_right (a c b : ℤ) (hac : a < c) (hcb : c < b) :
   unfold T7_zeroCredit
   split_ifs <;> omega
 
-/-- Expose the corrected branch of the recursion. -/
+/-- Expose only the corrected branch of the frozen recursion. -/
 lemma T7_search_succ (fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
     (reject : Counts → ℕ → Bool) (a b : ℤ) (idx : ℕ) :
     adaptiveSearch (fuel+1) true o k₁ k₂ reject a b idx =
@@ -125,7 +128,7 @@ lemma T7_search_terminates (fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
       · simp only [if_neg hq]
         exact ih a c q.idx hac (by omega)
 
-/-- Stateful sentinel-search bound, measured in table tests.
+/-- Stateful analogue of `sentinel_queries_le_pow`, measured in table tests.
 The reserve pays for the exceptional candidate block at zero at most once.
 No property of `reject`, or of the chronological start index, is assumed. -/
 lemma T7_search_cost (q fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
@@ -176,7 +179,7 @@ lemma T7_search_cost (q fuel : ℕ) (o : Counts) (k₁ k₂ : ℤ)
           have hm := Nat.mul_le_mul_left (o.total+1) hc
           nlinarith
 
-/-- Arbitrary-start version with one additional candidate block in the budget. -/
+/-- Reusable arbitrary-start version, stronger by one block than the frozen budget. -/
 lemma T7_upperRun_budget (o : Counts) (reject : Counts → ℕ → Bool) (idx : ℕ)
     (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) :
     (upperRun true o reject idx).value.isSome ∧
@@ -213,6 +216,8 @@ theorem adaptive_test_budget_proof (o : Counts) (reject : Counts → ℕ → Boo
   refine ⟨h.1, le_trans h.2 ?_⟩
   unfold testBudget
   exact Nat.mul_le_mul_left _ (by omega)
+
+example : type_of% @AronowAudit.P003.adaptive_test_budget := adaptive_test_budget_proof
 
 /-! ## P003-T8: corrected Wald row -/
 
@@ -357,7 +362,7 @@ lemma T8_filter_length_mono {α : Type*} (xs : List α) (p q : α → Bool)
       · simpa [hp, hq] using ht
 
 /-- The coverage-fraction premise gives a strict majority of widths above the
-common lower bound. -/
+common lower bound; this statement is reusable in the next Wald record. -/
 lemma T8_run_median_lower (z : ℝ)
     (hz : 1.95996398454005 < z ∧ z < 1.95996398454006)
     (runs : List (Fin 26)) (hne : runs ≠ [])
@@ -431,5 +436,7 @@ theorem corrected_wald_row_proof (z : ℝ)
   · unfold waldWidth
     rw [wald_exact_arithmetic.2.2.2.2]
     norm_num
+
+example : type_of% @AronowAudit.P003.corrected_wald_row := corrected_wald_row_proof
 
 end AronowAudit.P003.Wave1

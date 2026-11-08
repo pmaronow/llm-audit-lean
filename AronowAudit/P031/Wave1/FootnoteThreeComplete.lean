@@ -39,5 +39,7 @@ theorem footnote_three_complete :
         olsEstimator Q s = olsEstimator (P n) s) := by
   exact FootnoteThreeComplete.assemble footnote_three_probability_complete
 
+example : AronowAudit.P031.Wave1.FootnoteThreeComplete.Target := footnote_three_complete
+
 end
 end AronowAudit.P031.Wave1

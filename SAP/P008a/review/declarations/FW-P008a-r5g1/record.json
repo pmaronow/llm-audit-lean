@@ -1,0 +1,160 @@
+[
+ {
+  "target_id": "P008-T1",
+  "decision": "restricted",
+  "theorem": "SAP.P008a.T1",
+  "restriction": "Retains the explicitly labelled 121-node observation and its within-count swap, both normalized supports, and both directions of the four-node tail discrepancy. Does not quantify over every initial 60-treated observed assignment or assert the existence of a relabelling that puts it into the recorded observation form.",
+  "rows_used": [
+   "AronowAudit.P008.blocked_support",
+   "AronowAudit.P008.observed_count_does_not_identify_law",
+   "AronowAudit.P008.reference_laws_counterexample",
+   "AronowAudit.P008.six_support"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P008a.T1Statement"
+ },
+ {
+  "target_id": "P008-T2",
+  "decision": "restricted",
+  "theorem": "SAP.P008a.T2",
+  "restriction": "The spatial cumulative-test component is confined to Euclidean circles in a measurable whole field, with integrability for every assignment on every evaluated circle; positive finite circle mass and nonempty arms on the positive-probability conditional support make its averages and ratios meaningful. Imputability is asserted for the cumulative statistic on that support, rather than separately for each circle mean. The documentary seven-lottery design, its identification with a particular conditional reference law, and the empirical significance/withdrawal conclusions are not formalized. General finite-law calibration, conditioning, Bernoulli-given-count uniformity and both directions of the four-node law discrepancy are retained.",
+  "rows_used": [
+   "AronowAudit.P008.bernoulli_given_count_uniform",
+   "AronowAudit.P008.conditional_tail_valid",
+   "AronowAudit.P008.design_tail_valid",
+   "AronowAudit.P008.sharp_null_cumulative_test_valid"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.prob_mono",
+    "reason": "Auxiliary monotonicity is already used inside the exported calibration theorem."
+   }
+  ],
+  "statement_definition": "SAP.P008a.T2Statement",
+  "supporting_declarations": [
+   "AronowAudit.P008.reference_laws_counterexample"
+  ]
+ },
+ {
+  "target_id": "P008-T3",
+  "decision": "whole",
+  "theorem": "SAP.P008a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.spatial_percentile_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.finite_field_percentile_counterexample",
+    "reason": "The separate finite-field witness is unnecessary; the retained rectangle certificate establishes the prescribed spatial example."
+   },
+   {
+    "lean_name": "AronowAudit.P008.interpolated_percentile_counterexample",
+    "reason": "Its scalar quantile calculations are subsumed by the retained full spatial rectangle certificate."
+   },
+   {
+    "lean_name": "AronowAudit.P008.line_embedding_distance",
+    "reason": "The full rectangle certificate supplies the spatial witness directly; the general distance identity is separately recorded in Bridge."
+   },
+   {
+    "lean_name": "AronowAudit.P008.percentile_spatial_hypotheses",
+    "reason": "These hypotheses concern the alternative finite-field witness, rather than the retained full rectangle construction."
+   },
+   {
+    "lean_name": "AronowAudit.P008.univ_five",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.univ_four",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.univ_six",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   }
+  ],
+  "statement_definition": "SAP.P008a.T3Statement",
+  "supporting_declarations": [
+   "AronowAudit.P008.six_support",
+   "AronowAudit.P008.bernoulli_given_count_uniform"
+  ]
+ },
+ {
+  "target_id": "P008-T4",
+  "decision": "restricted",
+  "theorem": "SAP.P008a.T4",
+  "restriction": "Retains complementation, the one-third inclusive-tail lower bound for every linear contrast functional, the mass and level obstruction for every nonempty rejection set, general exact calibration, the IID sampled-permutation bound, and the sum 7.996 of the displayed estimates. Omits the reconstructed unrounded observed statistic 7.99649 and its asserted rounded value 8.00, the six reconstructed cumulative statistics and their exact observed p-value 1/3. The interpolated-percentile counterexample is not repeated in this theorem; it is stated in T3.",
+  "rows_used": [
+   "AronowAudit.P008.complement_contrast",
+   "AronowAudit.P008.contrast_is_hajek",
+   "AronowAudit.P008.linear_functional_complement",
+   "AronowAudit.P008.monte_carlo_rank_valid",
+   "AronowAudit.P008.six_no_five_percent_rejection",
+   "AronowAudit.P008.six_tail_lower_bound"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.prob_as_expect",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.prob_equiv",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   }
+  ],
+  "statement_definition": "SAP.P008a.T4Statement",
+  "supporting_declarations": [
+   "AronowAudit.P008.design_tail_valid",
+   "AronowAudit.P008.printed_toy_sums"
+  ]
+ },
+ {
+  "target_id": "P008-T5",
+  "decision": "whole",
+  "theorem": "SAP.P008a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.effect_range_covariance_omission",
+   "AronowAudit.P008.effect_range_cutoff_counterexample",
+   "AronowAudit.P008.pair_circle_calculation",
+   "AronowAudit.P008.pair_support",
+   "AronowAudit.P008.replicated_circle_depends_on_pair",
+   "AronowAudit.P008.replicated_plane_circle",
+   "AronowAudit.P008.replicated_plane_cutoff_omission",
+   "AronowAudit.P008.replicated_plane_separation",
+   "AronowAudit.P008.replicated_spatial_counterexample",
+   "AronowAudit.P008.replicated_spatial_marginals"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.replicated_cutoff_variance",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.replicated_local_outcome",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.replicated_nodes_separated",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.replicated_other_pair_far",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.replicated_sign_moments",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.replicated_spatial_cutoff_omission",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.uniform_bit_expect",
+    "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+   }
+  ],
+  "statement_definition": "SAP.P008a.T5Statement"
+ }
+]

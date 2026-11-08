@@ -312,8 +312,9 @@ lemma vc3_score_projection {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (vc3_integrable_top (vc3_score_lp K hK d a ∞))
     (vc3_integrable_top (vc3_epsilon_lp K hK d ∞))
 
-/- The scalar conditional projection calculation uses only the pull-out and tower
-   properties of conditional expectation. -/
+/- The scalar conditional projection calculation uses only pull-out and tower.
+   Compare FourPapersCommon/ConditionalCovarianceResidual.lean, commit
+   7601a9d5ade08066632bc68b9a615e163f2dd02c (MIT); the proof below is local. -/
 lemma vc3_total_covariance {Ω : Type*} [m₀ : MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (m : MeasurableSpace Ω) (hm : m ≤ m₀)
     {X Y A B : Ω → ℝ} (hX : MemLp X 2 μ) (hY : MemLp Y 2 μ)
@@ -812,5 +813,7 @@ theorem variance_correction_proof {U : Type*} [MeasurableSpace U] {k : ℕ}
   refine ⟨vc3_dyad_mean K hK, vc3_disjoint_moment K hK, vc3_sparse_variance K hK, ?_⟩
   have hc := vc3_conditional_decomposition (N := N) K hK
   exact ⟨hc.1, hc.2.1, hc.2.2.1, hc.2.2.2, vc3_closed_covariance K hK⟩
+
+example : type_of% @AronowAudit.P018.variance_correction := variance_correction_proof
 
 end AronowAudit.P018.Wave1

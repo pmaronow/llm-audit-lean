@@ -1,5 +1,4 @@
-/- The auxiliary correction assumes positive marginal variance and, for
-consistency, vanishing between-unit mean variance. -/
+/- Original P011 contracts with unchanged hypotheses. Maximizing values are measurably represented as a finite supremum; the selector need not be measurable. The auxiliary repair retains its original positive marginal variance and vanishing mean-spread premises. -/
 import AronowAudit.P011.P011_CorollariesCompletion
 import AronowAudit.P011.P011_HomoskedasticCompletion
 import AronowAudit.P011.P011_CoverageCompletion
@@ -105,3 +104,4 @@ theorem auxiliary_corrected_display (F : Family) (c1 c2 c3 c4 : ℝ)
 
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.auxiliary_corrected_display

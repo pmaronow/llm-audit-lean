@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P040.T1",
+  "target_id": "P040-T1",
+  "round": 3,
+  "verdict": "restriction_inaccurate",
+  "severity": "minor",
+  "issues": [
+   "SAP/P040/Defs/Part1.lean:76: The dependency docstring says \"T1 omits only the identification of the actual normal quantile with the multiplier range.\" The exported SAP.P040.T1 does include that identification (SAP/P040/Defs/WholeW1.lean:113, through T1WholeStatement at SAP/P040/Challenge/Part1.lean:20). The omission description needs to name the incomplete base component T1Statement, instead of attributing the omission to T1. This is a documentation defect only; the whole classification and mathematical statement are correct."
+  ]
+ }
+]

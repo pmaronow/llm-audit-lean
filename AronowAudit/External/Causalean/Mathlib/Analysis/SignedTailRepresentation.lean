@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -94,6 +93,10 @@ lemma measurable_signedTail_uncurry :
     measurable_const.indicator hx0
   simpa [signedTail, tailInd, Set.indicator_apply, Set.mem_Iio] using h1.fun_sub h0
 
+/-- The signed tail indicator is bounded by `1` in absolute value. -/
+lemma abs_signedTail_le_one (a s : ℝ) : |signedTail a s| ≤ 1 := by
+  simp [signedTail, tailInd_apply]
+  split_ifs <;> norm_num
 
 /-- `signedTail a` is Lebesgue integrable: it is a bounded function supported on
 a bounded interval. -/

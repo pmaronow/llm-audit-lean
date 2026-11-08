@@ -17,7 +17,7 @@ open BernoulliCompletion MixingBasics
 /-- Proposition 6 with the observed maximum at the fixed common constant `k`
 and any admissible potential exponent `s`. The maximum premise identifies the
 paper's exponent; the proof needs only its admissibility in `hReg`.
-The `hajek` definition sets the entire contrast to zero when either arm is empty. -/
+The existing `hajek` sets the entire contrast to zero when either arm is empty. -/
 theorem arbitrary_ADSE_consistency_paper
     (S : AronowAudit.P009.Study) (k : ℝ)
     (q s : AronowAudit.P009.MomentIndex)
@@ -45,6 +45,24 @@ theorem arbitrary_ADSE_consistency_paper
   exact ⟨probability_of_op_zero S _ _ hzero hHT,
     probability_of_op_zero S _ _ hzero hHJ, hHT, hHJ⟩
 
+example : type_of% @arbitrary_ADSE_consistency_paper =
+    (∀ (S : AronowAudit.P009.Study) (k : ℝ)
+      (q s : AronowAudit.P009.MomentIndex),
+      AronowAudit.P009.RegularMix S k q s →
+      (∀ r : AronowAudit.P009.MomentIndex, 2 ≤ r →
+        (∀ t i, AronowAudit.P009.MomentBound (S.experiment t).design
+          ((S.experiment t).outcome i) k r) → r ≤ q) →
+      AronowAudit.P009.Restricted S →
+      AronowAudit.P009.LittleO
+        (fun t => AronowAudit.P009.alphaExt (S.experiment t)
+          (AronowAudit.P009.extExponent q)) (AronowAudit.P009.size S) →
+      AronowAudit.P009.EstimatorClaims S
+        (fun t => AronowAudit.P009.adse (S.experiment t))
+        (fun t => AronowAudit.P009.bernoulliRate S t +
+          Real.sqrt (AronowAudit.P009.alphaExt (S.experiment t)
+            (AronowAudit.P009.extExponent q)) /
+            Real.sqrt (AronowAudit.P009.size S t))) := rfl
+
 /-- Proposition 1 with an explicit completion convention: `hajek` is the Hájek
 contrast with the entire contrast set to zero when either arm is empty.
 Definition 6 of the paper leaves it undefined there. -/
@@ -71,6 +89,29 @@ theorem unrestricted_inconsistency_zero_completion
         (fun t z => AronowAudit.P009.hajek (S'.experiment t) z -
           AronowAudit.P009.eate (S'.experiment t)) := by
   exact unrestricted_inconsistency_proof S k hk hA hFail
+
+example : type_of% @unrestricted_inconsistency_zero_completion =
+    (∀ (S : AronowAudit.P009.Study) (k : ℝ), 0 < k →
+      (∀ t i, k⁻¹ ≤ AronowAudit.P009.marginal (S.experiment t) i true ∧
+        AronowAudit.P009.marginal (S.experiment t) i true ≤ 1-k⁻¹) →
+      ¬ AronowAudit.P009.Restricted S →
+      ∃ y : (t : ℕ) → Fin (S.N t) → AronowAudit.P009.Assignment (S.N t) → ℝ,
+        let S' : AronowAudit.P009.Study := {S with experiment := fun t =>
+          {S.experiment t with outcome := y t}}
+        (∃ K q s, AronowAudit.P009.RegularSequence S' K q s) ∧
+        (∃ L > 0,
+          AronowAudit.P009.HasLimsup
+            (fun t => AronowAudit.P009.dAvg (S.experiment t) /
+              AronowAudit.P009.size S t) L ∧
+          AronowAudit.P009.HasLimsup
+            (fun t => AronowAudit.P009.dAvg (S'.experiment t) /
+              AronowAudit.P009.size S' t) L) ∧
+        ¬ AronowAudit.P009.InProbability S'
+          (fun t z => AronowAudit.P009.ht (S'.experiment t) z -
+            AronowAudit.P009.eate (S'.experiment t)) ∧
+        ¬ AronowAudit.P009.InProbability S'
+          (fun t z => AronowAudit.P009.hajek (S'.experiment t) z -
+            AronowAudit.P009.eate (S'.experiment t))) := rfl
 
 end
 

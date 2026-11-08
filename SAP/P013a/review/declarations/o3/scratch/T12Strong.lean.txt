@@ -1,0 +1,75 @@
+import SAP.P013a.Challenge
+open SAP.P013a Finset
+
+/-- The printed bound restricted to the most demanding reading: R ≥ 1 and positivity at every exposure. -/
+def StrongBound : Prop :=
+  ∀ {Ω : Type} [Fintype Ω] {N K : ℕ} {P : Design Ω} (F : Population P N K),
+    0 < N → (∀ d, Positivity F d) → ∀ d : Fin K, ∀ (R : ℕ), 1 ≤ R → ∀ (p0 : ℝ),
+    IsMinimumPi F d p0 → potentialTotal F d ≠ 0 →
+    |(expectation (independentProduct P (replicateDesign P R)) (simulatedHTTotal F d R)-
+      potentialTotal F d)/potentialTotal F d| ≤ (1-p0)^(R+1)
+
+def StrongRule : Prop :=
+  ∀ {Ω : Type} [Fintype Ω] {N K : ℕ} {P : Design Ω} (F : Population P N K),
+    0 < N → (∀ d, Positivity F d) → ∀ d : Fin K, ∀ (R : ℕ), 1 ≤ R → ∀ (p0 : ℝ),
+    IsMinimumPi F d p0 → potentialTotal F d ≠ 0 → ∀ b : ℝ, 0 < b → b < 1 →
+    (R : ℝ) ≥ Real.log b/Real.log (1-p0)-1 →
+    |(expectation (independentProduct P (replicateDesign P R)) (simulatedHTTotal F d R)-
+      potentialTotal F d)/potentialTotal F d| ≤ b
+
+lemma facts :
+    let F := signedReplicationPopulation 2
+    expectation (independentProduct signedReplicationDesign (replicateDesign signedReplicationDesign 1))
+      (simulatedHTTotal F 1 1) = 2/9 ∧ potentialTotal F 1 = 1 ∧
+    SAP.P013a.pi F 0 1 = 1/3 ∧ SAP.P013a.pi F 1 1 = 2/3 ∧
+    SAP.P013a.pi F 0 0 = 2/3 ∧ SAP.P013a.pi F 1 0 = 1/3 := by
+  intro F
+  have hsum : ∀ g : (Fin 1 → Fin 4) → ℝ, ∑ zs, g zs = ∑ a : Fin 4, g (fun _ => a) := by
+    intro g
+    exact (Fintype.sum_equiv (Equiv.funUnique (Fin 1) (Fin 4)) _ _ (fun zs => by
+      simp [Equiv.funUnique]; congr 1; funext r; fin_cases r; rfl))
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simp only [expectation, independentProduct, replicateDesign, Fintype.sum_prod_type]
+    simp only [hsum]
+    simp [Fin.sum_univ_four, simulatedHTTotal, simulatedPi, replicateCount, indicator, observed, F,
+      signedReplicationPopulation, signedReplicationDesign, Fin.sum_univ_two]
+    norm_num
+  all_goals simp [potentialTotal, SAP.P013a.pi, expectation, indicator, F, signedReplicationPopulation,
+      signedReplicationDesign, Fin.sum_univ_four, Fin.sum_univ_two]
+  all_goals norm_num
+
+lemma hyps : Positivity (signedReplicationPopulation 2) 0 ∧ Positivity (signedReplicationPopulation 2) 1 ∧
+    IsMinimumPi (signedReplicationPopulation 2) 1 (1/3) := by
+  obtain ⟨-, -, h01, h11, h00, h10⟩ := facts
+  refine ⟨?_, ?_, ⟨⟨0, h01⟩, ?_⟩⟩
+  · intro i; fin_cases i <;> simp [h00, h10] <;> norm_num
+  · intro i; fin_cases i <;> simp [h01, h11] <;> norm_num
+  · intro i; fin_cases i <;> simp [h01, h11] <;> norm_num
+
+example : ¬ StrongBound := by
+  intro h
+  obtain ⟨hE, hT, -, -, -, -⟩ := facts
+  obtain ⟨h0, h1, hmin⟩ := hyps
+  have := h (signedReplicationPopulation 2) (by norm_num)
+    (by intro d; fin_cases d; exacts [h0, h1]) 1 1 le_rfl (1/3) hmin (by rw [hT]; norm_num)
+  rw [hE, hT] at this
+  norm_num [abs_of_neg] at this
+
+example : ¬ StrongRule := by
+  intro h
+  obtain ⟨hE, hT, -, -, -, -⟩ := facts
+  obtain ⟨h0, h1, hmin⟩ := hyps
+  have hlog : Real.log (1 - 1/3 : ℝ) < 0 := Real.log_neg (by norm_num) (by norm_num)
+  have hR : ((1 : ℕ) : ℝ) ≥ Real.log (1/2)/Real.log (1-1/3)-1 := by
+    have : Real.log (1/2) / Real.log (1 - 1/3) ≤ 2 := by
+      rw [div_le_iff_of_neg hlog]
+      have h2 : 2 * Real.log (1 - 1/3 : ℝ) = Real.log ((1-1/3)^2) := by
+        rw [Real.log_pow]; norm_num
+      rw [h2]
+      exact Real.log_le_log (by norm_num) (by norm_num)
+    push_cast; linarith
+  have := h (signedReplicationPopulation 2) (by norm_num)
+    (by intro d; fin_cases d; exacts [h0, h1]) 1 1 le_rfl (1/3) hmin (by rw [hT]; norm_num)
+    (1/2) (by norm_num) (by norm_num) hR
+  rw [hE, hT] at this
+  norm_num [abs_of_neg] at this

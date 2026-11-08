@@ -1,0 +1,250 @@
+import SAP.P033.Defs
+
+open MeasureTheory ProbabilityTheory Set Filter SAP.P033
+open scoped BigOperators Topology ENNReal
+
+noncomputable section
+
+-- T6: a nonconstant, measurable binary variable with probability 1/2 of 1.
+def fairBinaryLaw : Measure (Fin 2) := (PMF.uniformOfFintype (Fin 2)).toMeasure
+
+example : IsProbabilityMeasure fairBinaryLaw := by
+  unfold fairBinaryLaw
+  infer_instance
+
+example : Measurable (fun i : Fin 2 => (i : ℝ)) ∧
+    (∀ᵐ (i : Fin 2) ∂fairBinaryLaw, (i : ℝ) = 0 ∨ (i : ℝ) = 1) ∧
+    fairBinaryLaw.real {i : Fin 2 | (i : ℝ) = 1} = 1/2 := by
+  refine ⟨by fun_prop, Filter.Eventually.of_forall ?_, ?_⟩
+  · intro i
+    fin_cases i <;> norm_num
+  · norm_num [fairBinaryLaw, Measure.real, PMF.toMeasure_apply_fintype,
+      Fin.sum_univ_two, PMF.uniformOfFintype_apply, Set.indicator]
+
+example : (2 : ℕ) ≤ 2 ∧ (∀ i : Fin 2, (![0,1] : Fin 2 → ℝ) i = 0 ∨
+    (![0,1] : Fin 2 → ℝ) i = 1) ∧
+    sampleVariance ![(0:ℝ),1] = 1/2 ∧ 0 < binaryStudySE ∧
+    (31731 : ℕ) ≤ 31731 ∧
+    |(1/20 : ℝ)| ≤ 1/20 ∧ (0 : ℝ) < 1 ∧ (0 : ℝ) < 1/2 := by
+  refine ⟨by decide, ?_, ?_, ?_, by decide, ?_, by norm_num, by norm_num⟩
+  · intro i
+    fin_cases i <;> norm_num
+  · norm_num [sampleVariance, sampleMean, Fin.sum_univ_two]
+  · norm_num [binaryStudySE]
+  · norm_num
+
+-- General helpers to check that product-law conditioning events have positive mass.
+lemma density_probability (f : ℝ → ℝ) (hf : ∀ x, 0 ≤ f x)
+    (hi : Integrable f volume) (hn : (∫ x, f x) = 1) :
+    IsProbabilityMeasure (volume.withDensity (fun x => ENNReal.ofReal (f x))) := by
+  constructor
+  rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ,
+    ← ofReal_integral_eq_lintegral_ofReal hi (Eventually.of_forall hf), hn]
+  simp
+
+lemma full_count_event_positive (f : ℝ → ℝ) (M : ℕ) (h : ℝ)
+    [IsProbabilityMeasure (volume.withDensity (fun x => ENNReal.ofReal (f x)))]
+    (hw : 0 < (volume.withDensity (fun x => ENNReal.ofReal (f x)))
+      (Icc (caliperCutoff-h) (caliperCutoff+h))) :
+    0 < (caliperDataLaw M f).real {X | caliperCount h X = M} := by
+  classical
+  have he : {X : Fin M → ℝ | caliperCount h X = M} =
+      Set.univ.pi (fun _ : Fin M => Icc (caliperCutoff-h) (caliperCutoff+h)) := by
+    ext X
+    simp only [Set.mem_ofPred_eq, Set.mem_pi, Set.mem_univ, true_implies, caliperCount]
+    simpa using (Finset.card_filter_eq_iff (s := Finset.univ)
+      (p := fun i : Fin M => X i ∈ Icc (caliperCutoff-h) (caliperCutoff+h)))
+  unfold Measure.real
+  apply ENNReal.toReal_pos
+  · rw [he, caliperDataLaw, Measure.pi_pi]
+    exact Finset.prod_ne_zero_iff.mpr (fun _ _ => ne_of_gt hw)
+  · haveI : IsProbabilityMeasure (caliperDataLaw M f) := by
+      unfold caliperDataLaw
+      infer_instance
+    finiteness
+
+-- T7: normalization and a genuine positive-probability 19-study conditioning event.
+lemma linear_nonneg (x : ℝ) : 0 ≤ linearCaliperDensity x := by
+  unfold linearCaliperDensity
+  split_ifs with hx
+  · exact div_nonneg hx.1 (by norm_num)
+  · exact le_rfl
+
+lemma linear_eq_indicator : linearCaliperDensity =
+    (Icc (0:ℝ) 4).indicator (fun x : ℝ => x/8) := by
+  ext x
+  simp [linearCaliperDensity, Set.indicator]
+
+lemma linear_integrable : Integrable linearCaliperDensity volume := by
+  rw [linear_eq_indicator]
+  exact (continuous_id.div_const (8:ℝ)).integrableOn_Icc.integrable_indicator measurableSet_Icc
+
+lemma linear_integral (a b : ℝ) (ha : 0 ≤ a) (hab : a ≤ b) (hb : b ≤ 4) :
+    (∫ x in a..b, linearCaliperDensity x) = (b^2-a^2)/16 := by
+  calc
+    _ = ∫ x in a..b, x/8 := by
+      apply intervalIntegral.integral_congr
+      intro x hx
+      rw [Set.uIcc_of_le hab] at hx
+      exact if_pos ⟨ha.trans hx.1, hx.2.trans hb⟩
+    _ = _ := by rw [intervalIntegral.integral_div, integral_id]; ring
+
+lemma linear_normalized : (∫ x, linearCaliperDensity x) = 1 := by
+  rw [linear_eq_indicator]
+  rw [integral_indicator measurableSet_Icc, integral_Icc_eq_integral_Ioc,
+    ← intervalIntegral.integral_of_le (show (0:ℝ) ≤ 4 by norm_num),
+    intervalIntegral.integral_div, integral_id]
+  norm_num
+
+lemma linear_window_mass :
+    (volume.withDensity (fun x => ENNReal.ofReal (linearCaliperDensity x)))
+      (Icc (caliperCutoff-caliperCutoff/5) (caliperCutoff+caliperCutoff/5)) =
+      ENNReal.ofReal (2401/12500) := by
+  rw [withDensity_apply _ measurableSet_Icc,
+    ← ofReal_integral_eq_lintegral_ofReal linear_integrable.integrableOn
+      (Eventually.of_forall linear_nonneg)]
+  congr 1
+  rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le
+    (show caliperCutoff-caliperCutoff/5 ≤ caliperCutoff+caliperCutoff/5 by
+      norm_num [caliperCutoff]), linear_integral]
+  all_goals norm_num [caliperCutoff]
+
+example : (∀ x, 0 ≤ linearCaliperDensity x) ∧
+    Integrable linearCaliperDensity volume ∧ (∫ x, linearCaliperDensity x) = 1 ∧
+    0 < caliperCutoff/5 ∧ caliperCutoff/5 < caliperCutoff ∧
+    0 < (caliperDataLaw 19 linearCaliperDensity).real
+      {X | caliperCount (caliperCutoff/5) X = 19} := by
+  refine ⟨linear_nonneg, linear_integrable, linear_normalized,
+    by norm_num [caliperCutoff], by norm_num [caliperCutoff], ?_⟩
+  letI := density_probability linearCaliperDensity linear_nonneg
+    linear_integrable linear_normalized
+  apply full_count_event_positive
+  rw [linear_window_mass]
+  norm_num
+
+-- The Gaussian part of T7 is a real Gaussian experiment (not repeated dependent draws).
+example : IsProbabilityMeasure (gaussianReal (7/2) 1) ∧
+    HasLaw id (gaussianReal (7/2) 1) (gaussianReal (7/2) 1) :=
+  ⟨inferInstance, HasLaw.id⟩
+
+-- T8: a normalized density satisfying even all the local optional conditions.
+def uniformDensity : ℝ → ℝ := (Icc (0:ℝ) 4).indicator (fun _ => 1/4)
+
+lemma uniform_nonneg (x : ℝ) : 0 ≤ uniformDensity x := by
+  by_cases hx : x ∈ Icc (0:ℝ) 4 <;> simp [uniformDensity, hx] <;> norm_num
+
+lemma uniform_integrable : Integrable uniformDensity volume :=
+  (continuous_const.integrableOn_Icc).integrable_indicator measurableSet_Icc
+
+lemma uniform_normalized : (∫ x, uniformDensity x) = 1 := by
+  norm_num [uniformDensity, integral_indicator_const, Measure.real, Real.volume_Icc]
+
+lemma uniform_on_window (x : ℝ)
+    (hx : x ∈ Icc (caliperCutoff-caliperCutoff/5) (caliperCutoff+caliperCutoff/5)) :
+    uniformDensity x = 1/4 := by
+  have hx' : x ∈ Icc (0:ℝ) 4 := by
+    norm_num [caliperCutoff, Set.mem_Icc] at hx ⊢
+    constructor <;> linarith [hx.1, hx.2]
+  simp [uniformDensity, hx']
+
+lemma uniform_window_mass :
+    (volume.withDensity (fun x => ENNReal.ofReal (uniformDensity x)))
+      (Icc (caliperCutoff-caliperCutoff/5) (caliperCutoff+caliperCutoff/5)) =
+      ENNReal.ofReal (49/250) := by
+  rw [withDensity_apply _ measurableSet_Icc,
+    ← ofReal_integral_eq_lintegral_ofReal uniform_integrable.integrableOn
+      (Eventually.of_forall uniform_nonneg)]
+  congr 1
+  rw [setIntegral_congr_fun measurableSet_Icc uniform_on_window]
+  norm_num [Measure.real, Real.volume_Icc, caliperCutoff]
+
+example : (∀ x, 0 ≤ uniformDensity x) ∧
+    (∀ x, x < 0 → uniformDensity x = 0) ∧ Integrable uniformDensity volume ∧
+    (∫ x, uniformDensity x) = 1 ∧ 0 < caliperCutoff/5 ∧
+    caliperCutoff/5 < caliperCutoff ∧
+    0 < caliperAbove uniformDensity (caliperCutoff/5) +
+      caliperBelow uniformDensity (caliperCutoff/5) ∧
+    0 < (caliperDataLaw 19 uniformDensity).real
+      {X | caliperCount (caliperCutoff/5) X = 19} ∧
+    MonotoneOn uniformDensity
+      (Icc (caliperCutoff-caliperCutoff/5) (caliperCutoff+caliperCutoff/5)) ∧
+    AntitoneOn uniformDensity
+      (Icc (caliperCutoff-caliperCutoff/5) (caliperCutoff+caliperCutoff/5)) ∧
+    (∀ x ∈ Icc (caliperCutoff-caliperCutoff/5) (caliperCutoff+caliperCutoff/5),
+      (1/4:ℝ) ≤ uniformDensity x) ∧
+    (∀ x ∈ Icc (caliperCutoff-caliperCutoff/5) (caliperCutoff+caliperCutoff/5),
+      ∀ y ∈ Icc (caliperCutoff-caliperCutoff/5) (caliperCutoff+caliperCutoff/5),
+      |uniformDensity x-uniformDensity y| ≤ 0*|x-y|) ∧
+    HasDerivAt uniformDensity 0 caliperCutoff ∧
+    ContinuousAt uniformDensity caliperCutoff ∧ 0 < uniformDensity caliperCutoff := by
+  have hc : caliperCutoff ∈ Icc (caliperCutoff-caliperCutoff/5)
+      (caliperCutoff+caliperCutoff/5) := by norm_num [caliperCutoff]
+  have hd : HasDerivAt uniformDensity 0 caliperCutoff := by
+    have he : uniformDensity =ᶠ[𝓝 caliperCutoff] (fun _ => (1/4:ℝ)) := by
+      filter_upwards [Ioo_mem_nhds (show (0:ℝ) < caliperCutoff by norm_num [caliperCutoff])
+        (show caliperCutoff < (4:ℝ) by norm_num [caliperCutoff])] with x hx
+      simp [uniformDensity, show x ∈ Icc (0:ℝ) 4 from ⟨hx.1.le, hx.2.le⟩]
+    exact he.hasDerivAt_iff.mpr (hasDerivAt_const caliperCutoff (1/4:ℝ))
+  refine ⟨uniform_nonneg, ?_, uniform_integrable, uniform_normalized,
+    by norm_num [caliperCutoff], by norm_num [caliperCutoff], ?_, ?_, ?_, ?_, ?_, ?_,
+    hd, hd.continuousAt, ?_⟩
+  · intro x hx
+    simp [uniformDensity, show x ∉ Icc (0:ℝ) 4 from fun h => (not_le.mpr hx) h.1]
+  · have ha : caliperAbove uniformDensity (caliperCutoff/5) = caliperCutoff/20 := by
+      unfold caliperAbove
+      trans ∫ x in caliperCutoff..caliperCutoff+caliperCutoff/5, (1/4:ℝ)
+      · apply intervalIntegral.integral_congr
+        intro x hx
+        rw [uIcc_of_le (show caliperCutoff ≤ caliperCutoff+caliperCutoff/5 by
+          norm_num [caliperCutoff])] at hx
+        exact uniform_on_window x ⟨hc.1.trans hx.1, hx.2⟩
+      · rw [intervalIntegral.integral_const]
+        simp only [smul_eq_mul]
+        ring
+    have hb : caliperBelow uniformDensity (caliperCutoff/5) = caliperCutoff/20 := by
+      unfold caliperBelow
+      trans ∫ x in caliperCutoff-caliperCutoff/5..caliperCutoff, (1/4:ℝ)
+      · apply intervalIntegral.integral_congr
+        intro x hx
+        rw [uIcc_of_le (show caliperCutoff-caliperCutoff/5 ≤ caliperCutoff by
+          norm_num [caliperCutoff])] at hx
+        exact uniform_on_window x ⟨hx.1, hx.2.trans hc.2⟩
+      · rw [intervalIntegral.integral_const]
+        simp only [smul_eq_mul]
+        ring
+    rw [ha, hb]
+    norm_num [caliperCutoff]
+  · letI := density_probability uniformDensity uniform_nonneg uniform_integrable uniform_normalized
+    apply full_count_event_positive
+    rw [uniform_window_mass]
+    norm_num
+  · intro x hx y hy _
+    simp [uniform_on_window x hx, uniform_on_window y hy]
+  · intro x hx y hy _
+    simp [uniform_on_window x hx, uniform_on_window y hy]
+  · intro x hx
+    rw [uniform_on_window x hx]
+  · intro x hx y hy
+    simp [uniform_on_window x hx, uniform_on_window y hy]
+  · rw [uniform_on_window caliperCutoff hc]
+    norm_num
+
+-- T9: the Gaussian-law premise and overlapping cluster-label premises are realized.
+example : ∃ (μ : Measure ℝ) (T : ℝ → ℝ) (τ s : ℝ),
+    IsProbabilityMeasure μ ∧ 0 < s ∧ HasLaw T (gaussianReal (τ/s) 1) μ ∧
+    τ ≠ 0 ∧ (0 : ℝ) < 1/2 ∧ (1/2:ℝ) < 1 := by
+  refine ⟨gaussianReal 1 1, id, 1, 1, inferInstance, by norm_num, ?_,
+    by norm_num, by norm_num, by norm_num⟩
+  simpa using (HasLaw.id : HasLaw id (gaussianReal 1 1) (gaussianReal 1 1))
+
+example : ({0,1} : Finset ℕ).Nonempty ∧ ({1,2} : Finset ℕ).Nonempty ∧
+    clusterCountRatio ({0,1} : Finset ℕ) {1,2} = 3/4 ∧
+    ({0,1} ∩ {1,2} : Finset ℕ) ≠ ∅ := by
+  norm_num [clusterCountRatio, Finset.union_insert, Finset.union_singleton]
+
+-- T10: independently verify the complete closed witness, including variance and SD.
+example : T10Statement := by
+  norm_num [T10Statement, T10CoreStatement, sampleMean, sampleVariance, sampleSD,
+    funnelPoint, Fin.sum_univ_succ, Real.sqrt_eq_iff_mul_self_eq_of_pos]
+
+end

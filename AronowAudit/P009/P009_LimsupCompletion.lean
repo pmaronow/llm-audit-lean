@@ -97,6 +97,7 @@ theorem limsup_interference_counterexample_completed :
   · intro t
     rw [he]
     exact limsup_threshold_counterexample.2.1 (t+1) (by omega)
+#print axioms limsup_interference_counterexample_completed
 end
 end AronowAudit.P009.LimsupCompletion
 
@@ -112,5 +113,6 @@ theorem limsup_interference_counterexample :
       atTop (nhds (1/4)) ∧
     (∀ t, 1/4 ≤ dAvg (limsupStudy.experiment t)/size limsupStudy t ↔ t+1 ≤ 4) := by
   exact LimsupCompletion.limsup_interference_counterexample_completed
+#print axioms limsup_interference_counterexample
 end
 end AronowAudit.P009

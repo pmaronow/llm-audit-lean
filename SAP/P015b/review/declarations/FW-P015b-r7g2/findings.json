@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P015-T11",
+    "theorem": "SAP.P015b.T11",
+    "fingerprint": "6178247394f1dcc11421326883618336982201312212921eab1af521dcca24d9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteChecks.lean:19: an explicit Fin 2 x Fin 100 binary sample has 200 rows, 1 and 99 successes in its two cells, mean 1/2, Gram determinant 10000, and the stated treatment-score formula for every real link. T11 has no hypotheses; its positive finite data and smooth sigmoid avoid junk values. The analytic and all-degree conclusions are certified by the supplied theorem, not reproved in this witness check.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T15",
+    "theorem": "SAP.P015b.T15",
+    "fingerprint": "844a8b6924baa2b6d970bbac4d27d93c379aea759ac59e5ef40da56297c72ea7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:170: independent fair Bernoulli coordinates on their countable product space, K=0, Y0=0, tau=1 and omega=1/2 satisfy all universal convergence and moment-identity hypotheses; the control Gram is 1 and mean weight 1/4. The affine potential-outcome hypothesis is also constructed. Compiled scratch/FiniteChecks.lean:39 independently proves every conjunct of WholeConfoundingWitness, including the failed independence, slope 2 and weighted effect 1/2. Its cell mass is 1 and Gram determinant 1/4, so no fallback is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T22",
+    "theorem": "SAP.P015b.T22",
+    "fingerprint": "607d34b2f02f2ea7ae2e598e618878a18c779da1c8121679fd54bd3237842a02",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:170: an actual countable product of independent Bernoulli(1/2) coordinates, K=0, Y0=0, tau=1 and omega=1/2 satisfies all measurability, iid, conditional-independence, linear-conditional-mean and eight-family regularity hypotheses jointly. The control Gram is 1 and mean weight 1/4. Moment convergence is proved using Mathlib strong_law_ae; the witness lemmas have no sorryAx dependency.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T23",
+    "theorem": "SAP.P015b.T23",
+    "fingerprint": "9d4953660522287158b0c20db15825152560a49f4a97447ea8ebc923328dac90",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:187: independent Bernoulli(1/2) treatment coordinates with K=0, Z=1 and omega=1/2 satisfy every hypothesis jointly, including independence and identical distribution of (D,Z,X), the linear conditional mean and all seven moment families. The control Gram is 1 and mean weight 1/4. The regularity proof uses the strong law and has no sorryAx dependency.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T24",
+    "theorem": "SAP.P015b.T24",
+    "fingerprint": "994e97ba7be47de8056b73bb5854b06a19379845d2eb5bebee22c565384761cb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:170 and :205: independent Bernoulli(1/2) treatment coordinates, K=0, Y0=0 and tau=1 satisfy every sampling/convergence hypothesis jointly. The same model supplies every population-only hypothesis, including joint random-assignment independence, L2 treatment, integrable effect and positive variance. The control Gram is 1, and mean weight and variance are 1/4. The witness regularity and independence lemmas have no sorryAx dependency.",
+    "confidence": 0.99
+  }
+]

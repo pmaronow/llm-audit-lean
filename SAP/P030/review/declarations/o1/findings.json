@@ -1,0 +1,57 @@
+[
+ {
+  "target_id": "P030-T1",
+  "theorem": "SAP.P030.T1",
+  "fingerprint": "71229840c568cf1eb88bbf192d449576529fe9c6a1f4f4cd518d8aef9690e659",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": "",
+  "nonvacuity": "Closed proposition with no top-level hypotheses; its inner universal 'forall alpha, 0<alpha -> alpha<1' is satisfiable (alpha=1/20, compiled in scratch/Nonvac.lean). Index sanity compiled by decide in scratch/Nonvac.lean: fixed units of fiveS are indices [0,1,2] (units 1,2,3), fiveAssignment 0/1 treat exactly index 3/4 (units 4/5). scratch/T4Witness.lean independently recomputes nearestDistance for both assignments (|x_i - x_4|, |x_i - x_5|), shows the distance vectors differ by the constant 1 and that Spearman is shift invariant, so the statistic is constant on Omega' (as T1 states).",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P030-T2",
+  "theorem": "SAP.P030.T2",
+  "fingerprint": "7e0e25c38ce600cb55170ef05158281fc751bf32be64ff3b9129c03f41bbb1f9",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": "",
+  "nonvacuity": "Closed proposition; inner universals over alpha in (0,2/3] and (0,1/2) are satisfiable (alpha=1/20, compiled in scratch/Nonvac.lean). Index sanity compiled: tenS selects indices [0,7,8,9] (units 1,8,9,10), tenFixed = ![0,7,8,9], tableTreatment 0/3/5 are units 2/5/7, so tenAssignment 6 is the paper's observed z^(7).",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P030-T3",
+  "theorem": "SAP.P030.T3",
+  "fingerprint": "1709f21e4092487711ed5843fbf62c5ef55d800d64eee6db832fc69b32718be3",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": "",
+  "nonvacuity": "The outer universal over (A, mu, f) is inhabited: scratch/Nonvac.lean compiles Nonempty (FiniteLaw (Fin 2)) via uniformLaw; u=1/2 in [0,1] and alpha=1/20 in (0,1) witness the inner hypotheses. The restriction alpha<1 is needed for clause (vi)'s equivalence over all reals: compiled check that at alpha=1, pL=pU=1 falsifies 'twoTailP pL pU <= alpha <-> pL <= alpha/2 or pU <= alpha/2'. The conjoined T1Statement is closed.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P030-T4",
+  "theorem": "SAP.P030.T4",
+  "fingerprint": "968b6fc4ade0b15f1cb9fd47ea47879aab3532b44d9544370b0bccccde998109",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": "",
+  "nonvacuity": "Refutation, so the witness was checked. scratch/T4Witness.lean compiles, without sorry, 'example : not PrintedTwoTailedExactness' using the in-class P030-T1 witness: N=5, Omega=fiveOmega, S=fiveS (nonexperimental fixed units), observed fiveAssignment 0 (Omega' nonempty), Y=fiveY (NoInterference), g = the paper's statistic (Spearman between D_nearest to the nearest treated variant unit and Y_fixed), alpha=1/20. The statistic is constant on Omega', p=1 for both assignments, the printed rule rejects under both, size 1 > 1/20. Also compiled: at alpha=0 the printed rule never rejects a p in [0,1], so the negation cannot be driven by a degenerate level.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P030-T5",
+  "theorem": "SAP.P030.T5",
+  "fingerprint": "e612bdfbe502a58296c683017b5b2532d020f79b5992deea771aa0552947adde",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": "",
+  "nonvacuity": "Closed proposition (universe-polymorphic); the inner universals over nonempty finsets with a statistic constant on them are inhabited (Finset.univ on Fin 3 with t=0, compiled in scratch/Nonvac.lean). Index sanity compiled: tableTreatment 0 and 3 are units 2 and 5 (the claim's z^(2), z^(5)), tenAssignment 6 is z^(7).",
+  "confidence": "high"
+ }
+]

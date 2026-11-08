@@ -1,8 +1,10 @@
 import AronowAudit.P031.Wave1.LargeSampleRefutationBlueprint
 
-/-! Split a `2k`-digit vector into two blocks, then apply the
-binary enumeration to each block. The equivalence transports arbitrary events,
-so no regularity assumption on `E` is needed. -/
+/-!
+Node 5: split a `2k`-digit vector into two blocks, then apply the blueprint's
+binary enumeration to each block.  The equivalence transports arbitrary events,
+so no regularity assumption on `E` is needed.
+-/
 
 namespace AronowAudit.P031.Wave1.LargeSampleRefutation
 noncomputable section

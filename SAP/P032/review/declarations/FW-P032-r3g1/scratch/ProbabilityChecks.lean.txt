@@ -1,0 +1,120 @@
+import SAP.P032.Defs
+set_option maxHeartbeats 1600000
+open scoped BigOperators ENNReal
+open Matrix MeasureTheory ProbabilityTheory SAP.P032
+noncomputable section
+
+-- T2: a nondegenerate centered law for two non-incident observations.
+def pairLaw : Measure (Fin 4) := distributionMeasure negativePairDistribution
+instance : IsProbabilityMeasure pairLaw := by
+  constructor
+  calc
+    pairLaw Set.univ = ∑ ω, ENNReal.ofReal (negativePairDistribution.weight ω) := by
+      simp [pairLaw, distributionMeasure]
+    _ = ENNReal.ofReal (∑ ω, negativePairDistribution.weight ω) :=
+      (ENNReal.ofReal_sum_of_nonneg (fun i _ => negativePairDistribution.nonneg i)).symm
+    _ = 1 := by rw [negativePairDistribution.total]; simp
+
+lemma pair_l2 (r : Fin 2) : MemLp (fun ω => pairErrorValues ω r) 2 pairLaw :=
+  MemLp.of_discrete
+
+lemma pair_integral (f : Fin 4 → ℝ) :
+    (∫ ω, f ω ∂pairLaw) =
+      (1/8 : ℝ)*f 0 + (3/8 : ℝ)*f 1 + (3/8 : ℝ)*f 2 + (1/8 : ℝ)*f 3 := by
+  rw [integral_fintype (Integrable.of_finite (f := f))]
+  norm_num [pairLaw, distributionMeasure, negativePairDistribution,
+    Fin.sum_univ_succ, Measure.real, Measure.add_apply, Measure.smul_apply, ENNReal.ofReal_div_of_pos,
+    ENNReal.toReal_add, ENNReal.add_ne_top, Pi.single_apply]
+  <;> ring
+
+lemma pair_centered (r : Fin 2) : (∫ ω, pairErrorValues ω r ∂pairLaw) = 0 := by
+  rw [pair_integral]
+  fin_cases r <;> norm_num [pairErrorValues]
+
+example : ∃ (μ : Measure (Fin 4)) (_ : IsProbabilityMeasure μ)
+    (d : Fin 2 → DyadData (Fin 4)) (X : Matrix (Fin 2) (Fin 1) ℝ)
+    (β : Fin 1 → ℝ) (u : Fin 2 → Fin 4 → ℝ),
+    (X.transpose*X).det ≠ 0 ∧
+    (∀ r, MemLp (u r) 2 μ) ∧ (∀ r, (∫ ω, u r ω ∂μ) = 0) ∧
+    errorMoments μ u = pairCovariance (-1) := by
+  refine ⟨pairLaw, inferInstance, pairDyads, pairIntercept, (fun _ => 0),
+    (fun r ω => pairErrorValues ω r), ?_, pair_l2, pair_centered, ?_⟩
+  · norm_num [pairIntercept, Matrix.det_fin_one, Matrix.mul_apply, Fin.sum_univ_succ]
+  · ext r s
+    unfold errorMoments
+    rw [pair_integral]
+    fin_cases r <;> fin_cases s <;> norm_num [pairErrorValues, pairCovariance]
+
+-- T12: a positive-variance shared primitive, with all other primitives zero.
+-- This makes all three coefficient sign cases available with the same data.
+def toyLaw : Measure (Fin 2) := (1/2 : ℝ≥0∞) • Measure.dirac 0 +
+  (1/2 : ℝ≥0∞) • Measure.dirac 1
+instance : IsProbabilityMeasure toyLaw := by
+  constructor
+  apply (ENNReal.toReal_eq_one_iff _).mp
+  norm_num [toyLaw, Measure.add_apply, Measure.smul_apply, ENNReal.toReal_add]
+def toyZ (i : Fin 5) (ω : Fin 2) : ℝ :=
+  if i = 0 then (if ω = 0 then -1 else 1) else 0
+
+lemma toy_l2 (i : Fin 5) : MemLp (toyZ i) 2 toyLaw := MemLp.of_discrete
+lemma toy_integral (f : Fin 2 → ℝ) :
+    (∫ ω, f ω ∂toyLaw) = (1/2 : ℝ)*f 0 + (1/2 : ℝ)*f 1 := by
+  rw [integral_fintype (Integrable.of_finite (f := f))]
+  norm_num [toyLaw, Fin.sum_univ_succ, Measure.real, Measure.add_apply, Measure.smul_apply, ENNReal.ofReal_div_of_pos,
+    ENNReal.toReal_add, ENNReal.add_ne_top, Pi.single_apply]
+  <;> ring
+
+lemma toy_uncorrelated (i j : Fin 5) (h : i ≠ j) :
+    covariance (toyZ i) (toyZ j) toyLaw = 0 := by
+  by_cases hi : i = 0
+  · have hj : j ≠ 0 := by intro hj; exact h (hi.trans hj.symm)
+    have hz : toyZ j = (fun _ => 0) := by funext ω; simp [toyZ, hj]
+    rw [hz, covariance_const_right]
+  · have hz : toyZ i = (fun _ => 0) := by funext ω; simp [toyZ, hi]
+    rw [hz, covariance_const_left]
+
+lemma toy_variance : variance (toyZ 0) toyLaw = 1 := by
+  rw [variance_eq_sub (toy_l2 0), toy_integral, toy_integral]
+  norm_num [toyZ]
+
+example : ∃ (μ : Measure (Fin 2)) (_ : IsProbabilityMeasure μ)
+    (Z : Fin 5 → Fin 2 → ℝ),
+    (∀ i, MemLp (Z i) 2 μ) ∧
+    (∀ i j, i ≠ j → covariance (Z i) (Z j) μ = 0) ∧
+    0 < variance (Z 0) μ := by
+  exact ⟨toyLaw, inferInstance, toyZ, toy_l2, toy_uncorrelated,
+    by rw [toy_variance]; norm_num⟩
+
+-- Actual outcome variances establish genuine strict cases independently of Challenge.
+lemma toy_zero (i : Fin 5) (hi : i ≠ 0) : toyZ i = (fun _ => 0) := by
+  funext ω
+  simp [toyZ, hi]
+
+lemma toy_self_average : outcomeAverage (toyZ 0) (toyZ 0) = toyZ 0 := by
+  funext ω
+  unfold outcomeAverage
+  ring
+
+example : variance (outcomeAverage (countryOutcomes toyZ 1 0 1 0).1
+      (countryOutcomes toyZ 1 0 1 0).2) toyLaw = 1 ∧
+    naiveAverageVariance toyLaw (countryOutcomes toyZ 1 0 1 0).1
+      (countryOutcomes toyZ 1 0 1 0).2 = 1/2 := by
+  simp [countryOutcomes, toy_zero 3 (by decide), toy_zero 4 (by decide),
+    toy_self_average, naiveAverageVariance, toy_variance]
+  <;> norm_num
+
+example : variance (outcomeAverage (countryOutcomes toyZ 1 0 (-1) 0).1
+      (countryOutcomes toyZ 1 0 (-1) 0).2) toyLaw = 0 ∧
+    naiveAverageVariance toyLaw (countryOutcomes toyZ 1 0 (-1) 0).1
+      (countryOutcomes toyZ 1 0 (-1) 0).2 = 1/2 := by
+  have havg : outcomeAverage (toyZ 0) (-toyZ 0) = 0 := by
+    funext ω
+    simp [outcomeAverage]
+  have hy1 : (countryOutcomes toyZ 1 0 (-1) 0).1 = toyZ 0 := by
+    funext ω
+    simp [countryOutcomes, toyZ]
+  have hy2 : (countryOutcomes toyZ 1 0 (-1) 0).2 = -toyZ 0 := by
+    funext ω
+    fin_cases ω <;> norm_num [countryOutcomes, toyZ]
+  rw [hy1, hy2, havg]
+  norm_num [naiveAverageVariance, toy_variance, variance_neg]

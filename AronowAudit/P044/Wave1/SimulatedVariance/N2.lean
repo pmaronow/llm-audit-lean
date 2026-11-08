@@ -16,7 +16,7 @@ theorem n2_proof : N2 := by
   change ∀ (i : Fin 12) (a : Exposure),
     exposureCount cliqueF i a = cliqueFullCount a
   intro i a
-  -- These finite checks use computational decidability.
+  -- Do not put a classical decidability instance around these computations.
   fin_cases i <;> cases a <;> decide +kernel
 
 end

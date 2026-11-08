@@ -1,0 +1,49 @@
+[
+ {
+  "target_id": "P001-T35",
+  "decision": "whole",
+  "theorem": "SAP.P001b.T35",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.triangular_region_correction"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T36",
+  "decision": "restricted",
+  "theorem": "SAP.P001b.T36",
+  "restriction": "Retains real analyticity (and hence smoothness), strict positivity, integrability, total mass one, the infinite nonnegative slice integral at zero, and integrability of every nonzero slice. Omits boundedness; the logistic slice formula and its separate normalization; the joint CDF and everywhere mixed-derivative assertions; the limiting value of the zero-slice integrand; positivity of the nonzero slice integrals; and the marginal CDF assertion of no finite derivative at zero. States only these density and extended-integral facts; it does not establish a refutation of the pointwise marginal-PDF identity under the usual assumption that its real slice integral exists finitely.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.infinite_marginal_slice_counterexample_proof"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T37",
+  "decision": "whole",
+  "theorem": "SAP.P001b.T37",
+  "restriction": null,
+  "statement_definition": "SAP.P001b.T37WholeStatement",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.marginal_pdf_ae_correction_all_versions",
+   "AronowAudit.P001.conditional_density_positive_finite_slice",
+   "AronowAudit.P001.pdf_version_change",
+   "SAP.P001b.WH.W1.T37_whole",
+   "SAP.P001b.WH.W1.T37_assembly"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T38",
+  "decision": "whole",
+  "theorem": "SAP.P001b.T38",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.bivariate_normal_endpoint_counterexample",
+   "AronowAudit.P001.zero_normal_combination_counterexample",
+   "AronowAudit.P001.continuous_rv_range_uncountable"
+  ],
+  "rows_not_used": []
+ }
+]

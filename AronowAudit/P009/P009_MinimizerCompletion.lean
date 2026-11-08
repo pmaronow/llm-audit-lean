@@ -123,6 +123,7 @@ theorem corrected_three_point_minimizer_completed (S : Study) (k q s α : ℝ)
   · intro t
     have ha := (abs_le.mp (habs t a)).2
     linarith
+#print axioms corrected_three_point_minimizer_completed
 end
 end AronowAudit.P009.AtomCompletion
 
@@ -149,5 +150,6 @@ theorem corrected_three_point_minimizer (S : Study) (k q s α : ℝ)
       f t (fun i => z ⟨i.val, lt_of_lt_of_le i.isLt (hb t)⟩) = if a then 1 else -1))
       atTop (nhds (α/2))) := by
   exact AtomCompletion.corrected_three_point_minimizer_completed S k q s α hReg hBER hα b hb hbInfinity f hf hmin
+#print axioms corrected_three_point_minimizer
 end
 end AronowAudit.P009

@@ -1,0 +1,29 @@
+[
+ {
+  "target_id": "P019-T22",
+  "decision": "restricted",
+  "theorem": "SAP.P019b.T22",
+  "restriction": "Retains the Proposition 4 null identity and inference bundle only for finite underlying probability spaces with arbitrary real atom masses and fixed sample completions. Omits the extension to arbitrary measurable spaces, the general randomized causal-effect interpretation, and the positive delayed-treatment design implication. The additional finite protocol permits assignment disclosure before the direct answer and delays only physical list display; it establishes failure of independence for that distinct display-only reading and does not refute the printed design assertion.",
+  "rows_used": [
+   "AronowAudit.P019.placebo_two_identity",
+   "AronowAudit.P019.Wave1.proposition_four_proof",
+   "SAP.P019b.WH.W1.T22_whole",
+   "SAP.P019b.WH.W1.T22_assembly"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.Wave1.normal_pvalue_uniform_proof",
+    "reason": "The aggregate placebo inference theorem already exports every interior p-value CDF limit."
+   },
+   {
+    "lean_name": "AronowAudit.P019.binary_null_characterization",
+    "reason": "The auxiliary converse for Y-Z independence is not a clause of the retained Proposition 4 inference assertion."
+   },
+   {
+    "lean_name": "AronowAudit.P019.direct_influence_moments",
+    "reason": "The aggregate placebo-II theorem already proves the inferential bundle; this row alone contains only single-subject influence moments."
+   }
+  ],
+  "statement_definition": "SAP.P019b.T22WholeStatement"
+ }
+]

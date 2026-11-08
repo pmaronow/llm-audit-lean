@@ -20,7 +20,7 @@ theorem marked_direct_decay_pos : 0 < markedDirectDecay := by
   have h := Real.exp_lt_one_iff.mpr (by norm_num : -(1/4 : ℝ) < 0)
   linarith
 
-/-- Removing at most three specified draws still gives a uniform exponential
+/-- Removing at most two specified draws still gives a uniform exponential
 bound at every possible donor count. -/
 theorem marked_draw_power_exp_bound (m d c k : ℕ) (hm : 0 < m) (hd : d ≤ 3)
     (hk : k ≤ d) (hc : c ≤ m) :

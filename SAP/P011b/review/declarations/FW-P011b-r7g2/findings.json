@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P011-T20",
+    "theorem": "SAP.P011b.T20",
+    "fingerprint": "54f482dbbf4761e768d24da739f1bae0947dc311e777ffe4b35bea3208aa6f0c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed statement with an explicit uniform-product fair-sign witness. scratch/Check.lean independently compiles the 2^n equally weighted Boolean inputs, sign-valued outcomes, the empty-graph estimator identity for every n>0, the exact strict-event binomial counts 2, 14, 65262, and their three canonical fractions. claim-audit.md checks every printed-reading assumption, including vector independence, valid constraints, all scaling constants, equal zero means, positive variance, and finite moments. scratch/exact_checks.py independently verifies disjoint-vector independence at n=4 and the exact moments and probabilities.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T21",
+    "theorem": "SAP.P011b.T21",
+    "fingerprint": "128967765a18f1a7e20dacf40cccc51640e73d56b22e5a14baf50a582e220e23",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs Review.zeroModel of size 3 with Dirac law at the zero vector, weights one and empty graph, and proves all outer hypotheses together: n>0, Dependency, Homoskedastic and MemLp of every weighted coordinate at exponent 2. This check imports only Defs. The positive-variance path witness is also genuine: independent exact enumeration in scratch/exact_checks.py gives all diagonal variances one, adjacent covariances 3/5 and 4/5, independent endpoints and scaled variance 29/15.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T22",
+    "theorem": "SAP.P011b.T22",
+    "fingerprint": "078834a528fc5a7aa55d8ad6af6f539779270edd5c2a26f802588d9465ad4520",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles the sole outer premise at n=3 and checks card(Edge 3)=3. Compatibility is not an added premise for the universal equivalences. The independent rational script checks all eight simple three-vertex graphs and all 216 recruitment/cap systems with caps in {0,1,2}, including infeasible systems, and verifies the degree, objective, full V1 and maximizer relations on three data vectors.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T23",
+    "theorem": "SAP.P011b.T23",
+    "fingerprint": "693a9ae1aa26ba386476e74c80c251db6e5b9bffb7f39d814f4576d4b97a8512",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed statement with genuine explicit witnesses. scratch/Check.lean independently compiles mean zero for (-2,1/2,3/2), incompatibility of its all-nonzero graph with unit caps, compatibility of edge23 and its exact objective 3/4, and omission of mandatory edge12 for (0,1,-1). scratch/exact_checks.py exhausts the feasible assignments, with objectives 0,-1,-3,3/4 and unique optimum edge23. claim-audit.md explains valid underlying dependency graphs and all conditions of the finite reading.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T24",
+    "theorem": "SAP.P011b.T24",
+    "fingerprint": "0e56cef1656b7251ca9459618450758e370a00f3630a3a5a3abafe1c74e55f96",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently compiles Compatible edge23 (fun _ => 1) edge23 and ProgramFeasible for the same data, with two degree caps attained. Thus the full validity premise is satisfiable in a nonempty graph instance. It also compiles compatibility at n=0. These checks import only Defs.",
+    "confidence": "high"
+  }
+]

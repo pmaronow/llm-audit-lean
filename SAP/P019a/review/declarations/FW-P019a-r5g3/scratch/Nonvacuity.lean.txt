@@ -1,0 +1,106 @@
+import SAP.P019a.Challenge
+
+open MeasureTheory ProbabilityTheory
+open scoped BigOperators
+
+namespace T11Audit
+noncomputable section
+open Classical SAP.P019a
+
+abbrev Ω := Bool × Bool × Bool
+
+def law : Measure Ω := (PMF.uniformOfFintype Ω).toMeasure
+
+instance : IsProbabilityMeasure law := by unfold law; infer_instance
+
+def obs (ω : Ω) : T11Observation 1 :=
+  (⟨if ω.1 then 1 else 0, by split <;> norm_num⟩,
+    ω.2.1, ω.2.1, ω.2.2,
+    ⟨(if ω.1 then 1 else 0) + (if ω.2.1 && ω.2.2 then 1 else 0), by
+      rcases ω with ⟨w, x, z⟩
+      cases w <;> cases x <;> cases z <;> decide⟩)
+
+def pop : T11Population 1 Ω where
+  law := law
+  probability := inferInstance
+  observe := obs
+  measurable_observe := measurable_of_finite _
+
+lemma mean_eq (f : T11Observation 1 → ℝ) :
+    pop.mean f = (1 / 8 : ℝ) * ∑ ω : Ω, f (obs ω) := by
+  change (∫ ω, f (obs ω) ∂law) = _
+  rw [integral_fintype Integrable.of_finite]
+  simp [law, Measure.real, Finset.mul_sum]
+
+lemma prob_eq (D : T11Observation 1 → Prop) :
+    pop.prob D = (1 / 8 : ℝ) * ∑ ω : Ω, if D (obs ω) then 1 else 0 := by
+  rw [← mean_eq (fun t => if D t then 1 else 0)]
+  change law.real {ω | D (obs ω)} = ∫ ω, (if D (obs ω) then 1 else 0 : ℝ) ∂law
+  symm
+  simpa [Set.indicator] using
+    (integral_indicator_one (μ := law) (s := {ω | D (obs ω)})
+      (Set.toFinite _).measurableSet)
+
+lemma monotone : pop.monotone := by
+  exact ae_of_all _ (fun _ h => h)
+
+lemma noLiarsDesign : pop.noLiarsDesign := by
+  apply ae_of_all
+  rintro ⟨w, x, z⟩
+  cases w <;> cases x <;> cases z <;>
+    norm_num [pop, obs, T11Observation.W, T11Observation.V,
+      T11Observation.X, T11Observation.Z, bitVal]
+
+lemma treatmentIndependent : pop.treatmentIndependent := by
+  intro f z
+  rw [mean_eq, prob_eq, mean_eq]
+  simp only [Fintype.sum_prod_type, Fintype.sum_bool]
+  cases z <;>
+    simp [obs, T11Observation.W, T11Observation.X,
+      T11Observation.Y, T11Observation.Z] <;> ring
+
+lemma nondegenerate : pop.nondegenerate := by
+  unfold T11Population.nondegenerate T11Population.cv
+    T11Population.variance T11Population.ce
+  constructor
+  · intro z y
+    simp only [prob_eq, mean_eq, Fintype.sum_prod_type, Fintype.sum_bool]
+    cases z <;> cases y <;>
+      norm_num [obs, T11Observation.cell,
+        T11Observation.Z, T11Observation.Y, T11Observation.V]
+  · simp only [mean_eq, Fintype.sum_prod_type, Fintype.sum_bool]
+    norm_num [obs, T11Observation.Z,
+      T11Observation.Y, bitVal]
+
+example : pop.standing :=
+  ⟨monotone, noLiarsDesign, treatmentIndependent, nondegenerate⟩
+
+-- Every premise of each of the other three implications holds for this
+-- same population; the coverage clause is nonvacuous at alpha = 1/2.
+example :
+    pop.standing ∧
+    (∀ z, 0 < pop.prob (fun t => t.Z = z)) ∧
+    0 < pop.prob (fun t => t.Y = true) ∧
+    (∀ z, 0 < pop.prob (T11Observation.cell z true)) ∧
+    (0 : ℝ) < 1 / 2 ∧ (1 / 2 : ℝ) < 1 := by
+  refine ⟨⟨monotone, noLiarsDesign, treatmentIndependent, nondegenerate⟩,
+    ?_, ?_, ?_, by norm_num, by norm_num⟩
+  · intro z
+    simp only [prob_eq, Fintype.sum_prod_type, Fintype.sum_bool]
+    cases z <;> norm_num [obs, T11Observation.Z]
+  · simp only [prob_eq, Fintype.sum_prod_type, Fintype.sum_bool]
+    norm_num [obs, T11Observation.Y]
+  · intro z
+    simp only [prob_eq, Fintype.sum_prod_type, Fintype.sum_bool]
+    cases z <;> norm_num [obs, T11Observation.cell, T11Observation.Z, T11Observation.Y]
+
+example : pop.mu = 1 / 2 := by
+  unfold T11Population.mu
+  simp only [prob_eq, Fintype.sum_prod_type, Fintype.sum_bool]
+  norm_num [obs, T11Observation.X]
+
+#print axioms T11Audit.nondegenerate
+#print axioms T11Audit.treatmentIndependent
+
+end
+end T11Audit

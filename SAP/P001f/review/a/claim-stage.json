@@ -1,0 +1,110 @@
+[
+  {
+    "theorem": "SAP.P001f.T96",
+    "target_id": "P001-T96",
+    "my_reading_vs_claim": "whole",
+    "reason": "The three grouped cells encode the specified eighteen-unit sample exactly: sizes 6, treated counts (3,1,5), treated sums (12,3,20), and control sums (9,10,3). The statement includes a unique global logit maximizer, fitted probabilities, observed fractions, score arithmetic, both estimators, and their nonzero gap. All arm counts and all fitted-score denominators are positive. The omitted unit names do not change this fixed grouped likelihood or these fixed estimators. Strict concavity of the full-rank grouped logit likelihood verifies the maximum. The sample is realizable with positive probability under iid covariate cells of mass 1/3, the displayed logistic treatment probabilities, and the displayed cell-constant potential outcomes."
+  },
+  {
+    "theorem": "SAP.P001f.T97",
+    "target_id": "P001-T97",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The valid algebraic characterization is at the level of positive real cell arm masses and arbitrary cell outcome sums. It does not state the canonical raw-unit regrouping identities in part (i), nor the passage from all individual-unit outcome vectors to all cell sums in part (iii). Positive integer counts with n equal to their total specialize to the canonical setting. There is no assumption of the characterization's conclusion: varying one outcome sum identifies the coefficients. A nonempty instance is E=Fin 1, n=2, nt=nc=1, q=1/2."
+  },
+  {
+    "theorem": "SAP.P001f.T98",
+    "target_id": "P001-T98",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The true-score conditional and unconditional expectations, sample-average expectations, and strict reciprocal-weight inequalities match the formal-content paragraph. The stabilized outcome-estimator definition, fitted-score convergence, and efficiency prose are absent. The hypotheses require an infinite iid sequence and pointwise binarity and overlap at every observation, rather than just the finite sample and almost everywhere versions sufficient for each expectation identity. The product law of iid Bernoulli(1/2) treatments with constant covariate and p=1/2 satisfies all hypotheses, with epsilon=1/4. The lower and upper overlap bounds make every displayed reciprocal integrable."
+  },
+  {
+    "theorem": "SAP.P001f.T99",
+    "target_id": "P001-T99",
+    "my_reading_vs_claim": "whole",
+    "reason": "The closed finite-law assertion is exactly the canonical two-atom counterexample, including normalization, conditional ignorability, both distinct epsilon bounds, propensity 1/4, weighted effect 1/4, ATT 1, inequality, and restoration of ATT by normalization. Its finite singleton-event independence criterion is genuine conditional independence for this finite law. The conditioning probabilities and the normalization denominator are 1 or 1/4, never zero."
+  },
+  {
+    "theorem": "SAP.P001f.T100",
+    "target_id": "P001-T100",
+    "my_reading_vs_claim": "whole",
+    "reason": "The positive treatment probability, propensity-mean identity, weighted-effect identity, normalization, and exact equality characterization are all present. Almost everywhere binary D with both arms positive renders Supp[D]={0,1}. An integrable effect suffices without separate outcome moments or uniform overlap: the true propensity is in [0,1] almost everywhere and conditional ignorability extends from bounded indicators to an integrable effect. Constant potential outcomes 0 and 1, constant X, and Bernoulli(1/4) D give a nonvacuity instance with W=1/4 and ATT=1."
+  },
+  {
+    "theorem": "SAP.P001f.T101",
+    "target_id": "P001-T101",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected relative-complement identity and elementwise characterization are exact and universally true. The canonical claim also includes the iff characterization of the erroneous union identity and the three finite-example equalities, none of which is asserted. A= {1,2}, B={2} in the three-element universal set is a nonempty example."
+  },
+  {
+    "theorem": "SAP.P001f.T102",
+    "target_id": "P001-T102",
+    "my_reading_vs_claim": "whole",
+    "reason": "The negated universal proposition includes integrable covariates and outcome, covariate and joint Lebesgue densities, conditional-mean versions, and coordinate differentiability at every point of positive covariate density. It therefore refutes the printed distributional well-definedness even in its jointly continuous class. For example X uniform on [-2,-1] union [1,2], independent Y uniform on [-1,1], has mean X=0 outside the support. Versions m0=0 and m1(x)=x on |x|<1 and 0 otherwise are identical on the support and differentiable there, but have respective derivatives 0 and 1 at the mean. The separate sample formula correctly expands the chosen estimator's derivative; it asserts no identification or convergence and has positive n and a genuine derivative premise."
+  },
+  {
+    "theorem": "SAP.P001f.T103",
+    "target_id": "P001-T103",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The actual unrestricted normal/lognormal/exponential mixture with valid nonnegative weights, positive scales and rate is used. The negation of existence of a maximizer for every nonempty positive sample genuinely refutes assertion (A). At n=1, y=1, normal weight 1, mean 1 and scale s decreasing to zero give likelihood 1/(s sqrt(2 pi)), unbounded above. Every valid parameter has finite likelihood. Assertion (B)'s full-parameter consistency and efficiency claims are not addressed."
+  },
+  {
+    "theorem": "SAP.P001f.T104",
+    "target_id": "P001-T104",
+    "my_reading_vs_claim": "narrower",
+    "reason": "This is a genuine negation of the unqualified equivalence on countable joint masses, not a proof of the entire collection (A), (B), (C) and the regional example. For cell mass m_k=2^(-k-1), let t_k=4^(-k-1), c_k=m_k-t_k. The totals are 1/3 and 2/3; every cell has both arms, while propensity t_k/m_k=2^(-k-1) tends to zero. Thus the support-equality-to-uniform-positivity direction fails, refuting (B) without its hedge. Uniform positivity still implies equal supports, so the theorem does not challenge true assertion (A), and it does not adjudicate (C)'s unspecified extra conditions."
+  },
+  {
+    "theorem": "SAP.P001f.T106",
+    "target_id": "P001-T106",
+    "my_reading_vs_claim": "whole",
+    "reason": "All five canonical expectation/variance/standard-deviation/Chebyshev results are present, with the finite moments and positive variance explicitly required where the canonical convention requires them. The real variance agrees with the usual one under MemLp 2. A fair two-point law X in {0,1}, Y=2X gives finite moments and strictly positive variance 1/4, so the Chebyshev branch is nonvacuous."
+  },
+  {
+    "theorem": "SAP.P001f.T107",
+    "target_id": "P001-T107",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Only Theorem 2.2.17's iterated expectation is asserted. Theorem 2.2.18's total-variance formula and every component of Theorem 2.2.20's MSE decomposition and optimality conclusion are missing from this canonical target. ConditionalMean is the usual integral characterization for measurable X and does not simply assume the mean identity alone; its universal event identity gives the result by A=univ. X's measurability is not required here, yielding some extra cases but retaining the full iterated-expectation component. Constant Y=m=c on any probability space supplies a nonvacuity instance."
+  },
+  {
+    "theorem": "SAP.P001f.T108",
+    "target_id": "P001-T108",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The three numerical identities/bounds and moment conditions match, but IndependentCopies requires a sequence indexed by all natural numbers. The canonical claim expressly concerns each fixed finite iid sample. A given finite iid sample need not extend to an infinite iid sequence on its original probability space: already a single nondegenerate Bernoulli variable on a two-atom space cannot have a second independent copy there. No finite-sample or change-of-space transfer is in the statement. This is an additional domain restriction. Infinite Bernoulli product measure with coordinate observations is a nondegenerate instance, with variance 1/4."
+  },
+  {
+    "theorem": "SAP.P001f.T109",
+    "target_id": "P001-T109",
+    "my_reading_vs_claim": "whole",
+    "reason": "Weierstrass, existence of the population degree-J least-squares polynomial for each J, and eventual L2 approximation by every minimizing family give the canonical result, without requiring unique coefficients. Finite Y second moment is the canonical implicit condition and, together with bounded X, makes every risk integrable. The PMF/PDF support branches use the paper's positive-mass/positive-density support, not topological support; the discrete interval branch necessarily degenerates to one point, but the continuous branch is nonvacuous (X uniform [0,1], density 1_[0,1], Y=X, m=id). No regularity or coefficient nondegeneracy assumption is hidden in the minimization premises."
+  },
+  {
+    "theorem": "SAP.P001f.T110",
+    "target_id": "P001-T110",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every nonempty Boolean sample, both endpoints, the sample-mean identity, the global likelihood inequality and its unique equality case, and the 2/3 example are asserted. The count k is at most n, so n-k is ordinary counting subtraction; 0^0=1 represents the empty Bernoulli factor and is appropriate. The real parameter interval is exactly [0,1]."
+  },
+  {
+    "theorem": "SAP.P001f.T111",
+    "target_id": "P001-T111",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The MCAR, discrete MAR and vector MAR conclusions are genuine versions of the identification results and the two finite estimates agree exactly. The two MAR statements retain population integrability of the respondent conditional-mean version m(X) as an extra explicit premise, rather than deriving it using MAR and the uniform response lower bound. General estimator formulas are supplied as definitions and evaluated only at the stated nondegenerate sample. This does not introduce a circular conditional-mean hypothesis: under the respondent-restricted measure it characterizes the respondent regression, whereas the conclusion concerns the population measure. A constant covariate and outcome with fair binary response satisfy all hypotheses and m(X) is integrable."
+  },
+  {
+    "theorem": "SAP.P001f.T112",
+    "target_id": "P001-T112",
+    "my_reading_vs_claim": "whole",
+    "reason": "Balance, preservation of MAR, and the response lower bound conditional on the true score are all present, including the conditional-probability version id. A binary response's conditional mean determines its conditional law, and conditioning on that mean gives the usual balancing identity; indicator-based conditional independence needs no Y moment. The propensity's integrability follows from its being a conditional mean of a binary variable. A constant covariate and outcome and fair response with p=1/2 satisfy the hypotheses with epsilon=1/4."
+  },
+  {
+    "theorem": "SAP.P001f.T113",
+    "target_id": "P001-T113",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both double-robustness branches and the displayed augmented score agree with the canonical claim, interpreted as versions. The measurable integrable m(X) premise is not an extra restriction relative to claims.json: its canonical note explicitly says, 'In case (ii), integrability of [the nuisance CEF] is implicit (footnote 2, p. 45).' In branch (i) it also follows from MAR, response positivity and integrable Y. The docstring's description of excluding cancellation-only cases consequently does not describe a restriction of this supplied canonical claim. The statement itself is true: the positive lower bounds make the correction integrable, and either regression correctness or propensity correctness gives the identity. Constant X,Y and fair response yield examples of each branch, also with deliberately incorrect m in branch (ii)."
+  },
+  {
+    "theorem": "SAP.P001f.T114",
+    "target_id": "P001-T114",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The full interval membership, width, every-value sharpness with the original observable law, and both ATE numerical endpoints are asserted. The four individual potential-outcome numerical estimates and their individual imputation interpretations in the canonical claim are absent. The stronger same-space sharpness is valid: keep observed outcomes fixed and interpolate the two extremal missing-outcome assignments to attain every c. Measurable bounded outcomes ensure all integrals are finite, and both treatment-event denominators are positive. The displayed six-unit sample and a fair two-atom law with constant potential outcomes are nonvacuity instances."
+  }
+]

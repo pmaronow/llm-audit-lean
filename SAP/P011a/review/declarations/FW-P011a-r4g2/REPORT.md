@@ -1,0 +1,19 @@
+All five declarations are faithful to their canonical corrected claims. The architect's five `whole` decisions are accurate; no restriction or docstring correction is needed.
+
+The blind reading and junk-value audit were saved in [reading.md](reading.md) before opening `claims.json`. The independent claim comparison was saved in [claim-stage.json](claim-stage.json) before opening `record.json`. Reading the record did not change any conclusion. Every closure entry was inspected, including the types of the 99 distinct generated auxiliary proofs. No Solution or other review files were consulted.
+
+| Declaration | Result | Main checks |
+| --- | --- | --- |
+| `SAP.P011a.T6` | faithful / none | All spectral, finite, asymptotic and cycle clauses are present. The actual spectral positive part is used. The alternative matrix really is a PSD majorant with the required smaller quadratic value. Frobenius uniqueness is a valid strengthening. |
+| `SAP.P011a.T7` | faithful / none | Both finite comparison constants and zero-degree cases match. Supplied caps may grow; full caps are explicitly used in the independent-sign example despite the base sign model's stored zero caps. The optimizer description and unscaled limits match. |
+| `SAP.P011a.T8` | faithful / none | All four estimator classes and their individual conditions match, including the mean-bias condition and both variance-control and clipped-coverage conclusions. The cycle/path failures concern the unrestricted original estimator, as the canonical correction itself states. |
+| `SAP.P011a.T9` | faithful / none | All five parts are retained, including the three norm rates, prediction-error extension, exact OLS failure and misspecification term. The additional measurability/integrability conditions are the usual conditions presupposed by the task. The OLS example uses a nonsingular Gram matrix. |
+| `SAP.P011a.T10` | faithful / none | The infinite-pattern quantifier, independent mixture, finite identity, both impossibility conclusions, observed-data restriction and unscaled/design caveats all match. Arbitrary statistics have common measurable representatives on the finite supports, so the strengthening beyond Borel statistics is legitimate. |
+
+[scratch/Check.lean](scratch/Check.lean) compiles with the prescribed `sap-lean` command. It checks a positive-variance scaling instance, valid constraints, finite maximizer attainment, all four estimator-class alternatives, full-cap sign metadata, and nonzero-dimensional correct and misspecified residual models. The scaling witness is extracted from the already certified sign-family component; this is a check of hypothesis satisfiability, not an independent reconstruction of that component's proof.
+
+Independent exact rational calculations in [scratch/exact_checks.py](scratch/exact_checks.py) also pass. They verify the cycle spectrum and alternative majorant, cycle/path moments, every sign sample through n=8, the OLS expectations `17/4` and `73/8`, finite mixtures and the sampling-design example. Results are in [scratch/exact-checks.json](scratch/exact-checks.json). The OLS inconsistency is genuine beyond its expectation calculation: writing T_n=n Vres, the independent-sign construction gives T_n/n converging in distribution to chi-square(1), precluding T_n converging in probability to 2.
+
+No conclusion depends on division by zero, a singular inverse, an empty feasible set, a nonintegrable integral, an infinite probability converted to a real, or an unbounded real liminf. Gaussian quantiles are used only for 0<alpha<1, square roots in intervals are clipped, and all asymptotic sample sizes are positive. The supplied witnesses meet the independence conditions of their stated settings.
+
+Final machine-readable judgments, with the original fingerprints and per-target nonvacuity evidence, are in [findings.json](findings.json).

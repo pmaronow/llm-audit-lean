@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P012-T13",
+    "theorem": "SAP.P012b.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Kernel-checked in scratch/Check.lean: S={1,2}, seeds={1}, parent(2)=1, times=(0,1), degrees=(2,1), traits=(true,false). The datum is admissible, recruiter 1 has spare degree, both sampled trait degree sums are positive, and the same-trait leaf completion is compatible with both parameters defined. Flipping its private vertex u(1,0) gives p(H)-p(K)=-1/2. The independent rational check additionally obtains -5/12 for a recruiter with two children, strictly below the first-child bound -1/6.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T14",
+    "theorem": "SAP.P012b.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The statement is unconditional and exhibits actual finite states. A is the single recruitment edge with degrees (1,1) and all-zero traits; B is a two-seed dyad with opposite traits; C is one sampled seed of degree zero; D is a recruitment edge plus three private leaves at vertex 2. These are admissible and compatible by direct inspection. scratch/Check.lean checks admissibility of A and h=-1 with nonzero denominator for the mixed-trait dyad. scratch/audit_checks.py independently checks A, B, and the four trait-count cases of D, including the undefined all-one case. The Option guards, rather than totalized real quotients, express undefinedness.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T15",
+    "theorem": "SAP.P012b.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A simple dyad with opposite traits has m=1, trait degree totals (1,1), numerator -1/2 and denominator 1/2; scratch/Check.lean checks definedness and h=-1. The compiled spareRecruiter datum has sampled trait degree totals (1,2), one recruitment, and a compatible completion with both parameters defined. The all-zero-trait datum A and the all-seed datum B realize failure of the respective whole-space domain conditions. Thus the positive-domain implications and their failure cases are meaningful. Endpoint existence and the possible empty h-defined-only region are accurately disclosed as omitted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T16",
+    "theorem": "SAP.P012b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the first clause, T(n)=1 is positive and nondecreasing. For the corrected schedule choose epsilon=1 and T1=1/log(2); for the depth-series clauses choose epsilon=D=1. Existence of real parameters satisfying the schedule and depth assumptions is kernel-checked in scratch/Check.lean. cooling(n) represents paper time t=n+1, with the separately assigned first temperature at n=0. Every logarithm used as a denominator in the corrected schedule/series has argument at least 2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T17",
+    "theorem": "SAP.P012b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled admissible spareRecruiter datum and its compiled compatible leaf completion: edges are {s(1),s(2)} and {s(1),u(1,0)}, sampled degrees are (2,1). Compatibility implies GraphCompatible. Deleting the private leaf leaves sampled degrees (1,1), so the exact-degree side of the equivalence fails precisely with the nonempty unsampled set. Datum A and its recruitment dyad give the no-unsampled, exact-degree case. The predicate InducedCompatible correctly imposes degree upper bounds and no trait condition.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T18",
+    "theorem": "SAP.P012b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take D1=D2=spareRecruiter and H=K its leaf completion. Admissibility and compatibility are kernel-checked in scratch/Check.lean; vertex, edge and on-vertex trait equalities follow by reflexivity. All expressions defining homophily use only those vertices, edges and traits. The specialization to admissible compatible histories and omission of the contrasting p-dependence assertion are both explicitly disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T19",
+    "theorem": "SAP.P012b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A concrete refutation is kernel-checked in scratch/Check.lean: isoD has S=seeds={1,2}, no recruitment edges, reported degrees zero, and traits (false,true); isoH consists of the two sampled isolated vertices. The datum is admissible and isoH compatible. Choose i=1,j=s(2) in the unchanged graph-proposal branch. The printed cleanup removes both sampled vertices, so the resulting state is incompatible. This is an execution of the literal printed listing, including its unconditional removal of isolates. correct_whole credits the explicitly labeled refutation, not the false printed preservation assertion; the step-2 polarity classification remains different.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T20",
+    "theorem": "SAP.P012b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The structural/count background is satisfiable: S={1,...,527}, seeds={1,...,6}, parent(j)=j-1 for j>=7, time(i)=i, degree(i)=9 for i<=271 and 8 otherwise. The degree total is 271*9+256*8=4487 and recruitment degrees are at most 2. Give vertex 1 trait false and the other sampled vertices trait true; both sampled trait degree sums are positive, and private-leaf completion is compatible. For every datum with the claimed counts, the opposite-trait leaf completion has 521+3445=3966 edges and h<=-1462/1983, strictly below each printed lower endpoint even after subtracting 1/20000. Exact rational inequalities are checked by scratch/audit_checks.py. correct_whole credits the labeled refutation of the printed interval conjunction; it does not certify any printed endpoints or change the step-2 different classification.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T21",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no proposition is exported. claims.json explicitly marks no_lean=true. The denial of general closed forms has no defined mathematical class of allowable formulas here, and the record claims no proof of that denial or of a speed/global-optimization guarantee. Unseen general endpoint results receive no credit in this assessment.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T22",
+    "theorem": "SAP.P012b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Zero spare degree: S={1,2}, seeds={1}, parent(2)=1, times=(0,1), degrees=(1,1), traits=(false,true); both sampled trait degree totals equal 1 and there is one recruitment. Positive spare degree: the compiled spareRecruiter datum has degrees (2,1), traits (true,false), one recruitment, both trait degree totals positive, and a compatible leaf completion. A nonrecruiter-only surplus is also possible with degrees (1,2), traits (false,true): p remains zero while flipping the leaf at vertex 2 varies h. Thus both sides and the recruiter-only distinction occur under the actual hypotheses. The theorem correctly expresses graph uniqueness through vertices, edges and on-vertex traits, not equality of arbitrary trait functions outside the graph.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T23",
+    "theorem": "SAP.P012b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean kernel-checks admissibility of figureData, sampled trait degree totals 3 and 14, and more sampled vertices than seeds. Its private-leaf completion uses surplus degrees (3,1,2,2,1). Independent exact enumeration of 762 representatives in scratch/audit_checks.py gives attained extrema -5/8, 79/105, -11/80 and 49/120, with explicit leaf-trait witnesses recorded in scratch/audit_checks.json. Every compatible graph has the same h,p as one of these representatives after splitting shared unsampled vertices into private leaves. FullRegion requires attained marginal extrema, while Icc asserts only the containing rectangle. Nonuniqueness of extremizing graphs is accurately disclosed as omitted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T24",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no convergence proposition is exported. The canonical target concerns the printed process; the compiled T19 counterexample shows that its proposal can leave the compatible state space, and the printed first logarithmic temperature is singular. A convergence theorem for repaired proposals would concern a different process. The record explicitly excludes that credit, and supporting objective, finiteness and depth facts do not imply the missing probability limit. This justification follows from the visible definitions and canonical claim without relying on the unseen credited proof.",
+    "confidence": 0.99
+  }
+]

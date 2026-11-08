@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P004-T41",
+    "theorem": "SAP.P004c.T41",
+    "fingerprint": "811f0c2130ceca38d6e792d8a885c503e69e9d0467225739af9e7ac95a41796c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled /home/ubuntu/sap/tasks/FW-P004c-r3g2/scratch/Check.lean:372 using sap-lean (exit 0). Review.population has N singleton nodes with distinct-node distance N+1, counting measure, bands {0}, p=1/2, d=0, and assignment-independent outcomes beta_i: +1 on the first floor(N/2) nodes, -1 on the next floor(N/2), and 0 on the remaining node if N is odd. Every spatial average is genuine and equals beta_i. Outcomes are bounded by 2; locality holds with h=0; every fixed-radius ball is eventually a singleton. The compiled variance identity is Var(HT)=8*floor(N/2)/N^2, with N*Var(HT)>=1 for N>=2. The example constructs every hypothesis, including the conditional CLT's nondegeneracy premise, using only Defs and Mathlib.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T42",
+    "theorem": "SAP.P004c.T42",
+    "fingerprint": "8a040b55c9f5512fa3268e653be8aa2a85ba8ed63e691746ad77ea3755b37454",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled /home/ubuntu/sap/tasks/FW-P004c-r3g2/scratch/Check.lean:381 using sap-lean (exit 0). Use the explicitly constructed Review.population: N singleton nodes at distinct-node distance N+1, counting measure, bands {0}, p=1/2, d=0, and fixed outcomes beta_i in {1,-1,0}, with floor(N/2) occurrences of each nonzero sign. Genuine averages, bounded outcomes, locality h=0, and radiuswise-eventual singleton balls are all proved. Both arm population means are 0, so the corrected linearization equals HT and its variance is 8*floor(N/2)/N^2. The example proves the required N-times-linearization-variance lower bound with v=1 for N>=2, as well as every other hypothesis. It imports no Challenge theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T44",
+    "theorem": "SAP.P004c.T44",
+    "fingerprint": "6674b82cd5b3b82c183540ea22002d81762fbdb7e13296822fc40f2c2c057394",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled /home/ubuntu/sap/tasks/FW-P004c-r3g2/scratch/Check.lean:390 using sap-lean (exit 0). Review.population uses singleton nodes with genuine metric distance N+1 off the diagonal, counting measure, bands {0}, p=1/2, d=0, and deterministic balanced outcomes beta_i in {1,-1,0}. WellDefined holds at every N and radius; outcomes satisfy the bound b=2. Conditional expectations of these constant assignment functions are proved equal to themselves, giving NED witnesses psi=0, g=G=1, exponent=5, C=S=1. The uniform quadratic spacing bound holds with Cb=1 at every N and every nonnegative radius. Both metric-node and eventual regularity hypotheses are proved. The corrected linearization has variance 8*floor(N/2)/N^2 and satisfies the optional CLT lower bound with v=1 for N>=2. This instantiates the disclosed replacement premise; scratch/LiteralSpacing.lean separately compiles a proof that the literal printed radiuswise Cb*s^2 premise is impossible at s=0 under metric node distances.",
+    "confidence": 0.98
+  }
+]

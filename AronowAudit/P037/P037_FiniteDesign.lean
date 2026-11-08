@@ -110,7 +110,7 @@ noncomputable def blockTreatment (w : Fin 6) (i : Fin 4) : ℝ :=
   if i = (treatedPair w).1 ∨ i = (treatedPair w).2 then 1 else 0
 
 /-- Uniform two-of-four block randomization; each of its six
-allocations has mass 1/6. -/
+allocations has mass 1/6. This is the validator's conventional reading. -/
 noncomputable def oneBlockDesign : FiniteDesign (Fin 6) where
   weight := fun _ => 1/6
   nonneg := fun _ => by norm_num
@@ -202,7 +202,7 @@ def printedExposureCondition (x : ExposureConfiguration) : Exposure → Prop
   | .direct => x.seed = 1
 
 /-- P037-T8 repairs the SI p. 17 nonreferent line by adding both missing
-factors. On feasible configurations these predicates express the corrected indicator products. -/
+factors. On binary indicators these predicates equal the printed products. -/
 def correctedExposureCondition (x : ExposureConfiguration) : Exposure → Prop
   | .control => x.school = 0
   | .school => x.school = 1 ∧ x.seed = 0 ∧ x.peers = 0
@@ -333,7 +333,7 @@ theorem augmented_contribution_unbiased {Ω : Type*} [Fintype Ω]
   ring
 
 /-- P037-T11(3): uniform outcome/prediction bounds and a probability
-lower bound imply the bound H=K+2K/η for every realization. -/
+lower bound imply the validator's bound H=K+2K/η for every realization. -/
 theorem augmented_contribution_bound (I pi y g K eta : ℝ)
     (hI : I=0 ∨ I=1) (heta : 0 < eta) (hpi : eta ≤ pi)
     (hy : |y| ≤ K) (hg : |g| ≤ K) :
@@ -515,16 +515,16 @@ theorem product_design_sum_variance {I : Type*} [Fintype I] [DecidableEq I]
         ring
     _ = _ := by simp
 
-/-- P037-T1's fixed eligible referent fractions for SI Eq. (2), pp. 13--14:
-q=(1/10,1/10,3/10,3/10). Every school has four strata of ten eligibles,
-with one or three referents per stratum. -/
+/-- P037-T1's fixed eligible referent fractions (validator witness for
+SI Eq. (2), pp. 13--14): q=(1/10,1/10,3/10,3/10). Every school has
+four strata of ten eligibles, with one or three referents per stratum. -/
 noncomputable def witnessEligibleFraction (i : Fin 4) : ℝ :=
   if i.val < 2 then 1/10 else 3/10
 
 /-- Exact hypergeometric seed draw in one stratum: choose five of ten
 uniformly without replacement, r of the ten being referents. The Fin 4
-count range is sufficient for the witness's r=1 or r=3.
-This implements the SI p. 6 half-of-eligibles draw. -/
+count range is sufficient for the witness's r=1 or r=3. Validator E001,
+derivation §3; implements the SI p. 6 half-of-eligibles draw. -/
 noncomputable def stratumCountMass (r : ℕ) (k : Fin 4) : ℝ :=
   (r.choose k.val : ℝ) * ((10-r).choose (5-k.val) : ℝ) / (10:ℕ).choose 5
 
@@ -549,9 +549,9 @@ noncomputable def schoolCountMass (r : ℕ) (k : Fin 13) : ℝ :=
   ∑ c : Fin 4 → Fin 4,
     if (∑ s, (c s).val) = k.val then ∏ s, stratumCountMass r (c s) else 0
 
-/-- P037-T1(i), finite convolution identity for the exact five-of-ten
-seed law: summing a function of the total count against its
-quotient law equals summing over the four actual stratum counts. -/
+/-- P037-T1(i), finite convolution bridge for the exact five-of-ten
+seed law (validator E001 §3): summing a function of the total count
+against its quotient law equals summing over the four actual stratum counts. -/
 theorem school_count_pushforward (r : ℕ) (f : ℝ → ℝ) :
     (∑ k, schoolCountMass r k * f (k.val:ℝ)) =
       ∑ c : Fin 4 → Fin 4, (∏ s, stratumCountMass r (c s)) *
@@ -578,7 +578,7 @@ theorem school_count_pushforward (r : ℕ) (f : ℝ → ℝ) :
   simp [total, Nat.cast_sum]
 
 /-- Nonnegativity of every hypergeometric stratum mass in the witness;
-this is an elementary property of the binomial-count formula. -/
+this is an elementary property of the binomial-count formula in E001 §3. -/
 theorem stratum_count_nonneg (r : ℕ) (k : Fin 4) :
     0 ≤ stratumCountMass r k := by
   unfold stratumCountMass
@@ -682,7 +682,7 @@ theorem school_count_common_support (r : ℕ) (hr : r=1 ∨ r=3)
   exact lt_of_lt_of_le hpos hle
 
 /-- Conditional expectation over the two independently drawn treated-school
-seed counts in P037-T1, before averaging the six school allocations. -/
+seed counts in P037-T1 (E001 §3), before averaging the six school allocations. -/
 noncomputable def pairCountMean (r s : ℕ) (f : Fin 13 → Fin 13 → ℝ) : ℝ :=
   ∑ k, ∑ l, schoolCountMass r k * schoolCountMass s l * f k l
 
@@ -718,7 +718,7 @@ theorem pair_count_mean_first (r s : ℕ) (hr : r=1 ∨ r=3) (hs : s=1 ∨ s=3) 
   exact hh.trans (by ring)
 
 /-- The second treated school's composition has mean q=s/10 in the
-same exact product law; P037-T1(i). -/
+same exact product law; P037-T1(i), validator E001 §3. -/
 theorem pair_count_mean_second (r s : ℕ) (hr : r=1 ∨ r=3) (hs : s=1 ∨ s=3) :
     pairCountMean r s (fun _ l => (l.val:ℝ)/20) = (s:ℝ)/10 := by
   have hh := pair_count_factorization r s (fun _ => (1:ℝ)) (fun l => (l.val:ℝ)/20)
@@ -786,7 +786,7 @@ theorem pair_count_mean_reverse_product (r s : ℕ) (hr : r=1 ∨ r=3) (hs : s=1
   rw [heq, pair_count_mean_product r s hr hs]
 
 /-- Number of referents among ten eligibles in each stratum of the
-low/high-q schools; all eligible pools are fixed. -/
+validator's low/high-q schools; all eligible pools are fixed. -/
 def witnessStratumReferents (i : Fin 4) : ℕ := if i.val < 2 then 1 else 3
 
 /-- Collapse full seed assignments to their two treated-school counts.
@@ -801,14 +801,14 @@ noncomputable def witnessStateMass (w : CompositionState) : ℝ :=
     schoolCountMass (witnessStratumReferents (treatedPair w.1).2) w.2.2
 
 /-- C_iD_i in SI Eq. (2), zero for a control school and K_i/20 for
-either treated school in the counterexample. -/
+either treated school in the validator's counterexample. -/
 noncomputable def witnessInteraction (w : CompositionState) (i : Fin 4) : ℝ :=
   if i = (treatedPair w.1).1 then (w.2.1.val:ℝ)/20 else
   if i = (treatedPair w.1).2 then (w.2.2.val:ℝ)/20 else 0
 
-/-- P037-T1's fixed school potential outcomes: control 3/10; treated
-3/10-q_i for every seed set/composition c. The school-level paper does
-not supply potential-outcome notation. -/
+/-- P037-T1's fixed school potential outcomes. The school-level paper
+does not supply potential-outcome notation; the validator specifies this
+object: control 3/10; treated 3/10-q_i for every seed set/composition c. -/
 noncomputable def witnessPotentialOutcome (i : Fin 4) (treated : Bool) (_c : ℝ) : ℝ :=
   if treated then 3/10-witnessEligibleFraction i else 3/10
 
@@ -823,7 +823,7 @@ noncomputable def blockCross (x y : Fin 4 → ℝ) : ℝ :=
   (∑ i, x i*y i) - (∑ i, x i)*(∑ i, y i)/4
 
 /-- Columns (D,q,DC) in the expected normal equations for SI Eq. (2).
-The column order (D,q,DC) is explicit. -/
+The different order (D,q,DC), used by the validator, is explicit. -/
 noncomputable def witnessColumns (w : CompositionState) (k : Fin 3) : Fin 4 → ℝ :=
   ![blockTreatment w.1, witnessEligibleFraction, witnessInteraction w] k
 
@@ -831,7 +831,7 @@ noncomputable def witnessColumns (w : CompositionState) (k : Fin 3) : Fin 4 → 
 noncomputable def witnessMean (X : CompositionState → ℝ) : ℝ :=
   ∑ w, witnessStateMass w * X w
 
-/-- G=E[X'MX] and h=E[X'MY], the population
+/-- G=E[X'MX] and h=E[X'MY] in validator E001 §4, the population
 normal equations of the printed composition regression. -/
 noncomputable def witnessGram : Matrix (Fin 3) (Fin 3) ℝ :=
   fun k l => witnessMean (fun w => blockCross (witnessColumns w k) (witnessColumns w l))
@@ -849,7 +849,7 @@ theorem witness_mean_split (X : CompositionState → ℝ) :
   simp [witnessMean, witnessStateMass, Fintype.sum_prod_type,
     pairCountMean, Finset.mul_sum, mul_assoc]
 
-/-- The witness is a genuine normalized randomization law,
+/-- The validator's witness is a genuine normalized randomization law,
 not merely a list of asserted regression moments (P037-T1(i)). -/
 theorem witness_state_probability_law :
     (∀ w, 0 ≤ witnessStateMass w) ∧ (∑ w, witnessStateMass w) = 1 := by
@@ -1083,14 +1083,14 @@ theorem witness_normal_equation_certificate (t g b : ℝ) :
     refine ⟨?_,?_,?_⟩ <;> linarith
   · rintro ⟨rfl,rfl,rfl⟩; norm_num
 
-/-- P037-T1(iv): the general fixed schedule
-“a + τD + b₁D(C-q) + b₂D(q-1/5) + gq”, as potential outcomes. -/
+/-- P037-T1(iv), validator E001 v2 §5: the general fixed schedule
+"a + τD + b₁D(C-q) + b₂D(q-1/5) + gq", as potential outcomes. -/
 noncomputable def witnessMixturePotentialOutcome (a tau b1 b2 g : ℝ)
     (i : Fin 4) (treated : Bool) (c : ℝ) : ℝ :=
   a+g*witnessEligibleFraction i +
     if treated then tau+b1*(c-witnessEligibleFraction i)+b2*(witnessEligibleFraction i-1/5) else 0
 
-/-- P037-T1(iv): the observed general schedule
+/-- P037-T1(iv), validator E001 v2 §5: the observed general schedule
 uses the realized columns D and Z=DC, with its fixed eligible fraction q. -/
 noncomputable def witnessMixtureObservedOutcome (a tau b1 b2 g : ℝ)
     (w : CompositionState) (i : Fin 4) : ℝ :=
@@ -1151,7 +1151,7 @@ theorem witness_mixture_rhs (a tau b1 b2 g : ℝ) :
       witness_coordinate_moments.2.2.1, witness_coordinate_moments.2.2.2,
       witness_mean_composition_treatment] <;> ring
 
-/-- P037-T1(iv): under the exact witness design, for the
+/-- P037-T1(iv): under the exact witness design, for the validator's
 general outcome schedule the population DC coefficient mixes b_1 and b_2
 with weights 15/31 and 16/31, although its causal composition slope is b_1.
 Existence and uniqueness of the population solution are explicit.
@@ -1421,9 +1421,10 @@ theorem centered_composition_identifies_common_slope {Ω K : Type*}
   simp only [Finset.sum_const_zero, zero_add] at hrow
   nlinarith
 
-/-- P037-T2(B4): adding Dμ to the original DC model is the invertible
-column transformation Z=R+Dμ; Dq is the μ=q case. The coefficient on DC
-is the coefficient on the innovation in the equivalent centered parameterization. -/
+/-- P037-T2(B4), revised: adding Dμ to the original DC model is the invertible
+column transformation Z=R+Dμ. The historical Lean name is retained because
+this is the same general change-of-columns identity; Dq is the μ=q case. The coefficient on DC is the coefficient
+on the innovation in the equivalent centered parameterization. -/
 theorem adding_eligible_interaction_equivalent {Ω K : Type*}
     [Fintype Ω] [Fintype K] [DecidableEq K] {B : ℕ}
     (d : FiniteDesign Ω) (W : K → Ω → (Fin B × Fin 4) → ℝ)
@@ -1602,7 +1603,7 @@ theorem witness_equations_matrix_iff {n : ℕ}
         fun k => witnessMean (fun w => blockCross (X w k) (Y w)) := by
   simp only [WitnessEquations, funext_iff, Matrix.mulVec, dotProduct, Matrix.of_apply, mul_comm]
 
-/-- P037-T2(C): all the exact corrected and printed
+/-- P037-T2(C): all the validator's exact repaired and printed
 normal-equation comparisons, including the nonzero common slope 1/5.
 These connect the actual finite design to unique coefficients. -/
 theorem witness_repaired_regression_comparisons :
@@ -1931,7 +1932,7 @@ theorem designVariance_mul {Ω : Type*} [Fintype Ω] (d : FiniteDesign Ω)
   unfold designVariance
   ring
 
-/-- P037-T11, sufficient setting: B independently randomized
+/-- P037-T11, validator's sufficient setting: B independently randomized
 four-school blocks, fixed retained students/outcomes/predictions, and
 block-local exposures with their exact positive probabilities. The
 assignment index encodes both school and within-school seed draws; it
@@ -1984,7 +1985,7 @@ Its square root is the normalizing SD in P037-T11(6). -/
 noncomputable def rowTotalVariance {B : ℕ} (r : RetainedBlockRow B) : ℝ :=
   ∑ b, designVariance (r.law b) (oracleBlockTotal r b)
 
-/-- Sufficient regularity in P037-T11(3)--(6), not conditions
+/-- Validator's sufficient regularity in P037-T11(3)--(6), not conditions
 verified for the 56 empirical schools. Uniform block size, population
 growth, positivity and bounded outcomes/predictions are explicit. -/
 def UniformBlockBounds (r : ∀ B, RetainedBlockRow (B+1)) (m : ℕ) (c eta K : ℝ) : Prop :=
@@ -2195,7 +2196,7 @@ theorem oracle_block_centered_bound {B : ℕ} (r : RetainedBlockRow B)
 
 /-- P037-T11(6): the finite Lindeberg numerator is exactly zero once
 ε sqrt(σ₀² B)>2mH; division by the positive total variance then also
-gives zero. This finite lemma does not require a central limit theorem. -/
+gives zero. This finite lemma is independent of the drafted CLT. -/
 theorem oracle_lindeberg_vanish (r : ∀ B, RetainedBlockRow (B+1))
     (m : ℕ) (c eta K sigmaSquared : ℝ)
     (h : UniformBlockBounds r m c eta K)
@@ -2220,13 +2221,10 @@ theorem oracle_lindeberg_vanish (r : ∀ B, RetainedBlockRow (B+1))
   simp only [designMean] at hno
   simp only [hno, ite_false, mul_zero]
 
-/-!
-Finite product-law Lindeberg-Feller theorem. The general analytic CLT is
-adapted from the Apache-2.0 StatLean development in
-`AronowAudit.P037.P037_VaryingLindeberg`.
-All finite-law, independence, moment and standardization identities below
-are proved from the finite-design definitions.
--/
+/-! Finite product-law Lindeberg-Feller bridge. The general analytic CLT is
+adapted from the pinned Apache-2.0 StatLean development in
+P037_VaryingLindeberg.lean. All finite-law, independence, moment and
+standardization bridges below are proved from the audit's original definitions. -/
 namespace BlockCLT
 open MeasureTheory ProbabilityTheory Filter
 open scoped Topology ENNReal
@@ -2718,7 +2716,7 @@ theorem augmented_subtraction_certificates (I pi p y gh gs : ℝ) :
   constructor <;> ring
 
 /-- Fixed-dimensional covariate vector x_i in SI p. 19's regression;
-linear fitted specification g(x_i,ξ)=x_i'ξ is a sufficient
+linear fitted specification g(x_i,ξ)=x_i'ξ is the validator's sufficient
 case, rather than a claim that the paper specified g this narrowly. -/
 abbrev RowCovariates {B : ℕ} (r : RetainedBlockRow B) (q : ℕ) :=
   (b : Fin B) → Fin (r.students b) → Fin q → ℝ
@@ -2733,8 +2731,7 @@ noncomputable def fittedRowMean {B q : ℕ} (r : RetainedBlockRow B)
 
 /-- The SI p. 19 IPW least-squares coefficient: inverse weighted Gram
 times weighted outcome cross-products. On singular samples the zero
-inverse is used. An asymptotic conclusion for this coefficient requires
-singular samples to have vanishing probability. -/
+inverse is used; the asymptotic conclusion must prove singularity rare. -/
 noncomputable def fittedRowCoefficient {B q : ℕ} (r : RetainedBlockRow B)
     (x : RowCovariates r q)
     (p : (b : Fin B) → Fin (r.students b) → ℝ) (w : BlockSample r) : Fin q → ℝ :=
@@ -2813,10 +2810,48 @@ noncomputable def populationRowRhs {B q : ℕ} (r : RetainedBlockRow B)
     (x : RowCovariates r q) : Fin q → ℝ :=
   fun k => (∑ b, ∑ i, x b i k*r.y b i) / retainedSize r
 
+/-- P037-T11(8): under regression regularity and o_p(B^(-1/2)) uniform
+probability-estimation error, the IPW coefficients are consistent, the
+augmented fitted mean differs from its deterministic-β oracle by
+o_p(B^(-1/2)), and it inherits consistency and the block Gaussian CLT.
+All rates, population limits and positivity assumptions are explicit. -/
+theorem fitted_block_estimator_limit {q : ℕ} (r : ∀ B, RetainedBlockRow (B+1))
+    (x : ∀ B, RowCovariates (r B) q)
+    (pHat : ∀ B, BlockSample (r B) → (b : Fin (B+1)) → Fin ((r B).students b) → ℝ)
+    (m : ℕ) (c eta K L : ℝ) (Q : Matrix (Fin q) (Fin q) ℝ) (v : Fin q → ℝ)
+    (hbounds : UniformBlockBounds r m c eta K)
+    (hx : ∀ B b i k, |x B b i k| ≤ L)
+    (hQ : ∀ k l, Filter.Tendsto (fun B => populationRowGram (r B) (x B) k l)
+      Filter.atTop (nhds (Q k l)))
+    (hv : ∀ k, Filter.Tendsto (fun B => populationRowRhs (r B) (x B) k)
+      Filter.atTop (nhds (v k)))
+    (hposQ : ∀ a : Fin q → ℝ, a ≠ 0 → 0 < ∑ k, a k*(Q.mulVec a) k)
+    (hp : ∀ B w b i, 0 < pHat B w b i)
+    (hSim : ∀ eps : ℝ, 0 < eps → Filter.Tendsto (fun B => blockRowProbability (r B)
+      (fun w => ∃ b i, eps < Real.sqrt (B+1)*|pHat B w b i-(r B).pi b i|))
+      Filter.atTop (nhds 0))
+    (hg : ∀ B b i, (r B).g b i = ∑ k, x B b i k*(Q⁻¹.mulVec v) k) :
+    let betaStar := Q⁻¹.mulVec v
+    let betaHat := fun B w => fittedRowCoefficient (r B) (x B) (pHat B w) w
+    let muHat := fun B w => fittedRowMean (r B) (x B) (betaHat B w) (pHat B w) w
+    (∀ eps : ℝ, 0 < eps → Filter.Tendsto (fun B => blockRowProbability (r B)
+      (fun w => ∃ k, eps < |betaHat B w k-betaStar k|)) Filter.atTop (nhds 0)) ∧
+    (∀ eps : ℝ, 0 < eps → Filter.Tendsto (fun B => blockRowProbability (r B)
+      (fun w => eps < Real.sqrt (B+1)*|muHat B w-oracleRowMean (r B) w|))
+      Filter.atTop (nhds 0)) ∧
+    (∀ eps : ℝ, 0 < eps → Filter.Tendsto (fun B => blockRowProbability (r B)
+      (fun w => eps < |muHat B w-retainedPotentialMean (r B)|)) Filter.atTop (nhds 0)) ∧
+    (∀ sigmaSquared : ℝ, 0 < sigmaSquared →
+      (∀ B, sigmaSquared*(B+1) ≤ rowTotalVariance (r B)) →
+      ∀ z : ℝ, Filter.Tendsto (fun B => blockRowProbability (r B) (fun w =>
+        (retainedSize (r B):ℝ)*(muHat B w-retainedPotentialMean (r B)) /
+          Real.sqrt (rowTotalVariance (r B)) ≤ z)) Filter.atTop
+        (nhds ((ProbabilityTheory.gaussianReal 0 1 (Set.Iic z)).toReal))) := by
+  sorry
 
-/-- T2(DM): “mu_i = sum_h n_ih(K_ih/N_ih)/sum_h n_ih”.
-Stratum sizes N, referent counts K and fixed seed counts n are integers
-fixed before randomization. -/
+/-- Revised T2(DM), E001 materials analysis,
+"mu_i = sum_h n_ih(K_ih/N_ih)/sum_h n_ih". Stratum sizes N, referent
+counts K and fixed seed counts n are integers fixed before randomization. -/
 noncomputable def stratifiedCompositionMean {H : ℕ} (N K n : Fin H → ℕ) : ℝ :=
   (∑ h, (n h:ℝ)*((K h:ℝ)/N h))/(∑ h, (n h:ℝ))
 
@@ -2825,7 +2860,7 @@ q=ΣK/ΣN. Unlike μ, this does not weight strata by their fixed seed counts. -/
 noncomputable def stratifiedEligibleFraction {H : ℕ} (N K : Fin H → ℕ) : ℝ :=
   (∑ h, (K h:ℝ))/(∑ h, (N h:ℝ))
 
-/-- T2(DM): each stratum is uniformly sampled without replacement,
+/-- Revised T2(DM): each stratum is uniformly sampled without replacement,
 independently. The product subtype contains precisely its allowed seed sets. -/
 abbrev StratifiedSeedState {H : ℕ} (N n : Fin H → ℕ) :=
   (h : Fin H) → {s : Finset (Fin (N h)) // s.card=n h}
@@ -2843,6 +2878,7 @@ noncomputable section
 attribute [local instance] Classical.propDecidable
 set_option maxHeartbeats 1000000
 
+abbrev SourceDesign := Causalean.Experimentation.DesignBased.FiniteDesign
 open Causalean.Experimentation.DesignBased (completeRandomization completeRandomization_card)
 open Causalean.Experimentation.FinitePopulationMoments (sampleMean popMean popVar E_sampleMean Var_sampleMean)
 
@@ -3002,7 +3038,7 @@ theorem completed {H : ℕ} (N n : Fin H → ℕ)
 end
 end StratifiedCompletion
 
-/-- T2(DM): full exact mean and variance under the uniform product
+/-- Revised T2(DM): full exact mean and variance under the uniform product
 seed design; singleton strata have zero variance. Independence of this law
 from school assignment gives the treated-school conditional moments and (R). -/
 theorem stratified_composition_design_moments {H : ℕ} (N n : Fin H → ℕ)
@@ -3019,7 +3055,7 @@ theorem stratified_composition_design_moments {H : ℕ} (N n : Fin H → ℕ)
           (((N h:ℝ)-n h)/((N h:ℝ)-1)))/(∑ h, (n h:ℝ))^2 := by
   exact StratifiedCompletion.completed N n refs hN hn ht
 
-/-- T2(DM),(B5): equal sampling fractions across every stratum
+/-- Revised T2(DM),(B5): equal sampling fractions across every stratum
 make the design mean equal the eligible fraction. Nonzero total seeds and
 nonempty strata are actual design conditions, not conclusions assumed. -/
 theorem design_mean_equal_sampling_fraction {H : ℕ} (N K n : Fin H → ℕ)
@@ -3037,16 +3073,16 @@ theorem design_mean_equal_sampling_fraction {H : ℕ} (N K n : Fin H → ℕ)
   unfold stratifiedCompositionMean stratifiedEligibleFraction
   rw [hk,hs,mul_div_mul_left _ _ hf]
 
-/-- T2(DM): four strata (13,2,7),(14,1,7),(14,0,7),(14,0,7)
-give q=3/55, μ=41/728 and μ-q=71/40040. This is an exact arithmetic
-certificate for supplied counts; their empirical provenance is not proved here. -/
+/-- Revised T2(DM): four strata (13,2,7),(14,1,7),(14,0,7),(14,0,7)
+give q=3/55, μ=41/728 and μ-q=71/40040. This is a synthetic count
+certificate from the correction, not a claim about a named school. -/
 theorem unequal_strata_design_mean_certificate :
     stratifiedEligibleFraction ![13,14,14,14] ![2,1,0,0]=3/55 ∧
     stratifiedCompositionMean ![13,14,14,14] ![2,1,0,0] ![7,7,7,7]=41/728 ∧
     (41/728:ℝ)-3/55=71/40040 ∧ (41/728:ℝ)≠3/55 := by
   norm_num [stratifiedEligibleFraction,stratifiedCompositionMean,Fin.sum_univ_succ]
 
-/-- T2(B5): q-centered composition contains a nonzero design-mean
+/-- Revised T2(B5): q-centered composition contains a nonzero design-mean
 shift in general; q can replace μ in both repaired columns when μ=q. -/
 theorem composition_centering_special_case (D C μ q : ℝ) :
     D*(C-q)=D*(C-μ)+D*(μ-q) ∧
@@ -3055,7 +3091,7 @@ theorem composition_centering_special_case (D C μ q : ℝ) :
   · ring
   · intro h; simp [h]
 
-/-- T2(B1)--(B3): the actual arbitrary-baseline/common-slope
+/-- Revised T2(B1)--(B3): the actual arbitrary-baseline/common-slope
 potential outcome schedule identifies b using R=D(C-μ), under the stated
 conditional mean-zero seed design, seed-independent nuisance columns and
 positive block-centered seed variance. Finite-sample unbiasedness is not claimed. -/
@@ -3301,3 +3337,119 @@ theorem witness_ols_probability_limit (eps : ℝ) (heps : 0 < eps) :
 
 end AronowAudit.P037
 
+#print axioms AronowAudit.P037.designMean_add
+#print axioms AronowAudit.P037.designMean_sub
+#print axioms AronowAudit.P037.designMean_const
+#print axioms AronowAudit.P037.designMean_mul
+#print axioms AronowAudit.P037.designMean_sum
+#print axioms AronowAudit.P037.designVariance_centered
+#print axioms AronowAudit.P037.block_design_constraints
+#print axioms AronowAudit.P037.within_block_dependence
+#print axioms AronowAudit.P037.between_block_independence
+#print axioms AronowAudit.P037.printed_exposure_counterexamples
+#print axioms AronowAudit.P037.printed_exposure_overlaps
+#print axioms AronowAudit.P037.corrected_exposure_partition
+#print axioms AronowAudit.P037.exposure_frequency_printed_example
+#print axioms AronowAudit.P037.exposure_indicator_moments
+#print axioms AronowAudit.P037.augmented_contribution_unbiased
+#print axioms AronowAudit.P037.augmented_contribution_bound
+#print axioms AronowAudit.P037.witness_zero_composition_effect
+#print axioms AronowAudit.P037.composition_witness_design_moments
+#print axioms AronowAudit.P037.witness_normal_equation_certificate
+#print axioms AronowAudit.P037.composition_witness_mixture
+#print axioms AronowAudit.P037.witness_mixture_causal_curve
+#print axioms AronowAudit.P037.witness_ols_probability_limit
+#print axioms AronowAudit.P037.withinBlocksCross_add
+#print axioms AronowAudit.P037.withinBlocksCross_mul
+#print axioms AronowAudit.P037.withinBlocksCross_sum
+#print axioms AronowAudit.P037.withinBlocksCross_block_constant
+#print axioms AronowAudit.P037.correctly_specified_composition_model
+#print axioms AronowAudit.P037.composition_innovation_decomposition
+#print axioms AronowAudit.P037.composition_innovation_orthogonality
+#print axioms AronowAudit.P037.centered_composition_identifies_common_slope
+#print axioms AronowAudit.P037.adding_eligible_interaction_equivalent
+#print axioms AronowAudit.P037.witness_repaired_regression_comparisons
+#print axioms AronowAudit.P037.finite_chebyshev
+#print axioms AronowAudit.P037.monte_carlo_frequency_moments
+#print axioms AronowAudit.P037.monte_carlo_frequency_consistent
+#print axioms AronowAudit.P037.fixed_count_forces_dependence
+#print axioms AronowAudit.P037.oracle_block_unbiased
+#print axioms AronowAudit.P037.oracle_row_finite_bounds
+#print axioms AronowAudit.P037.independent_blocks_oracle_consistent
+#print axioms AronowAudit.P037.bounded_design_mean
+#print axioms AronowAudit.P037.oracle_block_centered_bound
+#print axioms AronowAudit.P037.oracle_lindeberg_vanish
+#print axioms AronowAudit.P037.independent_blocks_oracle_normal
+#print axioms AronowAudit.P037.fitted_mean_subtraction_identities
+#print axioms AronowAudit.P037.fitted_block_estimator_limit
+#print axioms AronowAudit.P037.stratum_moment_certificates
+#print axioms AronowAudit.P037.independent_blocks_exposure_contrasts
+#print axioms AronowAudit.P037.oracle_contrast_finite_facts
+#print axioms AronowAudit.P037.designVariance_nonneg
+#print axioms AronowAudit.P037.bounded_design_variance
+#print axioms AronowAudit.P037.oracle_block_bounds
+#print axioms AronowAudit.P037.augmented_subtraction_certificates
+#print axioms AronowAudit.P037.withinBlocksCross_sub
+#print axioms AronowAudit.P037.withinBlocksCross_left_add
+#print axioms AronowAudit.P037.augmented_normal_iff_residual
+#print axioms AronowAudit.P037.designVariance_sum_covariances
+#print axioms AronowAudit.P037.finite_product_factorization
+#print axioms AronowAudit.P037.product_design_mean_product
+#print axioms AronowAudit.P037.coordinateFactor_product
+#print axioms AronowAudit.P037.coordinateFactor_self
+#print axioms AronowAudit.P037.coordinateFactor_other
+#print axioms AronowAudit.P037.product_design_coordinate_mean
+#print axioms AronowAudit.P037.product_design_coordinate_pair
+#print axioms AronowAudit.P037.product_design_sum_variance
+#print axioms AronowAudit.P037.designVariance_mul
+#print axioms AronowAudit.P037.oracle_row_unbiased
+#print axioms AronowAudit.P037.oracle_variance_rate_bound
+#print axioms AronowAudit.P037.printed_exposure_not_single_valued
+#print axioms AronowAudit.P037.printed_monte_carlo_last_draw
+
+#print axioms AronowAudit.P037.school_count_pushforward
+#print axioms AronowAudit.P037.stratum_count_nonneg
+#print axioms AronowAudit.P037.school_count_moments
+#print axioms AronowAudit.P037.school_count_nonneg
+#print axioms AronowAudit.P037.school_count_common_support
+#print axioms AronowAudit.P037.pair_count_factorization
+#print axioms AronowAudit.P037.pair_count_mean_const
+#print axioms AronowAudit.P037.pair_count_mean_first
+#print axioms AronowAudit.P037.pair_count_mean_second
+#print axioms AronowAudit.P037.pair_count_mean_first_sq
+#print axioms AronowAudit.P037.pair_count_mean_second_sq
+#print axioms AronowAudit.P037.pair_count_mean_product
+#print axioms AronowAudit.P037.pair_count_mean_first_self
+#print axioms AronowAudit.P037.pair_count_mean_second_self
+#print axioms AronowAudit.P037.pair_count_mean_reverse_product
+#print axioms AronowAudit.P037.witness_mean_split
+#print axioms AronowAudit.P037.witness_state_probability_law
+#print axioms AronowAudit.P037.witness_mean_add
+#print axioms AronowAudit.P037.witness_mean_sub
+#print axioms AronowAudit.P037.witness_mean_mul
+#print axioms AronowAudit.P037.witness_mean_mul_right
+#print axioms AronowAudit.P037.witness_mean_const
+#print axioms AronowAudit.P037.witness_mean_sum
+#print axioms AronowAudit.P037.witness_coordinate_moments
+#print axioms AronowAudit.P037.witness_mean_block_cross
+#print axioms AronowAudit.P037.witness_mean_composition_treatment
+#print axioms AronowAudit.P037.witness_mean_div
+#print axioms AronowAudit.P037.witness_mean_observed_product
+#print axioms AronowAudit.P037.witness_expected_normal_equations
+#print axioms AronowAudit.P037.witness_mean_mixture_product
+#print axioms AronowAudit.P037.witness_mixture_rhs
+#print axioms AronowAudit.P037.composition_witness_counterexample
+#print axioms AronowAudit.P037.witness_mean_left_scaled_product
+#print axioms AronowAudit.P037.witness_mean_right_scaled_product
+#print axioms AronowAudit.P037.witness_mean_scalar_right_factor
+#print axioms AronowAudit.P037.witness_repaired_moments
+#print axioms AronowAudit.P037.witness_repaired_rhs
+#print axioms AronowAudit.P037.witness_equations_matrix_iff
+#print axioms AronowAudit.P037.stratified_composition_design_moments
+#print axioms AronowAudit.P037.design_mean_equal_sampling_fraction
+#print axioms AronowAudit.P037.unequal_strata_design_mean_certificate
+#print axioms AronowAudit.P037.composition_centering_special_case
+#print axioms AronowAudit.P037.design_mean_centered_common_slope
+
+#print axioms AronowAudit.P037.independent_blocks_oracle_normal
+#print axioms AronowAudit.P037.independent_blocks_exposure_contrasts

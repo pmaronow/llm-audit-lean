@@ -5,7 +5,7 @@ import Mathlib.Analysis.Calculus.Taylor
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.Real.Pi.Bounds
 
-/-! Gaussian probability bounds, balanced scrutiny, and significance tiers.
+/-! Exact proofs for the five records in brief dw-GP041P042P045B1.
 The Gaussian bounds use finite Taylor polynomials and rational arithmetic;
 the scrutiny calculation averages over the actual balanced-subset law. -/
 
@@ -14,7 +14,7 @@ open scoped BigOperators
 open MeasureTheory ProbabilityTheory Set
 namespace AronowAudit.P041.Wave1
 
-/-! Gaussian p-value approximations. -/
+/-! Record 1: Gaussian p-value approximations. -/
 
 def normal_expPoly (n : ℕ) (u : ℝ) : ℝ :=
   ∑ j ∈ Finset.range (n+1), (-u)^j / (j.factorial:ℝ)
@@ -212,7 +212,10 @@ lemma normal_between_stat :
     have h2 := normal_tail_antitone hz0
     constructor <;> linarith
 
-/-! Balanced scrutiny and its specializations. -/
+example : type_of% @AronowAudit.P041.corrected_normal_p_approximations := corrected_normal_p_approximations_proof
+
+
+/-! Records 2–4: balanced scrutiny and its specializations. -/
 open OrderCompletion
 
 lemma scrutiny_card {m : ℕ} {z : Finset (Fin (2*m))}
@@ -403,6 +406,8 @@ lemma scrutiny_expect_affine (m : ℕ) (f : Finset (Fin (2*m)) → ℝ) (a b : �
   have : (0:ℝ) < m := by exact_mod_cast (by omega : 0 < m)
   positivity
 
+example : type_of% @AronowAudit.P041.balanced_scrutiny_general := balanced_scrutiny_general_proof
+
  theorem study_one_size_scrutiny_proof :
     balancedExpectation 50 (fun z => (leadingCited z : ℝ)) = 50/51 ∧
     balancedExpectation 50 (fun z => (∑ r ∈ z, scrutinyOutcome z r) / 50) = 50/51 ∧
@@ -419,6 +424,8 @@ lemma scrutiny_expect_affine (m : ℕ) (f : Finset (Fin (2*m)) → ℝ) (a b : �
     norm_num
   · norm_num at hd ⊢; exact hd
 
+example : type_of% @AronowAudit.P041.study_one_size_scrutiny := study_one_size_scrutiny_proof
+
  theorem adaptive_protocol_estimands_general_proof (m : ℕ) (hm : 1 ≤ m) :
     (∀ z z' : Finset (Fin (2*m)), ∀ r : Fin (2*m),
       (∀ s, s ≠ r → (s ∈ z ↔ s ∈ z')) → scrutinyOutcome z r - scrutinyOutcome z' r = 0) ∧
@@ -431,7 +438,10 @@ lemma scrutiny_expect_affine (m : ℕ) (f : Finset (Fin (2*m)) → ℝ) (a b : �
   rw [scrutiny_no_direct_effect z z' r (fun s hs => h s (ne_of_lt hs))]
   ring
 
-/-! Strongest attained significance tiers. -/
+example : type_of% @AronowAudit.P041.adaptive_protocol_estimands_general := adaptive_protocol_estimands_general_proof
+
+
+/-! Record 5: strongest attained significance tiers. -/
 set_option maxRecDepth 10000 in
 lemma normal_star_endpoints :
     2*cdf (gaussianReal 0 1) (-2.80) < (0.01:ℝ) ∧
@@ -484,5 +494,8 @@ lemma normal_two_star (z : ℝ) (hl : 2.01 < |z|) (hu : |z| < 2.46) :
   · intro h s hh hs
     obtain ⟨hl,hu⟩ := hD h s hh hs
     exact normal_two_star _ (by linarith) hu
+
+example : type_of% @AronowAudit.P041.corrected_normal_star_tiers := corrected_normal_star_tiers_proof
+
 
 end AronowAudit.P041.Wave1

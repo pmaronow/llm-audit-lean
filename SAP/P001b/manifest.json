@@ -1,0 +1,221 @@
+{
+  "unit_id": "P001b",
+  "work_id": "P001",
+  "targets": [
+    {
+      "target_id": "P001-T20",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T20",
+      "restriction": null,
+      "statement_definition": "SAP.P001b.T20WholeStatement",
+      "rows_used": ["AronowAudit.P001.discrete_overlap_pointwise", "AronowAudit.P001.finite_overlap_uniform_bound", "SAP.P001b.WH.W1.T20_whole", "SAP.P001b.WH.W1.T20_assembly", "SAP.P001b.WH.W1.T20_L1V2_proof", "SAP.P001b.WH.W1.T20_L2V2_proof", "SAP.P001b.WH.W1.T20_L3V2_proof", "AronowAudit.P001.complete_overlap_without_uniform_positivity"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T21",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T21",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.complete_coding_not_ignorability"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P001.electorate_potential_outcomes_not_cia", "reason": "Duplicates the complete electorate witness already obtained from complete_coding_not_ignorability."}, {"lean_name": "AronowAudit.P001.electorate_votes_count", "reason": "Not separately invoked: the complete electorate witness already exports the 100-voter count identity."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T22",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T22",
+      "restriction": null,
+      "statement_definition": "SAP.P001b.T22WholeStatement",
+      "rows_used": ["AronowAudit.P001.complete_coding_not_ignorability", "SAP.P001b.WH.W1.T22_whole", "SAP.P001b.WH.W1.T22_assembly", "SAP.P001b.WH.W1.T22_L1V2_proof", "SAP.P001b.WH.W1.T22_L2V2_proof", "AronowAudit.P001.description_only_outcomes_conditional_independence", "AronowAudit.P001.Wave1.explicit_ignorability_discrete_ate_proof", "AronowAudit.P001.Wave1.MarDiscrete.n1_proof"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P001.Wave1.explicit_ignorability_discrete_ate_conditional", "reason": "Not invoked: the supplied proof uses the unconditional countable-covariate identification declaration, avoiding this row’s additional literature premise."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T23",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T23",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.basic_probability_rules", "AronowAudit.P001.probability_monotonicity"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T24",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T24",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.Wave1.total_probability_complete_correction"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P001.total_probability_partition", "reason": "Not separately invoked: the complete correction already exports both countable formulas."}, {"lean_name": "AronowAudit.P001.two_event_partition_nonempty", "reason": "Not separately invoked: the complete correction already exports the binary nonemptiness equivalence."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T25",
+      "decision": "refuted",
+      "theorem": "SAP.P001b.T25",
+      "restriction": "Retains only counterexample (a), the constant-zero one-atom law. Omits counterexample (b), the Bernoulli law with masses two thirds and one third and its printed-sum value one third.",
+      "rows_used": ["AronowAudit.P001.integer_cdf_missing_zero_counterexample"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T26",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T26",
+      "restriction": null,
+      "statement_definition": "SAP.P001b.T26WholeStatement",
+      "rows_used": ["AronowAudit.P001.integer_lower_tail_correction", "SAP.P001b.WH.W1.T26_whole", "SAP.P001b.WH.W1.T26_assembly", "SAP.P001b.WH.W1.T26_L1_proof"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T27",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T27",
+      "restriction": null,
+      "statement_definition": "SAP.P001b.T27WholeStatement",
+      "rows_used": ["AronowAudit.P001.Wave1.dense_discrete_cdf_counterexample_proof", "SAP.P001b.WH.W1.T27_whole", "SAP.P001b.WH.W1.T27_assembly", "SAP.P001b.WH.W1.T27_L1_proof", "SAP.P001b.WH.W1.T27_L2_proof", "AronowAudit.P001.Wave1.T27_mass_pos", "AronowAudit.P001.Wave1.T27_level_mass", "AronowAudit.P001.Wave1.T27_geometric", "AronowAudit.P001.Wave1.T27_third_not_atom"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T28",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T28",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.discrete_cdf_jump_sum", "AronowAudit.P001.fair_die_cdf_examples", "AronowAudit.P001.finite_cdf_constant_between_values", "AronowAudit.P001.ordered_finite_cdf_formula"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T29",
+      "decision": "refuted",
+      "theorem": "SAP.P001b.T29",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.uniform_pdf_versions_counterexample"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T30",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T30",
+      "restriction": null,
+      "statement_definition": "SAP.P001b.T30WholeStatement",
+      "rows_used": ["AronowAudit.P001.continuous_independence_density_ae", "AronowAudit.P001.joint_cdf_mixed_derivative_boundary", "AronowAudit.P001.joint_pdf_unique_ae", "AronowAudit.P001.pdf_unique_and_derivative_ae", "AronowAudit.P001.pdf_version_change", "SAP.P001b.WH.W2.T30_whole", "SAP.P001b.WH.W2.T30_assembly", "SAP.P001b.WH.W2.T30_L1_proof", "SAP.P001b.WH.W2.T30_L2_proof"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T31",
+      "decision": "refuted",
+      "theorem": "SAP.P001b.T31",
+      "restriction": "Retains the specified recursive fat-Cantor set, its measure one half, the normalized subtype probability law, its density, literal range and positive-density support, and exclusion of every nondegenerate interval. Omits the removed-length geometric-series calculation and the quantitative bounds on the lengths of the stage components.",
+      "rows_used": ["AronowAudit.P001.Wave1.fat_cantor_continuous_range_counterexample_proof"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T32",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T32",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.Wave1.continuous_range_complete_correction", "AronowAudit.P001.continuous_rv_range_uncountable", "AronowAudit.P001.Wave1.fat_cantor_continuous_range_counterexample_proof"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T33",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T33",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.functions_equal_on_range"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T34",
+      "decision": "refuted",
+      "theorem": "SAP.P001b.T34",
+      "restriction": "Retains only counterexample (a), the normalized density on (0,1) times (-1,0), with event mass one and printed iterated integral zero. Omits counterexample (b), the independent uniform law on [-1,1] squared and the values three eighths and one eighth.",
+      "rows_used": ["AronowAudit.P001.triangular_event_counterexample"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T35",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T35",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.triangular_region_correction"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T36",
+      "decision": "restricted",
+      "theorem": "SAP.P001b.T36",
+      "restriction": "Retains real analyticity (and hence smoothness), strict positivity, integrability, total mass one, the infinite nonnegative slice integral at zero, and integrability of every nonzero slice. Omits boundedness; the logistic slice formula and its separate normalization; the joint CDF and everywhere mixed-derivative assertions; the limiting value of the zero-slice integrand; positivity of the nonzero slice integrals; and the marginal CDF assertion of no finite derivative at zero. States only these density and extended-integral facts; it does not establish a refutation of the pointwise marginal-PDF identity under the usual assumption that its real slice integral exists finitely.",
+      "rows_used": ["AronowAudit.P001.Wave1.infinite_marginal_slice_counterexample_proof"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T37",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T37",
+      "restriction": null,
+      "statement_definition": "SAP.P001b.T37WholeStatement",
+      "rows_used": ["AronowAudit.P001.Wave1.marginal_pdf_ae_correction_all_versions", "AronowAudit.P001.conditional_density_positive_finite_slice", "AronowAudit.P001.pdf_version_change", "SAP.P001b.WH.W1.T37_whole", "SAP.P001b.WH.W1.T37_assembly"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P001-T38",
+      "decision": "whole",
+      "theorem": "SAP.P001b.T38",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P001.bivariate_normal_endpoint_counterexample", "AronowAudit.P001.zero_normal_combination_counterexample", "AronowAudit.P001.continuous_rv_range_uncountable"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    }
+  ]
+}

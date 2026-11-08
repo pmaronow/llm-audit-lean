@@ -1,0 +1,24 @@
+import SAP.P029b.Defs
+import SAP.P029b.Defs.WholeW2
+
+open SAP.P029b MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal
+
+noncomputable section
+namespace Review
+
+set_option maxHeartbeats 400000
+-- T19: a nonempty balanced design and an assigned complier.
+def simPoint : SimSpaceW2 1 := (fun _ => 0, {0})
+example : simPoint.2.card = 1 ∧ simAssignmentW2 simPoint 0 = true ∧
+    latentAC (simIndexACW2 false simPoint.1 0) = 1 ∧
+    latentA (simIndexACW2 false simPoint.1 0) (simIndexAW2 false simPoint.1 0) = 0 ∧
+    latentC (simIndexACW2 false simPoint.1 0) (simIndexAW2 false simPoint.1 0) = 1 ∧
+    latentD (simIndexACW2 false simPoint.1 0) (simIndexAW2 false simPoint.1 0) true = 1 ∧
+    simY0W2 false simPoint.1 0 = 5 ∧ simTauW2 false simPoint.1 0 = 5 := by
+  norm_num [simPoint, simAssignmentW2, simIndexACW2, simIndexAW2,
+    baselineACIndex, baselineAIndex, latentAC, latentA, latentC, latentD,
+    positiveIndicator, bit, simY0W2, simTauW2]
+
+
+end Review

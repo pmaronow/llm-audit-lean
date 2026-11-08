@@ -5,7 +5,11 @@ import Mathlib.Probability.ConditionalExpectation
 import Mathlib.Probability.Independence.Basic
 import Mathlib.MeasureTheory.Integral.Pi
 
-/-! P018-T2, P018-T20 and P018-T22: conditional moments, moment convergence, and Gaussian simulation. -/
+/-!
+Drafts for P018-T2, P018-T20 and P018-T22.  Prepared by source inspection;
+no Lean executable was run.  The held declarations are used only in the
+three `type_of%` checks, never as proof dependencies.
+-/
 noncomputable section
 namespace AronowAudit.P018.Wave1
 open Finset Matrix MeasureTheory ProbabilityTheory Filter
@@ -229,6 +233,9 @@ theorem conditional_moment_correction_proof {U : Type*} [MeasurableSpace U] {k N
     filter_upwards [hall] with ω hω
     simp only [hω, score, zero_smul, Finset.sum_const_zero, Pi.zero_apply]
 
+example : type_of% @AronowAudit.P018.conditional_moment_correction :=
+  conditional_moment_correction_proof
+
 /-! ## P018-T20: weak convergence and UI squares -/
 
 private def vui_q {k : ℕ} (x : Vec k) : ℝ := ∑ a, (x a)^2
@@ -366,7 +373,7 @@ private theorem vui_truncation_integral_bound {Ω : Type*} [MeasurableSpace Ω] 
   apply norm_integral_le_of_norm_le (vui_tail_integrable P X hX hL2 C)
   exact Filter.Eventually.of_forall (fun ω => vui_clip_tail F hF hC (X ω))
 
-/-- A scalar weak-moment transfer. -/
+/-- A scalar weak-moment transfer, proved here rather than assumed as an input. -/
 private theorem vui_moment {Ω : ℕ → Type*} [∀ N : ℕ, MeasurableSpace (Ω N)]
     {k : ℕ} (μ : ∀ N : ℕ, Measure (Ω N)) (hμ : ∀ N, IsProbabilityMeasure (μ N))
     (ξ : ∀ N, Ω N → Vec k) (ν : Measure (Vec k))
@@ -481,6 +488,9 @@ theorem variance_limit_with_UI_proof {Ω : ℕ → Type*} [∀ N : ℕ, Measurab
       covariance_eq_sub (hL2 a) (hL2 b)
     simpa only [← hcN, ← hcν] using ht
 
+example : type_of% @AronowAudit.P018.variance_limit_with_UI :=
+  variance_limit_with_UI_proof
+
 /-! ## P018-T22: independent Gaussian simulation blocks -/
 
 private instance sdc_probability (N T : ℕ) : IsProbabilityMeasure (simulationLaw N T) := by
@@ -586,6 +596,10 @@ private theorem sdc_effect_L2 {N T : ℕ} (d : Dyad N) :
       ∑ i ∈ members d, ω (Sum.inr (Sum.inl i))) 2 (simulationLaw N T) :=
   memLp_finsetSum (members d) (fun i _ => sdc_coord_L2 N T _)
 
+private theorem sdc_error_L2 {N T : ℕ} (d : Dyad N) (t : Fin T) :
+    MemLp (fun ω : SimulationIndex N T → ℝ => simulationError ω d t)
+      2 (simulationLaw N T) :=
+  (sdc_effect_L2 d).add (sdc_coord_L2 N T _)
 
 private theorem sdc_error_mean {N T : ℕ} (d : Dyad N) (t : Fin T) :
     (∫ ω : SimulationIndex N T → ℝ, simulationError ω d t ∂ simulationLaw N T) = 0 := by
@@ -685,5 +699,8 @@ theorem simulation_design_correction_proof (N T : ℕ) (hN : 2 ≤ N) (hT : 1 �
   exact ⟨sdc_gaussian_errors N T, sdc_independent_blocks N T,
     fun d t => sdc_error_mean d t, fun d f t u => sdc_error_cov d f t u,
     fun d t => sdc_conditional_zero d t⟩
+
+example : type_of% @AronowAudit.P018.simulation_design_correction :=
+  simulation_design_correction_proof
 
 end AronowAudit.P018.Wave1

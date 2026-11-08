@@ -5,7 +5,7 @@ import Mathlib.Analysis.PSeries
 
 /-!
 P002-T15: Supplement Lemma 12 with the corrected square and the positive-variance
-scope.
+scope chosen in AUTHOR-DECISIONS.md, 20 October 2026.
 
 Normalize the two adjusted potential-outcome vectors by their combined standard
 deviation. A fourth-moment calculation for a uniform fixed-size subset supplies
@@ -15,6 +15,8 @@ finite-sampling second moments then bound the conditional variance-ratio error.
 The argument uses the marginal laws in `RandomizationSequence`, and therefore
 also covers the independent assignments specified on Supplement p. 27.
 
+The admitted declarations `corrected_lemma12`, `randomization_moments`, and
+`sample_mean_variance` are not used as proof inputs.
 -/
 
 namespace AronowAudit.P002.Wave1
@@ -54,6 +56,14 @@ lemma DecisionLemma12_probability_nonneg {n : ℕ} (P : Population n)
     (E : Finset (Fin n) → Prop) : 0 ≤ probability P E := by
   exact div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
 
+lemma DecisionLemma12_probability_le_one {n : ℕ} (P : Population n)
+    (hP : ValidDesign P) (E : Finset (Fin n) → Prop) : probability P E ≤ 1 := by
+  have hne : (assignments P).Nonempty := by
+    apply Finset.powersetCard_nonempty.mpr
+    simpa using hP.2.2.le
+  have hc : (0 : ℝ) < (assignments P).card := by
+    exact_mod_cast Finset.card_pos.mpr hne
+  exact (div_le_one hc).mpr (by exact_mod_cast Finset.card_filter_le (assignments P) E)
 
 lemma DecisionLemma12_probability_eq_expectation {n : ℕ} (P : Population n)
     (E : Finset (Fin n) → Prop) :
@@ -842,7 +852,7 @@ lemma DecisionLemma12_observed_affine {n : ℕ} (P : Population n)
     field_simp
     <;> ring
 
-/-- Corrected Lemma 12 under the positive-variance hypothesis. -/
+/-- The exact positive-variance contract of the held corrected Lemma 12. -/
 theorem corrected_lemma12_proof {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
     [IsProbabilityMeasure μ] (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
     (P : ∀ n, Population (sizes n))
@@ -931,6 +941,8 @@ theorem corrected_lemma12_proof {Ω : Type*} [MeasurableSpace Ω] (μ : Measure 
   dsimp only at hj ⊢
   exact DecisionLemma12_conditional_bound (P (sub j)) (hP (sub j)).1 ha.1 ha.2 _ hj.1
     r D κ hr.1 hD hκ (hP (sub j)).2.2.2.1 (hP (sub j)).2.2.2.2.1 hj.2
+
+example : type_of% @AronowAudit.P002.corrected_lemma12 := corrected_lemma12_proof
 
 end
 end AronowAudit.P002.Wave1

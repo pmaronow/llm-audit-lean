@@ -20,6 +20,8 @@ theorem printed_complete_description_contract_refuted :
     CI μ X hX (fun ω => (m (X ω) 0 (U ω), m (X ω) 1 (U ω))) D :=
   CompleteDescription.assemble CompleteDescription.n1_proof CompleteDescription.n2_proof
 
+example : CompleteDescription.Target := printed_complete_description_contract_refuted
+
 end
 
 end AronowAudit.P001.Wave1

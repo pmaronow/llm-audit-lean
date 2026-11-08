@@ -1,8 +1,3 @@
-/-
-Documentation corrected for llm-audit-lean.
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.SqrtLogProduct
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
@@ -209,7 +204,8 @@ the size-`0` cover is impossible, because its cover clause `∀ f ∈ F, ∃ i :
 applied to any `f₀ ∈ F` would produce an index `i : Fin 0`, which is empty. Hence
 `1 ≤ N_{[]}(ε, F, L_2(P))` for every scale `ε`. This is the positivity input that
 makes the entropy integrand `√(log (1 + N))` bounded below by `√(log 2) > 0`
-pointwise, hence the entropy integral strictly positive when `δ > 0`. -/
+pointwise, hence the entropy integral strictly positive
+(`bracketingEntropyIntegral_pos_of_nonempty`). -/
 lemma one_le_bracketingNumber_of_nonempty
     {F : Set (Ω → ℝ)} {P : Measure Ω} (hF : F.Nonempty) (ε : ℝ) :
     1 ≤ bracketingNumber ε F 2 P := by
@@ -229,10 +225,9 @@ open Filter
 
 /-- The **bracketing entropy integral** `J_{[]}(δ, F, L_2(P))` —
 the cumulative bracketing-entropy "size" of `F` from scale `0` up to `δ`,
-weighted by `√(log (1 + N_{[]}(ε, F, L_2(P))))`.
+weighted by `√(log N_{[]}(ε, F, L_2(P)))`.
 
-This regularized version of the vdV §19.2 entropy integral uses
-`J_{[]}(δ, F, L_2(P)) = ∫_0^δ √(log (1 + N_{[]}(ε, F, L_2(P)))) dε`.
+vdV §19.2: `J_{[]}(δ, F, L_2(P)) = ∫_0^δ √(log N_{[]}(ε, F, L_2(P))) dε`.
 
 The integrand at scale `ε` is obtained from `bracketingNumber ε F 2 P : ℕ∞`
 by `ENat.recTopCoe`:
@@ -259,11 +254,10 @@ noncomputable def bracketingEntropyIntegral
 /-- The weight `N ↦ √(log (1 + N))` on `ℕ∞` with the `⊤` convention, as a plain
 (non-dependent) function so its monotonicity can be stated cleanly.
 
-The `1 +` regularizer (matching vdV Lemma 19.33's `log(1 + |F|)`) gives
-`entropyWeight 0 = 0` and a strictly positive weight for every positive finite
-count, including `entropyWeight 1 = ENNReal.ofReal (√(log 2))`. A nonempty
-class has bracketing number at least one at every scale, which supplies the
-positive lower bound used by the chaining estimates. -/
+The `1 +` regularizer (matching vdV Lemma 19.33's `log(1 + |F|)`) keeps the
+weight strictly positive even when the bracketing count is `0` or `1`, so the
+chaining leaves' nonzero `levelJumpSup`/`levelOscSup` are dominated by a nonzero
+right-hand side. -/
 noncomputable def entropyWeight (N : ℕ∞) : ℝ≥0∞ :=
   ENat.recTopCoe (⊤ : ℝ≥0∞)
     (fun n : ℕ => ENNReal.ofReal (Real.sqrt (Real.log (1 + (n : ℝ))))) N
@@ -273,6 +267,36 @@ noncomputable def entropyWeight (N : ℕ∞) : ℝ≥0∞ :=
 @[simp] lemma entropyWeight_coe (n : ℕ) :
     entropyWeight (n : ℕ∞) = ENNReal.ofReal (Real.sqrt (Real.log (1 + (n : ℝ)))) := rfl
 
+lemma entropyWeight_mul_le (N M : ℕ∞) :
+    entropyWeight (N * M) ≤ entropyWeight N + entropyWeight M := by
+  rcases eq_or_ne N ⊤ with rfl | hN
+  · simp
+  rcases eq_or_ne M ⊤ with rfl | hM
+  · simp
+  obtain ⟨n, rfl⟩ := ENat.ne_top_iff_exists.mp hN
+  obtain ⟨m, rfl⟩ := ENat.ne_top_iff_exists.mp hM
+  rw [show (n : ℕ∞) * (m : ℕ∞) = ((n * m : ℕ) : ℕ∞) by norm_cast,
+    entropyWeight_coe, entropyWeight_coe, entropyWeight_coe,
+    ← ENNReal.ofReal_add (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)]
+  apply ENNReal.ofReal_le_ofReal
+  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+  have hprod : (1 : ℝ) + (n : ℝ) * m ≤ (1 + n) * (1 + m) := by
+    nlinarith [hn, hm, mul_nonneg hn hm]
+  have hnpos : (0 : ℝ) < 1 + n := by positivity
+  have hmpos : (0 : ℝ) < 1 + m := by positivity
+  calc
+    Real.sqrt (Real.log (1 + ((n * m : ℕ) : ℝ))) =
+        Real.sqrt (Real.log (1 + (n : ℝ) * m)) := by push_cast; ring
+    _ ≤ Real.sqrt (Real.log ((1 + (n : ℝ)) * (1 + m))) := by
+      apply Real.sqrt_le_sqrt
+      exact Real.log_le_log (by positivity) hprod
+    _ = Real.sqrt (Real.log (1 + (n : ℝ)) + Real.log (1 + m)) := by
+      rw [Real.log_mul hnpos.ne' hmpos.ne']
+    _ ≤ Real.sqrt (Real.log (1 + (n : ℝ))) +
+        Real.sqrt (Real.log (1 + m)) :=
+      ForMathlib.Real.sqrt_add_le (Real.log_nonneg (by linarith))
+        (Real.log_nonneg (by linarith))
 
 /-- The **pointwise integrand** of `bracketingEntropyIntegral`: the value
 `√(log (1 + N_{[]}(ε, F, L_2(P))))` at scale `ε`, with the `⊤` convention when no
@@ -340,6 +364,41 @@ lemma sqrt_log_two_le_entropyIntegrand
         norm_num
     _ ≤ entropyWeight (bracketingNumber ε F 2 P) := entropyWeight_mono h1
 
+/-- **Strict positivity of the bracketing entropy integral for a nonempty class.**
+
+For any nonempty `F` and any positive scale `δ' > 0`, the entropy integral
+`J_{[]}(δ', F, L²(P))` is strictly positive. The integrand
+`√(log (1 + N_{[]}(ε, F, L_2(P))))` is bounded below pointwise on `(0, δ']` by
+`√(log 2) > 0` (`sqrt_log_two_le_entropyIntegrand`): a nonempty class has
+`N_{[]}(ε, F, L_2(P)) ≥ 1`, so by monotonicity of the weight the integrand is
+`≥ entropyWeight 1 = ofReal (√(log 2))`. Hence
+`J ≥ ofReal (√(log 2)) · volume (Ioc 0 δ') = ofReal (√(log 2)) · ofReal δ' > 0`.
+
+Thus a separate positivity assumption on `J` is unnecessary: it follows from
+the nonemptiness of `F`, as in vdV Theorem 19.5. -/
+lemma bracketingEntropyIntegral_pos_of_nonempty
+    {F : Set (Ω → ℝ)} {P : Measure Ω} {δ' : ℝ} (hF : F.Nonempty) (hδ : 0 < δ') :
+    0 < bracketingEntropyIntegral δ' F P := by
+  rw [bracketingEntropyIntegral_eq_setLIntegral]
+  -- The constant lower bound `c₀ := ofReal (√(log 2))` on the integrand.
+  set c₀ : ℝ≥0∞ := ENNReal.ofReal (Real.sqrt (Real.log 2)) with hc₀
+  -- The integral dominates the integral of the constant `c₀` (pointwise bound
+  -- `c₀ ≤ entropyIntegrand ε F P` from `sqrt_log_two_le_entropyIntegrand`).
+  have h_mono : ∫⁻ _ε in Set.Ioc 0 δ', c₀ ∂volume
+      ≤ ∫⁻ ε in Set.Ioc 0 δ', entropyIntegrand ε F P ∂volume :=
+    lintegral_mono fun ε => sqrt_log_two_le_entropyIntegrand hF ε
+  -- `∫⁻ const = c₀ · volume (Ioc 0 δ')`.
+  rw [MeasureTheory.setLIntegral_const] at h_mono
+  -- `volume (Ioc 0 δ') = ofReal δ'`.
+  rw [Real.volume_Ioc, sub_zero] at h_mono
+  -- Both factors are strictly positive, hence so is the product, hence the integral.
+  have h_c₀_pos : (0 : ℝ≥0∞) < c₀ := by
+    rw [hc₀, ENNReal.ofReal_pos]
+    exact Real.sqrt_pos.mpr (Real.log_pos (by norm_num))
+  have h_vol_pos : (0 : ℝ≥0∞) < ENNReal.ofReal δ' := ENNReal.ofReal_pos.mpr hδ
+  have h_prod_pos : (0 : ℝ≥0∞) < c₀ * ENNReal.ofReal δ' :=
+    ENNReal.mul_pos h_c₀_pos.ne' h_vol_pos.ne'
+  exact lt_of_lt_of_le h_prod_pos h_mono
 
 /-- **Finite bracketing cover at every scale from a finite entropy integral.**
 
@@ -477,7 +536,7 @@ private lemma dyadic_term_le_two_setLIntegral
 
 /-- **Dyadic entropy series dominated by the entropy integral.**
 
-For `δ > 0`, the dyadic series `∑_q (1/2)^q·δ · √(log (1 + N_{[]}((1/2)^q·δ)))`
+For `δ > 0`, the dyadic series `∑_q (1/2)^q·δ · √(log N_{[]}((1/2)^q·δ))`
 (the `q`-th term covering the interval whose right endpoint is `(1/2)^q·δ`,
 the head term `q = 0` covering `(δ/2, δ]`) is bounded by twice the bracketing
 entropy integral `J_{[]}(δ, F, L_2(P))`.
@@ -575,7 +634,8 @@ proportionality `J_{[]}(δ, F − F) ≤ 2√2 · J_{[]}(δ, F)` (the factor `2`
 from the `η/2`-scale change of variables, the `√2` from squaring the count).
 
 They are stated abstractly over an auxiliary class `G` and a *cover-lifting*
-hypothesis (a size-`k → k²` map for `G = F − F`), so they live in `Bracketing` without referencing the
+hypothesis (the size-`k → k²` map that `hasFiniteBracketingCover_difference_class`
+realizes for `G = F − F`), so they live in `Bracketing` without referencing the
 difference class by name; `DonskerBracketing` instantiates them. -/
 
 /-- **Squaring the bracketing count costs at most a factor `√2` in the weight.**
@@ -606,7 +666,8 @@ lemma entropyWeight_sq_le (N : ℕ∞) :
 
 /-- **Abstract difference-class bracketing-number bound.**
 If every size-`k` `α`-bracketing cover of `F'` can be lifted to a size-`k * k`
-`β`-bracketing cover of an auxiliary class `G`, and `F'` has a finite
+`β`-bracketing cover of an auxiliary class `G` (the `Fin k → Fin (k*k)` pairing
+of `hasFiniteBracketingCover_difference_class`), and `F'` has a finite
 `α`-cover, then `N_{[]}(β, G) ≤ N_{[]}(α, F')²`.
 
 The minimal `α`-cover of `F'` (`exists_minimal_bracketingCover`) has size

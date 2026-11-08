@@ -23,8 +23,8 @@ theorem printed_covariance_lemma_refuted :
   have hh := (h (n := 6) (m := 4) hn (by omega) hmn .treated witnessA witnessB).2
   exact (not_le_of_gt hbad) (by simpa only [armSet,armSize] using hh)
 
-/-- Exact full printed sign-identity negation. The population witness is standardized
-and has invertible matrices in both arms. -/
+/-- Exact full printed sign-identity negation. Standardization and both-arm
+invertibility are certified by the existing actual population witness. -/
 theorem printed_interacted_third_bias_refuted :
     ¬ (∀ {n d m : ℕ} (P : Population n d),
       3 ≤ n → 0 < m → m < n → standardized P → interactedRegular P m →
@@ -38,3 +38,5 @@ theorem printed_interacted_third_bias_refuted :
 
 end AronowAudit.P005.ConfidenceFollowup02
 
+#print axioms AronowAudit.P005.ConfidenceFollowup02.printed_covariance_lemma_refuted
+#print axioms AronowAudit.P005.ConfidenceFollowup02.printed_interacted_third_bias_refuted

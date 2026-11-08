@@ -2,7 +2,7 @@ import AronowAudit.P012.Wave1.Gap.GLP013P012P012B1
 import Mathlib.Topology.Algebra.Order.LiminfLimsup
 
 /-!
-Annealing convergence using a direct finite-state drift
+The remaining annealing convergence result, using a direct finite-state drift
 argument. A nonoptimal compatible graph has a strictly improving corrected
 proposal: delete an optional sampled--sampled edge in favor of two mixed leaves,
 or redirect a homogeneous sampled--unsampled edge to a fresh mixed leaf. If
@@ -729,6 +729,8 @@ theorem annealing_convergence_proof {X : Type*} [Fintype X] [Nonempty X] [Decida
     rw [hμ.2.1 n] at h
     linarith
   simpa only [hsum,sub_zero] using hbadlim.const_sub 1
+
+example : type_of% @AronowAudit.P012.annealing_convergence := annealing_convergence_proof
 
 end
 end AronowAudit.P012.Wave1

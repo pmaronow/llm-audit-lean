@@ -1,6 +1,6 @@
 import AronowAudit.P002.Wave1.Theorem2.Pooled
 
-/-! The Xi-specific residual/slope decomposition for pooled moment bounds. -/
+/-! The Xi-specific residual/slope decomposition used by AC.3--AC.4. -/
 
 namespace AronowAudit.P002.Wave1
 noncomputable section

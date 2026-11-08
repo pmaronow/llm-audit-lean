@@ -5,6 +5,7 @@ import Mathlib.Algebra.Polynomial.Degree.Support
 
 /-!
 Pointwise least-squares selection for all samples, including empty and singular designs.
+Drafted by source inspection only; Lean has not been run on this file.
 -/
 
 set_option autoImplicit false

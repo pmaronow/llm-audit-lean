@@ -1,0 +1,145 @@
+import Lean
+import <IMPORT>
+open Lean
+
+/-! Work-composition adapter of A3 Inspect.lean.tmpl; compile and independently validate before trusting it.
+    Original sha256: 63787f2237cdb81bce677ee05d707dbbc10036fdd2362bccb73d5afd61226d2b
+    Reads the Lean environment directly; does not use the NDJSON exporter.
+    Statement closure excludes theorem proof values. Used-helper closure includes proof values.
+    Ownership is determined by module, including external namespaces defined in AronowAudit modules. -/
+
+def a3Module (env : Environment) (n : Name) : Option Name :=
+  (env.getModuleIdxFor? n).bind fun i => env.allImportedModuleNames[i.toNat]?
+
+def a3Project (env : Environment) (n : Name) : Bool :=
+  match a3Module env n with
+  | some m => (`SAP).isPrefixOf m || (`AronowAudit).isPrefixOf m
+  | none => false
+
+def a3Kind : ConstantInfo → String
+  | .axiomInfo _ => "axiom"
+  | .defnInfo _ => "definition"
+  | .thmInfo _ => "theorem"
+  | .opaqueInfo _ => "opaque"
+  | .quotInfo _ => "quotient"
+  | .inductInfo _ => "inductive"
+  | .ctorInfo _ => "constructor"
+  | .recInfo _ => "recursor"
+
+def a3Children (ci : ConstantInfo) (proofs : Bool) : List Name :=
+  let vals : Array Name := if proofs then
+      (ci.value? true).map (·.getUsedConstants) |>.getD #[]
+    else match ci with
+      | .defnInfo d => d.value.getUsedConstants
+      | .opaqueInfo o => o.value.getUsedConstants
+      | _ => #[]
+  let ctors : List Name := match ci with
+    | .inductInfo i => i.ctors
+    | _ => []
+  (ci.type.getUsedConstants ++ vals).toList ++ ctors
+
+partial def a3Closure (env : Environment) (proofs : Bool) : List Name → NameSet → NameSet
+  | [], seen => seen
+  | n :: rest, seen =>
+    if seen.contains n then a3Closure env proofs rest seen else
+    let seen := seen.insert n
+    match env.find? n with
+    | none => a3Closure env proofs rest seen
+    | some ci =>
+      let next := (a3Children ci proofs).filter fun c => a3Project env c && !seen.contains c
+      a3Closure env proofs (next ++ rest) seen
+
+/- Full structural encoding with the same alpha-insensitive fields as Expr.eqv.
+   Universe parameters are positional; no finite hash is used for equality. -/
+def a3Node (tag : String) (xs : List Json := []) : Json :=
+  Json.arr (toJson tag :: xs).toArray
+
+def a3Name : Name → Json
+  | .anonymous => a3Node "anonymous"
+  | .str p s => a3Node "str" [a3Name p, toJson s]
+  | .num p n => a3Node "num" [a3Name p, toJson n]
+
+partial def a3Level (params : List Name) : Level → Except String Json
+  | .zero => pure (a3Node "zero")
+  | .succ u => return a3Node "succ" [← a3Level params u]
+  | .max u v => return a3Node "max" [← a3Level params u, ← a3Level params v]
+  | .imax u v => return a3Node "imax" [← a3Level params u, ← a3Level params v]
+  | .param n =>
+    if params.contains n then pure (a3Node "param" [toJson (params.idxOf n)])
+    else .error s!"unbound universe parameter: {n}"
+  | .mvar _ => .error "universe metavariable in declaration"
+
+partial def a3Expr (params : List Name) : Expr → Except String Json
+  | .bvar i => pure (a3Node "bvar" [toJson i])
+  | .fvar _ => .error "free variable in declaration"
+  | .mvar _ => .error "metavariable in declaration"
+  | .sort u => return a3Node "sort" [← a3Level params u]
+  | .const n us => return a3Node "const" [a3Name n, Json.arr (← us.mapM (a3Level params)).toArray]
+  | .app f a => return a3Node "app" [← a3Expr params f, ← a3Expr params a]
+  | .lam _ t b _ => return a3Node "lam" [← a3Expr params t, ← a3Expr params b]
+  | .forallE _ t b _ => return a3Node "forall" [← a3Expr params t, ← a3Expr params b]
+  | .letE _ t v b _ => return a3Node "let" [← a3Expr params t, ← a3Expr params v, ← a3Expr params b]
+  | .lit (.natVal n) => pure (a3Node "nat" [toJson n])
+  | .lit (.strVal s) => pure (a3Node "string" [toJson s])
+  | .mdata _ e => a3Expr params e
+  | .proj n i e => return a3Node "proj" [a3Name n, toJson i, ← a3Expr params e]
+
+def a3Canonical (params : List Name) (e : Expr) : CoreM Json :=
+  match a3Expr params e with
+  | .ok j => pure j
+  | .error message => throwError "A3 canonical expression: {message}"
+
+def a3Row (env : Environment) (n : Name) (role : String) : CoreM Json := do
+  let some ci := env.find? n
+    | return Json.mkObj [("name", toJson n.toString), ("role", toJson role), ("error", toJson "missing")]
+  let vals : Option String := match ci with
+    | .defnInfo d => some (toString (repr d.value))
+    | .opaqueInfo o => some (toString (repr o.value))
+    | _ => none
+  let canonicalType ← a3Canonical ci.levelParams ci.type
+  let canonicalValue ← match ci with
+    | .defnInfo d => pure (some (← a3Canonical ci.levelParams d.value))
+    | .opaqueInfo o => pure (some (← a3Canonical ci.levelParams o.value))
+    | _ => pure (none : Option Json)
+  let ctors := match ci with
+    | .inductInfo i => i.ctors.map toString
+    | _ => []
+  let axs ← collectAxioms n
+  return Json.mkObj [("name", toJson n.toString), ("role", toJson role),
+    ("module", toJson ((a3Module env n).map toString)), ("kind", toJson (a3Kind ci)),
+    ("level_params", toJson (ci.levelParams.map toString)),
+    ("universe_count", toJson ci.levelParams.length),
+    ("canonical_type", canonicalType), ("canonical_value", toJson canonicalValue),
+    ("type", toJson (toString (repr ci.type))), ("value", toJson vals),
+    ("constructors", toJson ctors), ("axioms", toJson (axs.map toString))]
+
+#eval show CoreM Unit from do
+  let env ← getEnv
+  let challengePrefixes : Array Name := <CHALLENGE_PREFIXES>
+  let expected : Array Name := <NAMES>
+  let targets : Array Name := <TARGETS>
+  let mut theorems : Array String := #[]
+  let mods := env.allImportedModuleNames
+  for i in [0:mods.size] do
+    if challengePrefixes.any (fun p => p.isPrefixOf mods[i]!) then
+      for n in env.header.moduleData[i]!.constNames do
+        if let some (.thmInfo _) := env.find? n then
+          if !n.isInternal then theorems := theorems.push n.toString
+  let challengeMods := (mods.filter fun m => challengePrefixes.any (fun p => p.isPrefixOf m)).map toString
+  let mut lines : Array String := #[Json.compress (Json.mkObj [
+    ("record", toJson "inventory"), ("imports", toJson (mods.map toString)),
+    ("challenge_modules", toJson challengeMods), ("challenge_theorems", toJson theorems)])]
+  for n in expected do
+    lines := lines.push (Json.compress (← a3Row env n "expected"))
+  let starts := targets.toList.flatMap fun n =>
+    match env.find? n with
+    | none => []
+    | some ci => ci.type.getUsedConstants.toList.filter (a3Project env)
+  let statements := (a3Closure env false starts {}).toArray.qsort Name.lt
+  for n in statements do
+    lines := lines.push (Json.compress (← a3Row env n "statement"))
+  if <AUDIT_USED> then
+    let used := (a3Closure env true targets.toList {}).toArray.qsort Name.lt
+    for n in used do
+      lines := lines.push (Json.compress (← a3Row env n "used"))
+  IO.FS.writeFile <OUTPUT> (String.intercalate "\n" lines.toList ++ "\n")

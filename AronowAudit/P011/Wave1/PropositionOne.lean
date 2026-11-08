@@ -28,6 +28,14 @@ theorem printed_proposition_one_refuted :
     PropositionOne.n6_proof PropositionOne.n7_proof PropositionOne.n8_proof
     PropositionOne.n9_proof PropositionOne.n10_proof PropositionOne.n11_proof
 
+example : AronowAudit.P011.Wave1.PropositionOne.Target := printed_proposition_one_refuted
+
+/-- The explicit family witnessing the negated universal statement. -/
+theorem printed_proposition_one_witness : AronowAudit.P011.Wave1.PropositionOne.Witness :=
+  PropositionOne.assemble_witness PropositionOne.n1_proof PropositionOne.n2_proof
+    PropositionOne.n3_proof PropositionOne.n4_proof PropositionOne.n5_proof
+    PropositionOne.n6_proof PropositionOne.n7_proof PropositionOne.n8_proof
+    PropositionOne.n9_proof PropositionOne.n10_proof PropositionOne.n11_proof
 
 end
 

@@ -1,0 +1,188 @@
+import SAP.P020.Defs
+import SAP.P020.Defs.WholeW1
+import SAP.P020.Defs.WholeW3
+
+set_option autoImplicit false
+set_option maxRecDepth 2000
+set_option maxHeartbeats 2000000
+open scoped BigOperators
+open SAP.P020
+
+namespace Review
+noncomputable section
+
+abbrev P : ClusterPopulation where
+  M := 4
+  mt := 2
+  mt_pos := by decide
+  mt_lt := by decide
+  n := ![1, 2, 3, 4]
+  n_pos := by intro j; fin_cases j <;> norm_num
+  y0 := ![0, 1, 0, 2]
+  y1 := ![1, 0, 2, 0]
+
+abbrev s : Finset (Fin P.M) := {0, 1}
+
+theorem admissible_P : 0 < P.mt ∧ P.mt < P.M ∧ (∀ j, 0 < P.n j) ∧
+    2 ≤ P.mt ∧ 2 ≤ controlCount P ∧ populationSize P = 10 ∧
+    clusterVariance (fun j => (P.n j : ℝ)) = 5/4 ∧
+    s ∈ assignments P := by
+  norm_num [P, s, controlCount, populationSize, clusterVariance, clusterMean,
+    Fin.sum_univ_succ, assignments, Finset.mem_powersetCard]
+  exact P.n_pos
+
+theorem affine_witness_P : armMeanSize P true s = 3/2 ∧ armMeanSize P false s = 7/2 ∧
+    horvitzThompson P s = -(1:ℝ)/5 ∧
+    horvitzThompson (affinePopulation P 1 2) s = -(6:ℝ)/5 ∧
+    horvitzThompson (affinePopulation P 1 2) s ≠ 2 * horvitzThompson P s := by
+  have hcontrols : controls s = ({2,3} : Finset (Fin 4)) := by decide
+  norm_num [armMeanSize, armSize, armSum, hcontrols, controlCount,
+    horvitzThompson, htTotal, populationSize, affinePopulation, Fin.sum_univ_succ,
+    P, s]
+
+example : ∃ (Q : ClusterPopulation) (b0 b1 : ℝ) (a : Finset (Fin Q.M)),
+    a ∈ assignments Q ∧
+      horvitzThompson (affinePopulation Q b0 b1) a ≠ b1 * horvitzThompson Q a := by
+  refine ⟨P, 1, 2, s, ?_, affine_witness_P.2.2.2.2⟩
+  decide
+
+def L : FiniteLaw (Fin 2) := uniformLaw Finset.univ ⟨0, Finset.mem_univ _⟩
+def u : Fin 2 → ℝ := ![1, 3]
+def v : Fin 2 → ℝ := ![1, 2]
+
+example : (∀ ω ∈ L.support, 0 < v ω) ∧ expectation L v = 3/2 ∧
+    designCovariance L (fun ω => u ω / v ω) v = 1/8 ∧
+    expectation L (fun ω => u ω / v ω) =
+      (expectation L u - designCovariance L (fun ω => u ω / v ω) v) /
+        expectation L v := by
+  constructor
+  · intro ω hω; fin_cases ω <;> norm_num [v]
+  · norm_num [expectation, designCovariance, L, uniformLaw, u, v,
+      Fin.sum_univ_succ]
+
+theorem assignments_P : assignments P =
+    {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}} := by decide
+
+@[simp] theorem controls01 : controls ({0,1} : Finset (Fin 4)) = {2,3} := by decide
+@[simp] theorem controls02 : controls ({0,2} : Finset (Fin 4)) = {1,3} := by decide
+@[simp] theorem controls03 : controls ({0,3} : Finset (Fin 4)) = {1,2} := by decide
+@[simp] theorem controls12 : controls ({1,2} : Finset (Fin 4)) = {0,3} := by decide
+@[simp] theorem controls13 : controls ({1,3} : Finset (Fin 4)) = {0,2} := by decide
+@[simp] theorem controls23 : controls ({2,3} : Finset (Fin 4)) = {0,1} := by decide
+
+theorem E_P (f : Finset (Fin 4) → ℝ) :
+    expectation (clusterLaw P) f =
+      (f {0,1} + f {0,2} + f {0,3} + f {1,2} + f {1,3} + f {2,3}) / 6 := by
+  simp +decide [expectation, clusterLaw, uniformLaw, assignments_P, Finset.sum_insert]
+  ring
+
+example : expectation (clusterLaw P) (differenceInMeans P) = 1/24 ∧
+    averageTreatmentEffect P = 0 ∧
+    designBias (clusterLaw P) (differenceInMeans P) (averageTreatmentEffect P) = 1/24 := by
+  norm_num [designBias, E_P,
+    differenceInMeans, armSize, armSum, averageTreatmentEffect, populationSize,
+    Fin.sum_univ_succ, P]
+
+abbrev X : Fin 1 → Fin P.M → ℝ := fun _ => ![2, -1, 4, 0]
+abbrev ka : Fin 1 → ℝ := fun _ => -2
+
+-- Nonconstant fixed adjustments; verify both totals, the ATE and centering.
+example : expectation (clusterLaw P) (rajTotal P false (3/2)) = 3 ∧
+    expectation (clusterLaw P) (rajTotal P true (3/2)) = 3 ∧
+    expectation (clusterLaw P) (desRaj P (3/2)) = 0 ∧
+    expectation (clusterLaw P) (rajCovariateTotal P X 1 ka false) = 3 ∧
+    expectation (clusterLaw P) (rajCovariateTotal P X 1 ka true) = 3 ∧
+    expectation (clusterLaw P) (desRajCovariates P X 1 ka) = 0 ∧
+    expectation (clusterLaw P) (fun u =>
+      3 * (armMeanSize P true u - (populationSize P : ℝ)/P.M)) = 0 ∧
+    expectation (clusterLaw P) (fun u =>
+      centeredArmMeanW3 P false (fun j => (P.n j : ℝ)) u +
+        ∑ l, ka l * centeredArmMeanW3 P false (X l) u) = 0 := by
+  norm_num [E_P, rajTotal, rajPotential, differenced, armSum, controlCount,
+    desRaj, rajCovariateTotal, rajCovariatePotential, desRajCovariates,
+    clusterMean, populationSize, armMeanSize, armSize, centeredArmMeanW3,
+    Fin.sum_univ_succ, X, ka, P]
+
+-- The positive-variance optimization hypotheses hold, with nonzero coefficients.
+example : armOptimalCoefficient P false = 1/2 ∧
+    armOptimalCoefficient P true = -(1:ℝ)/10 ∧
+    optimalCoefficient P = 1/5 ∧ rajVarianceCurvature P = 4/15 ∧
+    W1SizeVariance P ≠ 0 ∧ 0 < W1v P := by
+  norm_num [armOptimalCoefficient, optimalCoefficient, rajVarianceCurvature,
+    W1SizeVariance, W1Sizes, W1v, clusterVariance, clusterCovariance,
+    clusterMean, controlCount, populationSize, Fin.sum_univ_succ, P]
+
+theorem ht_variance_P : designVariance (clusterLaw P) (horvitzThompson P) = 1/75 := by
+  norm_num [designVariance, E_P, horvitzThompson, htTotal, armSum,
+    controlCount, populationSize, Fin.sum_univ_succ, P]
+
+example : designVariance (clusterLaw P) (desRaj P (1/5)) = 1/375 := by
+  norm_num [designVariance, E_P, desRaj, rajTotal, rajPotential, differenced,
+    clusterMean, armSum, controlCount, populationSize, Fin.sum_univ_succ, P]
+
+theorem expected_variance_estimator_P :
+    expectation (clusterLaw P) (combinedVarianceEstimator P P.y0 P.y1) = 11/75 := by
+  norm_num [E_P, combinedVarianceEstimator, armSum, controlCount,
+    populationSize, Fin.sum_univ_succ, P]
+
+example : expectation (clusterLaw P)
+    (combinedVarianceEstimator P (rajPotential P false (1/5))
+      (rajPotential P true (1/5))) = 17/125 := by
+  norm_num [E_P, combinedVarianceEstimator, rajPotential, differenced,
+    clusterMean, armSum, controlCount, populationSize, Fin.sum_univ_succ, P]
+
+-- Include the zero-size-variance case and the allowed empty covariate type.
+abbrev Pequal : ClusterPopulation :=
+  { P with n := fun _ => 2, n_pos := by intro j; decide }
+
+example : ∃ (Q : ClusterPopulation) (_Z : Fin 0 → Fin Q.M → ℝ) (_b : Fin 0 → ℝ),
+    clusterVariance (fun j => (Q.n j : ℝ)) = 0 := by
+  refine ⟨Pequal, Fin.elim0, Fin.elim0, ?_⟩
+  norm_num [Pequal, P, clusterVariance, clusterMean, Fin.sum_univ_succ]
+
+example (k : ℝ) (u : Finset (Fin Pequal.M)) :
+    desRaj Pequal k u = horvitzThompson Pequal u := by
+  have hr (a : Bool) : rajPotential Pequal a k =
+      (if a then Pequal.y1 else Pequal.y0) := by
+    funext j
+    norm_num [rajPotential, differenced, clusterMean, Pequal, P, Fin.sum_univ_succ]
+  simp only [desRaj, rajTotal, hr, horvitzThompson, htTotal]
+
+abbrev Blocks : Fin 2 → ClusterPopulation := fun _ => P
+
+theorem block_card : (blockLaw Blocks).support.card = 36 := by
+  decide
+
+-- A positive-probability off-diagonal draw rules out a repeated-draw law.
+example : ∃ z : BlockAssignments Blocks,
+    z ∈ (blockLaw Blocks).support ∧ (z 0).val ≠ (z 1).val ∧
+      (blockLaw Blocks).weight z = 1/36 := by
+  have h01 : ({0,1} : Finset (Fin 4)) ∈ assignments P := by decide
+  have h23 : ({2,3} : Finset (Fin 4)) ∈ assignments P := by decide
+  let z : BlockAssignments Blocks := fun b =>
+    if b = 0 then ⟨{0,1}, h01⟩ else ⟨{2,3}, h23⟩
+  refine ⟨z, ?_, ?_, ?_⟩
+  · exact Finset.mem_univ _
+  · simp [z]; decide
+  · change 1 / ((blockLaw Blocks).support.card : ℝ) = 1/36
+    rw [block_card]
+    norm_num
+
+-- The blockwise conservativeness premise is satisfiable by the actual statistic.
+example : 0 < (2 : ℕ) ∧ blockedSize Blocks = 20 ∧
+    (∀ b : Fin 2,
+      designVariance (clusterLaw (Blocks b)) (horvitzThompson (Blocks b)) ≤
+        expectation (clusterLaw (Blocks b))
+          (combinedVarianceEstimator (Blocks b) (Blocks b).y0 (Blocks b).y1)) := by
+  constructor
+  · decide
+  constructor
+  · norm_num [blockedSize, Blocks, populationSize, P, Fin.sum_univ_succ]
+  · intro b
+    change designVariance (clusterLaw P) (horvitzThompson P) ≤
+      expectation (clusterLaw P) (combinedVarianceEstimator P P.y0 P.y1)
+    rw [ht_variance_P, expected_variance_estimator_P]
+    norm_num
+
+end
+end Review

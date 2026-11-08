@@ -1,0 +1,252 @@
+import SAP.P029b.Challenge
+
+open scoped BigOperators Classical Topology ENNReal
+open SAP.P029b MeasureTheory ProbabilityTheory Filter Set
+
+noncomputable section
+
+namespace AuditNonvacuity
+
+def pureUnit : PotentialUnit Unit := ⟨(), false, true, 0, 1⟩
+abbrev coin : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+abbrev coinSpace := ℕ → Bool
+def coins : Measure coinSpace := Measure.infinitePi (fun _ => coin)
+instance : IsProbabilityMeasure coins := by unfold coins; infer_instance
+
+lemma coin_mass (z : Bool) : mP coin {b | b = z} = 1/2 := by
+  norm_num [mP, coin, PMF.toMeasure_apply_singleton]
+
+lemma pure_iv {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
+    [IsProbabilityMeasure μ] (Z : Ω → Bool) (hZ : Measurable Z)
+    (hmass : ∀ z : Bool, mP μ {ω | Z ω = z} = 1/2) :
+    IVAssumptions μ (fun _ => pureUnit) Z := by
+  refine ⟨measurable_const, measurable_const, measurable_const,
+    measurable_const, measurable_const, hZ,
+    integrable_const _, integrable_const _, ?_, ?_, ?_, ?_, ?_⟩
+  · exact indepFun_const_right Z ((), false, true, (0 : ℝ), (1 : ℝ))
+  · rw [hmass]; norm_num
+  · rw [hmass]; norm_num
+  · simp [PotentialUnit.defier, pureUnit]
+  · have hCE (z : Bool) : mCE μ (fun ω => bit (Z ω)) {ω | Z ω = z} = bit z := by
+      have heq : (fun ω => bit (Z ω)) =ᵐ[μ.restrict {ω | Z ω = z}] (fun _ => bit z) := by
+        filter_upwards [ae_restrict_mem (hZ (measurableSet_singleton z))] with ω hω
+        simp_all
+      rw [mCE, integral_congr_ae heq]
+      simp only [integral_const, Measure.real, smul_eq_mul, Measure.restrict_apply_univ]
+      change (mP μ {ω | Z ω = z} * bit z) / mP μ {ω | Z ω = z} = bit z
+      rw [hmass]
+      ring
+    simpa [pureUnit, PotentialUnit.receipt, hCE, bit] using
+      (by rw [hCE true, hCE false]; norm_num [bit] :
+        mCE μ (fun ω => bit (Z ω)) {ω | Z ω = true} -
+          mCE μ (fun ω => bit (Z ω)) {ω | Z ω = false} ≠ 0)
+
+-- T25: every population hypothesis, with genuine assignment and first stage.
+example : IVAssumptions coin (fun _ => pureUnit) id :=
+  pure_iv coin id measurable_id coin_mass
+
+-- T25: every finite sample hypothesis.
+example : 0 < (∑ i : Fin 2, bit (decide (i.val = 1))) ∧
+    (∑ i : Fin 2, bit (decide (i.val = 1))) < (2 : ℝ) ∧
+    SampleDefined (fun _ : Fin 2 => 1) (fun i => decide (i.val = 1))
+      (fun i => decide (i.val = 1)) := by
+  constructor
+  · simp only [Fin.sum_univ_two]; norm_num [bit]
+  constructor
+  · simp only [Fin.sum_univ_two]; norm_num [bit]
+  constructor
+  · intro z
+    cases z <;> norm_num [sampleArm, bit, Fin.sum_univ_two]
+  · norm_num [sampleArm, bit, Fin.sum_univ_two]
+
+lemma pure_versions {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
+    [IsProbabilityMeasure μ] :
+    ScoreVersions μ (fun _ => pureUnit) (fun _ => 1) (fun _ => 1) ∧
+    A1Versions μ (fun _ => pureUnit) (fun _ => 1) := by
+  have hσ : covariateSigma (fun _ : Ω => pureUnit) ≤ (inferInstance : MeasurableSpace Ω) :=
+    measurable_const.comap_le
+  simp [ScoreVersions, A1Versions, PotentialUnit.complier, PotentialUnit.tau,
+    pureUnit]
+  exact Filter.Eventually.of_forall fun ω =>
+    (congrFun (condExp_const (μ := μ) hσ (1 : ℝ)) ω).symm
+
+-- T26: every population hypothesis, including A1 for its conditional conclusion.
+example : IVAssumptions coin (fun _ => pureUnit) id ∧
+    ScoreVersions coin (fun _ => pureUnit) (fun _ => 1) (fun _ => 1) ∧
+    (0 : ℝ) < 1/2 ∧
+    (∀ᵐ _ ∂coin, (1/2 : ℝ) < 1 ∧ (1 : ℝ) ≤ 1) ∧
+    A1Versions coin (fun _ => pureUnit) (fun _ => 1) := by
+  refine ⟨pure_iv coin id measurable_id coin_mass, (pure_versions coin).1,
+    by norm_num, Filter.Eventually.of_forall (fun _ => by norm_num), (pure_versions coin).2⟩
+
+lemma eval_mass (i : ℕ) (z : Bool) : mP coins {ω | ω i = z} = 1/2 := by
+  have hmap := Measure.infinitePi_map_eval (fun _ : ℕ => coin) i
+  have hset : (fun ω : coinSpace => ω i) ⁻¹' {z} = {ω | ω i = z} := rfl
+  have h := congrArg (fun ν : Measure Bool => (ν {z}).toReal) hmap
+  rw [Measure.map_apply (measurable_pi_apply i) (measurableSet_singleton z)] at h
+  simpa only [hset, mP, coins] using h.trans (coin_mass z)
+
+lemma eval_ident (i j : ℕ) :
+    IdentDistrib (fun ω : coinSpace => ω i) (fun ω => ω j) coins coins := by
+  refine ⟨(measurable_pi_apply i).aemeasurable, (measurable_pi_apply j).aemeasurable, ?_⟩
+  simp [coins, Measure.infinitePi_map_eval]
+
+-- T26: the complete ICSWConditions structure has an iid, pure-complier instance.
+lemma pure_conditions :
+    ICSWConditions coins (fun _ _ => pureUnit) (fun i ω => ω i)
+      (fun _ => 1) (fun _ => 1) (fun _ _ _ => 1) := by
+  constructor
+  · intro i
+    exact pure_iv coins (fun ω => ω i) (measurable_pi_apply i) (eval_mass i)
+  · exact iIndepFun_infinitePi
+      (X := fun (_ : ℕ) (b : Bool) => (((), false, true, (0 : ℝ), (1 : ℝ)), b))
+      (by intro i; fun_prop)
+  · intro i
+    exact (eval_ident i 0).comp
+      (u := fun b : Bool => (((), false, true, (0 : ℝ), (1 : ℝ)), b)) (by fun_prop)
+  · intro i
+    exact (pure_versions coins).1
+  · exact ⟨1/2, by norm_num, fun _ => Filter.Eventually.of_forall (fun _ => by norm_num)⟩
+  · exact fun _ _ => measurable_const
+  · exact fun _ => Filter.Eventually.of_forall (fun _ _ => by norm_num)
+  · have herr : uniformScoreError (fun (_ : ℕ) (_ : coinSpace) => pureUnit)
+        (fun _ => 1) (fun _ _ _ => 1) = fun _ _ => (0 : ℝ) := by
+      funext n ω
+      simp [uniformScoreError]
+    rw [herr]
+    intro ε hε
+    simpa [edist_self, not_le_of_gt hε] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0))
+
+lemma ae_exists_coin (z : Bool) : ∀ᵐ ω ∂coins, ∃ i, ω i = z := by
+  let A : ℕ → Set coinSpace := fun i => {ω | ω i = z}
+  have hm : ∀ i, MeasurableSet (A i) := by
+    intro i
+    change MeasurableSet ((fun ω : coinSpace => ω i) ⁻¹' {z})
+    exact (measurable_pi_apply i) (measurableSet_singleton z)
+  have hind : iIndepFun (fun i (ω : coinSpace) => ω i) coins :=
+    iIndepFun_infinitePi (X := fun (_ : ℕ) (b : Bool) => b) (fun _ => measurable_id)
+  have hs : iIndepSet A coins :=
+    iIndepSets.iIndepSet_of_mem
+      (fun i => (comap_measurable (fun ω : coinSpace => ω i)) (measurableSet_singleton z))
+      hm hind.iIndep.iIndepSets'
+  have hmass (i : ℕ) : coins (A i) = (2 : ℝ≥0∞)⁻¹ := by
+    change coins ((fun ω : coinSpace => ω i) ⁻¹' {z}) = _
+    rw [← Measure.map_apply (measurable_pi_apply i) (measurableSet_singleton z)]
+    simp [coins, coin, Measure.infinitePi_map_eval, PMF.toMeasure_apply_singleton]
+  have hlim : coins (limsup A atTop) = 1 :=
+    measure_limsup_eq_one hm hs (by
+      simp_rw [hmass]
+      exact ENNReal.tsum_const_eq_top_of_ne_zero (by norm_num))
+  have hae : ∀ᵐ ω ∂coins, ω ∈ limsup A atTop := by
+    apply (ae_iff_measure_eq (MeasurableSet.measurableSet_limsup hm).nullMeasurableSet).2
+    exact hlim.trans (measure_univ).symm
+  filter_upwards [hae] with ω hω
+  exact (mem_limsup_iff_frequently_mem.1 hω).exists
+
+lemma pure_sample_defined {n : ℕ} (Z : Fin n → Bool)
+    (ht : ∃ i, Z i = true) (hf : ∃ i, Z i = false) :
+    SampleDefined (fun _ => (1 : ℝ)) Z Z := by
+  have hsum (z : Bool) (hz : ∃ i, Z i = z) :
+      0 < ∑ i : Fin n, (if Z i = z then (1 : ℝ) else 0) := by
+    obtain ⟨i, hi⟩ := hz
+    exact Finset.sum_pos' (fun _ _ => by positivity)
+      ⟨i, Finset.mem_univ _, by simp [hi]⟩
+  have h1 := hsum true ht
+  have h0 := hsum false hf
+  have hstage (z : Bool) :
+      sampleArm (fun _ => 1) (fun i => bit (Z i)) Z z = bit z := by
+    have hnorm : (∑ i : Fin n, (if Z i = z then (1 : ℝ) else 0)) ≠ 0 :=
+      ne_of_gt (hsum z (by cases z <;> assumption))
+    have hnum : (∑ i : Fin n, (if Z i = z then bit (Z i) else 0)) =
+        (∑ i : Fin n, (if Z i = z then (1 : ℝ) else 0)) * bit z := by
+      rw [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i _
+      by_cases hi : Z i = z <;> simp [hi]
+    simp only [sampleArm, one_mul, hnum]
+    exact mul_div_cancel_left₀ (bit z) hnorm
+  constructor
+  · intro z
+    simpa only [one_mul] using ne_of_gt (hsum z (by cases z <;> assumption))
+  · rw [hstage true, hstage false]
+    norm_num [bit]
+
+lemma pure_eventually_defined :
+    RatiosEventuallyDefined coins (fun _ _ => pureUnit) (fun i ω => ω i)
+      (fun _ _ _ => 1) := by
+  filter_upwards [ae_exists_coin true, ae_exists_coin false] with ω ht hf
+  obtain ⟨i, hi⟩ := ht
+  obtain ⟨j, hj⟩ := hf
+  filter_upwards [eventually_ge_atTop (max i j)] with n hn
+  have hin : i < n+1 := by omega
+  have hjn : j < n+1 := by omega
+  simpa [pureUnit, PotentialUnit.receipt] using
+    (pure_sample_defined (fun k : Fin (n+1) => ω k.val) ⟨⟨i, hin⟩, hi⟩ ⟨⟨j, hjn⟩, hj⟩)
+
+-- All hypotheses of T26's sample implication, together in one nonvacuity example.
+example :
+    ICSWConditions coins (fun _ _ => pureUnit) (fun i ω => ω i)
+      (fun _ => 1) (fun _ => 1) (fun _ _ _ => 1) ∧
+    Measurable (fun _ : Unit => (1 : ℝ)) ∧
+    (∀ i : ℕ, (fun _ : coinSpace => (1 : ℝ)) =ᵐ[coins]
+      condExp (covariateSigma (fun _ => pureUnit)) coins
+        (fun _ => pureUnit.tau)) ∧
+    (∀ x ∈ (Measure.map (fun _ : coinSpace => pureUnit.x) coins).support,
+      (1 : ℝ) = 1) ∧
+    (∃ ε : ℝ, 0 < ε ∧
+      ∀ x ∈ (Measure.map (fun _ : coinSpace => pureUnit.x) coins).support,
+        ε < 1 ∧ (1 : ℝ) ≤ 1) ∧
+    RatiosEventuallyDefined coins (fun _ _ => pureUnit) (fun i ω => ω i)
+      (fun _ _ _ => 1/(1 : ℝ)) := by
+  refine ⟨pure_conditions, measurable_const, fun _ => (pure_versions coins).2,
+    fun _ _ => rfl, ⟨1/2, by norm_num, fun _ _ => by norm_num⟩, ?_⟩
+  simpa using pure_eventually_defined
+
+-- T27: check the actual bounded individual data, independent of the Challenge proof.
+example : ∀ a : CancelAtomW2, (cancelUnitW2 a).outcome a.2 = 0 := by
+  rintro ⟨⟨x,k⟩,z⟩
+  fin_cases k <;> cases x <;> cases z <;>
+    norm_num [cancelUnitW2, cancelSignW2, PotentialUnit.outcome, PotentialUnit.receipt]
+
+example : (∫ a, (cancelUnitW2 a).tau ∂cancelLawW2) = 0 := by
+  rw [integral_fintype Integrable.of_finite]
+  norm_num [Measure.real, cancelLawW2, PMF.toMeasure_apply_singleton,
+    Fintype.sum_prod_type, Fin.sum_univ_three,
+    cancelUnitW2, cancelSignW2, PotentialUnit.tau]
+
+-- One complete traversal of the twelve atoms gives a fully interior good fit.
+def fullCycle (i : ℕ) : CancelAtomW2 :=
+  ((decide (i % 12 ≥ 6), ⟨(i % 6) / 2, by omega⟩), decide (i % 2 = 1))
+
+lemma fullCycle_rates (x z : Bool) :
+    cancelRateW2 11 fullCycle x z = if z then 2/3 else 1/3 := by
+  unfold cancelRateW2
+  simp only [Fin.sum_univ_succ]
+  cases x <;> cases z <;>
+    norm_num [fullCycle, cancelDrawW2, cancelZW2, cancelUnitW2,
+      PotentialUnit.receipt, bit]
+
+lemma fullCycle_good : cancelFitGoodW2 11 fullCycle := by
+  intro x
+  norm_num [cancelFitGoodW2, fullCycle_rates]
+
+example : SampleDefined (fun i : Fin 12 => 1/cancelFittedScoreW2 11 i.val fullCycle)
+    (fun i => (cancelDrawW2 i.val fullCycle).receipt (cancelZW2 i.val fullCycle))
+    (fun i => cancelZW2 i.val fullCycle) := by
+  have hscore : ∀ i, cancelFittedScoreW2 11 i fullCycle = 1/3 := by
+    intro i
+    norm_num [cancelFittedScoreW2, fullCycle_good, fullCycle_rates]
+  constructor
+  · intro z
+    simp only [hscore, Fin.sum_univ_succ]
+    cases z <;>
+      norm_num [fullCycle,
+        cancelDrawW2, cancelZW2, cancelUnitW2, PotentialUnit.receipt,
+        bit]
+  · simp only [sampleArm, hscore, Fin.sum_univ_succ]
+    norm_num [fullCycle,
+      cancelDrawW2, cancelZW2, cancelUnitW2, PotentialUnit.receipt,
+      bit]
+
+end AuditNonvacuity

@@ -1,0 +1,46 @@
+[
+  {
+    "target_id": "P011-T11",
+    "theorem": "SAP.P011a.T11",
+    "fingerprint": "8fd833451243c99a76b271b3629ec3a53602ca4930d1271962baf519acaa47c7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional assertion about explicit probability laws, not an implication with potentially empty hypotheses. For n=k+1 the law is the pushforward of the uniform measure on all 2^n independent sign assignments, with Y_i=2*1_{i even}+epsilon_i and theta_i=n/(2*ceil(n/2)). On a common infinite independent-sign space these raw outcomes and the empty graphs are nested. E[betaHat]=1, |theta_i*Y_i-1|<=2, all degrees are zero, every weighted variance is t_n^2>0, n*Var(betaHat)=t_n^2 tends to 1, and |theta_i|<2, so every printed condition holds. scratch/Check.lean checks the small-size weight/spread conventions and a support outcome directly. Independent exact enumeration in scratch/check_witnesses.py verifies the finite decomposition, scaled variance, remainder moments, and both failure-event probabilities for all n=1..10; outputs are in scratch/witness-checks.json. The two limiting contradictions and the complete condition checklist are explained in REPORT.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T12",
+    "theorem": "SAP.P011a.T12",
+    "fingerprint": "e5b31e80d58d8b5d72f7d5ea4cd32abf8298a50137c5982876b8bfd2ffeb38d6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs an example of exists F, WholeScaling F 2 1 1 2 and forall k, Homoskedastic (F.model k), taking F=alternatingFamily. This formal construction projects the separately Comparator-certified T11 counterexample facts and does not use T12. Independently, the explicit independent-sign law gives beta=1, bound 2, zero graph degrees, common variance t_n^2, scaled estimator variance t_n^2 tending to 1 and coefficients of absolute value at most 1<2, proving joint satisfiability directly. Its first row has mean spread zero and later rows have unequal means, so the example does not impose an unstated equal-means condition. Positive row sizes, bounded weighted coordinates and probability laws guarantee every moment and denominator used by T12 exists in its intended sense.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T13",
+    "theorem": "SAP.P011a.T13",
+    "fingerprint": "8998e87568701b4460862c3a5c23999de8ad6da885d1831f0b4b909d6aba985a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently constructs feasible solutions of both matchingWitness problems and checks their rational objectives 3/4 and -3/4. It also proves, by taking a maximum over the nonempty finite set of all gadget matchings, that every DegreeProblem has a genuine maximum gadget matching. Thus both the feasibility and supplied-maximum antecedents of the reduction are inhabited. Independent exhaustive enumeration in scratch/check_witnesses.py gives gadget sizes (12 vertices,13 edges) and (12 vertices,11 edges), matching optima 166 and 200, and verifies optimal decoding and the recovery equation for every maximizing matching. The statement is narrower than the canonical claim precisely as disclosed in the Challenge docstring and record: no generic program equivalence, explicit optional optimum identity or computational complexity claim is credited.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T14",
+    "theorem": "SAP.P011a.T14",
+    "fingerprint": "a270dceb563d23b868dba9e03da5152e58a773291be4991862bae9a20872a577",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently constructs a full certified-bound instance with n=3, empty required graph, unit caps, unit edge weights, U=3, and a compatible Boolean graph; it also checks feasibility of the triangle's all-halves vector, compatibility of sixIntegerEdges and its six-unit V1 value 5/18. Independent exact enumeration in scratch/check_witnesses.py verifies the six-unit integer optimum 2, fractional value 3, variance values 5/18 and 1/3, and triangle doubled optima 2 and 3. The fractional upper bounds follow from summing degree constraints (and w_e<=1 in the six-unit case). The zero fractional vector is feasible and has objective below the named integer solution, giving a genuine witness to the arbitrary-feasible-point caveat. The global-upper-bound hypothesis is exactly the canonical certified-bound premise; it does not assume the integer conclusion.",
+    "confidence": 0.99
+  }
+]

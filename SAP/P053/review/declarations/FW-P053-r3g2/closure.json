@@ -1,0 +1,596 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P053.T6",
+   "target_id": "P053-T6",
+   "fingerprint": "eb2ebe077acea389af553b6e9dff6edeff813ff24ee20c85e0d022c82399bd5d",
+   "module": "SAP.P053.Challenge.Part1",
+   "line": 38,
+   "closure": [
+    {
+     "line": 49,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.ConstantEffects"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P053.Defs.Part5",
+     "name": "SAP.P053.ConstantVarianceApproximation"
+    },
+    {
+     "line": 97,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.InProbability"
+    },
+    {
+     "line": 102,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.LittleOInvSize"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.Y0"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.Y1"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.mk"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.n0"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.n1"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.size"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P053.Defs.Part5",
+     "name": "SAP.P053.PositiveOLS"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Regularity"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Regularity.mk"
+    },
+    {
+     "line": 47,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.SharpNull"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P053.Defs.Part5",
+     "name": "SAP.P053.SharpWaldValidity"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P053.Defs.Part5",
+     "name": "SAP.P053.T6Statement"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.averageEffect"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.centeredSS"
+    },
+    {
+     "line": 54,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.difference"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.estimate"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.fisherVariance"
+    },
+    {
+     "line": 113,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.normalCritical"
+    },
+    {
+     "line": 51,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.observed"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsLimit"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsVariance"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsVariance._proof_1"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.populationMean"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.populationVariance"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.randomizationMean"
+    },
+    {
+     "line": 65,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.randomizationProbability"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.randomizationVariance"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.residualSS"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.sampleMean"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.sampleVariance"
+    },
+    {
+     "line": 110,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.standardNormalCDF"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P053.Defs.Part1",
+     "name": "SAP.P053.support"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.unitEffects"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P053.T8",
+   "target_id": "P053-T8",
+   "fingerprint": "520ced1b138f1201cd5416fd6b88c003a0a8aa97f330c0ce0b05c6a123d092dc",
+   "module": "SAP.P053.Challenge.Part1",
+   "line": 52,
+   "closure": [
+    {
+     "line": 49,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.ConstantEffects"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.ConstantLimitAgreement"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.HeterogeneousFinite"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.HeterogeneousFinite._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.HeterogeneousFinite._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.HeterogeneousFinite._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.HeterogeneousFinite._proof_4"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.HeterogeneousLimit"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.HeterogeneousLimit._proof_1"
+    },
+    {
+     "line": 97,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.InProbability"
+    },
+    {
+     "line": 102,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.LittleOInvSize"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.NeymanBound"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.Y0"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.Y1"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.mk"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.n0"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.n1"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.size"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Regularity"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Regularity.mk"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P053.Defs.Part7",
+     "name": "SAP.P053.T8Statement"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.averageEffect"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.centeredSS"
+    },
+    {
+     "line": 54,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.difference"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.estimate"
+    },
+    {
+     "line": 115,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.heterogeneousWitness"
+    },
+    {
+     "line": 106,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.neymanLimit"
+    },
+    {
+     "line": 76,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.neymanVariance"
+    },
+    {
+     "line": 51,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.observed"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsLimit"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsVariance"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsVariance._proof_1"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.populationMean"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.populationVariance"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.randomizationMean"
+    },
+    {
+     "line": 65,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.randomizationProbability"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.randomizationVariance"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.residualSS"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.sampleMean"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.sampleVariance"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P053.Defs.Part1",
+     "name": "SAP.P053.support"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.unitEffects"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P053.T7",
+   "target_id": "P053-T7",
+   "fingerprint": "51019e19829a42e807a8480c54201084de01fa7afe9e33c9e4be1930291e8230",
+   "module": "SAP.P053.Challenge.Part1",
+   "line": 47,
+   "closure": [
+    {
+     "line": 97,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.InProbability"
+    },
+    {
+     "line": 102,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.LittleOInvSize"
+    },
+    {
+     "line": 29,
+     "module": "SAP.P053.Defs.Part6",
+     "name": "SAP.P053.LocalFisherComparison"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population"
+    },
+    {
+     "line": 24,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.Y0"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.Y1"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.mk"
+    },
+    {
+     "line": 22,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.n0"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.n1"
+    },
+    {
+     "line": 26,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Population.size"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Regularity"
+    },
+    {
+     "line": 83,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.Regularity.mk"
+    },
+    {
+     "line": 38,
+     "module": "SAP.P053.Defs.Part6",
+     "name": "SAP.P053.T7Statement"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P053.Defs.Part6",
+     "name": "SAP.P053.WaldComparison"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part6",
+     "name": "SAP.P053.WaldComparison._proof_1"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.averageEffect"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.centeredSS"
+    },
+    {
+     "line": 80,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.fisherVariance"
+    },
+    {
+     "line": 106,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.neymanLimit"
+    },
+    {
+     "line": 76,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.neymanVariance"
+    },
+    {
+     "line": 51,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.observed"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsLimit"
+    },
+    {
+     "line": 73,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsVariance"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.olsVariance._proof_1"
+    },
+    {
+     "line": 37,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.populationMean"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.populationVariance"
+    },
+    {
+     "line": 65,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.randomizationProbability"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.residualSS"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.sampleMean"
+    },
+    {
+     "line": 34,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.sampleVariance"
+    },
+    {
+     "line": 18,
+     "module": "SAP.P053.Defs.Part1",
+     "name": "SAP.P053.support"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P053.Defs.Part2",
+     "name": "SAP.P053.unitEffects"
+    }
+   ]
+  }
+ ]
+}

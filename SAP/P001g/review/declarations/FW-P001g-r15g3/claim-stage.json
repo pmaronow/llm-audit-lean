@@ -1,0 +1,20 @@
+[
+  {
+    "theorem": "SAP.P001g.T128",
+    "target_id": "P001-T128",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The displayed formula and limiting coverage lower bound match the canonical assertion; alpha, the standard-normal quantile, positive finite asymptotic variance, and the corrected n-scale variance consistency are all represented. However, the theorem only asserts limiting coverage of the open sets. It does not assert the additional random-interval property in definitions_needed, namely strictly ordered endpoints almost surely at every positive sample size. Nonnegative vhat permits vhat = 0 at finite sizes. The theorem therefore covers the asymptotic-coverage part, on a somewhat enlarged domain, while omitting that finite-size clause. Its docstring explicitly identifies this omission. The note's equality of limiting coverage and the finite_lemmas are audit history, not extra clauses of the canonical assertion."
+  },
+  {
+    "theorem": "SAP.P001g.T129",
+    "target_id": "P001-T129",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two conjuncts retain consistency of an actual-product maximizer under explicit compactness, continuity and unique population maximization, positive finite observed logarithms, and a finite pointwise uniform error envelope converging in probability, and retain the expected-log maximum/equality lemma on an independent true-model domain. They do not state the canonical statement's product-log/sample-average identity, uniqueness of the empirical maximizer, or the separate pointwise WLLN conclusion. The all-sample-point envelope is stronger than merely positing convergence of a measurable supremum up to null sets; its existence is assumed rather than derived. These limitations are explicitly disclosed in the docstring. The definitions use actual products, genuine joint laws and ordinary expectations on their stipulated positive integrable domains; they neither encode consistency nor assume it."
+  },
+  {
+    "theorem": "SAP.P001g.T130",
+    "target_id": "P001-T130",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both displayed sample averages are stated, with exact unbiasedness at every positive sample size and convergence in probability to the two canonical endpoints. Bounded outcomes render all means finite, binary R with positive probabilities of both values is exactly Supp[R] = {0,1}, and iid is imposed on the observed pairs as printed. The positive observed-response atom makes conditionalMeanAt the genuine conditional mean; the -99 code cancels as intended. No missing-at-random or independence-of-outcome-and-response assumption is added. Sharpness/identification of the population bounds is not separately asserted by this canonical target, which supplies the endpoints from Theorem 6.1.3."
+  }
+]

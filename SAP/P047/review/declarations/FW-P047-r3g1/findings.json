@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P047-T1",
+    "theorem": "SAP.P047.T1",
+    "fingerprint": "851c0d938ee97ca0a0b5e33c10bb123b33b6ab03858a103d353553ef144f0473",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean. AuditP047.S has uniform covariate, independent fair treatment, Y(0)=0 and independent Bernoulli(1/2) Y(1). Independently proved S_bounded : BoundedOverlap S 1 (1/4), S_treated : TreatedMeanModel S (1/4), and S_effect : ate S = 1/2. An example supplies both branches' law hypotheses together with n=1, alpha=1/4 and t=1 satisfying the scalar hypotheses. The checked witness proofs use only propext, Classical.choice and Quot.sound, without the reviewed theorems or sorryAx.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P047-T2",
+    "theorem": "SAP.P047.T2",
+    "fingerprint": "07921f3d5db1921eca202509dd313b4f229edb3ceea4f40b178523a946e65768",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean. An example constructs AuditP047.S with BoundedOverlap S 1 (1/4), ate S = 1/2, score S (1/2,true,(0,1)) = 2 and score S (1/2,false,(0,1)) = 0. Thus positive admissible B and epsilon give a genuine nonempty population class with a nonconstant contribution, rather than an empty probability supremum. For arbitrary admissible B and epsilon, independent uniform W and fair A with both potential outcomes zero give a mathematical nonemptiness witness. All displayed finite-tail hypotheses also admit n=1 and K=1. The compiled construction does not invoke SAP.P047.T1, T2 or T3; its named witness proofs have no sorryAx dependency.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P047-T3",
+    "theorem": "SAP.P047.T3",
+    "fingerprint": "aeabd0987349f6a24984a55280629cf362b4f959a73346c04fed8a1b011981a7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean. Independently constructs S and proves S.measure = baselineLaw, propensity identically 1/2, UnknownModel S and ate S = 1/2, including full joint ignorability. Proves unknownPopulations is nonempty and every member has integrable effect, so M=unknownPopulations satisfies both containing-model hypotheses. Uses Q=dirac () on Unit, a measurable constant-zero observed-data estimator, and measurable endpoints -infinity and +infinity. Compiled examples show the estimator's baseline error event at tolerance 1/12 has probability one, full interval coverage is one for every n, alpha=1/4 satisfies the honesty antecedent, and widthProb is one. The witness, class-integrability and coverage proofs have no sorryAx dependency and do not use the audited theorem stubs.",
+    "confidence": "high"
+  }
+]

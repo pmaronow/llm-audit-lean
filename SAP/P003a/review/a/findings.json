@@ -1,0 +1,182 @@
+[
+  {
+    "target_id": "P003-T29",
+    "theorem": "SAP.P003a.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "v=(0,0,0,2), m=1, alpha=1/2. There are two labeled assignments, one admissible treated-count state (0,0,0,1) of multiplicity 2, and both arms have size 1. scratch/Check.lean compiles the positive-arm, nonempty Assignment 2 1, possibility and p=1 checks.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T1",
+    "theorem": "SAP.P003a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed numerical assertions, no external hypotheses. The explicit v=(11,0,3,6), n=20, m=3, alpha=109/500 has 1140 assignments. The exceptional treated state (0,0,3,0) has multiplicity 1 and permits exactly the mask (0,0,1,0); otherwise the mask is zero. Independent labeled enumeration verifies both intervals, p-values and missing coverage 297/380, strictly below 391/500.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T2",
+    "theorem": "SAP.P003a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Coverage: v=(0,0,0,2),m=1,alpha=1/2, mu(q,r)=1 for r=(0,0,0,0) and 0 otherwise is a valid IsMissingLaw (compiled in scratch/Check.lean). Inclusion: o=(0,1,0,1), r=0. Nontrivial coupling: n=4,m=2,z={0,1}, w=(00,00,11,10), y=yprime=(0,0,1,0), r={2}, alpha=1/10. Then d=1, w is possible, p=1/3, and Tplus=0<tau(w)=1/4; the corresponding count calculations compile and independent labeled enumeration confirms p.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T3",
+    "theorem": "SAP.P003a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same compiled no-missingness law v=(0,0,0,2),m=1 satisfies the joint-law premises; r=0 and o=(0,1,0,1) satisfy the deterministic premises. The explicit unbalanced n=20,m=3 example gives a genuine nonzero missing mask and independently checked repaired hull coverage 892/1140=223/285, above 391/500.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T4",
+    "theorem": "SAP.P003a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed witnesses with legal positive integer search bounds 1<2 and actual threshold functions (constant accept with r=2, constant reject with r=0). The balanced o=(7,1,0,8) has positive arm sizes 8,8 and 144 possible population vectors; independent labeled enumeration verifies its exact interval and the two possible p=1 populations.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T5",
+    "theorem": "SAP.P003a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "k1=k2=0 is a legal one-point domain, d=1, fuel=2. Constant rejection has threshold r=-1 and run (-1,[0]); constant acceptance has threshold r=0 and run (0,[0]). Both runs compile in scratch/Check.lean. Thus the domain is nonempty, no sentinel is queried, and log2 is evaluated at 1.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T11",
+    "theorem": "SAP.P003a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed n=2,m=1 all-zero binary population is a legal nonempty randomization experiment. Its two assignments give deviation 0, so x=1 rejects at level 1/2 and every positive rejecting x has the smaller rejecting x/2.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T12",
+    "theorem": "SAP.P003a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Omega=Fin 2, w(0)=w(1)=1/2, D(0)=0, D(1)=1, alpha=3/4. The rejecting support consists of value 1 and has probability 1/2<3/4. Positive weights and normalization compile in scratch/Check.lean; normalization excludes an empty type.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T13",
+    "theorem": "SAP.P003a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Any positive-size binary table satisfies the premises, for example n=2 and w identically (false,false). The displayed n=20 count vectors are realized by ten 11 and ten 00 units, or by twenty 10 units respectively. No empty-population division is involved.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T14",
+    "theorem": "SAP.P003a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "g=zeroMass and k=2 satisfy the rescaling premises; IsMass zeroMass, its SDShape at center 0, and IsSD zeroMass compile in scratch/Check.lean. fairMass is the normalized finite-support law with mean 1/2. For the bad-rescaling witness, X=1/2 almost surely and k=2 give zero at every sampled physical point 2j.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T9",
+    "theorem": "SAP.P003a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two-point probability space Bool with mass 1/2 at each point, X1(B)=X2(B)=1 if B=true and 0 otherwise, realizes the displayed marginal and sum laws. All first moments converge absolutely; the failure is the strict inequality f(1)=0<f(2)=1/2 in the sum law.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T10",
+    "theorem": "SAP.P003a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "f=zeroMass satisfies IsSD by the compiled scratch example; smoothing gives fairMass and parity smoothing works for p=0 and p=1. The finite-support fairMass premise is also admissible and exercises a half-integer center. The shape-only clause is instantiated by zeroMass with doubled center 0.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T15",
+    "theorem": "SAP.P003a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "v=(0,1,0,1), m=1 has total 2 and one discordant unit; m times the estimator is 0 or 1 with equal probability. Independent exact checks verify the SD condition for all 114 discordant balanced population vectors with n=2,4,6.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T16",
+    "theorem": "SAP.P003a.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2,m=1,z={0} and any binary potential table meet the balanced identity premises; the two orientations of each displayed pair are actual outcomes. The six pair equalities have no hypotheses and use integer subtraction.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T17",
+    "theorem": "SAP.P003a.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed example v=(0,0,1,4),o=(0,2,0,3) has positive arm sizes 2,3 and the common total 5. The Monte Carlo premises are met by this v, m=2,K=1,alpha=1/2 and any fixed real C; the assignment space has 10 elements. Independent exact squared-statistic comparisons confirm p=1 for C=0 and p=2/5 for C=10^6.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T21",
+    "theorem": "SAP.P003a.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed o=(1,6,0,2), alpha=17/18 experiment has arm sizes 7,2, 36 labeled assignments and 42 possible population vectors. Independent enumeration confirms accepted effects {0,1/9}, the estimate 1/7 outside their hull, and p(1,0,1,7)=29/36.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T22",
+    "theorem": "SAP.P003a.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,1,0,1) has exactly the four population vectors listed in the proposition. For u=(0,1,1,0), its effect-zero j=1 line has first table u and k=0; for u=(0,0,0,2), j=0 has that first table. Thus the possible-table premise is inhabited and both distinct lines occur.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T23",
+    "theorem": "SAP.P003a.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The one-point domain k1=k2=0 and fuel 2 has trace [0]. Constant rejection returns -1 and demonstrates endpoint<rejected query; constant acceptance returns 0 and, with u=0, demonstrates the accepted-query implication. These runs compile in scratch/Check.lean.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "target_id": "P042-T1",
+    "theorem": "SAP.P042.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional explicit witnesses. The six-voter allocation set has exactly 90 elements with genuine uniform rational moments. The independent Binomial(100,1/2) product law has positive normalized masses on 101^3 triples. Independent exact enumeration in scratch/audit_checks.py reproduces all moments, thresholds, the reduced coverage fraction, and coverages 0.8886829667422668 and 0.9546954675333121. The coverageCount natural lower bound equals the intended max(0,2x-r).",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P042-T2",
+    "theorem": "SAP.P042.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Uniform independent signs on {-1,1}^3 satisfy the shared-control and independent-arm assumptions with n0=n1=n2=1 and sigmaSq=1. Repeating a single sign variable gives strictly positive variances, an attainable common-factor bound, and the J=3 equal-weight block with a=1/3 and c12=c13=c23=1. Two independent signs give nonempty disjoint singleton pools. For finite populations N=4 and n=(1,1,1) give 24 labelled allocations with one residual unit. scratch/Check.lean checks square integrability, a genuine probability measure, positive variance, and nonempty allocation spaces; scratch/audit_checks.py independently checks these finite examples, including the finite-population covariance formula. No empty type, zero denominator, nonintegrable integral, or conclusion-as-hypothesis is needed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P042-T3",
+    "theorem": "SAP.P042.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. Both supplied standard errors and all fixed/random weight denominators are strictly positive. The multiplier range is nonempty, containing both 19599/10000 and 49/25. scratch/audit_checks.py verifies every exact fraction and every squared endpoint bound at both extremes; monotonicity supplies the whole interval. The result establishes the fixed-effects numerical mismatch and alternative-method reproduction without assuming historical intent.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P042-T4",
+    "theorem": "SAP.P042.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The scalar assertions are unconditional with positive denominators and nonempty multiplier ranges. For the stochastic implication, use a uniform four-point sign square, D0=(1741/3125)Z0 and D1=(40891/50000)Z1, with independent centered unit-variance signs. scratch/Check.lean proves in Mathlib that both variables are L2, have exactly roboVariances, and have covariance zero. Exact arithmetic separately verifies the fixed/random means, variances, rounding bins, and positivity.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P042-T5",
+    "theorem": "SAP.P042.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On a uniform two-point probability space let Z=-1,+1 and D0=D1=Z. Both variables are L2 with variance 1. Their precision-weighted average is Z with variance 1, whereas 1/W=1/2. For the two disjoint singleton pools their difference is identically zero, whereas the proposed sum of inverse weight sums is 2. scratch/Check.lean verifies the probability space, L2/positive-variance hypotheses, pooled formula failure, and zero-versus-two difference calculation. These witnesses refute exactly the two specified unconditional variance readings.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P042-T6",
+    "theorem": "SAP.P042.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=4, m=2, c=(true,false,true,false), Y(false)=(0,1,0,1) and Y(true)=(1,1,1,1). There are six equiprobable treatment subsets, two compliers and two never-takers. Exact enumeration gives expected contact=1/2, expected observed contrast=ITT=1/2 and CACE=1. Thus the expected denominator is positive without requiring every realized contact count to be positive. scratch/audit_checks.py also verifies both potential-outcome balance identities and the numerical illustration. scratch/Check.lean verifies nonempty complete assignments and positive complier counts.",
+    "confidence": "high"
+  }
+]

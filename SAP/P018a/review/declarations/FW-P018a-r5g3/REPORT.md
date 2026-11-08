@@ -1,0 +1,18 @@
+# Review of SAP.P018a.T11–T14
+
+All four declarations are faithful to their canonical claims. Each record decision of `whole` is correct, and each Challenge docstring accurately describes its statement. No corrections are needed.
+
+The blind reading was saved in [reading.md](/home/ubuntu/sap/tasks/FW-P018a-r5g3/reading.md) before opening `claims.json`. It covers all 252 supplied closure entries, including repeated dependencies; all 43 distinct generated proof constants were printed and inspected. [claim-stage.json](/home/ubuntu/sap/tasks/FW-P018a-r5g3/claim-stage.json) was saved before opening `record.json`. The record did not change any conclusion.
+
+| Declaration | Assessment |
+| --- | --- |
+| T11 | All parts (a)–(f) are retained: actual scalar variance; the conditional row giving the literal unsummed target; exact fitted and expected sandwiches; both discrepancy limits; restored total-score variance; repeated block dimensions and normalization; and the independent uniform/sign two-regressor calculations. The witness meets the bounded iid-unit setting. S6 permits identical within-dyad records. |
+| T12 | All six repair clauses are present. The exact covariance is that of the population-bread linearized score. The sample linearization holds on every nonsingular sample. Sparse covariances are unconditional; raw moments require individual block centering. Both reductions, equivalent normalization, and both check models are stated. Arbitrary fixed record weights and empty blocks give valid additional generality. |
+| T13 | The exact binary data, unique logistic maximizer, global strict concavity, bread, both meats, both positive definite sandwiches, nonzero difference and incidence identity are all included. The literal printed cross product is represented with the repeated first regressor; the corrected product uses both dyads’ regressors. |
+| T14 | The corrected estimator, all score-product and incidence identities, symmetry, printed-factor factorization and concrete disagreement are retained. Distinct two-element endpoint sets express the simple dyad setting. The coefficient is arbitrary, with binary responses and nonsingular bread as the canonical hypotheses require. |
+
+The relevant literal displays were also checked against the [paper PDF](https://arxiv.org/pdf/1312.3398), PDF pages 9 and 24 in that version. The canonical claims control this review; audit notes and proof provenance add no clauses. Neither canonical counterexample is mislabeled as a refutation of its own assertion.
+
+[The scratch checks](/home/ubuntu/sap/tasks/FW-P018a-r5g3/scratch/Check.lean) compiled successfully with `/home/ubuntu/sap/tools/sap-lean scratch/Check.lean`, with no warnings or errors. They use definitions and Mathlib directly, without invoking any Challenge theorem. They establish the sign model’s standing assumptions and independent units, a joint positive-dimensional instance of every T12 premise, the logistic witness’s rank and zero score, unequal meat entries 14 and 27/2, and an existential witness satisfying every T14 hypothesis simultaneously. The continuous mixed-model moments were checked mathematically rather than reproved in scratch.
+
+Zero division, singular matrix inverses, nonintegrable Bochner integrals, conditional-expectation completions, and infinite-measure `toReal` do not produce any substantive conclusion here. Finite-size guards exclude problematic denominators; the fixed models have finite moments; logistic denominators and logarithm arguments are positive. Empty initial dyad types only affect finitely many terms of limits. The deliberately singular repeated block is exhibited as a defect and is never used through its completed inverse.

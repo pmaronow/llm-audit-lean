@@ -1,0 +1,190 @@
+import SAP.P022.Challenge
+
+set_option autoImplicit false
+open SAP.P022 Filter MeasureTheory
+open scoped BigOperators Topology ENNReal NNReal
+noncomputable section
+
+
+example : Nonempty (Assignment (reciprocalWitness.design 0)) := inferInstance
+example : (reciprocalWitness.design 0).N = 4 ∧
+    (reciprocalWitness.design 0).m = 2 ∧ (reciprocalWitness.design 0).k = 2 := by
+  norm_num [reciprocalWitness]
+
+lemma zero_row (t : Bool) (q : ℕ) :
+    rowOutcomes zeroWitness t q = fun _ => (0 : ℝ) := by
+  cases t <;> rfl
+
+lemma empirical_const {s : ℕ} (hs : 0 < s) (z x : ℝ) :
+    empiricalCDF (fun _ : Fin s => z) x = if z ≤ x then 1 else 0 := by
+  letI : Nonempty (Fin s) := Fin.pos_iff_nonempty.mp hs
+  simp [empiricalCDF, finiteMean]
+
+lemma origin_cdf (t : Bool) (x : ℝ) :
+    lawCDF originLaw t x = if 0 ≤ x then 1 else 0 := by
+  cases t <;> by_cases hx : 0 ≤ x <;>
+    simp [lawCDF, originLaw, hx]
+
+lemma zero_population_cdf (t : Bool) (q : ℕ) :
+    empiricalCDF (rowOutcomes zeroWitness t q) = lawCDF originLaw t := by
+  funext x
+  rw [zero_row, empirical_const (by have := (zeroWitness.design q).population_min; omega)]
+  exact (origin_cdf t x).symm
+
+lemma zero_weak : weakPopulationConvergence zeroWitness originLaw := by
+  intro f
+  have hf : ∫ p, f p ∂(originLaw : Measure (ℝ × ℝ)) = f (0,0) := by
+    simp [originLaw]
+  rw [hf]
+  have hfun : (fun q => finiteMean (fun i : Fin (zeroWitness.design q).N =>
+      f (zeroWitness.y1 i.val, zeroWitness.y0 i.val))) = fun _ : ℕ => f (0,0) := by
+    funext q
+    letI : Nonempty (Fin (zeroWitness.design q).N) :=
+      Fin.pos_iff_nonempty.mp (by have := (zeroWitness.design q).population_min; omega)
+    change (𝔼 _i : Fin (zeroWitness.design q).N, f (0,0)) = f (0,0)
+    exact Fintype.expect_const _
+  rw [hfun]
+  exact tendsto_const_nhds
+
+example (d : Design) : designProbability d (fun _ => True) = 1 := by
+  simp [designProbability, designExpectation]
+
+example (d : Design) (y1 y0 : Fin d.N → ℝ) (π : Assignment d) :
+    lastIntegralTerm d y1 y0 0 π = 0 ∧ lowerLastIntegralTerm d y1 y0 0 π = 0 := by
+  simp [lastIntegralTerm, lowerLastIntegralTerm]
+
+lemma half_limit : Tendsto
+    (fun q : ℕ => (((q + 4) / 2 : ℕ) : ℝ) / ((q : ℝ) + 4)) atTop (𝓝 (1 / 2 : ℝ)) := by
+  have hmod : Tendsto (fun q : ℕ => (((q + 4) % 2 : ℕ) : ℝ) / ((q : ℝ) + 4))
+      atTop (𝓝 (0 : ℝ)) := by
+    simpa only [Function.comp_def, id_eq, Nat.cast_add, Nat.cast_ofNat] using
+      (tendsto_mod_div_atTop_nhds_zero_nat (m := 2) (by decide)).comp
+        ((tendsto_add_atTop_iff_nat 4).2 tendsto_id)
+  have h := ((tendsto_const_nhds (x := (1 : ℝ))).sub hmod).div_const (2 : ℝ)
+  norm_num at h
+  convert h using 1
+  funext q
+  have hd : (((q + 4) % 2 : ℕ) : ℝ) + 2 * (((q + 4) / 2 : ℕ) : ℝ) = (q : ℝ) + 4 := by
+    exact_mod_cast Nat.mod_add_div (q + 4) 2
+  have hn : (q : ℝ) + 4 ≠ 0 := by positivity
+  field_simp
+  nlinarith
+
+lemma full_allocation (q : ℕ) :
+    (((zeroWitness.design q).m : ℝ) + (zeroWitness.design q).k) /
+      (zeroWitness.design q).N = 1 := by
+  change ((((q + 4) / 2 : ℕ) : ℝ) + ((q + 4 - (q + 4) / 2 : ℕ) : ℝ)) /
+    ((q + 4 : ℕ) : ℝ) = 1
+  have hh : (((q + 4) / 2 : ℕ) : ℝ) + ((q + 4 - (q + 4) / 2 : ℕ) : ℝ) =
+      ((q + 4 : ℕ) : ℝ) := by
+    exact_mod_cast Nat.add_sub_of_le (Nat.div_le_self (q + 4) 2)
+  rw [hh, div_self (by positivity)]
+
+lemma zero_conditions : Conditions123 zeroWitness originLaw 1 (1/2) := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num, ?_, ?_, zero_weak, ?_⟩
+  · simpa [zeroWitness, reciprocalWitness] using half_limit
+  · simpa only [full_allocation] using (tendsto_const_nhds :
+      Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 1))
+  · intro t x _
+    simpa only [zero_population_cdf] using (tendsto_const_nhds :
+      Tendsto (fun _ : ℕ => lawCDF originLaw t x) atTop (𝓝 (lawCDF originLaw t x)))
+
+lemma zero_sample_cdf (t : Bool) (q : ℕ) (π : Assignment (zeroWitness.design q)) :
+    sampledCDF zeroWitness t q π = lawCDF originLaw t := by
+  funext x
+  cases t
+  · change empiricalCDF (fun _ : Fin (zeroWitness.design q).k => (0 : ℝ)) x =
+      lawCDF originLaw false x
+    rw [empirical_const (by have := (zeroWitness.design q).control_min; omega), origin_cdf]
+  · change empiricalCDF (fun _ : Fin (zeroWitness.design q).m => (0 : ℝ)) x =
+      lawCDF originLaw true x
+    rw [empirical_const (by have := (zeroWitness.design q).treatment_min; omega), origin_cdf]
+
+lemma cdf_self (G : ℝ → ℝ) : cdfDistance G G = 0 := by
+  simp [cdfDistance]
+
+lemma scaled_false (S : ExperimentSequence) :
+    scaledProbabilityLimsup S (fun _ _ => False) = 0 := by
+  simp [scaledProbabilityLimsup, designProbability, designExpectation]
+
+lemma zero_lemma2 : Lemma2Conclusions zeroWitness originLaw 1 (1/2) := by
+  refine ⟨?_, (fun _ => 1), (fun _ => 1), ?_, ?_, ?_, ?_⟩
+  · intro t
+    simpa only [zero_population_cdf, cdf_self] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+  · intro η _; exact ⟨by norm_num, by norm_num⟩
+  · intro a b _ _; exact ⟨le_rfl, le_rfl⟩
+  · intro η hη
+    simp only [zero_sample_cdf, cdf_self, not_le.mpr hη, scaled_false]
+    exact bot_le
+  · intro η hη
+    simp only [zero_sample_cdf, cdf_self, not_le.mpr hη, scaled_false]
+    exact bot_le
+
+example : ∃ S H, Conditions123 S H 1 (1/2) ∧ Lemma2Conclusions S H 1 (1/2) ∧
+    (∀ i, |S.y1 i| ≤ (1 : ℝ) ∧ |S.y0 i| ≤ 1) := by
+  refine ⟨zeroWitness, originLaw, zero_conditions, zero_lemma2, ?_⟩
+  intro i
+  norm_num [zeroWitness]
+
+lemma seven_zero (d : Design) (C : ℝ) (π : Assignment d) :
+    sevenTerms d (fun _ => 0) (fun _ => 0) C π = fun _ => 0 := by
+  have hN := empirical_const (s := d.N) (by have := d.population_min; omega) (0 : ℝ)
+  have hM := empirical_const (s := d.m) (by have := d.treatment_min; omega) (0 : ℝ)
+  have hK := empirical_const (s := d.k) (by have := d.control_min; omega) (0 : ℝ)
+  have ht : empiricalCDF (observedTreatment d (fun _ => 0) π) =
+      empiricalCDF (fun _ : Fin d.N => 0) := by
+    funext x
+    change empiricalCDF (fun _ : Fin d.m => 0) x = empiricalCDF (fun _ : Fin d.N => 0) x
+    rw [hM x, hN x]
+  have hc : empiricalCDF (observedControl d (fun _ => 0) π) =
+      empiricalCDF (fun _ : Fin d.N => 0) := by
+    funext x
+    change empiricalCDF (fun _ : Fin d.k => 0) x = empiricalCDF (fun _ : Fin d.N => 0) x
+    rw [hK x, hN x]
+  have hl : lastIntegralTerm d (fun _ => 0) (fun _ => 0) C π = 0 := by
+    simp [lastIntegralTerm, ht, hc]
+  funext j
+  fin_cases j <;> simp [sevenTerms, finiteMean, observedTreatment, observedControl, hl]
+
+lemma zero_earlier (C : ℝ) (ν : Fin 8 → ℝ) (hν : ∀ i, 0 < ν i) :
+    EarlierSixRates zeroWitness 1 (1/2) C ν := by
+  intro j
+  have hpos : 0 < correctedAllocation ν 0 ⟨j.val, by omega⟩ := by
+    fin_cases j <;> dsimp [correctedAllocation] <;>
+      first | exact hν _ | exact add_pos (hν _) (hν _)
+  simp only [zero_row, seven_zero, abs_zero, not_le.mpr hpos, scaled_false]
+  exact bot_le
+
+example : ∃ (S : ExperimentSequence) (H : JointLaw) (ν : Fin 8 → ℝ), Conditions123 S H 1 (1/2) ∧
+    Lemma2Conclusions S H 1 (1/2) ∧
+    (∀ i, |S.y1 i| ≤ (1 : ℝ) ∧ |S.y0 i| ≤ 1) ∧
+    (0 : ℝ) < 1 ∧ (0 : ℝ) < 1/32 ∧ (1/32 : ℝ) < 1/(16*1^2) ∧
+    (∀ i, 0 < ν i) ∧ (∑ i, ν i) = (1/2 : ℝ) ∧
+    EarlierSixRates S 1 (1/2) 1 ν ∧
+    (∀ (w : Fin 8 → ℝ), (∀ i, 0 < w i) → (∑ i, w i) = (1/2 : ℝ) →
+      EarlierSixRates S 1 (1/2) 1 w) := by
+  refine ⟨zeroWitness, originLaw, (fun _ => 1/16), zero_conditions, zero_lemma2,
+    ?_, by norm_num, by norm_num, by norm_num, ?_, ?_, ?_, ?_⟩
+  · intro i; norm_num [zeroWitness]
+  · intro i; norm_num
+  · norm_num
+  · exact zero_earlier 1 _ (by intro i; norm_num)
+  · intro w hw _; exact zero_earlier 1 w hw
+
+example : ∃ (S : ExperimentSequence) (H : JointLaw) (ν : Fin 8 → ℝ), Conditions123 S H 1 (1/2) ∧
+    Lemma2Conclusions S H 1 (1/2) ∧
+    (∀ i, |S.y1 i| ≤ (1 : ℝ) ∧ |S.y0 i| ≤ 1) ∧
+    (∀ i, 0 < ν i) ∧ (∑ i, ν i) = (1 : ℝ) ∧
+    (0 : ℝ) < 1/16 ∧ (1/16 : ℝ) < 1/(8*1^2) ∧
+    EarlierSixRates S 1 (1/2) 1 ν := by
+  refine ⟨zeroWitness, originLaw, (fun _ => 1/8), zero_conditions, zero_lemma2,
+    ?_, ?_, ?_, by norm_num, by norm_num, ?_⟩
+  · intro i; norm_num [zeroWitness]
+  · intro i; norm_num
+  · norm_num
+  · exact zero_earlier 1 _ (by intro i; norm_num)
+
+#print axioms zero_conditions
+#print axioms zero_lemma2
+#print axioms zero_earlier

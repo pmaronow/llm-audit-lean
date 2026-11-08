@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P046-T1",
+    "theorem": "SAP.P046.T1",
+    "fingerprint": "ce6ec40d69730a1e71a08206454d84ca18ae6126b6acb15290820a53f15dde01",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed counterexample with no theorem-level premises. scratch/Check.lean:12 compiles the explicit IntervalExample.study validity conjunct from the certified declaration; lines 14 and 18 directly reduce generator values. Its law uses independent uniform W,U and independent sample coordinates. scratch/audit_arithmetic.py independently classifies all 5151 states using an exact rational logarithm enclosure, obtains 1946 failures, checks total probability one, the exact integer numerator, and both strict probability comparisons; results are in scratch/arithmetic.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T2",
+    "theorem": "SAP.P046.T2",
+    "fingerprint": "3054f38117b08dad013eb4739b6c2a3e3076ba4199fffea9f05b9ce540960edb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed counterexample with no theorem-level premises. scratch/Check.lean:23 compiles ValidStudy ConditionalExample.study and line 25 its positive event-mass conjunct from the certified declaration; lines 28 and 32 directly check the generator and membership of an explicit design-respecting sample in E. The actual event mass is 2^(-100), with independent uniform covariates and independent Bernoulli assignments, so the restricted a.e. conclusions apply on positive probability. All means and conditional indicators are bounded and measurable.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T3",
+    "theorem": "SAP.P046.T3",
+    "fingerprint": "f8f2e910c643f5fa08e0c019ffd8ee9cc97204a2d99424711936c3c89aa665ac",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:37 compiles an existential instance satisfying every premise of the coverage, conditional-tail and known-bound components: M=ConditionalExample.study, n=100, alpha=1/20, b=9/10 and t=1. ValidStudy is taken from the independently specified certified T2 witness; the remaining positive-number and lower-bound conditions are proved directly. All additional structural and proof-step assertions have only validity and these scalar premises.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T4",
+    "theorem": "SAP.P046.T4",
+    "fingerprint": "10b597ca07d498e78efe569441794a67acc8c0e74bab936c8111f545eee729b6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed counterexample with no theorem-level premises. scratch/Check.lean:45 and line 47 compile validity and balance from the certified declaration; lines 49 and 54 directly check generated lower-half data with both assignments, and line 59 proves g_0 is not zero. The generator uses three independent uniforms, giving the stipulated conditional independence. scratch/audit_arithmetic.py independently enumerates all eight latent (L,Z,X) atoms and, using exact fractions, all 64 size-2 and 4096 size-4 samples, checking means, second moments, variances and nonnegative empirical quadratic coefficients on both folds.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T5",
+    "theorem": "SAP.P046.T5",
+    "fingerprint": "e0fec5e2995968c7e1af0c9ac9ca3e479a13712b8550d4fadfe2a518539b8996",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:65 constructs balanced fits identically zero; line 71 constructs the fixed singleton zero family with d=0. The example at line 84 jointly satisfies every family-theorem premise on ConditionalExample.study: validity, balance, member L2, zero inclusion, exact opposite-fold empirical minimization for every n,j, deterministic population minimization and genuine extended-L2 convergence for both folds. The example at line 112 jointly satisfies every direct-theorem premise, including measurability and the extended-risk inequality. Neither example uses T5. Validity and the balanced fold counts are supplied by the certified T2/T4 closed witnesses; all new fitting and convergence obligations are proved directly. The additional universal norm/variance components also have zero-function instances at lines 122-124.",
+    "confidence": 0.99
+  }
+]

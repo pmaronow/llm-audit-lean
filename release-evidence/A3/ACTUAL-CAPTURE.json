@@ -1,0 +1,75 @@
+{
+  "at": "2026-11-08T02:36:44.734327+00:00",
+  "capture_complete": true,
+  "identity": {
+    "boot_id": "787d8ad1-3854-4eb0-9229-b44214fc6ee7",
+    "pgid": 3585010,
+    "pid": 3585010,
+    "sid": 3585010,
+    "start_ticks": 57034698,
+    "uid": 1000
+  },
+  "native": {
+    "native": {
+      "COMPLETION.json": {
+        "bytes": 253,
+        "mode": "0664",
+        "path": "/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001/COMPLETION.json",
+        "sha256": "a6e26d0953c3586254dd33bd140d5b18a86d9a3996ec59f713eff7ddb06a7af6"
+      },
+      "INTENT.json": {
+        "bytes": 2604,
+        "mode": "0664",
+        "path": "/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001/INTENT.json",
+        "sha256": "2e9ced76e85bfc43343b90a12f5d8e43e384db4f4f0edcf5ab90021876ae9600"
+      },
+      "LAUNCH.json": {
+        "bytes": 2323,
+        "mode": "0664",
+        "path": "/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001/LAUNCH.json",
+        "sha256": "23f3d6b23b5ac7712a8a035745776d7328c5603d81d4a7199f562ba9d7526ae9"
+      },
+      "exit": {
+        "bytes": 2,
+        "mode": "0664",
+        "path": "/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001/exit",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      "stderr.log": {
+        "bytes": 0,
+        "mode": "0664",
+        "path": "/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout.log": {
+        "bytes": 0,
+        "mode": "0664",
+        "path": "/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001/stdout.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "root": "/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001",
+    "semantic": {
+      "pending_summary": null,
+      "summary": {
+        "bytes": 11217,
+        "mode": "0664",
+        "path": "/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/replay/replay-summary.json",
+        "sha256": "58b93d9a3f77703bd3b89c1706ef1068d6dd1f318af7da8721866543a81f2c2a"
+      }
+    }
+  },
+  "native_exit_code": 0,
+  "phase": "all",
+  "program_rerun": false,
+  "readback_ssh_exit_code": 0,
+  "readback_stdout_sha256": "b0d8ed5dc5776769fa96e08ac4e6f4f69e9c6d56d96de979b7b95849bc747ae9",
+  "remote_readback_source_sha256": "c8e675406c56f25ac1747413b2c098f39ba9977d00e046216f3eafd4f8befeec",
+  "scope": "Actual native/semantic metadata capture only; no certificate or release approval.",
+  "semantic_acceptance_or_review_issued": false,
+  "transport_argv": [
+    "ssh",
+    "dbl-ws",
+    "/usr/bin/python3.12 -I -S -B -c 'OP='\"'\"'/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001'\"'\"'\nSEMANTIC={'\"'\"'summary'\"'\"': '\"'\"'/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/replay/replay-summary.json'\"'\"', '\"'\"'pending_summary'\"'\"': '\"'\"'/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/replay/replay-summary.pending.json'\"'\"'}\n\nfrom pathlib import Path\nimport base64,hashlib,json,os,stat\nroot=Path(OP)\nassert root.resolve(strict=True)==root and root.is_dir()\nallowed={'\"'\"'INTENT.json'\"'\"','\"'\"'LAUNCH.json'\"'\"','\"'\"'COMPLETION.json'\"'\"','\"'\"'exit'\"'\"','\"'\"'stdout.log'\"'\"','\"'\"'stderr.log'\"'\"','\"'\"'RECORDER-ERROR.json'\"'\"'}\nassert {p.name for p in root.iterdir()}<=allowed\ndef read(path):\n assert path.resolve(strict=True)==path\n s=path.lstat()\n assert stat.S_ISREG(s.st_mode) and s.st_nlink==1 and s.st_size<128*1024**2\n raw=path.read_bytes();t=path.lstat()\n stamp=lambda v:(v.st_dev,v.st_ino,v.st_mode,v.st_nlink,v.st_size,v.st_mtime_ns,v.st_ctime_ns)\n assert stamp(s)==stamp(t)\n return {'\"'\"'path'\"'\"':str(path),'\"'\"'bytes'\"'\"':len(raw),'\"'\"'sha256'\"'\"':hashlib.sha256(raw).hexdigest(),\n         '\"'\"'mode'\"'\"':format(stat.S_IMODE(s.st_mode),'\"'\"'04o'\"'\"'),'\"'\"'base64'\"'\"':base64.b64encode(raw).decode()}\nnative={p.name:read(p) for p in sorted(root.iterdir())}\noutputs={key:read(Path(value)) if os.path.lexists(value) else None for key,value in SEMANTIC.items()}\nprint(json.dumps({'\"'\"'root'\"'\"':OP,'\"'\"'native'\"'\"':native,'\"'\"'semantic'\"'\"':outputs},sort_keys=True))\n'"
+  ]
+}

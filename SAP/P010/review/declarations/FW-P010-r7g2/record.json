@@ -1,0 +1,98 @@
+[
+ {
+  "target_id": "P010-T6",
+  "decision": "whole",
+  "theorem": "SAP.P010.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.proposition_one_else_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P010.else_branch_criterion",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   }
+  ],
+  "bridge": "SAP.P010.Bridge.T6_correspondence",
+  "statement_definition": "SAP.P010.T6Statement"
+ },
+ {
+  "target_id": "P010-T7",
+  "decision": "whole",
+  "theorem": "SAP.P010.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.joint_independence_step_counterexample"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T7_correspondence",
+  "statement_definition": "SAP.P010.T7Statement",
+  "declaration_review_round_4": {
+   "finding": "label_wrong/minor: the theorem establishes the canonical counterexample rather than refuting that counterexample assertion.",
+   "resolution": "Relabelled whole and rewrote the docstring to identify the canonical counterexample and the specific printed assertion it refutes. Formal statement, proof, theorem name and row accounting unchanged.",
+   "source": "fw/round4/T7/r6g2/findings.json",
+   "status": "resolved"
+  }
+ },
+ {
+  "target_id": "P010-T8",
+  "decision": "whole",
+  "theorem": "SAP.P010.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.corollary_one_corrected_proof"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T8_correspondence",
+  "statement_definition": "SAP.P010.T8Statement"
+ },
+ {
+  "target_id": "P010-T9",
+  "decision": "whole",
+  "theorem": "SAP.P010.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.simulation_width_counterexample_proof"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P010.Bridge.T9_correspondence",
+  "statement_definition": "SAP.P010.T9Statement",
+  "declaration_review_round_4": {
+   "finding": "label_wrong/minor: the theorem establishes the canonical counterexample rather than refuting that counterexample assertion.",
+   "resolution": "Relabelled whole and rewrote the docstring to identify the canonical counterexample and the specific printed assertion it refutes. Formal statement, proof, theorem name and row accounting unchanged.",
+   "source": "fw/round4/T9/r6g2/findings.json",
+   "status": "resolved"
+  }
+ },
+ {
+  "target_id": "P010-T10",
+  "decision": "whole",
+  "theorem": "SAP.P010.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P010.Wave1.simulation_invariance_corrected_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P010.bounds_fixed_observables",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P010.bounds_fixed_observables_actual",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P010.simulation_mean_formula_injective",
+    "reason": "Auxiliary row is not needed separately: the primary declaration already establishes the complete target statement."
+   }
+  ],
+  "bridge": "SAP.P010.Bridge.T10_correspondence",
+  "statement_definition": "SAP.P010.T10Statement",
+  "declaration_review_round_1": {
+   "finding": "not_faithful/minor: docstring omitted the nonzero-lambda qualification for simulation sensitivity.",
+   "resolution": "Added λ ≠ 0 and feasible correlation to the prose summary; stated the two specified designs have different widths. Formal statement and whole decision unchanged.",
+   "source": "fw/round1/T10/r1g2/findings.json",
+   "status": "resolved"
+  }
+ }
+]

@@ -1,0 +1,196 @@
+import SAP.P029a.Defs
+
+open SAP.P029a
+open scoped BigOperators Classical
+
+set_option maxRecDepth 4096
+set_option maxHeartbeats 1500000
+
+namespace Audit
+
+-- Independence of an arbitrary map of a finite latent variable and its
+-- independently sampled Boolean assignment, checked without Challenge stubs.
+lemma product_independent {L A : Type*} [Fintype L]
+    (p : L → ℝ) (hp : ∑ i, p i = 1) (e : ℝ) (U : L → A) :
+    FiniteIndependent (bernoulliProductMass p e) (fun i => U i.1) Prod.snd := by
+  intro a b
+  have hsum : ∀ x, p x * e + p x * (1 - e) = p x := by
+    intro x
+    ring
+  have htrue : (∑ x, p x * e) = e := by
+    rw [← Finset.sum_mul, hp]
+    ring
+  have hfalse : (∑ x, p x * (1 - e)) = 1 - e := by
+    rw [← Finset.sum_mul, hp]
+    ring
+  cases b <;>
+    simp [finiteProbability, bernoulliProductMass, Fintype.sum_prod_type,
+      Fintype.sum_bool, hsum, htrue, hfalse] <;>
+    rw [Finset.sum_mul] <;>
+    apply Finset.sum_congr rfl <;>
+    intro x hx <;> split_ifs <;> ring
+
+-- T11: all facts of both concrete SEM laws, proved by their finite data.
+example : SEMDefierFacts := by
+  unfold SEMDefierFacts
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · constructor
+    · intro i
+      rcases i with ⟨t,z⟩
+      cases t <;> cases z <;>
+        norm_num [semDefierWitnessMass, bernoulliProductMass, semComplianceMass]
+    · norm_num [semDefierWitnessMass, bernoulliProductMass, semComplianceMass,
+        Fintype.sum_prod_type, Fintype.sum_bool]
+  · exact product_independent semComplianceMass
+      (by norm_num [semComplianceMass, Fintype.sum_bool]) (1/4)
+      (fun t => ((semDefierResponse t).x, (semDefierResponse t).d0,
+        (semDefierResponse t).d1, (semDefierResponse t).y0, (semDefierResponse t).y1))
+  · intro i
+    rcases i with ⟨t,z⟩
+    cases t <;> cases z <;>
+      norm_num [semDefierResponse, PotentialResponse.treatmentEffect,
+        PotentialResponse.observedOutcome, PotentialResponse.receivedTreatment,
+        semDefierResidual, indicatorValue]
+  · intro z
+    cases z <;>
+      norm_num [finiteConditionalMean, finiteExpectation, finiteProbability,
+        semDefierWitnessMass, bernoulliProductMass, semComplianceMass,
+        semDefierResidual, semDefierResponse, PotentialResponse.receivedTreatment,
+        indicatorValue, Fintype.sum_prod_type, Fintype.sum_bool]
+  all_goals norm_num [finiteExpectation, finiteProbability, finiteVariance,
+    finiteCorrelation, finiteCovariance, semDefierWitnessMass, bernoulliProductMass,
+    semComplianceMass, semDefierResponse, PotentialResponse.receivedTreatment,
+    PotentialResponse.isDefier, indicatorValue, Fintype.sum_prod_type, Fintype.sum_bool]
+
+example : SEMDependenceFacts := by
+  unfold SEMDependenceFacts
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [IsFiniteLaw, Fin.sum_univ_succ]
+  · intro i
+    fin_cases i <;>
+      norm_num [semDependentResponse, semDependentAssignment, semDependentResidual,
+        PotentialResponse.treatmentEffect, PotentialResponse.observedOutcome,
+        PotentialResponse.receivedTreatment, indicatorValue]
+  · intro z
+    cases z <;>
+      norm_num [finiteConditionalMean, finiteExpectation, finiteProbability,
+        semDependentResponse, semDependentAssignment, semDependentResidual,
+        PotentialResponse.receivedTreatment, indicatorValue, Fin.sum_univ_succ]
+  · norm_num [finiteVariance, finiteCovariance, finiteExpectation,
+      semDependentAssignment, indicatorValue, Fin.sum_univ_succ]
+  · norm_num [finiteVariance, finiteCovariance, finiteExpectation,
+      semDependentResponse, Fin.sum_univ_succ]
+  · have h : Real.sqrt ((1/4 : ℝ) * (5/2)) ≠ 0 :=
+      ne_of_gt (Real.sqrt_pos.2 (by norm_num))
+    norm_num [finiteCorrelation, finiteVariance, finiteCovariance, finiteExpectation,
+      semDependentAssignment, semDependentResponse, indicatorValue, Fin.sum_univ_succ]
+  · norm_num [finiteCovariance, finiteExpectation, semDependentAssignment,
+      semDependentResponse, PotentialResponse.receivedTreatment, indicatorValue,
+      Fin.sum_univ_succ]
+  · norm_num [finiteCovariance, finiteExpectation, semDependentAssignment,
+      semDependentResponse, PotentialResponse.receivedTreatment, indicatorValue,
+      Fin.sum_univ_succ]
+  · norm_num [finiteProbability, semDependentResponse,
+      PotentialResponse.isDefier, Fin.sum_univ_succ]
+  · intro h
+    have heq := h (-2) true
+    norm_num [finiteProbability, semDependentResponse, semDependentAssignment,
+      Fin.sum_univ_succ] at heq
+
+-- A nonempty instance of every premise in the SEM potential-outcome identity.
+example : ∃ (Y0 Y1 u : Unit → ℝ) (Q : Unit → Unit → ℝ)
+    (β0 β1 : ℝ) (coeff : Unit → ℝ),
+    (∀ i, Y0 i = β0 + (∑ k, coeff k * Q i k) + u i) ∧
+    (∀ i, Y1 i = β0 + β1 + (∑ k, coeff k * Q i k) + u i) ∧
+    (∀ i, Y1 i - Y0 i = β1) := by
+  refine ⟨fun _ => 5, fun _ => 6, fun _ => 2, fun _ _ => 1,
+    0, 1, fun _ => 3, ?_⟩
+  norm_num
+
+-- T12: the all-complier witness satisfies every IV hypothesis and has two effects.
+example : FiniteIVConditions (bernoulliProductMass (fun _ : Bool => 1/2) (1/2))
+    (assignResponse heterogeneousResponse) Prod.snd := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [IsFiniteLaw, bernoulliProductMass, Fintype.sum_prod_type, Fintype.sum_bool]
+  · norm_num [finiteProbability, bernoulliProductMass, Fintype.sum_prod_type, Fintype.sum_bool]
+  · norm_num [finiteProbability, bernoulliProductMass, Fintype.sum_prod_type, Fintype.sum_bool]
+  · exact product_independent (fun _ : Bool => (1/2 : ℝ))
+      (by norm_num [Fintype.sum_bool]) (1/2)
+      (fun t => ((heterogeneousResponse t).x, (heterogeneousResponse t).d0,
+        (heterogeneousResponse t).d1, (heterogeneousResponse t).y0, (heterogeneousResponse t).y1))
+  · norm_num [finiteProbability, bernoulliProductMass, assignResponse,
+      heterogeneousResponse, PotentialResponse.isDefier, Fintype.sum_prod_type,
+      Fintype.sum_bool]
+  · norm_num [finiteConditionalMean, finiteProbability, finiteExpectation,
+      bernoulliProductMass, assignResponse, heterogeneousResponse,
+      PotentialResponse.receivedTreatment, indicatorValue, Fintype.sum_prod_type,
+      Fintype.sum_bool]
+
+example : ¬ ∃ β : ℝ, ∀ h, (heterogeneousResponse h).treatmentEffect = β := by
+  rintro ⟨β,hβ⟩
+  have h0 := hβ false
+  have h1 := hβ true
+  norm_num [heterogeneousResponse, PotentialResponse.treatmentEffect] at h0 h1
+  linarith
+
+-- T13: all population hypotheses, independent observation law, positive domains.
+example : FiniteIVConditions sixAtomMass (assignResponse constantResponse) Prod.snd ∧
+    FiniteLatentIgnorability sixAtomMass (assignResponse constantResponse) ∧
+    finiteComplianceScore sixAtomMass (assignResponse constantResponse) () = 1/2 ∧
+    (1/4 : ℝ) < finiteComplianceScore sixAtomMass (assignResponse constantResponse) () := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+    · constructor
+      · intro i
+        rcases i with ⟨j,z⟩
+        fin_cases j <;> cases z <;>
+          norm_num [sixAtomMass, bernoulliProductMass, complianceTypeMass]
+      · norm_num [sixAtomMass, bernoulliProductMass, complianceTypeMass,
+          Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_succ]
+    · norm_num [finiteProbability, sixAtomMass, bernoulliProductMass,
+        complianceTypeMass, Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_succ]
+    · norm_num [finiteProbability, sixAtomMass, bernoulliProductMass,
+        complianceTypeMass, Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_succ]
+    · exact product_independent complianceTypeMass
+        (by norm_num [complianceTypeMass, Fin.sum_univ_succ]) (1/2)
+        (fun t => ((constantResponse t).x, (constantResponse t).d0,
+          (constantResponse t).d1, (constantResponse t).y0, (constantResponse t).y1))
+    · norm_num [finiteProbability, sixAtomMass, bernoulliProductMass,
+        complianceTypeMass, assignResponse, constantResponse, PotentialResponse.isDefier,
+        Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_succ]
+    · norm_num [finiteConditionalMean, finiteProbability, finiteExpectation,
+        sixAtomMass, bernoulliProductMass, complianceTypeMass, assignResponse,
+        constantResponse, PotentialResponse.receivedTreatment, indicatorValue,
+        Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_succ]
+  · intro x hx
+    cases x
+    norm_num [finiteConditionalMean, finiteProbability, finiteExpectation,
+      sixAtomMass, bernoulliProductMass, complianceTypeMass, assignResponse,
+      constantResponse, PotentialResponse.isComplier, PotentialResponse.treatmentEffect,
+      Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_succ]
+  all_goals norm_num [finiteComplianceScore, finiteProbability, sixAtomMass,
+    bernoulliProductMass, complianceTypeMass, assignResponse, constantResponse,
+    PotentialResponse.isComplier, Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_succ]
+
+example : IsFiniteLaw twoReceiptMass ∧
+    FiniteIndependent twoReceiptMass Prod.fst Prod.snd ∧
+    (∀ d, 0 < twoReceiptMass d) := by
+  refine ⟨?_, ?_, ?_⟩
+  · constructor
+    · intro i
+      rcases i with ⟨d1,d0⟩
+      cases d1 <;> cases d0 <;> norm_num [twoReceiptMass]
+    · norm_num [twoReceiptMass, Fintype.sum_prod_type, Fintype.sum_bool]
+  · intro d1 d0
+    cases d1 <;> cases d0 <;>
+      norm_num [finiteProbability, twoReceiptMass, Fintype.sum_prod_type, Fintype.sum_bool]
+  · intro d
+    rcases d with ⟨d1,d0⟩
+    cases d1 <;> cases d0 <;> norm_num [twoReceiptMass]
+
+-- Check the positive correlation denominators independently of zero numerators.
+example : (0 : ℝ) < Real.sqrt ((3/16) * (3/16)) ∧
+    (0 : ℝ) < Real.sqrt ((1/4) * (5/2)) := by
+  constructor <;> apply Real.sqrt_pos.2 <;> norm_num
+
+end Audit

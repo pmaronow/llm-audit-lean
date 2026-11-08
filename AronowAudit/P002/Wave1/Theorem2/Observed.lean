@@ -5,11 +5,11 @@ import AronowAudit.P002.Wave1.E61Eigenvalue.N6
 import AronowAudit.P002.Wave1.E61Eigenvalue.N11
 
 /-!
-Regression bounds for P002-T5, corrected Theorem 2.
+Regression application machinery for P002-T5, corrected Theorem 2.
 
-A finite, uniform Gram concentration bound gives an event controlling the quadratic form
-for every coefficient vector and both arms at once. This event controls fitted
-coefficients and residual sums of squares.
+AC.1 is a finite, uniform Gram concentration bound. Its good event controls the
+quadratic form for every coefficient vector and both arms at once. Subsequent
+nodes use this event to control fitted coefficients and residual sums of squares.
 All probabilities below are the actual complete-randomization probabilities.
 -/
 
@@ -108,7 +108,7 @@ lemma T2C_arm_tail {n} (P : Population n) (hP : ValidDesign P)
     _ ≤ expectation P (fun S => (armMean q S a-mean q)^2) := h
     _ ≤ 2*M/(r*n) := T2C_arm_mse P hP hm hc r M hr hl hu q hM hq a
 
-/-- Covariate-only assumptions, so the same lemmas apply to fixed responses. -/
+/-- Covariate-only assumptions, so the same lemmas apply to frozen responses. -/
 def T2C_covariates {n k} (x : Fin n → Fin k → ℝ) (e A : ℝ) : Prop :=
   (∀ s, ∑ i, x i s = 0) ∧
   (∀ s, mean (fun i => x i s^4) ≤ A) ∧
@@ -159,7 +159,7 @@ lemma T2C_gramGood_of_entries {n k} (x : Fin n → Fin k → ℝ) (e A : ℝ)
   linarith [neg_abs_le (dotProduct b (gram x (if a then S else Sᶜ) *ᵥ b)-
     dotProduct b (gram x Finset.univ *ᵥ b))]
 
-/-- An explicit O(1/n) bound, uniform in the response and both arms. -/
+/-- AC.1: an explicit O(1/n) bound, uniform in the response and both arms. -/
 theorem T2C_gram_bad_bound {n k} (P : CovPopulation n k) (e A r : ℝ)
     (hP : ValidDesign P.pop) (hm : 2 ≤ P.pop.n1) (hc : 2 ≤ n-P.pop.n1)
     (he : 0 < e) (hr : 0 < r) (hl : r*n ≤ (P.pop.n1 : ℝ))
@@ -202,7 +202,7 @@ theorem T2C_gram_bad_bound {n k} (P : CovPopulation n k) (e A r : ℝ)
       dsimp [τ]
       ring
 
-/-- Gram concentration along growing arrays; arm sizes one are harmless finite initial rows. -/
+/-- AC.1 along growing arrays; arm sizes one are harmless finite initial rows. -/
 theorem T2C_gram_bad_limit (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
     (k : ℕ) (P : ∀ j, CovPopulation (sizes j) k) (e A r : ℝ)
     (he : 0 < e) (hr : 0 < r) (hP : ∀ j, ValidDesign (P j).pop)
@@ -338,7 +338,7 @@ lemma T2C_product_second {n} (hn : 0 < n) (u q : Fin n → ℝ)
   have hpos : 0 ≤ (M+K)*H*n := by positivity
   linarith
 
-/-- The score estimate, with constants depending only on covariates/kurtosis. -/
+/-- The AC.2 score estimate, with constants depending only on covariates/kurtosis. -/
 theorem T2C_score_mse {n k} (P : CovPopulation n k) (e A r H K : ℝ)
     (hP : ValidDesign P.pop) (hm : 2 ≤ P.pop.n1) (hc : 2 ≤ n-P.pop.n1)
     (hr : 0 < r) (hH : 0 < H) (hK : 0 ≤ K)
@@ -419,6 +419,19 @@ lemma T2C_gramGood_det {n k} (x : Fin n → Fin k → ℝ) (e : ℝ) (he : 0 < e
     (gram x (if a then S else Sᶜ)).det ≠ 0 :=
   T2C_coercive_det _ _ (by positivity : 0 < min 1 e/2) (hS a)
 
+/-- Exact coefficient and energy bounds on the common full-rank event. -/
+theorem T2C_fitted_bounds {n k} (x : Fin n → Fin k → ℝ) (e : ℝ) (he : 0 < e)
+    (S : Finset (Fin n)) (hS : T2C_gramGood x e S) (a : Bool)
+    (q : Fin n → ℝ) (c : Option (Fin k) → ℝ) :
+    let h := score x (if a then S else Sᶜ) (fun i => q i-dotProduct (augmented x i) c)
+    normSq (ols x (if a then S else Sᶜ) q-c) ≤ normSq h/(min 1 e/2)^2 ∧
+    0 ≤ dotProduct h ((gram x (if a then S else Sᶜ))⁻¹ *ᵥ h) ∧
+    dotProduct h ((gram x (if a then S else Sᶜ))⁻¹ *ᵥ h) ≤ normSq h/(min 1 e/2) := by
+  dsimp only
+  rw [ols_error _ _ _ _ (T2C_gramGood_det x e he S hS a)]
+  have h := T2C_inverse_bounds _ (min 1 e/2) (by positivity) (hS a)
+    (score x (if a then S else Sᶜ) (fun i => q i-dotProduct (augmented x i) c))
+  exact ⟨h.2.1, h.1, h.2.2⟩
 
 lemma T2C_xmean_mse {n k} (P : CovPopulation n k) (e A r : ℝ)
     (hP : ValidDesign P.pop) (hm : 2 ≤ P.pop.n1) (hc : 2 ≤ n-P.pop.n1)
@@ -513,7 +526,7 @@ def T2C_rssReduced {n k} (x : Fin n → Fin k → ℝ) (q : Fin n → ℝ)
     dotProduct (score x (if a then S else Sᶜ) q)
       ((gram x (if a then S else Sᶜ))⁻¹ *ᵥ score x (if a then S else Sᶜ) q)
 
-/-- RSS consistency relative to the population residual second moment. -/
+/-- AC.2: RSS consistency relative to the population residual second moment. -/
 theorem T2C_rss_relative_bound {n k} (P : CovPopulation n k) (e A r H K η : ℝ)
     (hP : ValidDesign P.pop) (hm : 2 ≤ P.pop.n1) (hc : 2 ≤ n-P.pop.n1)
     (he : 0 < e) (hr : 0 < r) (hH : 0 < H) (hK : 0 ≤ K) (hη : 0 < η)
@@ -619,6 +632,35 @@ theorem T2C_regression_product_limit (sizes : ℕ → ℕ) (hsizes : StrictMono 
   exact T2C_regression_product_bound (P j) e A r (H j) K η (hP j) hj.1 hj.2
     he hr (hH j) hK hη (hl j) (hu j) (hx j) (q j) (hq0 j) (hq4 j) a
 
+theorem T2C_rss_relative_limit (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
+    (k : ℕ) (P : ∀ j, CovPopulation (sizes j) k) (e A r K η : ℝ)
+    (he : 0 < e) (hr : 0 < r) (hK : 0 ≤ K) (hη : 0 < η)
+    (hP : ∀ j, ValidDesign (P j).pop)
+    (hl : ∀ j, r*sizes j ≤ ((P j).pop.n1 : ℝ))
+    (hu : ∀ j, ((P j).pop.n1 : ℝ) ≤ (1-r)*sizes j)
+    (hx : ∀ j, T2C_covariates (P j).x e A)
+    (q : ∀ j, Fin (sizes j) → ℝ) (H : ℕ → ℝ) (hH : ∀ j, 0 < H j)
+    (hq0 : ∀ j, score (P j).x Finset.univ (q j) = 0)
+    (hqH : ∀ j, mean (fun i => q j i^2) = H j)
+    (hq4 : ∀ j, mean (fun i => q j i^4) ≤ K*(H j)^2) (a : Bool) :
+    Tendsto (fun j => probability (P j).pop (fun S => T2C_gramGood (P j).x e S ∧
+      η ≤ |T2C_rssReduced (P j).x (q j) S a/H j-1|)) atTop (nhds 0) := by
+  have hN : Tendsto (fun j => (sizes j : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_atTop.comp hsizes.tendsto_atTop
+  have hb : Tendsto (fun j => 8*K/(r*sizes j*η^2)+
+      4*((k : ℝ)+1)*(max 1 A+K)/(r*sizes j*(min 1 e/2)*η)) atTop (nhds 0) := by
+    have h1 := (tendsto_const_nhds.div_atTop hN :
+      Tendsto (fun j => (8*K/(r*η^2))/(sizes j : ℝ)) atTop (nhds 0))
+    have h2 := (tendsto_const_nhds.div_atTop hN :
+      Tendsto (fun j => (4*((k : ℝ)+1)*(max 1 A+K)/(r*(min 1 e/2)*η))/(sizes j : ℝ))
+        atTop (nhds 0))
+    convert h1.add h2 using 1 <;> first | funext j; ring | simp
+  apply squeeze_zero' (Eventually.of_forall fun _ =>
+    DecisionLemma12_probability_nonneg _ _) _ hb
+  filter_upwards [T2C_arms_eventually sizes hsizes (fun j => (P j).pop) r hr hP hl hu]
+    with j hj
+  exact T2C_rss_relative_bound (P j) e A r (H j) K η (hP j) hj.1 hj.2
+    he hr (hH j) hK hη (hl j) (hu j) (hx j) (q j) (hq0 j) (hqH j) (hq4 j) a
 
 lemma T2C_Xi_covariates {n k} (P : CovPopulation n k) (δ e A B r : ℝ)
     (hP : Xi P δ e A B r) : T2C_covariates P.x e A :=
@@ -741,7 +783,7 @@ lemma T2C_observed_difference {n k} (P : CovPopulation n k) (β e : ℝ) (he : 0
   simp only [T2C_groupMean_dot]
   rfl
 
-/-- Observed numerator conclusion at the residual sampling scale. -/
+/-- AC.2 observed numerator conclusion at the residual sampling scale. -/
 theorem T2C_observed_numerator_limit (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
     (k : ℕ) (P : ∀ j, CovPopulation (sizes j) k) (δ e A B r : ℝ)
     (he : 0 < e) (hr : 0 < r) (hP : ∀ j, Xi (P j) δ e A B r)
@@ -1124,7 +1166,7 @@ lemma T2C_finite_factor_error (N X H : ℝ) (hN : 2 ≤ N) (hH : 0 < H) :
       have hm := mul_le_mul_of_nonneg_right hf1 (abs_nonneg (X/H-1))
       simpa only [one_mul] using add_le_add hm (le_refl (1/N))
 
-/-- Observed denominator: normalization is by the conservative oracle expression. -/
+/-- AC.2 observed denominator: normalization is by the conservative oracle expression. -/
 theorem T2C_observed_sigma_limit (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
     (k : ℕ) (P : ∀ j, CovPopulation (sizes j) k) (δ e A B r : ℝ)
     (he : 0 < e) (hr : 0 < r) (hP : ∀ j, Xi (P j) δ e A B r)

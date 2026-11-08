@@ -1,0 +1,175 @@
+[
+ {
+  "target_id": "P013-T11",
+  "decision": "whole",
+  "theorem": "SAP.P013a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.complete_randomization_degree39_counts",
+   "AronowAudit.P013.degree39_choose_ratio",
+   "AronowAudit.P013.degree39_ratio_bound",
+   "AronowAudit.P013.degree39_small_p",
+   "AronowAudit.P013.degree39_large_q"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.degree39_design_incompatibility",
+    "reason": "The selected counting, ratio and decimal-bound declarations provide both directions of incompatibility directly."
+   }
+  ],
+  "statement_definition": "SAP.P013a.T11Statement",
+  "definition_route": "Mathlib-only SAP definitions with field-preserving structural adapters and definitional equality"
+ },
+ {
+  "target_id": "P013-T12",
+  "decision": "refuted",
+  "theorem": "SAP.P013a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.ConfidenceFollowup02.simulated_bias_as_printed_refuted",
+   "AronowAudit.P013.ConfidenceFollowup02.simulated_rule_as_printed_refuted"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P013a.T12Statement",
+  "definition_route": "Mathlib-only SAP definitions with field-preserving structural adapters and definitional equality"
+ },
+ {
+  "target_id": "P013-T13",
+  "decision": "whole",
+  "theorem": "SAP.P013a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.ht_unbiased",
+   "AronowAudit.P013.ht_variance_formula",
+   "AronowAudit.P013.htEffect_unbiased",
+   "AronowAudit.P013.htEffect_variance",
+   "AronowAudit.P013.ht_covariance_formula"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.covariance_mul_const",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.covariance_sum_sum",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.covariance_symm",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_add",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_const",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_const_mul",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_finset_sum",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_mono",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_mul_const",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_nonneg",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_sub",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.expectation_sum",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.htMean_unbiased",
+    "reason": "The canonical statement asks for total and contrast expectations; mean unbiasedness is an auxiliary specialization."
+   },
+   {
+    "lean_name": "AronowAudit.P013.htTotal_observed",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.ht_covariance_full",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.jointPi_cross_self",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.jointPi_nonneg",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.jointPi_self",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.sum_diag_off",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.variance_centered",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.variance_nonneg",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.variance_sub_div",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   }
+  ],
+  "statement_definition": "SAP.P013a.T13Statement",
+  "definition_route": "Mathlib-only SAP definitions with field-preserving structural adapters and definitional equality"
+ },
+ {
+  "target_id": "P013-T14",
+  "decision": "whole",
+  "theorem": "SAP.P013a.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.varianceHT_unbiased",
+   "AronowAudit.P013.varianceHT_bias",
+   "AronowAudit.P013.varianceHT_conservative",
+   "SAP.P013a.WH.W1.T14_whole",
+   "SAP.P013a.WH.W1.T14_assembly",
+   "SAP.P013a.WH.W1.toSampling",
+   "SAP.P013a.WH.W1.conjugate_of_reciprocal",
+   "AronowAudit.P027.proposition1",
+   "AronowAudit.P027.proposition2",
+   "AronowAudit.P027.corollary2"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.correctionA2_expectation",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.pairTerm_expectation",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P013.squareTerm_expectation",
+    "reason": "Supporting component is already included in a selected composite declaration; no separate application is needed."
+   }
+  ],
+  "statement_definition": "SAP.P013a.T14WholeStatement",
+  "definition_route": "Mathlib-only SAP definitions with field-preserving structural adapters and definitional equality"
+ }
+]

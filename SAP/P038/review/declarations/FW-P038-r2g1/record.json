@@ -1,0 +1,21 @@
+[
+ {
+  "target_id": "P038-T1",
+  "decision": "whole",
+  "theorem": "SAP.P038.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P038.corrected_election_hours_window"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P038.T1Statement",
+  "bridge": [
+   "SAP.P038.Bridge.referenceWeeks_eq",
+   "SAP.P038.Bridge.tailCount_eq",
+   "SAP.P038.Bridge.empiricalP_eq",
+   "SAP.P038.Bridge.roundsTo_eq",
+   "SAP.P038.Bridge.tailWeeks_eq",
+   "SAP.P038.Bridge.electionDayAdjustedP_eq"
+  ]
+ }
+]

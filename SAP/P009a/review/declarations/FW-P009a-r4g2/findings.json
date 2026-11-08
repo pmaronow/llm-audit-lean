@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P009-T6",
+    "theorem": "SAP.P009a.T6",
+    "fingerprint": "d9d70a00b026688599c8157b38e902cab47f8e4c2b05e08e603fdc98987f1162",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean, theorem t6_nonvacuity: n_t=t+1, uniform fair Bernoulli design, all outcomes z_0, k=2; every assignment bound holds and averageDependence/n_t=1, so SparseDependence fails. The strict-threshold antecedents are also instantiated with a_t=L=1 and c=1/2. The existential nonattainment witness a_t=1-1/(t+1) is an ordinary real sequence with limsup 1 and no attainment. Exact independent rational checks verify the displayed finite construction for n=1..7, L=1/4,4/9,1 under fair and perfectly dependent nondegenerate designs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T7",
+    "theorem": "SAP.P009a.T7",
+    "fingerprint": "be622eaebcddd7e06a40cc550b60fb284d8a284f46893b30046d5c0bc8f056ca",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean, theorem t7_nonvacuity, independently of Challenge theorems: the actual sparse sequence has product assignment, no spillovers, regularity k=2,q=4,s=1, maximum dependence 1 and strictly positive variance 1/(t+1)^2 at every time. bounded_fair_reg also verifies every real finite moment order. Both canonical full-cube schedules were checked mathematically for the exact formulas and by scratch/finite_checks.py for n=1..7, including EATE, variance and the equal-probability Rademacher standardized law. They satisfy all conditions of the canonical printed reading.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T8",
+    "theorem": "SAP.P009a.T8",
+    "fingerprint": "863b4925f6c8f5dd122f7b7c3f267ad2f0df917ef6507c382128af3bd4133088",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean, theorem t8_nonvacuity: identitySequence has n_t=t+1, fair product assignment and y_i(z)=z_i, uniform Regularity 2 2 1, maximumDependence=1, and variance(HT)=1/n_t, so n_t*variance(HT)=1. This constructs data satisfying every antecedent, including the variance floor, at the endpoint q=2. All proofs are independent of the audited Challenge theorems.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T9",
+    "theorem": "SAP.P009a.T9",
+    "fingerprint": "4aba1be48aaf40ff60ed6ac422be01e43e8d938f9ec2a84c2ce4abc5e4e4300a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Half.lean, theorem t9_finite_nonvacuity: r=1, n=6, m=3, mass 1/20 on exactly-three-treated assignments and zero elsewhere, outcome=halfPopulationResponse 1, all marginals 1/2, dependenceIndicator(0,1)=0, both mask-count events of probability 1/2 and discrepancy 1/4. scratch/finite_checks.py independently verifies the full graphs, counts, support identities and bounded outcomes for r=1,2. For arbitrary r>=1, the uniform design exists because there are binomial(n,n/2) supported assignments; bounded outcomes imply all regularity orders, and complementation exchanges the two halves and gives event probability 1/2. Thus the canonical growing counterexample is genuine.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T10",
+    "theorem": "SAP.P009a.T10",
+    "fingerprint": "8e7e79dd4adc95e8ea5f1d029ce34754b11c39d16ac2c01a04a33f7a740e12d8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Complete.lean, theorem t10_nonvacuity: n_t=t+2, identity outcomes and a normalized mixture of the n_t one-hot assignments yield uniform complete randomization with m=1 and averageDependence=1 at every time. Every antecedent of the universal implication is satisfied. The regular necessity witness is the canonical T9 half-population family with r=t+1, marginal 1/2, averageDependence<3 and a fixed mixing coefficient 1/4; its conditions were separately checked. A regular simple positive example is identity outcomes under m=floor(n/2), for which singleton pair mixing=p(1-p)/(n-1) tends to zero and exceptions may be empty.",
+    "confidence": 0.99
+  }
+]

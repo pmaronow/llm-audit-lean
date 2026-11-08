@@ -3,7 +3,7 @@ import AronowAudit.P004.Wave1.ObservationalCoverage.O6
 import AronowAudit.P004.Wave1.LinePopulation.N3
 
 /-! Population projection and the actual augmented-variance guard. All matrix inverse
-identities below require both columns to be present. -/
+identities below require both columns to be present. This file was drafted without Lean. -/
 
 namespace AronowAudit.P004.Wave1.ObservationalCoverage
 

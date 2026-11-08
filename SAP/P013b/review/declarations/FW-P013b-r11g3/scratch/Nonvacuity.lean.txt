@@ -1,0 +1,156 @@
+import SAP.P013b.Defs
+
+set_option autoImplicit false
+set_option maxRecDepth 2000
+open scoped BigOperators
+open Finset
+namespace Review
+open SAP.P013b
+noncomputable section
+
+-- A concrete five-world design, one analyzed student and one additional peer.
+def wearingDesign : Design (Fin 5) where
+  weight _ := 1/5
+  positive _ := by norm_num
+  total := by norm_num [Fin.sum_univ_succ]
+
+def analysed : Fin 1 → Fin 2 := fun _ => 0
+def studentSchool : Fin 2 → Fin 56 := fun _ => 0
+def hosts (z : Fin 5) (_ : Fin 56) : Bool := decide (z ≠ 0)
+def assigned (z : Fin 5) (i : Fin 2) : Bool :=
+  if i = 0 then decide (z = 3 ∨ z = 4) else decide (z = 2 ∨ z = 4)
+def neighbors (i : Fin 2) : Finset (Fin 2) := if i = 0 then {1} else {0}
+def wearingOutcome (_ : Fin 1) (d : Fin 5) : ℝ := if d = 4 then 1 else 0
+
+def wearingPopulation : Population wearingDesign 1 5 :=
+  section10Population wearingDesign analysed studentSchool hosts assigned neighbors wearingOutcome
+
+theorem t27_hypotheses :
+    0 < (1 : ℕ) ∧ Function.Injective analysed ∧
+    (∀ i d, wearingOutcome i d = 0 ∨ wearingOutcome i d = 1) ∧
+    (∀ i, i ∉ neighbors i) ∧
+    (∀ i j, j ∈ neighbors i ↔ i ∈ neighbors j) ∧
+    (∀ i j, j ∈ neighbors i → studentSchool i = studentSchool j) ∧
+    (∀ i d, 0 < pi wearingPopulation i d) := by
+  refine ⟨by norm_num, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i j _
+    exact Subsingleton.elim i j
+  · intro i d
+    simp only [wearingOutcome]
+    split_ifs <;> simp
+  · intro i
+    fin_cases i <;> simp [neighbors]
+  · intro i j
+    fin_cases i <;> fin_cases j <;> simp [neighbors]
+  · intro i j _
+    rfl
+  · intro i d
+    fin_cases i
+    fin_cases d <;>
+      norm_num [SAP.P013b.pi, expectation, indicator, wearingPopulation, section10Population,
+        section10Exposure, wearingDesign, analysed, studentSchool, hosts, assigned,
+        neighbors, Fin.sum_univ_succ, Fin.succ_mk, Finset.filter_singleton]
+
+-- The binary outcome varies, and every exposure probability is exactly 1/5.
+example : wearingOutcome 0 4 = 1 ∧ wearingOutcome 0 0 = 0 ∧
+    ∀ d, pi wearingPopulation 0 d = 1/5 := by
+  refine ⟨by norm_num [wearingOutcome], by norm_num [wearingOutcome], ?_⟩
+  intro d
+  fin_cases d <;>
+    norm_num [SAP.P013b.pi, expectation, indicator, wearingPopulation, section10Population,
+      section10Exposure, wearingDesign, analysed, studentSchool, hosts, assigned,
+      neighbors, Fin.sum_univ_succ, Fin.succ_mk, Finset.filter_singleton]
+
+-- A concrete member of the full B support, without enumerating its 6^14 elements.
+def blockChoice : Fin 14 → Finset (Fin 4) := fun _ => {0,1}
+
+theorem blockChoice_mem : blockChoice ∈ schoolBSupport := by
+  classical
+  simp [schoolBSupport, Fintype.mem_piFinset, blockChoice, schoolBlockChoices]
+
+theorem concrete_C_mem : blockSchoolHosts blockChoice ∈ schoolCSupport := by
+  classical
+  have heq : blockSchoolHosts blockChoice =
+      (univ : Finset (Fin 14)).product ({0,1} : Finset (Fin 4)) := by
+    ext a
+    simp [blockSchoolHosts, blockChoice]
+  rw [schoolCSupport, mem_powersetCard]
+  refine ⟨subset_univ _, ?_⟩
+  rw [heq]
+  change ((univ : Finset (Fin 14)) ×ˢ ({0,1} : Finset (Fin 4))).card = 28
+  rw [Finset.card_product]
+  norm_num
+
+example : schoolBSupport.Nonempty ∧ schoolCSupport.Nonempty :=
+  ⟨⟨blockChoice, blockChoice_mem⟩, ⟨blockSchoolHosts blockChoice, concrete_C_mem⟩⟩
+
+-- The support-separating assignment really has 28 schools, and lies in C.
+theorem bad_C_mem : schoolBadHosts.card = 28 ∧ schoolBadHosts ∈ schoolCSupport := by
+  classical
+  have hcard : schoolBadHosts.card = 28 := by
+    change (((univ : Finset (Fin 14)).filter (fun b => b.val < 7)) ×ˢ
+      (univ : Finset (Fin 4))).card = 28
+    rw [Finset.card_product]
+    simp only [Finset.card_filter, Fin.sum_univ_succ]
+    norm_num [Fin.sum_univ_succ, Fin.succ_mk]
+  refine ⟨hcard, ?_⟩
+  simp [schoolCSupport, hcard]
+
+theorem bad_not_B : ∀ z ∈ schoolBSupport, blockSchoolHosts z ≠ schoolBadHosts := by
+  classical
+  intro z hz heq
+  have hz0 : (z 0).card = 2 := by
+    have hz0 := (Fintype.mem_piFinset.mp hz) (0 : Fin 14)
+    exact (mem_powersetCard.mp hz0).2
+  have hfull : z 0 = univ := by
+    ext k
+    constructor
+    · intro _
+      exact mem_univ _
+    · intro _
+      have hm : ((0 : Fin 14), k) ∈ schoolBadHosts := by
+        simp [schoolBadHosts]
+      rw [← heq] at hm
+      simpa [blockSchoolHosts] using hm
+  rw [hfull] at hz0
+  norm_num at hz0
+
+-- Valid student law for T26, with two same-school students and a cross-school pair.
+def studentLaw (_ : Fin 2) : ℝ := 1/2
+def sampleSchool (i : Fin 3) : School := if i = 2 then (1,0) else (0,0)
+def studentCode (x : Fin 2) (_ : Fin 3) : Fin 4 := if x = 0 then 0 else 3
+
+example : 0 < (3 : ℕ) ∧ (∀ x, 0 ≤ studentLaw x) ∧
+    (∑ x, studentLaw x) = 1 ∧
+    sampleSchool 0 = sampleSchool 1 ∧ sampleSchool 0 ≠ sampleSchool 2 := by
+  norm_num [studentLaw, sampleSchool, Fin.sum_univ_succ]
+
+-- The arbitrary four-valued student code includes the exact Section 10 map.
+example (host own peer : Bool) :
+    schoolHostedExposure host
+      (if own then (if peer then 3 else 2) else (if peer then 1 else 0)) =
+      section10Exposure host own peer := by
+  cases host <;> cases own <;> cases peer <;> rfl
+
+-- All generic moment hypotheses in T25 have an explicit finite instance.
+def pairHosts (z : Fin 2 × Fin 2) (i : School) : Bool :=
+  if i = (0,0) then decide (z.1 = 1) else decide (z.2 = 1)
+
+example :
+    ((0,0) : School) ≠ (0,1) ∧ (0 : ℝ) < 1/4 ∧ (0 : ℝ) < 27/110 ∧
+    uniformSchoolProbability (univ : Finset (Fin 2 × Fin 2))
+      (fun z => pairHosts z (0,0) = true) = 1/2 ∧
+    uniformSchoolProbability (univ : Finset (Fin 2 × Fin 2))
+      (fun z => pairHosts z (0,1) = true) = 1/2 ∧
+    uniformSchoolProbability (univ : Finset (Fin 2 × Fin 2))
+      (fun z => pairHosts z (0,0) = true ∧ pairHosts z (0,1) = true) = 1/4 := by
+  have ha : ((univ : Finset (Fin 2 × Fin 2)).filter
+      (fun z => pairHosts z (0,0) = true)).card = 2 := by decide
+  have hb : ((univ : Finset (Fin 2 × Fin 2)).filter
+      (fun z => pairHosts z (0,1) = true)).card = 2 := by decide
+  have hab : ((univ : Finset (Fin 2 × Fin 2)).filter
+      (fun z => pairHosts z (0,0) = true ∧ pairHosts z (0,1) = true)).card = 1 := by decide
+  norm_num [uniformSchoolProbability, ha, hb, hab]
+
+end
+end Review

@@ -229,7 +229,7 @@ theorem tc09_uniform_amplification_index (J : ℕ) (hJ : 1 ≤ J) :
     amplification uniformMargins J = amplification uniformMargins (2*((J+1)/2)-1) := by
   simp only [amplification, residualVariance, popResidual, tc09_uniform_projection_index J hJ]
 
-/-- Uniform residual amplification diverges without an amplification hypothesis or endpoint estimate. -/
+/-- C023-DIVERGENCE: no amplification hypothesis or endpoint estimate is assumed. -/
 theorem uniform_amplification_diverges :
     Filter.Tendsto (amplification uniformMargins) Filter.atTop Filter.atTop := by
   have hindex : Tendsto (fun J : ℕ => (J+1)/2) atTop atTop := by
@@ -241,6 +241,10 @@ theorem uniform_amplification_diverges :
   apply h.congr'
   filter_upwards [eventually_ge_atTop 1] with J hJ
   exact (tc09_uniform_amplification_index J hJ).symm
+
+-- The unchanged complete component type from the proof program.
+example : Filter.Tendsto (amplification uniformMargins) Filter.atTop Filter.atTop :=
+  uniform_amplification_diverges
 
 end
 end AronowAudit.P023.Wave1

@@ -11,8 +11,8 @@ local instance instDecidableQuadraticUniqueBlpN1 (p : Prop) : Decidable p :=
 
 theorem n1_proof : N1 := by
   intro Ω _ μ _ X W hX hW hx hw
-  -- The direct moment argument in
-  -- `uniform_quadratic_cef_and_blp` needs no independence hypothesis.
+  -- This is the same direct moment argument used inside the proved frozen
+  -- uniform_quadratic_cef_and_blp; it needs no independence hypothesis.
   have hU2 : MemLp id 2 (uniformLaw 0 1) := by
     rw [uniformLaw_zero_one_eq_restrict]
     apply (memLp_two_iff_integrable_sq (by fun_prop)).2

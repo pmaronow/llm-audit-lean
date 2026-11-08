@@ -36,5 +36,8 @@ theorem footnote_three_probability_complete :
     FootnoteThreeProbability.n7_proof FootnoteThreeProbability.n8_proof
     FootnoteThreeProbability.n9_proof
 
+example : AronowAudit.P031.Wave1.FootnoteThreeProbability.Target :=
+  footnote_three_probability_complete
+
 end
 end AronowAudit.P031.Wave1

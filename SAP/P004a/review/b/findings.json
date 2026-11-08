@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P004-T1",
+    "theorem": "SAP.P004a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Choose a likelihood maximizer on the fixed nonempty compact box [-2,2]^2 for every finite N,z; continuity gives existence even at N=0. The explicit line population has outcome values 1 or 21/20 at distinct atoms, so b=2 works, all d=0 masses are 1, and its finite-radius node counts are uniformly bounded. True probabilities are 1/3, 1/2, 2/3 (margin 1/10), and the Gram limit is diag(1,2/3). Both arm fits are equal, so Q=0. Along N=3K, N Var(A_printed)=1753/750000>0; the all-N prefix extension has the same positive limit. The entered weighted squares were independently checked exactly in scratch/arithmetic_checks.py.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T2",
+    "theorem": "SAP.P004a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Finite hypotheses have a compiled instance N=2,k=1,O_i=1,p_i=1/2,R_i(z)=bit(z_i),B_i={i}; information is the nonsingular 1x1 matrix [1/4], and only self-interference occurs (scratch/Check.lean). For ALL asymptotic hypotheses, take singleton nodes (10i,0), counting measure, assignment-independent outcomes y_i=(-1)^i at those nodes, d=h=0, O_i=1, theta0=0, Theta=[-1,1], and the actual intercept-only constrained MLE (the empirical fraction clipped to [logistic(-1),logistic(1)], then logit). Choose any maximizer at N=0. Overlap, boundedness, spacing, locality and well-definedness hold; scoreFits equals the mean y. N times its linearized variance is 4(1-mean(y)^2), at least 3 for N>=2, so the normal/interval branch is also nonvacuous. All node effects and Q are zero.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T3",
+    "theorem": "SAP.P004a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the specified period-eight design, actual groupwise constrained MLEs with each empirical group fraction clipped to [1/20,19/20] and then logit; if a group is absent choose coefficient 0. The likelihood separates by group, so these are maximizers. True p are 1/2 and 1/10 with overlap margin 1/25, the limiting Gram matrix is diag(1/4,3/4), truth is strictly inside the compact box, outcomes are bounded by 1, and d=0 masses are 1. Singleton-neighborhood homophily is a sum of squares. Both N Var(A_printed) and N Var(actual fitted IPW) tend to 1/4; hence the variance guards hold. Independent exact group-count enumeration reproduces actual N=32 and N=64 fitted variances and printed-SAH expectations in scratch/arithmetic-results.json.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T4",
+    "theorem": "SAP.P004a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=2, p_i=1/2, B_i={i}, g_i(a)=0 and R_i(z)=bit(z_i). For the first conjunct choose z=(true,false), whose arm counts both equal 1 (compiled in scratch/Check.lean). For the second, residual contrasts are independent 2 Z_i, so outside-neighborhood covariances vanish; Var((C_0+C_1)/2)=1/2 <= sahLimit=1. Every neighborhood includes itself and is symmetric.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T5",
+    "theorem": "SAP.P004a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed witness conjunction, with actual disjoint unit-disk and annular regions in the Euclidean plane, positive areas pi(1,3,5,7,9,11), binary angular-sector outcomes and fair independent assignments. The exhibited assignment has probability 1/4 and one node in each arm. Exact bin shares give -17/500 for the bin sum and 121/18000 for the whole-area AME (independently checked). No zero-area singleton-circle convention is used: distance zero to a closed unit-disk node is the full disk.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T6",
+    "theorem": "SAP.P004a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=m=2, A=Fin 2 with its full measurable structure, counting measure, B_i0={0}, B_i1={1}, p_i=1/2, and Y(0,z)=bit(z_0), Y(1,z)=2 bit(z_1). Both disjoint bin masses equal 1 and every function is integrable. Union node effects are 1/2 and 1, with node-average effect 3/4. The scaling clauses may use this probability law and c=2; their universal weights also include normalized genuine probability laws.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T7",
+    "theorem": "SAP.P004a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit five-point star blocks are distinct Euclidean nodes with bounded assignment-independent outcomes, fair assignments, uniformly bounded local node counts, and unit d=0 atom masses. All effects and homophily terms vanish. At N=5m, N Var(linearHajek)=16/5>0. The finite twenty-node assignment has probability 2^-20, both arm counts 10, and positive adjustment traces 41/50 and 101/100. Its two variances and adjusted ratios were independently computed as 4/25, 8/41 and 16/101 with exact rational matrices. The block PD matrix has eigenvalues 0,1,1,1,3, so its nonzero projected PSD adjustment has positive trace and trace-square when both arms are nonempty; the guarded event does not rely on undefined Student parameters.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P004-T8",
+    "theorem": "SAP.P004a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Finite guards have a compiled example N=2, orthonormal matrix identity, z=(true,false), critical=1,c=2; both arms have size 1. The all-N alternating-outcome line population from T2, with d=h=0,p=1/2, satisfies every asymptotic guard, including N Var(linearHajek)>=3 eventually and homophily zero. Its distance-cutoff kernel is the identity, so take all eigenvalues 1 and all eigenvector matrices identity. Take c_N(z)=normalQuantile(1-alpha/2) for any fixed alpha in (0,1). Nonempty arms occur with probability 1-2^(1-N), tending to 1; empty arms do not cause the asymptotic result by themselves.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T9",
+    "theorem": "SAP.P004a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit intercept-only row 1, truth 0, compact interval [0,1] and clamped-logit boundaryMLE are actual nonempty positive-dimensional logistic data. For N>=1 the normalized Gram matrix is [1], true p=1/2 has overlap margin 1/4, and likelihood concavity gives the specified constrained maximizer. The Rademacher negative-tail event gives the claimed uniform remainder bound from E[T^2]=N and E[T^4]=3N^2-2N. Exact binomial evaluation independently checks its sufficient negative-tail probability >=3/32 for N=1,...,500. N=0 is harmless: all likelihood sums are zero and boundaryMLE=0 belongs to the constraint set.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T10",
+    "theorem": "SAP.P004a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A nonempty one-dimensional interior instance is O_Ni=1, theta0=0, Theta=[-1,1], and the actual intercept-only constrained MLE obtained by clipping the empirical fraction to [logistic(-1),logistic(1)] and applying logit. At N=0 choose any member of the interval. Compactness, uniform row bound 1, positive Gram bound 1 for N>=1, and overlap margin 1/4 hold. The truth is interior, so both the consistency/rate branch and the score-remainder branch have genuine instances. No conclusion is assumed in LogisticConditions.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T11",
+    "theorem": "SAP.P004a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For any N>=1 choose R_i(z)=1 and p_i=1/4. The independent Bernoulli assignment weights are positive and sum to 1; all averages and contrasts are finite with nonzero denominators. Direct one-node expectation gives true effect 0, printed expectation -2 and corrected expectation 0, exactly the witness included in the theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T12",
+    "theorem": "SAP.P004a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The eight-node atomic spatial population is assignment-independent and hence sharp null, with unit finite mass at every d=0 region. Every assignment has probability 1/256. The exhibited complete draw array has probability 256^-101>0; its signed/absolute comparison discrepancy is a genuine event. Independent integer/rational computation gives eightNodeMCSize=0.05549969550171698...>1/20. All natural-number subtractions in its numerator remain within their intended nonnegative ranges.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T13",
+    "theorem": "SAP.P004a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=8,P=100,w(z)=1/256, alpha=1/20 and T=the eight-node HT statistic (or its absolute value). Weights are strictly positive and sum to 1, and the product weights describe 101 independent assignments. The theorem also applies to arbitrary tied statistics; no no-ties or continuity hypothesis is needed. All denominators P and P+1 are positive. The deterministic exceedance count is between 0 and P, giving the difference bounds without any zero denominator.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T14",
+    "theorem": "SAP.P004a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The concrete two-node, three-atom population has positive finite shell masses: at radii (4,5), node 0 has masses (1,2) and node 1 has masses (2,1). All four bands are measurable and have positive finite mass. Outcomes lie in {0,1,2}, with value 1 off the atoms, so are integrable on these bands and bounded by 3. Fair assignments give singleton AMEs 0,0 and disk/donut AME 1/6, independently checked by rational finite sums.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T15",
+    "theorem": "SAP.P004a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The general spatial hypotheses have a compiled N=2 example on R: both nodes {0}, zeta=dirac(0), bands=all real distances and Y(x,z)=bit(z_0), so every region has mass 1 and every outcome is integrable (scratch/Check.lean). The discrete and common-weight hypotheses have a compiled example N=m=2,A=Fin 2, all a_i(x)=1, shell_i(x)=x, and w_0=w_1=1/2; thus every enumerated shell really has positive mass. For the radial assertion take center 0,a=0,b=1; denominator pi is positive and density is 2r on [0,1].",
+    "confidence": 0.98
+  }
+]

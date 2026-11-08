@@ -3,9 +3,11 @@ import AronowAudit.P005.Wave1.Gap.GP005B5
 
 /-!
 Conditional proofs of P005-T8 and P005-T9. The only literature premise is
-`Tropp2011RowSampling`. Appending the intercept to the standardized covariates
-controls both centered arm Gram matrices. A finite Markov bound for the sum
-of the two arm scores then gives the remainder rate.
+`Tropp2011RowSampling`, as in the supplied statements. Appending the intercept
+to the standardized covariates controls both centered arm Gram matrices.
+A finite Markov bound for the sum of the two arm scores then gives the exact
+remainder rate. All sampling moments and residual identities are proved or
+reused from proved project lemmas.
 -/
 
 noncomputable section
@@ -704,8 +706,8 @@ lemma CondT8T9_sample_threshold {n d : ℕ} (P : Population n d)
     _ ≤ 4*A*n*(a/(4*A)) := mul_le_mul_of_nonneg_left hsmall (by positivity)
     _ = _ := by field_simp <;> ring
 
-/-- The corrected interacted expansion, conditional on the published
-row-sampling theorem. -/
+/-- The repaired interacted expansion, conditional only on the published
+row-sampling theorem named in the frozen statement. -/
 theorem corrected_interacted_expansion_max_conditional :
     AronowAudit.P005.corrected_interacted_expansion_max_conditional_statement := by
   intro H d m P h hinv hκ
@@ -793,7 +795,7 @@ theorem corrected_interacted_expansion_max_conditional :
   change probability (m n) EQ ≤ ε/4 at hbQ
   linarith
 
-/-- The equivalent corrected logarithm condition uses the same Tropp premise. -/
+/-- The equivalent repaired logarithm condition uses the same Tropp premise. -/
 theorem corrected_interacted_expansion_two_conditional :
     AronowAudit.P005.corrected_interacted_expansion_two_conditional_statement := by
   intro H d m P h hinv hκ
@@ -806,6 +808,12 @@ theorem corrected_interacted_expansion_two_conditional :
       (kappa_bounds (P n) (by omega) hP.2).1
   exact corrected_interacted_expansion_max_conditional H d m P h hinv
     ((repaired_log_conditions d (fun n => kappa (P n)) hd hk).1.mp hκ)
+
+example : AronowAudit.P005.corrected_interacted_expansion_max_conditional_statement :=
+  corrected_interacted_expansion_max_conditional
+
+example : AronowAudit.P005.corrected_interacted_expansion_two_conditional_statement :=
+  corrected_interacted_expansion_two_conditional
 
 end AronowAudit.P005.Wave1
 

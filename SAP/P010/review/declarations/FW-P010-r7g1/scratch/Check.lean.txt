@@ -1,0 +1,117 @@
+import SAP.P010.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 2048
+set_option maxHeartbeats 800000
+
+open MeasureTheory ProbabilityTheory Set Filter
+open scoped ENNReal NNReal Classical Topology BigOperators
+open SAP.P010
+
+-- T1/T2: independently evaluate all endpoint formulas from the supplied counts.
+example (a : Fin 3) :
+    sampleBounds preferCount a =
+      (![(0,61/285),(87/281,27/47),(56/139,1)] : Fin 3 → ℚ × ℚ) a := by
+  fin_cases a <;>
+    norm_num [sampleBounds, keptLower, keptUpper, passers, sampleSize, failures,
+      preferCount, trimShare, failureShare, Fin.sum_univ_succ]
+
+example (a : Fin 3) :
+    sampleBounds approveCount a =
+      (![(0,64/95),(113/281,2/3),(109/278,1)] : Fin 3 → ℚ × ℚ) a := by
+  fin_cases a <;>
+    norm_num [sampleBounds, keptLower, keptUpper, passers, sampleSize, failures,
+      approveCount, trimShare, failureShare, Fin.sum_univ_succ]
+
+example (a : Fin 3) :
+    0 < keptLower a ∧ 0 < keptUpper a ∧
+    failures a < sampleSize a ∧ preferCount a ≤ passers a ∧ approveCount a ≤ passers a ∧
+    0 < trimShare a ∧ trimShare a < 1 := by
+  fin_cases a <;>
+    norm_num [keptLower, keptUpper, passers, sampleSize, failures,
+      preferCount, approveCount, trimShare, failureShare, Fin.sum_univ_succ]
+
+example (a : Fin 3) :
+    fractionalPreference a =
+      (![(0,8745997/40739821),(12614477/40739821,23486112/40739821),
+        (16448045/40739821,1)] : Fin 3 → ℚ × ℚ) a := by
+  fin_cases a <;>
+    norm_num [fractionalPreference, minAlwaysShare, preferCount, sampleSize,
+      failureShare, failures, Fin.sum_univ_succ]
+
+-- The universally quantified integer-cutoff range has an actual member in each arm.
+example (a : Fin 3) : ∃ j : ℕ, 1 ≤ j ∧ j ≤ passers a := by
+  refine ⟨1, le_rfl, ?_⟩
+  fin_cases a <;> norm_num [passers, sampleSize, failures]
+
+-- T3 has two concrete populations and no antecedents. Extract their admissibility
+-- certificates, rather than using the theorem under review for T4 nonvacuity.
+example (b : Bool) : ∃ μ : Measure (Population 2 0),
+    μ = missingPassingPopulation b ∧ populationAssumptions μ ∧
+    0 < μ allPass ∧ noAtoms (μ.map response) ∧
+    fullRealSupport μ response ∧ allMoments μ response ∧ trimmingRatio μ 0 < 1 := by
+  rcases (show T3Statement from SAP.P010.T3).1 b with
+    ⟨hp,hA,hc,hf,hm,hp0,hp1,hr,rest⟩
+  refine ⟨missingPassingPopulation b, rfl, hp, ?_, hc, hf, hm, ?_⟩
+  · rw [hA]; norm_num
+  · rw [hr]; norm_num
+
+-- T4: a concrete measure satisfying every hypothesis, including actual
+-- integrability and atomlessness of the passing law. T4 is not used here.
+example : ∃ (μ : Measure (Population 2 0)) (a : Fin 2),
+    populationAssumptions μ ∧ 0 < μ allPass ∧
+    noAtoms (passerDistribution μ a) ∧
+    Integrable response (μ.restrict (passed ∩ assigned a)) ∧
+    trimmingRatio μ a < 1 := by
+  let μ := missingPassingPopulation false
+  rcases (show T3Statement from SAP.P010.T3).1 false with
+    ⟨hp,hA,hc,hf,hm,hp0,hp1,hr,hF,rest⟩
+  have hresponse : Measurable (response : Population 2 0 → ℝ) := by
+    have hy0 : Measurable (fun ω : Population 2 0 => potentialOutcome 0 ω) :=
+      (measurable_pi_apply 0).comp measurable_fst
+    have hy1 : Measurable (fun ω : Population 2 0 => potentialOutcome 1 ω) :=
+      (measurable_pi_apply 1).comp measurable_fst
+    have hsz : Measurable (fun ω : Population 2 0 => ω.2.2) :=
+      measurable_snd.comp measurable_snd
+    have hz : Measurable (arm : Population 2 0 → Fin 2) := measurable_fst.comp hsz
+    have heq : (response : Population 2 0 → ℝ) =
+        (fun ω => if arm ω = 0 then potentialOutcome 0 ω else potentialOutcome 1 ω) := by
+      funext ω
+      change ω.1 (arm ω) = if arm ω = 0 then ω.1 0 else ω.1 1
+      generalize arm ω = z
+      fin_cases z <;> simp
+    rw [heq]
+    exact Measurable.ite (measurableSet_eq_fun hz measurable_const) hy0 hy1
+  have habs : Integrable (fun ω => ‖response ω‖) μ := by
+    simpa only [pow_one, Real.norm_eq_abs] using hm 1
+  have hi : Integrable response μ :=
+    (integrable_norm_iff hresponse.aestronglyMeasurable).mp habs
+  refine ⟨μ, 0, hp, ?_, ?_, hi.restrict, ?_⟩
+  · rw [hA]; norm_num
+  · rw [hF]
+    intro x
+    simp [laplaceDistribution]
+  · rw [hr]; norm_num
+
+-- T5: instantiate its sharpness family at a strict interior parameter.
+-- The certified T5 properties verify this concrete witness; the test does not
+-- independently reprove the analytic assertions of T5.
+example (a : Fin 2) :
+    compatiblePopulations boundedPasserPopulation (betaEndpointPopulation (1/2) false) ∧
+    meanOn (betaEndpointPopulation (1/2) false) (potentialOutcome a) allPass = 11/32 ∧
+    compatiblePopulations boundedPasserPopulation (betaEndpointPopulation (1/2) true) ∧
+    meanOn (betaEndpointPopulation (1/2) true) (potentialOutcome a) allPass = 21/32 := by
+  rcases (show T5Statement from SAP.P010.T5) with
+    ⟨hp,hA,hc,hf,h1,h2,h3,hi,htails,hbounds,hfamily⟩
+  rcases hfamily (1/2) (by norm_num) (by norm_num) with ⟨hq,hcomp,hmean⟩
+  rcases hmean a with ⟨hl,hpos,ht,hu⟩
+  norm_num at hl
+  refine ⟨hcomp false, hl, hcomp true, ?_⟩
+  rw [hu, hl]
+  norm_num
+
+example (a : Fin 2) : (compatibleMeans boundedPasserPopulation a).Nonempty := by
+  rcases (show T5Statement from SAP.P010.T5) with
+    ⟨hp,hA,hc,hf,h1,h2,h3,hi,htails,hbounds,hfamily⟩
+  rcases hfamily (1/2) (by norm_num) (by norm_num) with ⟨hq,hcomp,hmean⟩
+  exact ⟨_, betaEndpointPopulation (1/2) false, hcomp false, rfl⟩

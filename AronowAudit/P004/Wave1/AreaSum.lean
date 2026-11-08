@@ -43,5 +43,7 @@ theorem area_sum_spatial_caseB :
     AreaSum.a8_proof AreaSum.a9_proof AreaSum.a10_proof AreaSum.a11_proof
     (AreaSum.volumes AreaSum.a2_proof AreaSum.a5_proof)
 
+example : AronowAudit.P004.Wave1.AreaSum.Target := area_sum_spatial_caseB
+
 end
 end AronowAudit.P004.Wave1

@@ -1,0 +1,46 @@
+[
+ {
+  "target_id": "P024-T7",
+  "decision": "whole",
+  "theorem": "SAP.P024.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P024.Wave1.equal_cluster_independent_population_on_defined_domain",
+   "AronowAudit.P024.Wave1.independent_unequal_size_bias_on_defined_domain",
+   "AronowAudit.P024.equal_size_dim",
+   "SAP.P024.WH.W1.T7_whole",
+   "SAP.P024.WH.W1.T7_assembly",
+   "AronowAudit.P024.bernoulli_nonempty_mass_probability",
+   "AronowAudit.P024.bernoulli_nonempty_mass_positive"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P024.T7WholeStatement"
+ },
+ {
+  "target_id": "P024-T8",
+  "decision": "restricted",
+  "theorem": "SAP.P024.T8",
+  "restriction": "Assume a predetermined interior treatment quota m_b in every block on every assignment and actual common within-block treatment probabilities m_b/N_b. Establish the population-share weighted raw-mean identity and unbiasedness under these conditions; no result for variable block treatment counts or unequal within-block propensities is asserted. Uniform subsets and independence across blocks are not required.",
+  "rows_used": [
+   "AronowAudit.P024.blocked_actual_means_identity",
+   "AronowAudit.P024.blocked_estimator_unbiased",
+   "SAP.P024.WH.W3.T8_whole",
+   "SAP.P024.WH.W3.T8_assembly"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P024.blocked_weighted_identity",
+    "reason": "The retained actual-observed-means identity incorporates this fixed-divisor intermediate."
+   },
+   {
+    "lean_name": "SAP.P024.WH.W1.T8_whole",
+    "reason": "Historical counterexample declaration; not used in the retained positive specialization."
+   },
+   {
+    "lean_name": "SAP.P024.WH.W1.T8_assembly",
+    "reason": "Historical counterexample declaration; not used in the retained positive specialization."
+   }
+  ],
+  "statement_definition": "SAP.P024.T8WholeStatement_W3"
+ }
+]

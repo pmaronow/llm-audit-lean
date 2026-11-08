@@ -23,6 +23,8 @@ theorem sample_mean_paper_contract :
           var μ (X 0) / (ε ^ 2 * (n : ℝ)))) :=
   SampleMean.assemble SampleMean.n1_proof
 
+example : SampleMean.Target.{u} := sample_mean_paper_contract
+
 end
 
 end AronowAudit.P001.Wave1

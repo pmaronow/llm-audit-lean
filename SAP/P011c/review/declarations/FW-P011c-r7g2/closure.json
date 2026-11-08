@@ -1,0 +1,929 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P011c.T34",
+   "target_id": "P011-T34",
+   "fingerprint": "4f42e30f766e1406a73cf6a12775b660ee4fdf137bc88ad2993c549a38ef8126",
+   "module": "SAP.P011c.Challenge.Part1",
+   "line": 42,
+   "closure": [
+    {
+     "line": 23,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Compatible"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Dependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.mk"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.model"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.size"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Graph"
+    },
+    {
+     "line": 101,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Homoskedastic"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.G"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.R"
+    },
+    {
+     "line": 65,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.d"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.law"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.mk"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.theta"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Nested"
+    },
+    {
+     "line": 111,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.T34WholeStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.T41WholeStatement._proof_1"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Valid"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.VariableDependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.WholeScaling"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.WholeScaling._proof_1"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.adjacency"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.average"
+    },
+    {
+     "line": 75,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.beta"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.betaHat"
+    },
+    {
+     "line": 29,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.centered"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.covariance"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.degree"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.expectation"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.printedAuxiliary"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.probability"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.sampleVariance"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.scaledTrue"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.var"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.weighted"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.wholeFairSignLaw"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.wholeFairSignLaw._proof_1"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P011c.T35",
+   "target_id": "P011-T35",
+   "fingerprint": "321d8836e3e6a24fca9050abd45d325f8188dc1a65326b73e3359160fe82342d",
+   "module": "SAP.P011c.Challenge.Part1",
+   "line": 52,
+   "closure": [
+    {
+     "line": 23,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Compatible"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Conservative"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Dependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.mk"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.model"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.size"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Graph"
+    },
+    {
+     "line": 54,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Maximizes"
+    },
+    {
+     "line": 89,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.MeanModel"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.G"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.R"
+    },
+    {
+     "line": 65,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.d"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.law"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.mk"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.theta"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Nested"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T35WholeStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T35WholeStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T35WholeStatement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T35WholeStatement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T35WholeStatement._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T35WholeStatement._proof_5"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.V1"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Valid"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.VariableDependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.WholeW2Scaling"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.WholeW2Scaling._proof_1"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.adjacency"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.average"
+    },
+    {
+     "line": 75,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.beta"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.betaHat"
+    },
+    {
+     "line": 29,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.centered"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.degree"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.expectation"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.olsTheta"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.probability"
+    },
+    {
+     "line": 33,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.quadratic"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.var"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.weighted"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P011c.T36",
+   "target_id": "P011-T36",
+   "fingerprint": "2b0ddc47d859e6f93e9bd3a962b4f3989c95e1aa1b45f5d185aacfab1fffc50c",
+   "module": "SAP.P011c.Challenge.Part1",
+   "line": 63,
+   "closure": [
+    {
+     "line": 50,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Conservative"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Dependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.mk"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.model"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.size"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Graph"
+    },
+    {
+     "line": 101,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Homoskedastic"
+    },
+    {
+     "line": 45,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.InProbability"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.G"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.law"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.mk"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.theta"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Nested"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T35WholeStatement._proof_2"
+    },
+    {
+     "line": 49,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T36WholeStatement"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.V2"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.VariableDependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.WholeW2Scaling"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.WholeW2Scaling._proof_1"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.adjacency"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.average"
+    },
+    {
+     "line": 75,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.beta"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.betaHat"
+    },
+    {
+     "line": 29,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.centered"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.covariance"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.degree"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.expectation"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.probability"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.sampleVariance"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.scaledTrue"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.var"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.weighted"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P011c.T37",
+   "target_id": "P011-T37",
+   "fingerprint": "71e0005afc175b4df8c2f3aed09dc9ada9406292978e8d84f207355c302d1369",
+   "module": "SAP.P011c.Challenge.Part1",
+   "line": 73,
+   "closure": [
+    {
+     "line": 23,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Compatible"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Conservative"
+    },
+    {
+     "line": 98,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Dependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.mk"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.model"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.size"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Graph"
+    },
+    {
+     "line": 101,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Homoskedastic"
+    },
+    {
+     "line": 54,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Maximizes"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.G"
+    },
+    {
+     "line": 64,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.R"
+    },
+    {
+     "line": 65,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.d"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.law"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.mk"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.theta"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.T37WholeStatement"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.V2"
+    },
+    {
+     "line": 50,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.V2prime"
+    },
+    {
+     "line": 40,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Valid"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.VariableDependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.WholeW2Scaling"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW2",
+     "name": "SAP.P011c.WholeW2Scaling._proof_1"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.adjacency"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.average"
+    },
+    {
+     "line": 75,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.beta"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.betaHat"
+    },
+    {
+     "line": 29,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.centered"
+    },
+    {
+     "line": 81,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.covariance"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.degree"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.expectation"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.probability"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.sampleVariance"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.truncatedDegree"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.var"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.weighted"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P011c.T38",
+   "target_id": "P011-T38",
+   "fingerprint": "fd02a502ba5b380c868ef244c443a5dd191a83d571fe71253232790d95cd2def",
+   "module": "SAP.P011c.Challenge.Part1",
+   "line": 81,
+   "closure": [
+    {
+     "line": 98,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Dependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.mk"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.model"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Family.size"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Graph"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.G"
+    },
+    {
+     "line": 60,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.law"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.mk"
+    },
+    {
+     "line": 62,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.Model.theta"
+    },
+    {
+     "line": 63,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.Phi"
+    },
+    {
+     "line": 38,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.T38WholeStatement"
+    },
+    {
+     "line": 90,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.VariableDependency"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.WholeScaling"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P011c.Defs.WholeW1",
+     "name": "SAP.P011c.WholeScaling._proof_1"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.average"
+    },
+    {
+     "line": 75,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.beta"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.betaHat"
+    },
+    {
+     "line": 20,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.degree"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.expectation"
+    },
+    {
+     "line": 43,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.probability"
+    },
+    {
+     "line": 57,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.scaledTrue"
+    },
+    {
+     "line": 85,
+     "module": "SAP.P011c.Defs.Part2",
+     "name": "SAP.P011c.standardized"
+    },
+    {
+     "line": 77,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.var"
+    },
+    {
+     "line": 67,
+     "module": "SAP.P011c.Defs.Part1",
+     "name": "SAP.P011c.weighted"
+    }
+   ]
+  }
+ ]
+}

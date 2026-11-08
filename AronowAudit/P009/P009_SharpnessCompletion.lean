@@ -1,4 +1,4 @@
-/- Exact HT construction identity from unitwise inverse-probability cancellation and symbolic finite-prefix counting. This identity alone does not establish the sharpness construction graph or limiting theorem. -/
+/- Exact HT construction identity from unitwise inverse-probability cancellation and symbolic finite-prefix counting. Does not establish the separate sharpness construction graph or limiting theorem; no new assumptions or copied external code. -/
 import AronowAudit.P009.P009_Audit
 namespace AronowAudit.P009.SharpnessCompletion
 open scoped BigOperators
@@ -52,16 +52,16 @@ theorem sharpness_HT_construction_completed {n : ℕ} (hn : 0 < n) (E : Experime
   field_simp [hn0,hh0,hs0]
   linear_combination (Real.sqrt D*f z)*hs
 
+#print axioms sharpness_HT_construction_completed
 end
 end AronowAudit.P009.SharpnessCompletion
 
 namespace AronowAudit.P009
 open scoped BigOperators
 noncomputable section
-/-- T51 finite identity in the construction, Supplement A pp. 36–38: under
-Bernoulli assignment, choosing the printed own-treatment coefficient makes the
-HT estimator exactly `Real.sqrt D / Real.sqrt n` times the supplied function `f`
-whenever `1 ≤ h ≤ n`. -/
+/-- T51 finite identity in the construction, Supplement A pp. 36–38: choosing
+the printed own-treatment coefficient makes the HT estimator exactly the
+scaled three-point map whenever 1≤h≤n. -/
 theorem sharpness_HT_construction {n : ℕ} (hn : 0 < n) (E : Experiment n)
     (hBER : Bernoulli E) (h : ℕ) (hh : 1 ≤ h ∧ h ≤ n)
     (f : Assignment n → ℝ) (D : ℝ) :
@@ -71,5 +71,6 @@ theorem sharpness_HT_construction {n : ℕ} (hn : 0 < n) (E : Experiment n)
     ∀ z, ht E' z = Real.sqrt D/Real.sqrt n*f z := by
   exact SharpnessCompletion.sharpness_HT_construction_completed hn E hBER h hh f D
 
+#print axioms sharpness_HT_construction
 end
 end AronowAudit.P009

@@ -92,7 +92,7 @@ lemma neyman_randomStates_iff (v q : Counts) (m : ℕ) :
     · have he : m-q.a-q.b-q.c = q.d := by omega
       simp only [he, if_pos hd]
 
--- Enumeration uniqueness.
+-- Enumeration uniqueness, adapted from P003/Wave1/Gap/GP0031B2.lean.
 private lemma neyman_flatMap_nodup
     {A B : Type*} (xs : List A) (f : A → List B) (g : B → A)
     (hx : xs.Nodup) (hf : ∀ a ∈ xs, (f a).Nodup)
@@ -547,6 +547,84 @@ lemma neyman_observed_arms (v q : Counts) (m : ℕ) (hq : q ∈ randomStates v m
   dsimp [observed, Counts.total] at ht ⊢
   omega
 
+lemma neyman_deviation_scaling (v o : Counts) (m : ℕ)
+    (ho : o.total = v.total) (hom : o.a+o.b = m) (hm : 0 < m ∧ m < v.total) :
+    (deviationNumerator v o m : ℝ) =
+      ((v.total : ℝ)*m*((v.total : ℝ)-m))*(estimate o-tau v) := by
+  have hmR : (m : ℝ) ≠ 0 := by exact_mod_cast hm.1.ne'
+  have hnR : (v.total : ℝ) ≠ 0 := by exact_mod_cast (lt_trans hm.1 hm.2).ne'
+  have hlR : (v.total : ℝ)-(m : ℝ) ≠ 0 := by
+    have h : (m : ℝ) < v.total := by exact_mod_cast hm.2
+    linarith
+  have htreated : (o.a : ℝ)+o.b = m := by exact_mod_cast hom
+  have hcontrol : (o.c : ℝ)+o.d = (v.total : ℝ)-m := by
+    have ht : o.a+o.b+o.c+o.d = v.total := ho
+    have htR : (o.a : ℝ)+o.b+o.c+o.d = v.total := by exact_mod_cast ht
+    linarith
+  simp only [deviationNumerator, estimate, estimateQ, tau, tauQ,
+    Rat.cast_sub, Rat.cast_div, Rat.cast_add, Rat.cast_natCast, Rat.cast_intCast,
+    Int.cast_sub, Int.cast_mul, Int.cast_natCast]
+  rw [htreated,hcontrol]
+  field_simp
+
+lemma neyman_tail_iff (v o o' : Counts) (m : ℕ)
+    (ho : o.total = v.total) (hom : o.a+o.b = m)
+    (ho' : o'.total = v.total) (hom' : o'.a+o'.b = m)
+    (hm : 0 < m ∧ m < v.total) :
+    |estimate o'-tau v| ≥ |estimate o-tau v| ↔
+      (deviationNumerator v o' m).natAbs ≥ (deviationNumerator v o m).natAbs := by
+  have hpos : 0 < ((v.total : ℝ)*m*((v.total : ℝ)-m)) := by
+    have hmR : (0 : ℝ) < m := by exact_mod_cast hm.1
+    have hmnR : (m : ℝ) < v.total := by exact_mod_cast hm.2
+    exact mul_pos (mul_pos (lt_trans hmR hmnR) hmR) (sub_pos.mpr hmnR)
+  have habs (x : ℝ) : |((v.total : ℝ)*m*((v.total : ℝ)-m))*x| =
+      ((v.total : ℝ)*m*((v.total : ℝ)-m))*|x| := by
+    rw [abs_mul, abs_of_pos hpos]
+  have hnat (a : ℤ) : (a.natAbs : ℝ) = |(a : ℝ)| := by
+    rw [Nat.cast_natAbs, Int.cast_abs]
+  change |estimate o-tau v| ≤ |estimate o'-tau v| ↔
+    (deviationNumerator v o m).natAbs ≤ (deviationNumerator v o' m).natAbs
+  rw [← Nat.cast_le (α := ℝ), hnat, hnat,
+    neyman_deviation_scaling v o m ho hom hm,
+    neyman_deviation_scaling v o' m ho' hom' hm,
+    habs, habs]
+  exact (mul_le_mul_iff_right₀ hpos).symm
+
+/-- The referee-corrected S01 tail specialization. The two observed-design
+equalities are essential; the table may have arbitrary labels. -/
+lemma neyman_pValue_pushforward (v o : Counts) (m : ℕ) (w : PotentialTable v.total)
+    (hw : tableCounts w = v) (ho : o.total = v.total) (hom : o.a+o.b = m)
+    (hm0 : 0 < m) (hmn : m < v.total) :
+    uniformProb (fun z : Assignment v.total m =>
+      |tableEstimator w z.val-tau v| ≥ |estimate o-tau v|) = (pValue v o : ℝ) := by
+  let E : Counts → Prop := fun q =>
+    (deviationNumerator v (observed v q) m).natAbs ≥ (deviationNumerator v o m).natAbs
+  have hpred (z : Assignment v.total m) :
+      (|tableEstimator w z.val-tau v| ≥ |estimate o-tau v|) ↔ E (neyman_treated w z.val) := by
+    rw [neyman_estimator_eq w v hw m]
+    have hz := neyman_observed_arms v (neyman_treated w z.val) m
+      (neyman_treated_mem w v hw m z)
+    exact neyman_tail_iff v o _ m ho hom hz.1 hz.2 ⟨hm0,hmn⟩
+  have he : uniformProb (fun z : Assignment v.total m =>
+      |tableEstimator w z.val-tau v| ≥ |estimate o-tau v|) =
+      uniformProb (fun z : Assignment v.total m => E (neyman_treated w z.val)) := by
+    congr 1
+    funext z
+    exact propext (hpred z)
+  rw [he,neyman_event_pushforward w v hw m E]
+  unfold designProb pValue tailCount
+  simp only [hom, binomial_eq_choose, Rat.cast_div, Rat.cast_natCast]
+  congr 1
+  rw [Nat.cast_list_sum]
+  simp only [List.map_map, Function.comp_def]
+  apply congrArg List.sum
+  apply List.map_congr_left
+  intro q hq
+  by_cases he : E q
+  · simp only [if_pos he, if_pos (show (deviationNumerator v (observed v q) m).natAbs ≥
+      (deviationNumerator v o m).natAbs from he)]
+  · simp only [if_neg he, if_neg (show ¬ ((deviationNumerator v (observed v q) m).natAbs ≥
+      (deviationNumerator v o m).natAbs) from he), Nat.cast_zero]
 
 theorem neyman_finite_identity_proof (v : Counts) (m : ℕ) (hm : 0 < m ∧ m < v.total) :
     designMean v m (fun q => estimate (observed v q)) = tau v ∧
@@ -558,5 +636,7 @@ theorem neyman_finite_identity_proof (v : Counts) (m : ℕ) (hm : 0 < m ∧ m < 
       ((v.total-1 : ℕ)*(m : ℝ)*(v.total-m : ℕ)) := by
   have h := neyman_finite_moments v m hm
   exact ⟨h.1, h.2, h.2 ▸ neyman_variance_upper v m hm⟩
+
+example : type_of% @AronowAudit.P003.neyman_finite_identity := neyman_finite_identity_proof
 
 end AronowAudit.P003.Wave1

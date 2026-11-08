@@ -2,9 +2,9 @@ import AronowAudit.P004.P004_Spatial
 import AronowAudit.External.Causalean.Mathlib.Probability.SteinMethod.AlmostEverywhereDepGraphCLT
 
 /-!
-The P004 bounded-degree dependency-graph central limit theorem follows from
-the Stein-method theorem. The adapter supplies the almost-everywhere summand
-bound without strengthening the graph or variance hypotheses.
+The unchanged P004 bounded-degree dependency-graph CLT follows from the actual
+licensed Stein-method proof engine. The generic adapter supplies the original
+a.e. summand bound without strengthening the graph or variance hypotheses.
 -/
 namespace AronowAudit.P004
 open MeasureTheory ProbabilityTheory Filter
@@ -58,5 +58,6 @@ theorem corrected_dependency_clt {Ω : ℕ → Type*} [∀ N, MeasurableSpace (�
     ((Finset.measurable_sum Finset.univ (fun i _ => hmeas N i)).div_const _) measurableSet_Iic]
   rfl
 
+#print axioms corrected_dependency_clt
 end
 end AronowAudit.P004

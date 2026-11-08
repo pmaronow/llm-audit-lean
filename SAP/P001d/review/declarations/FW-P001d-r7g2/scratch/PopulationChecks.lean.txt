@@ -1,0 +1,71 @@
+import SAP.P001d.Challenge
+
+open MeasureTheory ProbabilityTheory SAP.P001d
+open scoped BigOperators ENNReal
+noncomputable section
+namespace ReviewPopulation
+
+def μ : Measure (Fin 2) := (PMF.uniformOfFintype (Fin 2)).toMeasure
+instance : IsProbabilityMeasure μ := by unfold μ; infer_instance
+def X (_ : Fin 2) (_ : Fin 1) : ℝ := 1
+def ε : Fin 2 → ℝ := ![1, -1]
+
+lemma mass (i : Fin 2) : μ.real {i} = (1/2 : ℝ) := by
+  change ((PMF.uniformOfFintype (Fin 2)).toMeasure {i}).toReal = (1/2 : ℝ)
+  rw [PMF.toMeasure_apply_singleton _ _ (measurableSet_singleton i)]
+  norm_num [PMF.uniformOfFintype_apply]
+
+lemma meanZero : (∫ ω, ε ω ∂μ) = 0 := by
+  rw [integral_fintype Integrable.of_finite]
+  simp_rw [mass]
+  norm_num [ε, Fin.sum_univ_succ]
+
+lemma epsSquare (ω : Fin 2) : (ε ω)^2 = 1 := by
+  fin_cases ω <;> norm_num [ε]
+
+lemma conditionalMean : IsCEF μ X ε (fun _ => 0) := by
+  refine ⟨measurable_const, Integrable.of_finite, integrable_const _, ?_⟩
+  intro A _
+  by_cases h : (fun _ : Fin 1 => (1 : ℝ)) ∈ A
+  · have hh : X ⁻¹' A = Set.univ := by
+      ext ω
+      change ((fun _ : Fin 1 => (1 : ℝ)) ∈ A) ↔ True
+      simp [h]
+    simp [hh, meanZero]
+  · have hh : X ⁻¹' A = ∅ := by
+      ext ω
+      change ((fun _ : Fin 1 => (1 : ℝ)) ∈ A) ↔ False
+      simp [h]
+    simp [hh]
+
+lemma conditionalVariance : IsCEF μ X (fun ω => (ε ω - 0)^2) (fun _ => 1) := by
+  refine ⟨measurable_const, Integrable.of_finite, integrable_const _, ?_⟩
+  intro A _
+  simp [epsSquare]
+
+lemma gram : populationGram μ X = (1 : Matrix (Fin 1) (Fin 1) ℝ) := by
+  ext i j
+  fin_cases i; fin_cases j
+  simp [populationGram, X]
+
+-- Every hypothesis of T67 holds at K=1 and sigma2=1; neither the
+-- conditional variance nor the matrix conclusions are zero-dimensional.
+example : Measurable X ∧ MemLp ε 2 μ ∧
+    IsCEF μ X ε (fun _ => 0) ∧ (0 ≤ (1 : ℝ)) ∧
+    IsCEF μ X (fun ω => (ε ω - 0)^2) (fun _ => 1) ∧
+    (∀ j k, Integrable (fun ω => X ω j * X ω k) μ) ∧
+    (∀ j k, Integrable (fun ω => (ε ω)^2 * X ω j * X ω k) μ) ∧
+    IsUnit (populationGram μ X).det := by
+  refine ⟨measurable_of_countable X, ?_, conditionalMean, by norm_num,
+    conditionalVariance, ?_, ?_, ?_⟩
+  · exact eLpNorm_lt_top_of_finite (measurable_of_countable ε).aestronglyMeasurable
+  · intro j k; exact Integrable.of_finite
+  · intro j k; exact Integrable.of_finite
+  · rw [gram]; simp
+
+example : populationMeat μ X ε = (1 : Matrix (Fin 1) (Fin 1) ℝ) := by
+  ext i j
+  fin_cases i; fin_cases j
+  simp [populationMeat, epsSquare, X]
+
+end ReviewPopulation

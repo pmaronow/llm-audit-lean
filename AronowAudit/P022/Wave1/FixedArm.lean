@@ -22,5 +22,7 @@ theorem fixed_arm_variance_limit_eventually :
        finiteVariance (rowOutcomes S false q) / k)) atTop (𝓝 0) := by
   exact FixedArm.assemble RandomizationVariance.n1_proof RandomizationVariance.n2_proof RandomizationVariance.n3_proof RandomizationVariance.n4_proof FixedArm.n1_proof
 
+example : AronowAudit.P022.Wave1.FixedArm.Target := fixed_arm_variance_limit_eventually
+
 end
 end AronowAudit.P022.Wave1

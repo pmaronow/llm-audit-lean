@@ -1,0 +1,77 @@
+import SAP.P002a.Challenge
+
+open SAP.P002a
+open scoped BigOperators Matrix Classical
+
+set_option maxHeartbeats 1500000
+set_option maxRecDepth 3000
+
+noncomputable section
+
+-- These proofs calculate from definitions; they do not invoke T6, T8, or T10.
+example :
+    ValidDesign (nearSingularModel 4).pop ∧
+    MonotoneReceipt (nearSingularModel 4).pop ∧
+    compliers (nearSingularModel 4).pop = Finset.univ ∧
+    late (nearSingularModel 4).pop = 0 ∧
+    (assignments (nearSingularModel 4).pop).card = 70 ∧
+    mean (fun i => (nearSingularModel 4).x i 0) = 0 := by
+  norm_num [ValidDesign, MonotoneReceipt, compliers, nearSingularModel, late,
+    groupMean, assignments, mean, Finset.card_powersetCard, Fin.sum_univ_succ,
+    Nat.choose]
+
+example : ∃ x : Fin 2 → Fin 1 → ℝ,
+    (∀ s, ∑ i, x i s = 0) ∧
+    (∀ s, mean (fun i => x i s^4) = 16) ∧
+    covariateGram x = (fun _ _ => 4) ∧
+    gram x Finset.univ = Matrix.diagonal
+      (fun j : Option (Fin 1) => match j with | none => 1 | some _ => 4) ∧
+    ∃ b : Option (Fin 1) → ℝ,
+      normSq b = 1 ∧ dotProduct b (gram x Finset.univ *ᵥ b) = 1 ∧
+      dotProduct b (gram x Finset.univ *ᵥ b) < 2 * normSq b := by
+  let x : Fin 2 → Fin 1 → ℝ := fun i _ => if i = 0 then -2 else 2
+  have hx : gram x Finset.univ = Matrix.diagonal
+      (fun j : Option (Fin 1) => match j with | none => 1 | some _ => 4) := by
+    ext s t
+    fin_cases s <;> fin_cases t <;>
+      norm_num [gram, groupMean, augmented, x, Fin.sum_univ_succ]
+  refine ⟨x, ?_, ?_, ?_, hx, ?_⟩
+  · intro s
+    norm_num [x, Fin.sum_univ_succ]
+  · intro s
+    norm_num [mean, x, Fin.sum_univ_succ]
+  · ext s t
+    norm_num [covariateGram, mean, x, Fin.sum_univ_succ]
+  · refine ⟨fun j => if j = none then 1 else 0, ?_⟩
+    rw [hx]
+    norm_num [normSq, dotProduct, Matrix.mulVec, Fin.sum_univ_succ,
+      Fintype.sum_option]
+
+lemma centring_class : Theta centringModel 0 (1/2) 1 := by
+  have hC : compliers centringModel = Finset.univ := by
+    ext i
+    simp [compliers, centringModel]
+  have hlate : late centringModel = 2 := by
+    norm_num [late, compliers, groupMean, centringModel, Fin.sum_univ_succ]
+  norm_num [Theta, ValidDesign, MonotoneReceipt, centringModel, compliers, late,
+    fourthNorm, SAP.P002a.v, w, binary, groupVar, groupCov, groupMean,
+    popVar, mean, Fin.sum_univ_succ]
+  apply (le_div_iff₀ (Real.sqrt_pos.mpr (show (0:ℝ)<3 by norm_num))).mpr
+  norm_num [Real.sqrt_le_iff]
+
+example : T10Statement := by
+  have hC : compliers centringModel = Finset.univ := by
+    ext i
+    simp [compliers, centringModel]
+  have hlate : late centringModel = 2 := by
+    norm_num [late, compliers, groupMean, centringModel, Fin.sum_univ_succ]
+  have hD : assignments centringModel =
+      {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}} := by decide
+  unfold T10Statement T10Printed T10Corrected
+  dsimp only
+  simp only [centring_class, hlate, true_and, expectation, hD]
+  norm_num [S2, fraction, controlSize, observedW, observedY, observedD,
+    armMean, SAP.P002a.v, w, binary, groupMean, popVar, mean, centringModel,
+    Fin.sum_univ_succ, Finset.sum_insert, Finset.sum_singleton,
+    Finset.card_insert_of_notMem, Finset.card_singleton, Finset.ext_iff,
+    Fin.forall_fin_succ]

@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P053-T6",
+    "theorem": "SAP.P053.T6",
+    "fingerprint": "eb2ebe077acea389af553b6e9dff6edeff813ff24ee20c85e0d022c82399bd5d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean using only SAP.P053.Defs. With m=k+2, take N=4m, n1=m, n0=3m, and identical binary potential outcomes equal to 1 on the first 2m units and 0 on the remaining 2m. The example proves all Regularity fields with (p,v1,v0,vt,tauInf)=(1/4,1/4,1/4,0,0), sharp null and constant effects at every index, average effect tending to zero, a positive OLS limiting coefficient, v0>0, and PositiveOLS. Every control sample has both outcome values. Thus all hypotheses of all three branches are jointly satisfiable without using an audited Challenge theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T8",
+    "theorem": "SAP.P053.T8",
+    "fingerprint": "520ced1b138f1201cd5416fd6b88c003a0a8aa97f330c0ce0b05c6a123d092dc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean constructs a nondegenerate regular constant-effect instance for the universal part. Compiled scratch/Finite.lean checks the explicit heterogeneous witness at m=1: average effect 0, population variances 10/9, 40/9, 10/9, and 45 supported assignments; it also proves nonconstant effects for every k. For the full witness m=k+1, N=10m, half of Y0 are +1 and half -1, Y1=2Y0: means are zero, S0^2=Stau^2=N/(N-1), S1^2=4N/(N-1), allocation is 1/5, and the raw fourth-moment average is 17. These explicit formulas verify all S5 fields and limits independently. Exact rational enumeration for m=1,2 (scratch/enumerate_witness.py; scratch/enumeration.json) checks the genuine actual variances 9/4 and 81/76 and both claimed leading variance forms. The actual scaled coefficient 81/4 lies strictly between 10 and 85/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P053-T7",
+    "theorem": "SAP.P053.T7",
+    "fingerprint": "51019e19829a42e807a8480c54201084de01fa7afe9e33c9e4be1930291e8230",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean constructs E=sharpFamily with nonnegative sigma1=sigma0=1/2, p=1/4, every Regularity field, and average effect tending to zero, satisfying all outer and local hypotheses. The unequal-limit implication is also nonvacuous: heterogeneousWitness has all S5 fields by the explicit mean/variance and fourth-moment computations given in REPORT.md, with p=1/5, sigma1=2, sigma0=1, vt=1, tauInf=0, and distinct OLS/Neyman coefficients 10 and 85/4. Compiled scratch/Finite.lean proves its effects are nonconstant at every index and checks its initial finite population independently.",
+    "confidence": 0.99
+  }
+]

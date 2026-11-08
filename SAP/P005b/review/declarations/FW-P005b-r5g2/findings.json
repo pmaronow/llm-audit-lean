@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P005-T20",
+    "theorem": "SAP.P005b.T20",
+    "fingerprint": "d078e9ff022513dd36c847e23b43ec691e5560b1a16da60c5159f76b3c119f9f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully with sap-lean. With n=5,d=1,m=2, x=(-3/2,-1/2,0,1/2,3/2), yT=x^2 and yC=0, it constructs standardized data, verifies both arm determinants on every assignment, and constructs a genuine existential counterexample: actual third-component difference 21/320 versus printed -21/320. The same population supplies the positive exact-part hypotheses. scratch/counterexamples.md independently checks every printed condition for the asymptotic witness d_n=1, m_n=floor(n/2), v_0=1, v_i=i/n^4, x=(v-mean(v))/sd(v), yT_i=i/n, yC=0: K=1, exact standardization, sampling fractions bounded away from 0 and 1, eventual all-assignment nonsingularity, and kappa*log(1)=0. On the event that subject 0 is not treated, of probability at least 1/2, the remainder is at least n^2-3 while the proposed rate is at most 1/sqrt(n). The infinite-sequence verification is a mathematical argument, not a compiled Lean proof.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T21",
+    "theorem": "SAP.P005b.T21",
+    "fingerprint": "f747bacf61a81d818d7aae600cbfc34bc732484616e7b7b542e7dbf73444893a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully. The n=5,d=1,m=2 population x=(-3/2,-1/2,0,1/2,3/2), yT=x^2,yC=0 satisfies n>=3, both nonempty arms, standardization, and all-assignment noninteracted nonsingularity. Both arms have size at least two, so all (11)/(12) hypotheses are also realized. A separate compiled example verifies noninteracted nonsingularity for the same population with m=1, confirming that the main hypotheses allow singleton treatment arms.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T22",
+    "theorem": "SAP.P005b.T22",
+    "fingerprint": "c012c0cea4c5498333de79656c926010cf7c839f14c366a0d2904cebf742093b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully. The n=5,d=1,m=2 population x=(-3/2,-1/2,0,1/2,3/2), yT=x^2,yC=0 has centered unit-Gram covariates and strictly positive treatment and control scalar covariance determinants under every assignment. It satisfies every main hypothesis, with nonconstant effects and positive dimension. The compiled weakP example replaces x by 2*x and verifies that its mean is zero while it is not standardized; with arm sizes 2 and 3 this also gives genuine models for both weaker armwise clauses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T23",
+    "theorem": "SAP.P005b.T23",
+    "fingerprint": "f302ebaf8b07fdcc1c9f5a656d41409aac094b950b93c219de6be3ee200e799d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully. The n=5,d=1,m=2 standardized population with x=(-3/2,-1/2,0,1/2,3/2), yT=x^2,yC=0 realizes all main hypotheses, including nonsingularity under every assignment. A separate n=4,d=1,m=2 population x=(-7/5,-1/5,1/5,7/5), yT=x^2+7,yC=x^2 is compiled with standardization and all-assignment noninteracted nonsingularity, balanced arms, and a constant treatment effect of 7, jointly realizing both local vanishing antecedents.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T24",
+    "theorem": "SAP.P005b.T24",
+    "fingerprint": "58120b3f1cfb0129cb7809265b402801d3e2dad18695c8874d17d1886e3b2897",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiled successfully. The n=5,d=1,m=2 population x=(-3/2,-1/2,0,1/2,3/2), yT=x^2,yC=0 realizes every hypothesis with positive dimension and strictly positive scalar arm covariance matrices on all ten assignments. A separate compiled Population 2 0 with m=1, yT=(1,3), yC=(0,1) realizes the n=2 boundary: empty covariate matrices have determinant 1 and all scalar means have nonzero denominators.",
+    "confidence": 0.99
+  }
+]

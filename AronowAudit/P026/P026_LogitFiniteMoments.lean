@@ -99,6 +99,12 @@ lemma center_Vhat_variance : variance tableDesign
   simp_rw [table_marginal,table_joint]
   decide +kernel
 
+#print axioms variance_expansion
+#print axioms rational_ht_L1
+#print axioms rational_variance_L1
+#print axioms center_HT_variance
+#print axioms center_Vhat_variance
+
 lemma real_htRawCoefficient (w : Fin 6 × Fin 15) (i : Fin 10) :
     htRawCoefficient realTableDesign w i=((htRawCoefficient tableDesign w i:ℚ):ℝ) := by
   simp only [htRawCoefficient]
@@ -293,6 +299,10 @@ lemma logit_numeric_moment_bounds (r : Fin 10 → ℝ) (hr : ∀ i,|r i|≤1)
   · apply (Real.sqrt_lt' (by norm_num)).2
     norm_num
     linarith
+
+#print axioms logit_numeric_moment_bounds
+#print axioms ht_difference_bound
+#print axioms printed_difference_bound
 
 end
 end AronowAudit.P026.LogitFiniteMoments

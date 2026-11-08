@@ -1,0 +1,14 @@
+[
+ {
+  "theorem": "SAP.P004b.T20",
+  "target_id": "P004-T20",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P004b/Challenge/Part1.lean:47: The docstring calls the 2b/min(p,1-p) and 4b/min(p,1-p) bounds sharp. The linearized bound is not sharp: the same hypotheses imply 2b/q+2b <= 3b/q, where q=min(p,1-p), so coefficient 4 can be improved without an added hypothesis. The theorem and canonical inequalities remain correct; this is a documentation-only overstatement. See the independent scalar Lean proof in scratch/SharpBound.lean and its application in REPORT.md.",
+   "SAP/P004b/Defs/WholeW2.lean:233: The CLTSharpBounds definition docstring repeats the inaccurate optimality description, \"Sharp centered contrast bounds\"; the proposition states only inequalities.",
+   "SAP/P004b/Defs/WholeW2.lean:262: The T20WholeStatement docstring repeats \"sharp bounds\" for the improvable linearized coefficient 4."
+  ]
+ }
+]

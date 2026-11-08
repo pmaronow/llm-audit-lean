@@ -1,0 +1,59 @@
+[
+ {
+  "target_id": "P018-T25",
+  "decision": "refuted",
+  "theorem": "SAP.P018b.T25",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P018.Wave1.benchmark_correspondence_printed_false"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P018b.T25Statement"
+ },
+ {
+  "target_id": "P018-T26",
+  "decision": "refuted",
+  "theorem": "SAP.P018b.T26",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P018.Wave1.lemma1_printed_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P018.ols_score_identity",
+    "reason": "A valid positive finite-sample helper; no separate invocation is needed for the refutation of the printed conjunction."
+   },
+   {
+    "lean_name": "AronowAudit.P018.variance_sum_identity",
+    "reason": "A valid positive finite-sample helper; no separate invocation is needed for the refutation of the printed conjunction."
+   }
+  ],
+  "statement_definition": "SAP.P018b.T26Statement"
+ },
+ {
+  "target_id": "P018-T27",
+  "decision": "whole",
+  "theorem": "SAP.P018b.T27",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P018.Wave1.proposition1_printed_proof",
+   "AronowAudit.P018.Wave1.GP0182B2b_variance_consistency",
+   "SAP.P018b.Bridge.toKernel",
+   "SAP.P018b.WH.W3.T27_assembly",
+   "SAP.P018b.WH.W3.T27_whole"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P018b.T27WholeStatement_W3"
+ },
+ {
+  "target_id": "P018-T28",
+  "decision": "refuted",
+  "theorem": "SAP.P018b.T28",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P018.Wave1.printed_corollaries_scalar_refuted"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P018b.T28Statement"
+ }
+]

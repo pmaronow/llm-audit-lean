@@ -1,0 +1,86 @@
+[
+  {
+    "theorem": "SAP.P002a.T1",
+    "target_id": "P002-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The correct explicit twelve-unit counterexample, both strict variance-bound failures, its repeated-block family, the m=1 zero population coefficients and failed arithmetic comparison are present. The separate complier covariance/fourth-moment and contrast-variance evaluations, exact numerical printed right sides, and expanded oracle formula in the canonical statement are not asserted as such. The definitions reproduce the canonical population. Exact rational enumeration of all 66 assignments confirms the two variances 5/396 and 36/55 and printed right sides 65/4752 and 39/55; Theta and Xi hold. No empty class or zero denominator produces either strict failure."
+  },
+  {
+    "theorem": "SAP.P002a.T2",
+    "target_id": "P002-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both corrected final bounds use max(delta,0), the actual design variance, and the correct raw versus oracle scaling. The canonical intermediate inequalities, negative-delta class inclusions and agreement with the printed bounds at nonnegative delta are not separate conclusions. The adjusted result explicitly requires k>0, consistent with the paper's positive-integer covariate dimension. ValidDesign inside Theta/Xi makes all design denominators positive. The negativeDeltaModel 1 at the canonical constants satisfies every hypothesis and gives corrected bounds 65/7128 <= 5/396 and 26/55 <= 36/55."
+  },
+  {
+    "theorem": "SAP.P002a.T3",
+    "target_id": "P002-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is explicitly a refutation of the printed claim: it negates each of the two printed universal bounds, with the printed multiplier 1-delta, not the corrected multiplier. PrintedLemma5 and PrintedE10 faithfully encode the two finite inequalities and their standing parameter/design hypotheses. The explicit repeated negative-delta family confirms that the counterexample also applies to the sequence formulation of Lemma 16. A refutation does not rely on restricting delta to nonnegative values or changing the oracle statistic to the feasible one."
+  },
+  {
+    "theorem": "SAP.P002a.T4",
+    "target_id": "P002-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The moment-collapse implication, common raw adjusted outcomes, exact coverage-one unadjusted classes, adjusted uniform lower bound max(0,1-1548/(n-1)), nonemptiness at every n>=2 and every beta, and both limits differing from nominal coverage are retained. The detailed zero-statistic/quantile and rank-event calculations, grid moment values, and entire heterogeneous six-unit illustration are absent. Group covariance zero at singleton compliers and studentized 0/0=0 match the supplied paper conventions. The exhibited degenerate populations are genuinely admissible; Lean checks Theta centringModel at (0,1/2,1) and Xi (degenerateCovModel 2 0) at (0,1/4,4,1/2,1/4), and independent rational checks confirm the degenerate witnesses for n=2 through 64."
+  },
+  {
+    "theorem": "SAP.P002a.T5",
+    "target_id": "P002-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two uniform liminf lower bounds are taken along nonempty classes and explicitly require that their sizes be unbounded. This prevents empty infima or a bottom filter from making the result vacuous. The theorem supplies sufficient unadjusted sharpness using an admissible constant-additive-effect sequence with positive control-outcome variance, including nominal convergence of that sequence, but does not assert necessity or adjusted-class sharpness, and does not separately state the degenerate-class observation. The balanced-sign sequence of sizes 2(j+2), delta=0,r=1/2,A=1 satisfies the sharpness hypotheses; the degenerate and grid families supply unbounded classes for the two lower bounds. The conclusion does not occur as a hypothesis."
+  },
+  {
+    "theorem": "SAP.P002a.T6",
+    "target_id": "P002-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The canonical even near-singular family and odd extension are correct. Admissibility, every even arm fit being nonsingular, the weaker power-of-two feasible-variance bound, estimator <5/n, probability-one failure at tolerance 1/2 and its limiting value one are retained. Intermediate moment/residual values, rare-block slopes and statistics, mean zero, sharper binomial and 121/(25n) bounds, and pointwise ratio inequality are omitted. The denominator is correctly the variance of the FEASIBLE refitted statistic, the quantity printed in (E.61). Exact Fraction enumeration at n=8 (70 assignments) and n=10 (252 assignments) verifies nonsingularity, exploding variance bound, estimator bound and probability one; odd admissibility is independently checked at n=9,11,13."
+  },
+  {
+    "theorem": "SAP.P002a.T8",
+    "target_id": "P002-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It gives the n=2 centered x=(2,-2) instance of the canonical even-size family, fourth mean 16, the covariate Rayleigh lower bound 2, and a unit intercept direction with augmented quadratic form 1<2. It does not separately state the exact covariate Gram 4, augmented Gram diag(1,4), smallest eigenvalue 1, or general even-size family. This genuinely refutes the covariate-to-augmented-Gram implication identified by the canonical claim; it does not purport to refute Lemma 19 or to realize its particular coefficient-error vector."
+  },
+  {
+    "theorem": "SAP.P002a.T9",
+    "target_id": "P002-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The finite block Gram identity, its bound for every augmented vector, exact minimum Rayleigh quotient min(1,leastRayleigh), and almost-sure corrected bound for the actual fitted-minus-pooled coefficient vectors all appear. T9Sequence includes the independent-across-sizes complete-randomization setup of the Supplement's almost-sure assertions (the supplied canonical definitions for T14/T15 explicitly describe that setup). The o_as(1) is an existential real error sequence tending to zero, with one eventual inequality for both arms for each fixed strict subsequence. No extra conclusion-assuming event or convergence premise is supplied. k>0 makes both real infima nonempty and they are bounded below by zero, so no arbitrary real sInf convention is used. An independent product of complete randomizations of nearSingularModel(j+4) supplies nonempty sequence hypotheses."
+  },
+  {
+    "theorem": "SAP.P002a.T10",
+    "target_id": "P002-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical four-unit population and assignment, admissibility, beta=2, the unequal identity sides 0 and -24, printed-bracket mean square 49/3 versus 1/3, corrected bracket and corrected mean square are all asserted. S1 squared is explicitly positive and equals 1/12, so the unnormalized unequal expectations really refute the printed normalized equality as well. Independent exact enumeration of the six assignments confirms these values, and the population's Theta hypothesis is compiled from Defs alone."
+  },
+  {
+    "theorem": "SAP.P002a.T11",
+    "target_id": "P002-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected sign, every-assignment identity, exact finite expectation, normalized equality, Big-O rate and zero limit are correctly represented. The separately simplified coefficient n0/(n1*n*pi^2*(1-pi)^2) and identity sum(v1^2)/S1^2=(n-1)/(pi^2*(1-pi)^2) are not separate conclusions. Strict positivity of S1 squared is explicit in normalized statements, agreeing with the positivity in the canonical definitions; the unnormalized finite statements cover all valid designs and every beta. The centringModel is a compiled nonzero-variance finite witness, and the balanced-sign sequence supplies the rate hypotheses."
+  },
+  {
+    "theorem": "SAP.P002a.T12",
+    "target_id": "P002-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical eight-unit balanced-sign example, original assignment, admissibility, true beta=0, all 70 reassignments, contrast -2, actual variance 1/28, printed right side 1/14, strict failure, and corrected bound attained at 1/28 are all present. The reassignment vector q is frozen as in the paper. Exact rational enumeration confirms the numbers; design sizes and variance are strictly positive."
+  },
+  {
+    "theorem": "SAP.P002a.T13",
+    "target_id": "P002-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "It states the exact finite bound for an arbitrary frozen outcome vector and the stated explicit r^2(1-r)^2/n balance bound. Arbitrary q includes every observed Y-beta D. Although both conclusions share a balance parameter in the Lean quantifiers, every valid design admits r=min(n1/n,n0/n)>0, so the first conclusion still covers every valid design as claimed. The n=8 sign witness gives equality in the first bound with contrast -2 and variance 1/28."
+  },
+  {
+    "theorem": "SAP.P002a.T14",
+    "target_id": "P002-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The balanced-sign family at every even n>=4, admissibility, exact positive reassignment variance, probability-one failure of the printed square-root/variance ratio, limit one, and corrected finite tail bound 2/(n*kappa) are present. The hypergeometric law, its moment, exact estimator and ratios, support 0 or at least 3, square-root divergence, range and mean deficit of the corrected ratio, and separate corrected-probability limit are not separate conclusions. Exact hypergeometric counts verify the retained probability claim and mean deficit for even n=4 through 128 and n=256,512,1024."
+  },
+  {
+    "theorem": "SAP.P002a.T15",
+    "target_id": "P002-T15",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It states the corrected variance/variance error probability, almost surely for all positive tolerances along each fixed strict subsequence, but requires positive arm population variances at every size and positive conditional reassignment variance for every size and every omega. The latter excludes zero observed-vector denominators rather than silently exploiting real division by zero. It also proves the conclusion for arbitrary couplings with complete-randomization marginals, extending the paper's independent setup without weakening the result on the retained independent models. The sign family of sizes 2(j+2) has both arm variances n/(n-1)>0 and conditional variance 1/(4(n-1))>0 for EVERY omega since observed outcomes do not depend on the original assignment; the hypotheses are jointly satisfiable for its product randomization measure."
+  }
+]

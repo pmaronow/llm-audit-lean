@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P005b.T15",
+    "target_id": "P005-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "The quantified natural arm sizes t,c>=2 represent exactly the canonical integer sizes; n=t+c. Both corrected rational coefficients, the printed intermediate treatment fraction, and the sum of (11) and (12) for every assignment are present. NTTC has the printed sign and sampleCov has divisor equal to arm size. No extra population restriction occurs. scratch/Check.lean constructs t=2,c=3,d=1,S={0,1}, with treated and control covariances 1/2 and 4/3, and combined value 5/18. All denominators are positive."
+  },
+  {
+    "theorem": "SAP.P005b.T16",
+    "target_id": "P005-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical parts (a)-(e) are covered: pair and triple inclusion probabilities, corrected placement of expectation in the repeated-pair sum, factorization and diagonal subtraction, the triple-distinct contribution, the corrected full-n decomposition, coefficient simplification, and both final treated and mixed third moments. The complement mean and coefficient relations are explicit. The only data premises are n>=3, nonempty arms, and the three zero sums, exactly the canonical premises. Falling products use real subtraction, including m=1,2. scratch/Check.lean compiles a=b=c=(1,1,1,-3), n=4,m=3, with moments 2/9 and -2/3."
+  },
+  {
+    "theorem": "SAP.P005b.T17",
+    "target_id": "P005-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The target's actual type is T17WholeStatement. It includes every contraction, corrected matching-index equality, leverage bound, bounded residual-difference moment, and deterministic O(kappa/n) statement, as well as the first variance bound for the actual common-residual star and the quoted O_p(sqrt(kappa*d/n)) conclusion. Audit-history language in finite_lemmas excluding the first variance inequality was not used to remove the assertion from the canonical statement. Residuals equal the printed population weighted-least-squares residuals under standardization. Both sequence premises repeat Assumptions 1-3, with harmless freedom at sizes below three and no dimension-positivity or leverage-decay addition. scratch/Check.lean compiles a standardized positive-dimensional finite population with star=1/6. scratch/SequenceCheck.lean compiles every sequence hypothesis for d_n=1,m_n=floor(n/2), x=(sqrt(n/2),-sqrt(n/2),0,...), and zero outcomes, with uniform K=1 and ratio constants 1/4,3/4. Dimension zero is also mathematically nonvacuous: all dot sums and star are genuinely zero."
+  },
+  {
+    "theorem": "SAP.P005b.T18",
+    "target_id": "P005-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical parts (a)-(c) are present: B=-p_T A, equality of all three bracketed vectors, equality after the common dot product, the covariate-complement identity, the weighted residual normal equation, and identification of the first expression with the actual star. Dividing the canonical normal equation by n is equivalent because n>0. The first group allows arbitrary residual arrays satisfying that equation; the second proves it for the correct common residuals under the canonical standardization. scratch/Check.lean supplies the complete finite hypothesis data from p17 at n=4,d=1,m=1,S={0}, proves its weighted normal equation, and computes the actual star as 1/6."
+  },
+  {
+    "theorem": "SAP.P005b.T19",
+    "target_id": "P005-T19",
+    "my_reading_vs_claim": "different",
+    "reason": "The logical polarity is a refutation rather than an affirmative restatement: T19 negates exactly the canonical universal conjunction of the expectation identity and the variance inequality for arbitrary uncentered vectors. This is a valid refutation of the claim's own printed reading, not merely a competing interpretation. Before accepting it, scratch/t19-witness.md records that reading and checks every condition. Independently compiled in scratch/Check.lean: n=6,m=5,t=treated,a=(20,1,1,1,1,1),b=(1,20,20,20,20,20), with all six assignments sampled uniformly. The expectation identity holds, the covariance variance is 521284/1125, the printed bound is 54027/125, and their difference is 35041/1125>0. No centering hypothesis is part of the canonical assertion and no junk values or undefined quantities are involved. Thus the negative polarity faithfully refutes the entire asserted conjunction."
+  }
+]

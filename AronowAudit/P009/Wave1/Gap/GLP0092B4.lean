@@ -581,5 +581,7 @@ theorem chebyshev_asymptotic_sharpness_proof (S : Study) (k α x : ℝ) (hk : 0 
     exact t51_centered_cdf_limit (fun t => Assignment (S.N t))
       (fun t => (S.experiment t).design) F hF α hα hminus hplus u hu
 
+example : type_of% @AronowAudit.P009.chebyshev_asymptotic_sharpness := chebyshev_asymptotic_sharpness_proof
+
 end
 end AronowAudit.P009.Wave1

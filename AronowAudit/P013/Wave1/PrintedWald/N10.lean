@@ -39,8 +39,7 @@ private def evenUnitEquiv (k : ℕ) : Fin (k + 2) × Fin 2 ≃ Fin (2 * k + 3 + 
   (finProdFinEquiv : Fin (k + 2) × Fin 2 ≃ Fin ((k + 2) * 2)).trans
     (finCongr (by omega : (k + 2) * 2 = 2 * k + 3 + 1))
 
-/-- On the split event the cross-exposure sum over positive joint probabilities
-has one nonzero term per pair. -/
+/-- On the split event the positive cross-exposure sum has one term per pair. -/
 theorem n10_proof : N10 := by
   classical
   intro h1 h7 k z hz

@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P012-T11",
+    "theorem": "SAP.P012a.T11",
+    "fingerprint": "06464903617811ac96cf012c8b628e53f5d50afc444bbbf2a1316ee0190be44c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using /home/ubuntu/sap/tools/sap-lean. nv11Inputs constructs admissible data with sampled {1,2}, seed {1}, parent constantly 1, increasing times, degrees (2,2), traits (0,1), chosen slots x=y=0, and the private-leaf starting state; it satisfies every input condition of both universal swap clauses. nv11Witness independently proves compatibility of the starting and swapped states, definedness of both homophily values, values 1/3 and -1, and difference 4/3. Neither proof uses a Challenge theorem; #print axioms lists only propext, Classical.choice, and Quot.sound. For arbitrary admissible input meeting the normalized hypotheses, leafCompletion D true itself supplies a state satisfying the graph and selected-trait premises at every permitted slot. The exact instance's different fresh labels represent the same finite construction up to renaming.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T12",
+    "theorem": "SAP.P012a.T12",
+    "fingerprint": "40ad99f1c3f5b6a3311946657b3fd710512f9b2bf4d8be969f08c41b2e9fb23d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean using /home/ubuntu/sap/tools/sap-lean. nv12Inputs independently verifies admissibility of a2Data, compatibility of both a2State values, recruitment degree 2 versus observed degree 3 at recruiter 1, trait 1, actual recruitment of both 2 and 3, the private-neighbour condition, and positive definedness guards for both p values. nv12Values proves option values some 0 and some (5/12), difference -5/12, and the printed comparison fractions -1/6 and -1/4. Neither proof uses a Challenge theorem or sorryAx. The printed-reading sentence and complete condition-by-condition witness check were saved in claim-analysis.md before accepting the refutation. The refuted assertion is the equality (A2); the canonical target already specifies this counterexample, so record.json's whole decision is correct.",
+    "confidence": 0.99
+  }
+]

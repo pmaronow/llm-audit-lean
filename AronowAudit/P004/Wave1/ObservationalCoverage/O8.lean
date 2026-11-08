@@ -4,7 +4,8 @@ import AronowAudit.P004.P004_DependencyCompletion
 import AronowAudit.P004.P004_SpatialCLTCompletion
 
 /-! The fixed-degree CLT applied to the genuinely independent centered own-coin
-summands. The dependency graph below proves full family independence directly. -/
+summands. The dependency graph below proves full family independence directly;
+FC9 is not an additional dependency. Drafted without running Lean. -/
 
 namespace AronowAudit.P004.Wave1.ObservationalCoverage
 

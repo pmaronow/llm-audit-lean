@@ -1,10 +1,11 @@
 import AronowAudit.P001.Wave1.Gap.FidP001
 
 /-!
-# P001 printed PDA assertion and counterexample
+# P001 fidelity contracts
 
-The PDA assertion includes the joint vector/response PDF; neither the sample
-space nor the dimension is fixed. A continuous-CEF counterexample refutes it.
+Independent copies of the approved statements bind the existing finals at compile time.
+The PDA endpoint negates the full paper-class contract, including the joint vector/response
+PDF; neither the sample space nor the dimension is fixed in that contract.
 -/
 
 set_option autoImplicit false
@@ -18,18 +19,68 @@ universe u
 
 noncomputable section
 
+/-- Approved statement: `~/lean-work/runs/map-fid-P001/map.json`, record 1 (P001-T37).
+Both `ref1-fid-P001` and `ref2-fid-P001` accept this signature without statement fixes. -/
+def approvedContract_P001_T37 : Prop :=
+  ∀ (ν : Measure (ℝ × ℝ)) [IsProbabilityMeasure ν]
+    (f : (ℝ × ℝ) → ℝ) (hf : AronowAudit.P001.HasJointPDF ν f),
+    (∀ᵐ y ∂volume,
+      (∫⁻ x : ℝ, ENNReal.ofReal (f (x, y))) < ∞) ∧
+    ∀ g : ℝ → ℝ, (∀ y, 0 ≤ g y) →
+      (∀ᵐ y ∂volume,
+        ENNReal.ofReal (g y) = (∫⁻ x : ℝ, ENNReal.ofReal (f (x, y)))) →
+      AronowAudit.P001.HasPDF (ν.map Prod.snd) g
 
+example : approvedContract_P001_T37 :=
+  @AronowAudit.P001.Wave1.marginal_pdf_ae_correction_all_versions
 
+/-- Approved certificate: `~/lean-work/runs/map-fid-P001/map.json`, record 3 (P001-T102),
+with the two statement fixes in `ref2-fid-P001/referee.json` applied. Referee 1 changes
+only the explanatory scope, distinguishing the existential type from its proof witness. -/
+def approvedContract_P001_T102 : Prop :=
+    ∃ (μ : Measure (ℝ × ℝ))
+      (X : (ℝ × ℝ) → (Fin 1 → ℝ)) (Y : (ℝ × ℝ) → ℝ)
+      (f m₀ m₁ : (Fin 1 → ℝ) → ℝ) (q : (ℝ × ℝ) → ℝ),
+      IsProbabilityMeasure μ ∧ Measurable X ∧ Measurable Y ∧
+      (∀ j, Integrable (fun ω => X ω j) μ) ∧ Integrable Y μ ∧
+      AronowAudit.P001.HasVectorPDF (μ.map X) f ∧
+      AronowAudit.P001.HasJointPDF (μ.map (fun ω => (X ω 0, Y ω))) q ∧
+      AronowAudit.P001.IsCEF μ X Y m₀ ∧
+      AronowAudit.P001.IsCEF μ X Y m₁ ∧
+      ContDiff ℝ 1 m₀ ∧ ContDiff ℝ 1 m₁ ∧
+      m₀ =ᵐ[μ.map X] m₁ ∧
+      (let xbar : Fin 1 → ℝ :=
+          fun j => AronowAudit.P001.mean μ (fun ω => X ω j)
+       HasDerivAt
+         (fun t : ℝ => m₀ (Function.update xbar 0 (xbar 0 + t))) 0 0 ∧
+       HasDerivAt
+         (fun t : ℝ => m₁ (Function.update xbar 0 (xbar 0 + t))) 1 0)
+
+/- Referee 2's exact statement fixes:
+"In proposed_statement_lean, replace the existential binder line
+`(f m₀ m₁ : (Fin 1 → ℝ) → ℝ),` by
+`(f m₀ m₁ : (Fin 1 → ℝ) → ℝ) (q : (ℝ × ℝ) → ℝ),`."
+"Immediately after `AronowAudit.P001.HasVectorPDF (μ.map X) f ∧`, insert
+`AronowAudit.P001.HasJointPDF (μ.map (fun ω => (X ω 0, Y ω))) q ∧`.
+Retain every other proposed conjunct, including both actual HasDerivAt assertions.
+This preserves the printed CEF definitions’ joint-PDF setting, not only a covariate PDF."
+-/
+
+example : approvedContract_P001_T102 :=
+  AronowAudit.P001.Wave1.printed_pda_continuous_cef_counterexample
 
 /-- P001-T102's printed well-definedness claim: Definition 4.3.7, p. 167 (PDF p. 185),
-footnote 13, p. 166 (PDF p. 184), and the well-definedness remark, p. 168 (PDF p. 186).
+footnote 13, p. 166 (PDF p. 184), and the well-definedness remark, p. 168 (PDF p. 186);
+`runs/P001/staged/main.txt:9771–9774,9783–9809,9848–9850` in the audit. The distributional
+reading is identified by `runs/P001/lean/targets.json`, P001-T102's `note`, and
+`map-fid-P001` record 3, both referees, and `ver30-01/REPORT.md`.
 
 Conventions: arbitrary measurable probability spaces in universe `u`, every finite real
 covariate dimension and every actual coordinate; measurable covariate and response with
 finite absolute first moments; continuous joint laws represented by a finite nonnegative
 real density on the vector/response product, with a.e. measurability, integrability and
 the law-with-density identity. `f` is any covariate PDF in the existing `HasVectorPDF`
-sense. "Positive support" means `{x | 0 < f x}`.
+sense. "Positive support" means `{x | 0 < f x}`, as in the approved local-support reading.
 CEFs are real extensions satisfying `IsCEF` for the same response and covariate under the
 same law; values off covariate support are not prescribed. Differentiability means actual
 two-sided differentiability at zero along the selected coordinate path at every
@@ -59,6 +110,7 @@ def printedContract_P001_T102 : Prop :=
       HasDerivAt (fun t => m₀ (Function.update xbar k (xbar k + t))) a 0 ∧
       HasDerivAt (fun t => m₁ (Function.update xbar k (xbar k + t))) a 0
 
+abbrev Target_P001_T102 : Prop := ¬ printedContract_P001_T102.{u}
 
 end
 end AronowAudit.P001.Wave1.FidP001Contracts
@@ -70,10 +122,9 @@ open scoped ENNReal
 
 universe u
 
-/-- The continuous-CEF counterexample refutes the full printed PDA
-well-definedness assertion. Transporting its joint PDF to the one-coordinate
-vector product preserves the paper's joint-density class; lifting its sample
-space supplies every universe. -/
+/-- The approved continuous-CEF certificate refutes the full printed PDA well-definedness
+contract. Transporting its joint PDF to the one-coordinate vector product preserves the
+paper's joint-density class; lifting its sample space supplies every universe. -/
 theorem printed_pda_continuous_cef_counterexample_printed_negation :
     ¬ FidP001Contracts.printedContract_P001_T102.{u} := by
   classical
@@ -166,10 +217,17 @@ theorem printed_pda_continuous_cef_counterexample_printed_negation :
   rw [hmean] at ha₀ ha₁
   exact zero_ne_one ((hderiv.1.unique ha₀).trans (ha₁.unique hderiv.2))
 
+#print axioms printed_pda_continuous_cef_counterexample_printed_negation
+
 end AronowAudit.P001.Wave1
 
 namespace AronowAudit.P001.Wave1.FidP001Contracts
 
 universe u
+
+example : Target_P001_T102.{u} :=
+  AronowAudit.P001.Wave1.printed_pda_continuous_cef_counterexample_printed_negation
+
+example : Target_P001_T102.{u} ↔ ¬ printedContract_P001_T102.{u} := Iff.rfl
 
 end AronowAudit.P001.Wave1.FidP001Contracts

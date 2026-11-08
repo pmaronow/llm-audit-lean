@@ -1,0 +1,194 @@
+import SAP.P035.Defs
+
+open SAP.P035
+
+namespace AuditP035
+
+lemma size_pos (y : Year) : 0 < latentSize y := by
+  cases y <;> norm_num [latentSize]
+
+lemma threshold_order (y : Year) :
+    threshold y false ≤ threshold y true := by
+  cases y <;> norm_num [threshold]
+
+lemma threshold_le_size (y : Year) (z : Bool) :
+    threshold y z ≤ latentSize y := by
+  cases y <;> cases z <;> norm_num [threshold, latentSize]
+
+lemma d_formula (y : Year) (z a : Bool) (r : ℕ) :
+    D y z a r = decide (r ≤ threshold y z) := by
+  cases z
+  · simp [D, bit]
+  · simp [D, bit, Nat.add_sub_of_le (threshold_order y)]
+
+lemma observed_pointwise (y : Year) (z : Bool) (r : ℕ) :
+    C y z true r = D y z true r := by
+  simp [C, D, bit]
+
+lemma threshold_sum (N t : ℕ) (ht : t ≤ N) :
+    (∑ r ∈ Finset.Icc 1 N, if r ≤ t then (1 : ℚ) else 0) = (t : ℚ) := by
+  have hf : (Finset.Icc 1 N).filter (fun r => r ≤ t) = Finset.Icc 1 t := by
+    ext r
+    simp only [Finset.mem_filter, Finset.mem_Icc]
+    omega
+  rw [← Finset.sum_filter, hf]
+  simp
+
+lemma d_mean (y : Year) (z a : Bool) :
+    outcomeMean D y z a = (threshold y z : ℚ) / (latentSize y : ℚ) := by
+  unfold outcomeMean uniformMean
+  simp only [d_formula, fruitValue, decide_eq_true_eq]
+  rw [show latentPopulation y = Finset.Icc 1 (latentSize y) from rfl,
+    threshold_sum _ _ (threshold_le_size y z)]
+
+lemma threshold_calibration (y : Year) (z : Bool) :
+    (threshold y z : ℚ) / (latentSize y : ℚ) = releasedFrequency y z := by
+  cases y <;> cases z <;>
+    norm_num [threshold, latentSize, releasedFrequency, fruitCounts, completeCases]
+
+lemma d_calibrated : Calibrated D := by
+  intro y z
+  rw [d_mean, threshold_calibration]
+
+lemma c_calibrated : Calibrated C := by
+  intro y z
+  simpa only [outcomeMean, observed_pointwise] using d_calibrated y z
+
+lemma c_mean_absent (y : Year) (z : Bool) :
+    outcomeMean C y z false = outcomeMean D y false false := by
+  simp [outcomeMean, uniformMean, C, D, bit]
+
+lemma mean_difference (Y : PotentialOutcome) (y : Year) (z : Bool) :
+    campaignMean Y y z = outcomeMean Y y z true - outcomeMean Y y z false := by
+  unfold campaignMean campaignDifference outcomeMean uniformMean
+  rw [Finset.sum_sub_distrib, sub_div]
+
+lemma c_effect (y : Year) :
+    campaignMean C y true = exactEffect y := by
+  rw [mean_difference]
+  have hp : outcomeMean C y true true = outcomeMean D y true true := by
+    simp only [outcomeMean, observed_pointwise]
+  rw [hp, c_mean_absent, d_mean, d_mean]
+  cases y <;> norm_num [threshold, latentSize, exactEffect]
+
+lemma effect_pos (y : Year) : 0 < exactEffect y := by
+  cases y <;> norm_num [exactEffect]
+
+lemma effect_is_contrast (y : Year) :
+    exactEffect y = releasedFrequency y true - releasedFrequency y false := by
+  cases y <;> norm_num [exactEffect, releasedFrequency, fruitCounts, completeCases]
+
+lemma observed_equal : observedLaw D = observedLaw C := by
+  funext y z b
+  simp only [observedLaw, observedLawWith, observed_pointwise]
+
+lemma d_individual_effect_zero (y : Year) (z : Bool) (r : ℕ) :
+    campaignDifference D y z r = 0 := by
+  simp [campaignDifference, D]
+
+lemma d_campaign_mean_zero (y : Year) (z : Bool) : campaignMean D y z = 0 := by
+  simp [campaignMean, uniformMean, d_individual_effect_zero]
+
+lemma c_absent_no_porch_contrast (y : Year) (r : ℕ) :
+    C y true false r = C y false false r := by
+  simp [C, bit]
+
+-- The entire existential witness, constructed without importing the Challenge.
+example : ∃ U V : PotentialOutcome,
+    Calibrated U ∧ Calibrated V ∧ observedLaw U = observedLaw V ∧
+    (∀ y z r, campaignDifference U y z r = 0) ∧
+    (∀ y, 0 < campaignMean V y true ∧
+      campaignMean V y true = releasedFrequency y true - releasedFrequency y false ∧
+      campaignMean V y true = exactEffect y) ∧
+    (∀ y r, V y true false r = V y false false r) := by
+  refine ⟨D, C, d_calibrated, c_calibrated, observed_equal,
+    d_individual_effect_zero, ?_, c_absent_no_porch_contrast⟩
+  intro y
+  rw [c_effect]
+  exact ⟨effect_pos y, effect_is_contrast y, rfl⟩
+
+-- The two genuinely different effects also refute the identification predicate.
+example : ¬ CampaignIdentified := by
+  intro h
+  have he := h D C d_calibrated c_calibrated observed_equal Year.y2012
+  rw [d_campaign_mean_zero, c_effect] at he
+  norm_num [exactEffect] at he
+
+-- The fixed support has exactly the positive denominator used in the means.
+example (y : Year) : (latentPopulation y).Nonempty ∧
+    (latentPopulation y).card = latentSize y := by
+  constructor
+  · exact ⟨1, Finset.mem_Icc.mpr ⟨le_refl _, size_pos y⟩⟩
+  · simp [latentPopulation]
+
+-- No denominator or truncated threshold difference is hiding an edge case.
+example (y : Year) (z : Bool) :
+    0 < completeCases y z ∧ 0 < enrolled y z ∧
+    0 < latentSize y ∧ threshold y false ≤ threshold y true := by
+  cases y <;> cases z <;> norm_num [completeCases, enrolled, latentSize, threshold]
+
+-- Check the genuine finite probability design used by BOTH targets.
+lemma arm_mass (y : Year) (z : Bool) :
+    (∑ r ∈ latentPopulation y, jointMass y z r) =
+      yearMass y * assignmentMass y z := by
+  simp only [jointMass, conditionalMass, Finset.sum_const, nsmul_eq_mul]
+  have hn : ((latentPopulation y).card : ℚ) = (latentSize y : ℚ) := by
+    simp [latentPopulation]
+  rw [hn]
+  have hp : (latentSize y : ℚ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt (size_pos y))
+  field_simp
+
+example : (∀ y z r, 0 ≤ jointMass y z r) ∧
+    (∑ y ∈ years, ((∑ r ∈ latentPopulation y, jointMass y false r) +
+      (∑ r ∈ latentPopulation y, jointMass y true r))) = 1 := by
+  constructor
+  · intro y z r
+    cases y <;> cases z <;>
+      norm_num [jointMass, yearMass, conditionalMass, assignmentMass, enrolled, latentSize]
+  · simp only [arm_mass]
+    norm_num [years, yearMass, assignmentMass, enrolled]
+
+-- T1-specific arithmetic and support checks, independent of the Challenge.
+example (y : Year) : latentSize y =
+    Nat.lcm (reducedDenominator y false) (reducedDenominator y true) := by
+  cases y <;>
+    norm_num [latentSize, reducedDenominator, completeCases, fruitCounts, Nat.lcm]
+
+example (y : Year) (z : Bool) (r : ℕ) : conditionalMass y z r =
+    (∑ s ∈ latentPopulation y, conditionalMass y z s) *
+    (conditionalMass y false r + conditionalMass y true r) := by
+  simp only [conditionalMass, Finset.sum_const, nsmul_eq_mul]
+  simp only [latentPopulation, Nat.card_Icc, Nat.add_sub_cancel]
+  cases y <;> cases z <;> norm_num [assignmentMass, enrolled, latentSize]
+
+lemma d_success_count (y : Year) (z : Bool) :
+    successCount D y z = threshold y z := by
+  have hf : (latentPopulation y).filter (fun r => D y z true r = true) =
+      Finset.Icc 1 (threshold y z) := by
+    ext r
+    simp only [latentPopulation, Finset.mem_filter, Finset.mem_Icc,
+      d_formula, decide_eq_true_eq]
+    have ht := threshold_le_size y z
+    omega
+  unfold successCount
+  rw [hf]
+  simp
+
+example (y : Year) (z : Bool) : successCount C y z = threshold y z := by
+  simpa only [successCount, observed_pointwise] using d_success_count y z
+
+lemma c_comparison_mean_zero (y : Year) : campaignMean C y false = 0 := by
+  simp [campaignMean, campaignDifference, C, bit, uniformMean]
+
+example : overallCampaignEffect D = 0 := by
+  simp [overallCampaignEffect, d_campaign_mean_zero]
+
+example : overallCampaignEffect C = (83755728 / 5240292055 : ℚ) ∧
+    0 < overallCampaignEffect C := by
+  have he : overallCampaignEffect C = (83755728 / 5240292055 : ℚ) := by
+    simp only [overallCampaignEffect, c_comparison_mean_zero, c_effect]
+    norm_num [years, yearMass, assignmentMass, enrolled, exactEffect]
+  rw [he]
+  norm_num
+
+end AuditP035

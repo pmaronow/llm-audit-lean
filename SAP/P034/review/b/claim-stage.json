@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P034.T1",
+    "target_id": "P034-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "T1Statement expands to every part (i)-(ix) of the canonical constructed counterexample: the actual strictly positive normalized 32-point law, randomization and overlap, zero individual effects, exact equal completion rates, all outcome-dependent conditional completion probabilities and failures of independence, actual complete-case means and OLS moments, unique real normal-equation solutions, the specified 400-record frequency table and chi-square nonrejection, and the explicit product-law World B with the same entire observed law and different effect. Boolean outcome/covariate bundles are injective encodings of their rational-valued counterparts. Finite sums are ordinary expectations for these positive normalized laws. All denominators are positive: treatment probabilities 1/2, treatment/covariate cells 1/4, treatment/covariate/outcome cells 1/8, completed treatment cells 1/4, completed population 1/2, and Pearson expected counts 100. This proves the canonical counterexample to the interpretation licensing complete-case OLS, not that the article's empirical report of no detected differential attrition is false. No hypotheses are added. Closed finite assertions compiled from Defs alone in scratch/Check.lean; the real uniqueness assertions follow from det G=1/16 and the sample scaling G_s=200G."
+  },
+  {
+    "theorem": "SAP.P034.T2",
+    "target_id": "P034-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem quantifies over arbitrary probability spaces and every finite real covariate dimension, with precisely the measurable random variables, finite second moments, H1 randomization and overlap, and H2 independent positive potential completion in the canonical setting. Explicit measurability is inherent in random variables, and L2 membership of the finite vector under the maximum norm is equivalent to the printed finite second moment under any usual finite-dimensional norm. CompleteCaseIdentification gives all of (a)-(d), including equality of the full conditional covariate law, coordinatewise orthogonality, the treatment coordinate of every real normal-equation solution even for singular G, and unique existence when G is nonsingular. EqualCompletionFailure gives the fixed counterexample required in (e); its occurrence inside the implication adds no hypothesis, and its fixed finite definitions yield positive overlap. The measurable-event denominators are positive by (a) and positive total response follows. L2 hypotheses imply integrability of the realized outcomes and every Gram/RHS integrand, so no totalized-integral convention is used. The assumptions are jointly satisfiable; scratch/Check.lean compiles an explicit fair-Bool example with k=1, full response, Y0=0, Y1=1, X=0. A nonsingular example with genuine response variation is given by independent fair T,X,R0,R1 and Y0=X,Y1=X+1."
+  },
+  {
+    "theorem": "SAP.P034.T3",
+    "target_id": "P034-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The closed proposition asserts the exact four canonical cells, unique real saturated interpolation (a,b,c,d)=(0,0,0,2), both zero reference contrasts, both equally weighted contrasts equal to one, and zero unequal to one. The empty covariate index is legitimate here: the canonical witness is exactly the four-variable saturated model with no covariates, and all four treatment cells remain present. Unique exact interpolation also yields the stated equivalent least-squares fit, since zero residual sum of squares is attained uniquely. The theorem docstring identifies the averaged-effect interpretation of the printed labels; it does not assert that the printed empirical entries or a printed identity are false. There are no premises or degeneracy conventions."
+  },
+  {
+    "theorem": "SAP.P034.T4",
+    "target_id": "P034-T4",
+    "my_reading_vs_claim": "broader",
+    "reason": "All canonical parts (i)-(v), for every coefficient vector and covariate vector, are present without added hypotheses. There is a harmless true extension: the two unaveraged contrast identities quantify over every real value of the other factor, whereas the canonical setting needs only binary factor values. The polynomial formula provides this extension directly; it includes every canonical binary contrast. The arbitrary-real weighted identities and the exact zero-product and positive-weight equivalences match the canonical statement. Finite sums represent the actual gamma dot z term and cancel at fixed z. This is full coverage of the canonical mathematical assertion; the real-factor extension is recorded as broader rather than silently treating the quantifier domains as identical."
+  },
+  {
+    "theorem": "SAP.P034.T5",
+    "target_id": "P034-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "The 13-by-3 counts, column denominators, and corrected tenths reproduce definitions_needed exactly; only the two specified Total percentages differ from their printed versions. T5Statement asserts all of (i)-(iv): exact fractions and rounding intervals, failure of both printed roundings, all 39 corrected category roundings, every row count sum, and every column total. It additionally checks the response-slot identity 5775=3*1925 given in definitions_needed. Rational division has positive fixed denominators 2898,2877,5775, and the half-open rounding condition is the canonical one. No category index is empty, and no truncated natural subtraction is used. The closed arithmetic proposition compiled from Defs alone in scratch/Check.lean and was independently checked using exact rational arithmetic."
+  }
+]

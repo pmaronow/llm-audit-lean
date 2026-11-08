@@ -1,0 +1,107 @@
+import SAP.P011c.Defs
+
+open MeasureTheory Finset
+open scoped BigOperators ENNReal
+open SAP.P011c
+
+noncomputable section
+
+def path3 : Graph 3 :=
+  ⟨fun i j => decide ((i = 1 ∧ j ≠ 1) ∨ (i ≠ 1 ∧ j = 1)), by
+    constructor
+    · intro i j
+      fin_cases i <;> fin_cases j <;> decide
+    · intro i
+      fin_cases i <;> decide⟩
+
+def pathPlus : Fin 3 → ℝ := fun i => if i = 1 then -1 else 1
+def pathMinus : Fin 3 → ℝ := fun i => if i = 1 then -3 else 1
+
+def fairPathLaw : Measure (Fin 3 → ℝ) :=
+  (1 / 2 : ℝ≥0∞) • Measure.dirac pathPlus +
+  (1 / 2 : ℝ≥0∞) • Measure.dirac pathMinus
+
+instance fairPathLaw_probability : IsProbabilityMeasure fairPathLaw := by
+  constructor
+  norm_num [fairPathLaw, Measure.add_apply, Measure.smul_apply]
+  exact ENNReal.inv_two_add_inv_two
+
+def pathModel : Model 3 where
+  law := fairPathLaw
+  probability := inferInstance
+  theta := fun _ => 1
+  G := path3
+  R := path3
+  d := degree path3
+
+lemma path_integral (f : (Fin 3 → ℝ) → ℝ) :
+    (∫ y, f y ∂fairPathLaw) = (f pathPlus + f pathMinus) / 2 := by
+  have hp : Integrable f ((1 / 2 : ℝ≥0∞) • Measure.dirac pathPlus) :=
+    (integrable_dirac (by simp)).smul_measure (by norm_num)
+  have hm : Integrable f ((1 / 2 : ℝ≥0∞) • Measure.dirac pathMinus) :=
+    (integrable_dirac (by simp)).smul_measure (by norm_num)
+  rw [fairPathLaw, integral_add_measure hp hm]
+  simp only [integral_smul_measure, integral_dirac]
+  norm_num
+  ring
+
+example : beta pathModel = 0 := by
+  unfold beta expectation
+  change (∫ y, betaHat pathModel y ∂fairPathLaw) = 0
+  rw [path_integral]
+  norm_num [betaHat, weighted, pathModel, SAP.P011c.average,
+    pathPlus, pathMinus, Fin.sum_univ_succ]
+
+example : var pathModel (betaHat pathModel) = 1 / 9 := by
+  unfold var expectation
+  change (∫ y, (betaHat pathModel y - ∫ z, betaHat pathModel z ∂fairPathLaw)^2
+    ∂fairPathLaw) = _
+  simp only [path_integral]
+  norm_num [betaHat, weighted, pathModel, SAP.P011c.average,
+    pathPlus, pathMinus, Fin.sum_univ_succ]
+
+example : V1 path3 pathPlus = -8 / 81 ∧ V1 path3 pathMinus = -32 / 81 := by
+  norm_num [V1, quadratic, adjacency, centered, SAP.P011c.average,
+    path3, pathPlus, pathMinus, Fin.sum_univ_succ]
+
+example : Compatible path3 (degree path3) path3 := by
+  exact ⟨by intros; assumption, by intro i; exact le_rfl⟩
+
+-- Requiring all true edges and capping degrees at their true values leaves one graph.
+lemma saturated_unique {n : ℕ} (R A : Graph n)
+    (h : Compatible R (degree R) A) : A = R := by
+  apply Subtype.ext
+  funext i j
+  by_cases hr : R.val i j = true
+  · exact (h.1 i j hr).trans hr.symm
+  · have hrfalse : R.val i j = false := by cases hh : R.val i j <;> simp_all
+    by_cases ha : A.val i j = true
+    · have hle (k : Fin n) :
+          (if R.val i k then (1 : ℕ) else 0) ≤ if A.val i k then 1 else 0 := by
+        cases hk : R.val i k
+        · simp [hk]
+        · simp [hk, h.1 i k hk]
+      have hlt : degree R i < degree A i := by
+        unfold degree
+        exact sum_lt_sum (fun k _ => hle k) ⟨j, mem_univ j, by simp [hrfalse, ha]⟩
+      exact False.elim (Nat.not_lt_of_ge (h.2 i) hlt)
+    · have hafalse : A.val i j = false := by cases hh : A.val i j <;> simp_all
+      exact hafalse.trans hrfalse.symm
+
+example {n : ℕ} (G : Graph n) (x : Fin n → ℝ) :
+    Maximizes G (degree G) (fun A => V1 A x) G := by
+  refine ⟨⟨by intros; assumption, by intro i; exact le_rfl⟩, ?_⟩
+  intro B hB
+  rw [saturated_unique G B hB]
+
+-- Each path block has only one random coordinate; the other coordinates are constants.
+-- The full asymptotic construction and independence checks are given in Witnesses.md.
+
+-- Uniform deterministic bound for n*V1 with q blocks and t = (sum of signs)/q.
+example (t : ℝ) : (-1 / 3 : ℝ) + 4 / 9 * t - 11 / 27 * t^2 ≤ -7 / 33 := by
+  nlinarith [sq_nonneg (t - 6 / 11)]
+
+-- Therefore the scaled underestimation is bigger than epsilon = 1/2 on every outcome.
+example (t : ℝ) : (1 / 2 : ℝ) <
+    1 / 3 - ((-1 / 3 : ℝ) + 4 / 9 * t - 11 / 27 * t^2) := by
+  nlinarith [sq_nonneg (t - 6 / 11)]

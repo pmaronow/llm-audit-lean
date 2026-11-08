@@ -1,0 +1,301 @@
+import SAP.P001e.Challenge
+
+open MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal NNReal Classical
+
+set_option maxHeartbeats 1500000
+set_option linter.unusedVariables false
+
+namespace Audit
+open SAP.P001e
+noncomputable section
+
+-- Fin numeral literals wrap modulo the size; all literal indices in the audited
+-- declarations are already in range, so no audited lookup wraps.
+example : (7 : Fin 6).val = 1 := rfl
+
+-- T92: evaluate both literal tables independently of the Challenge theorem.
+example :
+    partialImputation ![1,8,9,3,5,7] = 12103/4874 ∧
+    fullImputation ![1,8,9,3,5,7] = 6178/2437 ∧
+    partialImputation ![1,8,9,3,5,7] - fullImputation ![1,8,9,3,5,7] = -253/4874 ∧
+    partialImputation ![1,8,9,3,5,7] ≠ fullImputation ![1,8,9,3,5,7] := by
+  norm_num [partialImputation, fullImputation, examplePrediction, exampleCoef,
+    exampleD, exampleY, exampleX2, Fin.sum_univ_succ]
+
+-- T93: the consistent covariates give the same two means.
+example : partialImputation exampleX1 = 6178/2437 ∧
+    fullImputation exampleX1 = 6178/2437 := by
+  norm_num [partialImputation, fullImputation, examplePrediction, exampleCoef,
+    exampleD, exampleY, exampleX1, exampleX2, Fin.sum_univ_succ]
+
+-- T92/T93: certify the displayed coefficients by normal equations, not by naming T92/T93.
+example : (exampleDesign.transpose * exampleDesign).mulVec exampleCoef =
+    exampleDesign.transpose.mulVec exampleY := by
+  ext i
+  fin_cases i <;>
+    norm_num [exampleDesign, exampleD, exampleX1, exampleX2, exampleY, exampleCoef,
+      Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.transpose_apply,
+      Fin.sum_univ_succ]
+
+-- T95: all distances, donors, completed values, and means.
+example : T95Statement := by
+  norm_num [T95Statement, DonorDistances, HotDeckDonors, MatchingDonors,
+    UniqueNearest, respondents, nonrespondents, exampleScores,
+    matchingControl, matchingTreatment, matchingDonor, exampleD, exampleY,
+    Fin.forall_fin_succ, Fin.sum_univ_succ, funext_iff]
+
+-- A two-unit, both-arm, exact nonzero-effect OLS sample for T93's universal finite clause.
+def smallD : Fin 2 → ℝ := ![0,1]
+def smallY : Fin 2 → ℝ := ![2,5]
+def smallX : Fin 2 → Fin 1 → ℝ := fun _ _ => 0
+def smallC : Fin 1 → ℝ := fun _ => 0
+
+lemma small_binary : ∀ i, smallD i = 0 ∨ smallD i = 1 := by
+  intro i; fin_cases i <;> simp [smallD]
+
+lemma small_arms : (∃ i, smallD i = 0) ∧ (∃ i, smallD i = 1) := by
+  exact ⟨⟨0, rfl⟩, ⟨1, rfl⟩⟩
+
+lemma small_fit : IsPooledOLSW4 smallY smallD smallX 2 3 smallC := by
+  intro a b c
+  have hzero : pooledRSSW4 smallY smallD smallX 2 3 smallC = 0 := by
+    norm_num [pooledRSSW4, pooledPredictionW4, smallY, smallD, smallX, smallC,
+      Fin.sum_univ_succ]
+  rw [hzero]
+  exact Finset.sum_nonneg fun i _ => sq_nonneg _
+
+example : (∀ i, smallD i = 0 ∨ smallD i = 1) ∧
+    ((∃ i, smallD i = 0) ∧ (∃ i, smallD i = 1)) ∧
+    IsPooledOLSW4 smallY smallD smallX 2 3 smallC :=
+  ⟨small_binary, small_arms, small_fit⟩
+
+-- A genuine probability model with both treatment arms for T93's population clause.
+def coin : Measure (Fin 2) :=
+  (1/2 : ℝ≥0) • Measure.dirac 0 + (1/2 : ℝ≥0) • Measure.dirac 1
+
+instance coin_probability : IsProbabilityMeasure coin := by
+  constructor
+  simp only [coin, Measure.add_apply, Measure.smul_apply, measure_univ]
+  rw [← add_smul]
+  norm_num
+
+lemma coin_integral (f : Fin 2 → ℝ) : ∫ i, f i ∂coin = (f 0 + f 1)/2 := by
+  rw [coin, integral_add_measure (Integrable.of_finite) (Integrable.of_finite),
+    integral_smul_nnreal_measure, integral_smul_nnreal_measure]
+  simp only [integral_dirac, NNReal.smul_def]
+  norm_num
+  ring
+
+lemma constant_independent {Ω E F G : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace E] [MeasurableSpace F] [MeasurableSpace G]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → E) (hX : Measurable X)
+    (f : F) (V : Ω → G) : CondIndependent μ X hX (fun _ => f) V := by
+  intro A B hA hB
+  by_cases hf : f ∈ A
+  · simp only [hf, true_and, ↓reduceIte, condExp_const hX.comap_le, one_mul]
+    exact Filter.EventuallyEq.rfl
+  · simp only [hf, false_and, ↓reduceIte, condExp_const hX.comap_le, zero_mul]
+    exact Filter.EventuallyEq.rfl
+
+lemma coin_propensity : IsConditionalMean coin smallX smallD (fun _ => 1/2) := by
+  refine ⟨measurable_const, Integrable.of_finite, Integrable.of_finite, ?_⟩
+  intro A hA
+  by_cases h : (fun _ : Fin 1 => (0 : ℝ)) ∈ A
+  · have hpre : smallX ⁻¹' A = Set.univ := by
+      ext i
+      change (fun _ : Fin 1 => (0 : ℝ)) ∈ A ↔ True
+      exact iff_true_intro h
+    rw [hpre, Measure.restrict_univ, coin_integral, coin_integral]
+    norm_num [smallD]
+  · have hpre : smallX ⁻¹' A = ∅ := by
+      ext i
+      change (fun _ : Fin 1 => (0 : ℝ)) ∈ A ↔ False
+      exact iff_false_intro h
+    simp [hpre]
+
+lemma coin_model : WholePotentialModel coin smallX smallD
+    (fun _ => (2 : ℝ)) (fun _ => (5 : ℝ)) (fun _ => (1/2 : ℝ)) := by
+  refine ⟨measurable_const, measurable_of_finite _, measurable_const, measurable_const,
+    integrable_const 2, integrable_const 5,
+    Filter.Eventually.of_forall small_binary, coin_propensity, ?_, ?_⟩
+  · refine ⟨1/4, by norm_num, Filter.Eventually.of_forall ?_⟩
+    intro i; norm_num
+  · exact constant_independent coin smallX measurable_const (2,5) smallD
+
+lemma coin_linear_cef : IsConditionalMean coin (fun i => (smallD i, smallX i))
+    (fun i => realizedOutcome 2 5 (smallD i))
+    (fun dx => pooledPredictionW4 2 3 smallC dx.2 dx.1) := by
+  refine ⟨by unfold pooledPredictionW4; fun_prop,
+    Integrable.of_finite, Integrable.of_finite, ?_⟩
+  intro A hA
+  congr 1
+  funext i
+  simp [realizedOutcome, pooledPredictionW4, smallC]
+  ring
+
+-- These are every input hypothesis of PopulationLinearCEFW4, with b=3.
+example : WholePotentialModel coin smallX smallD
+    (fun _ => (2 : ℝ)) (fun _ => (5 : ℝ)) (fun _ => (1/2 : ℝ)) ∧
+    IsConditionalMean coin (fun i => (smallD i, smallX i))
+      (fun i => realizedOutcome 2 5 (smallD i))
+      (fun dx => pooledPredictionW4 2 3 smallC dx.2 dx.1) :=
+  ⟨coin_model, coin_linear_cef⟩
+
+-- T94: a randomized treatment independent of an actual continuous outcome.
+def intervalLaw : Measure ℝ := volume.restrict (Set.Icc 0 1)
+
+instance interval_probability : IsProbabilityMeasure intervalLaw := by
+  constructor
+  norm_num [intervalLaw]
+
+def intervalDensity (y : ℝ) : ℝ := (Set.Icc (0 : ℝ) 1).indicator (fun _ => 1) y
+def densityFamily (y d : ℝ) (x : Fin 1 → ℝ) (t : Fin 0 → ℝ) : ℝ := intervalDensity y
+def joint : Measure (Fin 2 × ℝ) := coin.prod intervalLaw
+instance joint_probability : IsProbabilityMeasure joint := by unfold joint; infer_instance
+def popX : Fin 2 × ℝ → Fin 1 → ℝ := fun _ _ => 0
+def popD (ω : Fin 2 × ℝ) : ℝ := smallD ω.1
+def popY (ω : Fin 2 × ℝ) : ℝ := ω.2
+
+lemma interval_density_measure :
+    volume.withDensity (fun y => ENNReal.ofReal (intervalDensity y)) = intervalLaw := by
+  have heq : (fun y => ENNReal.ofReal (intervalDensity y)) =
+      (Set.Icc (0 : ℝ) 1).indicator (fun _ => (1 : ℝ≥0∞)) := by
+    funext y
+    by_cases h : y ∈ Set.Icc (0 : ℝ) 1 <;> simp [intervalDensity, h]
+  rw [heq]
+  change volume.withDensity ((Set.Icc (0 : ℝ) 1).indicator (1 : ℝ → ℝ≥0∞)) = _
+  exact withDensity_indicator_one measurableSet_Icc
+
+lemma inner_integrable : Integrable (fun y => y * intervalDensity y) volume := by
+  have h : IntegrableOn (fun y : ℝ => y) (Set.Icc 0 1) volume :=
+    continuous_id.continuousOn.integrableOn_Icc
+  convert h.integrable_indicator measurableSet_Icc using 1
+  funext y
+  by_cases hy : y ∈ Set.Icc (0 : ℝ) 1 <;> simp [intervalDensity, hy]
+
+lemma pop_propensity : IsConditionalMean joint popX popD (fun _ => 1/2) := by
+  refine ⟨measurable_const, ?_, integrable_const _, ?_⟩
+  · exact (show Integrable smallD coin from Integrable.of_finite).comp_fst intervalLaw
+  · intro A hA
+    by_cases h : (fun _ : Fin 1 => (0 : ℝ)) ∈ A
+    · have hpre : popX ⁻¹' A = Set.univ := by
+        ext ω
+        change (fun _ : Fin 1 => (0 : ℝ)) ∈ A ↔ True
+        exact iff_true_intro h
+      rw [hpre, Measure.restrict_univ]
+      simp [popD, joint, integral_fun_fst, coin_integral, smallD]
+    · have hpre : popX ⁻¹' A = ∅ := by
+        ext ω
+        change (fun _ : Fin 1 => (0 : ℝ)) ∈ A ↔ False
+        exact iff_false_intro h
+      simp [hpre]
+
+lemma pop_independence : CondIndependent joint popX measurable_const
+    (fun ω => (popY ω, popY ω)) popD := by
+  intro A B hA hB
+  have hx : MeasurableSpace.comap popX inferInstance = ⊥ :=
+    MeasurableSpace.comap_const (fun _ : Fin 1 => (0 : ℝ))
+  simp only [hx, condExp_bot]
+  apply Filter.Eventually.of_forall
+  intro ω
+  have heq : (fun z : Fin 2 × ℝ =>
+      if (popY z, popY z) ∈ A ∧ popD z ∈ B then (1 : ℝ) else 0) =
+      (fun z => (if smallD z.1 ∈ B then (1 : ℝ) else 0) *
+        (if (z.2,z.2) ∈ A then (1 : ℝ) else 0)) := by
+    funext z
+    by_cases ha : (z.2,z.2) ∈ A <;> by_cases hb : smallD z.1 ∈ B <;>
+      simp [popY, popD, ha, hb]
+  rw [heq]
+  let f : Fin 2 → ℝ := fun i => if smallD i ∈ B then 1 else 0
+  let g : ℝ → ℝ := fun y => if (y,y) ∈ A then 1 else 0
+  change (∫ z, f z.1 * g z.2 ∂coin.prod intervalLaw) =
+    (∫ z, g z.2 ∂coin.prod intervalLaw) * (∫ z, f z.1 ∂coin.prod intervalLaw)
+  rw [integral_prod_mul, integral_fun_snd, integral_fun_fst]
+  simp only [measureReal_def, measure_univ, ENNReal.toReal_one, one_smul]
+  exact mul_comm _ _
+
+lemma pop_model : WholePotentialModel joint popX popD popY popY (fun _ => 1/2) := by
+  have hY : Integrable popY joint :=
+    (show Integrable (fun y : ℝ => y) intervalLaw from
+      continuous_id.continuousOn.integrableOn_Icc).comp_snd coin
+  refine ⟨measurable_const, (measurable_of_finite smallD).comp measurable_fst,
+    measurable_snd, measurable_snd, hY, hY, ?_, pop_propensity, ?_, pop_independence⟩
+  · exact Filter.Eventually.of_forall fun ω => small_binary ω.1
+  · refine ⟨1/4, by norm_num, Filter.Eventually.of_forall ?_⟩
+    intro ω; norm_num
+
+lemma pop_correct : WholeCorrectModel joint popX popD popY popY densityFamily
+    (fun _ => 0) := by
+  let zmap : Fin 2 → ℝ × (Fin 1 → ℝ) := fun i => (smallD i, fun _ => 0)
+  have hzmap : Measurable zmap := measurable_of_finite _
+  have hz : Measurable (fun ω => (popD ω, popX ω)) := hzmap.comp measurable_fst
+  have hmap : joint.map (fun ω => (popD ω, popX ω)) = coin.map zmap := by
+    change joint.map (zmap ∘ Prod.fst) = _
+    rw [← Measure.map_map hzmap measurable_fst]
+    simp [joint]
+  have hjoint : joint.map (fun ω => ((popD ω, popX ω), popY ω)) =
+      (joint.map (fun ω => (popD ω, popX ω))).prod intervalLaw := by
+    rw [hmap]
+    have h := Measure.map_prod_map coin intervalLaw hzmap measurable_id
+    change (coin.prod intervalLaw).map (Prod.map zmap id) = _
+    simpa only [Measure.map_id] using h.symm
+  have hkernel : condDistrib popY (fun ω => (popD ω, popX ω)) joint =ᵐ[
+      joint.map (fun ω => (popD ω, popX ω))]
+      Kernel.const (ℝ × (Fin 1 → ℝ)) intervalLaw := by
+    apply condDistrib_ae_eq_of_measure_eq_compProd_of_measurable hz measurable_snd
+    rw [Measure.compProd_const]
+    exact hjoint
+  have hyobs : (fun ω => realizedOutcome (popY ω) (popY ω) (popD ω)) = popY := by
+    funext ω
+    unfold realizedOutcome
+    ring
+  unfold WholeCorrectModel
+  rw [hyobs]
+  refine ⟨⟨?_, ?_, ?_⟩, ?_, ?_⟩
+  · change Measurable (fun z : (ℝ × (Fin 1 → ℝ)) × ℝ => intervalDensity z.2)
+    exact ((measurable_const.indicator measurableSet_Icc).comp measurable_snd)
+  · intro z y
+    change 0 ≤ intervalDensity y
+    by_cases h : y ∈ Set.Icc (0 : ℝ) 1 <;> simp [intervalDensity, h]
+  · filter_upwards [hkernel] with z hz
+    simpa [densityFamily, Kernel.const_apply, interval_density_measure] using hz
+  · intro d hd
+    exact Filter.Eventually.of_forall fun _ => inner_integrable
+  · intro d hd
+    change Integrable (fun _ : Fin 2 × ℝ => ∫ y, y * intervalDensity y) joint
+    exact integrable_const _
+
+-- A complete density-backed population instance, and the same observable model twice
+-- provide nonvacuity for both population and two-model identification hypotheses.
+example : WholePotentialModel joint popX popD popY popY (fun _ => 1/2) ∧
+    WholeCorrectModel joint popX popD popY popY densityFamily (fun _ => 0) ∧
+    joint.map (fun ω => ((popD ω, popX ω), realizedOutcome (popY ω) (popY ω) (popD ω))) =
+      joint.map (fun ω => ((popD ω, popX ω), realizedOutcome (popY ω) (popY ω) (popD ω))) :=
+  ⟨pop_model, pop_correct, rfl⟩
+
+-- Every hypothesis of the estimator clause, with a true density and an attained ML fit.
+example : ∃ (g : ℝ → ℝ → (Fin 1 → ℝ) → (Fin 0 → ℝ) → ℝ)
+    (Y D : Fin 2 → ℝ) (X : Fin 2 → Fin 1 → ℝ)
+    (Θ : Set (Fin 0 → ℝ)) (θhat : Fin 0 → ℝ),
+    0 < (2 : ℕ) ∧
+    (θhat ∈ Θ ∧ ∀ t ∈ Θ, (∏ i, g (Y i) (D i) (X i) t) ≤
+      ∏ i, g (Y i) (D i) (X i) θhat) ∧
+    (∀ d ∈ ({0,1} : Set ℝ), ∀ i, Integrable (fun y => y * g y d (X i) θhat)) := by
+  refine ⟨densityFamily, smallY, smallD, smallX, {fun _ => 0}, fun _ => 0,
+    by norm_num, ⟨by simp, ?_⟩, ?_⟩
+  · intro t ht
+    have h : t = fun _ => 0 := by simpa using ht
+    subst t
+    exact le_rfl
+  · intro d hd i
+    exact inner_integrable
+
+end
+end Audit
+
+#print axioms Audit.small_fit
+#print axioms Audit.coin_model
+#print axioms Audit.coin_linear_cef
+#print axioms Audit.pop_model
+#print axioms Audit.pop_correct

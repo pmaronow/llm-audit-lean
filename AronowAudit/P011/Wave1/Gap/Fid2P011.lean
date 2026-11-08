@@ -346,6 +346,26 @@ lemma fid2_constant_products [IsProbabilityMeasure μ] (X : Fin 4 → Ω → ℝ
   ring
 
 
+/-- Choose one of the four L4 slot factors at each slot and apply Hölder. -/
+lemma fid2_fourth_of_memLp [IsProbabilityMeasure μ] {X : Fin 4 → Ω → ℝ} {B : Ω → ℝ}
+    (hX : ∀ a, MemLp (X a) 4 μ) (hB : MemLp B 4 μ) :
+    ∀ s : Finset (Fin 4),
+      Integrable (fun ω => (∏ a ∈ s, X a ω)*(B ω)^(4-s.card)) μ := by
+  intro s
+  let F : Fin 4 → Ω → ℝ := fun a ω => if a ∈ s then X a ω else B ω
+  have hF (a : Fin 4) : MemLp (F a) 4 μ := by
+    by_cases ha : a ∈ s
+    · simpa only [F, if_pos ha] using hX a
+    · simpa only [F, if_neg ha] using hB
+  have hi := CovarianceCompletion.product4_integrable (hF 0) (hF 1) (hF 2) (hF 3)
+  exact hi.congr (Eventually.of_forall fun ω => by
+    dsimp only
+    rw [← Fin.prod_univ_four (fun a => F a ω)]
+    dsimp only [F]
+    rw [Finset.prod_ite]
+    simp [Finset.filter_notMem_eq_sdiff,
+      Finset.prod_const, Finset.card_sdiff_of_subset (Finset.subset_univ s)])
+
 end Generic
 
 lemma fid2_covOf_four {n : ℕ} (m : Model n) (a b c d : (Fin n → ℝ) → ℝ) :
@@ -535,6 +555,92 @@ theorem corrected_covariance_expansion_moments
       simpa [v, r, X, Y, θ, weighted] using fid2_raw_fourth θ hf
     exact ⟨hw.1, hraw, hw.2.1.trans (by rw [hraw, hqij, hqkl])⟩
 
+/-- Weighted L4 is a sufficient-moment companion to the local-moments endpoint. -/
+theorem corrected_covariance_expansion_weighted
+    {n : ℕ} (hn : 0 < n) (m : Model n)
+    (hX : ∀ a, MemLp (fun y => weighted m y a) 4 m.law)
+    (i j k l : Fin n) :
+    (let E := expectation m
+     let B := betaHat m
+     let X : Fin n → (Fin n → ℝ) → ℝ := fun a y => weighted m y a
+     let r : Fin n → (Fin n → ℝ) → ℝ := fun a y => X a y - B y
+     let Q : Fin n → Fin n → ℝ := fun a b =>
+       E (fun y => X a y*X b y) - E (fun y => X a y*B y) -
+       E (fun y => X b y*B y) + E (fun y => (B y)^2)
+     let v : Fin 4 → Fin n := ![i, j, k, l]
+     let Y : Fin 4 → (Fin n → ℝ) → ℝ := fun a y => y (v a)
+     let θ : Fin 4 → ℝ := fun a => m.theta (v a)
+     (∀ a b, E (fun y => r a y*r b y) = Q a b) ∧
+     covOf m (fun y => r i y*r j y) (fun y => r k y*r l y) =
+       ProbabilityTheory.covariance (fun y => r i y*r j y)
+         (fun y => r k y*r l y) m.law ∧
+     covOf m (fun y => r i y*r j y) (fun y => r k y*r l y) =
+       E (fun y => r i y*r j y*r k y*r l y) - Q i j*Q k l ∧
+     covOf m (fun y => r i y*r j y) (fun y => r k y*r l y) =
+       fourthMoment E (X i) (X j) (X k) (X l) B - Q i j*Q k l ∧
+     (∀ b : ℝ,
+       covOf m (fun y => (X i y-b)*(X j y-b))
+         (fun y => (X k y-b)*(X l y-b)) =
+       covOf m (fun y => X i y*X j y) (fun y => X k y*X l y) -
+       b*(covOf m (fun y => X i y*X j y) (X k) +
+          covOf m (fun y => X i y*X j y) (X l) +
+          covOf m (X i) (fun y => X k y*X l y) +
+          covOf m (X j) (fun y => X k y*X l y)) +
+       b^2*(covOf m (X i) (X k) + covOf m (X i) (X l) +
+            covOf m (X j) (X k) + covOf m (X j) (X l))) ∧
+     ((∀ p ∈ ({(i,j), (k,l)} : Finset (Fin n × Fin n)),
+         Integrable (fun y => y p.1*y p.2) m.law ∧
+         Integrable (fun y => y p.1*B y) m.law ∧
+         Integrable (fun y => y p.2*B y) m.law) →
+       (Q i j = pairMoment E (fun y => y i) (fun y => y j) B
+          (m.theta i) (m.theta j) ∧
+        Q k l = pairMoment E (fun y => y k) (fun y => y l) B
+          (m.theta k) (m.theta l))) ∧
+     ((∀ p ∈ ({(i,j), (k,l)} : Finset (Fin n × Fin n)),
+         Integrable (fun y => y p.1*y p.2) m.law ∧
+         Integrable (fun y => y p.1*B y) m.law ∧
+         Integrable (fun y => y p.2*B y) m.law) →
+       (∀ s : Finset (Fin 4),
+         Integrable (fun y => (∏ a ∈ s, Y a y) * (B y)^(4-s.card)) m.law) →
+       (E (fun y => r i y*r j y*r k y*r l y) =
+          AronowAudit.P011.Wave1.rawFourthMoment E Y B θ ∧
+        covOf m (fun y => r i y*r j y) (fun y => r k y*r l y) =
+          AronowAudit.P011.Wave1.rawFourthMoment E Y B θ -
+          pairMoment E (fun y => y i) (fun y => y j) B (m.theta i) (m.theta j) *
+          pairMoment E (fun y => y k) (fun y => y l) B (m.theta k) (m.theta l)))) := by
+  extract_lets E B X r Q v Y θ
+  let instProbabilityFid2 : IsProbabilityMeasure m.law := m.probability
+  have hB : MemLp B 4 m.law := CovarianceCompletion.betaHat_memLp4 m hX
+  have hX2 (a : Fin n) : MemLp (X a) 2 m.law := (hX a).mono_exponent (by norm_num)
+  have hB2 : MemLp B 2 m.law := hB.mono_exponent (by norm_num)
+  have hBsq : Integrable (fun y => (B y)^2) m.law :=
+    (hB2.integrable_mul hB2).congr (Eventually.of_forall fun y => by
+      dsimp only [Pi.mul_apply]; ring)
+  have hp : Integrable (fun y => (B y)^2) m.law ∧
+      ∀ p ∈ ({(i,j), (k,l)} : Finset (Fin n × Fin n)),
+        Integrable (fun y => X p.1 y*X p.2 y) m.law ∧
+        Integrable (fun y => X p.1 y*B y) m.law ∧
+        Integrable (fun y => X p.2 y*B y) m.law := by
+    refine ⟨hBsq, ?_⟩
+    intro p _
+    exact ⟨(hX2 p.1).integrable_mul (hX2 p.2),
+      (hX2 p.1).integrable_mul hB2, (hX2 p.2).integrable_mul hB2⟩
+  have hf := fid2_fourth_of_memLp (fun a => hX (v a)) hB
+  have hconst : ∀ s : Finset (Fin 4), s.Nonempty →
+      Integrable (fun y => ∏ a ∈ s, X (v a) y) m.law := by
+    intro s _
+    simpa using fid2_fourth_of_memLp (B := fun _ => (1 : ℝ))
+      (fun a => hX (v a)) (memLp_const 1) s
+  have hm := corrected_covariance_expansion_moments hn m i j k l
+  have hc := hm.2.1 hp hf
+  have hall (a b : Fin n) : E (fun y => r a y*r b y) = Q a b :=
+    CovarianceCompletion.pair_expansion (hX2 a) (hX2 b) hB2
+  refine ⟨hall, hc.1, hc.2.1, hc.2.2, hm.2.2.1 hconst, ?_, ?_⟩
+  · intro hr
+    have h := hm.2.2.2.1 ⟨hBsq, hr⟩
+    exact ⟨h.1, h.2.1⟩
+  · intro hr hrf
+    exact (hm.2.2.2.2 ⟨hBsq, hr⟩ hrf).2
 
 end
 end AronowAudit.P011.Wave1

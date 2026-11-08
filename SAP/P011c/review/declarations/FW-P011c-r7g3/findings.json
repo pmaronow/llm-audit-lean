@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P011-T39",
+    "theorem": "SAP.P011c.T39",
+    "fingerprint": "d35e9b1f1c3592a932e9789558151a6e096e53ee4e9a91fa9241e82f32a02f94",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean, theorem Review.t39Nonvacuity, importing definitions only. It constructs n_k=k+1 independent fair-sign coordinates with unit weights, empty dependency and known-edge graphs, and zero caps. The constants are (c1,c2,c3,c4)=(1,1,1,2); beta_k=0 and n_k Var(betaHat_k)=1 are proved. Taking V_k equal to the true variance is measurable and satisfies both the scaled-consistency and one-sided-conservativeness premises exactly. The printed axioms are only propext, Classical.choice, and Quot.sound; there is no sorryAx or dependence on a Challenge theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T40",
+    "theorem": "SAP.P011c.T40",
+    "fingerprint": "331a3e49b9b6fd83cdd329e0cc9e4128f425bbbc624daa2de6dc11ccde0420b5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean, theorem Review.t40Nonvacuity, importing definitions only. The explicitly constructed independent fair-sign family has n_k=k+1, unit weights, empty true and known-edge graphs, zero caps, and WholeScaling constants (1,1,1,2). Its weighted-coordinate variances are all one, so Homoskedastic holds, and Valid is proved. The selector always returns the empty graph. The file proves that this is the unique graph compatible with zero degree caps and therefore maximizes V2 at every row and every outcome. Thus all hypotheses, including the universal pointwise selector hypothesis, are jointly satisfied. The printed axioms are only propext, Classical.choice, and Quot.sound, with no sorryAx or Challenge theorem dependency.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T41",
+    "theorem": "SAP.P011c.T41",
+    "fingerprint": "9f042b767575b8f70ac92e7cb1dbce07cda7eecb1e83997edc89e45d964983c8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteChecks.lean using definitions only. On the two-vertex single-edge graph, caps h_i=1 satisfy h_i=2r_i-1 at equality; the file directly proves that the capacity matrix is the all-ones matrix, is PSD, and has nonnegative quadratic forms divided by two. Caps h_i=0 give zero diagonal and quadratic value -2 on (1,-1), checking that subtraction really is over the reals and that the capacity hypothesis is substantive. It also checks PSD at size zero, two distinct tied feasible maximizers for a negative constant objective, and proves the fixed-additive-correction maximizer equivalence for arbitrary n,R,d,f,c,A. The PSD witness uses only propext, Classical.choice, and Quot.sound.",
+    "confidence": 0.995
+  }
+]

@@ -34,6 +34,8 @@ theorem ate_sharp_paper_bounds_same_observable_law :
       mean μ (fun ω => Z1 ω - Z0 ω) = c :=
   AteSharpBounds.assemble AteSharpBounds.n1_proof AteSharpBounds.n2_proof AteSharpBounds.n3_proof
 
+example : AteSharpBounds.Target.{u} := ate_sharp_paper_bounds_same_observable_law
+
 end
 
 end AronowAudit.P001.Wave1

@@ -1,0 +1,44 @@
+[
+  {
+    "theorem": "SAP.P024.T1",
+    "target_id": "P024-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "All clauses (i)-(iv) are present: the exact four-date paths and actual exposure probabilities, nonconstant untreated path, estimand over dates 2 and 3, three HT values, expectation 2 and variance 1561/8, and the separate sharp-null before-after path, ranks, exact grid calibration and superuniformity. Zero-probability exposure states at dates 1 and 4 are excluded from the estimator, as in the canonical claim. Both arms of every before-after contrast contain dates. The fixed finite assignment law and outcomes give an unconditional nonvacuous witness; exact rational recomputation passed. The two different outcome schedules in the estimation and null-testing clauses are not conflated."
+  },
+  {
+    "theorem": "SAP.P024.T2",
+    "target_id": "P024-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The three independent conjuncts match canonical (a), (b), and (c). Arbitrary finite period labels can be relabeled as Fin T. The HT definition selects the observed state's potential outcome and uses the actual marginal exposure probability; its overlap set is exactly 0<pi<1 and explicitly nonempty. The sharp-null path need not be retained as a redundant parameter once its statistic is represented by an arbitrary fixed D on schedules. Inclusive upper-tail ranks are evaluated under a nonempty uniform law. The raw null and nonnull before-after expectations are 10 and 12 rather than 0 and 2. No independence or no-trend assumption is added. Nonvacuity: the calendar overlap contains date 2 (Lean-checked), and Fin 1 with any statistic satisfies the null-test hypotheses. Finite-sum linearity proves (a); counting inclusive ranks proves (b)."
+  },
+  {
+    "theorem": "SAP.P024.T4",
+    "target_id": "P024-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "K=k+2 and K=2n+2 enumerate exactly the required population sizes. The actual individual-weighted means, two nonempty-arm formulas, strict 1/8 error bound, independent half-probability parent law, nonempty event probability, arbitrary empty-arm extensions, error-probability limit 1 and failure of limit 0, conditional mean, complete half-allocation distribution and variance limit, maximum-share formula and limit, and every K=6 check are retained. Uniform proper nonempty subsets are exactly the conditional fair-Bernoulli law; no independence is attributed to the conditional assignments. Nonempty subtype domains are inhabited (for example {0} at K=2, Lean-checked). Exact enumeration for K=2 through 10 passed. The limits follow from 2/2^K tending to 0 and the displayed rational ratios tending to 1. The example has bounded outcomes and genuinely violates consistency even with an empty-arm extension chosen to equal the effect."
+  },
+  {
+    "theorem": "SAP.P024.T5",
+    "target_id": "P024-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The full principal consistency implication and no-dominance equivalence are retained, for changing outcomes, effects and probabilities and arbitrary empty-arm extensions. The canonical unchanged qualitative appreciable-bias sentence and the cross-referenced assertion of failure without no dominance are absent from this stub. All quantitative hypotheses are the canonical ones: positive integer sizes, a uniform bound on individual potential outcomes, interior common probabilities, either independent joint masses or complete fixed-count joint masses, and a vanishing maximum individual-population share. The branch may vary with k, a valid extension of the same argument. There is no hidden regularity hypothesis or conclusion in an antecedent. Nonvacuity is Lean-checked simultaneously: K=k+2 unit-sized clusters, Y0=0, Y1=1, Bernoulli(1/2), B=1, eta=1/4, maximum weight 1/K tending to 0; every empty-arm extension is allowed. Finite-sum variance bounds and a ratio bound establish consistency; max(w)^2 <= sum(w^2) <= max(w) establishes the equivalence."
+  },
+  {
+    "theorem": "SAP.P024.T6",
+    "target_id": "P024-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "This proves the actual observed difference-in-means identity for a predetermined nonempty treatment count m on every assignment and actual equal inclusion probabilities m/N. It covers the canonical fixed-count branch and its explicitly mentioned balanced nonuniform extension, but not the canonical independent common-p assignment conditional on nonempty arms, which has a random count. Pointwise counts also constrain zero-mass assignments, whereas an almost-sure count suffices mathematically. Both strengthenings are stated as applying on every assignment in the docstring. The general identical-probability wording cannot safely imply unbiasedness without more design conditions; a two-point random-count design on three units has common marginal 1/2 yet expectation 1/2 for an effect 1/3. Nonvacuity: two units with one selected uniformly meet all count and marginal conditions (Lean-checked); exact enumeration for all treatment counts in the canonical six-unit example gives expectation 2. No outcomes or effect restrictions are imposed."
+  },
+  {
+    "theorem": "SAP.P024.T7",
+    "target_id": "P024-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The general formula Pr(A)=1-p^K-(1-p)^K is not asserted; only positivity and the correct normalized conditional masses are retained. Equal positive cluster sizes, arbitrary real individual outcomes, every p strictly between 0 and 1, equal-size allocation identities, arbitrary empty-arm extensions, and the exact unequal-size (1,2) two-cluster conditional bias witness are present. The parent joint law is genuinely independent; the conditional law is normalized on proper nonempty subsets and is not mislabeled independent. The two-cluster real-size/cluster-mean representation realizes exactly the canonical three individuals with outcomes (0,0,0) and (0,1,1). There is no zero conditioning denominator in an admitted instance. Nonvacuity: unitPopulation k has equal positive sizes for every k and p=1/3 is interior (Lean-checked); at K=2 the conditioning probability is 4/9 (Lean-checked). Exact enumeration for K=2 through 7 and three probabilities confirms the conditional identity; the unequal-size conditional mean is 1/2 versus effect 2/3."
+  },
+  {
+    "theorem": "SAP.P024.T8",
+    "target_id": "P024-T8",
+    "my_reading_vs_claim": "broader",
+    "reason": "Relative to the explicit mandatory formal reading in canonical_claim.note, this retains the entire on-every-allocation identity and unbiasedness conclusions and permits additional balanced nonuniform fixed-count laws. Canonical within-block uniform m_b-of-N_b assignment implies the Lean fixed-count and common-marginal hypotheses; conversely those hypotheses need not imply uniform assignment when there are at least four units in a block. Fixed nonempty block counts and pi_b=m_b/N_b already occur in that canonical formal reading, so variable counts and unequal within-block probabilities are not missing cases of its mandatory formulas. The optional pooled-bias example is not required. The actual observed block means occur in the conclusions, and the HT denominators are identified with true marginals. All denominators are positive; blocks are explicitly nonempty. Cross-block independence is not added. Nonvacuity: two blocks of two units, with the same uniformly selected unit index treated in both blocks, satisfy every count and marginal hypothesis (Lean-checked) despite cross-block dependence. Exact checking of all 16 allocations in the canonical unequal-fraction example gives both expectations 3 and the pooled expectation 35/4."
+  }
+]

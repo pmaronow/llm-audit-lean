@@ -1,0 +1,156 @@
+[
+  {
+    "target_id": "P006-T1",
+    "theorem": "SAP.P006a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2, fair Boolean covariates, deterministic Y0=0 and Y1=(9/10,1), zero estimator, and independent Bernoulli treatment conditional on covariates. All policies in [0,1]^2 induce a normalized finite probability law. Policies (0,1), (1,1), and (17/18,1) are feasible. scratch/Check.lean independently compiles the actual ATO values 3/4 and 19/20.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T2",
+    "theorem": "SAP.P006a.T2",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "The restriction in record.json and Challenge/Part1.lean:13 does not disclose omission of the canonical T2 ATT sufficient-implementation assertion ('this holds ... for an estimator ... independent of the treatment population and of the treatment randomization'). T2Statement assumes VectorUnbiased at Defs/Part5.lean:64 and :104 but never concludes it from PointwiseUnbiased and IndependentEstimator. T6Statement's implementation branch concludes only TreatedUnbiased (Defs/Part5.lean:188), a different moment. The retained assertions are correct, but the enumerated omission list is incomplete."
+    ],
+    "fix": "Restriction: Retain the sample empty/nonempty probabilities, unconditional ATO and ATT identities, sample reward means conditional on a nonempty treated sample, best-response equivalences, finite threshold frontier and attained threshold optimum, population-ratio optimizer, and n=1 reward identities. For ATT add integrability of the estimator evaluated at each unit under every admissible policy, including policies outside any specified feasible class (Standing). Omit the separate single-unit identity A/q = E[m(X_i) | T_i=1], the standalone scalar closed form for h_n, and the explicit assertion that a finite-n optimum can treat a nonmaximal-mean type; that concrete witness is stated in T1. Also omit the sufficient-implementation assertion that pointwise-unbiased independent estimation implies the full-vector conditional unbiasedness hypothesis. T6 states a sufficient implementation only for the treated-residual moment.",
+    "nonvacuity": "scratch/Check.lean constructs bernoulliExperiment c r: n=1, Omega=Bool, X=c, PX=dirac(c), Y0=0, Y1=r, estimator zero, T(t)=t, and law_pi=Bernoulli(pi(c)) for every admissible pi. It compiles Standing, VectorUnbiased, TreatedUnbiased, and IndependentEstimator. Use C=Unit and r=1. The finite-support branch is instantiated by K=2, p=(1/2,1/2), m=(1,1), n=1; its positive-mass, normalization, and antitone premises also compile.",
+    "confidence": 0.92
+  },
+  {
+    "target_id": "P006-T3",
+    "theorem": "SAP.P006a.T3",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "T3Statement quantifies b,s,hb,hs before its entire conclusion (Defs/Part5.lean:114-121). Thus even the per-policy reward/welfare identities and zero-policy values require both an attained ATT maximum and an attained welfare maximum. Canonical clauses (i)-(ii) do not require either optimizer, and the best-response nonnegativity in (iii) does not require a welfare optimizer. Neither record.json's restriction nor Challenge/Part1.lean:19 discloses this loss of scope; the claim that all numbered conclusions are included is therefore incomplete. scratch/Check.lean supplies a regular nonempty feasible class with no maximizer, so this is a real additional condition rather than an automatic consequence of the other premises."
+    ],
+    "fix": "Restriction: Require full evaluated-estimator integrability under every admissible policy, including policies outside the feasible set (Standing), rather than only meaningful feasible-policy evaluation moments. All conclusions, including the per-policy identities and the zero-policy reward and welfare identities, additionally assume supplied ATT-reward and welfare maximizers; no conclusion is exported for a feasible class lacking either maximizer. Under these supplied maximizers retain the numbered conclusions and the attained-maximum regret identity. Omit the final concrete comparison with the invalid printed closed form in the T1 example; T1 separately states those numerical welfare gaps.",
+    "nonvacuity": "The compiled experiment at C=Unit, r=1 has expectedATT(pi)=V(pi)=pi(()). On the full admissible class, zero is feasible and b=s=the constant-one policy are simultaneously attained maximizers; these facts compile in scratch/Check.lean. The same file compiles zero feasibility and nonexistence of either maximizer on P={pi: Admissible pi and pi(())<1}, demonstrating the additional scope restriction on otherwise meaningful per-policy identities.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P006-T4",
+    "theorem": "SAP.P006a.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both models have a fair Boolean covariate, one unit, Y0=0, bounded deterministic Y1=+1/2 or -1/2, bounded estimator estA or estB, and conditionally independent Bernoulli treatment for every binary policy. The fixed-query means are zero although evaluated estimators are identically +1 or -1. scratch/Check.lean independently checks the first fixed-query mean and diagonal value.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T5",
+    "theorem": "SAP.P006a.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The product of two fair Boolean covariates and each agent's independent treatment coin is a normalized finite law. Baselines are both zero, effects are 1/4 and 1/8, reference and both covariate laws coincide, weights are one, and the common estimator is bounded. The actual policies (0,0) for j and (1,1) for k attain the displayed scores.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T6",
+    "theorem": "SAP.P006a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled bernoulliExperiment at C=Unit, r=1 and the full admissible class. Standing supplies PolicyDesign after discarding unused fields. The estimator residual is identically zero; PointwiseUnbiased holds with baseline zero, and IndependentEstimator is compiled using constant auxiliary Z. All unit outcomes and rewards are bounded, and the constant-one policy is a nonzero-reward best response.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P006-T7",
+    "theorem": "SAP.P006a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled bernoulliExperiment at C=Unit, r=1 with g identically one. Replacing its already-zero estimator by zero leaves the experiment unchanged, so Standing holds. Residuals are zero, g*tau=1 is integrable under dirac(()), every actual reward is a bounded Boolean variable, and the optimal policy is constant one with welfare one.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P006-T8",
+    "theorem": "SAP.P006a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled bernoulliExperiment at C=Unit x Unit, c=((),()), r=1, b0=0 and the full admissible class. Standing, TreatedUnbiased, MarginalBaseline, EstimatorUsesOnlyX and marginalHeterogeneity=0 are verified by the compiled construction and checks. All rewards are bounded; constant one maximizes score and welfare, and gamma=0 is feasible.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P006-T9",
+    "theorem": "SAP.P006a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the generic branch use n=2, fitted effects (1,-1), so k=1, utility=1/2 and beneficiary mean=1. For the numeric branches choose vH=146954/1000000, vS=25186/1000000, bH=vH*(255/62), bS=vS*(7264/1360); these lie inside the stated input intervals. The table-only premises are satisfiable, for example rH=62/255 and rS=1360/7264 with these utilities.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T10",
+    "theorem": "SAP.P006a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "B=1 gives the probability law dirac((),(2,1)) and feasible set {constant one}. Both outcome coordinates are integrable; the only policy has positive treatment mass one, welfare -1 and regret zero. Invariance uses the genuine measurable (X,Y1) projection. The same singleton forces zero regret for every finite-moment law, without default integrals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T11",
+    "theorem": "SAP.P006a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "C=Unit, P={constant zero, constant one}, reward(D,pi)=0. This reward is treated-data invariant and nondegenerate because constant one is a best response of positive treatment mass under dirac((),(2,1)). For any M>0 choose B=M+1 and D=dirac((),(1+B,1)); constant one remains a best response with regret B>M, while constant zero is another best response of regret zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T12",
+    "theorem": "SAP.P006a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no premises. L=Lebesgue restricted to [0,1] has total mass one and Q=(1/2)L+(1/2)dirac(1/2) also has total mass one. Their common support is nonempty; the atom of Q at 1/2 has mass 1/2 while its L-mass is zero. The missing density is an actual measure-theoretic obstruction, independent of Mathlib's total rnDeriv convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T13",
+    "theorem": "SAP.P006a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take K=2 (nonempty), C=Unit, both Omega_k=Bool, n_k=1, common PX_k=P0=dirac(()), and the compiled bernoulliExperiment with r=1 for one agent and r=2 for the other. Both baselines and estimators are zero. OutcomeStanding follows from the compiled Standing. Absolute continuity is reflexive, all residuals vanish, all actual weighted summands are integrable on the finite sample space, and the reference weights equal one at the sole covariate. Both scores have attained, nonzero maxima.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P006-T14",
+    "theorem": "SAP.P006a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "C=Unit, P0=dirac(()), tau_j=2 and tau_k=1. Both positive parts are integrable, dominance holds pointwise, and the two integrals are 2 and 1. This uses a nonzero measure and finite ordinary integrals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P006-T15",
+    "theorem": "SAP.P006a.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The first pair consists of point-mass models with T=1, Y1=1 and Y0=0 or 2; the observed law is the point mass at (T,Y)=(1,1), as independently compiled. The second pair has observed masses 1/2,1/4,1/4 on the three specified records and hence total mass one. For private U=Unit the supremum defining maximumDeviation is the bounded nonempty range {0}, so its zero integral does not use an unbounded-supremum convention.",
+    "confidence": 0.99
+  }
+]

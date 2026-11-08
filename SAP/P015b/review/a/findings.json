@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P015-T9",
+    "theorem": "SAP.P015b.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete 3-by-2 group designs, each Gram determinant 2; S=I_2 is positive semidefinite and both noise variances are 1. Exact independent rational computations verify both precision and raw-data GLS values and the arbitrary-vector slope rows (scratch/exact_checks.py). No empty index or singular inverse is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T10",
+    "theorem": "SAP.P015b.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take G=q=1, n_0=1, Z_0=[1], S=[1], sigma_0^2=1 and any y_0, for example 0. Then Q_0=[1], P_0=[1/2] and H=[1/2], all nonsingular; the scalar row has its single genuine coordinate. The nonempty positive-dimensional rank/positivity premises were checked in scratch/Nonvacuity.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T20",
+    "theorem": "SAP.P015b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The displayed four strictly positive masses sum to 1; profile masses are 1/4 and 3/4 and det(leverageMoment)=7/200. The cell masses and determinant were checked in Lean; the inverse, every leverage, conditional average and all rounding inequalities were independently verified with exact rational arithmetic.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T14",
+    "theorem": "SAP.P015b.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The premises are met by alpha=x=0, beta=1, d=0 and dprime=1, with any real p. They do not assume the negated conclusion; strict monotonicity of the actual sigmoid proves it.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T21",
+    "theorem": "SAP.P015b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=2,K=0,W=[[1,0],[1,1]],Y=(0,1),b=1/2,c=1. The unit-intercept property and Gram determinant 1 were checked in Lean. The affine identity also has an unrestricted domain and admits c=0. Neither an existing exact logistic fit nor the desired affine conclusion is assumed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T11",
+    "theorem": "SAP.P015b.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both binomial cells have 100 trials and strictly interior success counts 1 and 99, with grouped full-rank Gram determinant 10000. The unique fit has finite predictors plus/minus log(99). All-degree Taylor bounds have the alternating increasing-term justification in scratch/audit_details.md; the numerical degree-0-through-80 check is only supplementary.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P015-T15",
+    "theorem": "SAP.P015b.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the limit take the standard Borel space ℝ^ℕ with iid Uniform[0,1] coordinates D_i, K=0, Y0_i=0, tau_i=1 and omega=(1/2). All moment families are bounded and obey the LLN; E[w]=1/12, and the sample intercept/treatment design has rank two almost surely for every n>=2. All extra integrability premises hold. For the separate moment identities a fair two-point treatment with constant baseline/effect and no controls suffices. Details: scratch/audit_details.md.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P015-T22",
+    "theorem": "SAP.P015b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The iid Uniform[0,1] construction on ℝ^ℕ, K=0, Y0_i=0, tau_i=1, omega=(1/2), satisfies every premise. Population control Gram is [1], E[w]=1/12, moments are bounded and obey the LLN, and for every n>=2 the full design has rank two almost surely since D_0!=D_1 almost surely. Thus the actual OLS coefficient is 1 almost surely in that tail. Details: scratch/audit_details.md.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P015-T23",
+    "theorem": "SAP.P015b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the same iid Uniform[0,1] construction, K=0, Z_i=D_i, omega=(1/2). The seven moment families are bounded, the control Gram is [n], and the fitted residual sum of squares is positive almost surely for every n>=2. E[w]=1/12 and E[wZ]=1/24, so the target is 1/2. All integrability and positivity premises hold. Details: scratch/audit_details.md.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P015-T24",
+    "theorem": "SAP.P015b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the estimator limit take independent Uniform[0,1] treatment coordinates, K=0, Y0_i=0 and tau_i=1 on ℝ^ℕ. Assignment is independent of the constant baseline/effect/controls, all regularity holds and rank is two almost surely for n>=2. For the separate population identities a fair two-point treatment with constant effect has finite second moment and positive variance 1/4. Details: scratch/audit_details.md.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P015-T18",
+    "theorem": "SAP.P015b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six positive cell masses sum to 1; every stated outcome probability is interior, and theta=(1/2,0,0) is admissible (checked in Lean). The literal product-mixture unit law supplies the causal model. At a=0 and a=1/16 the actual likelihood Hessian is negative definite, strict concavity gives unique admissible global maxima, and implicit differentiation yields treatment derivatives 1 and 120/119, checked exactly. Logistic stationarity also has nontrivial finite-maximizer instances, e.g. two successes and two failures balanced across two treatment cells. Details: scratch/audit_details.md.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P015-T17",
+    "theorem": "SAP.P015b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The positive implication admits a fair two-point treatment with a constant profile and variance 1/4. The small-weight family has positive profile masses and E[w]>0; epsilon=1/4 and its weight mean 7/32 were checked in Lean. At epsilon=10^-6 the IPW variable has mean 3/2 and finite variance 2000071/4, giving consistency by Chebyshev. The full-rank fitted-zero sample has positive probability 1/256. The literal missing-pair law has E[w]=5/8 and effective probabilities (1/10,1/10,2/5,2/5), so its conditioning cell has mass 4/5. Exact checks and details are in scratch/exact_checks.py and scratch/audit_details.md.",
+    "confidence": 0.98
+  }
+]

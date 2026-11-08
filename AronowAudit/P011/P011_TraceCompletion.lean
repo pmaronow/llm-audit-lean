@@ -34,5 +34,7 @@ theorem trace_psd_covariance {n : ℕ} (m : Model n)
   rw [trace_covariance_integral m hL2 M]
   exact integral_nonneg (fun y=>hM.2 _)
 
+#print axioms trace_covariance_integral
+#print axioms trace_psd_covariance
 end
 end AronowAudit.P011.DenseTraceCompletion

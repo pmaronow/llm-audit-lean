@@ -1,0 +1,104 @@
+[
+  {
+    "theorem": "SAP.P009b.T18",
+    "target_id": "P009-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The incoming count includes self, so incoming-1 is exactly the number of other interfering units. Both corrected hypergeometric laws, the separate zero case, the likelihood-ratio identity, every scalar bound, and the supported masked-vector bound are present. Forcing the deleted coordinate to false is an injective representation of the paper's (n-1)-vector. Complete randomization and the incoming-count hypothesis make every displayed denominator positive on its stated range; natural subtraction does not change any intended integer. n=2,m=1 with no interference gives incoming=1; n=4,m=2 with one other incoming edge gives a positive-r instance. The finite ratios were independently checked for n=2 through 10. No extra hypothesis or false clause found."
+  },
+  {
+    "theorem": "SAP.P009b.T19",
+    "target_id": "P009-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "After converting the paper's labels 1,...,6 to Fin 6 labels 0,...,5, the actual schedules realize exactly the counterexample indicators and pairing. The indicator is 1 and the witness count is 3, with all listed indicator/summand details present. The fair law is a genuine probability law; these combinatorial quantities do not depend on the law and have the same values under paired randomization. Enumeration of all 64 assignments independently confirmed the counterexample. It refutes the printed equality and leaves the inequality untouched."
+  },
+  {
+    "theorem": "SAP.P009b.T20",
+    "target_id": "P009-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two pointwise inequalities and final eAVG<=C2^2 lemma are stated, but none of the displayed intermediate aggregate chain is asserted. The theorem quantifies over positive finite experiments and actual fixed-point-free pairings, using their induced indicators. Every diagonal-one binary indicator array can in fact be realized by additive full-cube schedules. A two-unit zero-outcome experiment and swap pairing give an instance. Both pointwise inequalities and the endpoint were checked for all 4096 four-unit arrays; the general bound follows by summing witnesses and 2xy<=x^2+y^2."
+  },
+  {
+    "theorem": "SAP.P009b.T21",
+    "target_id": "P009-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact specified experiment, all aggregate values, the MSQ/B1/B2 decomposition and the two numerical disagreements are present. The six contributing ordered pairs and their individual conditional covariances are omitted. Independent rational enumeration gives dAVG=3, MSQ=1, B1=1/6, B2=1/3, E BER=229/144, Var HT=241/144 and normalized expected gap -1/6. The negative source baseline is expressly part of this canonical illustration, rather than being required to lie in the simulation sampling support. No claim about refuting the printed convergence is made."
+  },
+  {
+    "theorem": "SAP.P009b.T22",
+    "target_id": "P009-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All aggregate finite identities, both specialized exact centres, the centre correction and its 1/sqrt(n) bound are retained. The individual conditional covariance identities in clause (ii), convergence about the printed centre and the three limiting-regime conclusions are absent. Corrected-centre convergence is stated under an explicit common RegularSequence with q>=4, whereas the canonical finite model allows arbitrary fixed baseline vectors. This is a satisfiable moment restriction, not the conclusion: for example N_t=t+2, h_t=1, c_0=-1/4, other c_i=0, fair designs, k=2,q=4,s=1. The finite formulas were checked in 42 instances. In this bounded one-source model, the normalized BER fluctuation has order at most 1/sqrt(N_t), so the retained convergence is sound."
+  },
+  {
+    "theorem": "SAP.P009b.T23",
+    "target_id": "P009-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem retains the twelve uniform-baseline sampling integrals and the complete-design squared-bias/variance ratio. It omits the universal fixed-baseline/support identities and divergence of the ratios, and explicitly assumes integrability of the twelve integrands. Its variance is the integral of conditional design variance. The constants are correct: independent baselines have variance 29/6, giving 58/(3n); adjacent uniform order-statistic gaps contribute 36/[n(n+1)(n+2)] and paired noise contributes 49/(3n). At n=2 use the uniform two-balanced-assignment law, constant swap pairing, and constant Q: rank adjacency holds after sorting the two entries and all twelve integrands are polynomials on a compact box, hence integrable. No zero-by-nonintegrability loophole remains."
+  },
+  {
+    "theorem": "SAP.P009b.T24",
+    "target_id": "P009-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The complete-interference exception is fully stated for arbitrary fixed baselines and positive even sample sizes under both balanced complete and paired designs, with supportwise outcomes/effects/estimators, expectation zero, EATE=1, signed and absolute bias and both MSE identities. The corrected sentence's empirical claim of negligible bias in all other settings and the printed Monte Carlo entries are not asserted. Positive n is the ordinary nonempty-sample domain; both designs force n>=2 and nonempty arms. The n=2 balanced law with arbitrary baselines is a concrete instance, and support/bias/MSE identities were checked for n=2,4,6,8 under both designs."
+  },
+  {
+    "theorem": "SAP.P009b.T25",
+    "target_id": "P009-T25",
+    "my_reading_vs_claim": "different",
+    "reason": "Correction of the initial reading, supported by SAP/P009b/Defs/Part2.lean:82 and scratch/Parse.lean's compiled definitional equality: empiricalBias R estimates is ((sum_r estimates_r)-1)/R, with subtraction outside the sum. Canonical P009-T25 defines (sum_r (estimates_r-1))/R. At R=2 and both estimates=1 the package reportedBias is 1/2 while the canonical statistic is zero; at R=50000 and all estimates=1 the package reports 49999/50000. These values and the discrepancy are compiled without importing Challenge. The caption conjunct remains true of this different statistic; the R=1 sign-loss fixture cannot expose the difference, and the population-bias clauses remain faithful. The initial whole verdict was due solely to this cited sum-scope misreading; its original text is preserved in scratch/claim-stage-before-record.json."
+  },
+  {
+    "theorem": "SAP.P009b.T26",
+    "target_id": "P009-T26",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The common-assignment/no-interference coefficient, the formula for every supplied exponent (indeed every real exponent), the exponent-one formula, positive normalized limit and failure of little-o are retained. The uniform potential bound, maximal-moment-order argument selecting exponent one, separate p=1/2 normalization and p=1/3 contrast are not asserted. NoInterference implies the masks encode only their own coordinate; under common assignment each encodes the same Bernoulli variable, with coefficient p(1-p)>0, so no real-supremum or zero-power convention does the work. N_t=t+2, zero outcomes and p=1/3 give a concrete study and a genuinely positive limit 2/9."
+  },
+  {
+    "theorem": "SAP.P009b.T27",
+    "target_id": "P009-T27",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The finite lower/upper atom bounds, finite three-point approximation and error estimate plus two limits for any supplied minimizer are present. Existence of a minimizing sequence, a separately asserted exponential-limit lemma and the heavy-atom counterexample are not present. Minimality is the canonical optimization property, not an assumption about the desired masses, and is satisfiable because there are finitely many three-point maps. Explicit simultaneous instance: fair zero-outcome studies N_t=b_t=t+2, k=2,q=2,s=1, alpha=1/2; assign +1 when the first two bits are both false, -1 when both true and zero otherwise. Both outer masses are exactly 1/4, so its error is zero and it is a minimizer."
+  },
+  {
+    "theorem": "SAP.P009b.T28",
+    "target_id": "P009-T28",
+    "my_reading_vs_claim": "whole",
+    "reason": "All of the canonical formal content is present: the mean/mass identity, the corrected absolute shift condition, the finite CDF equality and its eventual sequence version, positive threshold distance and failure of the printed reversed inequality. Finite laws capture every distribution supported on the three atoms and in particular every finite assignment-space variable used here. No relation to a separate HT construction is claimed by the canonical formal content. Constant sharpLaw(1/2), sharpValue and x=1/2 give jointly satisfiable finite and sequence instances with mean zero and distance 1/2."
+  },
+  {
+    "theorem": "SAP.P009b.T29",
+    "target_id": "P009-T29",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The power a is restricted to natural numbers; no statement for non-natural orders is supplied. On this domain every numerical link of the corrected chain and its endpoint is present; replacing signed covariance by absolute covariance is a valid strengthening. The moment assumption is exactly the needed observed q-moment bound, and q>=2 makes q positive even at a=0. Zeroth powers use the ordinary 0^0=1 convention and all links remain valid. Fair two-unit schedules Y_0=z_0+z_1, Y_1=z_1 with k=2,q=4,a=1 or 2 provide nonzero-covariance instances."
+  },
+  {
+    "theorem": "SAP.P009b.T30",
+    "target_id": "P009-T30",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both corrected MAX/SR multiples and the exact equality-or-zero conditions for the two printed AVG identities are present. dMAX is the finite maximum, and lambdaMax is the ordinary maximum Rayleigh quotient of the symmetric nonnegative d matrix, hence its largest eigenvalue/spectral radius. Positive n makes both supremum sets nonempty and bounded; overlap makes the estimator denominators positive. Fair n=3 with Y_0=z_0+z_1,Y_1=z_1,Y_2=z_2 has D=diag(J_2,1), dAVG=5/3 and dMAX=lambdaMax=2, with BER>0 at the all-treated assignment, so the alternatives are substantive."
+  },
+  {
+    "theorem": "SAP.P009b.T31",
+    "target_id": "P009-T31",
+    "my_reading_vs_claim": "whole",
+    "reason": "The three-point law and disjoint CDF cases agree exactly with Definition A4, including the values at -1,0,1. The second conjunct states precisely the canonical implication from convergence of both outer masses to CDF convergence at every real threshold. Fixed three-point support justifies convergence even at jumps. Finite-law presentation captures all distributions in this formal content. Use alpha=1/2 and the constant sharpLaw/sharpValue sequence for a concrete instance of every hypothesis."
+  },
+  {
+    "theorem": "SAP.P009b.T32",
+    "target_id": "P009-T32",
+    "my_reading_vs_claim": "whole",
+    "reason": "The exact unweighted balance definition is used. The arbitrary-update identity implies both directions of the change by two, with an explicit upward-flip clause; all integer multiplier crossings and every paired-flip membership case are stated. Distinct flipped units and the two initial treatment values are the intended hypotheses. The canonical formal content is integer arithmetic, not a probabilistic assertion about the number of affected units. Singleton G with z_i=false gives an upward instance; G containing just the upward unit gives a nonzero paired-flip instance. Four-unit cases were independently enumerated."
+  },
+  {
+    "theorem": "SAP.P009b.T33",
+    "target_id": "P009-T33",
+    "my_reading_vs_claim": "whole",
+    "reason": "After shifting indices by one, all distinct-unit untreated/treated spillovers, reciprocal products, source weighted mean and B1 formula match the canonical statement. For distinct i,j the order of the two function updates correctly represents y_ij(a,b;Z_-ij); no diagonal spillover is asserted. The h parameter is a natural number in [1,n], so Fin n has the required source and all denominators are positive. The fair one-source experiment n=2,h=2,c=0 is a nontrivial instance; the general aggregate and spillover formulas were checked in the finite grid used for T22."
+  },
+  {
+    "theorem": "SAP.P009b.T34",
+    "target_id": "P009-T34",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The half-difference identity, per-arm endpoint bound by k, k>=2, two-arm bound by 2k, comparison 2k<=2k^2 and Lemma A17 are present. The separate links through E|Y_i(b;Z)| and the displayed weighted proof-chain equalities are omitted. Paired randomization gives marginal 1/2; the potential s-moment with s>=1 yields E|Y_i(b;Z)|<=k, so the retained bounds are sound. The uniform two-balanced-assignment law on n=2 with swap pairing and zero outcomes satisfies Paired and Regular(2,4,1); schedules Y_0=z_0+z_1,Y_1=z_1 give a nontrivial alternative."
+  }
+]

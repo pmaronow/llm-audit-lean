@@ -1,0 +1,311 @@
+# Blind reading
+
+This file was written and saved before opening `claims.json` or `record.json`.
+I read all entries in `closure.json`, the source of every listed definition,
+the four Challenge docstrings, and the generated declarations printed by
+`scratch/BlindPrint.lean`. The generated declarations provide structure
+projections/constructor, decidability, nonemptiness proofs, numeral instances,
+and measure typeclass instances; they add no statistical assumptions.
+
+## SAP.P018b.T25
+
+Sources: `Challenge/Part1.lean:131–135`, `Defs/Part6.lean:11–13`,
+`Defs/Part3.lean:74–85`, and the dyad/endpoint definitions in Parts 1 and 2.
+
+For a natural number N, let the units be the finite set {0,...,N−1}.
+The dyads are **all unordered two-element subsets** of this set. A dyad's
+first endpoint is its minimum and its second endpoint is its maximum in the
+order of `Fin N`. Let A and B be the real matrices with dyads as rows and
+units as columns, with A[d,i]=1 when i is the minimum endpoint of d (and 0
+otherwise), and B[d,i]=1 when i is the maximum endpoint (and 0 otherwise).
+The operations below are ordinary finite real matrix addition,
+multiplication, transpose, and scalar multiplication; I is the identity
+matrix indexed by dyads.
+
+The assertion is
+
+    NOT [for every N : natural number with N >= 3,
+         there exist real t1, t2, s, all nonnegative, such that
+         (A+B)(A+B)' + I = t1 A A' + t2 B B' + s I].
+
+Thus, classically it asserts that there is at least one N >= 3 for which no
+such triple exists. It does not assert failure for every N, and it says
+nothing about estimating these parameters or fitting a model to data.
+Entrywise, the left matrix is |d intersection f| + 1[d=f], and the right
+matrix is t1 1[min d=min f] + t2 1[max d=max f] + s 1[d=f].
+
+The Challenge docstring calls this a refutation of a printed claim about a
+shared-unit covariance being in a fitted two-independent-role family.
+
+Junk-value and boundary checks:
+
+* The endpoint minimum/maximum use `Finset.min'`/`max'` with an actual proof
+  of nonemptiness. A dyad has cardinality exactly two. There is no arbitrary
+  endpoint or partial-function default.
+* The universal variable N is guarded by N >= 3, so neither the unit set nor
+  the dyad index set is empty in the assertion being negated.
+* Matrix sums are finite and real. No inverse, division, integrals,
+  logarithms, square roots, extended-real conversions, suprema, infima, or
+  limiting operations occur. Endpoint labels are natural indices; there is
+  no truncated subtraction or relevant numeric cast.
+
+## SAP.P018b.T26
+
+Sources: `Challenge/Part1.lean:137–140`, `Defs/Part6.lean:15–21`, and every
+listed dependency in Parts 1 and 2. `Proposition1Extra._proof_1` is only the
+outer-measure typeclass instance; `Proposition1Extra` itself is not a
+hypothesis of this statement.
+
+The outermost connective is negation of a universal implication. Inside it,
+quantification is: a small type U; a measurable-space structure on U; a
+natural dimension k; a measure mu on U; a vector-valued function
+x : U x U -> R^k; and a real function y : U x U -> R. R^k is the type of
+functions `Fin k -> R`, and k by k matrices have real entries indexed by
+`Fin k`. Vector norms are finite-coordinate sup norms. The assumptions
+inside the implication are the following, in order.
+
+1. mu is a probability measure.
+2. x and y are measurable on the product measurable space U x U.
+3. For every u,v, x(u,v)=x(v,u) and y(u,v)=y(v,u).
+4. There is a real C >= 0 such that, for mu x mu almost every (u,v),
+   max_a |x_a(u,v)| <= C and |y(u,v)| <= C.
+5. There is a coordinate j in `Fin k` such that x_j(u,v)=1 for every u,v.
+6. The matrix Q with Q_ab = integral x_a(u,v)x_b(u,v) d(mu x mu) has
+   nonzero determinant.
+7. There exists N0 : natural number such that for every N >= N0, for
+   mu^N almost every sample omega : Fin N -> U, the sample Gram matrix
+   G(omega)=sum_{d} x_d x_d' has nonzero determinant.
+
+Here mu^N is the finite product of N copies of mu: the units are sampled
+independently with the same law. The dyads d are every two-element subset
+of `Fin N`. At dyad d={i,j}, i<j, write x_d=x(omega_i,omega_j) and
+y_d=y(omega_i,omega_j). Dot products and all sums over coordinates or dyads
+are finite real sums. Define
+
+    b = Q^(-1) [ integral x(u,v)y(u,v) d(mu x mu) ],
+    e(u,v) = y(u,v) - sum_a x_a(u,v)b_a,
+    e_d(omega) = e(omega_i,omega_j),
+    S_N(omega) = sum_d e_d(omega) x_d(omega),
+    bhat_N(omega) = G(omega)^(-1) sum_d y_d(omega)x_d(omega),
+    D_N = (real N)((real N)-1)/2,
+    V_N = [N/(D_N)^2] Q^(-1) Cov_mu^N(S_N,S_N) Q^(-1).
+
+For real vector functions f,g, the covariance matrix used here has entry
+
+    integral (f_a - integral f_a)(g_b - integral g_b) d measure.
+
+It is not an uncentered second-moment definition. Means of vectors and
+matrices are entrywise real Bochner integrals. The two factors of Q^(-1)
+in V_N are as displayed, without an explicit transpose.
+
+For each N let H_N be the sigma algebra generated by the **entire vector
+of observed regressors** omega -> (x_d(omega))_d. Define the conditional
+mean m_d=E[e_d | H_N] and
+
+    c_df = E[(e_d-m_d)(e_f-m_f) | H_N],
+    P_N = sum_{d,f: d intersection f nonempty} E[c_df x_d x_f'].
+
+The overlap sum includes d=f. Each expectation here is under mu^N.
+`designSigma` is precisely the comap measurable space for this complete
+design map, not the sigma algebra for just one or two dyads.
+
+The statement negates that assumptions 1–7 always imply **both**:
+
+* For every natural N >= 3, Cov_mu^N(S_N,S_N)=P_N.
+* There exists a probability law nu on R^k such that (a) the laws of
+  sqrt(N)(bhat_N-b) converge weakly to nu, (b) every coordinate has a finite
+  second moment under nu, (c) its mean is zero, and (d) V_N converges to
+  Cov_nu(id,id) in the ordinary finite-dimensional topology.
+
+Weak convergence is explicitly: the random vector is almost-everywhere
+measurable for every N, nu is a probability measure, and for every bounded
+continuous real function g on R^k its expectation converges to its integral
+under nu. No Gaussian assertion appears. `MemLp ... 2 nu` means
+almost-everywhere strong measurability and finite L2 seminorm. The
+negation does not identify a witness and does not say which conjunct
+fails. The Challenge docstring calls the conjunction a false printed claim.
+
+Junk-value and boundary checks:
+
+* Scalar division has the real-field convention 1/0=0. D_N=0 for N=0,1.
+  This makes V_N a defined zero-scaled matrix at those indices. The finite
+  identity starts at N=3; the limit is unaffected by a finite prefix.
+  The subtraction in D_N is **real**, not truncated natural subtraction.
+* Matrix inversion is Mathlib's nonsingular inverse: the ordinary inverse
+  if the determinant is nonzero, and the zero matrix otherwise. Q is
+  nonsingular by assumption. Small or exceptional singular samples give
+  bhat_N=0. Assumption 7 excludes singular samples almost surely for all
+  sufficiently large N, so that convention cannot itself cause the
+  asymptotic refutation in that class.
+* The integral of a nonintegrable function is totalized to zero. Under
+  assumptions 1–6 the population quantities and finite-N score covariances
+  are integrable: x,y are bounded almost everywhere and b is a fixed real
+  vector. The conditional quantities are also meaningful and integrable.
+  The bounded continuous weak-convergence tests are integrable under
+  probability laws. L2 is explicitly required for the limit coordinates.
+* Conditional expectation is zero if its sigma algebra is not a sub-sigma
+  algebra, the trimmed measure is not sigma-finite, or the integrand is
+  not integrable. Measurability of the finite design map gives H_N <= the
+  sample sigma algebra, and probability gives finite trimmed measure;
+  boundedness gives integrability. Versions of conditional expectations
+  are only determined almost everywhere, which is harmless inside the
+  subsequent expectations.
+* `Real.sqrt N` is applied to the real cast of a natural number, hence
+  nonnegative. Its convention on negative reals is unused.
+* The intercept requires an actual j : Fin k, so k=0 cannot satisfy the
+  hypotheses. A probability measure also excludes an empty U. For N=0,1
+  dyad sums are empty and are zero; endpoints are only called on real
+  two-element subsets, so they never need defaults.
+* There are no logarithms, rpow expressions, real conversions of infinite
+  measures in this statement, limsup/liminf, or empty-set sInf/sSup.
+
+## SAP.P018b.T27
+
+Sources: `Challenge/Part1.lean:142–153`,
+`Defs/WholeW3.lean:13–28`, and all the listed dependencies in Parts 1 and 2.
+The actual target is `T27WholeStatement_W3`, **not** `T27Statement` in
+Part 6. Thus neither `SampleRank` nor `Proposition1Extra` is assumed.
+
+For every small measurable type U, every natural dimension k, and every
+triple (mu,x,y), with mu a measure on U, x:U x U -> R^k and
+y:U x U -> R, assume:
+
+1. mu is a probability measure;
+2. x,y are jointly measurable;
+3. x,y are pointwise symmetric in their two unit arguments;
+4. a common finite C >= 0 bounds max_a |x_a| and |y| almost everywhere
+   under mu x mu;
+5. one fixed coordinate of x equals 1 at every pair of arguments;
+6. Q_ab=integral x_a x_b d(mu x mu) has nonzero determinant.
+
+These are the complete hypotheses. Samples have law mu^N, a finite product
+of identical unit laws. Every unordered two-element subset of `Fin N` is
+observed, with x_d=x(omega_min(d),omega_max(d)) and similarly y_d.
+All finite-dimensional vectors/matrices are real coordinate functions on
+`Fin k`; all products/sums below are ordinary real finite matrix/vector
+operations. Put
+
+    Q = E[x x'],  b = Q^(-1) E[xy],
+    e_d = y_d - sum_a x_{d,a} b_a,
+    G_N = sum_d x_d x_d',
+    bhat_N = G_N^(-1) sum_d y_d x_d,
+    rhat_d = y_d - sum_a x_{d,a} bhat_{N,a},
+    Mhat_N = sum_{d,f: d intersection f nonempty}
+                 rhat_d rhat_f x_d x_f',
+    Vhat_N = G_N^(-1) Mhat_N G_N^(-1),
+    D_N = (real N)((real N)-1)/2,
+    S_N = sum_d e_d x_d,
+    V_N = [N/(D_N)^2] Q^(-1) Cov_mu^N(S_N,S_N) Q^(-1).
+
+The overlap sum includes diagonal pairs and both orders of distinct
+overlapping dyads. The residual in Mhat_N is fitted; the residual in S_N
+uses the population b. Covariance is the entrywise centered integral
+E[(S_a-E S_a)(S_b-E S_b)].
+
+The conclusion is that for **every real epsilon > 0**,
+
+    mu^N {omega : epsilon <= ||N Vhat_N(omega)-V_N||} -> 0
+    as natural N -> infinity.
+
+Here the norm is the maximum of the absolute matrix entries (the scoped
+elementwise matrix norm); `inProbability` takes the `ENNReal.toReal` of
+the event measure before taking this ordinary real limit. The docstring
+describes this consistency assertion and expressly permits the totalized
+sample inverse, says population rank suffices, and says the additional
+printed fitted-residual/moment conditions are unnecessary. It also states
+that usual measure-theoretic conditions are assumed.
+
+Junk-value and boundary checks:
+
+* Q is invertible by assumption. G_N uses the ordinary inverse when
+  nonsingular and the zero matrix otherwise. Consequently on singular
+  samples bhat_N=0 and Vhat_N=0. This is an explicit convention relevant
+  to the finite-sample definition, disclosed in both docstrings. There is
+  no hypothesis making samples nonsingular almost surely at large N.
+* Real division by zero makes the factor N/(D_N)^2 zero at N=0,1. The
+  empty dyad sums are also zero there. These are only two terms of a
+  sequence and do not change convergence at infinity. D_N uses real
+  subtraction and real casts, not truncated subtraction.
+* Population means and the finite-N covariance are Bochner integrals,
+  totalized to zero if nonintegrable. Bounded x,y, probability, and fixed
+  b give their usual integrable meanings under the hypotheses. No
+  expectation or moment bound on fitted residuals or the inverse sample
+  Gram matrix is used in this statement.
+* An infinite event measure would have `toReal` equal to zero. Here all
+  event measures are <=1 because mu^N is a probability measure; the
+  infinite-measure default is unavailable. The statistics and norm events
+  are measurable (finite sums, measurable kernels, and the Borel totalized
+  finite-dimensional inverse).
+* The intercept makes k positive and a probability law excludes an empty
+  U. Endpoints have proven nonemptiness and distinctness. The empty
+  coordinate case cannot satisfy the hypotheses. The N=0 empty product
+  and N<2 empty dyad sets are harmless finite prefixes.
+* No conditional expectations, sqrt, log, rpow, limsup/liminf, or sInf/sSup
+  occur in this target's actual closure.
+
+## SAP.P018b.T28
+
+Sources: `Challenge/Part1.lean:155–158`, `Defs/Part6.lean:29–35`,
+the sample definitions in Parts 1 and 2, and
+`Defs/Part2.lean:143–148`.
+
+There are no user-supplied objects or hypotheses. Let B_i be independent
+fair Boolean random variables: `fairLaw` is the probability measure from
+the uniform probability mass function on the two-element type Bool, and
+the N-sample law is its product. Let Z_i=1 if B_i=true and Z_i=−1 if
+B_i=false. There is a single regressor x_d=(1) and response
+y_{ij}=Z_i+Z_j for every unordered pair of distinct units. Dyad endpoints
+are the minimum and maximum of each two-element subset of `Fin N`.
+
+The coefficient bhat_N is ordinary scalar intercept OLS, defined by the
+matrix formula
+
+    G_N = sum_d 1 = number of unordered pairs,
+    bhat_N = G_N^(-1) sum_{i<j} (Z_i+Z_j).
+
+For singular G_N it uses the zero matrix inverse. Set
+
+    rhat_{ij} = Z_i+Z_j-bhat_N,
+    Vhat_N = G_N^(-1)
+               [sum_{d,f: d intersection f nonempty} rhat_d rhat_f]
+             G_N^(-1),
+    D_N = (real N)((real N)-1)/2.
+
+The coefficient and variance estimator are really 1-dimensional vector
+and 1 by 1 matrix expressions; the statement selects coordinate 0 and
+entry (0,0). The overlap sum includes diagonals and both orders.
+
+The theorem says it is **not the case that both**
+
+    N Var_mu^N(bhat_N) - 4/D_N -> 0
+
+as an ordinary real sequence, and
+
+    for every epsilon>0,
+    mu^N {omega : epsilon <= |N Vhat_N(omega)-4/D_N|} -> 0.
+
+Mathlib's real variance here is the real conversion of the extended
+nonnegative integral of |bhat_N-E bhat_N|^2. All the variables on each
+sample space take finitely many real values, so this equals the usual
+finite variance. The second limit is convergence in probability of the
+displayed scalar error. The negation of a conjunction does not separately
+assert failure of both limits. The docstring says that the fair-sign
+specialization refutes a printed conjunction with literal target 4/D.
+
+Junk-value and boundary checks:
+
+* For N=0,1, D_N=0 and real 4/D_N=0 by totalized division. The dyad set is
+  empty, G_N=0, bhat_N=0, and Vhat_N=0. Both limiting assertions ignore
+  this finite prefix. For N>=2, D_N>0 and the scalar Gram matrix is
+  nonsingular for every sample.
+* Each sample type is finite and discretely measurable, with a genuine
+  probability measure. Every statistic, mean, and second moment is
+  measurable and finite. Thus neither Bochner integral totalization nor
+  the variance conversion of infinity to zero is used.
+* The `inProbability` event measure is finite, so its `toReal` has its
+  ordinary finite meaning. No empty event or empty finite sum causes a
+  positive-N asymptotic shortcut.
+* All numeric subtraction is real, including D_N; all casts of N are the
+  canonical nonnegative real casts. `Fin 1` has the actual index 0.
+  Dyad minimum/maximum never use defaults. No sqrt, log, rpow,
+  conditional expectation, sInf/sSup, limsup, or liminf occurs.

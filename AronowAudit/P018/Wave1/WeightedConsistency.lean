@@ -31,7 +31,7 @@ universe u
 
 noncomputable section
 
-/-- Weighted covariance-estimator consistency under the common directed kernel assumptions. -/
+/-- Weighted covariance-estimator consistency under the common directed kernel contract. -/
 theorem weighted_consistency_common_directed_kernel :
   ∀ {U : Type u} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k),
     RepeatedStanding R → (∀ N d, R.T N d ≤ 2) →
@@ -68,6 +68,9 @@ theorem weighted_consistency_common_directed_kernel :
     WeightedConsistency.m9_proof
     WeightedConsistency.m10_proof
     WeightedConsistency.m11_proof
+
+example : AronowAudit.P018.Wave1.WeightedConsistency.Target :=
+  weighted_consistency_common_directed_kernel
 
 end
 end AronowAudit.P018.Wave1

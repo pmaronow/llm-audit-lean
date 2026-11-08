@@ -6,8 +6,10 @@ import Mathlib.Order.Filter.AtTopBot.Tendsto
 import Mathlib.Topology.Instances.ENNReal.Lemmas
 
 /-!
-Finite design averages, affine variances, and the two-potential-response
-contrast variance identity (P002-T29).
+Draft dd-GP0022B2. Source inspection only; Lean has not been run.
+Record 4: a complete proof draft, with its exact-type check.
+Record 6: independent helpers, including the corrected referee contract SH.4.
+The missing shared asymptotic coverage layer is described in the run report.
 -/
 namespace AronowAudit.P002.Wave1
 noncomputable section
@@ -20,7 +22,7 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 set_option linter.unnecessarySeqFocus false
 
-/-! ## Finite design carrier and affine variance -/
+/-! ## Record 4: finite design carrier and affine variance -/
 
 private theorem NV_mem_assignments {n} (P : Population n) (S : Finset (Fin n)) :
     S ∈ assignments P ↔ S.card = P.n1 := by
@@ -247,7 +249,7 @@ theorem NV_tau_as_contrast {n} (P : Population n) (h : ValidDesign P)
   field_simp [hm, hn, hc]
   <;> ring
 
-/-- Statement of P002-T29. -/
+/-- Exact frozen statement of P002-T29. -/
 theorem neyman_variance_proof {n} (P : Population n) (h : ValidDesign P) (β : ℝ) :
     designVariance P (tau P β) = S2 P β true / (P.n1 : ℝ) +
       S2 P β false / controlSize P - Sdiff2 P β / (n : ℝ) := by
@@ -276,15 +278,308 @@ theorem neyman_variance_proof {n} (P : Population n) (h : ValidDesign P) (β : �
   unfold S2 Sdiff2
   ring
 
+example : type_of% @AronowAudit.P002.neyman_variance := neyman_variance_proof
 
+/-! ## Record 6: independent constant-effect and sparse-filter steps -/
 
+/-- SH.1: a constant receipt effect is the complier average receipt effect. -/
+theorem SH_late_constant {n} (P : Population n) (β : ℝ)
+    (hc : (compliers P).Nonempty) (hy : ∀ i, P.y i true = P.y i false + β) :
+    late P = β := by
+  have hcard : ((compliers P).card : ℝ) ≠ 0 := by
+    exact_mod_cast (Finset.card_ne_zero.mpr hc)
+  simp [late, groupMean, hy, hcard]
+
+/-- SH.1 at the actual LATE; no compliance-case averaging remains. -/
+theorem SH_observedW_baseline {n} (P : Population n)
+    (hc : (compliers P).Nonempty)
+    (hy : ∃ β, ∀ i, P.y i true = P.y i false + β)
+    (S : Finset (Fin n)) : observedW P (late P) S = fun i => P.y i false := by
+  rcases hy with ⟨β, hβ⟩
+  rw [SH_late_constant P β hc hβ]
+  exact constant_effect_adjusted_outcomes P β hβ S
+
+/-- The same baseline is the potential adjusted response in both assignment arms. -/
+theorem SH_w_baseline {n} (P : Population n)
+    (hc : (compliers P).Nonempty)
+    (hy : ∃ β, ∀ i, P.y i true = P.y i false + β) (a : Bool) :
+    w P a (late P) = fun i => P.y i false := by
+  rcases hy with ⟨β, hβ⟩
+  rw [SH_late_constant P β hc hβ]
+  funext i
+  unfold w
+  cases hdi : P.d i a <;> simp [hdi, binary, hβ]
+
+/-- Retain the actual attainable finite quantile in the fixed-baseline reduction. -/
+theorem SH_coverage_baseline {n} (P : Population n)
+    (hc : (compliers P).Nonempty)
+    (hy : ∃ β, ∀ i, P.y i true = P.y i false + β) (α : ℝ) :
+    coverage P (late P) α = probability P (fun S =>
+      rawAR P (fun i => P.y i false) S ≤
+        quantile P (rawAR P (fun i => P.y i false)) α) := by
+  unfold coverage accepted
+  simp_rw [SH_observedW_baseline P hc hy]
+
+/-- Transfer the actual Theta moment premise to the fixed baseline vector. -/
+theorem SH_baseline_moment_bound {n} (P : Population n) (δ r A : ℝ)
+    (hP : Theta P δ r A)
+    (hy : ∃ β, ∀ i, P.y i true = P.y i false + β) :
+    fourthNorm (fun i => P.y i false - mean (fun j => P.y j false)) ≤
+      A * Real.sqrt (popVar (fun i => P.y i false)) := by
+  rcases hP with ⟨hv, hm, hc, hlo, hhi, hcov, hfourth⟩
+  have hh := hfourth true
+  unfold v at hh
+  rw [SH_w_baseline P hc hy true] at hh
+  exact hh
+
+private theorem SH_probability_congr {n} (P : Population n)
+    (E F : Finset (Fin n) → Prop)
+    (hEF : ∀ S ∈ assignments P, E S ↔ F S) : probability P E = probability P F := by
+  unfold probability
+  have he : (assignments P).filter E = (assignments P).filter F := by
+    ext S
+    simp only [Finset.mem_filter]
+    constructor
+    · rintro ⟨hS, hE⟩
+      exact ⟨hS, (hEF S hS).mp hE⟩
+    · rintro ⟨hS, hF⟩
+      exact ⟨hS, (hEF S hS).mpr hF⟩
+  rw [he]
+
+private theorem SH_probability_mono {n} (P : Population n)
+    (E F : Finset (Fin n) → Prop)
+    (hEF : ∀ S ∈ assignments P, E S → F S) : probability P E ≤ probability P F := by
+  unfold probability
+  apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
+  exact_mod_cast Finset.card_le_card (show (assignments P).filter E ⊆
+      (assignments P).filter F from by
+    intro S hS
+    rcases Finset.mem_filter.mp hS with ⟨hS, hE⟩
+    exact Finset.mem_filter.mpr ⟨hS, hEF S hS hE⟩)
+
+/-- Finite-support UC.4/SH.3 bracket, including an upper endpoint not itself attained.
+This uses precisely the attainable-minimum quantile in P002, with no change to ties. -/
+theorem SH_quantile_bracket {n} (P : Population n) (hP : ValidDesign P)
+    (g : Finset (Fin n) → ℝ≥0∞) (α : ℝ) (hα : 0 < α ∧ α < 1)
+    (a b : ℝ≥0∞)
+    (ha : probability P (fun S => g S ≤ a) < 1 - α)
+    (hb : 1 - α ≤ probability P (fun S => g S ≤ b)) :
+    a < quantile P g α ∧ quantile P g α ≤ b := by
+  have hlower : a < quantile P g α := by
+    by_contra hnot
+    have hqa : quantile P g α ≤ a := le_of_not_gt hnot
+    have hm : probability P (fun S => g S ≤ quantile P g α) ≤
+        probability P (fun S => g S ≤ a) := by
+      apply SH_probability_mono
+      intro S hS hSq
+      exact hSq.trans hqa
+    have hv := quantile_valid P hP g α hα
+    linarith
+  let B := (assignments P).filter (fun S => g S ≤ b)
+  have hB : B.Nonempty := by
+    by_contra hnot
+    have he : B = ∅ := Finset.not_nonempty_iff_eq_empty.mp hnot
+    have hpzero : probability P (fun S => g S ≤ b) = 0 := by
+      unfold probability
+      change (B.card : ℝ) / ((assignments P).card : ℝ) = 0
+      rw [he]
+      simp only [Finset.card_empty, Nat.cast_zero, zero_div]
+    rw [hpzero] at hb
+    linarith [hα.2]
+  let L := B.image g
+  have hL : L.Nonempty := hB.image g
+  let t := L.max' hL
+  have htL : t ∈ L := Finset.max'_mem L hL
+  have htb : t ≤ b := by
+    rcases Finset.mem_image.mp htL with ⟨S, hS, hgt⟩
+    rw [← hgt]
+    exact (Finset.mem_filter.mp hS).2
+  have hCDF : probability P (fun S => g S ≤ t) =
+      probability P (fun S => g S ≤ b) := by
+    apply SH_probability_congr
+    intro S hS
+    constructor
+    · exact fun hSt => hSt.trans htb
+    · intro hSb
+      have hSB : S ∈ B := Finset.mem_filter.mpr ⟨hS, hSb⟩
+      exact Finset.le_max' L (g S) (Finset.mem_image.mpr ⟨S, hSB, rfl⟩)
+  let C := ((assignments P).image g).filter (fun z =>
+    1 - α ≤ probability P (fun S => g S ≤ z))
+  have htC : t ∈ C := by
+    apply Finset.mem_filter.mpr
+    constructor
+    · rcases Finset.mem_image.mp htL with ⟨S, hS, hgt⟩
+      exact Finset.mem_image.mpr ⟨S, (Finset.mem_filter.mp hS).1, hgt⟩
+    · rw [hCDF]
+      exact hb
+  have hC : C.Nonempty := ⟨t, htC⟩
+  have hqt : quantile P g α ≤ t := by
+    change (if h : C.Nonempty then C.min' h else ⊤) ≤ t
+    rw [dif_pos hC]
+    exact Finset.min'_le C t htC
+  exact ⟨hlower, hqt.trans htb⟩
+
+/-- SH.3: continuous-law CDF bracketing gives nominal probability at the actual
+finite quantile. This is a generic analytic lemma, not an assumption that the
+constant-effect population sequence has the required CDF limit. -/
+theorem SH_nominal_of_cdf_limits (sizes : ℕ → ℕ) (P : ∀ j, Population (sizes j))
+    (g : ∀ j, Finset (Fin (sizes j)) → ℝ≥0∞)
+    (hP : ∀ j, ValidDesign (P j)) (α : ℝ) (hα : 0 < α ∧ α < 1)
+    (H : ℝ → ℝ)
+    (hCDF : ∀ t : ℝ, 0 < t → Tendsto (fun j =>
+      probability (P j) (fun S => g j S ≤ ENNReal.ofReal t)) atTop (nhds (H t)))
+    (hbracket : ∀ ε : ℝ, 0 < ε → ∃ a b : ℝ,
+      0 < a ∧ 0 < b ∧ H a < 1 - α ∧ 1 - α < H b ∧ H b < 1 - α + ε) :
+    Tendsto (fun j => probability (P j) (fun S =>
+      g j S ≤ quantile (P j) (g j) α)) atTop (nhds (1 - α)) := by
+  apply tendsto_order.2
+  constructor
+  · intro x hx
+    exact Eventually.of_forall (fun j =>
+      hx.trans_le (quantile_valid (P j) (hP j) (g j) α hα))
+  · intro x hx
+    rcases hbracket (x - (1 - α)) (sub_pos.mpr hx) with
+      ⟨a, b, ha, hb, hHa, hHb, hHbx⟩
+    have hl : ∀ᶠ j in atTop,
+        probability (P j) (fun S => g j S ≤ ENNReal.ofReal a) < 1 - α :=
+      (tendsto_order.1 (hCDF a ha)).2 _ hHa
+    have hu : ∀ᶠ j in atTop,
+        1 - α < probability (P j) (fun S => g j S ≤ ENNReal.ofReal b) :=
+      (tendsto_order.1 (hCDF b hb)).1 _ hHb
+    have hHx : H b < x := by linarith only [hHbx]
+    have hxevent : ∀ᶠ j in atTop,
+        probability (P j) (fun S => g j S ≤ ENNReal.ofReal b) < x :=
+      (tendsto_order.1 (hCDF b hb)).2 _ hHx
+    filter_upwards [hl, hu, hxevent] with j hlj huj hxj
+    have hq : quantile (P j) (g j) α ≤ ENNReal.ofReal b :=
+      (SH_quantile_bracket (P j) (hP j) (g j) α hα
+        (ENNReal.ofReal a) (ENNReal.ofReal b) hlj huj.le).2
+    have hp : probability (P j) (fun S => g j S ≤ quantile (P j) (g j) α) ≤
+        probability (P j) (fun S => g j S ≤ ENNReal.ofReal b) := by
+      apply SH_probability_mono
+      intro S hS hg
+      exact hg.trans hq
+    exact hp.trans_lt hxj
 
 /-- The absolute-standard-normal CDF at positive arguments. -/
 def SH_absNormalCDF (t : ℝ) : ℝ :=
   2 * ProbabilityTheory.cdf (ProbabilityTheory.gaussianReal 0 1) t - 1
 
+/-- The exact bracketing premise used by SH.3 for the absolute normal law.
+Surjectivity of the normal CDF avoids a separate epsilon/delta cutoff argument. -/
+theorem SH_normal_bracket (α : ℝ) (hα : 0 < α ∧ α < 1) (ε : ℝ) (hε : 0 < ε) :
+    ∃ a b : ℝ, 0 < a ∧ 0 < b ∧ SH_absNormalCDF a < 1 - α ∧
+      1 - α < SH_absNormalCDF b ∧ SH_absNormalCDF b < 1 - α + ε := by
+  letI : NullSingletonClass (ProbabilityTheory.gaussianReal 0 1) :=
+    ProbabilityTheory.nullSingletonClass_gaussianReal (by norm_num : (1 : NNReal) ≠ 0)
+  let d : ℝ := min (α / 4) (ε / 4)
+  have hd0 : 0 < d := lt_min (by linarith [hα.1]) (by linarith)
+  have hdα : d ≤ α / 4 := min_le_left _ _
+  have hdε : d ≤ ε / 4 := min_le_right _ _
+  obtain ⟨a, ha⟩ := AronowAudit.P053.NormalCompletion.exists_cdf_eq
+    (ProbabilityTheory.gaussianReal 0 1) (p := (3 : ℝ) / 4 - α / 4)
+    (by linarith [hα.2]) (by linarith [hα.1])
+  obtain ⟨b, hb⟩ := AronowAudit.P053.NormalCompletion.exists_cdf_eq
+    (ProbabilityTheory.gaussianReal 0 1) (p := 1 - α / 2 + d)
+    (by linarith [hα.2]) (by linarith [hα.1])
+  have ha0 : 0 < a := by
+    apply AronowAudit.P053.NormalCompletion.strictMono_normal_cdf.lt_iff_lt.mp
+    rw [AronowAudit.P053.NormalCompletion.normal_cdf_zero, ha]
+    linarith [hα.2]
+  have hb0 : 0 < b := by
+    apply AronowAudit.P053.NormalCompletion.strictMono_normal_cdf.lt_iff_lt.mp
+    rw [AronowAudit.P053.NormalCompletion.normal_cdf_zero, hb]
+    linarith [hα.2]
+  refine ⟨a, b, ha0, hb0, ?_, ?_, ?_⟩
+  · unfold SH_absNormalCDF
+    rw [ha]
+    linarith [hα.2]
+  · unfold SH_absNormalCDF
+    rw [hb]
+    linarith
+  · unfold SH_absNormalCDF
+    rw [hb]
+    linarith
 
+/-- All of SH.1/SH.3 and the ENNReal conversion, conditional only on the
+studentized CDF limit that SH.2 must independently establish. -/
+theorem SH_constant_nominal_of_cdf (sizes : ℕ → ℕ) (P : ∀ j, Population (sizes j))
+    (δ r A α : ℝ) (hα : 0 < α ∧ α < 1) (hP : ∀ j, Theta (P j) δ r A)
+    (hconstant : ∀ j, ∃ β, ∀ i, (P j).y i true = (P j).y i false + β)
+    (hCDF : ∀ t : ℝ, 0 < t → Tendsto (fun j => probability (P j)
+      (fun S => rawAR (P j) (fun i => (P j).y i false) S ≤ ENNReal.ofReal t))
+      atTop (nhds (SH_absNormalCDF t))) :
+    Tendsto (fun j => ENNReal.ofReal (coverage (P j) (late (P j)) α))
+      atTop (nhds (ENNReal.ofReal (1 - α))) := by
+  have hnom := SH_nominal_of_cdf_limits sizes P
+    (fun j => rawAR (P j) (fun i => (P j).y i false))
+    (fun j => (hP j).1) α hα SH_absNormalCDF hCDF
+    (fun ε hε => SH_normal_bracket α hα ε hε)
+  have hfun : (fun j => coverage (P j) (late (P j)) α) =
+      (fun j => probability (P j) (fun S =>
+        rawAR (P j) (fun i => (P j).y i false) S ≤
+          quantile (P j) (rawAR (P j) (fun i => (P j).y i false)) α)) := by
+    funext j
+    exact SH_coverage_baseline (P j) (hP j).2.2.1 (hconstant j) α
+  apply ENNReal.tendsto_ofReal
+  rw [hfun]
+  exact hnom
 
+/-- SH.4, corrected as required by both referees.
+The lower bound is explicitly by the SAME q as the sequential upper limit.
+In particular, mere boundedness below of the full liminf is not a premise here. -/
+theorem SH_sparse_liminf (E : Set ℕ) (a : ℕ → ℝ≥0∞) (q : ℝ≥0∞)
+    (sizes : ℕ → ℕ) (hsizes : StrictMono sizes) (hE : ∀ j, sizes j ∈ E)
+    (b : ℕ → ℝ≥0∞)
+    (hlower : q ≤ Filter.liminf a (atTop ⊓ Filter.principal E))
+    (hab : ∀ j, a (sizes j) ≤ b j) (hb : Tendsto b atTop (nhds q)) :
+    Filter.liminf a (atTop ⊓ Filter.principal E) = q := by
+  have hs : Tendsto sizes atTop (atTop ⊓ Filter.principal E) := by
+    apply tendsto_inf.2
+    refine ⟨hsizes.tendsto_atTop, ?_⟩
+    exact tendsto_principal.2 (Eventually.of_forall hE)
+  have hsub : Filter.liminf a (atTop ⊓ Filter.principal E) ≤
+      Filter.liminf (a ∘ sizes) atTop := hs.liminf_le_liminf_comp
+  have hbound : Filter.liminf (a ∘ sizes) atTop ≤ Filter.liminf b atTop := by
+    exact Filter.liminf_le_liminf (Eventually.of_forall hab)
+  apply le_antisymm
+  · exact hsub.trans (hbound.trans_eq hb.liminf_eq)
+  · exact hlower
+
+/-- The nested beta/model infimum is bounded above by any admissible model. -/
+theorem SH_infCoverage_le {n} (P : Population n) (δ r A α : ℝ)
+    (hP : Theta P δ r A) :
+    infCoverageTheta n δ r A α ≤ ENNReal.ofReal (coverage P (late P) α) := by
+  unfold infCoverageTheta
+  exact (iInf_le_of_le (late P)
+    (iInf_le_of_le (⟨P, hP, rfl⟩ : {Q : Population n // Theta Q δ r A ∧ late Q = late P})
+      le_rfl))
+
+/-- SH.5's order-theoretic assembly. The two substantive statistical inputs are
+explicit here; this helper does not claim the frozen unconditional theorem. -/
+theorem SH_liminf_from_coverage (sizes : ℕ → ℕ) (hsizes : StrictMono sizes)
+    (P : ∀ j, Population (sizes j)) (δ r A α : ℝ)
+    (hP : ∀ j, Theta (P j) δ r A)
+    (hlower : ENNReal.ofReal (1 - α) ≤ Filter.liminf
+      (fun N => infCoverageTheta N δ r A α)
+      (atTop ⊓ Filter.principal {N | ∃ Q : Population N, Theta Q δ r A}))
+    (hseq : Tendsto (fun j => ENNReal.ofReal (coverage (P j) (late (P j)) α))
+      atTop (nhds (ENNReal.ofReal (1 - α)))) :
+    Filter.liminf (fun N => infCoverageTheta N δ r A α)
+      (atTop ⊓ Filter.principal {N | ∃ Q : Population N, Theta Q δ r A}) =
+        ENNReal.ofReal (1 - α) := by
+  apply SH_sparse_liminf _ _ _ sizes hsizes
+    (fun j => (⟨P j, hP j⟩ : ∃ Q : Population (sizes j), Theta Q δ r A))
+    (fun j => ENNReal.ofReal (coverage (P j) (late (P j)) α)) hlower
+  · intro j
+    exact SH_infCoverage_le (P j) δ r A α (hP j)
+  · exact hseq
+
+/- The final corrected_remark3_sharpness_proof and its exact-type example are
+intentionally not asserted: SH.2 needs the independently proved UC.3 CDF limit,
+and SH.5 needs UC.9's full-class lower bound. The required statistical layer is absent in this
+worktree. The held declarations are not used to fill those missing proofs.
+See /Users/pmaronow/lean-work/runs/dd-GP0022B2/REPORT.md. -/
 
 end
 end AronowAudit.P002.Wave1

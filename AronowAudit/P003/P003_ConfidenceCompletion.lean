@@ -1,6 +1,7 @@
 import AronowAudit.P003.P003_Audit
 
-/-! Refutations of the printed search and coverage claims, with exact model identities. -/
+/-! Checked full-contract refutations and exact model bridges.
+The original false affirmative drafts are archived in the integration evidence. -/
 namespace AronowAudit.P003.ConfidenceFollowup
 
 open scoped BigOperators
@@ -8,8 +9,8 @@ attribute [local instance 0] Classical.propDecidable
 set_option maxRecDepth 100000
 set_option maxHeartbeats 1200000
 
-/-- T27: the literal execution fails the two-point all-accept claim,
-independently of the claimed evaluation bound. -/
+/-- The literal execution fails the original two-point all-accept contract,
+independently of its claimed evaluation bound. -/
 theorem printed_search_claim_refuted :
     ¬ (∀ (k₁ k₂ r : ℤ) (f : ℤ → Bool),
       (0 < k₁ ∧ k₁ < k₂) → (k₁-1 ≤ r ∧ r ≤ k₂) →
@@ -22,8 +23,61 @@ theorem printed_search_claim_refuted :
     (by norm_num) (by norm_num) (by intro x hx hx'; simp [hx'])
   cases steps <;> simp [printedExecution, searchStep] at he
 
+/-- A singleton printed search domain is absorbing, regardless of all test
+decisions and of its available fuel. -/
+theorem printed_singleton_no_endpoint (fuel : ℕ) (o : Counts)
+    (k₁ k₂ a : ℤ) (reject : Counts → ℕ → Bool) (idx : ℕ) :
+    (adaptiveSearch fuel false o k₁ k₂ reject a a idx).value = none := by
+  induction fuel generalizing idx with
+  | zero => simp [adaptiveSearch]
+  | succ fuel ih =>
+    simp only [adaptiveSearch, Bool.false_eq_true, false_and, ↓reduceIte]
+    have hmid : (a+a)/2 = a := by omega
+    have hne : a ≠ a+1 := by omega
+    simp only [hmid]
+    by_cases hc : (runTests reject idx (candidates o a)).compatible = true
+    · simpa only [hc, Bool.false_eq_true, ↓reduceIte, hne, and_false] using
+        ih (runTests reject idx (candidates o a)).idx
+    · simpa only [hc, Bool.false_eq_true, ↓reduceIte, hne, and_false] using
+        ih (runTests reject idx (candidates o a)).idx
 
-/-- The accepted rational effects and real inversion give the same
+/-- At n=2,m=1 an observed effect one gives a singleton literal upper
+search. This actual finite Monte Carlo experiment violates the universal
+endpoint-return clause in the exact original printed contract. -/
+theorem printed_monte_inclusions_refuted :
+    ¬ (∀ (v : Counts) (m K : ℕ) (α ε : ℝ),
+      0 < m → v.total = 2*m → 0 < K →
+      (0 < α ∧ α < 1) → (0 ≤ ε ∧ ε < α) →
+      (∀ ω : MonteSpace v.total m K,
+        let e := monteEndpoints false α ε (canonicalObserved v ω.1.val) ω.2
+        e.1.value.isSome ∧ e.2.value.isSome) ∧
+      uniformProb (fun ω : MonteSpace v.total m K =>
+        exactInterval α (canonicalObserved v ω.1.val) ⊆
+          monteInterval false α ε (canonicalObserved v ω.1.val) ω.2) ≥
+            1-2*(testBudget v.total : ℝ)*Real.exp (-2*(K : ℝ)*ε^2) ∧
+      (0 < α-2*ε → uniformProb (fun ω : MonteSpace v.total m K =>
+        monteInterval false α ε (canonicalObserved v ω.1.val) ω.2 ⊆
+          exactInterval (α-2*ε) (canonicalObserved v ω.1.val)) ≥
+            1-2*(testBudget v.total : ℝ)*Real.exp (-2*(K : ℝ)*ε^2))) := by
+  intro h
+  let z : Assignment 2 1 := ⟨{0}, by decide⟩
+  have hreturn := (h ⟨0,2,0,0⟩ 1 1 (1/2) 0 (by omega) rfl
+    (by omega) (by norm_num) (by norm_num)).1
+  have ho : canonicalObserved (⟨0,2,0,0⟩ : Counts) z.val = ⟨1,0,0,1⟩ := by
+    decide +kernel
+  have hbad := (hreturn (z, fun _ _ => z)).2
+  change (upperRun false (canonicalObserved (⟨0,2,0,0⟩ : Counts) z.val)
+    (approximateReject (1/2) 0 (canonicalObserved (⟨0,2,0,0⟩ : Counts) z.val)
+      (fun _ _ => z))).value.isSome = true at hbad
+  rw [ho] at hbad
+  have hn := printed_singleton_no_endpoint 5 ⟨1,0,0,1⟩ 2 2 2
+    (approximateReject (K := 1) (1/2) 0 ⟨1,0,0,1⟩ (fun _ _ => z)) 0
+  change (adaptiveSearch 5 false ⟨1,0,0,1⟩ 2 2
+    (approximateReject (K := 1) (1/2) 0 ⟨1,0,0,1⟩ (fun _ _ => z))
+    2 2 0).value.isSome = true at hbad
+  simpa only [hn, Option.isSome_none, Bool.false_eq_true] using hbad
+
+/-- The accepted rational effects and real inversion are the same unchanged
 finite possible-table calculation. -/
 theorem accepted_real_iff (α : ℚ) (o : Counts) (t : ℝ) :
     t ∈ accepted (α : ℝ) o ↔
@@ -97,7 +151,7 @@ theorem real_extrema_of_intervalQ (α : ℚ) (o : Counts) (l u : ℚ)
     · exact_mod_cast hu
 
 /-- For nonempty certified endpoint inversions, the real missing interval
-agrees exactly with the rational implementation. -/
+agrees exactly with the original rational implementation. -/
 theorem missing_mem_real_iff (α : ℚ) (o r : Counts) (l₀ u₀ l₁ u₁ t : ℚ)
     (h₀ : intervalQ α (minusCompletion o r) = some (l₀,u₀))
     (h₁ : intervalQ α (plusCompletion o r) = some (l₁,u₁)) :
@@ -210,8 +264,8 @@ theorem bad_event_real_iff (q : Counts) (hq : q ∈ randomStates badPopulation 3
   · exact missing_mem_real_iff _ _ _ _ _ _ _ _ interval_obs_2_1_11_6 interval_obs_2_1_11_6
   · exact missing_mem_real_iff _ _ _ _ _ _ _ _ interval_obs_3_0_11_6 interval_obs_3_0_11_6
 
-/-- The real-valued joint probability equals the exact rational coverage,
-including all ten design-count states. -/
+/-- The original real-valued joint probability has the already-certified
+exact rational coverage, including all ten genuine design-count states. -/
 theorem badJointLaw_coverage :
     missingProb badPopulation 3 badJointLaw (fun q r =>
       tau badPopulation ∈ missingInterval ((109/500 : ℚ) : ℝ) (observed badPopulation q) r) =
@@ -239,7 +293,7 @@ theorem badJointLaw_coverage :
   rw [he,badCoverage_certificate]
   norm_num
 
-/-- T26: exact full negation of the unbalanced printed coverage claim.
+/-- Exact full negation of the original unbalanced printed coverage claim.
 The witness has deterministic missingness and nonempty endpoint inversions,
 so neither its random-J wording nor its empty-endpoint convention is used. -/
 theorem printed_missing_coverage_refuted :
@@ -252,5 +306,16 @@ theorem printed_missing_coverage_refuted :
     (by norm_num [badPopulation,Counts.total]) (by norm_num) badJointLaw badJointLaw_legal
   rw [badJointLaw_coverage] at hb
   norm_num at hb
+
+#print axioms badJointLaw_legal
+#print axioms badJointLaw_probability
+#print axioms bad_event_real_iff
+#print axioms badJointLaw_coverage
+#print axioms printed_missing_coverage_refuted
+
+#print axioms printed_search_claim_refuted
+#print axioms printed_singleton_no_endpoint
+#print axioms printed_monte_inclusions_refuted
+#print axioms real_extrema_of_intervalQ
 
 end AronowAudit.P003.ConfidenceFollowup

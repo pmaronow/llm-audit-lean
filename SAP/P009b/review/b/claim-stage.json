@@ -1,0 +1,104 @@
+[
+  {
+    "theorem": "SAP.P009b.T18",
+    "target_id": "P009-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "All corrected count laws, the r=0 sure event and ratio, the positive-r identity and scalar chain, and the supported-vector bound are present. Pointwise supported-vector bounds are equivalent to the stated maximum bound on the finite nonempty support; padding the deleted coordinate with false is bijective on that support. Diagonal interference gives incoming>=1; Complete and incoming<=min(m,n-m) protect all natural subtractions, binomial denominators, and event denominators. Nonvacuous examples include n=2,m=1 with zero outcomes (compiled) and n=4,m=2 with y_0=z_0+z_1, y_j=z_j for j>0, giving incoming_0=2 and r=1. Exact checks of 240 count/arm and 284 supported-vector/arm cases agree. No apparent false assertion or conclusion-assuming hypothesis."
+  },
+  {
+    "theorem": "SAP.P009b.T19",
+    "target_id": "P009-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The concrete outcome schedule realizes exactly the canonical six-unit indicator array after shifting from one-based to zero-based indices. The theorem states the pairing involution, every required incoming and remaining diagonal indicator, the three witness summands, d_01=0, e_01=1 and witness count 3. Thus the refutation concerns the printed equality, without refuting Lemma A7. There are no theorem hypotheses to make inconsistent; the fair law is normalized and an independent exact enumeration reproduces the three witnesses."
+  },
+  {
+    "theorem": "SAP.P009b.T20",
+    "target_id": "P009-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two pointwise witness inequalities and final eAVG<=C2^2 are present, but the canonical summed proof chain, its outgoing-product equality, paired-square inequality, splitting, and permutation reindexing equality are not stated. Inputs are outcome-induced finite indicators and fixed-point-free involutive pairings, rather than an independently supplied reflexive indicator array with the stated permutation properties. The retained assertion is true by witness counting, reordering finite sums and 2xy<=x^2+y^2. n=2 with the compiled zero fair experiment and swap pairing is admissible, with eAVG=C2^2=1. Exact checks cover all 4,100 reflexive directed graphs at n=2,4."
+  },
+  {
+    "theorem": "SAP.P009b.T21",
+    "target_id": "P009-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The specified experiment, all aggregate numeric identities and both discrepancies are present, but the six contributing ordered pairs and their individual conditional covariance values are not stated. The negative source baseline is explicitly permitted in this finite illustration; it is not required to lie in the separate uniform sampling model. Exact enumeration of all 64 assignments reproduces dAVG=3, MSQ=1, B1=1/6, B2=1/3, EBER=229/144, VarHT=241/144 and the normalized expected gap -1/6. This genuinely refutes the exact printed evaluation, and does not claim to refute a convergence statement."
+  },
+  {
+    "theorem": "SAP.P009b.T22",
+    "target_id": "P009-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All aggregate finite identities, the exact corrected-minus-printed centre difference and its n^(-1/2) bound are retained. Clause (ii)'s individual pair/arm conditional covariance identities, convergence about the printed centre, and all three limiting-regime assertions are absent as separate conclusions. The one retained convergence assertion additionally requires a common RegularSequence bound and q>=4. The finite hypotheses allow n=b=1; a nontrivial limit instance is N_t=t+1, b_t=1, fair assignments, c_t,0=-1/4 and every other baseline zero, with k=2,q=4,s=1. Denominators are positive since n>0,b>=1 and dAVG>=1. Exact checks of 84 models reproduce the finite formulas and difference bound; the growing independent bounded instance satisfies the limit hypotheses."
+  },
+  {
+    "theorem": "SAP.P009b.T23",
+    "target_id": "P009-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Only the sampling integrals of four signed biases, four design variances, four design MSEs, and the complete-design ratio identity are stated. Fixed-baseline clauses (a)-(d), supportwise balance/outcome/effect/estimator/marginal identities, ratio divergence, and an identification with a joint sampling-and-assignment variance are not stated. SimulationIntegrable explicitly adds integrability of each of the twelve functions, preventing nonintegrable-integral conventions from doing work. Hypotheses are satisfiable already at n=2: P=balancedTwoLaw, constant swap pairing (which pairs adjacent ranks for any two covariate values), Q_x=P. The integrands are polynomials in bounded uniform baselines, hence integrable. The variance formulas independently follow from balanced-sign covariances and the second moment of adjacent uniform order-statistic spacings."
+  },
+  {
+    "theorem": "SAP.P009b.T24",
+    "target_id": "P009-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The entire exact finite complete-interference exception is present, including supportwise outcomes, effects and estimator formulas, EATE=1, both expectations zero, signed/absolute biases, and both MSE identities. The opening empirical assertion of negligibility in all other settings and any certification of printed Monte Carlo entries are absent. n=2 with the compiled balanced law and any real baselines is admissible for both designs; both estimator arms are nonempty on support, so the arbitrary empty-arm Hajek extension has no effect. Independent checks at n=2,4,6 reproduce the support identities and MSE relation."
+  },
+  {
+    "theorem": "SAP.P009b.T25",
+    "target_id": "P009-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "The formal mathematical content is fully present: the reported statistic is the absolute signed mean error about 1, nonnegative for every positive replication count; explicit one-observation arrays demonstrate sign loss; and the complete-interference population has both signed biases -1 and absolute biases 1 under either design. Universal R includes R=50000 by specialization. The table captions and specific simulation draws are contextual evidence, not additional mathematical conclusions. The zero/single-two estimate arrays and n=2 balanced-design populations are explicit nonvacuous instances."
+  },
+  {
+    "theorem": "SAP.P009b.T26",
+    "target_id": "P009-T26",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Pairwise alpha, the external coefficient for every real supplied exponent, its exponent-one formula, the positive normalized limit, and failure of the little-o condition are present. The potential-outcome bound k^(3/2), unbounded maximum moment order and consequent selection of exponent one in Definition 9, the separately stated p=1/2 normalization, and p=1/3 non-equivalence example are absent. No RegularSequence assumption is used, since the retained mixing assertions need only the common law and no interference. An explicit admissible study is N_t=t+1, all outcomes zero, and mass 1/3 on all-true and 2/3 on all-false. These are distinct assignments at every size; alpha=p(1-p)>0 makes arbitrary real powers well defined."
+  },
+  {
+    "theorem": "SAP.P009b.T27",
+    "target_id": "P009-T27",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The finite Bernoulli bounds, finite-law three-point approximation, minimizer error bound and two limiting masses are present under the standing regularity assumptions. The theorem takes a minimizing sequence as input instead of asserting its existence, and does not separately assert that the exponential upper bound tends to zero or give the heavy-atom example. This is not circular: hmin is the defining optimization property, and does not assume the numeric bound or either limit. A concrete study has N_t=b_t=t+1, zero outcomes, fair assignments, k=2,q=4,s=1,alpha=1/2; use f_0=0 and, for t>=1, f_t=1 on first-two bits (0,0), -1 on (1,1), zero otherwise. At t=0 every candidate's error is at least 1/2, attained by zero; thereafter these maps attain zero error. The finite approximation permits the compiled sharpLaw example."
+  },
+  {
+    "theorem": "SAP.P009b.T28",
+    "target_id": "P009-T28",
+    "my_reading_vs_claim": "whole",
+    "reason": "The three-point mean identity, finite centering/CDF identity, eventual absolute-distance comparison for a fixed threshold, the corresponding CDF event equality for sequences, and eventual impossibility of the printed reversed inequality are all stated. Exact finite support is sufficient for every general three-point variable by its finite pushforward law. x is fixed before the eventual quantifier, as in the canonical claim. Constant sharpLaw(1/2) variables have mean zero and give an explicit sequence, with x=1/2 and D(x)=1/2; the positive-distance and zero approximation-error arithmetic compile."
+  },
+  {
+    "theorem": "SAP.P009b.T29",
+    "target_id": "P009-T29",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Every numerical moment-chain link and the endpoint bound are present for the corrected i,j variables, with absolute covariance strengthening the signed conclusion. The power a is restricted to natural numbers, omitting the other orders in the canonical claim. q>=2 and k>0 match the standing moment setting, and 2a<=q protects the Jensen exponent. a=0 is harmless, including at zero moments, because the defined arm variable retains its indicator and Mathlib has rpow(0,0)=1. A nonzero admissible example is n=2, fair assignments, constant outcomes 1, k=2,q=4,a=1 or 2, either arm. Cauchy-Schwarz, variance<=second moment and monotonicity of Lp norms prove the retained chain."
+  },
+  {
+    "theorem": "SAP.P009b.T30",
+    "target_id": "P009-T30",
+    "my_reading_vs_claim": "whole",
+    "reason": "The corrected MAX and SR definitions and both equality-or-zero characterizations of the printed AVG identities are all stated. d is symmetric and nonnegative, so the finite-dimensional unit-Rayleigh supremum is the largest eigenvalue (and, by nonnegativity, spectral radius) intended by the paper. n>0 makes that value set and the degree range nonempty and bounded; no default supremum or zero denominator is exploited. Positive marginal hypotheses follow from the standing setting; a fair size-two experiment with outcomes 1 gives an explicit instance with BER>0, while the compiled zero-outcome experiment supplies the zero-BER alternative."
+  },
+  {
+    "theorem": "SAP.P009b.T31",
+    "target_id": "P009-T31",
+    "my_reading_vs_claim": "whole",
+    "reason": "The sharp three-point CDF has exactly the corrected disjoint ranges, and pointwise CDF convergence is asserted at every real threshold, including the atoms, from convergence of the two outer masses and exact three-point support. The finite-law encoding loses no three-point distribution or sequence of such distributions. Constant SharpLaw(alpha) with SharpValue, for example alpha=1/2, is an explicit admissible nonvacuous sequence. No hypothesis assumes CDF convergence itself."
+  },
+  {
+    "theorem": "SAP.P009b.T32",
+    "target_id": "P009-T32",
+    "my_reading_vs_claim": "whole",
+    "reason": "The update identity, its control-to-treatment specialization, both integer multiplier-crossing equivalences and the simultaneous opposite-flip balance formula include all formal content of the corrected claim. The general update formula also yields the downward change by two. Arbitrary finite G and distinct flipped units cover all membership alternatives in the printed paired discussion without requiring any probability hypothesis. For instance n=2,G={0},z=(false,true) exercises a +2 paired change; G={0,1} exercises exact cancellation. Integer, rather than arbitrary real, starting balances match the unweighted balance definition."
+  },
+  {
+    "theorem": "SAP.P009b.T33",
+    "target_id": "P009-T33",
+    "my_reading_vs_claim": "whole",
+    "reason": "After the harmless one-based to zero-based index shift, all corrected untreated and treated spillovers for distinct units, reciprocal products, source weighted mean and printed B1 formula are stated for every admissible one-source model. Positive n and 1<=b<=n implement the paper's nonempty sample/source range. Arbitrary real baselines remain allowed. The n=6,b=4 illustration is a nonvacuous instance with nonzero spillover; exact checks of 84 models reproduce the coefficient identities and B1."
+  },
+  {
+    "theorem": "SAP.P009b.T34",
+    "target_id": "P009-T34",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The half-difference identity, per-arm bound by k, k>=2, two-arm bound by 2k<=2k^2, and Lemma A17 are present. Both intermediate first-moment bounds (absolute mean difference<=E|potential| and E|potential|<=k) and the separately displayed weighted proof-chain equalities are absent. The retained hypotheses are the genuine paired design and standing regularity, with no bound on ADSE-EATE assumed. The compiled n=2 balanced law with zero outcomes, swap pairing and k=2,q=4,s=1 satisfies them jointly. For a nonzero difference take y_0=z_1,y_1=0 under that design: EATE=0,ADSE=-1/2,rSUM=1 and all moments remain bounded."
+  }
+]

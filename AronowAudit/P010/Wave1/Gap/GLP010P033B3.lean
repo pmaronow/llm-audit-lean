@@ -10,6 +10,8 @@ Mathlib's Gamma integral. Product-law calculations then give the exact potential
 pair/assignment laws, the observed law and the all-pass law. The final calculation
 compares the printed tail means with the always-passer means and restores the
 passing condition for the corrected bounds.
+
+The held declaration is used only for the final type comparison.
 -/
 
 namespace AronowAudit.P010.Wave1
@@ -446,6 +448,11 @@ lemma missing_pass_ignorability (u : Bool) : Ignorability (missingPassLaw u) := 
 lemma missing_pass_fair_singleton (a : Fin 2) : fairAssignment {a} = 1/2 := by
   fin_cases a <;> simp [fairAssignment, Fin.ext_iff]
 
+lemma missing_pass_arm_mass (u : Bool) (a : Fin 2) :
+    missingPassLaw u (armEvent a) = 1/2 := by
+  have he := congrArg (fun μ : Measure (Fin 2) => μ {a}) (missing_pass_assignment_marginal u)
+  simpa only [Measure.map_apply measurable_assignment (measurableSet_singleton a),
+    missing_pass_fair_singleton, armEvent, preimage, mem_singleton_iff] using he
 
 lemma missing_pass_arm_pair (u : Bool) (a : Fin 2) :
     ((missingPassLaw u).restrict (armEvent a)).map (fun ω => (observedY ω, observedS ω)) =
@@ -805,6 +812,8 @@ theorem missing_passing_condition_counterexample_proof :
     missing_pass_passer_law u, hq, hm.1, hm.2, ht, ?_, hc.1, hc.2⟩
   rw [hm.1, hm.2, ht]
   cases u <;> norm_num
+
+example : type_of% @AronowAudit.P010.missing_passing_condition_counterexample := missing_passing_condition_counterexample_proof
 
 end
 end AronowAudit.P010.Wave1

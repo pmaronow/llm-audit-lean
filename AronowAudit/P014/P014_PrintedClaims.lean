@@ -5,9 +5,7 @@ open scoped BigOperators
 noncomputable section
 universe u
 
-/-- P014-T1: the universally quantified printed unbiasedness assertion
-(p. 131) under the formal local-randomization clauses of p. 130, with no ties
-read for distinct subjects. The assertion is false. -/
+/-- Exact universally quantified historical assertion; a proposition, not an axiom. -/
 def printed_unbiasedness : Prop :=
   ∀ {Ω : Type u} {N : ℕ} (L : FiniteLaw Ω)
     (X : Ω → Fin N → ℝ) (b : ℝ) (S : Finset (Fin N)) (y : Outcomes N)
@@ -17,9 +15,7 @@ def printed_unbiasedness : Prop :=
         ∑ i ∈ S, printedMean (L.map (fun ω => threshold (X ω))) y i false) /
           S.card
 
-/-- P014-T4: the printed unbiasedness assertion under uniform permutations
-of distinct fixed local scores and all formal printed clauses (pp. 130--131).
-The assertion is false even under this intended local-randomization reading. -/
+/-- Exact universally quantified historical assertion; a proposition, not an axiom. -/
 def printed_unbiasedness_intended_local : Prop :=
   ∀ {Ω : Type u} {N : ℕ} (L : FiniteLaw Ω)
     (X : Ω → Fin N → ℝ) (b : ℝ) (S : Finset (Fin N)) (v : S → ℝ) (y : Outcomes N)

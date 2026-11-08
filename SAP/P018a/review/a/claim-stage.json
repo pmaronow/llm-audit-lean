@@ -1,0 +1,86 @@
+[
+  {
+    "theorem": "SAP.P018a.T1",
+    "target_id": "P018-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact nonlinear model, population moments, a.s. rank for every N>=3, zero conditional covariance and printed meat, score-variance decomposition, N=3 variance, positive limiting matrices, CLT, and sandwich limit are present. Missing separate assertions include the two-row determinant, conditional mean/nonlinearity, orthogonality/disjoint moments, identification of Gamma with an overlapping score moment, the entrywise general-N and scaled-score displays, and repeated/unit-weight extensions. Retained constants passed independent rational integration. The bounded continuous unit law is a nonempty probability model; no conclusion is assumed."
+  },
+  {
+    "theorem": "SAP.P018a.T2",
+    "target_id": "P018-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Under the S9 model it states centering, disjoint score moments, both sparse corrected meats, the conditional-covariance decomposition, PSD missing term and its zero equivalence, the disjoint conditional remainder, the exact H/Gamma formula and target limit. It does not separately identify M as Var(E[S|X]) or the full conditional sum as E[Var(S|X)], identify Gamma as an overlapping score moment, give the rational finite-N sandwich display, assert orthogonality's insufficiency, or formulate the repeated/weighted replacements. Standing has a compiled one-dimensional constant-regressor instance, and all moment operations in these claims are integrable under its bound."
+  },
+  {
+    "theorem": "SAP.P018a.T3",
+    "target_id": "P018-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains the sign-model mean counterexample and consistency, deterministic scaling failure, spike example, three N=8 fair-sign covariances, and inverse-Gram convergence with infinite first moment. The inverse-design finite assertions hold only above an existential threshold N0>=3 rather than every N>=3. It omits numerous fit/overlap/samplewise/scaled-moment identities and the general covariance identity and six-case exclusion. The N=8 residual expressions are finite averages, without a separate OLS identification. Exhaustive sign enumeration verifies the retained finite values; the infinite inverse moment uses an extended nonnegative integral rather than a zero-valued nonintegrable real integral."
+  },
+  {
+    "theorem": "SAP.P018a.T4",
+    "target_id": "P018-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "States the full corrected unconditional-target probability consistency under S9 and the correctly scaled finite-second-moment Chebyshev inequality and sufficient conditions. MemLp explicitly prevents misuse of totalized scalar variance. Supremum versus Euclidean/operator norms is immaterial in fixed finite dimension. Singular-sample zero inverse is an allowed extension on events with probability tending to zero; no inverse moment, a.s. sample-rank assumption or fitted-residual bound is added. Standing is jointly satisfiable, as compiled in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P018a.T5",
+    "target_id": "P018-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains the N=3 covariance mismatch for all real component parameters, exact fixed-component GLS variance and ratio, and the translation-equivariant estimator variance identity. It omits the general-N covariance derivations/mismatch count, derivation of Gaussian average/centered-effect independence, numeric lower-bound examples and repeated extension. The last clause assumes independence of yc from the normal average, measurability of the estimator, and both finite second moments instead of deriving them for design (4). The GLS matrices pass exact rational checks. Its probabilistic hypotheses are feasible: N=1, one standard normal a, D=1, yc=0, estimate(y)=y_0."
+  },
+  {
+    "theorem": "SAP.P018a.T6",
+    "target_id": "P018-T6",
+    "my_reading_vs_claim": "broader",
+    "reason": "Covers all formal algebraic content (i)-(iv). It additionally proves the independent-error covariance identity for an arbitrary deterministic matrix Z, and the GLS identity for symmetric nonsingular C with nonsingular F'C^{-1}F, rather than only positive definite C and full-column-rank F. These are valid generalizations and specialize to the canonical hypotheses. Explicit coordinate finite-second-moment hypotheses spell out ordinary covariance existence. For example C=I, F=I and independent finite Gaussian vectors satisfy the hypotheses."
+  },
+  {
+    "theorem": "SAP.P018a.T7",
+    "target_id": "P018-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains the sign-pair model, Standing and Proposition1Extra, Q/beta, Gamma/limiting target, finite-N target, limiting probability of a negative slope estimate, sandwich limit, and exact N=8 rank/OLS/negative-sandwich witness. It omits the rank-failure probability, exact residual and score-moment displays, inverse-Q and separate target convergence, N=8 meat and probability embedding, joint second-order weak limit, and nonnormal-pivot assertion. The N=8 witness passes rational checks. The population Q is nonsingular, and the fitted residuals are uniformly bounded by 4 because nonsingular fits give group means of responses in [-2,2]; singular fits use zero."
+  },
+  {
+    "theorem": "SAP.P018a.T8",
+    "target_id": "P018-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The possibly singular projection CLT, target and sandwich limits, nonpositive-variance probability limit, and 0<alpha<1 coverage are present. The normal-pivot clause additionally requires eventual strict positivity of the estimated contrast variance almost surely; it is not an unconditional consequence here of merely positive limiting contrast variance. The separate degenerate-contrast failure example is absent. This added premise is satisfiable: intercept-only X=1, Y=U_i+U_j with independent continuous uniform[-1,1] units has Vstar=4/3 and Vhat=(N-2)(N-3)sum_i(U_i-Ubar)^2/D^2>0 a.s. for N>=4. Null/finitely many exceptional denominators do not determine the weak limit."
+  },
+  {
+    "theorem": "SAP.P018a.T9",
+    "target_id": "P018-T9",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains positivity and uniform weight bound, variance lower bound and limit, the positive deviation-probability bound, nonexistence of a common deterministic variance target, and repeated-data joint-law transfer. It omits exact weight/coefficient sums, the fixed event and sharper sandwich bound, explicit coefficient inconsistency and divergent N-scaled variance, normalized-design/coefficient limits, and model/residual certificates. Dyads are genuine unordered pairs and the weights are positive for every N>=2, so the scalar weighted sample Gram is strictly positive. Reversal of the iid unit labels explains the repeated-data law transfer and was checked exactly at finite sizes."
+  },
+  {
+    "theorem": "SAP.P018a.T10",
+    "target_id": "P018-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The repaired C1 uses common record-index kernels, uniformly bounded positive record counts, a positive limiting normalized Gram, and exactly the deterministic block-score-mean overlap condition. Weighted C2 covers the symmetric single-record S9 model, omitting the ordered/directed-record extension permitted by the canonical text. C3 and C4 are retained, with explicit N>=2 and ordinary-inverse sample/population rank premises in C3. It omits the separate insufficiency assertion for stacked normal equations. None of these conditions is the requested stochastic conclusion. Single-record sign data, unit weights and unit common scales satisfy the consistency hypotheses; block-score means vanish."
+  },
+  {
+    "theorem": "SAP.P018a.T11",
+    "target_id": "P018-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains exact scaled sign-estimator variance 4, scalar expression 4/D tending to zero, scaled-sandwich consistency, and the two scalar missing/restored-sum normalizations. It omits the exact fit, conditional/single-dyad moment identifications tying the scalar numerator to the printed targets, samplewise/expected sandwich formulas, explicit difference limits, stochastic score variance, and all repeated T>1 and two-regressor weighted calculations. Its positive-N denominators are nonzero and its finite sign-model moments are ordinary finite moments."
+  },
+  {
+    "theorem": "SAP.P018a.T12",
+    "target_id": "P018-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains centered total scores, expected normalized Grams, exact covariance interpretations, the repeated/weighted linearizations, reductions, and equivalent normalization. The linearizations are a.e. implications on nonsingular samples instead of identities on every nonsingular sample. It expressly requires positive total record count in clauses dividing by L, and omits the sparse-covariance/uncentered-moment clause (iii) and model checks (vi). Finite-size bounded data and nonsingular expected Grams protect the actual covariance interpretations; the last normalization clause is only algebra. Single-record constant/intercept data at N=3 with unit record weights satisfy all finite-size premises."
+  },
+  {
+    "theorem": "SAP.P018a.T13",
+    "target_id": "P018-T13",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All listed data, fit/score, unique maximizer, rank, bread/inverse, middle factors, covariance values/difference, positive definiteness, neighbor sums and incidence representation are present. It does not separately assert strict concavity of the entire log-likelihood. The data are a concrete nonsingular binary witness; Lean checks the design and bread determinants, and independent rational calculations verify both distinct positive definite covariances."
+  },
+  {
+    "theorem": "SAP.P018a.T14",
+    "target_id": "P018-T14",
+    "my_reading_vs_claim": "broader",
+    "reason": "States all corrected logistic algebra (i)-(iii), and the concrete inequality with the printed middle factor. The incidence identity is generalized to any injectively indexed finite family of two-element unit sets, including incomplete dyad collections, rather than only all pairs of N units. This valid generalization includes the complete dyad setting. Binary outcomes and nonsingular bread are exactly the intended logistic data assumptions; beta is arbitrary, with no fitted-score premise. The six-dyad witness satisfies the structural hypotheses and has bread determinant 35/4, verified in Lean."
+  }
+]

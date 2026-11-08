@@ -2,9 +2,9 @@ import Mathlib
 
 /-!
 P024: Field Experimental Designs for the Study of Media Effects, pp. 170–177.
-The article contains prose statistical claims, not displayed formulas. The definitions
-below express these claims using potential outcomes, finite probability laws, estimators,
-and population sequences. All randomness is assignment.
+The article contains prose statistical claims, not displayed formulas. Potential outcomes,
+finite probability laws, estimators, and sequences below are the audit's explicit readings
+in targets.json and the two named validator derivations. All randomness is assignment.
 -/
 namespace AronowAudit.P024
 open scoped BigOperators
@@ -12,7 +12,7 @@ open Filter
 noncomputable section
 
 /-- “random assignments” (p. 170) and “all possible random assignments” (p. 172):
-a finite known randomization law. This notation is not printed in the paper. -/
+a finite known randomization law. This notation is the audit's, not printed in the paper. -/
 structure Design (Ω : Type*) [Fintype Ω] where
   mass : Ω → ℝ
   nonneg : ∀ ω, 0 ≤ mass ω
@@ -30,40 +30,40 @@ def probability {Ω : Type*} [Fintype Ω] (d : Design Ω) (P : Ω → Prop) : �
 def variance {Ω : Type*} [Fintype Ω] (d : Design Ω) (X : Ω → ℝ) : ℝ :=
   expectation d (fun ω => (X ω - expectation d X)^2)
 
-/-- Uniform finite randomization for onset and complete designs. -/
+/-- Uniform finite randomization, used in the validator's onsets and complete designs. -/
 def uniformDesign (Ω : Type*) [Fintype Ω] [Nonempty Ω] : Design Ω where
   mass := fun _ => 1 / (Fintype.card Ω : ℝ)
   nonneg := fun _ => by positivity
   total := by simp [Fintype.card_ne_zero]
 
-/-- Auxiliary linearity of finite randomization expectation. This lemma is used for corrected T2(a), p. 174. -/
+/-- Auxiliary linearity of finite randomization expectation. This is an audit lemma used for corrected T2(a), p. 174. -/
 theorem expectation_add {Ω : Type*} [Fintype Ω] (d : Design Ω) (X Y : Ω → ℝ) :
     expectation d (fun ω => X ω + Y ω) = expectation d X + expectation d Y := by
   simp [expectation, mul_add, Finset.sum_add_distrib]
 
-/-- Auxiliary linearity of finite randomization expectation. This lemma is used for corrected T2(a), p. 174. -/
+/-- Auxiliary linearity of finite randomization expectation. This is an audit lemma used for corrected T2(a), p. 174. -/
 theorem expectation_sub {Ω : Type*} [Fintype Ω] (d : Design Ω) (X Y : Ω → ℝ) :
     expectation d (fun ω => X ω - Y ω) = expectation d X - expectation d Y := by
   simp [expectation, mul_sub, Finset.sum_sub_distrib]
 
-/-- Auxiliary extraction of a constant from expectation. This lemma is used for corrected T2(a), p. 174. -/
+/-- Auxiliary extraction of a constant from expectation. This is an audit lemma used for corrected T2(a), p. 174. -/
 theorem expectation_mul {Ω : Type*} [Fintype Ω] (d : Design Ω) (X : Ω → ℝ) (a : ℝ) :
     expectation d (fun ω => X ω * a) = expectation d X * a := by
   simp [expectation, mul_assoc, Finset.sum_mul]
 
-/-- Auxiliary expectation of a nonrandom constant. This lemma is used for corrected T2(a), p. 174. -/
+/-- Auxiliary expectation of a nonrandom constant. This is an audit lemma used for corrected T2(a), p. 174. -/
 theorem expectation_const {Ω : Type*} [Fintype Ω] (d : Design Ω) (a : ℝ) :
     expectation d (fun _ => a) = a := by
   simp [expectation, ← Finset.sum_mul, d.total]
 
-/-- Auxiliary interchange of finite summation and assignment expectation. This lemma is used for corrected T2(a), p. 174. -/
+/-- Auxiliary interchange of finite summation and assignment expectation. This is an audit lemma used for corrected T2(a), p. 174. -/
 theorem expectation_sum {I Ω : Type*} [Fintype Ω] (d : Design Ω)
     (E : Finset I) (X : I → Ω → ℝ) :
     expectation d (fun ω => ∑ i ∈ E, X i ω) = ∑ i ∈ E, expectation d (X i) := by
   simp only [expectation, Finset.mul_sum]
   rw [Finset.sum_comm]
 
-/-- Auxiliary extraction of a fixed divisor from expectation. This lemma is used for corrected T2(a), p. 174. -/
+/-- Auxiliary extraction of a fixed divisor from expectation. This is an audit lemma used for corrected T2(a), p. 174. -/
 theorem expectation_div {Ω : Type*} [Fintype Ω] (d : Design Ω) (X : Ω → ℝ) (a : ℝ) :
     expectation d (fun ω => X ω / a) = expectation d X / a := by
   simpa only [div_eq_mul_inv] using expectation_mul d X a⁻¹
@@ -78,21 +78,22 @@ def observed {I Ω : Type*} (z : Ω → I → Bool) (y0 y1 : I → ℝ) (ω : Ω
   if z ω i then y1 i else y0 i
 
 /-- “average causal effect ... in the subject pool” (p. 170); over the finite set E.
-Potential-outcome notation is used, and periods are restricted to those with overlap. -/
+Potential-outcome notation and a restriction to overlap periods are the audit's. -/
 def averageEffect {I : Type*} (E : Finset I) (y0 y1 : I → ℝ) : ℝ :=
   (∑ i ∈ E, (y1 i - y0 i)) / E.card
 
-/-- Inverse-probability contrast, Note 4 (p. 177); current-exposure timing version.
-The if expression equals Z Y/p - (1-Z) Y/(1-p), with Y the observed outcome. -/
+/-- Inverse-probability contrast, Note 4 (p. 177); current-exposure timing version in
+P024-A002/v1/artifact/derivation.md §4. The if expression equals
+Z Y/p - (1-Z) Y/(1-p), with Y the observed outcome. -/
 def htEstimate {I Ω : Type*} (E : Finset I) (z : Ω → I → Bool)
     (y0 y1 π : I → ℝ) (ω : Ω) : ℝ :=
   (∑ i ∈ E, if z ω i then y1 i / π i else -(y0 i / (1 - π i))) / E.card
 
-/-- Exposure probability: no independence across periods. -/
+/-- Exposure probability, P024-A002 derivation §§3–4: no independence across periods. -/
 def exposureProbability {I Ω : Type*} [Fintype Ω] (d : Design Ω)
     (z : Ω → I → Bool) (i : I) : ℝ := expectation d (fun ω => indicator (z ω i))
 
-/-- Auxiliary expectation of one inverse-probability contrast. This lemma is used for corrected T2(a), p. 174. -/
+/-- Auxiliary expectation of one inverse-probability contrast. This is an audit lemma used for corrected T2(a), p. 174. -/
 theorem ht_coordinate_unbiased {Ω : Type*} [Fintype Ω] (d : Design Ω)
     (z : Ω → Bool) (y0 y1 p : ℝ)
     (hp : expectation d (fun ω => indicator (z ω)) = p) (h0 : p ≠ 0) (h1 : 1-p ≠ 0) :
@@ -107,7 +108,7 @@ theorem ht_coordinate_unbiased {Ω : Type*} [Fintype Ω] (d : Design Ω)
   rw [hc]
   field_simp
 
-/-- Corrected timing statement T2(a), p. 174: over any nonempty set of
+/-- Corrected timing statement T2(a), p. 174 as repaired: over any nonempty set of
 periods with overlap, the HT contrast is design-unbiased for the average within-period
 causal effect. Arbitrary fixed calendar trends and dependent exposures are allowed. -/
 theorem timing_ht_unbiased {I Ω : Type*} [Fintype Ω] (d : Design Ω)
@@ -124,7 +125,7 @@ theorem timing_ht_unbiased {I Ω : Type*} [Fintype Ω] (d : Design Ω)
     (exposureProbability d z i) rfl (ne_of_gt (hov i hi).1)
       (by linarith [(hov i hi).2])
 
-/-- The eligible periods E={t:0<p_t<1}, T2(a). -/
+/-- The eligible periods E={t:0<p_t<1}, T2(a), P024-A002 derivation §4. -/
 def overlap {I Ω : Type*} [Fintype I] [Fintype Ω] (d : Design Ω)
     (z : Ω → I → Bool) : Finset I :=
   Finset.univ.filter (fun i => 0 < exposureProbability d z i ∧ exposureProbability d z i < 1)
@@ -137,8 +138,8 @@ theorem timing_overlap_unbiased {I Ω : Type*} [Fintype I] [Fintype Ω]
   apply timing_ht_unbiased d _ hE
   simp [overlap]
 
-/-- Upper-tail randomization p-value, ties included; p. 172 and corrected T2(b).
-The sharp null fixes the outcome path, so D is fixed. -/
+/-- Upper-tail randomization p-value, ties included; p. 172 and corrected T2(b),
+P024-A002 derivation §6. The sharp null fixes the outcome path, so D is fixed. -/
 def randomizationP {Ω : Type*} [Fintype Ω] (D : Ω → ℝ) (ω : Ω) : ℝ :=
   ((Finset.univ.filter (fun υ => D ω ≤ D υ)).card : ℝ) / Fintype.card Ω
 
@@ -168,18 +169,18 @@ theorem randomization_test_valid {Ω : Type*} [Fintype Ω] [Nonempty Ω]
   · have hempty : R = ∅ := Finset.not_nonempty_iff_eq_empty.mp hr
     simpa [hempty] using hα
 
-/-- T1: four calendar periods t=1,2,3,4, encoded by Fin 4, and onsets
+/-- Validator T1: four calendar periods t=1,2,3,4, encoded by Fin 4, and onsets
 s=2,3,4 encoded by Fin 3; “randomizes the timing” (p. 174). -/
 def onsetExposure (s : Fin 3) (t : Fin 4) : Bool := decide (s.val+2 ≤ t.val+1)
 
-/-- T1's untreated calendar trajectory t²; p. 174 necessity claim witness.
-The trend is fixed before randomization. -/
+/-- Validator T1's untreated calendar trajectory t²; p. 174 necessity claim witness,
+P024-A002 derivation §3. The trend is fixed before randomization. -/
 def calendarBaseline (t : Fin 4) : ℝ := (t.val+1 : ℝ)^2
 
-/-- T1's treated potential outcomes t²+2, same location. -/
+/-- Validator T1's treated potential outcomes t²+2, same location. -/
 def calendarTreated (t : Fin 4) : ℝ := calendarBaseline t + 2
 
-/-- T1's overlap set is calendar periods 2 and 3. -/
+/-- T1's overlap set is calendar periods 2 and 3, P024-A002 derivation §3. -/
 def calendarEligible : Finset (Fin 4) := {1,2}
 
 /-- T1's HT timing estimator, using observed outcomes under current exposure. -/
@@ -187,8 +188,8 @@ def calendarHT (s : Fin 3) : ℝ :=
   htEstimate calendarEligible onsetExposure calendarBaseline calendarTreated
     (exposureProbability (uniformDesign (Fin 3)) onsetExposure) s
 
-/-- T1's raw before-after statistic on the fixed sharp-null trajectory.
-Means use all four periods. -/
+/-- T1's raw before-after statistic on the fixed sharp-null trajectory;
+P024-A002 derivation §5. Means use all four periods. -/
 def calendarBeforeAfter (s : Fin 3) : ℝ :=
   (∑ t : Fin 4, if onsetExposure s t then calendarBaseline t else 0) / (3-s.val : ℝ) -
   (∑ t : Fin 4, if onsetExposure s t then 0 else calendarBaseline t) / (s.val+1 : ℝ)
@@ -252,10 +253,24 @@ def clusterDIM {J : Type*} [Fintype J] (n y0 y1 : J → ℝ) (z : J → Bool) : 
 def clusterEffect {J : Type*} [Fintype J] (n y0 y1 : J → ℝ) : ℝ :=
   (∑ j, n j * (y1 j-y0 j)) / (∑ j, n j)
 
-/-- Number of treated units/clusters in an allocation; notation for p. 170–171. -/
+/-- Number of treated units/clusters in an allocation; audit notation for p. 170–171. -/
 def treatedCount {J : Type*} [Fintype J] (z : J → Bool) : ℕ :=
   (Finset.univ.filter (fun j => z j = true)).card
 
+/-- T7(i), p. 171: unequal cluster sizes can cause bias, as an existence claim.
+Two clusters have sizes 1 and 2; one is treated uniformly. All controls are zero;
+the two individuals in the large cluster have treatment outcome 1. -/
+theorem unequal_cluster_bias :
+    let n : Fin 2 → ℝ := ![1,2]
+    let y0 : Fin 2 → ℝ := ![0,0]
+    let y1 : Fin 2 → ℝ := ![0,1]
+    let z : Fin 2 → Fin 2 → Bool := fun s j => decide (s=j)
+    clusterEffect n y0 y1 = 2/3 ∧
+    clusterDIM n y0 y1 (z 0) = 0 ∧ clusterDIM n y0 y1 (z 1) = 1 ∧
+    expectation (uniformDesign (Fin 2)) (fun s => clusterDIM n y0 y1 (z s)) = 1/2 ∧
+    expectation (uniformDesign (Fin 2)) (fun s => clusterDIM n y0 y1 (z s)) ≠
+      clusterEffect n y0 y1 := by
+  norm_num [clusterEffect, clusterDIM, expectation, uniformDesign, Fin.sum_univ_succ]
 
 /-- Fixed-arm difference in means, p. 170: m treated and N-m control units.
 This representation is used only with the hypothesis that exactly m are treated. -/
@@ -263,7 +278,7 @@ def fixedDIM {J : Type*} [Fintype J] (m : ℕ) (y0 y1 : J → ℝ) (z : J → Bo
   (∑ j, if z j then y1 j else 0) / (m : ℝ) -
   (∑ j, if z j then 0 else y0 j) / ((Fintype.card J : ℝ)-m)
 
-/-- Auxiliary algebra relating a fixed-count difference in means to the HT contrast. This lemma is used for T6, p. 170. -/
+/-- Auxiliary algebra relating a fixed-count difference in means to the HT contrast. This is an audit lemma used for headline T6, p. 170. -/
 theorem fixed_dim_ht {J : Type*} [Fintype J] (m : ℕ) (hm : 0 < m)
     (hmN : m < Fintype.card J) (y0 y1 : J → ℝ) (z : J → Bool) :
     fixedDIM m y0 y1 z =
@@ -318,7 +333,7 @@ theorem individual_dim_unbiased {J Ω : Type*} [Fintype J] [Fintype Ω]
   exact timing_ht_unbiased d _ hE z y0 y1 hov
 
 /-- Auxiliary cancellation of equal cluster sizes: with fixed m treated clusters,
-individual group means equal the corresponding cluster group means. This lemma is used for T7, p. 171. -/
+individual group means equal the corresponding cluster group means. This is an audit lemma used for headline T7, p. 171. -/
 theorem equal_size_dim {J : Type*} [Fintype J] (n : ℝ) (hn : 0 < n)
     (m : ℕ) (hm : 0 < m) (hmN : m < Fintype.card J) (z : J → Bool)
     (hcount : treatedCount z = m) (y0 y1 : J → ℝ) :
@@ -347,9 +362,26 @@ theorem equal_size_dim {J : Type*} [Fintype J] (n : ℝ) (hn : 0 < n)
   rw [htN, hcN, htY, hcY, mul_div_mul_left _ _ (ne_of_gt hn),
     mul_div_mul_left _ _ (ne_of_gt hn)]
 
+/-- T7(ii), p. 171: equal-sized clusters under fixed-count equal-probability
+assignment have an unbiased individual-level difference in means. -/
+theorem equal_cluster_unbiased {J Ω : Type*} [Fintype J] [Fintype Ω]
+    (d : Design Ω) (n : ℝ) (hn : 0 < n) (m : ℕ) (hm : 0 < m)
+    (hmN : m < Fintype.card J) (z : Ω → J → Bool) (y0 y1 : J → ℝ)
+    (hcount : ∀ ω, treatedCount (z ω) = m)
+    (hp : ∀ j, exposureProbability d z j = (m : ℝ)/Fintype.card J) :
+    expectation d (fun ω => clusterDIM (fun _ => n) y0 y1 (z ω)) =
+      clusterEffect (fun _ => n) y0 y1 := by
+  have he : (fun ω => clusterDIM (fun _ => n) y0 y1 (z ω)) =
+      fun ω => fixedDIM m y0 y1 (z ω) := by
+    funext ω; exact equal_size_dim n hn m hm hmN (z ω) (hcount ω) y0 y1
+  rw [he, individual_dim_unbiased d m hm hmN z y0 y1 hcount hp]
+  unfold averageEffect clusterEffect
+  simp only [Finset.mul_sum, ← Finset.mul_sum, Finset.sum_const, Finset.card_univ,
+    nsmul_eq_mul, mul_comm (Fintype.card J : ℝ) n]
+  exact (mul_div_mul_left _ _ (ne_of_gt hn)).symm
 
-/-- Total number N of randomized units across the blocks.
-Each block has its own finite unit type; excluded markets are absent. -/
+/-- Block shares N_b/N in the “weighted average ... for each block” (p. 173).
+Blocks are dependent finite types of randomized units; excluded markets are absent. -/
 def blockPopulation {B : Type*} [Fintype B] (I : B → Type*) [∀ b, Fintype (I b)] : ℝ :=
   ∑ b, (Fintype.card (I b) : ℝ)
 
@@ -438,7 +470,7 @@ T4(iii) and T5's additional design; not attributed to the paper's word “indepe
 def completeClusterLaw {K : ℕ} (d : Design (Finset (Fin K))) (m : ℕ) : Prop :=
   ∀ s, d.mass s = if s.card = m then 1/(Nat.choose K m : ℝ) else 0
 
-/-- Realization of the independent Bernoulli(p) design. -/
+/-- Realization of the independent Bernoulli(p) design, P024-E002 derivation §§3,5. -/
 def bernoulliDesign (K : ℕ) (p : ℝ) (hp0 : 0 ≤ p) (hp1 : p ≤ 1) :
     Design (Finset (Fin K)) where
   mass := fun s => (∏ j ∈ s, p) * (∏ j ∈ Finset.univ \ s, (1-p))
@@ -457,7 +489,7 @@ structure ClusterPopulation (K : ℕ) where
   y0 : (j : Fin K) → Fin (size j) → ℝ
   y1 : (j : Fin K) → Fin (size j) → ℝ
 
-/-- Cluster control means, “group averages” (p. 171), explicit notation. -/
+/-- Cluster control means, “group averages” (p. 171), explicit audit notation. -/
 def clusterMean0 {K : ℕ} (P : ClusterPopulation K) (j : Fin K) : ℝ :=
   (∑ i, P.y0 j i) / P.size j
 
@@ -465,7 +497,7 @@ def clusterMean0 {K : ℕ} (P : ClusterPopulation K) (j : Fin K) : ℝ :=
 def clusterMean1 {K : ℕ} (P : ClusterPopulation K) (j : Fin K) : ℝ :=
   (∑ i, P.y1 j i) / P.size j
 
-/-- Population shares w_j=n_j/N, corrected T5. -/
+/-- Population shares w_j=n_j/N, corrected T5, P024-E002 derivation §5. -/
 def clusterWeight {K : ℕ} (P : ClusterPopulation K) (j : Fin K) : ℝ :=
   (P.size j : ℝ) / ∑ l, (P.size l : ℝ)
 
@@ -474,7 +506,7 @@ def populationEffect {K : ℕ} (P : ClusterPopulation K) : ℝ :=
   clusterEffect (fun j => P.size j) (clusterMean0 P) (clusterMean1 P)
 
 /-- Difference in individual means on nonempty arms; arbitrary real extension on
-empty-arm allocations. Corrected T5 allows this extension. -/
+empty-arm allocations. Corrected T5 and validator §5 explicitly allow this extension. -/
 def populationEstimator {K : ℕ} (P : ClusterPopulation K)
     (empty : Finset (Fin K) → ℝ) (s : Finset (Fin K)) : ℝ :=
   if s = ∅ ∨ s = Finset.univ then empty s
@@ -485,8 +517,8 @@ Use k+2 clusters, so the finite maximum always exists. -/
 def maxClusterWeight {k : ℕ} (P : ClusterPopulation (k+2)) : ℝ :=
   Finset.univ.sup' Finset.univ_nonempty (clusterWeight P)
 
-/-- L1, corrected T5: the sum of squared nonnegative normalized weights
-lies between (max w)² and max w. This is the finite inequality behind no dominance. -/
+/-- L1, corrected T5 (P024-E002 derivation §5): squared weights lie between
+(max w)² and max w. This is the exact finite inequality behind no dominance. -/
 theorem weight_square_bounds {J : Type*} [Fintype J] [Nonempty J]
     (w : J → ℝ) (hw : ∀ j, 0 ≤ w j) (hs : ∑ j, w j = 1) :
     let M := Finset.univ.sup' Finset.univ_nonempty w
@@ -506,7 +538,7 @@ theorem weight_square_bounds {J : Type*} [Fintype J] [Nonempty J]
         nlinarith [mul_nonneg (hw j) (sub_nonneg.mpr (hle j))]
       _ = M := by rw [← Finset.mul_sum, hs, mul_one]
 
-/-- L4, corrected T5: finite-design Chebyshev inequality with ≥,
+/-- L4, corrected T5 (validator §5): finite-design Chebyshev inequality with ≥,
 so it also bounds > events. No distributional limit theorem is assumed. -/
 theorem finite_chebyshev {Ω : Type*} [Fintype Ω] (d : Design Ω)
     (X : Ω → ℝ) (t : ℝ) (ht : 0 < t) :
@@ -527,7 +559,7 @@ theorem finite_chebyshev {Ω : Type*} [Fintype Ω] (d : Design Ω)
   apply (le_div_iff₀ (sq_pos_of_pos ht)).mpr
   nlinarith
 
-/-- L5, corrected T5: the deterministic ratio error bound for one
+/-- L5, corrected T5 (validator §5): the deterministic ratio error bound for one
 arm, allowing arbitrary A and a fixed calendar/population mean μ. -/
 theorem ratio_error_bound (A D p μ B η : ℝ) (hη : 0 < η)
     (hp : η ≤ p) (hμ : |μ| ≤ B) (hD : |D-p| < η/2) :
@@ -553,7 +585,7 @@ theorem ratio_error_bound (A D p μ B η : ℝ) (hη : 0 < η)
     _ = (2/η)*(|A-p*μ| +B*|D-p|) := by field_simp <;> ring
 
 /-- L5, both arms: the treatment and control ratios share the same denominator
-concentration requirement. Corrected T5. -/
+concentration requirement. Corrected T5, P024-E002 derivation §5. -/
 theorem two_arm_ratio_bound (A C D p μ1 μ0 B η : ℝ) (hη : 0 < η)
     (hp : η ≤ p ∧ p ≤ 1-η) (hμ : |μ1| ≤ B ∧ |μ0| ≤ B) (hD : |D-p| < η/2) :
     η/2 ≤ D ∧ η/2 ≤ 1-D ∧
@@ -567,14 +599,14 @@ theorem two_arm_ratio_bound (A C D p μ1 μ0 B η : ℝ) (hη : 0 < η)
     (by rw [hc]; exact hD)
   exact ⟨h0.1,h1.1,h0.2,by simpa only [hc] using h1.2⟩
 
-/-- Auxiliary monotonicity of weighted finite expectation. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary monotonicity of weighted finite expectation. This is an audit lemma used for corrected T5, p. 171. -/
 theorem expectation_mono {Ω : Type*} [Fintype Ω] (d : Design Ω) (X Y : Ω → ℝ)
     (h : ∀ ω, X ω ≤ Y ω) : expectation d X ≤ expectation d Y := by
   apply Finset.sum_le_sum
   intro ω _
   exact mul_le_mul_of_nonneg_left (h ω) (d.nonneg ω)
 
-/-- Auxiliary monotonicity of design event probabilities. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary monotonicity of design event probabilities. This is an audit lemma used for corrected T5, p. 171. -/
 theorem probability_mono {Ω : Type*} [Fintype Ω] (d : Design Ω) (P Q : Ω → Prop)
     (h : ∀ ω, P ω → Q ω) : probability d P ≤ probability d Q := by
   classical
@@ -584,7 +616,7 @@ theorem probability_mono {Ω : Type*} [Fintype Ω] (d : Design Ω) (P Q : Ω →
   · simp [hp, h ω hp]
   · by_cases hq : Q ω <;> simp [hp, hq]
 
-/-- Auxiliary bounds on a finite design event probability. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary bounds on a finite design event probability. This is an audit lemma used for corrected T5, p. 171. -/
 theorem probability_bounds {Ω : Type*} [Fintype Ω] (d : Design Ω) (P : Ω → Prop) :
     0 ≤ probability d P ∧ probability d P ≤ 1 := by
   classical
@@ -596,7 +628,7 @@ theorem probability_bounds {Ω : Type*} [Fintype Ω] (d : Design Ω) (P : Ω →
       (by intro ω; split_ifs <;> norm_num)
     simpa only [expectation_const, probability] using h
 
-/-- Auxiliary counting formula for uniform finite design probabilities. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary counting formula for uniform finite design probabilities. This is an audit lemma used for corrected T5, p. 171. -/
 theorem uniform_probability_card {Ω : Type*} [Fintype Ω] [Nonempty Ω]
     (P : Ω → Prop) [DecidablePred P] :
     probability (uniformDesign Ω) P =
@@ -606,7 +638,7 @@ theorem uniform_probability_card {Ω : Type*} [Fintype Ω] [Nonempty Ω]
 
 /-- T4's concrete population: K=k+2 clusters, one of size K², all others size 1;
 large-cluster potential outcomes 1/2,3/4, singleton outcomes 1/4,1/2.
-All individual effects are 1/4 and outcomes lie in (0,1). -/
+P024-E002 derivation §2; all individual effects are 1/4 and outcomes lie in (0,1). -/
 def dominantPopulation (k : ℕ) : ClusterPopulation (k+2) where
   size := fun j => if j.val = 0 then (k+2)^2 else 1
   positive := fun j => by split_ifs <;> positivity
@@ -619,7 +651,7 @@ def dominantValue (K m : ℝ) (largeTreated : Bool) : ℝ :=
   if largeTreated then 1/4+(1/4)*K^2/(K^2+m-1)
   else 1/4-(1/4)*K^2/(K^2+K-m-1)
 
-/-- Auxiliary sum of two types of clusters, one distinguished and the rest equal. This lemma is used for counterexample T4, p. 171. -/
+/-- Auxiliary sum of two types of clusters, one distinguished and the rest equal. This is an audit lemma used for counterexample T4, p. 171. -/
 theorem sum_two_values {J : Type*} [DecidableEq J] (s : Finset J)
     (j0 : J) (a b : ℝ) :
     (∑ j ∈ s, if j=j0 then a else b) = (s.card : ℝ)*b + if j0 ∈ s then a-b else 0 := by
@@ -628,7 +660,7 @@ theorem sum_two_values {J : Type*} [DecidableEq J] (s : Finset J)
   simp_rw [h]
   simp [Finset.sum_add_distrib]
 
-/-- Auxiliary rewriting of cluster group means as sums over a treated subset. This lemma is used for counterexample T4, p. 171. -/
+/-- Auxiliary rewriting of cluster group means as sums over a treated subset. This is an audit lemma used for counterexample T4, p. 171. -/
 theorem cluster_dim_subset {K : ℕ} (s : Finset (Fin K)) (n y0 y1 : Fin K → ℝ) :
     clusterDIM n y0 y1 (subsetExposure s) =
       (∑ j ∈ s, n j*y1 j)/(∑ j ∈ s, n j) -
@@ -842,7 +874,7 @@ theorem dominant_cluster_inconsistent
   have heq := tendsto_nhds_unique hlim hz
   norm_num at heq
 
-/-- Auxiliary union bound over a finite assignment law. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary union bound over a finite assignment law. This is an audit lemma used for corrected T5, p. 171. -/
 theorem probability_union_le {Ω : Type*} [Fintype Ω] (d : Design Ω) (P Q : Ω → Prop) :
     probability d (fun ω => P ω ∨ Q ω) ≤ probability d P+probability d Q := by
   classical
@@ -851,7 +883,8 @@ theorem probability_union_le {Ω : Type*} [Fintype Ω] (d : Design Ω) (P Q : Ω
   intro ω
   by_cases hp : P ω <;> by_cases hq : Q ω <;> simp [hp,hq]
 
-/-- L6's good-event bound, corrected T5: the stated deviation bounds imply nonempty arms and error at most 3ε/4. -/
+/-- L6's good-event bound, corrected T5 (validator §5): the exact deviations
+specified in targets.json imply nonempty arms and error at most 3ε/4. -/
 theorem finite_ratio_good_event (A C D p μ1 μ0 B η ε : ℝ)
     (hB : 0 ≤ B) (hη : 0 < η) (hε : 0 < ε)
     (hp : η ≤ p ∧ p ≤ 1-η) (hμ : |μ1| ≤ B ∧ |μ0| ≤ B)
@@ -883,9 +916,9 @@ theorem finite_ratio_good_event (A C D p μ1 μ0 B η ε : ℝ)
       gcongr
     _ = 3*ε/4 := by field_simp <;> ring
 
-/-- L6 finite-sample probability bound, corrected T5: from the
+/-- L6 finite-sample probability bound, corrected T5 (validator §5): from the
 stated means and variance bounds for A,C,D, Chebyshev and the union bound yield
-the stated probability bound. X can have arbitrary empty-arm values.
+the exact bound assembled in targets.json. X can have arbitrary empty-arm values.
 This lemma explicitly assumes the moment bounds; it does not prove them for either design. -/
 theorem finite_sample_probability_bound {Ω : Type*} [Fintype Ω]
     (d : Design Ω) (A C D X : Ω → ℝ) (p μ1 μ0 B η ε c W : ℝ)
@@ -967,8 +1000,8 @@ theorem no_dominance_iff_squared_weights
     rw [he] at hsqrt
     simpa using hsqrt
 
-/-- Observed raw before-after contrast with T1's constant effect restored.
-Unlike calendarHT it compares different calendar dates. -/
+/-- Observed raw before-after contrast with T1's constant effect restored;
+P024-A002 derivation §5. Unlike calendarHT it compares different calendar dates. -/
 def calendarObservedBeforeAfter (s : Fin 3) : ℝ :=
   (∑ t : Fin 4, if onsetExposure s t then observed onsetExposure calendarBaseline calendarTreated s t else 0) /
     (3-s.val : ℝ) -
@@ -1066,11 +1099,11 @@ theorem clustered_consistency_counterexample
   exact ⟨fun k => uniform_subsets_independent (k+2), dominant_individual_outcomes,
     dominant_effect, (dominant_cluster_inconsistent empty).1, (dominant_cluster_inconsistent empty).2⟩
 
-/-- Weighted cluster assignment total, corrected T5 (L2). -/
+/-- Weighted cluster assignment total, corrected T5, P024-E002 derivation §5 (L2). -/
 def assignmentTotal {K : ℕ} (x : Fin K → ℝ) (s : Finset (Fin K)) : ℝ :=
   ∑ j ∈ s, x j
 
-/-- Auxiliary complement-event probability identity under a finite design. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary complement-event probability identity under a finite design. This is an audit lemma used for corrected T5, p. 171. -/
 theorem probability_not {Ω : Type*} [Fintype Ω] (d : Design Ω) (P : Ω → Prop) :
     probability d (fun ω => ¬ P ω) = 1-probability d P := by
   classical
@@ -1173,7 +1206,7 @@ theorem independent_pair_moment {K : ℕ} (d : Design (Finset (Fin K))) (p : ℝ
     simp only [if_neg hjl]
     ring
 
-/-- Auxiliary finite variance identity E[X²]-(E[X])². This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary finite variance identity E[X²]-(E[X])². This is an audit lemma used for corrected T5, p. 171. -/
 theorem finite_variance_identity {Ω : Type*} [Fintype Ω] (d : Design Ω) (X : Ω → ℝ) :
     variance d X = expectation d (fun ω => (X ω)^2)-(expectation d X)^2 := by
   have hi : (fun ω => (X ω-expectation d X)^2) =
@@ -1183,7 +1216,7 @@ theorem finite_variance_identity {Ω : Type*} [Fintype Ω] (d : Design Ω) (X : 
   rw [hi, expectation_add, expectation_sub, expectation_mul, expectation_const]
   ring
 
-/-- Auxiliary variance invariance under subtraction from a fixed total. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary variance invariance under subtraction from a fixed total. This is an audit lemma used for corrected T5, p. 171. -/
 theorem variance_const_sub {Ω : Type*} [Fintype Ω] (d : Design Ω) (X : Ω → ℝ) (a : ℝ) :
     variance d (fun ω => a-X ω) = variance d X := by
   unfold variance
@@ -1192,12 +1225,12 @@ theorem variance_const_sub {Ω : Type*} [Fintype Ω] (d : Design Ω) (X : Ω →
       fun ω => (X ω-expectation d X)^2 := by funext ω; ring
   rw [he]
 
-/-- Auxiliary rewriting of a treated-subset total using assignment indicators. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary rewriting of a treated-subset total using assignment indicators. This is an audit lemma used for corrected T5, p. 171. -/
 theorem assignment_total_indicator {K : ℕ} (x : Fin K → ℝ) (s : Finset (Fin K)) :
     assignmentTotal x s = ∑ j, indicator (subsetExposure s j)*x j := by
   simp [assignmentTotal, indicator, subsetExposure, Finset.sum_ite]
 
-/-- Auxiliary identity: the control total is the fixed total minus the treatment total. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary identity: the control total is the fixed total minus the treatment total. This is an audit lemma used for corrected T5, p. 171. -/
 theorem assignment_total_complement {K : ℕ} (x : Fin K → ℝ) (s : Finset (Fin K)) :
     assignmentTotal x (Finset.univ \ s) = (∑ j, x j)-assignmentTotal x s := by
   unfold assignmentTotal
@@ -1249,7 +1282,7 @@ theorem exchangeable_weighted_moments {J Ω : Type*} [Fintype J] [DecidableEq J]
   rw [finite_variance_identity,hsecond,hmean]
   ring
 
-/-- L2 for independent assignment, corrected T5: exact weighted
+/-- L2 for independent assignment, corrected T5 (validator §5): exact weighted
 sum expectation and variance, also for control indicators 1-Z. No limit or
 moment hypothesis is added to the design itself. -/
 theorem independent_weighted_moments {K : ℕ} (d : Design (Finset (Fin K)))
@@ -1273,7 +1306,7 @@ theorem independent_weighted_moments {K : ℕ} (d : Design (Finset (Fin K)))
   · rw [hcomp,expectation_sub,expectation_const,hm]; ring
   · rw [hcomp,variance_const_sub,hv]
 
-/-- Auxiliary exact event counting for uniform fixed-count cluster randomization. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary exact event counting for uniform fixed-count cluster randomization. This is an audit lemma used for corrected T5, p. 171. -/
 theorem complete_probability_count {K : ℕ} (d : Design (Finset (Fin K)))
     (m : ℕ) (hd : completeClusterLaw d m) (P : Finset (Fin K) → Prop) [DecidablePred P] :
     probability d P =
@@ -1292,7 +1325,7 @@ theorem complete_probability_count {K : ℕ} (d : Design (Finset (Fin K)))
     ext s; simp [Finset.mem_powersetCard,and_comm]
   rw [he] <;> ring
 
-/-- Auxiliary inclusion probability for any specified H under complete assignment. This lemma is used for corrected T5, p. 171. -/
+/-- Auxiliary inclusion probability for any specified H under complete assignment. This is an audit lemma used for corrected T5, p. 171. -/
 theorem complete_joint_probability {K : ℕ} (d : Design (Finset (Fin K)))
     (m : ℕ) (hd : completeClusterLaw d m) (H : Finset (Fin K)) (hH : H.card ≤ m) :
     probability d (fun s => H ⊆ s) =
@@ -1302,8 +1335,8 @@ theorem complete_joint_probability {K : ℕ} (d : Design (Finset (Fin K)))
   rw [Finset.card_filter_powersetCard_subset H Finset.univ m (Finset.subset_univ H) hH]
   simp
 
-/-- Exact complete-randomization marginal, auxiliary to T5 L2 and the
-unbiasedness statements: each cluster has probability m/K of treatment. -/
+/-- Exact complete-randomization marginal, auxiliary to T5 L2 and the headline
+unbiasedness readings: each cluster has probability m/K of treatment. -/
 theorem complete_marginal {K : ℕ} (hK : 2 ≤ K) (m : ℕ) (hm : 0 < m) (hmK : m < K)
     (d : Design (Finset (Fin K))) (hd : completeClusterLaw d m) (j : Fin K) :
     expectation d (fun s => indicator (subsetExposure s j)) = (m : ℝ)/K := by
@@ -1385,9 +1418,9 @@ theorem complete_pair_inclusion {K : ℕ} (hK : 2 ≤ K) (m : ℕ) (hm : 0 < m) 
       simp [Finset.card_pair hjl, hsc] at hcard
     simp [he]
 
-/-- L2 for complete assignment, corrected T5: exact inclusion
+/-- L2 for complete assignment, corrected T5 (validator §5): exact inclusion
 probabilities, off-diagonal covariances, weighted-sum variance and its upper bound,
-for both treatment and control indicators. -/
+for both treatment and control indicators. This finite combinatorial lemma is drafted. -/
 theorem complete_weighted_moments {K : ℕ} (hK : 2 ≤ K) (m : ℕ) (hm : 0 < m)
     (hmK : m < K) (d : Design (Finset (Fin K))) (hd : completeClusterLaw d m)
     (x : Fin K → ℝ) :
@@ -1456,15 +1489,15 @@ theorem complete_weighted_moments {K : ℕ} (hK : 2 ≤ K) (m : ℕ) (hm : 0 < m
   · rw [hcomp,variance_const_sub,hv]
   · rw [hcomp,variance_const_sub]; exact hbound
 
-/-- Normalized treatment total A, corrected T5. -/
+/-- Normalized treatment total A, corrected T5, validator §5. -/
 def normalizedTreatmentTotal {K : ℕ} (w y1 : Fin K → ℝ) (s : Finset (Fin K)) : ℝ :=
   assignmentTotal (fun j => w j*y1 j) s
 
-/-- Normalized control total C, corrected T5. -/
+/-- Normalized control total C, corrected T5, validator §5. -/
 def normalizedControlTotal {K : ℕ} (w y0 : Fin K → ℝ) (s : Finset (Fin K)) : ℝ :=
   assignmentTotal (fun j => w j*y0 j) (Finset.univ \ s)
 
-/-- L3, corrected T5: normalized totals A,C,D have the specified
+/-- L3, corrected T5 (validator §5): normalized totals A,C,D have the printed
 means and variance upper bounds under either specified design. The weights may
 be any nonnegative normalized real weights, including the population shares. -/
 theorem normalized_total_moments {K : ℕ} (hK : 2 ≤ K) (d : Design (Finset (Fin K)))
@@ -1534,7 +1567,7 @@ theorem normalized_total_moments {K : ℕ} (hK : 2 ≤ K) (d : Design (Finset (F
       simpa only [mul_assoc] using h)
 
 /-- Independent half-probability design conditional on both arms being nonempty,
-T4(ii). Every remaining subset is equally likely. -/
+T4(ii), validator §3. Every remaining subset is equally likely. -/
 def conditionalNonemptyDesign (k : ℕ) :
     Design {s : Finset (Fin (k+2)) // s ≠ ∅ ∧ s ≠ Finset.univ} := by
   letI : Nonempty {s : Finset (Fin (k+2)) // s ≠ ∅ ∧ s ≠ Finset.univ} :=
@@ -1591,7 +1624,7 @@ theorem dominant_conditional_unbiased (k : ℕ) :
   rw [expectation_add,hperm] at hsum
   linarith
 
-/-- Complete randomization of half of K=2n+2 clusters, T4(iii). -/
+/-- Complete randomization of half of K=2n+2 clusters, T4(iii), validator §4. -/
 def halfClusterDesign (n : ℕ) :
     Design {s : Finset (Fin (2*n+2)) // s.card=n+1} := by
   have hc : 0 < Fintype.card {s : Finset (Fin (2*n+2)) // s.card=n+1} := by
@@ -1603,7 +1636,7 @@ def halfClusterDesign (n : ℕ) :
 def halfDominantRatio (n : ℕ) : ℝ :=
   (2*n+2 : ℝ)^2 / ((2*n+2 : ℝ)^2+(n+1)-1)
 
-/-- Auxiliary identification of a binary event expectation with its design probability. This lemma is used for counterexample T4, p. 171. -/
+/-- Auxiliary identification of a binary event expectation with its design probability. This is an audit lemma used for counterexample T4, p. 171. -/
 theorem probability_indicator_expected {Ω : Type*} [Fintype Ω] (d : Design Ω)
     (P : Ω → Prop) [DecidablePred P] :
     expectation d (fun ω => if P ω then 1 else 0) = probability d P := by
@@ -1612,7 +1645,7 @@ theorem probability_indicator_expected {Ω : Type*} [Fintype Ω] (d : Design Ω)
   apply Finset.sum_congr rfl
   intro ω _; by_cases h : P ω <;> simp [h]
 
-/-- Auxiliary expectation of a two-valued statistic under any finite law. This lemma is used for counterexample T4, p. 171. -/
+/-- Auxiliary expectation of a two-valued statistic under any finite law. This is an audit lemma used for counterexample T4, p. 171. -/
 theorem expectation_if_constant {Ω : Type*} [Fintype Ω] (d : Design Ω)
     (P : Ω → Prop) [DecidablePred P] (a b : ℝ) :
     expectation d (fun ω => if P ω then a else b) = probability d P*a+(1-probability d P)*b := by
@@ -1623,7 +1656,7 @@ theorem expectation_if_constant {Ω : Type*} [Fintype Ω] (d : Design Ω)
   rw [he,expectation_add,expectation_mul,expectation_const,probability_indicator_expected]
   ring
 
-/-- Auxiliary fact that an event true on every schedule has design probability one. This lemma is used for counterexample T4, p. 171. -/
+/-- Auxiliary fact that an event true on every schedule has design probability one. This is an audit lemma used for counterexample T4, p. 171. -/
 theorem probability_all {Ω : Type*} [Fintype Ω] (d : Design Ω)
     (P : Ω → Prop) (h : ∀ ω, P ω) : probability d P = 1 := by
   simp [probability,expectation,h,d.total]
@@ -1967,7 +2000,7 @@ theorem finite_mean_abs_bound (n : ℕ) (hn : 0 < n) (y : Fin n → ℝ) (B : �
         _ = (n : ℝ)*B := by simp
     _ = B := mul_div_cancel_left₀ _ (ne_of_gt hnR)
 
-/-- Bounded cluster outcomes also bound the population-share weighted arm mean. This lemma is used for corrected T5, p. 171. -/
+/-- Bounded cluster outcomes also bound the population-share weighted arm mean. This is an audit lemma used for corrected T5, p. 171. -/
 theorem weighted_mean_abs_bound {J : Type*} [Fintype J] (w y : J → ℝ) (B : ℝ)
     (hw : ∀ j, 0 ≤ w j) (hs : ∑ j, w j = 1) (hy : ∀ j, |y j| ≤ B) :
     |∑ j, w j*y j| ≤ B := by
@@ -2014,8 +2047,8 @@ theorem population_estimator_normalized {k : ℕ} (P : ClusterPopulation (k+2))
       div_div_div_cancel_right₀ (ne_of_gt (population_total_positive P))]
 
 /-- L6 for the actual individual population and either stipulated cluster design,
-corrected T5. The moment assumptions in the abstract bound are derived here,
-rather than imposed as extra population hypotheses. -/
+corrected T5 (P024-E002 derivation §5). The moment assumptions in the abstract
+bound are derived here, rather than imposed as extra population hypotheses. -/
 theorem cluster_population_probability_bound {k : ℕ} (P : ClusterPopulation (k+2))
     (d : Design (Finset (Fin (k+2)))) (empty : Finset (Fin (k+2)) → ℝ)
     (B η ε p c : ℝ) (hB : 0 ≤ B) (hη : 0 < η) (hε : 0 < ε)
@@ -2059,7 +2092,7 @@ theorem cluster_population_probability_bound {k : ℕ} (P : ClusterPopulation (k
     (fun s h0 h1 => population_estimator_normalized P empty s h0 h1)
   simpa only [population_effect_normalized] using h
 
-/-- T5, p. 171, corrected: bounded individual outcomes, a common interior
+/-- T5, p. 171 as repaired: bounded individual outcomes, a common interior
 probability, independent Bernoulli or uniform fixed-count cluster assignment, and
 no dominant cluster imply consistency for the changing individual-level effect.
 No convergence of p_k or τ_k, and no restriction on the empty-arm extension, is imposed.
@@ -2121,4 +2154,92 @@ theorem corrected_cluster_consistency
 
 
 end
+-- Axiom reports are regenerated with every compilation.
+#print axioms AronowAudit.P024.expectation_add
+#print axioms AronowAudit.P024.expectation_sub
+#print axioms AronowAudit.P024.expectation_mul
+#print axioms AronowAudit.P024.expectation_const
+#print axioms AronowAudit.P024.expectation_sum
+#print axioms AronowAudit.P024.expectation_div
+#print axioms AronowAudit.P024.ht_coordinate_unbiased
+#print axioms AronowAudit.P024.timing_ht_unbiased
+#print axioms AronowAudit.P024.timing_overlap_unbiased
+#print axioms AronowAudit.P024.randomization_test_valid
+#print axioms AronowAudit.P024.calendar_ht_counterexample
+#print axioms AronowAudit.P024.calendar_null_counterexample
+#print axioms AronowAudit.P024.raw_before_after_bias
+#print axioms AronowAudit.P024.unequal_cluster_bias
+#print axioms AronowAudit.P024.fixed_dim_ht
+#print axioms AronowAudit.P024.individual_dim_unbiased
+#print axioms AronowAudit.P024.equal_size_dim
+#print axioms AronowAudit.P024.equal_cluster_unbiased
+#print axioms AronowAudit.P024.blocked_weighted_identity
+#print axioms AronowAudit.P024.blocked_estimator_unbiased
+#print axioms AronowAudit.P024.weight_square_bounds
+#print axioms AronowAudit.P024.finite_chebyshev
+#print axioms AronowAudit.P024.ratio_error_bound
+#print axioms AronowAudit.P024.two_arm_ratio_bound
+#print axioms AronowAudit.P024.expectation_mono
+#print axioms AronowAudit.P024.probability_mono
+#print axioms AronowAudit.P024.probability_bounds
+#print axioms AronowAudit.P024.uniform_probability_card
+#print axioms AronowAudit.P024.sum_two_values
+#print axioms AronowAudit.P024.cluster_dim_subset
+#print axioms AronowAudit.P024.dominant_means
+#print axioms AronowAudit.P024.dominant_individual_outcomes
+#print axioms AronowAudit.P024.dominant_effect
+#print axioms AronowAudit.P024.dominant_exact_value
+#print axioms AronowAudit.P024.dominant_error_bound
+#print axioms AronowAudit.P024.uniform_subsets_independent
+#print axioms AronowAudit.P024.nonempty_arm_probability
+#print axioms AronowAudit.P024.dominant_probability_lower_bound
+#print axioms AronowAudit.P024.dominant_cluster_inconsistent
+#print axioms AronowAudit.P024.probability_union_le
+#print axioms AronowAudit.P024.finite_ratio_good_event
+#print axioms AronowAudit.P024.finite_sample_probability_bound
+#print axioms AronowAudit.P024.no_dominance_iff_squared_weights
+#print axioms AronowAudit.P024.raw_observed_effect_bias
+#print axioms AronowAudit.P024.calendar_p_grid
+#print axioms AronowAudit.P024.randomized_timing_no_trend_counterexample
+#print axioms AronowAudit.P024.individual_observed_dim_unbiased
+#print axioms AronowAudit.P024.blocked_actual_means_identity
+#print axioms AronowAudit.P024.clustered_consistency_counterexample
+#print axioms AronowAudit.P024.probability_not
+#print axioms AronowAudit.P024.independent_exclusion_probability
+#print axioms AronowAudit.P024.independent_marginal
+#print axioms AronowAudit.P024.independent_pair_moment
+#print axioms AronowAudit.P024.finite_variance_identity
+#print axioms AronowAudit.P024.variance_const_sub
+#print axioms AronowAudit.P024.assignment_total_indicator
+#print axioms AronowAudit.P024.assignment_total_complement
+#print axioms AronowAudit.P024.exchangeable_weighted_moments
+#print axioms AronowAudit.P024.independent_weighted_moments
+#print axioms AronowAudit.P024.complete_probability_count
+#print axioms AronowAudit.P024.complete_joint_probability
+#print axioms AronowAudit.P024.complete_marginal
+#print axioms AronowAudit.P024.complete_pair_inclusion
+#print axioms AronowAudit.P024.complete_weighted_moments
+#print axioms AronowAudit.P024.normalized_total_moments
+#print axioms AronowAudit.P024.dominant_conditional_unbiased
+#print axioms AronowAudit.P024.probability_indicator_expected
+#print axioms AronowAudit.P024.expectation_if_constant
+#print axioms AronowAudit.P024.probability_all
+#print axioms AronowAudit.P024.uniform_fixed_subset_marginal
+#print axioms AronowAudit.P024.complete_individual_dim_unbiased
+#print axioms AronowAudit.P024.dominant_complete_distribution
+#print axioms AronowAudit.P024.half_dominant_ratio_limit
+#print axioms AronowAudit.P024.dominant_complete_limits
+#print axioms AronowAudit.P024.dominant_total_size
+#print axioms AronowAudit.P024.dominant_max_weight
+#print axioms AronowAudit.P024.dominant_share_limit
+#print axioms AronowAudit.P024.dominant_six_checks
+#print axioms AronowAudit.P024.dominant_six_actual_checks
+#print axioms AronowAudit.P024.population_total_positive
+#print axioms AronowAudit.P024.population_weights
+#print axioms AronowAudit.P024.finite_mean_abs_bound
+#print axioms AronowAudit.P024.weighted_mean_abs_bound
+#print axioms AronowAudit.P024.population_effect_normalized
+#print axioms AronowAudit.P024.population_estimator_normalized
+#print axioms AronowAudit.P024.cluster_population_probability_bound
+#print axioms AronowAudit.P024.corrected_cluster_consistency
 end AronowAudit.P024

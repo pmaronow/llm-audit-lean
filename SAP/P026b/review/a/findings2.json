@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P026-T13",
+    "theorem": "SAP.P026b.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles an explicit UnitExperiment on Fin 2 with probability 1/2 each on (true,false) and (false,true), zero elsewhere, both marginals 1/2, and one treated unit on every supported assignment. Outcomes and prediction arrays can be arbitrary real vectors/functions; e.g. y1=(1,2), y0=(0,0), f=0. No independence or zero-covariance premise is imposed here.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T14",
+    "theorem": "SAP.P026b.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The 90-element allocation space is nonempty, normalized, and has treatment probabilities 1/2 on clusters 0-3 and 1/3 on clusters 4-9. Both observed-outcome blocks have two distinct covariate values and no nonzero weak separating direction, so their logistic likelihoods have unique finite maximizers. Independent 60-digit Decimal calculations give block-1 coefficients (1.0843222951194215,0.2280259453080925), block-2 coefficients (-1.1201075519520951,0.5657585557648923), ATE SD 0.247091750594593 and variance-estimator SD 0.0125667023899652. These are numerical corroboration, not a formal interval proof; existence and all moments are conclusions, not assumed premises.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P026-T15",
+    "theorem": "SAP.P026b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The three equally likely assignments treat exactly one of three units. Treatment/control marginals are 1/3 and 2/3; the (intercept,i) real OLS matrix has full rank. Exact Fraction calculations verify both OLS normal equations for every fitted row, residual estimates (1/4,1,1/4), treatment-fit covariances (1/6,0,1/6), and expectation 1/2 against ATE 1. Revision 2 only clarifies the Challenge docstring: it explicitly refutes the reading that estate() with HT=TRUE remains unbiased when covariates X are supplied. The finite experiment, OLS interpretation, estimators, and numerical conclusions remain as in the blind reading; the new wording adds no mathematical premise.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T16",
+    "theorem": "SAP.P026b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled two-unit UnitExperiment supplies positive marginals for every universal clause. Fixed predictions give the fixed-prediction branch; arbitrary covariates, including K=0, give a well-defined real Euclidean OLS projection. Under y1=y0=(1,2), the observed vector and its OLS fit are fixed, satisfying the sharp-null and zero-covariance cases. The separate three-unit example has bias -1/2 by exact arithmetic.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T17",
+    "theorem": "SAP.P026b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The stated three-point/two-unit real design (00,01,11), weights 1/3, has treatment marginals (1/3,2/3), positive control marginals, disagreement 1/3, and positive same-arm off-diagonal joints 1/3. Probability axioms, marginals and directed joints are checked in Lean. Exact Fraction arithmetic gives p10(0,1)=0, p10(1,0)=1/3, E[printedVariance(1,1)]=23/8 < 27/8=Var(HT(1,1))=Var(generalized(1,1,0)); the missing term is not a zero denominator artifact.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T18",
+    "theorem": "SAP.P026b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four equally likely allocations 000,011,101,110 have all marginals 1/2. Exact enumeration verifies every focal/input joint cell is 1/4. The fit Y1+Y2-2*Y1*Y2 equals the focal treatment indicator, so its covariance with that indicator is 1/4. Lean independently checks probability axioms, positive marginals and the covariance value.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T19",
+    "theorem": "SAP.P026b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The table has exactly 90 positive-probability allocations. Exact Fraction enumeration verifies every FE denominator is positive, with minimum 2710/993, and derives the opposite-block OLS residual vector used in the theorem. It gives FE expectation approximately -0.013987426269439, outside the printed -0.012 rounding interval, and Linear variance 38307/634880, approximately 0.06033738659. Either mismatch suffices to negate the selected printed conjunction. Both logistic likelihoods are full rank and nonseparated, so their uniqueness conjuncts do not manufacture the refutation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T20",
+    "theorem": "SAP.P026b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled two-unit UnitExperiment has normalized nonnegative weights and both marginals 1/2. Taking y1=(1,2), y0=(0,0) gives HT values 1 and 2 on the two supported assignments, expectation 3/2 equal to the actual ATE. Both total estimators and all masking denominators are well-defined.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T21",
+    "theorem": "SAP.P026b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For clause (a), the compiled two-unit law has n=1, N=2, both marginals 1/2 and exactly one treated unit on every supported assignment. For (b), the compiled ClusterExperiment with U=C=Fin 2, identity partition and that assignment law has M=2,m=1 and satisfies the added condition. For (c), the explicit four-unit clusters (0),(1),(2,3) give realized treatment counts 1,1,2 and positive control counts; exact arithmetic gives differences in means (2/3,2/3,-1), expectation 1/9, versus HT expectation and ATE 0. Independent fair assignments of two singleton clusters show the added fixed-cluster-count premise is genuinely stronger than uniform marginals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T22",
+    "theorem": "SAP.P026b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled two-unit law and any deterministic prediction vector g, for example (3,4), satisfy the zero-covariance premise with both marginals 1/2. Sharp-null potential outcomes also give assignment-invariant observed outcomes. Hence the antecedent does not assume unbiasedness, and the unconditional adjustment identity permits arbitrary assignment-dependent predictions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T23",
+    "theorem": "SAP.P026b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled two-unit law instantiates the universal block with arbitrary real affine constants. The supported failure witness has one unit, three equally likely sample points, treatment only at point 2, hence p1=1/3 and p0=2/3. At point 2 with b0=1,b1=-1 and original outcomes zero, transformed HT is 3 while b1 times original HT is 0. No realized-arm-size division occurs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P026-T24",
+    "theorem": "SAP.P026b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled identity-partition two-cluster experiment is nonempty, surjective, has both marginals 1/2 and positive disagreement (indeed 1), meeting the cluster antecedent. The asymmetric three-point/two-cluster design additionally satisfies positive disagreement while p10(0,1)=0; it can be encoded on all four binary allocations by assigning weight zero to 10. The full, split and off-diagonal covariance formulas still agree because each zero cross joint contributes -Xc*Zd. Fixed r and arbitrary real potential outcomes instantiate the variance block without any zero denominator.",
+    "confidence": 0.99
+  }
+]

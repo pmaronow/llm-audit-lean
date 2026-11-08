@@ -2,7 +2,7 @@ import AronowAudit.P018.Wave1.Gap.GP0182B2b
 
 /-!
 P018-T4: finite population-residual variance bounds and corrected sandwich
-consistency.
+consistency. The held declarations occur only in the statement checks.
 -/
 
 noncomputable section
@@ -15,7 +15,7 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 set_option linter.style.haveILetI false
 
-/-! Sharp finite support counts. -/
+/-! Record 3: sharp finite support counts. -/
 
 private def population_meat_mkDyad {N : ℕ} (i j : Fin N) (hij : i ≠ j) : Dyad N :=
   ⟨{i, j}, by simp [dyads, Finset.mem_powersetCard, hij]⟩
@@ -314,9 +314,12 @@ theorem population_meat_variance_bounds_proof {U : Type*} [MeasurableSpace U] {k
           (hv.trans (mul_le_mul_of_nonneg_left hdep (by positivity))) (sq_nonneg _)
       _ = _ := by ring
 
-/-! Specialization of common-directed-kernel consistency to single records
-and unit weights, using positive definiteness of the population Gram and
-eventual equality with the unconditional target under `Standing`.
+example : type_of% @AronowAudit.P018.population_meat_variance_bounds := population_meat_variance_bounds_proof
+
+/-! Record 4: specialize the proved common-directed-kernel result.
+`GP0182B2b_variance_consistency` verifies the single-record and unit-weight
+bridges, positive definiteness of the population Gram, and eventual equality
+with the unconditional target under exactly `Standing`.
 -/
 
 theorem variance_consistency_corrected_proof {U : Type*} [MeasurableSpace U] {k : ℕ}
@@ -324,5 +327,7 @@ theorem variance_consistency_corrected_proof {U : Type*} [MeasurableSpace U] {k 
     inProbability (unitSampleLaw K) (fun N ω =>
       (N : ℝ) • sampleVariance members (design K ω) (response K ω) - trueTarget K N) := by
   exact GP0182B2b_variance_consistency K hK
+
+example : type_of% @AronowAudit.P018.variance_consistency_corrected := variance_consistency_corrected_proof
 
 end AronowAudit.P018.Wave1

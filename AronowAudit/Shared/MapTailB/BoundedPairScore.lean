@@ -2,7 +2,8 @@ import AronowAudit.P018.Wave1.Gap.GP0182B2b
 import AronowAudit.P001.Wave1.Gap.DecideB
 import AronowAudit.Shared.MapTailB.RowLimits
 
-/-! Bounded symmetric pair kernels on the actual finite iid product rows. -/
+/-! Bounded symmetric pair kernels on the actual finite iid product rows.
+No common-directed-record hypothesis is used in this file. -/
 
 noncomputable section
 namespace AronowAudit.Shared.MapTailB
@@ -143,7 +144,7 @@ theorem tb09_pair_meat_centered {U : Type*} [MeasurableSpace U] {k : ℕ}
       _ = (6144*(B'^2)^2)/(N:ℝ) := by ring
   exact (WeightedConsistency.g5_proof P).1 F hp hv
 
-/-- The multivariate Gaussian realizes the contrast definition. -/
+/-- The existing multivariate Gaussian realizes the audit's contrast definition. -/
 theorem tb09_normalVectorLaw {k : ℕ} (M : Mat k) (hM : M.PosSemidef) :
     centeredNormalLaw (AronowAudit.P001.normalVectorLaw M) M := by
   refine ⟨hM,inferInstance,?_⟩

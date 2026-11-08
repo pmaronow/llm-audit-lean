@@ -127,5 +127,7 @@ theorem quarter_power_parameters (S : Study) :
     simp_rw [he]
     exact (tendsto_rpow_neg_atTop (by norm_num : (0:ℝ)<1/2)).comp hN
 
+#print axioms quarter_power_parameters
+#print axioms overwhelming_fraction_from_threshold
 end
 end AronowAudit.P009.MixingAsymptotic

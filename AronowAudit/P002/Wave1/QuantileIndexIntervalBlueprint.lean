@@ -1,15 +1,18 @@
 import AronowAudit.P002.Wave1.AlgorithmSupportBlueprint
 
 /-!
-# P002-T27: main p. 14 Lemma 1 for the paper's AR functions
+# Blueprint: P002-T27, main p. 14 Lemma 1 for the paper's AR functions
 
-The coefficient-level Lemma 1 assumes that one common observed dataset generates the
-observed and simulated AR coefficients (`DataGeneratedCoefficients`), Assumptions 6/7
-hold for all of them (`ARRegular`), and no two globally distinct simulated AR functions
-meet in the open interval. All four printed conclusions are included, including both
-one-sided unbounded intervals.
+Record P002-T27 (`AronowAudit.P002.quantile_index_interval`, resolution
+`repair_and_prove`). The frozen generic continuous-curve declaration is admitted and is
+not used. The final statement is the coefficient-level Lemma 1: one common observed
+dataset generates the observed and simulated AR coefficients
+(`DataGeneratedCoefficients`), Assumptions 6/7 hold for all of them (`ARRegular`), and
+no two globally distinct simulated AR functions meet in the open interval. All four
+printed conclusions are retained, including both one-sided unbounded intervals.
 
-The coefficient objects supply continuity and nonnegativity.
+The nodes are the shared `AlgorithmSupport.N2`, `N3`, `N4`; the coefficient objects
+supply continuity and nonnegativity through the proved `arFamily_regular`.
 -/
 
 namespace AronowAudit.P002.Wave1.QuantileIndexInterval
@@ -18,7 +21,7 @@ open scoped BigOperators ENNReal Matrix Topology
 open Filter MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-/-- Lemma 1 for the data-generated AR coefficients. -/
+/-- Frozen final statement of `AronowAudit.P002.Wave1.quantile_index_interval_paper`. -/
 def Target : Prop :=
   ∀ (M : ℕ) (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR) (α : ℝ),
     0 < M → (0 < α ∧ α < 1) → DataGeneratedCoefficients Qf Qg →
@@ -37,8 +40,8 @@ def Target : Prop :=
     (∀ x ∈ openInterval l u, ∀ a : ℝ, u = ⊤ → l = (a : EReal) →
       mcIndices g α x ⊆ mcIndices g α a)
 
-/-- Continuity of the critical value, single-curve interior constancy and closure
-extension imply the interval conclusions. -/
+/-- The nodes suffice: shared support nodes 2 (continuity of the critical value),
+3 (single-curve interior constancy) and 4 (closure extension). -/
 theorem assemble (h2 : AlgorithmSupport.N2) (h3 : AlgorithmSupport.N3)
     (h4 : AlgorithmSupport.N4) : Target := by
   intro M Qf Qg α hM hα _hdata _hQf hQg l u hlu hcross

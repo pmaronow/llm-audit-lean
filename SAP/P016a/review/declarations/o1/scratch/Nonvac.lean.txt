@@ -1,0 +1,92 @@
+import SAP.P016a.Challenge
+open SAP.P016a
+
+/-! Nonvacuity instances for the universally quantified conjuncts. -/
+
+-- T2: n = 2, u = (0,1), z = (T,F), w = (F,T): all hypotheses of (a)-(g),(j),(k)
+example : 2 ≤ 2 ∧ 0 < groupSize (![true,false] : Assignment 2) false ∧
+    0 < groupSize (![true,false] : Assignment 2) true ∧
+    groupSize (![false,true] : Assignment 2) true = groupSize (![true,false] : Assignment 2) true ∧
+    sameMargins (![0,1] : Outcome 2) ![true,false] ![1,0] ![false,true] := by
+  refine ⟨le_rfl, by decide, by decide, by decide, ?_⟩
+  intro g
+  have a1 : (Finset.univ.filter fun i : Fin 2 => (![true,false] : Assignment 2) i = true) = {0} := by decide
+  have a0 : (Finset.univ.filter fun i : Fin 2 => (![true,false] : Assignment 2) i = false) = {1} := by decide
+  have b1 : (Finset.univ.filter fun i : Fin 2 => (![false,true] : Assignment 2) i = true) = {1} := by decide
+  have b0 : (Finset.univ.filter fun i : Fin 2 => (![false,true] : Assignment 2) i = false) = {0} := by decide
+  cases g
+  · simp only [groupValues, a0, b0]; simp
+  · simp only [groupValues, a1, b1]; simp
+
+-- T2 (d),(g): a FiniteLaw on Fin 2 with assign = (z, w), sizes (1,1)
+example : ∃ (P : FiniteLaw (Fin 2)) (assign : Fin 2 → Assignment 2),
+    (∀ ω, groupSize (assign ω) false = 1 ∧ groupSize (assign ω) true = 1) ∧ P.weight 0 = 1/2 :=
+  ⟨uniformLaw (Fin 2), ![![true,false], ![false,true]], by
+    intro ω; fin_cases ω <;> decide, by simp [uniformLaw]⟩
+
+-- T4 (a): n = 2, S = swap adjacency, bank = (TF, FT, TT), Ω = {TF}; centered exposure (-1/2, 0)
+def S2 : Fin 2 → Fin 2 → ℝ := ![![0,1],![1,0]]
+def bank3 : Fin 3 → Assignment 2 := ![![true,false],![false,true],![true,true]]
+
+example : centeredExposure S2 bank3 ![true,false] = ![-1/2, 0] := by
+  funext i
+  fin_cases i <;>
+  simp only [centeredExposure, conditionalMean, exposureSum, Fin.sum_univ_two,
+    Fin.sum_univ_three] <;> norm_num [S2, bank3, bit]
+
+example : (∀ i j, S2 i j = S2 j i) ∧ (∀ i, S2 i i = 0) ∧ (∀ i a, ∃ b, bank3 b i = a) ∧
+    0 < sampleSD (centeredExposure S2 bank3 ![true,false]) := by
+  have hc : centeredExposure S2 bank3 ![true,false] = ![-1/2, 0] := by
+    funext i
+    fin_cases i <;>
+    simp only [centeredExposure, conditionalMean, exposureSum, Fin.sum_univ_two,
+      Fin.sum_univ_three] <;> norm_num [S2, bank3, bit]
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro i j; fin_cases i <;> fin_cases j <;> simp [S2]
+  · intro i; fin_cases i <;> simp [S2]
+  · intro i a
+    fin_cases i <;> cases a
+    · exact ⟨1, by simp [bank3]⟩
+    · exact ⟨0, by simp [bank3]⟩
+    · exact ⟨0, by simp [bank3]⟩
+    · exact ⟨1, by simp [bank3]⟩
+  · rw [hc, sampleSD]
+    apply Real.sqrt_pos.mpr
+    simp [sampleVariance, pooledMean, Fin.sum_univ_two]
+    norm_num
+
+-- T4 (b): h = (0,1), n = 2, sampleSD h > 0
+example : 0 < sampleSD (![0,1] : Outcome 2) := by
+  rw [sampleSD]; apply Real.sqrt_pos.mpr
+  simp [sampleVariance, pooledMean, Fin.sum_univ_two]; norm_num
+
+-- T4 (c): s = scores4, bank = matchedBank4 (each unit both values, all with 2 treated), z = complete4 1
+example : (∀ i a, ∃ b, matchedBank4 b i = a) ∧ groupSize (complete4 1) true = 2 ∧
+    (∀ b, groupSize (matchedBank4 b) true = 2) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro i a; fin_cases i <;> cases a <;> decide
+  · decide
+  · decide
+
+-- T4 (c)(iii) premises are satisfiable: both centered exposures have positive SD in the four-unit case
+example : centeredExposure (distance scores4) matchedBank4 (complete4 1) = ![-1/4,-1/4,1/4,1/4] ∧
+    centeredExposure (similarity (fun k => some (scores4 k))) matchedBank4 (complete4 1)
+      = ![1/8,1/8,-1/8,-1/8] := by
+  constructor <;> funext i <;> fin_cases i <;>
+  simp only [centeredExposure, conditionalMean, exposureSum, Fin.sum_univ_four] <;>
+  norm_num [distance, similarity, scores4, matchedBank4, complete4, bit, abs_of_nonneg, abs_of_nonpos]
+
+-- T6: n = 3, Ω = Unit, Γ = distance (0,1,2), g ≡ (-1,0,1) (sample variance 1), y0 = 0, b1 = b2 = 1
+example : ∃ (assign : Unit → Assignment 3) (Γ : Fin 3 → Fin 3 → ℝ) (g : Outcome 3 → Outcome 3)
+    (y0 : Outcome 3) (y : Unit → Outcome 3) (b1 b2 : ℝ),
+    IsDistanceMatrix Γ ∧ (∀ ω, sampleVariance (g (exposureSum Γ (assign ω))) = 1) ∧
+    (∀ ω i, y ω i = y0 i + b1 * bit (assign ω i) + b2 * g (exposureSum Γ (assign ω)) i) := by
+  refine ⟨fun _ => ![true,false,false], distance ![0,1,2], fun _ => ![-1,0,1], 0,
+    fun _ i => 0 + 1 * bit (![true,false,false] i) + 1 * (![-1,0,1] : Outcome 3) i, 1, 1,
+    ⟨?_, ?_, ?_, ?_⟩, ?_, ?_⟩
+  · intro i j; exact abs_nonneg _
+  · intro i j; exact abs_sub_comm _ _
+  · intro i; simp [distance]
+  · intro i j k; exact abs_sub_le _ _ _
+  · intro ω; simp [sampleVariance, pooledMean, Fin.sum_univ_three]; norm_num
+  · intro ω i; rfl

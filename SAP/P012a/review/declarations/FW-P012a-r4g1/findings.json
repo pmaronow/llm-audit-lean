@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P012-T1",
+    "theorem": "SAP.P012a.T1",
+    "fingerprint": "fbf7d96f7ccad4f2d6b764010fcaaae4efa2c3c489791b55517b73d2588dbd33",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: all four concrete data sets are admissible and their starting graphs compatible; the bad outputs in (a) and (b) are incompatible for both traits, cleanup in (c) is incompatible, and the dyad in (d) has an empty unsampled set. Exact homophily -1/3 and preferential value -1/2 are independently checked for (a), and a genuine WholePrintedRun is constructed for arbitrary coin outcomes. The remaining defined input values and every printed-reading condition are checked explicitly in claim-review.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T2",
+    "theorem": "SAP.P012a.T2",
+    "fingerprint": "f8948e9c38b2cc67793228277edb68434d10a9bab8746888e552128b5d224b18",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: admissible compatible inputs and actual constructor executions for unsampled deletion, sampled deletion using one existing replacement for both endpoints, addition using a shared unsampled endpoint, the unchanged branch, a trait flip, and the empty-pool trait self-loop. These examples satisfy every hypothesis of the relevant preservation and trace implications.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T3",
+    "theorem": "SAP.P012a.T3",
+    "fingerprint": "6a3c3a9e652b48f207a9dfff71d260e015bcef3c8632454133892885c2ad8033",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/PublishedInstance.lean: observed has sampled set range 527, seeds range 6, two time-ordered recruitment stars, sampled degree sum 4487, counts (a,b,cR)=(260,261,0), and totalSpare=3445. All these hypotheses and counts are independently checked in Lean. The private-leaf witness and its positive denominator are also verified mathematically in claim-review.md. Exact enumeration in scratch/arithmetic_check.py confirms the sharp integer bound and its two attaining triples.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T4",
+    "theorem": "SAP.P012a.T4",
+    "fingerprint": "207944db39f9ff59d6cc023df9bd07374ba4ee93f015e3eb08a007c616edc6d2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/PublishedInstance.lean supplies the published-total hypotheses and an actual IsGLB. Compiled scratch/EndpointWitness.lean constructs the full converse antecedent: 527 sampled vertices, six seeds, admissible observed data of degree total 4026, a nomination state of degree total 4487, and IsGLB L with L=-539551/767814 within 1/20000 of -7027/10000. Data and rounding checks are independent; certified T5 supplies the infimum in both examples.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T5",
+    "theorem": "SAP.P012a.T5",
+    "fingerprint": "9f0e7908187ac46e3bc9fffd251e96ccf1100131f74010f92323cf2f6de85f62",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean checks admissibility and positive spare total for proposalData, and checks the other regularity alternative using emptyPoolData with zero spare and positive recruitment degree totals of both traits. Compiled scratch/PublishedInstance.lean satisfies all application hypotheses (527 sampled vertices, six seeds, degree sum 4487). Thus both general-domain alternatives and the application specialization are nonempty.",
+    "confidence": 0.99
+  }
+]

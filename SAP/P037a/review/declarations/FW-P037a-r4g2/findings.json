@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P037-T6",
+    "theorem": "SAP.P037a.T6",
+    "fingerprint": "6ffc39fcfe360cd5d6ecce09a5dde26b7811dafc3a23c8be429541c58f752f61",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:12: A=2695, B=2012, e=3/50 and m=1/5 satisfy all four interval hypotheses simultaneously. scratch/Check.lean:20 independently proves all of totalsReduction by exact arithmetic. All denominators are positive in every asserted use.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P037-T7",
+    "theorem": "SAP.P037a.T7",
+    "fingerprint": "e2e940e9bfcc2d8b67f52edeb700e9a62f4979a6beb92d2880538ec7e0efa5bb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:24 proves both concrete feasible overlaps and label inequalities. scratch/Check.lean:30 constructs 40 eligibles in four strata of 10 with five seeds in each (20 total); indices 0 and 5 are respectively a seed and nonseed. scratch/Check.lean:43 checks that a focal student with no peers has both counts zero and at most 10 named peers, irrespective of referent status. Either local configuration extends to a treated school in a two-of-four allocation and to the remaining independent blocks, so the witnesses respect the hierarchical design.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P037-T8",
+    "theorem": "SAP.P037a.T8",
+    "fingerprint": "b67f219df73f4fa205addcc4f08b5075e45f53e024170ff6e386817c65c8c52b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:49 through the five consecutive examples supplies feasible representatives (0,0,0,0), (1,0,0,0), (1,0,1,0), (1,0,1,1), (1,1,0,0) of control, school, nonreferent, referent and direct exposure. In particular both canonical witnesses are feasible and have the required corrected classifications.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P037-T9",
+    "theorem": "SAP.P037a.T9",
+    "fingerprint": "a5b376d9ae582296f21663206f0c59c3796c7d75d5f99c434736af0f3701ca19",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:66 constructs the fair-coin design on Fin 2 and the event w=1, with pi=1/2 and single-draw variance 1/4. For J=2, independentDesign gives the mixed draw (0,1) weight 1/4; the sample frequency has mean 1/2 and variance 1/8 (scratch/Check.lean:97). Positive J and epsilon=1/4 are supplied at line 80, and all three printed-versus-corrected example values are checked at line 102. Thus the hypotheses permit genuinely independent, nondegenerate replicates.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T10",
+    "theorem": "SAP.P037a.T10",
+    "fingerprint": "050a3f315501be04c8f0818d4784fd86c41b26c49abecbf706e0b0a663575a49",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:113 constructs blockDesign and its treatment functions satisfying all binary, fixed-count and marginal-mean hypotheses together. Lines 129 and 135 independently check the two negative covariances and two-block probability factorization. scratch/Check.lean:142 also constructs an unequal allocation law supported on pairs (0,1) and (2,3), each with probability 1/2, and verifies every hypothesis of the general fixed-count clause at line 147.",
+    "confidence": 0.99
+  }
+]

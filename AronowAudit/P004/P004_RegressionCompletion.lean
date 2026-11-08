@@ -277,5 +277,8 @@ theorem hajek_ols {N : ℕ} (R : CircleTable N) (z : Assignment N)
   unfold hajek
   constructor <;> linarith
 
+#print axioms regression_matrix_identities
+#print axioms observational_sandwich_identity
+#print axioms hajek_ols
 end
 end AronowAudit.P004

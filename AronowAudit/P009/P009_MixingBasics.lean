@@ -199,6 +199,11 @@ theorem exceptional_pair_finite_counts_completed {n : ℕ} (hn : 0 < n) (E : Exp
         rw [hds]
         ring
 
+#print axioms exceptional_pair_finite_counts_completed
+#print axioms corrected_full_pair_mixing_bound_completed
+#print axioms alpha_le_of_event_bound
+#print axioms covariance_indicator_le_alpha
+#print axioms three_error_transfer
 end
 end AronowAudit.P009.MixingBasics
 
@@ -218,6 +223,8 @@ theorem exceptional_pair_finite_counts {n : ℕ} (hn : 0 < n) (E : Experiment n)
       (n:ℝ)^2-(n:ℝ)*dAvg E := by
   exact MixingBasics.exceptional_pair_finite_counts_completed hn E u hu
 
+#print axioms exceptional_pair_finite_counts
+
 theorem corrected_full_pair_mixing_bound {n : ℕ} (hn : 0 < n)
     (E : Experiment n) (b : Bool) (k : ℝ) (hk : 0 < k) :
     k^2/(n:ℝ)^2 * (∑ i, ∑ j, cov E.design
@@ -227,6 +234,8 @@ theorem corrected_full_pair_mixing_bound {n : ℕ} (hn : 0 < n)
       k^2*dAvg E/(n:ℝ) + k^2/(n:ℝ)^2 *
         (∑ i, ∑ j, (1-d E i j)*alpha E.design (fun z => z i) (fun z => z j)) := by
   exact MixingBasics.corrected_full_pair_mixing_bound_completed hn E b k hk
+
+#print axioms corrected_full_pair_mixing_bound
 
 end
 end AronowAudit.P009

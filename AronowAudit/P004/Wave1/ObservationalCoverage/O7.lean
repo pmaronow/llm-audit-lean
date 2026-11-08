@@ -3,7 +3,7 @@ import AronowAudit.P004.Wave1.ObservationalCoverage.O5
 import AronowAudit.P004.Wave1.LinePopulation.N1
 
 /-! The actual footnote-9 coefficient and doubly weighted printed SAH statistic.
-The restriction to `3 ≤ N` is essential. -/
+The restriction to `3 ≤ N` is essential. Drafted without running Lean. -/
 
 namespace AronowAudit.P004.Wave1.ObservationalCoverage
 

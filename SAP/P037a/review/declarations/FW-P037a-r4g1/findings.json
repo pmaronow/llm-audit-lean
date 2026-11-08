@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P037-T1",
+    "theorem": "SAP.P037a.T1",
+    "fingerprint": "966a76a1906a088b266f21b2932224234267b7ca9f333dab78220289ae145496",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:12-35 without using any Challenge theorem: countMass 1 0 > 0, assignmentMass (0,0,0) > 0, and for B=1 at this positive-mass sample alpha=3/10, theta=(-1/10,0,0) is an actual global least-squares minimizer (zero residual loss). Independently, scratch/check_design.py enumerated the collapsed law with exact rational arithmetic, finding exactly 454 positive states and checking normalization, treated-school moments, the displayed G and h, det G=31/60000, its unique coefficient vector, and all mixture basis coefficients. The repeated-block law is explicitly the product law; finite least-squares minimizers exist for every sample, so the minimizing-selection premise is inhabited by classical choice.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P037-T2",
+    "theorem": "SAP.P037a.T2",
+    "fingerprint": "6f25121b34e12012730f15dbced9fb38597241ecdf5d3d1df8af93f6fab5032d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:37-120 without using any Challenge theorem. Four strata with N=2, n=1 and one referent each satisfy the seed-law hypotheses and have an explicit seed assignment, mu=q=1/2. A uniform 12-point design Fin 6 x Fin 2 independently chooses a two-of-four treatment pair and a centered sign; C_0=1/2 +/- 1/4 and the other C_i=1/2 lie in [0,1]. With R=D(C-mu), W=D mu and Y=DC, the file proves CompositionRandomized for every function of D, E[R'MR]=3/128>0, the centered normal equations (delta,beta)=(1,1), and augmented normal equations (0,1), with a genuine augmentation index. scratch/Additional.lean:47-72 independently constructs the responseIdentification hypotheses including injectivity of its population Gram map. Exact rational enumeration also checks the unequal-strata arithmetic, E[R'MR]=1/160 in the canonical witness and all six displayed regression fits. Zero-error and zero-variation branches are legitimate algebraic special cases, not incompatible premises.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T3",
+    "theorem": "SAP.P037a.T3",
+    "fingerprint": "cce6a1ae253936ce323379a8c91688275ae1d01eb22368f0505f19ad0e78169a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:122-131: both specified pairs (-57/1000,7/250) and (-57/1000,17/500) satisfy every strict rounding-bin condition; their Wald ratios are 57/28 and 57/34, with 57/34<1.9 and 2<57/28. It also constructs the interior ratio z=2 using a=3/50 and s=3/100. Thus the parameter bins, critical-value interval and existential witnesses are nonempty. The genuine Gaussian CDF makes the quantile set nonempty and bounded below (limits 1 and 0 at the respective infinities), excluding a junk infimum. scratch/check_design.py separately sanity-checks all six normal-tail numbers and the 1.95996/1.95997 bracket numerically; those floating-point checks are not presented as proofs of the already-certified analytic assertions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P037-T4",
+    "theorem": "SAP.P037a.T4",
+    "fingerprint": "c804d8519939a0e741076ddd699842bd03ca43b6802a53743a91f898b5cf6f51",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Additional.lean:8-45: on the product probability space indexed by Fin 2 x Bool, the false coordinates have U(0,1) law and the true coordinates have Exp(1) law; the two coordinate subfamilies are measurable and independent within each family, and all marginal-law and probability-space assumptions of bootstrapRandomComparison hold simultaneously. scratch/Check.lean:133-160 constructs independent measurable uniform and exponential coordinate families of every finite size. scratch/Check.lean:177-199 gives positive weights (1,2), full-rank one-column design X=(1,1), response (1,3), Gram determinant 3, normal-equation solution 7/3 and normalized weights (1/3,2/3). scratch/Additional.lean:75-80 checks that the actual inverse-formula coefficient is 7/3. All denominators in the law arguments are positive almost surely, and all event masses are finite.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P037-T5",
+    "theorem": "SAP.P037a.T5",
+    "fingerprint": "e686fca5c232973b956a5bb7036fa30449acffe307cefa5cc4257d8a25ee9fe3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:133-175: product-uniform and product-exponential probability spaces furnish independent measurable input coordinates of every finite size, and the positive vector e=(1,1) maps under the displayed forward normalization to (q,t)=(1/2,2), which belongs to its stated chart domain and maps back to e under the inverse. For every dimension the all-ones multiplier vector also shows the positive orthant is nonempty, with positive total; the completed chart obtained by normalization is nonempty. Uniform input vectors are in (0,1) almost surely, so their minus-log transforms have their ordinary meaning, and independent continuous uniforms have no ties almost surely, giving genuine endpoint spacings. The positive-weight full-rank regression and actual inverse coefficient are independently checked in scratch/Check.lean:177-199 and scratch/Additional.lean:75-80. No Challenge theorem is used in these nonvacuity proofs.",
+    "confidence": 0.99
+  }
+]

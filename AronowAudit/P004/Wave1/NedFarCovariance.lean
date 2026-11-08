@@ -3,8 +3,8 @@ import AronowAudit.P004.Wave1.NedFarCovariance.E1
 import AronowAudit.P004.Wave1.NedFarCovariance.E2
 import AronowAudit.P004.Wave1.NedFarCovariance.E3
 
-/-! Far-pair covariance bound, uniform over bounded deterministic fits,
-with the population-arm-mean specialization as its second conjunct. -/
+/-! The repaired far-pair covariance theorem, uniform over bounded deterministic fits,
+with the held population-arm-mean specialization as its second conjunct. -/
 
 universe u
 
@@ -49,6 +49,9 @@ theorem ned_far_covariance_under_uniform_spacing :
         (∑ l ∈ ball (nodeSeparation (P N)) j (bandwidth N),
           ψ (nodeSeparation (P N) i j/3-nodeSeparation (P N) j l))) := by
   exact NedFarCovariance.assemble NedFarCovariance.e3_proof
+
+example : AronowAudit.P004.Wave1.NedFarCovariance.Target.{u} :=
+  ned_far_covariance_under_uniform_spacing
 
 end
 end AronowAudit.P004.Wave1

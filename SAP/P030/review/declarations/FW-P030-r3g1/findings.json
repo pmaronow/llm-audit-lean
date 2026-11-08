@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P030-T1",
+    "theorem": "SAP.P030.T1",
+    "fingerprint": "71229840c568cf1eb88bbf192d449576529fe9c6a1f4f4cd518d8aef9690e659",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete experiment; there are no external data hypotheses. scratch/Check.lean:14 constructs NoEffects and NoInterference directly; :21 constructs nonempty unconditional and conditional supports; :47 constructs a treated variant unit for either assignment; :68 verifies outcome rank square sum 2. scratch/FiveWitness.lean:20 independently proves both actual nearest-distance vectors, :31 proves both Spearman statistics equal 1, and :105 proves both distance rank square sums equal 2. Its :81 proves actual printed rejection probability 1 for every positive alpha. All checks compiled. scratch/recompute.py independently checks the complete finite rank/tail arithmetic, including corrected size 0. No zero-denominator or empty-minimum convention is used by the witness.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T2",
+    "theorem": "SAP.P030.T2",
+    "fingerprint": "7e0e25c38ce600cb55170ef05158281fc751bf32be64ff3b9129c03f41bbb1f9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete ten-unit population; there are no external data hypotheses. scratch/Check.lean:28 directly constructs NoEffects, NoInterference and FixedOutcomeNull; :38 constructs nonempty unconditional and conditional supports; :53 supplies a treated variant unit in every row; :74 proves outcome rank square sum 9/2. scratch/TenWitness.lean:20 independently verifies all six actual nearest-distance vectors, :32 proves every distance rank square sum positive, :39 verifies all rational squared correlations, :48 and :51 identify actual and imputed statistics, and :55 supplies supported assignments with unequal actual statistics. All checks compiled. scratch/recompute.py additionally checks exact midranks, products, square sums, conditioning masses, inclusive tails, rational rounding bounds, and printed size 1/2 versus corrected size 0 at alpha=1/20.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T3",
+    "theorem": "SAP.P030.T3",
+    "fingerprint": "1709f21e4092487711ed5843fbf62c5ef55d800d64eee6db832fc69b32718be3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:81 constructs a FiniteLaw on Fin 2 with support univ and masses (1/3,2/3), proving both mass nonnegativity and total mass 1; :87 evaluates the lower and upper tails of the nonconstant statistic f(i)=i.val. Thus the universally quantified hypotheses are jointly satisfiable with unequal positive masses. The strict-inclusion example is independently realized in scratch/FiveWitness.lean:31 and :81, and its two inclusive tails and corrected size 0 are checked in scratch/recompute.py. All Lean and Python checks passed. Normalization rules out an empty support; no integrals, undefined expectations or infinite extrema occur.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T4",
+    "theorem": "SAP.P030.T4",
+    "fingerprint": "968b6fc4ade0b15f1cb9fd47ea47879aab3532b44d9544370b0bccccde998109",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiveWitness.lean:92 independently proves the negation of PrintedTwoTailedExactness using N=5, fiveOmega, fiveS, observation fiveAssignment 0, fiveY and the actual distance/Spearman function fiveG defined at :39. It constructs the nonempty conditional support and no-interference proof and uses alpha=1/20, where the actual rejection probability is 1. The distances and correlation are proved from definitions, and rank square sums are positive. Compilation succeeded; #print axioms reports only propext, Classical.choice and Quot.sound, with no sorryAx and no dependency on the Challenge proofs. This is a genuine witness to failure of the canonical assertion itself, including its standing assumptions; it is also compatible with the printed statistic-constancy equality.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P030-T5",
+    "theorem": "SAP.P030.T5",
+    "fingerprint": "e612bdfbe502a58296c683017b5b2532d020f79b5992deea771aa0552947adde",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:28 directly verifies the no-effects, no-interference and fixed-outcome nulls; :38 verifies nonempty supports. scratch/TenWitness.lean:55 independently constructs the two supported assignments treating units 2 and 5 and proves their actual statistics differ, using the proved squared values 1/90 and 25/36. Every row has positive distance rank variance (:32), and outcome rank square sum is 9/2 (scratch/Check.lean:74). The nonconstancy proof compiled without sorryAx. scratch/recompute.py confirms exactly three statistic values, observed inclusive lower-tail p=1/3 and its 0.333 rounding. For the generic constant-statistic clauses, scratch/Check.lean:92 constructs a nonempty two-point support and t=7, with point-mass probability and inclusive lower-tail probability both 1.",
+    "confidence": 0.99
+  }
+]

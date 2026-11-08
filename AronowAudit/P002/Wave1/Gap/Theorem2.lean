@@ -214,5 +214,7 @@ theorem corrected_theorem2_proof (k : ℕ) (δ e A B r α : ℝ) (hk : 0 < k) (h
     simpa only [P.property.2] using hn P.val P.property.1
   exact ((ENNReal.lt_ofReal_iff_toReal_lt hyn).mpr hyx).trans_le hbound
 
+example : type_of% @AronowAudit.P002.corrected_theorem2 := corrected_theorem2_proof
+
 end
 end AronowAudit.P002.Wave1

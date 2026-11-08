@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P010-T16",
+    "theorem": "SAP.P010.T16",
+    "fingerprint": "62c2f682e78e39dbeb9a78791a2a8f42a66300eac90d35cf89dd0c2245344c61",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled successfully using only SAP.P010.Defs. At q=1/2 the six canonical atoms each have mass 1/6. The file proves probability normalization, positive assigned-arm masses, populationAssumptions, passing rates 2/3, all three principal-stratum masses 1/3, independence of the entire potential vector from assignment, observed check-assignment independence, integrability, zero unit effects and all three stratum means, zero average check effect, and selected means 0 and 1/2. The explicit example 0<1/2<1 satisfies every input hypothesis. For every interior q, the definition factors into the fixed three-stratum law of mass 1/3 each times the arm law (q,1-q), giving the same genuine canonical construction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T17",
+    "theorem": "SAP.P010.T17",
+    "fingerprint": "7d5831ea53a51905c9c796f54c43805fb2e481f0765b4df8ec9e11b3d4e47f12",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:75 compiles an example with K=2, d=0, fair assignment, Y(0)=0, Y(1)=1, and both potential checks true, satisfying IsProbabilityMeasure, randomAssignment, and populationAssumptions. Taking the comparison population equal to this one satisfies the same-observed-law antecedent reflexively. Lines 80-85 also prove that the all-fail version satisfies the valid design but fails positivePassRates: the assumption excludes real populations and is not automatically inferred from ignorability.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P010-T18",
+    "theorem": "SAP.P010.T18",
+    "fingerprint": "e5af8afd1bb75b1a0979b728895ef323dd71067554aad0562f7fc532ff2738c4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:56 compiles an existential example with K=2, d=0, fair assignment, constant potential outcomes Y(0)=0 and Y(1)=1, and both potential checks true. It supplies populationAssumptions, probability-one sameCheck, and integrability of both potentials for the distinct ordered arms 1 and 0. All conditioning events have positive mass and the causal difference is 1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T19",
+    "theorem": "SAP.P010.T19",
+    "fingerprint": "6715c01a35cdc2552b7f58cd1140d584f20021bba553805565bf9abb0ef33651",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:63 compiles an existential example with K=2, d=0, fair assignment, constant potential outcomes Y(0)=0 and Y(1)=1, and both potential checks false. It supplies IsProbabilityMeasure, randomAssignment, and integrability of both potentials for arms 1 and 0. This witnesses every hypothesis with a nonzero potential-mean difference and without imposing passing positivity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T20",
+    "theorem": "SAP.P010.T20",
+    "fingerprint": "18ed06516f6112121e3b6aec528cba8ffa1256f0fe52a02eca9728cb6514492d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:70 compiles an existential example with K=2, d=0, fair assignment, potential outcomes 0 and 1, and both potential checks false. It supplies IsProbabilityMeasure, randomAssignment, and probability-one sameCheck. Thus every hypothesis is jointly satisfiable even when nobody passes, as the canonical implication permits.",
+    "confidence": 0.99
+  }
+]

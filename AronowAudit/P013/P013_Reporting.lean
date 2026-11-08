@@ -179,3 +179,13 @@ theorem degree39_design_incompatibility (U neighbors : Finset ℕ) (i n : ℕ)
 end
 end AronowAudit.P013
 
+#print axioms AronowAudit.P013.wald_center
+#print axioms AronowAudit.P013.wls_d101_impossible
+#print axioms AronowAudit.P013.wls_d111_impossible
+#print axioms AronowAudit.P013.table2_two_rows
+#print axioms AronowAudit.P013.complete_randomization_degree39_counts
+#print axioms AronowAudit.P013.degree39_choose_ratio
+#print axioms AronowAudit.P013.degree39_ratio_bound
+#print axioms AronowAudit.P013.degree39_small_p
+#print axioms AronowAudit.P013.degree39_large_q
+#print axioms AronowAudit.P013.degree39_design_incompatibility

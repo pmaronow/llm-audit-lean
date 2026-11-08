@@ -200,5 +200,7 @@ lemma actual_residual_bound (k:Fin 10):|tableLogitResidual k|≤1:=by
     _≤(1/200000000:ℝ)+999/1000:=add_le_add he hc
     _≤1:=by norm_num
 
+#print axioms actual_residual_approximation
+#print axioms actual_residual_bound
 end
 end AronowAudit.P026.LogitCompletion

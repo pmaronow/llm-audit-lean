@@ -1,0 +1,849 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.coin_is_probability",
+        "reason": "The exact Bernoulli probability helper is not separately invoked; the fixed finite model is explicit in the definitions."
+      },
+      {
+        "lean_name": "AronowAudit.P006.treatedCount_two",
+        "reason": "Treatment counts are already present in the exact printed reward definition and the exported witness theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P006.twoATO_formula",
+        "reason": "The specialized expected-reward polynomial is used directly instead of the more general two-unit expansion."
+      },
+      {
+        "lean_name": "AronowAudit.P006.wATO_two",
+        "reason": "The realized reward expansion is already incorporated in the specialized witness; SUTVA transport uses the separately credited invariance row."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.T1_average_counterexample",
+      "AronowAudit.P006.T1_conditional_mean_mismatch",
+      "AronowAudit.P006.binaryWelfare_SUTVA",
+      "AronowAudit.P006.realized_rewards_SUTVA",
+      "AronowAudit.P006.rewardE001_formula",
+      "AronowAudit.P006.wATT_zero"
+    ],
+    "statement_definition": "SAP.P006a.T1Statement",
+    "target_id": "P006-T1",
+    "theorem": "SAP.P006a.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T2_one_unit_factor",
+      "AronowAudit.P006.T2_population_conditional_rule",
+      "AronowAudit.P006.Wave1.T2_corrected_average_split",
+      "AronowAudit.P006.Wave1.T2_finite_threshold_proof",
+      "SAP.P006a.WH.W1.T2_whole",
+      "SAP.P006a.WH.W1.T2_assembly",
+      "SAP.P006a.WH.W1.T2_L1_proof",
+      "SAP.P006a.WH.W1.T2_L2_proof",
+      "AronowAudit.P006.T1_average_counterexample",
+      "AronowAudit.P006.Wave1.T2_actual_averages",
+      "AronowAudit.P006.Wave1.T2_treatment_stats",
+      "AronowAudit.P006.Wave1.T2_nonempty_mass",
+      "AronowAudit.P006.Wave1.T2_objective_formula",
+      "AronowAudit.P006.Wave1.T2_event_mean",
+      "AronowAudit.P006.Wave1.T2_best_congr",
+      "AronowAudit.P006.Wave1.T2_geometric",
+      "AronowAudit.P006.Wave1.T2_fid_baseline_vectorUnbiased",
+      "AronowAudit.P006.Wave1.T6_independent_vector",
+      "AronowAudit.P006.Wave1.T7_bit_norm",
+      "AronowAudit.P006.Wave1.T7_bit_mul",
+      "AronowAudit.P006.Wave1.T2_total_moment"
+    ],
+    "statement_definition": "SAP.P006a.T2WholeStatement",
+    "target_id": "P006-T2",
+    "theorem": "SAP.P006a.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.positive_factor_regret",
+        "reason": "The experiment theorem already exports the abstract positive-factor regret consequence."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T3_corrected_ATT_regret_proof",
+      "AronowAudit.P006.bestValue_eq",
+      "SAP.P006a.WH.W1.T3_whole",
+      "SAP.P006a.WH.W1.T3_assembly",
+      "AronowAudit.P006.T1_average_counterexample",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_welfare",
+      "AronowAudit.P006.Wave1.T2_actual_averages",
+      "AronowAudit.P006.Wave1.T2_treatment_stats",
+      "AronowAudit.P006.emptyFactor_ge_one",
+      "AronowAudit.P006.Wave1.T7_policy_mul"
+    ],
+    "statement_definition": "SAP.P006a.T3WholeStatement",
+    "target_id": "P006-T3",
+    "theorem": "SAP.P006a.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.oneTT_formula",
+        "reason": "The specialized witness formula supplies the actual expected rewards; the general one-unit expansion is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.T4_unbiasedness_counterexamples",
+      "AronowAudit.P006.T4_zero_heterogeneity_bound_failure",
+      "AronowAudit.P006.wATT_one_eq_TT",
+      "AronowAudit.P006.witnesses_AB_formula"
+    ],
+    "statement_definition": "SAP.P006a.T4Statement",
+    "target_id": "P006-T4",
+    "theorem": "SAP.P006a.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T5_ranking_counterexample",
+      "AronowAudit.P006.ranking_witness_formula"
+    ],
+    "statement_definition": "SAP.P006a.T5Statement",
+    "target_id": "P006-T5",
+    "theorem": "SAP.P006a.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.T6_finite_aux_actual_identity",
+        "reason": "Finite specialization or auxiliary reduction not needed: the two credited general measurable-experiment results establish the stated target."
+      },
+      {
+        "lean_name": "AronowAudit.P006.T6_finite_auxiliary_estimation",
+        "reason": "Finite specialization or auxiliary reduction not needed: the two credited general measurable-experiment results establish the stated target."
+      },
+      {
+        "lean_name": "AronowAudit.P006.T6_finite_corrected_alignment",
+        "reason": "Finite specialization or auxiliary reduction not needed: the two credited general measurable-experiment results establish the stated target."
+      },
+      {
+        "lean_name": "AronowAudit.P006.T6_finite_reward_identity",
+        "reason": "Finite specialization or auxiliary reduction not needed: the two credited general measurable-experiment results establish the stated target."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T6_corrected_TT_minimal_integrability",
+      "AronowAudit.P006.Wave1.T6_independent_estimation_minimal_integrability"
+    ],
+    "statement_definition": "SAP.P006a.T6Statement",
+    "target_id": "P006-T6",
+    "theorem": "SAP.P006a.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.T7_finite_positive_rule",
+        "reason": "The general measurable-experiment theorem covers the canonical target; this finite specialization is not needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.pointwise_policy_gain_le",
+        "reason": "The full weighted-alignment theorem is used directly; its supporting pointwise inequality is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T7_corrected_weighted_alignment_treated_integrability"
+    ],
+    "statement_definition": "SAP.P006a.T7Statement",
+    "target_id": "P006-T7",
+    "theorem": "SAP.P006a.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.Wave1.T8_lemma2_proposition10_proof",
+        "reason": "Final status wrong_credit: not usable for this target; no statement or proof is taken from this row."
+      },
+      {
+        "lean_name": "AronowAudit.P006.uniform_error_regret",
+        "reason": "The experiment theorem already exports the regret bound, so the abstract decision helper is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T8_corrected_information_bound_proof",
+      "SAP.P006a.WH.W2.T8_whole",
+      "SAP.P006a.WH.W2.T8_assembly",
+      "SAP.P006a.WH.W2.T8_L1_proof",
+      "SAP.P006a.WH.W2.T8_L2_proof",
+      "SAP.P006a.WH.W2.T8_L3_proof",
+      "SAP.P006a.WH.W2.T8_L4_proof",
+      "SAP.P006a.WH.W2.T8_L5_proof",
+      "SAP.P006a.WH.W2.normalizedBestW2",
+      "SAP.P006a.WH.W2.regretEqW2",
+      "SAP.P006a.WH.W2.proposition10OfErrorW2",
+      "SAP.P006a.WH.W2.informationBoundW2",
+      "SAP.P006a.WH.W2.factorizationAtW2",
+      "SAP.P006a.WH.W2.qualifiedAtW2",
+      "SAP.P006a.WH.W2.evaluatedIntegrableW2",
+      "SAP.P006a.WH.W2.commonLawErrorAtW2",
+      "AronowAudit.P006.bestValue_eq",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_treated_score",
+      "AronowAudit.P006.Wave1.T8_information_integral_bias_bound",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_welfare",
+      "AronowAudit.P006.Wave1.T8_lemma2_signed_residual_integrable",
+      "AronowAudit.P006.Wave1.T7_policy_mul",
+      "SAP.P006a.WH.W2.P.T8_L1.weighted_coin_integrals_eq",
+      "AronowAudit.P006.Wave1.RepairT6T7_mul_integrable",
+      "AronowAudit.P006.Wave1.RepairT6T7_bit_norm",
+      "AronowAudit.P006.Wave1.RepairT6T7_unit_outcome_moments",
+      "AronowAudit.P006.Wave1.RepairT6T7_law_transport",
+      "AronowAudit.P006.Wave1.RepairT6T7_admissible_norm",
+      "SAP.P006a.WH.W2.P.T8_L2.bit_measurable",
+      "SAP.P006a.WH.W2.P.T8_L2.bit_integrable",
+      "SAP.P006a.WH.W2.P.T8_L2.integrable_of_measurable_bounded",
+      "SAP.P006a.WH.W2.P.T8_L2.setIntegral_restrict_eq_bit",
+      "SAP.P006a.WH.W2.P.T8_L2.residual_setIntegral_eq",
+      "SAP.P006a.WH.W2.P.T8_L2.treatedMeasure_setIntegral",
+      "SAP.P006a.WH.W2.P.T8_L2.treatedNull_iff",
+      "SAP.P006a.WH.W2.P.T8_L2.nullOnSet_iff_pos",
+      "AronowAudit.P006.Wave1.RepairT6T7_binary_conditional_moment_extension",
+      "AronowAudit.P006.Wave1.RepairT6T7_auxiliary_condExp",
+      "AronowAudit.P006.Wave1.T7_bit_mul",
+      "SAP.P006a.Bridge.experiment",
+      "SAP.P006a.Bridge.policyDesign"
+    ],
+    "statement_definition": "SAP.P006a.T8WholeStatement_W2",
+    "target_id": "P006-T8",
+    "theorem": "SAP.P006a.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T9_corrected_numeric_intervals",
+      "AronowAudit.P006.T9_denominator_identity",
+      "AronowAudit.P006.T9_from_printed_table"
+    ],
+    "statement_definition": "SAP.P006a.T9Statement",
+    "target_id": "P006-T9",
+    "theorem": "SAP.P006a.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.treatedCount_one",
+        "reason": "The exact one-unit expectation is used directly; the count helper is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P006.wATO_one",
+        "reason": "The actual ATO reward occurs in the expectation definition; its exported expectation formula supplies the needed reduction."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.T10_singleton_feasible_counterexample",
+      "AronowAudit.P006.oneATOExpectation_formula",
+      "AronowAudit.P006.oneATO_invariance"
+    ],
+    "statement_definition": "SAP.P006a.T10Statement",
+    "target_id": "P006-T10",
+    "theorem": "SAP.P006a.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T11_corrected_impossibility",
+      "AronowAudit.P006.T11_unbounded_shift_arithmetic"
+    ],
+    "statement_definition": "SAP.P006a.T11Statement",
+    "target_id": "P006-T11",
+    "theorem": "SAP.P006a.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.smul_support_eq",
+        "reason": "The density counterexample already exports both support equalities, so the generic scaling helper is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.T12_density_direction_counterexample",
+      "SAP.P006a.WH.W1.T12_whole",
+      "SAP.P006a.WH.W1.T12_assembly",
+      "SAP.P006a.WH.W1.T12_L1_proof"
+    ],
+    "scope": "Counterexample to the sufficiency reading of the printed absolute-continuity direction: P_agent << P_reference alone need not supply the named reference-to-agent density. This does not refute the ranking conclusion under a separate assumption that the named representing density exists.",
+    "statement_definition": "SAP.P006a.T12WholeStatement",
+    "target_id": "P006-T12",
+    "theorem": "SAP.P006a.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T13_corrected_ranking_treated_residuals"
+    ],
+    "statement_definition": "SAP.P006a.T13Statement",
+    "target_id": "P006-T13",
+    "theorem": "SAP.P006a.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T14_corrected_rank_inequality",
+      "AronowAudit.P006.positivePart_eq_max",
+      "SAP.P006a.WH.W1.T14_whole",
+      "SAP.P006a.WH.W1.T14_assembly"
+    ],
+    "statement_definition": "SAP.P006a.T14WholeStatement",
+    "target_id": "P006-T14",
+    "theorem": "SAP.P006a.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T15_constant_private_heterogeneity",
+      "AronowAudit.P006.T15_untreated_positivity_counterexamples"
+    ],
+    "statement_definition": "SAP.P006a.T15Statement",
+    "target_id": "P006-T15",
+    "theorem": "SAP.P006a.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.finite_convex_mean_bounds",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T16_corrected_agent_data_bound_proof",
+      "AronowAudit.P006.T16_sufficient_positivity"
+    ],
+    "statement_definition": "SAP.P006b.T16Statement",
+    "supporting_declarations": [
+      "AronowAudit.P006.bestValue_eq",
+      "MeasureTheory.integral_const",
+      "mul_div_cancel_right₀"
+    ],
+    "target_id": "P006-T16",
+    "theorem": "SAP.P006b.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.Wave1.T17_maximum_dominates_marginal_printed_false",
+        "reason": "The row refutes an unrestricted measurable-space assertion, whereas canonical clause (d) positively asserts the finite conditional-type comparison; wrong_credit cannot supply that clause or change the target."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.T17_selected_type",
+      "AronowAudit.P006.T17_three_type_example",
+      "SAP.P006b.WH.W1.T17_whole",
+      "SAP.P006b.WH.W1.T17_assembly",
+      "SAP.P006b.WH.W1.T17_L1_proof",
+      "SAP.P006b.WH.W1.T17_L2_proof",
+      "SAP.P006b.WH.W1.T17_L3_proof",
+      "SAP.P006b.WH.W1.T17_L4_proof",
+      "AronowAudit.P006.Wave1.RepairT6T7_unit_outcome_moments",
+      "AronowAudit.P006.Wave1.RepairT6T7_mul_integrable",
+      "AronowAudit.P006.Wave1.T2_total_moment",
+      "AronowAudit.P006.coin_is_probability",
+      "AronowAudit.P006.bestValue_eq"
+    ],
+    "statement_definition": "SAP.P006b.T17WholeStatement",
+    "target_id": "P006-T17",
+    "theorem": "SAP.P006b.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T18_regret_sign_counterexample",
+      "SAP.P006b.WH.W1.T18_whole",
+      "SAP.P006b.WH.W1.T18_assembly",
+      "AronowAudit.P006.twoATO_formula",
+      "AronowAudit.P006.wATO_two",
+      "AronowAudit.P006.bestValue_eq"
+    ],
+    "statement_definition": "SAP.P006b.T18WholeStatement",
+    "target_id": "P006-T18",
+    "theorem": "SAP.P006b.T18"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T19_corrected_regret",
+      "AronowAudit.P006.T19_corrected_regret_tendsto"
+    ],
+    "statement_definition": "SAP.P006b.T19Statement",
+    "supporting_declarations": [
+      "Filter.Tendsto.congr'"
+    ],
+    "target_id": "P006-T19",
+    "theorem": "SAP.P006b.T19"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T20_logistic_counterexample"
+    ],
+    "statement_definition": "SAP.P006b.T20Statement",
+    "target_id": "P006-T20",
+    "theorem": "SAP.P006b.T20"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T21_corrected_logistic_mean",
+      "AronowAudit.P006.logistic_bounds",
+      "AronowAudit.P006.signed_mean_formula"
+    ],
+    "statement_definition": "SAP.P006b.T21Statement",
+    "target_id": "P006-T21",
+    "theorem": "SAP.P006b.T21"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T22_corrected_empirical_mean",
+      "AronowAudit.P006.T22_two_row_example"
+    ],
+    "statement_definition": "SAP.P006b.T22Statement",
+    "target_id": "P006-T22",
+    "theorem": "SAP.P006b.T22"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T23_missing_outcome_counterexample"
+    ],
+    "statement_definition": "SAP.P006b.T23Statement",
+    "target_id": "P006-T23",
+    "theorem": "SAP.P006b.T23"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.T24_mixture_mean_iff",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.T24_representative_identification",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.independent_untreated_mean",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.Wave1.T24_corrected_identification_proof"
+    ],
+    "statement_definition": "SAP.P006b.T24Statement",
+    "target_id": "P006-T24",
+    "theorem": "SAP.P006b.T24"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.iid_additive_expectation",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.lower_bound_best_response_iff",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.lower_bound_gamma_eq",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P006.scale_best_iff",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.T25_printed_lower_bound_family",
+      "AronowAudit.P006.T25_existential_lower_bound",
+      "AronowAudit.P006.T25_unique_response_variant",
+      "AronowAudit.P006.T25_exact_sample_reward",
+      "AronowAudit.P006.lower_bound_formulas",
+      "AronowAudit.P006.lower_bound_perturbed_best_iff",
+      "AronowAudit.P006.lower_bound_welfare_optimum",
+      "SAP.P006b.WH.W1.T25_whole",
+      "SAP.P006b.WH.W1.T25_assembly",
+      "SAP.P006b.WH.W1.T25_general",
+      "SAP.P006b.WH.W1.T25_L1_proof",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_treated_score",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_welfare",
+      "AronowAudit.P006.lower_bound_best_response_iff",
+      "AronowAudit.P006.scale_best_iff",
+      "AronowAudit.P006.bestValue_eq"
+    ],
+    "statement_definition": "SAP.P006b.T25WholeStatement",
+    "target_id": "P006-T25",
+    "theorem": "SAP.P006b.T25"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.Wave1.printed_average_best_response_refuted",
+        "reason": "Its negated universal omits full support and cannot itself prove the repaired statement."
+      }
+    ],
+    "rows_used": [],
+    "statement_definition": "SAP.P006b.T26Statement",
+    "supporting_declarations": [
+      {
+        "lean_name": "SAP.P006b.T26Repair.refutation",
+        "reason": "Reassembles the explicit two-unit E26 counterexample with positive mass at every covariate point; refutes only the joint ATO/ATT assertion."
+      }
+    ],
+    "target_id": "P006-T26",
+    "theorem": "SAP.P006b.T26"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.Wave1.printed_TT_alignment_refuted"
+    ],
+    "statement_definition": "SAP.P006b.T27Statement",
+    "target_id": "P006-T27",
+    "theorem": "SAP.P006b.T27"
+  },
+  {
+    "axioms": [],
+    "decision": "omitted",
+    "proof_plan": null,
+    "proof_status": null,
+    "restriction": "The only credited row is wrong_credit: it refutes a universal implication for hypothetical numerical summaries, without connecting those summaries or interval premises to the actual fitted effects of either reported analysis. It establishes neither the two particular beneficiary means nor their refutation.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.ConfidenceFollowup02.T28_printed_beneficiary_report_refuted",
+        "reason": "The only credited row is wrong_credit: it refutes a universal implication for hypothetical numerical summaries, without connecting those summaries or interval premises to the actual fitted effects of either reported analysis. It establishes neither the two particular beneficiary means nor their refutation."
+      }
+    ],
+    "rows_used": [],
+    "target_id": "P006-T28",
+    "theorem": null
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P006.rewardP1_best",
+        "reason": "Its component is already supplied by the selected composite theorem; no separate use of this auxiliary declaration is needed."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P006.T29_ato_unbounded",
+      "AronowAudit.P006.Wave1.T29_family_all_sizes_proof",
+      "AronowAudit.P006.T29_first_mode_tendsto",
+      "AronowAudit.P006.T29_first_mode_welfare",
+      "SAP.P006b.WH.W1.T29_whole",
+      "SAP.P006b.WH.W1.T29_assembly",
+      "SAP.P006b.WH.W1.T29_family",
+      "SAP.P006b.WH.W1.T29_L1_proof",
+      "AronowAudit.P006.Wave1.T2_treatment_stats",
+      "AronowAudit.P006.Wave1.T2_unit_mark_moments",
+      "AronowAudit.P006.Wave1.T2_marked_average",
+      "AronowAudit.P006.Wave1.T2_observed_coefficients",
+      "AronowAudit.P006.Wave1.T2_average_coefficients",
+      "AronowAudit.P006.Wave1.T29_finite_iid_formula",
+      "AronowAudit.P006.Wave1.T29_unique",
+      "AronowAudit.P006.Wave1.T29_one",
+      "AronowAudit.P006.Wave1.T2_best_congr",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_welfare"
+    ],
+    "statement_definition": "SAP.P006b.T29WholeStatement",
+    "supporting_declarations": [
+      "Filter.Tendsto.congr'"
+    ],
+    "target_id": "P006-T29",
+    "theorem": "SAP.P006b.T29"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "declaration_review_round1": {
+      "resolution": "Corrected the docstring: both ranking premises hold, while the required score ordering fails for both properties. The statement, definitions, proof, restriction and decision are unchanged.",
+      "reviewer": "r1g3",
+      "severity": "minor",
+      "verdict": "not_faithful"
+    },
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P006.T30_TT_ranking_failure",
+      "SAP.P006b.WH.W1.T30_whole",
+      "SAP.P006b.WH.W1.T30_assembly",
+      "SAP.P006b.WH.W1.T30_maximum",
+      "SAP.P006b.WH.W1.T30_pair",
+      "SAP.P006b.WH.W1.T30_existence",
+      "AronowAudit.P006.Wave1.RepairT6T7_actual_treated_score",
+      "AronowAudit.P006.Wave1.RepairT6T7_positive_rule_integral_maximum",
+      "AronowAudit.P006.Wave1.RepairT6T7_mul_integrable",
+      "AronowAudit.P006.Wave1.RepairT6T7_admissible_norm",
+      "AronowAudit.P006.bestValue_eq",
+      "AronowAudit.P006.Wave1.BinaryExperiment.standing_of",
+      "AronowAudit.P006.Wave1.BinaryExperiment.n1_proof",
+      "AronowAudit.P006.Wave1.BinaryExperiment.n3_proof",
+      "AronowAudit.P006.Wave1.BinaryExperiment.n4_proof",
+      "AronowAudit.P006.Wave1.BinaryExperiment.n5_proof",
+      "AronowAudit.P006.Wave1.BinaryExperiment.fairLaw_probability"
+    ],
+    "statement_definition": "SAP.P006b.T30WholeStatement",
+    "target_id": "P006-T30",
+    "theorem": "SAP.P006b.T30"
+  }
+]

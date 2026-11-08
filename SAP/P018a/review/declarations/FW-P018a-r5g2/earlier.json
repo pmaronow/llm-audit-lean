@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P018a.T9",
+  "target_id": "P018-T9",
+  "round": 4,
+  "verdict": "restriction_inaccurate",
+  "severity": "minor",
+  "issues": [
+   "SAP/P018a/Challenge/Part2.lean:27: The sentence “All formulas dividing by dyad mass are restricted to N at least two” misdescribes the statement. The all-N fit and variance identities in SAP/P018a/Defs/WholeW1.lean:156-159 use W1c, defined at line 77 by division by W1W N. They include N=1, where W1W 1=0 and the identities use zero completion. The substantive canonical claim is fully covered and does not rely on this completion.",
+   "SAP/P018a/Defs/WholeW1.lean:153: The statement definition repeats the same inaccurate N>=2 scope assertion immediately before the unrestricted all-N linear-fit and variance identities."
+  ]
+ }
+]

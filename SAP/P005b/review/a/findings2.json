@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P005-T15",
+    "theorem": "SAP.P005b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take t=c=2, n=4, d=1, x=(-7/5,-1/5,1/5,7/5), any two-element treated subset and arbitrary outcomes. All coefficient denominators are positive. This covers all the corrected coefficient and covariance expressions, without assuming any identity being concluded.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T16",
+    "theorem": "SAP.P005b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=3,m=1,a=b=c=(1,1,-2) gives nonzero centered arrays and a nonzero third population moment. The randomization design and both arms are nonempty. Independent exact-rational checks of both third-moment identities cover 492 allocations at n=3,...,8; see scratch/audit.py and scratch/audit-results.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T17",
+    "theorem": "SAP.P005b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the finite contraction take n=2,d=m=1,x=(1,-1), with any real delta. For the order assertions take d_n=1,m_n=floor(n/2), x_ni=sqrt(12/(n^2-1))*(i-(n-1)/2), yT_ni=x_ni^2,yC_ni=0 for n>=3. These have uniform second-moment bound K=3, are standardized, and have treatment fractions between 1/4 and 3/4. Details are in scratch/checks.md. The additional finite residual-difference bound is valid because the common slope cancels, leaving centered yT-yC.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T18",
+    "theorem": "SAP.P005b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=5,d=1,m=2,x=(-3/2,-1/2,0,1/2,3/2),yT=x^2,yC=0 is standardized. For S={0,1} the actual residual term is 1/2. The general normal-equation hypothesis is also realized by these common residuals; it is not the bracket identity assumed as a hypothesis. Every displayed denominator is nonzero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T19",
+    "theorem": "SAP.P005b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "record2.json correctly says refuted. A witness to precisely the negated printed universal conjunction is n=7,m=6,t=treated,a=(10,1,1,1,1,1,1),b=(1/10,1,1,1,1,1,1). On the seven equiprobable allocations the covariance is zero once and -9/8 six times. Its variance 243/1568 exceeds the uncentered printed bound 31853/226800 by 46133/3175200. The expectation identity still holds, with expectation -27/28. Thus the refutation targets the false variance inequality in the printed domain, not an empty design or a modified definition.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T20",
+    "theorem": "SAP.P005b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "record2.json correctly says refuted, and the valid exact clauses are retained as T24Statement. The standardized n=5,d=1,m=2 grid x=(-3/2,-1/2,0,1/2,3/2),yT=x^2,yC=0 has minimum arm variance 1/16 across all assignments; the actual third-bias component is 21/320 and the printed side is -21/320. The additional asymptotic refutation also has a nonsingular witness: d=1,m=floor(n/2),z_0=0,z_i=(2i-n)/n,v_0=n-1,v_i=-1+z_i/n,x_i=v_i/sqrt(mean(v^2)),yT_i=yC_i=z_i. All covariates are distinct, K=1 suffices, kappa*log(d)=0, and kappa->1. The arm excluding unit 0 has intercept n, the other intercept is bounded, so the remainder grows linearly on every allocation. See the full argument in scratch/checks.md and exact finite enumerations in scratch/audit-results.json.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P005-T21",
+    "theorem": "SAP.P005b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The record and docstring accurately put m>=2 and n-m>=2 only around the expectations of (11),(12), their equivalent third-bias formula and coefficient collection. The main unbiasedness and inverse-free clauses retain n>=3 and both arms nonempty. The standardized distinct n=5,d=1 grid x=(-3/2,-1/2,0,1/2,3/2) is noninteracted-regular for every allocation at m=1 as well as m=2. Independent exact enumeration checks the main unbiasedness assertions on both domains; the m=2 example also realizes all restricted proof-step hypotheses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T22",
+    "theorem": "SAP.P005b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=5,d=1,m=2,x=(-3/2,-1/2,0,1/2,3/2),yT=x^2,yC=0. It is standardized and both within-arm variances are positive for every assignment. The two additional assertions require only centered covariates and the separately specified arm size, exactly as in the canonical claim. They use the inverse-free formula, so they do not rely on singular matrix inversion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T23",
+    "theorem": "SAP.P005b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The standardized n=5,d=1,m=2 distinct grid x=(-3/2,-1/2,0,1/2,3/2),yT=x^2,yC=0 has positive pooled variance for every assignment. The additive-effect premise is realized by yT=yC+1. For the balanced premise take n=4,m=2,x=(-7/5,-1/5,1/5,7/5), whose pooled variances are also positive. Exact-rational enumeration supports the decompositions and both bias formulas.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T24",
+    "theorem": "SAP.P005b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=5,d=1,m=2,x=(-3/2,-1/2,0,1/2,3/2),yT=x^2,yC=0 realizes standardization and all-assignment interacted regularity, with strictly positive arm variances. Both slope decompositions, the bias identity, the separate first-component moments and their difference match this target's valid exact part. The canonical target explicitly assigns the false later clauses to T20.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T25",
+    "theorem": "SAP.P005b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n>=3 take d_n=1,m_n=floor(n/2),x_ni=sqrt(12/(n^2-1))*(i-(n-1)/2),yT_ni=x_ni^2,yC_ni=0, with arbitrary finite prefix. These have mean(x)=0, mean(x^2)=1, uniform second-moment bound K=3 and treatment proportions strictly between 1/4 and 3/4. Distinct covariates give all-assignment noninteracted regularity. d_n/n->0 and kappa_n=3(n-1)/(n(n+1))>0. The canonical complete stochastic expansion and its probability quantifiers are retained; the revised whole label and dimension docstring are accurate. The earlier finding is fixed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T26",
+    "theorem": "SAP.P005b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The distinct standardized linear grid x_ni=sqrt(12/(n^2-1))*(i-(n-1)/2),d_n=1,m_n=floor(n/2),yT_ni=x_ni^2,yC_ni=0 has K=3, treatment proportions between 1/4 and 3/4 and all-assignment noninteracted regularity for n>=3. Its positive kappa_n=3(n-1)/(n(n+1)) tends to zero. The revised record and docstring accurately disclose exactly the missing bound without leverage decay and the missing exact identification with term (*) on p.1516; positivity is correctly identified as canonical. The earlier finding is fixed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T27",
+    "theorem": "SAP.P005b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n>=3 take x_ni=sqrt(12/(n^2-1))*(i-(n-1)/2),d_n=1,m_n=floor(n/2),yT_ni=x_ni^2,yC_ni=0, with arbitrary finite prefix. K=3 and proportion bounds 1/4,3/4 work. Both arm variances are positive under every assignment for n>=4. kappa_n=3(n-1)/(n(n+1))>0 tends to zero. The retained arm-specific expansion and the disclosed omission of the bound without leverage decay match the canonical claim; positive dimension is correctly identified as canonical. The earlier finding is fixed.",
+    "confidence": 0.99
+  }
+]

@@ -1,16 +1,22 @@
 import AronowAudit.P001.P001_Foundations
 
-/-!
-# Uniform/Gaussian quadratic CEF and its unique BLP (P001-T46)
+/-! # Blueprint: P001-T46 — uniform/Gaussian quadratic CEF and its unique BLP
 
-Example 2.2.24 (BLP under Nonlinearity), p. 82 (PDF p. 100), with corrected
-CEF factor `10X²`; Example 2.2.23, pp. 79–81; and mean-square minimization
-in Theorem 2.2.21, p. 76.
+Record 43 of dossier group P001c (`AronowAudit.P001.quadratic_cef_factor_ten_supporting`,
+resolution `bridge`). Example 2.2.24 (BLP under Nonlinearity), p. 82 (PDF p. 100), corrected
+CEF factor `10X²`, with the CEF and BLP of Example 2.2.23, pp. 79–81; BLP defined by
+mean-square minimization in Theorem 2.2.21, p. 76.
 
-For `X ~ U(0,1)`, independent `W ~ N(0,1)`, and `Y = 10X² + W`, the CEF is `10x²`.
-The BLP has slope `10` and intercept `-5/3`, and `-5/3 + 10X` uniquely minimizes
-the affine mean-square risk. The proof combines the CEF and coefficient identities,
-`Var X = 1/12`, and square integrability of `X`, `X²`, and `W`.
+For `X ~ U(0,1)`, independent `W ~ N(0,1)` and `Y = 10X² + W`: the CEF is `10x²`, the BLP
+coefficients are slope `10`, intercept `-5/3`, and `-5/3 + 10X` is the unique minimizer of the
+affine mean-square risk. The frozen proved `uniform_quadratic_cef_and_blp` already gives the
+CEF and the coefficients (and `Var X = 1/12`); the proved `blp_corrected_derivatives_and_minimum`
+gives the unique minimum once `X, Y ∈ L²`. The only new obligation is the `L²` facts.
+
+Map-P001c report, record 43; both referees accepted without fixes.
+
+Final declaration (writer): `AronowAudit.P001.Wave1.uniform_quadratic_cef_unique_blp`
+in `AronowAudit/P001/Wave1/QuadraticUniqueBlp.lean`.
 -/
 
 namespace AronowAudit.P001.Wave1.QuadraticUniqueBlp
@@ -23,7 +29,7 @@ local instance (p : Prop) : Decidable p := Classical.propDecidable p
 
 universe u
 
-
+/-- Frozen target (map-P001c `uniform_quadratic_cef_unique_blp`). -/
 def Target : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
     (X W : Ω → ℝ), Measurable X → Measurable W → IndepFun X W μ →
@@ -36,7 +42,7 @@ def Target : Prop :=
       (linearRisk μ X Y a b = linearRisk μ X Y (-5 / 3) 10 ↔
         a = -5 / 3 ∧ b = 10))
 
-/-- N1 (proof step "the bounded uniform `X` has all moments and the Gaussian `W` has
+/-- N1 (paper-proof step "the bounded uniform `X` has all moments and the Gaussian `W` has
 finite second moment; hence `X, X², W` (and so `Y = 10X² + W`) are square-integrable"). -/
 def N1 : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
@@ -63,7 +69,7 @@ theorem assemble (h1 : N1.{u}) : Target.{u} := by
   rw [hslope', hint'] at h
   exact h
 
-/- Satisfiable instance of the hypotheses: `Ω = ℝ × ℝ`,
+/- Satisfiable instance of the hypotheses (both referees): `Ω = ℝ × ℝ`,
 `μ = (uniformLaw 0 1).prod (gaussianReal 0 1)`, `X = Prod.fst`, `W = Prod.snd`. -/
 
 end

@@ -1,0 +1,68 @@
+[
+  {
+    "theorem": "SAP.P025a.T1",
+    "target_id": "P025-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The fixed sample, first printed cut, both extremal values, full attainable interval, normalized global box bounds, finite design, general zero-cut result and strict nonoptimality match the canonical counterexample. The statement omits the two all-weight residual equalities, the general mean-minus-minimum residual equality, the exact one-coordinate change formula, and an explicit independence assertion. No extra hypothesis is imposed; nonconstant binary data meet the hypotheses. See reading.md, T1; Defs/Part2.lean:10."
+  },
+  {
+    "theorem": "SAP.P025a.T2",
+    "target_id": "P025-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two weighted outcomes, strict order, probability bounds, population mean, wrong printed cut and value, corrected endpoint values, separation (Assumption 2), and global inequalities are correct. The actual population/class partition and true weights, sampling design and independent replication, upper first-cut assertion, both displayed residual equalities, and the general weighted zero-cut/nonoptimality result are absent. The closed numeric proposition is not vacuous; the binary instance satisfies separation. See Defs/Part2.lean:34 and scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P025a.T3",
+    "target_id": "P025-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All canonical mathematical hypotheses and the corrected cut conventions are preserved. Both prescribed scaled threshold vectors are feasible and attain the endpoint values; IsLeast/IsGreatest give genuine global attained extrema, and the full image, segment attainment, increments and lower termwise certificate are asserted. The separately stated continuity of the ratio along the segment in canonical part (d) is not exported. Positive n and positive weights prevent empty-index or zero-denominator artifacts. See Defs/Part3.lean:11-53."
+  },
+  {
+    "theorem": "SAP.P025a.T4",
+    "target_id": "P025-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The hypotheses J>0, strictly increasing outcomes, positive class masses and 0<alpha<=beta<=1 match the canonical abstract optimization problem. Both first cuts and attained endpoint values are asserted. Missing are both last-cut inequalities, both increments, and the explicit feasibility, value equalities and optimality assertions for the specified original-scale threshold vectors (attainment alone does not name those vectors). No asymptotic sharpness claim is substituted. See Defs/Part3.lean:55."
+  },
+  {
+    "theorem": "SAP.P025a.T5",
+    "target_id": "P025-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both exact-count counterexample calculations, probability bounds, reweighted values and directional ratios, population fractions, sample-size and rounding arithmetic, interval memberships, rounded-input variants, and all seven separate uniform quota laws/marginals are present and consistent. The joint independent sampling distribution, its normalization and link to the two populations, and the every-draw sample-count/Hajek assertions are absent. All seven quota spaces are nonempty since s<=N; no empty uniform law is used. See Defs/Part4.lean:10 and scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P025a.T6",
+    "target_id": "P025-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "The overlap equivalences have exactly the required ordered interior proportions and gamma>=1. Both exact odds ratios, threshold brackets, overlap at 4 and failure at 3, odds transformation, equal-prevalence/product equivalence, common-cap implication, and counterexamples to either directional ratio having to exceed three are stated. Additional fine square-root brackets are true by exact rational squaring. Positive probability and proportion assumptions keep every denominator nonzero; the common-cap clause needs no extra gamma hypothesis because its positive ratios force gamma>0. See Defs/Part5.lean:10."
+  },
+  {
+    "theorem": "SAP.P025a.T7",
+    "target_id": "P025-T7",
+    "my_reading_vs_claim": "different",
+    "reason": "The canonical text is the printed affirmative Proposition 1, which is false; T7 instead explicitly negates its universal lower/upper/range conjunction and proves the surviving upper first-cut endpoint result. This is an appropriate refutation direction, not a proof of the printed affirmative statement. The negated assertion uses the printed >= lower test, the correct admissible cut range and the original-scale attainable box. An independent Lean check refutes it with n=2, y=(0,1), alpha=1/2, beta=1 by the attainable value 1/3<1/2; thus no strengthened or inconsistent assumption is doing the refuting. Explicit original-scale upper-vector assertions and the general failure diagnosis are not exported by T7 itself. See Defs/Part6.lean:10,30."
+  },
+  {
+    "theorem": "SAP.P025a.T8",
+    "target_id": "P025-T8",
+    "my_reading_vs_claim": "different",
+    "reason": "The canonical text is the printed affirmative Proposition 2; T8 explicitly refutes the universal printed lower optimizer/formula conjunction and proves the surviving upper first-cut endpoint result. This is an appropriate refutation direction rather than the affirmative claim. The Option expression correctly records that the printed j=k-1 tail is undefined at cuts 0 and 1. Independently, the two-unit realizable mass vector (1/2,1) refutes the optimizer itself via 1/2<2/3, without relying on Option undefinedness or unattainable masses. Explicit original-scale upper-vector assertions, the separate general lower diagnosis, and any asymptotic sharpness statement are not exported. See Defs/Part6.lean:20,37."
+  },
+  {
+    "theorem": "SAP.P025a.T9",
+    "target_id": "P025-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem gives the corrected partition identity at every cut 0<=k<=J, identifies it with the true minimum at the corrected first cut, and gives exactly the duplicated two-class ratio and residual difference for 2<=k<=J. It explicitly records undefined printed tails at k=0,1; guarded natural subtraction agrees with one-based indices and does not truncate invalid tails into valid ones. The strict outcome order, positive masses, nonempty class set and probability bounds match the target. See Defs/Part6.lean:46."
+  },
+  {
+    "theorem": "SAP.P025a.T10",
+    "target_id": "P025-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The four-class and six-unit data, normalized design and marginals, class totals and sizes, true class weights, population mean, corrected cut and values, whole-box minimum bound and an attaining threshold vector, and wrong/undefined printed expressions match the canonical example. The all-weight residual equality and uniqueness of its zero at (2,2,1,1) are not asserted. The fixed design has four positive-probability samples, so its witness does not depend on impossible sampling data. See Defs/Part2.lean:46."
+  },
+  {
+    "theorem": "SAP.P025a.T11",
+    "target_id": "P025-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The normalized increment identity, gamma=1 threshold-value and normalized singleton-box assertions, gamma>1 stationary/test set equality and pointwise equivalence, persistence, and all two-coordinate exact identities, strict-improvement conclusions and equality-boundary conclusions are correct. Not exported are alpha=beta, the original-scale singleton box/vector assertions, both optimization endpoints at the sample mean, existence/identification of the boundary first cut, existence and equality of the strict-case first indices and global threshold maximum, and equal-probability finite-population calibration and population mean in (B-iv). Both boundary and strict hypotheses have explicit satisfiable instances. See Defs/Part7.lean:10."
+  }
+]

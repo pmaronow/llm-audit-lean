@@ -1,0 +1,194 @@
+import SAP.P008b.Challenge
+
+open scoped BigOperators
+open MeasureTheory
+open SAP.P008b
+
+set_option maxHeartbeats 3000000
+set_option maxRecDepth 10000
+set_option linter.unusedVariables false
+
+noncomputable section
+
+namespace Review
+
+def axis (a : ℝ) : Plane := WithLp.toLp 2 ![a, 0]
+
+lemma axis_dist (a b : ℝ) : dist (axis a) (axis b) = |a - b| := by
+  simp [EuclideanSpace.dist_eq, axis, Fin.sum_univ_two, Real.dist_eq,
+    Real.sqrt_sq_eq_abs]
+
+def field15 : MetricSpatialModel (Fin 2) 1 where
+  coord x := axis x.val
+  coord_injective := by
+    intro x y h
+    have h0 := congrArg (fun p : Plane => p 0) h
+    simp only [axis, PiLp.toLp_apply, Matrix.cons_val_zero] at h0
+    exact Fin.ext (Nat.cast_injective h0)
+  node _ := 0
+  metric := (inferInstance : NormedAddCommGroup Plane).toMetricSpace
+  ζ := Measure.count
+  Y _ z := 2 + bit (z 0)
+
+lemma distance15 (x : Fin 2) : field15.distance (field15.node 0) x = x.val := by
+  unfold MetricSpatialModel.distance field15
+  simp only [Fin.val_zero, Nat.cast_zero]
+  rw [axis_dist]
+  simp
+
+lemma band15 : field15.band 0 1 0 = {1} := by
+  ext x
+  fin_cases x <;> norm_num [MetricSpatialModel.band, distance15]
+
+lemma circle15 : field15.circle 0 1 = {1} := by
+  ext x
+  fin_cases x <;> norm_num [MetricSpatialModel.circle, distance15]
+
+-- A single instance satisfies all T15 local hypotheses at once, including
+-- positive inner radius and the node-exclusion separation premise.
+example : (0 : ℝ) ≤ 1 ∧ (0 : ℝ) ≤ 0 ∧
+    (∀ z, field15.validRegion (field15.band 0 1 0) (fun x => field15.Y x z)) ∧
+    (∀ z, field15.validRegion (field15.circle 0 1) (fun x => field15.Y x z)) ∧
+    (0 : ℝ) < 1 - 0 ∧
+    (∀ j : Fin 1, j ≠ 0 → 1 + 0 < field15.distance (field15.node 0) (field15.node j)) := by
+  have hv : ∀ z, field15.validRegion ({1} : Set (Fin 2)) (fun x => field15.Y x z) := by
+    intro z
+    refine ⟨MeasurableSet.singleton 1, ?_, ?_, ?_⟩
+    · norm_num [field15]
+    · simp [field15]
+    · change Integrable (fun _ : Fin 2 => 2 + bit (z 0)) (Measure.count.restrict {1})
+      exact integrable_const _
+  refine ⟨by norm_num, by norm_num, ?_, ?_, by norm_num, ?_⟩
+  · simpa only [band15] using hv
+  · simpa only [circle15] using hv
+  · intro j hj
+    exact False.elim (hj (Subsingleton.elim j 0))
+
+example (z : Assignment 1) :
+    field15.regionAverage (field15.band 0 1 0) (fun x => field15.Y x z) =
+      2 + bit (z 0) := by
+  rw [band15]
+  simp [MetricSpatialModel.regionAverage, field15]
+
+-- T17: nonempty first buffer and a strictly growing second buffer for an
+-- actual nonempty closed planar set, using a zero-radius first grid entry.
+def centroid17 (c : Fin 2) : Plane := axis c.val
+def grid17 (j : ℕ) : ℝ := if j = 0 then 0 else 1
+
+lemma buffer17zero :
+    polygonFullBuffer Finset.univ centroid17 ({axis 0} : Set Plane) 0 = {0} := by
+  ext c
+  fin_cases c <;> norm_num [polygonFullBuffer, distanceBuffer, centroid17,
+    Metric.infDist_singleton, axis_dist]
+
+lemma buffer17one :
+    polygonFullBuffer Finset.univ centroid17 ({axis 0} : Set Plane) 1 = Finset.univ := by
+  ext c
+  fin_cases c <;> norm_num [polygonFullBuffer, distanceBuffer, centroid17,
+    Metric.infDist_singleton, axis_dist]
+
+example : IsClosed ({axis 0} : Set Plane) ∧ ({axis 0} : Set Plane).Nonempty ∧
+    grid17 0 = 0 ∧
+    (polygonFullBuffer Finset.univ centroid17 ({axis 0} : Set Plane) (grid17 0)).Nonempty ∧
+    0 < (1 : ℕ) ∧ 0 ≤ grid17 (1 - 1) ∧ grid17 (1 - 1) < grid17 1 ∧
+    (polygonFullBuffer Finset.univ centroid17 ({axis 0} : Set Plane) (grid17 (1 - 1))).card <
+      (polygonFullBuffer Finset.univ centroid17 ({axis 0} : Set Plane) (grid17 1)).card := by
+  simp [grid17, buffer17zero, buffer17one]
+
+example :
+    archivedPolygonSummary .donut
+      (fun j => polygonFullBuffer Finset.univ centroid17 ({axis 0} : Set Plane) (grid17 j))
+      (fun c => (2 : ℝ) + c.val) 0 = 2 ∧
+    archivedPolygonSummary .donut
+      (fun j => polygonFullBuffer Finset.univ centroid17 ({axis 0} : Set Plane) (grid17 j))
+      (fun c => (2 : ℝ) + c.val) 1 = 3 ∧
+    archivedPolygonSummary .disk
+      (fun j => polygonFullBuffer Finset.univ centroid17 ({axis 0} : Set Plane) (grid17 j))
+      (fun c => (2 : ℝ) + c.val) 1 = 5/2 := by
+  norm_num [archivedPolygonSummary, grid17, buffer17zero, buffer17one, countMean,
+    Fin.sum_univ_two]
+
+-- T18: a genuine probability law and positive cell count, normalized weights,
+-- and nonnegative radii. No target theorem is used in this file.
+example : ∃ (C : ℕ) (Q : FiniteLaw (Assignment 4)) (base : Fin C → ℝ)
+    (r w : Fin 4 → Fin C → ℝ),
+    (∀ i c, 0 ≤ w i c) ∧ (∀ i, ∑ c, w i c = 1) ∧ (∀ i c, 0 ≤ r i c) := by
+  refine ⟨1, uniformLaw (Assignment 4), fun _ => 0, fun _ _ => 0, fun _ _ => 1, ?_⟩
+  simp
+
+-- T19: the exact raster blocks and eight-neighbor criterion are decidable
+-- finite facts. This independently checks the positive region counts.
+example : (Finset.univ : Finset PolygonRasterCell).card = 200 ∧
+    ∀ i, (rasterPolygonCells i).card = 25 ∧
+      (rasterPolygonBoundary i).card = 16 ∧
+      (rasterPolygonCells i \ rasterPolygonBoundary i).card = 9 := by
+  decide
+
+example : ∀ i c, c ∈ rasterPolygonCells i → (c ∈ rasterPolygonBoundary i ↔
+    ∃ a b : Fin 3, (a.val ≠ 1 ∨ b.val ≠ 1) ∧
+      ((c.1.val : ℤ) + a.val - 1 < rasterPolygonLeft i ∨
+       (rasterPolygonLeft i + 5 : ℤ) ≤ (c.1.val : ℤ) + a.val - 1 ∨
+       (c.2.val : ℤ) + b.val - 1 < 2 ∨ 7 ≤ (c.2.val : ℤ) + b.val - 1)) := by
+  decide
+
+-- Relate the index representation to the actual half-integer cell centers
+-- and the two filled geometric squares in the canonical fixture.
+example (i : Fin 2) (c : PolygonRasterCell) :
+    c ∈ rasterPolygonCells i ↔
+      (rasterPolygonLeft i : ℝ) ≤ (c.1.val : ℝ) + 1/2 ∧
+      (c.1.val : ℝ) + 1/2 ≤ (rasterPolygonLeft i : ℝ) + 5 ∧
+      (2 : ℝ) ≤ (c.2.val : ℝ) + 1/2 ∧ (c.2.val : ℝ) + 1/2 ≤ 7 := by
+  simp only [rasterPolygonCells, Finset.mem_filter, Finset.mem_univ, true_and]
+  constructor
+  · rintro ⟨h1, h2, h3, h4⟩
+    have h1' : (rasterPolygonLeft i : ℝ) ≤ c.1.val := by exact_mod_cast h1
+    have h2' : (c.1.val : ℝ) + 1 ≤ (rasterPolygonLeft i : ℝ) + 5 := by
+      exact_mod_cast h2
+    have h3' : (2 : ℝ) ≤ c.2.val := by exact_mod_cast h3
+    have h4' : (c.2.val : ℝ) + 1 ≤ 7 := by exact_mod_cast h4
+    exact ⟨by linarith, by linarith, by linarith, by linarith⟩
+  · rintro ⟨h1, h2, h3, h4⟩
+    have h1' : rasterPolygonLeft i < c.1.val + 1 := by
+      exact_mod_cast (by linarith : (rasterPolygonLeft i : ℝ) < c.1.val + 1)
+    have h2' : c.1.val < rasterPolygonLeft i + 5 := by
+      exact_mod_cast (by linarith : (c.1.val : ℝ) < (rasterPolygonLeft i : ℝ) + 5)
+    have h3' : 2 < c.2.val + 1 := by
+      exact_mod_cast (by linarith : (2 : ℝ) < c.2.val + 1)
+    have h4' : c.2.val < 7 := by
+      exact_mod_cast (by linarith : (c.2.val : ℝ) < 7)
+    exact ⟨by omega, h2', by omega, h4'⟩
+
+lemma edge19 (i : Fin 2) (z : Assignment 2) : polygonRasterEdgeM i z = 0 := by
+  have hc : (rasterPolygonBoundary i).card = 16 := by fin_cases i <;> decide
+  unfold polygonRasterEdgeM countMean
+  rw [hc]
+  fin_cases i <;>
+    norm_num [rasterPolygonBoundary, rasterPolygonCells, rasterPolygonLeft,
+      Finset.sum_filter, Fintype.sum_prod_type, Fin.sum_univ_succ, polygonRasterOutcome]
+
+lemma area19 (i : Fin 2) (z : Assignment 2) :
+    polygonRasterAreaM i z = if i = 0 then (9/25 : ℝ) * bit (z 0) else 0 := by
+  have hc : (rasterPolygonCells i).card = 25 := by fin_cases i <;> decide
+  unfold polygonRasterAreaM countMean
+  rw [hc]
+  fin_cases i <;>
+    norm_num [rasterPolygonCells, rasterPolygonLeft,
+      Finset.sum_filter, Fintype.sum_prod_type, Fin.sum_univ_succ, polygonRasterOutcome] <;> ring
+
+example : commonBernoulli (uniformLaw (Assignment 2)) (1/2) ∧
+    (uniformLaw (Assignment 2)).mass ![true,false] = 1/4 := by
+  norm_num [commonBernoulli, uniformLaw, Assignment, Fin.prod_univ_two]
+
+example : hajek polygonRasterEdgeM ![true,false] = 0 ∧
+    hajek polygonRasterAreaM ![true,false] = 9/25 ∧
+    finiteAMR (uniformLaw (Assignment 2)) polygonRasterEdgeM = 0 ∧
+    finiteAMR (uniformLaw (Assignment 2)) polygonRasterAreaM = 9/50 := by
+  have ht : nTreated ![true,false] = 1 := by
+    unfold nTreated
+    rw [Fin.sum_univ_two]
+    norm_num [bit]
+  have hc : nControl ![true,false] = 1 := by norm_num [nControl, ht]
+  norm_num [hajek, ht, hc, edge19, area19, finiteAMR, marginal, FiniteLaw.expect,
+    uniformLaw, Assignment, Fin.sum_univ_two, bit, Function.update_apply]
+
+end Review

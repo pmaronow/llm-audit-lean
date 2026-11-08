@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P032-T4",
+    "theorem": "SAP.P032.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take R=Fin 2, M=Fin 4, P=Fin 1, the two disjoint pairDyads and any nonzero scalar scores. For the noninjective-id discrepancy, the closed ten-record Cox data have V0=19/432 and Vid=5/144, giving a nonzero discrepancy 8/432. Every member mask includes the required outsider singletons. No probabilistic or design antecedent is assumed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T2",
+    "theorem": "SAP.P032.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled a probability measure assigning 1/2 to each point of Fin 2, R=Fin 2, M=Fin 4, P=Fin 1, pairDyads, pairIntercept and the nonconstant fair-sign error in each row. Its Gram determinant is 2; each error is square integrable and has integral zero. The explicit bounded positive/negative pair laws also give nonzero omitted covariances and both signs of the omitted contrast sum. L2 hypotheses ensure the integrals are ordinary finite moments.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T11",
+    "theorem": "SAP.P032.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled the full-rank pairIntercept design with pairDyads on Fin 4 and proved that every one of the four members occurs. A response (0,1) gives nonzero OLS residuals. The restriction is exactly the matrix decomposition: the docstring and record accurately omit the separate pointwise identity, conventional multiway equivalence, software computability, square-root rule and eigenvalue operation. Requiring all members to occur agrees with canonical N.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T7",
+    "theorem": "SAP.P032.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the generic orthogonal clause take P=Fin 2, Q=identity and eigenvalues (-1,2). The Hermitian clause applies to every real symmetric two-dimensional matrix. The fixed ten-dyad covariance is an actual symmetric matrix with positive diagonal and negative determinant; its positive and negative roots are distinct, so its clipped matrix has rank one. The rational trace, determinant and negative contrast were independently checked.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T12",
+    "theorem": "SAP.P032.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled a family with Z0 a nonconstant fair sign and Z1 through Z4 identically zero, all L2 and pairwise uncorrelated. Var(Z0)=1. Taking a=c=1 makes the true average variance 1 and the naive value 1/2; taking a=1,c=-1 makes them 0 and 1/2; setting a=0 realizes the equality case. Thus the strict cases do not rely on zero variances or empty spaces.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T1",
+    "theorem": "SAP.P032.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The pair and four-record atom weights are nonnegative and sum to one; all errors are bounded. The six-edge errors are explicit linear combinations of 13 independent fair signs. scratch/IID.lean compiled, from definitions and Mathlib only, a generic IID realization for any such finite law and instantiated both block laws; its proof has only propext, Classical.choice and Quot.sound as axioms. The finite covariance/spectral identities and replicated expectation formulas passed exact rational checks. Positive block counts and m+1 in limits keep the sampling-variance denominators positive. No conditional replication hypothesis is impossible.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P032-T5",
+    "theorem": "SAP.P032.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The unchanged two-disjoint-dyad intercept model with the negative-pair law has true variance 1/4 and dyadic population value 1/2, a nonsingular design and positive definite realizable covariance. The four-record model with one block has expected residual variance 7/32 above sampling variance 3/16; its IID replication has relative probability limit 5/3 above 1. All errors are bounded, sampling variances in the limit are eventually positive, and scratch/IID.lean was recompiled against the revised definitions to establish actual infinite IID realizations. The revised docstring adds no mathematical hypothesis or conclusion; record2.json now correctly labels this canonical assertion whole.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T3",
+    "theorem": "SAP.P032.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed, explicitly populated ten-record example with six subjects and four members. Risk sets have sizes 6 and 4, two events each, and information 12. Its row scores, information, all scalar components, direct ordered-pair covariance and both erroneous subtractions were independently recomputed exactly. The likelihood is strictly maximized at zero because its positive cosh arguments increase away from zero. No zero-risk or zero-information convention is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T6",
+    "theorem": "SAP.P032.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The ten listed dyads and observed covariate/response vectors are concrete data. det(X^T X)=416. Exact rational recomputation verified the fit, residuals, two meats, sandwich matrix, determinant and negative (1,6) contrast. Positive diagonal entries keep the gate inactive without assuming PSD or its failure as a hypothesis.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T9",
+    "theorem": "SAP.P032.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled m=2, nonempty component/parameter types, factors 1/2 and symmetric unit component matrices. Estimates may be (0,1), giving a nonzero Rubin term. In the count formula take K=4, all Gi=13, GD=6, n=24, so every denominator is nonzero and the gap coefficient is -3/52. The record and docstring exactly disclose the three nonzero-denominator guards; all other fixed-factor clauses remain present.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T8",
+    "theorem": "SAP.P032.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both binary datasets contain 24 records; their sample probabilities are 1/2 and 3/4 and their information values 6 and 9/2. Counts 13,6,24 yield nonzero undo factors 12/13,5/6,23/24. Exact rational checks verified all decomposition values, average, Rubin coefficients and pooling gap, and also independently verified the two omitted ordered-pair equalities. The omitted equalities are an accurately disclosed coverage restriction; all claimed variances are positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T10",
+    "theorem": "SAP.P032.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All 22 table rows are explicitly present and every n is positive. Exact rational enumeration over 0<=k<=n verified unique recovery in every row; the two threshold row sets, total 691, seven zero-loss rows, 18 SER-above-one rows and extrema 898/1000 and 4158/1000 were checked. No rounding convention at a tie, truncated subtraction or zero denominator determines these counts.",
+    "confidence": 0.99
+  }
+]

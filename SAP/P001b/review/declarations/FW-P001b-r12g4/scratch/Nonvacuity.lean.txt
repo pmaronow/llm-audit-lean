@@ -1,0 +1,147 @@
+import SAP.P001b.Defs
+import SAP.P001b.Defs.WholeW1
+
+open MeasureTheory ProbabilityTheory
+open scoped ENNReal NNReal BigOperators Topology
+
+noncomputable section
+namespace Review
+
+def unit : Set ℝ := Set.Icc 0 1
+def square : Set (ℝ × ℝ) := unit ×ˢ unit
+def squarePDF : ℝ × ℝ → ℝ := square.indicator (fun _ => 1)
+def squareLaw : Measure (ℝ × ℝ) := volume.restrict square
+def unitPDF : ℝ → ℝ := unit.indicator (fun _ => 1)
+
+lemma measurable_square : MeasurableSet square :=
+  measurableSet_Icc.prod measurableSet_Icc
+
+lemma volume_square : volume square = 1 := by
+  change (volume.prod volume) (unit ×ˢ unit) = 1
+  rw [Measure.prod_prod]
+  simp [unit, Real.volume_Icc]
+
+instance : IsProbabilityMeasure squareLaw := by
+  constructor
+  simpa [squareLaw, Measure.restrict_apply_univ] using volume_square
+
+lemma square_density : SAP.P001b.JointDensity squareLaw squarePDF := by
+  refine ⟨(measurable_const.indicator measurable_square).aemeasurable, ?_, ?_, ?_⟩
+  · intro z
+    by_cases hz : z ∈ square <;> simp [squarePDF, hz]
+  · apply (integrable_indicator_iff measurable_square).2
+    exact integrableOn_const (by simp [volume_square])
+  · have hd : (fun z => ENNReal.ofReal (squarePDF z)) =
+        square.indicator (fun _ => (1 : ℝ≥0∞)) := by
+      funext z
+      by_cases hz : z ∈ square <;> simp [squarePDF, hz]
+    change volume.restrict square = volume.withDensity (fun z => ENNReal.ofReal (squarePDF z))
+    rw [hd, withDensity_indicator measurable_square]
+    exact withDensity_one.symm
+
+-- Every premise of the T35 universal assertion is inhabited.
+example : ∃ (ν : Measure (ℝ × ℝ)), IsProbabilityMeasure ν ∧
+    ∃ f : ℝ × ℝ → ℝ, SAP.P001b.JointDensity ν f :=
+  ⟨squareLaw, inferInstance, squarePDF, square_density⟩
+
+lemma unit_integrable : Integrable unitPDF volume := by
+  apply (integrable_indicator_iff measurableSet_Icc).2
+  exact integrableOn_const (by simp [Real.volume_Icc])
+
+lemma unit_nonneg : ∀ y, 0 ≤ unitPDF y := by
+  intro y
+  by_cases hy : y ∈ unit <;> simp [unitPDF, hy]
+
+lemma unit_integral : (∫ y, unitPDF y) = 1 := by
+  change (∫ y, unit.indicator 1 y) = 1
+  rw [integral_indicator_one (s := unit) (μ := volume) measurableSet_Icc]
+  simp [unit, Measure.real, Real.volume_Icc]
+
+lemma square_horizontal (y : ℝ) :
+    (fun x => squarePDF (x,y)) = fun x => unitPDF x * unitPDF y := by
+  funext x
+  by_cases hx : x ∈ unit <;> by_cases hy : y ∈ unit <;>
+    simp [squarePDF, square, unitPDF, hx, hy]
+
+lemma marginal_version (y : ℝ) : ENNReal.ofReal (unitPDF y) =
+    ∫⁻ x : ℝ, ENNReal.ofReal (squarePDF (x,y)) := by
+  have he (x : ℝ) := congrFun (square_horizontal y) x
+  simp_rw [he]
+  have hi : Integrable (fun x => unitPDF x * unitPDF y) volume :=
+    unit_integrable.mul_const _
+  have hn : 0 ≤ᵐ[volume] (fun x => unitPDF x * unitPDF y) :=
+    Filter.Eventually.of_forall (fun x => mul_nonneg (unit_nonneg x) (unit_nonneg y))
+  rw [← ofReal_integral_eq_lintegral_ofReal hi hn, integral_mul_const, unit_integral, one_mul]
+
+-- Every premise of the T37 marginal assertion, including a finite version, is inhabited.
+example : ∃ (ν : Measure (ℝ × ℝ)), IsProbabilityMeasure ν ∧
+    ∃ (f : ℝ × ℝ → ℝ) (g : ℝ → ℝ), SAP.P001b.JointDensity ν f ∧
+      (∀ y, 0 ≤ g y) ∧
+      (∀ᵐ y ∂volume, ENNReal.ofReal (g y) = ∫⁻ x : ℝ, ENNReal.ofReal (f (x,y))) :=
+  ⟨squareLaw, inferInstance, squarePDF, unitPDF, square_density, unit_nonneg,
+    Filter.Eventually.of_forall marginal_version⟩
+
+lemma selected_slice : (fun y => squarePDF (1/2,y)) = unitPDF := by
+  have hx : (1/2 : ℝ) ∈ unit := by constructor <;> norm_num
+  have hxv : unitPDF (1/2) = 1 := Set.indicator_of_mem hx _
+  funext y
+  change squarePDF (1/2,y) = unitPDF y
+  rw [congrFun (square_horizontal y) (1/2), hxv, one_mul]
+
+-- Every premise of T37's separately quantified conditional-ratio assertion is inhabited.
+example : ∃ (f : ℝ × ℝ → ℝ) (x : ℝ), (∀ xy, 0 ≤ f xy) ∧
+    Integrable (fun y => f (x,y)) volume ∧ (0 < ∫ y, f (x,y)) := by
+  refine ⟨squarePDF, 1/2, square_density.2.1, ?_, ?_⟩
+  · rw [selected_slice]
+    exact unit_integrable
+  · rw [selected_slice, unit_integral]
+    norm_num
+
+-- T36 has no premises; independently check positivity and the analytic-order meaning.
+example (z : ℝ × ℝ) : 0 < SAP.P001b.infiniteSliceDensity z := by
+  unfold SAP.P001b.infiniteSliceDensity
+  positivity
+
+example : SAP.P001b.infiniteSliceDensity (0,0) = 1 / (4 * Real.pi) := by
+  norm_num [SAP.P001b.infiniteSliceDensity]
+  ring
+
+example (h : ContDiff ℝ ⊤ SAP.P001b.infiniteSliceDensity) :
+    AnalyticOnNhd ℝ SAP.P001b.infiniteSliceDensity Set.univ :=
+  h.analyticOnNhd
+
+-- T38's zero-combination law, checked without using any Challenge theorem.
+example : (gaussianReal 0 1).map (fun _ : ℝ => (0 : ℝ)) = Measure.dirac 0 := by
+  rw [Measure.map_const]
+  simp
+
+example : (Measure.dirac (0 : ℝ)) {0} = 1 := by simp
+
+example : ¬ ∃ f : ℝ → ℝ, SAP.P001b.Density (Measure.dirac 0) f := by
+  rintro ⟨f, hf⟩
+  have ha : (Measure.dirac (0 : ℝ)) ≪ volume := by
+    rw [hf.2.2.2]
+    exact withDensity_absolutelyContinuous _ _
+  have hzero : (Measure.dirac (0 : ℝ)) {0} = 0 := ha (by simp)
+  simp at hzero
+
+example (m : ℝ) (s : ℝ≥0) (hs : 0 < s) :
+    (Measure.dirac (0 : ℝ)) ≠ gaussianReal m s := by
+  intro he
+  have ha := gaussianReal_absolutelyContinuous m (ne_of_gt hs)
+  have hzero : (gaussianReal m s) {0} = 0 := ha (by simp)
+  rw [← he] at hzero
+  simp at hzero
+
+example : (1 : ℝ) ∈ Set.Icc (-1) 1 ∧ (-1 : ℝ) ∈ Set.Icc (-1) 1 := by
+  constructor <;> constructor <;> norm_num
+
+example : 2 * (1 - (1 : ℝ)^2) = 0 ∧ 2 * (1 - (-1 : ℝ)^2) = 0 ∧
+    2 * Real.pi * Real.sqrt (1 - (1 : ℝ)^2) = 0 ∧
+    2 * Real.pi * Real.sqrt (1 - (-1 : ℝ)^2) = 0 := by norm_num
+
+example (xy : ℝ × ℝ) : SAP.P001b.printedBivariateNormal 0 0 1 1 1 xy = 0 ∧
+    SAP.P001b.printedBivariateNormal 0 0 1 1 (-1) xy = 0 := by
+  norm_num [SAP.P001b.printedBivariateNormal]
+
+end Review

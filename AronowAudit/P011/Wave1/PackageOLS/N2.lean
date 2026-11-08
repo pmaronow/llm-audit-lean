@@ -11,7 +11,7 @@ open scoped BigOperators Topology Matrix
 
 noncomputable section
 
-/-- The path mean-model theorem includes coordinate integrability. -/
+/-- The completed path mean-model theorem includes coordinate integrability. -/
 theorem n2_proof : N2 := by
   intro k
   have hmean := (block_ols_representations.1 (2 : ℝ) (Or.inr rfl) (k + 1) (by omega)).1

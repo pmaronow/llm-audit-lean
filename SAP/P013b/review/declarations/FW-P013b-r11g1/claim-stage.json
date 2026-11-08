@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P013b.T15",
+    "target_id": "P013-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All four propositions are present with their separate off-diagonal joint-positivity antecedents, the unitwise equality case, selected marginal positivity, distinct exposures, and the paper's zero-joint convention. The estimator definitions reproduce expressions (7), (8), (10), (11) and A2; masked potentials equal the observed outcomes on their masks."
+  },
+  {
+    "theorem": "SAP.P013b.T16",
+    "target_id": "P013-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical statement explicitly selects (a1), (b1), and (b2) as the statements to formalize. The theorem includes fixed numerical predictions, unbiased difference total, assignmentwise residual identity, unbiased inverse-probability count, and the exact Hajek bias bound with the selected zero-count convention. The earlier contextual asymptotic remark is outside that explicit selection in the statement itself; this conclusion does not rely on the note removing a clause."
+  },
+  {
+    "theorem": "SAP.P013b.T17",
+    "target_id": "P013-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "Condition 7 is the literal same-exposure/different-randomization-outcome existence condition. The weighted total expectation and contrast expectation are both present. The weight uses the exposure induced by the assignment, giving the correct selected denominator in each conditional sum. Population.outcome is an unused free array here and imposes no exposure-sufficiency condition on yr."
+  },
+  {
+    "theorem": "SAP.P013b.T18",
+    "target_id": "P013-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is a refutation of the entire universal coverage assertion, rather than a proof of it: it negates the guarantee over nested sequences satisfying standing positivity and Conditions 3, literally printed 5, and 6, at levels 0<alpha<1. The dependency predicate matches all four printed clauses. Coverage uses the population causal effect as the meaningful target and requires a nonnegative variance estimate. An explicit nested common-coin sequence with fixed square-root-increment outcomes satisfies every printed condition and has coverage at most 1/2 at alpha=1/4. Its assumptions and the actual undercoverage are checked in scratch/CoverageWitness.lean; the witness has well-defined intervals."
+  },
+  {
+    "theorem": "SAP.P013b.T19",
+    "target_id": "P013-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem has the nested-population framework, fixed outcomes/consistency, all-exposure positivity, constants uniform over the sequence in Condition 3, and the o(N^2) count of potentially dependent pairs in Condition 4. Finite atom-probability factorization is exactly independence of categorical exposures. The conclusion is the canonical epsilon-probability limit for HT effect estimation error, with each population's own randomization law."
+  }
+]

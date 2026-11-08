@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P037b.T18",
+    "target_id": "P037-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part1.lean:223-254 states the residual-multiplier identities, leverage facts, homoskedastic covariance/shortfall and an abstract positive-norm weighted identity. Canonical (a) also asserts the expanded Gram-inverse sandwich, coefficient standard errors and normal-Wald P values and identifies a released procedure. Canonical (d) explicitly identifies the weighted quantity with the expected-to-true variance ratio for a coefficient; that link is absent. Integrability and full rank are legitimate second-moment/OLS conditions, not a contradictory premise."
+  },
+  {
+    "theorem": "SAP.P037b.T23",
+    "target_id": "P037-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:118-139 gives the exact grouped normal-equation/inverse/residual/HC0 certificates, predicted levels, prediction and contrast quadratic forms, covariance, numerical comparisons and centered-fit certificates. It omits the explicit rank assertion, difference and variance-decomposition equations, control-residual mean/sample-variance certificates, square-root band-width statement, and identification with released plotting operations. In particular ((28/100)/27)/56=1/5400 is arithmetic, not an explicit residual-sample-variance definition."
+  },
+  {
+    "theorem": "SAP.P037b.T24",
+    "target_id": "P037-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:142-172 states the algebraic level/difference identities, symmetric-covariance expansion and equality criterion, and same-sample full-rank recentering identities for fitted values, residuals, treatment coefficient and HC0 entry. It omits the normal-reference interval endpoints of (b), both-ordering existence assertion of (c), identification of the centered variance with the explicit contrast quadratic form, control-band failure and certificate of (e)-(f), and plotting-code identification. Arbitrary nuisance rows generalize the algebra without assuming a conclusion."
+  },
+  {
+    "theorem": "SAP.P037b.T19",
+    "target_id": "P037-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:14-35 states the complete four-school table, subset effects, finite expectations, profiling algebra, and convergence in probability of the defined weighted ratio. Canonical (v) additionally identifies that ratio as the treatment coefficient from OLS on block indicators. No general regression/design or such OLS identification occurs in this theorem. The positive denominators are actual kept-school counts; the B=0 convention is irrelevant to the limit."
+  },
+  {
+    "theorem": "SAP.P037b.T20",
+    "target_id": "P037-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:38-59 states the fixed-inclusion IPW identities of (a), the varying-inclusion identity of (b) with conditional probability expressed as its positive-denominator ratio, and the same-side threshold implication of (c). The sharp-null specialization of (c), the T19 counterexample and conditional values in (d), and descriptive identification of the released selection rule are absent. Positive finite support is exactly the canonical support convention."
+  },
+  {
+    "theorem": "SAP.P037b.T21",
+    "target_id": "P037-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:62-91 states both local probability vectors, raw histograms, sums, positivity/cutoff inequalities, both supported seed sets with their direct/nonseed labels, and the supported 10000-frequency witness. Canonical W2(vii) also states conditional selection probabilities 1/924 and an actual change of full analysis-set membership with all availability/cutoff masks. The theorem only compares labels for that last part. Marginalizing the three irrelevant seed blocks preserves the claimed local probabilities."
+  },
+  {
+    "theorem": "SAP.P037b.T22",
+    "target_id": "P037-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:94-115 states the population equality and screen inclusions, nonseed containment, a scalar nondegenerate cutoff event, seed-exclusion bound and threshold/reciprocal arithmetic. It does not state the coordinatewise zero-probability implication in (b), strict-inclusion examples of (c), binomial law and randomness of joint membership in (d), randomness of the full set in (e), or the averaging estimator and denominator in (f). The fifth exposure does not invalidate the equality of all-four positivity definitions: four positive disjoint events force each probability below one."
+  },
+  {
+    "theorem": "SAP.P037b.T29",
+    "target_id": "P037-T29",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:243-261 uses the actual Boolean/four-block finite assignment law and gives its normalization, all four probabilities/positivity, the frequency-error lower bound, expected rare hit count, zero-hit probability and centered second moment, zero-hit bounds and relative/control variance arithmetic. It omits the first-two-block count/unique-state assertions (i), explicit probability-sum equation, binomial distribution (iv), separate zero/nonzero-count error refinements, and explicit relative-standard-error inequality. The final control calculation is arithmetic, not a separately bound control-hit random variable."
+  },
+  {
+    "theorem": "SAP.P037b.T30",
+    "target_id": "P037-T30",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part3.lean:14-62 states the independent finite-product binomial law, unbiasedness and centered second moment, zero-hit probability, grid/error floor, Chebyshev precision and union bounds, zero-true-probability implication, strict nonzero variance/zero-hit probability for interior p, no-false-positive screen and explicit possible false-negative witness, and the actual blocked peer-avoidance formula plus all four numerical examples. Positive J and t<=n exclude spurious division-by-zero cases. Peer cardinalities are bounded by their block sizes, so natural subtraction is correct."
+  },
+  {
+    "theorem": "SAP.P037b.T31",
+    "target_id": "P037-T31",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:65-88 states the 56-school and eight-school support cardinalities, one supported/unblocked but blocked-impossible state, one pair probability for each local law, two eight-school uncentered second moments in each direction, and the general zero-mean/second-moment identity conditional on half marginals. It omits full support inclusion/probability/ratio, universal marginals/pairs/covariances, the eight-school pair laws and 34-state count, explicit zero means for the concrete eight-school statistics, and the two 56-school variance examples. The symbol varianceU/B in the Lean definition is just an uncentered square expectation."
+  },
+  {
+    "theorem": "SAP.P037b.T32",
+    "target_id": "P037-T32",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:91-103 states the blocked support count/mass normalization, general feasible uniform-selection marginal and pair laws with n>=2, and the abstract independent school-local half-mixture identity. It omits explicit blocked-component independence, numerical specializations in (b), control-exposure specializations and equality of B/U probabilities/populations/estimands in (c), joint-law comparisons of (d), and the released-sampler repair. The extra real nonnegativity/normalization premises define probability laws rather than presupposing the conclusion."
+  },
+  {
+    "theorem": "SAP.P037b.T25",
+    "target_id": "P037-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part2.lean:175-208 represents both canonical networks (with zero-based indices), directed indegrees, interpolated quantiles and fixed directed referent sets, W1 counts and differing labels, W2 eligible sets/histograms/probabilities, strict positivity and differing reciprocal weights. W2 is allowed to be a general three-of-six design by definitions_needed. This is a certificate distinguishing the nomination-row and union-row interpretations; it does not assert that the ambiguous printed assertion itself is false."
+  },
+  {
+    "theorem": "SAP.P037b.T26",
+    "target_id": "P037-T26",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:211-240 states Boolean union properties, both outgoing/incoming-only decompositions, the scalar equal-label criterion and implications, and positive-normalized-weight scalar probability inequalities with strictness. Canonical (c) also identifies the actual graph counts and their subset inequalities; (d) gives the reciprocal-possible-seed sufficient condition across the support; (f) references the fixed witnesses. Those graph instantiations/sufficient condition/witnesses and released-code/Fig. S5 descriptions are absent. The r<=c and q<=b constraints are valid for the counts described by the claim."
+  }
+]

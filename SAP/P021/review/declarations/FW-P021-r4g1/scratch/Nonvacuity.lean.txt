@@ -1,0 +1,221 @@
+import SAP.P021.Defs
+import SAP.P021.Defs.WholeW1
+
+open MeasureTheory Filter Topology
+open scoped BigOperators
+
+namespace ReviewP021
+
+noncomputable section
+
+abbrev X := SAP.P021.RDSState 2 3
+open SAP.P021
+
+def lo (s : Bool) : X := (⟨0, by constructor <;> norm_num⟩, ⟨0, by decide⟩, s)
+def hi (s : Bool) : X := (⟨2, by constructor <;> norm_num⟩, ⟨2, by decide⟩, s)
+
+-- Degree 2 has zero mass. Degrees 1 and 3 each have population mass 1/2,
+-- with sampling probabilities 1/4 and 3/4, and respective outcomes 0 and 2.
+def law : Measure X := (1 / 8 : ENNReal) •
+  ((3 : ENNReal) • Measure.dirac (lo false) + Measure.dirac (lo true) +
+    Measure.dirac (hi false) + (3 : ENNReal) • Measure.dirac (hi true))
+
+instance law_probability : IsProbabilityMeasure law := by
+  constructor
+  norm_num [law, Measure.smul_apply, Measure.add_apply]
+  calc
+    _ = (8 : ENNReal)⁻¹ * 8 := by ring
+    _ = 1 := ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+lemma integral_law (g : X → ℝ) :
+    (∫ x, g x ∂law) =
+      (3 * g (lo false) + g (lo true) + g (hi false) + 3 * g (hi true)) / 8 := by
+  have hd (x : X) : Integrable g (Measure.dirac x) := integrable_dirac (by simp)
+  have ht (x : X) : Integrable g ((3 : ENNReal) • Measure.dirac x) :=
+    (hd x).smul_measure (by norm_num)
+  rw [law, integral_smul_measure,
+    integral_add_measure (((ht _).add_measure (hd _)).add_measure (hd _)) (ht _),
+    integral_add_measure ((ht _).add_measure (hd _)) (hd _),
+    integral_add_measure (ht _) (hd _)]
+  norm_num [integral_smul_measure, integral_dirac]
+  ring
+
+lemma law_ignorability : Ignorability law := by
+  intro k
+  fin_cases k <;>
+    norm_num [degreeMass, sampledMean, degreeMean, samplingProbability,
+      sampledMass, degreeMoment, sampledMoment, integral_law, sampleCell,
+      degreeCell, sampleIndicator, outcome, lo, hi]
+
+-- Negative scale and negative supported profile are allowed; the unsupported
+-- degree is even assigned profile zero, without using its conditional mean.
+def holeProfile (k : Fin 3) : ℝ := if k.val = 1 then 0 else -degreeValue k
+
+lemma law_known_hole : KnownSampling law (-1 / 4) holeProfile := by
+  intro k
+  fin_cases k <;>
+    norm_num [degreeMass, samplingProbability, sampledMass, integral_law,
+      sampleCell, degreeCell, sampleIndicator, lo, hi, holeProfile, degreeValue]
+
+lemma law_known_linear :
+    KnownSampling law (-1 / 4) (fun k => (-1 : ℝ) * degreeValue k) := by
+  intro k
+  fin_cases k <;>
+    norm_num [degreeMass, samplingProbability, sampledMass, integral_law,
+      sampleCell, degreeCell, sampleIndicator, lo, hi, degreeValue]
+
+lemma law_mean : populationMean law = 1 := by
+  norm_num [populationMean, integral_law, outcome, lo, hi]
+
+lemma law_fraction : sampleFraction law = 1 / 2 := by
+  norm_num [sampleFraction, integral_law, sampleIndicator, lo, hi]
+
+lemma law_support : degreeSupport law = {0, 2} := by
+  ext k
+  fin_cases k <;> norm_num [degreeSupport, degreeMass, integral_law, degreeCell, lo, hi]
+
+theorem t1_nonvacuity : ∃ (B : ℝ) (K : ℕ) (F : Measure (RDSState B K))
+    (c : ℝ) (f : Fin K → ℝ),
+    IsProbabilityMeasure F ∧ Ignorability F ∧ KnownSampling F c f ∧
+    populationMean F = 1 ∧ c < 0 ∧
+    ∃ k : Fin K, degreeMass F k = 0 ∧ f k = 0 := by
+  refine ⟨2, 3, law, -1 / 4, holeProfile, inferInstance, law_ignorability,
+    law_known_hole, law_mean, by norm_num, ⟨1, by decide⟩, ?_, ?_⟩
+  · norm_num [degreeMass, integral_law, degreeCell, lo, hi]
+  · norm_num [holeProfile]
+
+def population (j : Fin 8) : X :=
+  if j.val < 4 then lo (j.val == 3) else hi (5 ≤ j.val)
+
+lemma population_average (g : X → ℝ) :
+    empiricalAverage population g = ∫ x, g x ∂law := by
+  rw [integral_law]
+  norm_num [empiricalAverage, population, Fin.sum_univ_succ]
+  ring
+
+lemma population_sample_set : sampleSet population = {3, 5, 6, 7} := by
+  ext j
+  simp only [sampleSet, Finset.mem_filter, Finset.mem_univ, true_and]
+  fin_cases j <;> norm_num [population, lo, hi]
+
+lemma population_sample_nonempty : (sampleSet population).Nonempty := by
+  rw [population_sample_set]
+  simp
+
+lemma population_estimator : vhEstimator population = 1 := by
+  classical
+  rw [vhEstimator, population_sample_set]
+  norm_num [population, outcome, degreeValue, lo, hi]
+
+-- An empty sample initially, then a fixed population realizing the limit law.
+def sequence (r : ℕ) : Fin 8 → X :=
+  if r = 0 then fun _ => lo false else population
+
+lemma initial_empty : sampleSet (sequence 0) = ∅ := by
+  ext j
+  simp [sampleSet, sequence, lo]
+
+lemma initial_estimator : vhEstimator (sequence 0) = 0 := by
+  simp [vhEstimator, initial_empty]
+
+lemma deterministic_weak : ∀ g : X → ℝ, Continuous g →
+    Tendsto (fun r => empiricalAverage (sequence r) g) atTop
+      (𝓝 (∫ x, g x ∂law)) := by
+  intro g _hg
+  apply tendsto_const_nhds.congr'
+  filter_upwards [eventually_ge_atTop 1] with r hr
+  simp [sequence, show r ≠ 0 by omega, population_average]
+
+lemma deterministic_hypotheses :
+    (0 : ℝ) ≤ 2 ∧ (0 : ℕ) < 3 ∧ IsProbabilityMeasure law ∧
+    (∀ r : ℕ, 0 < (fun _ => 8) r) ∧
+    (∀ g : X → ℝ, Continuous g →
+      Tendsto (fun r => empiricalAverage (sequence r) g) atTop
+        (𝓝 (∫ x, g x ∂law))) ∧
+    (-1 : ℝ) ≠ 0 ∧ Ignorability law ∧
+    KnownSampling law (-1 / 4) (fun k => (-1 : ℝ) * degreeValue k) := by
+  exact ⟨by norm_num, by norm_num, inferInstance, by simp,
+    deterministic_weak, by norm_num, law_ignorability, law_known_linear⟩
+
+lemma deterministic_conclusion :
+    Tendsto (fun r => vhEstimator (sequence r)) atTop (𝓝 (populationMean law)) := by
+  rw [law_mean]
+  apply tendsto_const_nhds.congr'
+  filter_upwards [eventually_ge_atTop 1] with r hr
+  simp [sequence, show r ≠ 0 by omega, population_estimator]
+
+-- Nondegenerate random populations: at stage 1 only the true branch has an
+-- empty sample; from stage 2 onwards both branches realize the limit law.
+def coin : Measure Bool := (1 / 2 : ENNReal) •
+  (Measure.dirac false + Measure.dirac true)
+
+instance coin_probability : IsProbabilityMeasure coin := by
+  constructor
+  norm_num [coin, Measure.smul_apply, Measure.add_apply]
+  calc
+    _ = (2 : ENNReal)⁻¹ * 2 := by ring
+    _ = 1 := ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+lemma coin_true : coin {true} = 1 / 2 := by
+  norm_num [coin, Measure.smul_apply, Measure.add_apply]
+
+def randomSequence (r : ℕ) (ω : Bool) : Fin 8 → X :=
+  if r < (if ω then 2 else 1) then fun _ => lo false else population
+
+lemma random_measurable : ∀ r j, Measurable (fun ω => randomSequence r ω j) := by
+  intro r j
+  exact measurable_of_countable _
+
+lemma random_initial_empty (ω : Bool) : sampleSet (randomSequence 0 ω) = ∅ := by
+  cases ω <;> ext j <;> simp [sampleSet, randomSequence, lo]
+
+lemma random_stage_one : randomSequence 1 false = population ∧
+    sampleSet (randomSequence 1 true) = ∅ := by
+  constructor
+  · rfl
+  · ext j
+    simp [sampleSet, randomSequence, lo]
+
+lemma random_weak : EmpiricalWeakInProbability coin law (fun _ => 8) randomSequence := by
+  intro g _hg
+  apply tendstoInMeasure_of_tendsto_ae
+  · intro r
+    exact (measurable_of_countable _).aestronglyMeasurable
+  · filter_upwards [] with ω
+    apply tendsto_const_nhds.congr'
+    filter_upwards [eventually_ge_atTop 2] with r hr
+    have hbig : ¬r < (if ω then 2 else 1) := by cases ω <;> simp_all <;> omega
+    simp [randomSequence, hbig, population_average]
+
+lemma random_hypotheses :
+    IsProbabilityMeasure coin ∧ (0 : ℝ) ≤ 2 ∧ (0 : ℕ) < 3 ∧
+    IsProbabilityMeasure law ∧ (∀ r : ℕ, 0 < (fun _ => 8) r) ∧
+    (∀ r j, Measurable (fun ω => randomSequence r ω j)) ∧
+    EmpiricalWeakInProbability coin law (fun _ => 8) randomSequence ∧
+    (-1 : ℝ) ≠ 0 ∧ Ignorability law ∧
+    KnownSampling law (-1 / 4) (fun k => (-1 : ℝ) * degreeValue k) := by
+  exact ⟨inferInstance, by norm_num, by norm_num, inferInstance, by simp,
+    random_measurable, random_weak, by norm_num, law_ignorability, law_known_linear⟩
+
+lemma random_conclusion :
+    TendstoInMeasure coin (fun r ω => vhEstimator (randomSequence r ω)) atTop
+      (fun _ => populationMean law) := by
+  rw [law_mean]
+  apply tendstoInMeasure_of_tendsto_ae
+  · intro r
+    exact (measurable_of_countable _).aestronglyMeasurable
+  · filter_upwards [] with ω
+    apply tendsto_const_nhds.congr'
+    filter_upwards [eventually_ge_atTop 2] with r hr
+    have hbig : ¬r < (if ω then 2 else 1) := by cases ω <;> simp_all <;> omega
+    simp [randomSequence, hbig, population_estimator]
+
+-- All checks use definitions and Mathlib only, not either Challenge theorem.
+#print axioms t1_nonvacuity
+#print axioms deterministic_hypotheses
+#print axioms deterministic_conclusion
+#print axioms random_hypotheses
+#print axioms random_conclusion
+
+end
+end ReviewP021

@@ -1,0 +1,86 @@
+[
+  {
+    "theorem": "SAP.P006b.T16",
+    "target_id": "P006-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The three conjuncts give the corrected almost-everywhere untreated-arm positivity result, the pointwise sufficient condition, and the full-information identity. The main conjunct includes the conditional-law normalization, selected mean and extrema bounds, all bias inequalities, and the 2 gamma regret bound. The attained-extrema hypotheses render the printed minima and maxima meaningful; the fiber and deviation integrability assumptions render the intended finite expectations meaningful. A supplied disintegration and maximizers are representations of the objects already used by the canonical statement. The estimator is the specified population selected mean, rather than an arbitrary noisy estimator. The hypotheses have a singleton-covariate Bernoulli-treatment, zero-outcome, singleton-policy instance. No conclusion is assumed as a hypothesis."
+  },
+  {
+    "theorem": "SAP.P006b.T17",
+    "target_id": "P006-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Contains the positive finite-mass algebra for leaving only one type untreated and treating only one type, and the exact three-type example. It omits the identification of the ratio with an actual conditional outcome mean for general policies in (a), and all of the marginal-versus-maximum comparison and Assumption 4 implies Assumption 2 conclusion in (d). Positive p_j and a second type where required prevent zero-denominator conventions. K=3, p=(1/3,1/3,1/3), m=(0,1,3), j=0 is a nonvacuous instance."
+  },
+  {
+    "theorem": "SAP.P006b.T18",
+    "target_id": "P006-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains the explicit two-unit best response, reward 3/4, welfare maximizer, actual regret 2 and disagreement with the printed value -1. Omits the samplewise bound and its equality assertion, the general-policy reward polynomial, uniqueness, the general-policy welfare expression, the separately displayed optimal and selected welfare values, and the universal nonnegativity assertion. The finite product weights describe the canonical fair binary experiment. Both candidate policies are feasible and the welfare range on the unit square is bounded."
+  },
+  {
+    "theorem": "SAP.P006b.T19",
+    "target_id": "P006-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "Contains the two effects, general-policy welfare formula, optimal and selected welfare values, corrected regret, positive discrepancy, and divergence of the actual regret. The example m is explicitly restricted to m>1/2, exactly the range implied by beta=2m and the canonical beta>1 hypothesis. The best-response status of (0,1) is taken as specified in this target, whose note assigns its independent verification to T29. p=1/2, beta=4 is an interior, finite, nonvacuous instance."
+  },
+  {
+    "theorem": "SAP.P006b.T20",
+    "target_id": "P006-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The explicit four-state masses give exactly the canonical joint law, logistic alive probabilities, signed means, both mean mismatches, both effects, and the differing TO decisions. A constant covariate can be suppressed without changing this witness, and intercept zero and treatment coefficient -log 3 realize its two displayed logistic probabilities. Each of the four masses is strictly positive, and no conditional-mean or integral convention does the work."
+  },
+  {
+    "theorem": "SAP.P006b.T21",
+    "target_id": "P006-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The explicit signed Bernoulli expectation is exactly the mean of a +/-1 outcome. The predictor has all four canonical coefficient terms. Every real coefficient vector and covariate vector is quantified; the signed-mean formula, doubled probability difference, strict logistic probability bounds and never-equal conclusion are all present. d can be positive, so the result does not rely on an empty feature index."
+  },
+  {
+    "theorem": "SAP.P006b.T22",
+    "target_id": "P006-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "The group definition is the finite set of matching observations and the denominator is its cardinality. Bounds for every enclosing interval imply the claimed minimum/maximum bounds for nonempty finite groups. The centered-sum identity, overall-mean identity, gamma formula and two-row counterexample are all present. n>0 and group nonemptiness protect every statistical use of division. Decidable equality imposes no mathematical restriction under classical logic."
+  },
+  {
+    "theorem": "SAP.P006b.T23",
+    "target_id": "P006-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both complete potential-outcome/observation laws, the product marginal proving treatment independence, positive untreated and observed-untreated mass, every observed-record equality, distinct target means, biased observed mean and four record masses agree with the canonical nonidentification witness. The fixed public covariate and fixed treated potential outcome are suppressed but lose no observable information. Both observed and unobserved untreated events have positive mass in both worlds."
+  },
+  {
+    "theorem": "SAP.P006b.T24",
+    "target_id": "P006-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is the canonical argument expressed for an arbitrary supplied covariate-stratum law mu: treatment independence, positive untreated and observed-untreated mass, mean representativeness implies identification of the observed Y mean, the q<1 mixture and equality criterion, and observation independence implies representativeness. It does not construct conditional laws from a joint covariate law, but universality in mu gives the stated local result in every supplied stratum. Outcome integrability and probability hypotheses prevent degenerate eventMean conventions. A fair observation indicator, treatment always zero and constant potential outcomes give a nonvacuous instance with q=1/2."
+  },
+  {
+    "theorem": "SAP.P006b.T25",
+    "target_id": "P006-T25",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The constant-public-covariate, deterministic-outcome, fair-private-type, zero-estimator family has the canonical n-unit reward, full response characterization, welfare and regret formulas, tight heterogeneity, and existence of both bad and unique bad responses. The product-sum identity makes the reward an actual finite-sample expectation. It does not quantify over nonconstant public covariates, policies depending on them, outcome noise or other admissible estimators. It replaces the specified min parameter choices by existence and omits the general unequal-beta/eta regret formula. alpha=1,beta=1/4,eta=0,n=1 supplies an instance; small positive beta and delta work for every positive epsilon."
+  },
+  {
+    "theorem": "SAP.P006b.T26",
+    "target_id": "P006-T26",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem asserts falsity of the bundled universal printed ATO/ATT claim, not the positive claim transcribed in claims.json. Its counterexample domain uses countable covariates with measurable singletons, Standing assumptions and fixed-query unbiasedness over all admissible policies, and its two specified rules match the printed rules exactly. This is an appropriate refutation of the conjunction, but does not itself claim separate failures of both propositions. A finite full-support witness avoids null-support or nonattainment issues: n=1, fair binary X, Y0=0, Y1=(1,2), estimator zero. The printed rule (0,1) has reward 1 whereas (1,1) has reward 3/2, for ATO and ATT alike."
+  },
+  {
+    "theorem": "SAP.P006b.T27",
+    "target_id": "P006-T27",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem negates the conjunction of the printed universal alignment identity, optimizer equivalence, zero regret and positive-effect best-response assertions under fixed-query unbiasedness. The polarity differs from the transcribed positive claims, as the docstring explicitly says; it refutes the bundled assertion, without promising a separate counterexample to each component. A finite full-support witness is n=1, fair binary X, Y0=0, Y1=1/2, and estimator h(sample,query)=1 when sample=query and -1 otherwise. Every fixed query has mean zero under every policy, but h(X)=1. Expected TT is -(a+b)/4 and welfare is (a+b)/4, so the reward maximizer (0,0) has welfare regret 1/2 and positiveRule is not a reward maximizer. Integrals are all finite and no supremum pathology is involved."
+  },
+  {
+    "theorem": "SAP.P006b.T29",
+    "target_id": "P006-T29",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The explicit family proves the arbitrary-threshold existential headline and includes the exact all-n reward expression, the n>=2 uniqueness and n=1 response set, welfare optimum and selected value, regret and divergence. The family response theorem is only about deterministic treated outcomes (0,1), whereas the canonical family quantifies over integrable outcome laws with the stated conditional means. The existential headline needs only the displayed witness family, so that part is fully covered. The effect function (-alpha,1) represents precisely the first failure mode. Taking p=1/2, n=2, alpha=-2(M+1) gives regret M+1>M."
+  },
+  {
+    "theorem": "SAP.P006b.T30",
+    "target_id": "P006-T30",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Supplies the explicit fair-binary pair with sample sizes 1 and 2, zero estimator and constant treated outcome 1: feasible policy (1,1), certified maxima 1 and 2, strict reversal, and numerical equal-effect dominance conditions. Baseline zero gives identical constant effects 1 and any reference mean 1. It omits the canonical general per-agent positive-part maximum identity and the sufficient general sample-size condition. The explicit pair is a genuine instance of the headline existential failure of both ranking properties."
+  }
+]

@@ -91,10 +91,8 @@ def empiricalLeftCDF {N : ℕ} (y : Fin N → ℝ) (x : ℝ) : ℝ :=
 def sortedOutcomes {N : ℕ} (y : Fin N → ℝ) : List ℝ :=
   (List.ofFn y).mergeSort (fun a b => decide (a ≤ b))
 
-/-- Rank r is one-based, as on p. 854. For a nonempty sample, rank 0
-returns the first sorted value; ranks above the sample size return 0.
-An empty sample always returns 0. Only valid ranks enter cell interiors;
-endpoint choices do not affect the integrals. -/
+/-- Rank r is one-based, as on p. 854. Outside valid ranks this total
+function uses 0; those values do not enter the integrals or cell interiors. -/
 def orderStatistic {N : ℕ} (y : Fin N → ℝ) (r : ℕ) : ℝ :=
   (sortedOutcomes y).getD (r - 1) 0
 
@@ -254,8 +252,20 @@ def Lemma2Conclusions (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ) : Pr
         η ≤ cdfDistance (lawCDF H false) (sampledCDF S false q π)) ≤
         ENNReal.ofReal ((1 - θ * (1 - ρ)) * K0 η / (θ * (1 - ρ) * η ^ 2)))
 
+/-- P022-T2, corrected Lemma 2 (p. 860): conditions 1–3 plus left-limit
+convergence at atoms imply uniform convergence and the printed tail bounds. -/
+theorem lemma2_corrected (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ)
+    (h : Conditions123 S H θ ρ) (hleft : AtomLeftConvergence S H) :
+    Lemma2Conclusions S H θ ρ := by
+  sorry
 
-/-- The explicit nested witness A, P022-E001:
+/-- P022-T18: Lemma 2 as printed, p. 860. This statement is false; it is
+deliberately left unproved, with its missing hypothesis visible. -/
+theorem lemma2_as_printed (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ)
+    (h : Conditions123 S H θ ρ) : Lemma2Conclusions S H θ ρ := by
+  sorry
+
+/-- The explicit nested witness A, validator P022-E001/v2 §2:
 y_{1i}=y_{0i}=-1/i, i≥1, n=N, m=floor(N/2). -/
 def reciprocalWitness : ExperimentSequence where
   design q := {
@@ -270,14 +280,70 @@ def reciprocalWitness : ExperimentSequence where
   y1 i := -(1 / ((i : ℝ) + 1))
   y0 i := -(1 / ((i : ℝ) + 1))
 
-/-- Point mass at (0,0), the weak limit of witness A. -/
+/-- Point mass at (0,0), the weak limit of witness A; validator §2. -/
 def originLaw : JointLaw := ⟨Measure.dirac (0, 0), by infer_instance⟩
 
 /-- D_1,D_0 of P022-T3: integrated absolute sampled-to-population CDF
-error over [-C,C], P022-E001, replacing the proof on p. 867. -/
+error over [-C,C], validator P022-E001/v1 §5, replacing the proof on p. 867. -/
 def integratedCDFError {N s : ℕ} (C : ℝ) (y : Fin N → ℝ) (a : Fin s → ℝ) : ℝ :=
   ∫ x in (-C)..C, |empiricalCDF a x - empiricalCDF y x|
 
+/-- P022-T3(a)–(c), repaired finite bounded-outcome proof: exact second
+moment bounds for D_1,D_0, deterministic variance error bound, and explicit
+finite-N probability bound for either endpoint. Validator §5; pp. 867–869. -/
+theorem bounded_direct_finite (d : Design) (y1 y0 : Fin d.N → ℝ) (C c : ℝ)
+    (hC : 0 ≤ C) (hy : ∀ i, |y1 i| ≤ C ∧ |y0 i| ≤ C)
+    (hc : 0 < c) (hm : c * d.N ≤ d.m) (hk : c * d.N ≤ d.k)
+    (hN : 2 / c ≤ (d.N : ℝ)) :
+    let D1 := fun π => integratedCDFError C y1 (observedTreatment d y1 π)
+    let D0 := fun π => integratedCDFError C y0 (observedControl d y0 π)
+    designExpectation d (fun π => D1 π ^ 2) ≤ C ^ 2 * ((d.N : ℝ) - d.m) /
+      (((d.N : ℝ) - 1) * d.m) ∧
+    C ^ 2 * ((d.N : ℝ) - d.m) / (((d.N : ℝ) - 1) * d.m) ≤ C ^ 2 / (c * d.N) ∧
+    designExpectation d (fun π => D0 π ^ 2) ≤ C ^ 2 * ((d.N : ℝ) - d.k) /
+      (((d.N : ℝ) - 1) * d.k) ∧
+    C ^ 2 * ((d.N : ℝ) - d.k) / (((d.N : ℝ) - 1) * d.k) ≤ C ^ 2 / (c * d.N) ∧
+    designExpectation d (fun π => (D1 π + D0 π) ^ 2) ≤ 4 * C ^ 2 / (c * d.N) ∧
+    (∀ B π, (d.N : ℝ) * |estimatedVariance d y1 y0 B π - populationBound d y1 y0 B| ≤
+      (16 / c + 8) * C * (D1 π + D0 π) + 8 * C ^ 2 / (c ^ 2 * d.N)) ∧
+    (∀ ε, 0 < ε → 16 * C ^ 2 / (c ^ 2 * ε) ≤ (d.N : ℝ) → ∀ B,
+      designProbability d (fun π => ε ≤ (d.N : ℝ) *
+        |estimatedVariance d y1 y0 B π - populationBound d y1 y0 B|) ≤
+          16 * (16 / c + 8) ^ 2 * C ^ 4 / (c * d.N * ε ^ 2)) := by
+  sorry
+
+/-- P022-T3, asymptotic consequence of the direct repair: condition 1
+and bounded outcomes alone give the explicit limsup bound. No weak limit or
+atom-value hypotheses occur. Validator §5; repaired proof of Proposition 2. -/
+theorem bounded_direct_asymptotic (S : ExperimentSequence) (θ ρ C : ℝ)
+    (hθ : 0 < θ ∧ θ ≤ 1) (hρ : 0 < ρ ∧ ρ < 1)
+    (hm : Tendsto (fun q => ((S.design q).m : ℝ) / (S.design q).N)
+      atTop (𝓝 (θ * ρ)))
+    (hn : Tendsto (fun q => (((S.design q).m : ℝ) + (S.design q).k) / (S.design q).N)
+      atTop (𝓝 θ))
+    (hC : 0 ≤ C) (hy : ∀ i, |S.y1 i| ≤ C ∧ |S.y0 i| ≤ C) :
+    ∀ ε c, 0 < ε → 0 < c → c < min (θ * ρ) (θ * (1 - ρ)) → ∀ B,
+      scaledProbabilityLimsup S (fun q π => ε ≤ ((S.design q).N : ℝ) *
+        |estimatedVariance (S.design q) (rowOutcomes S true q)
+          (rowOutcomes S false q) B π - populationBound (S.design q)
+            (rowOutcomes S true q) (rowOutcomes S false q) B|) ≤
+        ENNReal.ofReal (16 * (16 / c + 8) ^ 2 * C ^ 4 / (c * ε ^ 2)) := by
+  sorry
+
+/-- P022-T4, equations (11)–(12), corrected: both sample CDFs are unbiased,
+their exact variances have Bernoulli factors G_N(1-G_N),F_N(1-F_N), and
+their last displayed relations are inequalities. Lemma 2 proof, p. 861. -/
+theorem cdf_variance_corrected (d : Design) (y1 y0 : Fin d.N → ℝ) (x : ℝ) :
+    let G := empiricalCDF y1 x
+    let F := empiricalCDF y0 x
+    let Gh := fun π => empiricalCDF (observedTreatment d y1 π) x
+    let Fh := fun π => empiricalCDF (observedControl d y0 π) x
+    designExpectation d Gh = G ∧ designExpectation d Fh = F ∧
+    designVariance d Gh = ((d.N : ℝ) - d.m) / (((d.N : ℝ) - 1) * d.m) * G * (1 - G) ∧
+    designVariance d Fh = ((d.N : ℝ) - d.k) / (((d.N : ℝ) - 1) * d.k) * F * (1 - F) ∧
+    designVariance d Gh ≤ ((d.N : ℝ) - d.m) / (4 * ((d.N : ℝ) - 1) * d.m) ∧
+    designVariance d Fh ≤ ((d.N : ℝ) - d.k) / (4 * ((d.N : ℝ) - 1) * d.k) := by
+  sorry
 
 /-- The four-unit, two-treated/two-control design in P022-T5 and T9. -/
 def fourUnitDesign : Design := ⟨4, 2, 2, by omega, by omega, by omega, by omega⟩
@@ -327,12 +393,12 @@ def partitionCells (m k : ℕ) : ℕ := (partitionKnots m k).length - 1
 def cellWidth (m k r : ℕ) : ℝ := partitionPoint m k (r + 1) - partitionPoint m k r
 
 /-- Midpoints u_r=(p_{r-1}+p_r)/2 in the Appendix B correction,
-P022-E002. Original partition widths are retained. -/
+validator P022-E002 §6. Original partition widths are retained. -/
 def cellMidpoint (m k r : ℕ) : ℝ :=
   (partitionPoint m k r + partitionPoint m k (r + 1)) / 2
 
 /-- Centered midpoint covariance in the corrected sharp.var routine,
-P022-E002; Appendix B, p. 869, implementing (8). -/
+validator P022-E002 §6; Appendix B, p. 869, implementing (8). -/
 def midpointCovariance {m k : ℕ} (a : Fin m → ℝ) (b : Fin k → ℝ)
     (B : BoundSide) : ℝ :=
   ∑ r ∈ Finset.range (partitionCells m k), cellWidth m k r *
@@ -340,15 +406,41 @@ def midpointCovariance {m k : ℕ} (a : Fin m → ℝ) (b : Fin k → ℝ)
     (empiricalQuantile b (if B = .H then cellMidpoint m k r else
       1 - cellMidpoint m k r) - finiteMean b)
 
-/-- Normalized overlap weights w_ij in P022-T8(d), computed from integer-grid overlaps.
+/-- Integer overlap weights w_ij in P022-T8(d), validator §6.
 Indices here are zero-based, so the rank endpoints are i+1 and j+1. -/
 def overlapWeight (m k : ℕ) (i : Fin m) (j : Fin k) : ℝ :=
   max 0 (min (((i.val : ℝ) + 1) * k) (((j.val : ℝ) + 1) * m) -
     max ((i.val : ℝ) * k) ((j.val : ℝ) * m)) / ((m : ℝ) * k)
 
+/-- P022-T8: corrected Appendix B computation equals (8)–(9) for every
+real sample, and overlap weights have the required row and column masses.
+No assumption on floating-point rounding is made. Appendix B, p. 869. -/
+theorem appendixB_corrected {m k : ℕ} (hm : 2 ≤ m) (hk : 2 ≤ k)
+    (a : Fin m → ℝ) (b : Fin k → ℝ) :
+    (∑ r ∈ Finset.range (partitionCells m k), cellWidth m k r) = 1 ∧
+    (∀ r < partitionCells m k, ∀ u,
+      partitionPoint m k r < u → u < partitionPoint m k (r + 1) →
+      Nat.ceil ((m : ℝ) * u) = Nat.ceil ((m : ℝ) * partitionPoint m k (r + 1)) ∧
+      Nat.ceil ((k : ℝ) * u) = Nat.ceil ((k : ℝ) * partitionPoint m k (r + 1)) ∧
+      k + 1 - Nat.ceil ((k : ℝ) * u) =
+        Nat.ceil ((k : ℝ) * partitionPoint m k (partitionCells m k - r))) ∧
+    (∑ r ∈ Finset.range (partitionCells m k), cellWidth m k r *
+      empiricalQuantile a (cellMidpoint m k r)) = finiteMean a ∧
+    (∀ B, (∑ r ∈ Finset.range (partitionCells m k), cellWidth m k r *
+      empiricalQuantile b (if B = BoundSide.H then cellMidpoint m k r else
+        1 - cellMidpoint m k r)) = finiteMean b) ∧
+    (∀ B, midpointCovariance a b B = sharpCovariance a b B) ∧
+    (∀ N B, varianceExpression N m k (marginalVarianceEstimate N a)
+      (marginalVarianceEstimate N b) (midpointCovariance a b B) = estimateBound N a b B) ∧
+    (∀ i, (∑ j, overlapWeight m k i j) = 1 / (m : ℝ)) ∧
+    (∀ j, (∑ i, overlapWeight m k i j) = 1 / (k : ℝ)) ∧
+    (∀ B, sharpCovariance a b B = ∑ i, ∑ j, overlapWeight m k i j *
+      (orderStatistic a (i.val + 1) - finiteMean a) *
+      (orderStatistic b (if B = BoundSide.H then j.val + 1 else k - j.val) - finiteMean b)) := by
+  sorry
 
 /-- e=2⁻²⁶, the exact value of sqrt(binary64 machine epsilon),
-Appendix B, p. 869; P022-E002. -/
+Appendix B, p. 869; validator P022-E002 §3. -/
 def codeEpsilon : ℝ := 1 / 67108864
 
 /-- q_0=e and q_j=p_j-e (j>0), the shifted knots in printed sharp.var,
@@ -517,12 +609,48 @@ theorem independent_means_remainder (N m k : ℕ) (v1 v0 cov : ℝ)
   field_simp
   <;> ring
 
+/-- P022-T12(a), retained corrected claim: under the sharp null and n=N,
+the randomization expectation of Neyman's upper-bound estimator is at most
+the actual variance. Section 6.1, p. 858, using (3) and (6). -/
+theorem sharp_null_neyman_bias (d : Design) (hn : d.m + d.k = d.N)
+    (y : Fin d.N → ℝ) :
+    designExpectation d (neymanEstimate d y y .H) ≤ trueVariance d y y := by
+  sorry
 
 /-- Sorted outcomes indexed by Fin N, the comonotonic pairing in
 Lemma 1, p. 853. -/
 def sortedValues {N : ℕ} (y : Fin N → ℝ) : Fin N → ℝ :=
   fun i => (sortedOutcomes y).getD i.val 0
 
+/-- P022-T13: (1) is unbiased, (2) is the actual randomization variance,
+all finite populations with the given marginal multisets obey Lemma 1's
+covariance and variance bounds, and sorted and reverse-sorted pairings
+attain both variance endpoints. Section 2, p. 851; Lemma 1, p. 853. -/
+theorem sharp_bounds_and_variance (d : Design) (y1 y0 : Fin d.N → ℝ) :
+    designExpectation d (estimatedEffect d y1 y0) = averageEffect d y1 y0 ∧
+    trueVariance d y1 y0 = varianceExpression d.N d.m d.k
+      (finiteVariance y1) (finiteVariance y0) (finiteCovariance y1 y0) ∧
+    (∀ z1 z0 : Fin d.N → ℝ,
+      List.Perm (List.ofFn z1) (List.ofFn y1) →
+      List.Perm (List.ofFn z0) (List.ofFn y0) →
+      sharpCovariance y1 y0 .L ≤ finiteCovariance z1 z0 ∧
+      finiteCovariance z1 z0 ≤ sharpCovariance y1 y0 .H ∧
+      populationBound d y1 y0 .L ≤ trueVariance d z1 z0 ∧
+      trueVariance d z1 z0 ≤ populationBound d y1 y0 .H) ∧
+    trueVariance d (sortedValues y1) (sortedValues y0) = populationBound d y1 y0 .H ∧
+    trueVariance d (sortedValues y1) (fun i => sortedValues y0 i.rev) =
+      populationBound d y1 y0 .L := by
+  sorry
+
+/-- P022-T14: for n=N, every assignment obeys the full ordering
+V̂^{b-}≤V̂^L≤V̂^H≤V̂^{b+}≤V̂^a. Section 3, sentence after (9), p. 854. -/
+theorem estimated_bound_ordering (d : Design) (hn : d.m + d.k = d.N)
+    (y1 y0 : Fin d.N → ℝ) (π : Assignment d) :
+    neymanEstimate d y1 y0 .L π ≤ estimatedVariance d y1 y0 .L π ∧
+    estimatedVariance d y1 y0 .L π ≤ estimatedVariance d y1 y0 .H π ∧
+    estimatedVariance d y1 y0 .H π ≤ neymanEstimate d y1 y0 .H π ∧
+    neymanEstimate d y1 y0 .H π ≤ conventionalEstimate d y1 y0 π := by
+  sorry
 
 /-- Limiting coordinate means, variances and covariance, Proposition 1,
 p. 855. These are integrals under the actual Borel probability law. -/
@@ -560,6 +688,38 @@ def boundConsistency (S : ExperimentSequence) : Prop :=
         populationBound (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .L|)))
     atTop (𝓝 0)
 
+/-- P022-T15, Proposition 1 as printed, p. 855: all compatible laws have
+moments through order two, both population bound limits hold, and the joint
+estimation error is o_P(1/N), under exactly conditions 1–4. -/
+theorem proposition1 (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ)
+    (h : Conditions123 S H θ ρ) (hUI : UniformSquareIntegrability S) :
+    (∀ h ∈ compatibleLaws H, ∀ t : Bool, ∀ j : ℕ, j ≤ 2 →
+      Integrable (fun p : ℝ × ℝ => (if t then p.1 else p.2) ^ j)
+        (h : Measure (ℝ × ℝ))) ∧
+    (∀ h ∈ compatibleLaws H, Integrable (fun p : ℝ × ℝ => p.1 * p.2)
+      (h : Measure (ℝ × ℝ))) ∧
+    (∀ B, Tendsto (fun q => ((S.design q).N : ℝ) * populationBound (S.design q)
+      (rowOutcomes S true q) (rowOutcomes S false q) B) atTop (𝓝 (limitingBound H θ ρ B))) ∧
+    boundConsistency S := by
+  sorry
+
+/-- P022-T16, Proposition 2 with Remark 3, pp. 863 and 856: existential
+finite κ functions bound the scaled tail limsups for every positive tolerance
+allocation. This is the paper's explicit limsup reading of the O(1/N) rates. -/
+theorem proposition2 (H : JointLaw) (θ ρ C : ℝ) (hC : 0 ≤ C) :
+    ∃ κ1 κ2 κ3 : ℝ → ℝ, (∀ ε, 0 < ε → 0 ≤ κ1 ε ∧ 0 ≤ κ2 ε ∧ 0 ≤ κ3 ε) ∧
+    ∀ S : ExperimentSequence, Conditions123 S H θ ρ →
+    (∀ i, |S.y1 i| ≤ C ∧ |S.y0 i| ≤ C) →
+    ∀ ε ε1 ε2 ε3, 0 < ε1 → 0 < ε2 → 0 < ε3 → ε1 + ε2 + ε3 = ε →
+    scaledProbabilityLimsup S (fun q π => ε ≤ ((S.design q).N : ℝ) *
+      |estimatedVariance (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .H π -
+        populationBound (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .H|) ≤
+      ENNReal.ofReal (C ^ 4 * κ1 ε1) ∧
+    scaledProbabilityLimsup S (fun q π => ε ≤ ((S.design q).N : ℝ) *
+      |estimatedVariance (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .L π -
+        populationBound (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .L|) ≤
+      ENNReal.ofReal (C ^ 4 * (1 / ε1 ^ 2 + κ2 ε2 + κ3 ε3)) := by
+  sorry
 
 /-- "Uniformly bounded third moments" (Corollary 1, p. 856), expressed by
 a single finite uniform upper bound on both finite means of |y|³. -/
@@ -568,7 +728,7 @@ def BoundedThirdMoments (S : ExperimentSequence) : Prop :=
     |(if t then S.y1 else S.y0) i.val| ^ 3) ≤ M
 
 /-- "Support of H is nonsingular" (Corollary 1, p. 856): it is not
-concentrated on any affine line in ℝ². -/
+concentrated on any affine line in ℝ², the target's stated interpretation. -/
 def NonsingularLaw (H : JointLaw) : Prop :=
   ∀ a b c : ℝ, a ≠ 0 ∨ b ≠ 0 →
     ¬(∀ᵐ p ∂(H : Measure (ℝ × ℝ)), a * p.1 + b * p.2 = c)
@@ -597,6 +757,30 @@ def weakStandardNormal (S : ExperimentSequence)
     Tendsto (fun q => designExpectation (S.design q) (fun π => f (Z q π))) atTop
       (𝓝 (∫ x, f x ∂ProbabilityTheory.gaussianReal 0 1))
 
+/-- P022-T17, Corollary 1 and the coverage limit in Remark 4, pp. 856–857.
+Under the printed assumptions γ is positive and ≤1, the studentized statistic
+converges weakly to N(0,1), and the upper-bound Wald interval has the stated
+coverage limit ≥1-α. The external Freedman CLT is not assumed as an axiom. -/
+theorem corollary1_and_coverage (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ)
+    (h : Conditions123 S H θ ρ) (h3 : BoundedThirdMoments S)
+    (hns : NonsingularLaw H) :
+    0 < gamma H θ ρ ∧ gamma H θ ρ ≤ 1 ∧
+    Tendsto (fun q => ((S.design q).N : ℝ) * trueVariance (S.design q)
+      (rowOutcomes S true q) (rowOutcomes S false q)) atTop (𝓝 (limitingTrueVariance H θ ρ)) ∧
+    weakStandardNormal S (fun q π =>
+      (estimatedEffect (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) π -
+        averageEffect (S.design q) (rowOutcomes S true q) (rowOutcomes S false q)) /
+          Real.sqrt (gamma H θ ρ * estimatedVariance (S.design q)
+            (rowOutcomes S true q) (rowOutcomes S false q) .H π)) ∧
+    (∀ α, 0 < α → α < 1 →
+      Tendsto (fun q => designProbability (S.design q) (fun π =>
+        |estimatedEffect (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) π -
+          averageEffect (S.design q) (rowOutcomes S true q) (rowOutcomes S false q)| ≤
+            normalCritical α * Real.sqrt (estimatedVariance (S.design q)
+              (rowOutcomes S true q) (rowOutcomes S false q) .H π))) atTop
+        (𝓝 (2 * normalCDF (normalCritical α / Real.sqrt (gamma H θ ρ)) - 1)) ∧
+      1 - α ≤ 2 * normalCDF (normalCritical α / Real.sqrt (gamma H θ ρ)) - 1) := by
+  sorry
 
 /-- Finite lemma for Lemma 2: empirical CDFs lie in [0,1], using the
 finite population definition on p. 853. -/
@@ -609,7 +793,7 @@ theorem empirical_cdf_bounds {N : ℕ} (hN : 0 < N) (y : Fin N → ℝ) (x : ℝ
   · exact Finset.expect_le Finset.univ_nonempty (fun i _ => by split_ifs <;> norm_num)
 
 /-- Finite lemma for P022-T1: the point-mass limiting CDF is I(x≥0),
-P022-E001. -/
+validator P022-E001/v2 §2. -/
 theorem origin_cdf (t : Bool) (x : ℝ) :
     lawCDF originLaw t x = if 0 ≤ x then 1 else 0 := by
   cases t <;> by_cases hx : 0 ≤ x <;>
@@ -617,7 +801,7 @@ theorem origin_cdf (t : Bool) (x : ℝ) :
 
 /-- Finite lemma for P022-T1: any nonempty sample wholly below a negative
 threshold has uniform distance exactly 1 from the point mass at zero.
-P022-E001; refutes the uniform metric in Lemma 2. -/
+Validator P022-E001/v2 §2; refutes the uniform metric in Lemma 2. -/
 theorem zero_atom_distance {N : ℕ} (hN : 0 < N) (y : Fin N → ℝ)
     (treatment : Bool) (x : ℝ) (hx : x < 0) (hy : ∀ i, y i ≤ x) :
     cdfDistance (lawCDF originLaw treatment) (empiricalCDF y) = 1 := by
@@ -641,11 +825,11 @@ theorem zero_atom_distance {N : ℕ} (hN : 0 < N) (y : Fin N → ℝ)
     exact le_csSup hbdd (Set.mem_range_self x)
 
 /-- t_N=-1/(2N), the moving threshold in counterexample A,
-P022-E001. Row q has N=q+4. -/
+validator P022-E001/v2 §2. Row q has N=q+4. -/
 def reciprocalThreshold (q : ℕ) : ℝ := -(1 / (2 * ((q : ℝ) + 4)))
 
 /-- Finite lemma for P022-T1: every one of the first N reciprocal outcomes
-is below t_N<0, for every N≥4. P022-E001. -/
+is below t_N<0, for every N≥4. Validator P022-E001/v2 §2. -/
 theorem reciprocal_below_threshold (q : ℕ) (i : Fin (q + 4)) :
     -(1 / ((i.val : ℝ) + 1)) < reciprocalThreshold q ∧ reciprocalThreshold q < 0 := by
   have hi : 0 < (i.val : ℝ) + 1 := by positivity
@@ -662,7 +846,7 @@ theorem reciprocal_below_threshold (q : ℕ) (i : Fin (q + 4)) :
 /-- P022-T1, exact finite part of counterexample A: both population CDF
 distances and both sampled CDF distances are 1 for every N and assignment.
 This lemma alone is not a certificate of the asymptotic hypotheses.
-P022-E001; Lemma 2, p. 860. -/
+Validator P022-E001/v2 §2; Lemma 2, p. 860. -/
 theorem reciprocal_finite_errors :
     (∀ q t, cdfDistance (lawCDF originLaw t)
       (empiricalCDF (rowOutcomes reciprocalWitness t q)) = 1) ∧
@@ -689,6 +873,13 @@ theorem reciprocal_finite_errors :
       intro i
       exact hvalues q true _
 
+/-- Finite lemma for the corrected and printed Lemma 2: monotonicity and
+an endpoint CDF gap <δ bracket the CDF difference throughout a partition
+cell, exactly the inequality on pp. 860–861. -/
+theorem cdf_partition_bracket (Pa Px Pb Aa Ax Ab δ : ℝ)
+    (hP : Pa ≤ Px ∧ Px ≤ Pb) (hA : Aa ≤ Ax ∧ Ax ≤ Ab) (hgap : Pb < Pa + δ) :
+    Pb - Ab - δ < Px - Ax ∧ Px - Ax < Pa - Aa + δ := by
+  constructor <;> linarith [hP.1, hP.2, hA.1, hA.2]
 
 /-- Finite lemma for P022-T4: the Bernoulli variance bound is an inequality,
 with equality exactly at p=1/2. Equation (11), p. 861, corrected. -/
@@ -705,7 +896,7 @@ theorem bernoulli_variance_bound (p : ℝ) :
 
 /-- Finite lemma for P022-T1: at the limiting atom zero both empirical
 CDFs and both empirical left CDFs equal 1, whereas the limiting left value
-is 0. P022-E001; failed step on p. 861. -/
+is 0. Validator P022-E001/v2 §2; failed step on p. 861. -/
 theorem reciprocal_atom_values (q : ℕ) (t : Bool) :
     empiricalCDF (rowOutcomes reciprocalWitness t q) 0 = 1 ∧
     empiricalLeftCDF (rowOutcomes reciprocalWitness t q) 0 = 1 ∧
@@ -723,14 +914,14 @@ theorem reciprocal_atom_values (q : ℕ) (t : Bool) :
   · cases t <;> simp [lawLeftCDF, originLaw, Set.indicator]
 
 /-- Asymptotic hypothesis for P022-T1: the reciprocal outcomes tend to zero.
-P022-E001, the fixed-outcome nested witness A. -/
+Validator P022-E001/v2 §2, the fixed-outcome nested witness A. -/
 theorem reciprocal_outcome_limit :
     Tendsto (fun i : ℕ => -(1 / ((i : ℝ) + 1))) atTop (𝓝 0) := by
   simpa using (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).neg
 
 /-- Asymptotic hypothesis for P022-T1: the empirical joint distributions
 of the first N reciprocal pairs converge weakly to δ_(0,0), by Cesaro
-averages of every bounded continuous test function. -/
+averages of every bounded continuous test function. Validator §2. -/
 theorem reciprocal_weak_limit : weakPopulationConvergence reciprocalWitness originLaw := by
   intro f
   have hp : Tendsto (fun i : ℕ =>
@@ -758,7 +949,7 @@ theorem reciprocal_weak_limit : weakPopulationConvergence reciprocalWitness orig
 
 /-- Asymptotic hypothesis for P022-T1: floor(N/2)/N→1/2 and n/N=1.
 The division remainder supplies an exact expression for the first ratio.
-P022-E001. -/
+Validator P022-E001/v2 §2. -/
 theorem reciprocal_allocation_limit :
     Tendsto (fun q => ((reciprocalWitness.design q).m : ℝ) /
       (reciprocalWitness.design q).N) atTop (𝓝 (1 / 2)) ∧
@@ -807,7 +998,7 @@ theorem origin_cdf_continuous_off_atom (t : Bool) (x : ℝ) (hx : x ≠ 0) :
     exact tendsto_const_nhds.congr' heq.symm
 
 /-- P022-T1: every hypothesis of printed Lemma 2 is satisfied by the
-explicit nested reciprocal witness. Conditions 1–3, p. 855. -/
+explicit nested reciprocal witness. Conditions 1–3, p. 855; validator §2. -/
 theorem reciprocal_conditions123 : Conditions123 reciprocalWitness originLaw 1 (1 / 2) := by
   refine ⟨by norm_num, by norm_num, by norm_num, by norm_num, ?_, ?_,
     reciprocal_weak_limit, ?_⟩
@@ -824,7 +1015,7 @@ theorem reciprocal_conditions123 : Conditions123 reciprocalWitness originLaw 1 (
     norm_num
 
 /-- P022-T1: the deviation events at η=1/2 have probability one, and
-limsup N P(event)=+∞ for each marginal. Lemma 2, p. 860. -/
+limsup N P(event)=+∞ for each marginal. Validator §2; Lemma 2, p. 860. -/
 theorem reciprocal_tail_diverges (t : Bool) :
     scaledProbabilityLimsup reciprocalWitness (fun q π => (1 / 2 : ℝ) ≤
       cdfDistance (lawCDF originLaw t) (sampledCDF reciprocalWitness t q π)) = ⊤ := by
@@ -845,7 +1036,7 @@ theorem reciprocal_tail_diverges (t : Bool) :
 /-- P022-T1, witness A for the false Lemma 2: every printed hypothesis
 holds with θ=1,ρ=1/2; both population distances and every sample distance
 equal 1 in every row, and the scaled tail limits at η=1/2 are +∞.
-Lemma 2, p. 860; P022-E001. -/
+Lemma 2, p. 860; validator P022-E001/v2 §2. -/
 theorem lemma2_counterexample :
     Conditions123 reciprocalWitness originLaw 1 (1 / 2) ∧
     (∀ q t, cdfDistance (lawCDF originLaw t)
@@ -865,11 +1056,11 @@ theorem lemma2_counterexample :
   simpa using ht
 
 /-- Explicit admissible K(η)=2 ceil(4/min(η,1)) in the corrected Lemma 2,
-P022-E001. Unlike the printed proof, this choice is universal. -/
+validator P022-E001/v1 §3. Unlike the printed proof, this choice is universal. -/
 def correctedPartitionInteger (η : ℝ) : ℕ := 2 * Nat.ceil (4 / min η 1)
 
-/-- Finite lemma for P022-T2: the explicit corrected partition integer
-is positive and nonincreasing on positive tolerances. -/
+/-- Finite lemma for P022-T2: the explicit repaired partition integer
+is positive and nonincreasing on positive tolerances. Validator §3. -/
 theorem corrected_partition_integer_properties :
     (∀ η, 0 < η → 0 < correctedPartitionInteger η) ∧
     (∀ a b, 0 < a → a ≤ b → correctedPartitionInteger b ≤ correctedPartitionInteger a) := by
@@ -889,6 +1080,24 @@ theorem corrected_partition_integer_properties :
     apply Nat.ceil_mono
     exact div_le_div_of_nonneg_left (by norm_num) (lt_min ha (by norm_num)) (min_le_min hab le_rfl)
 
+/-- P022-T2, explicit version of the repaired Lemma 2: the validator's
+universal positive nonincreasing K gives both printed probability bounds.
+This supplements lemma2_corrected with the fixed integer choice. p. 860. -/
+theorem lemma2_corrected_explicit (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ)
+    (h : Conditions123 S H θ ρ) (hleft : AtomLeftConvergence S H) :
+    (∀ η, 0 < η → 0 < correctedPartitionInteger η) ∧
+    (∀ a b, 0 < a → a ≤ b → correctedPartitionInteger b ≤ correctedPartitionInteger a) ∧
+    (∀ t, Tendsto (fun q => cdfDistance (lawCDF H t)
+      (empiricalCDF (rowOutcomes S t q))) atTop (𝓝 0)) ∧
+    (∀ η, 0 < η →
+      scaledProbabilityLimsup S (fun q π => η ≤
+        cdfDistance (lawCDF H true) (sampledCDF S true q π)) ≤
+        ENNReal.ofReal ((1 - θ * ρ) * correctedPartitionInteger η / (θ * ρ * η ^ 2)) ∧
+      scaledProbabilityLimsup S (fun q π => η ≤
+        cdfDistance (lawCDF H false) (sampledCDF S false q π)) ≤
+        ENNReal.ofReal ((1 - θ * (1 - ρ)) * correctedPartitionInteger η /
+          (θ * (1 - ρ) * η ^ 2))) := by
+  sorry
 
 /-- Finite lemma for (11) and (13): population variance is the second
 moment minus squared mean. Finite population definitions, p. 851. -/
@@ -935,7 +1144,7 @@ theorem finite_covariance_cauchy {N : ℕ} (v w : Fin N → ℝ) :
 
 /-- Finite lemma for P022-T8: correct quadrature weights with total mass
 one and the correct weighted marginal means make centered and raw covariance
-formulas identical. P022-E002; equations (8)–(9), p. 854. -/
+formulas identical. Validator P022-E002 §6; equations (8)–(9), p. 854. -/
 theorem centered_quadrature {P : ℕ} (w x y : Fin P → ℝ) (μ ν : ℝ)
     (hw : (∑ i, w i) = 1) (hx : (∑ i, w i * x i) = μ)
     (hy : (∑ i, w i * y i) = ν) :
@@ -1029,13 +1238,13 @@ def sevenTotal (T : Fin 7 → ℝ) : ℝ :=
   T 0 - T 1 + T 2 - T 3 + T 4 - T 5 + T 6
 
 /-- Corrected allocation (ν1,ν2,ν3,ν4,ν5+ν6,ν7+ν8,ε1/2),
-P022-E006; corrected proof, pp. 865–868. -/
+validator P022-E006; repaired proof, pp. 865–868. -/
 def correctedAllocation (ν : Fin 8 → ℝ) (ε1 : ℝ) : Fin 7 → ℝ :=
   fun j => match j.val with
   | 0 => ν 0 | 1 => ν 1 | 2 => ν 2 | 3 => ν 3
   | 4 => ν 4 + ν 5 | 5 => ν 6 + ν 7 | _ => ε1 / 2
 
-/-- Finite lemma for P022-T6(a): the corrected allocation sums to ε1
+/-- Finite lemma for P022-T6(a): the repaired allocation sums to ε1
 when the first eight ν's sum to ε1/2. pp. 865–868. -/
 theorem corrected_allocation_sum (ν : Fin 8 → ℝ) (ε1 : ℝ)
     (hν : (∑ i, ν i) = ε1 / 2) :
@@ -1068,6 +1277,27 @@ theorem seven_term_budget (T a : Fin 7 → ℝ) (ε : ℝ)
   have hn := seven_total_abs_le T
   linarith
 
+/-- P022-T6(a)–(b): the actual decomposition, corrected budget probability
+bound, last-term supremum bound and event inclusion, including C=0.
+Proof of Proposition 2, pp. 864–868, corrected. -/
+theorem proposition2_corrected_finite (d : Design) (y1 y0 : Fin d.N → ℝ) (C : ℝ)
+    (hC : 0 ≤ C) (hy : ∀ i, |y1 i| ≤ C ∧ |y0 i| ≤ C) :
+    (∀ π, ((d.N : ℝ) * (estimatedVariance d y1 y0 .H π - populationBound d y1 y0 .H)) =
+      sevenTotal (sevenTerms d y1 y0 C π)) ∧
+    (∀ a : Fin 7 → ℝ, ∀ ε, (∀ j, 0 < a j) → (∑ j, a j) ≤ ε →
+      designProbability d (fun π => ε ≤ (d.N : ℝ) *
+        |estimatedVariance d y1 y0 .H π - populationBound d y1 y0 .H|) ≤
+      ∑ j, designProbability d (fun π => a j ≤ |sevenTerms d y1 y0 C π j|)) ∧
+    (∀ π, |lastIntegralTerm d y1 y0 C π| ≤
+      (8 * d.N * C ^ 2 / ((d.N : ℝ) - 1)) *
+        max (cdfDistance (empiricalCDF (observedTreatment d y1 π)) (empiricalCDF y1))
+          (cdfDistance (empiricalCDF (observedControl d y0 π)) (empiricalCDF y0))) ∧
+    (∀ x, 0 < x → ∀ π, x ≤ |lastIntegralTerm d y1 y0 C π| →
+      ((d.N : ℝ) - 1) * x / (8 * d.N * C ^ 2) ≤
+        cdfDistance (empiricalCDF (observedTreatment d y1 π)) (empiricalCDF y1) ∨
+      ((d.N : ℝ) - 1) * x / (8 * d.N * C ^ 2) ≤
+        cdfDistance (empiricalCDF (observedControl d y0 π)) (empiricalCDF y0)) := by
+  sorry
 
 /-- The coefficients c_1,...,c_8 of the printed bounds (17)–(22),
 pp. 865–867, with C⁴/ν_i² factored out. -/
@@ -1081,9 +1311,55 @@ def termRateCoefficient (θ ρ : ℝ) : Fin 8 → ℝ := fun i => match i.val wi
   | 6 => 4 * (1 - θ * ρ) / (θ * ρ)
   | _ => 4 * (1 - θ * (1 - ρ)) / (θ * (1 - ρ))
 
+/-- P022-T6(c)–(d), corrected limit step: the final integral has tolerance
+ε1/2 and the concluding display targets V_N^H. Earlier term bounds are
+explicit hypotheses, as specified by the target. pp. 865–868, corrected. -/
+theorem proposition2_corrected_limit (S : ExperimentSequence) (H : JointLaw) (θ ρ C : ℝ)
+    (h : Conditions123 S H θ ρ) (hC : 0 < C)
+    (hy : ∀ i, |S.y1 i| ≤ C ∧ |S.y0 i| ≤ C)
+    (hLemma : Lemma2Conclusions S H θ ρ) (ε1 ξ : ℝ)
+    (hε1 : 0 < ε1) (hξ : 0 < ξ ∧ ξ < ε1 / (16 * C ^ 2)) :
+    ∃ K1 K0 : ℝ → ℕ, ∃ κ : ℝ,
+      (∀ η, 0 < η →
+        scaledProbabilityLimsup S (fun q π => η ≤
+          cdfDistance (lawCDF H true) (sampledCDF S true q π)) ≤
+          ENNReal.ofReal ((1 - θ * ρ) * K1 η / (θ * ρ * η ^ 2)) ∧
+        scaledProbabilityLimsup S (fun q π => η ≤
+          cdfDistance (lawCDF H false) (sampledCDF S false q π)) ≤
+          ENNReal.ofReal ((1 - θ * (1 - ρ)) * K0 η / (θ * (1 - ρ) * η ^ 2))) ∧
+      (let η := ε1 / (16 * C ^ 2) - ξ
+       C ^ 4 * κ = (1 - θ * ρ) * K1 η / (θ * ρ * η ^ 2) +
+         (1 - θ * (1 - ρ)) * K0 η / (θ * (1 - ρ) * η ^ 2)) ∧
+      scaledProbabilityLimsup S (fun q π => ε1 / 2 ≤
+        |lastIntegralTerm (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) C π|) ≤
+          ENNReal.ofReal (C ^ 4 * κ) ∧
+      (∀ ν : Fin 8 → ℝ, (∀ i, 0 < ν i) → (∑ i, ν i) = ε1 / 2 →
+        (∀ j : Fin 6,
+          scaledProbabilityLimsup S (fun q π => correctedAllocation ν ε1
+            ⟨j.val, by omega⟩ ≤ |sevenTerms (S.design q)
+              (rowOutcomes S true q) (rowOutcomes S false q) C π ⟨j.val, by omega⟩|) ≤
+            ENNReal.ofReal (C ^ 4 * (match j.val with
+              | 0 => termRateCoefficient θ ρ 0 / (ν 0) ^ 2
+              | 1 => termRateCoefficient θ ρ 1 / (ν 1) ^ 2
+              | 2 => termRateCoefficient θ ρ 2 / (ν 2) ^ 2
+              | 3 => termRateCoefficient θ ρ 3 / (ν 3) ^ 2
+              | 4 => termRateCoefficient θ ρ 4 / (ν 4) ^ 2 + termRateCoefficient θ ρ 5 / (ν 5) ^ 2
+              | _ => termRateCoefficient θ ρ 6 / (ν 6) ^ 2 + termRateCoefficient θ ρ 7 / (ν 7) ^ 2))) →
+        ∀ ε, ε1 < ε →
+        scaledProbabilityLimsup S (fun q π => ε ≤ ((S.design q).N : ℝ) *
+          |estimatedVariance (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .H π -
+            populationBound (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .H|) ≤
+        scaledProbabilityLimsup S (fun q π => ε1 ≤ ((S.design q).N : ℝ) *
+          |estimatedVariance (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .H π -
+            populationBound (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .H|) ∧
+        scaledProbabilityLimsup S (fun q π => ε1 ≤ ((S.design q).N : ℝ) *
+          |estimatedVariance (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .H π -
+            populationBound (S.design q) (rowOutcomes S true q) (rowOutcomes S false q) .H|) ≤
+          ENNReal.ofReal (C ^ 4 * ((∑ i, termRateCoefficient θ ρ i / (ν i) ^ 2) + κ))) := by
+  sorry
 
 /-- The unshifted four-corner cycle in P022-T7: (0,0),(0,1),(1,0),(1,1),
-with n=N,m=floor(N/2). P022-E006; proof defect on p. 868. -/
+with n=N,m=floor(N/2). Validator P022-E006; proof defect on p. 868. -/
 def cornerWitness : ExperimentSequence :=
   { reciprocalWitness with
     y1 := fun i => if i % 4 < 2 then 0 else 1
@@ -1104,10 +1380,33 @@ def cornerLaw : JointLaw := ⟨
     norm_cast
     norm_num⟩
 
+/-- P022-T7: a concrete sequence satisfying Proposition 2 and even the
+corrected Lemma 2 refutes (23) at ε=3,ε1=ε2=ε3=1; its event has probability
+one and scaled limsup +∞. The wrong V_N target also has +∞ scaled limsup
+along N=4(r+1), for every 0<ε<1/2. Printed proof, p. 868. -/
+theorem proposition2_printed_counterexample :
+    Conditions123 cornerWitness cornerLaw 1 (1 / 2) ∧
+    AtomLeftConvergence cornerWitness cornerLaw ∧
+    (∀ i, |cornerWitness.y1 i| ≤ 1 ∧ |cornerWitness.y0 i| ≤ 1) ∧
+    scaledProbabilityLimsup cornerWitness (fun q π => (1 - 1 : ℝ) ≤
+      |lastIntegralTerm (cornerWitness.design q) (rowOutcomes cornerWitness true q)
+        (rowOutcomes cornerWitness false q) 1 π|) = ⊤ ∧
+    (∀ ε, 0 < ε → ε < (1 / 2 : ℝ) →
+      Filter.limsup (fun r => ENNReal.ofReal
+        (((cornerWitness.design (4 * r)).N : ℝ) *
+          designProbability (cornerWitness.design (4 * r)) (fun π => ε ≤
+            ((cornerWitness.design (4 * r)).N : ℝ) *
+            |estimatedVariance (cornerWitness.design (4 * r))
+              (rowOutcomes cornerWitness true (4 * r))
+              (rowOutcomes cornerWitness false (4 * r)) .H π -
+             trueVariance (cornerWitness.design (4 * r))
+              (rowOutcomes cornerWitness true (4 * r))
+              (rowOutcomes cornerWitness false (4 * r))|))) atTop = ⊤) := by
+  sorry
 
 /-- A simpler concrete witness for the tolerance defect alone: all fixed
 potential outcomes are zero, n=N,m=floor(N/2), C=1. This does not address
-the separate wrong-V_N defect. -/
+the separate wrong-V_N defect; the four-corner target remains above. -/
 def zeroWitness : ExperimentSequence :=
   { reciprocalWitness with y1 := fun _ => 0, y0 := fun _ => 0 }
 
@@ -1212,7 +1511,8 @@ theorem observed_means_unbiased (d : Design) (y : Fin d.N → ℝ) :
     exact Fintype.expect_const _
 
 /-- P022-T13, the unbiasedness assertion immediately after (1), p. 851:
-E_X(τ̂_N)=τ_N under the actual finite uniform randomization. -/
+E_X(τ̂_N)=τ_N under the actual finite uniform randomization. This theorem
+is separate from the still-drafted exact variance and sharpness theorem. -/
 theorem difference_in_means_unbiased (d : Design) (y1 y0 : Fin d.N → ℝ) :
     designExpectation d (estimatedEffect d y1 y0) = averageEffect d y1 y0 := by
   unfold designExpectation estimatedEffect
@@ -1221,7 +1521,8 @@ theorem difference_in_means_unbiased (d : Design) (y1 y0 : Fin d.N → ℝ) :
     (observed_means_unbiased d y1).1 (observed_means_unbiased d y0).2
 
 /-- Finite randomization lemma for P022-T4: E_X(Ĝ_N(x))=G_N(x) and
-E_X(F̂_N(x))=F_N(x), the first identities in (11)–(12), p. 861. -/
+E_X(F̂_N(x))=F_N(x), the first identities in (11)–(12), p. 861.
+The variance identities are stated separately and remain drafted. -/
 theorem sampled_cdfs_unbiased (d : Design) (y1 y0 : Fin d.N → ℝ) (x : ℝ) :
     designExpectation d (fun π => empiricalCDF (observedTreatment d y1 π) x) =
       empiricalCDF y1 x ∧
@@ -1231,6 +1532,30 @@ theorem sampled_cdfs_unbiased (d : Design) (y1 y0 : Fin d.N → ℝ) (x : ℝ) :
   · exact (observed_means_unbiased d (fun i => if y1 i ≤ x then 1 else 0)).1
   · exact (observed_means_unbiased d (fun i => if y0 i ≤ x then 1 else 0)).2
 
+/-- P022-T10(b), asymptotic part of the paper's independent-means argument:
+fixed arm sizes and bounded marginal variances make the covariance/fpc
+remainder in the actual randomization variance vanish. Section 2, p. 852. -/
+theorem fixed_arm_variance_limit (S : ExperimentSequence) (m k : ℕ)
+    (hm : ∀ q, (S.design q).m = m) (hk : ∀ q, (S.design q).k = k)
+    (hb : ∃ M : ℝ, ∀ q, finiteVariance (rowOutcomes S true q) ≤ M ∧
+      finiteVariance (rowOutcomes S false q) ≤ M) :
+    Tendsto (fun q => trueVariance (S.design q) (rowOutcomes S true q)
+      (rowOutcomes S false q) -
+      (finiteVariance (rowOutcomes S true q) / m +
+       finiteVariance (rowOutcomes S false q) / k)) atTop (𝓝 0) := by
+  sorry
+
+/-- P022-T9, general discrepancy identity for printed sharp.var in real
+arithmetic, when every original partition cell exceeds 2e. Only the first
+weight changes, giving -4e a_1 b_*/(N-1). Validator P022-E002 §4; p. 869. -/
+theorem appendixB_general_discrepancy {N m k : ℕ} (hm : 2 ≤ m) (hk : 2 ≤ k)
+    (hN : m + k ≤ N) (a : Fin m → ℝ) (b : Fin k → ℝ)
+    (hw : ∀ r < partitionCells m k, 2 * codeEpsilon < cellWidth m k r) :
+    printedCodeBound N a b .H - estimateBound N a b .H =
+      -4 * codeEpsilon * orderStatistic a 1 * orderStatistic b 1 / ((N : ℝ) - 1) ∧
+    printedCodeBound N a b .L - estimateBound N a b .L =
+      -4 * codeEpsilon * orderStatistic a 1 * orderStatistic b k / ((N : ℝ) - 1) := by
+  sorry
 
 /-- All probability couplings with the finite empirical marginal laws,
 "given only G_N and F_N" in Lemma 1, p. 853. This supplements the finite
@@ -1239,6 +1564,24 @@ def empiricalCompatibleLaws {N : ℕ} (y1 y0 : Fin N → ℝ) : Set JointLaw :=
   {H | ∀ x, lawCDF H true x = empiricalCDF y1 x ∧
     lawCDF H false x = empiricalCDF y0 x}
 
+/-- P022-T13, full probability-coupling reading of Lemma 1 (Hoeffding),
+p. 853: every joint law with the two empirical marginals has covariance
+between the quantile endpoints, and the laws obtained from aligned/reversed
+uniform quantiles attain the endpoints. Uniform laws are specified by every
+bounded continuous test function, without choosing a common probability space. -/
+theorem hoeffding_all_couplings (d : Design) (y1 y0 : Fin d.N → ℝ) :
+    (∀ H ∈ empiricalCompatibleLaws y1 y0,
+      Integrable (fun p : ℝ × ℝ => p.1 * p.2) (H : Measure (ℝ × ℝ)) ∧
+      sharpCovariance y1 y0 .L ≤ lawCovariance H ∧
+      lawCovariance H ≤ sharpCovariance y1 y0 .H) ∧
+    (∀ B, ∃ H ∈ empiricalCompatibleLaws y1 y0,
+      lawCovariance H = sharpCovariance y1 y0 B ∧
+      ∀ f : BoundedContinuousFunction (ℝ × ℝ) ℝ,
+        (∫ p, f p ∂(H : Measure (ℝ × ℝ))) =
+          ∫ u in (0 : ℝ)..1,
+            f (empiricalQuantile y1 u, empiricalQuantile y0
+              (if B = BoundSide.H then u else 1 - u))) := by
+  sorry
 
 /-- Finite lemma for P022-T14: the Cauchy-Schwarz covariance term is at
 most the arithmetic-mean term, 2 sqrt(AB)≤A+B. Section 2.1, p. 852. -/
@@ -1250,7 +1593,7 @@ theorem sqrt_product_le_arithmetic (A B : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B) :
 
 /-- Finite coefficient lemma for P022-T17(iv): with the printed θ,ρ,
 the product ab equals 1+(1-θ)/(θ²ρ(1-ρ)) and is at least 1.
-Corollary 1, p. 856; positivity of the coefficient product. -/
+Corollary 1, p. 856; target's positivity justification. -/
 theorem allocation_coefficient_product (θ ρ : ℝ)
     (hθ : 0 < θ) (hθ1 : θ ≤ 1) (hρ : 0 < ρ) (hρ1 : ρ < 1) :
     ((1 - θ * ρ) / (θ * ρ)) * ((1 - θ * (1 - ρ)) / (θ * (1 - ρ))) =
@@ -1272,3 +1615,65 @@ theorem allocation_coefficient_product (θ ρ : ℝ)
 end
 end AronowAudit.P022
 
+#print axioms AronowAudit.P022.lemma2_corrected
+#print axioms AronowAudit.P022.lemma2_as_printed
+#print axioms AronowAudit.P022.lemma2_counterexample
+#print axioms AronowAudit.P022.bounded_direct_finite
+#print axioms AronowAudit.P022.bounded_direct_asymptotic
+#print axioms AronowAudit.P022.cdf_variance_corrected
+#print axioms AronowAudit.P022.finiteMean_const
+#print axioms AronowAudit.P022.design_constant
+#print axioms AronowAudit.P022.equation11_counterexample
+#print axioms AronowAudit.P022.appendixB_corrected
+#print axioms AronowAudit.P022.appendixB_counterexample
+#print axioms AronowAudit.P022.fixed_sample_identity
+#print axioms AronowAudit.P022.fixed_sample_infinite_limit
+#print axioms AronowAudit.P022.independent_means_remainder
+#print axioms AronowAudit.P022.sharp_null_neyman_bias
+#print axioms AronowAudit.P022.sharp_bounds_and_variance
+#print axioms AronowAudit.P022.estimated_bound_ordering
+#print axioms AronowAudit.P022.proposition1
+#print axioms AronowAudit.P022.proposition2
+#print axioms AronowAudit.P022.corollary1_and_coverage
+#print axioms AronowAudit.P022.corrected_allocation_sum
+#print axioms AronowAudit.P022.seven_total_abs_le
+#print axioms AronowAudit.P022.seven_term_budget
+#print axioms AronowAudit.P022.proposition2_corrected_finite
+#print axioms AronowAudit.P022.proposition2_corrected_limit
+#print axioms AronowAudit.P022.proposition2_printed_counterexample
+#print axioms AronowAudit.P022.partition_two
+#print axioms AronowAudit.P022.quantile_two_ones
+#print axioms AronowAudit.P022.sharp_covariance_two_ones
+#print axioms AronowAudit.P022.empirical_cdf_bounds
+#print axioms AronowAudit.P022.origin_cdf
+#print axioms AronowAudit.P022.zero_atom_distance
+#print axioms AronowAudit.P022.reciprocal_below_threshold
+#print axioms AronowAudit.P022.reciprocal_finite_errors
+#print axioms AronowAudit.P022.cdf_partition_bracket
+#print axioms AronowAudit.P022.bernoulli_variance_bound
+#print axioms AronowAudit.P022.reciprocal_atom_values
+#print axioms AronowAudit.P022.reciprocal_outcome_limit
+#print axioms AronowAudit.P022.reciprocal_weak_limit
+#print axioms AronowAudit.P022.reciprocal_allocation_limit
+#print axioms AronowAudit.P022.origin_cdf_continuous_off_atom
+#print axioms AronowAudit.P022.reciprocal_conditions123
+#print axioms AronowAudit.P022.reciprocal_tail_diverges
+#print axioms AronowAudit.P022.lemma2_corrected_explicit
+#print axioms AronowAudit.P022.finite_variance_second_moment
+#print axioms AronowAudit.P022.indicator_population_variance
+#print axioms AronowAudit.P022.finite_covariance_cauchy
+#print axioms AronowAudit.P022.centered_quadrature
+#print axioms AronowAudit.P022.finite_squared_markov
+#print axioms AronowAudit.P022.third_moment_tail_bound
+#print axioms AronowAudit.P022.zero_tolerance_tail
+#print axioms AronowAudit.P022.equation23_counterexample
+#print axioms AronowAudit.P022.fixed_arm_variance_limit
+#print axioms AronowAudit.P022.appendixB_general_discrepancy
+#print axioms AronowAudit.P022.permutation_eval_mean
+#print axioms AronowAudit.P022.observed_means_unbiased
+#print axioms AronowAudit.P022.difference_in_means_unbiased
+#print axioms AronowAudit.P022.sampled_cdfs_unbiased
+#print axioms AronowAudit.P022.corrected_partition_integer_properties
+#print axioms AronowAudit.P022.hoeffding_all_couplings
+#print axioms AronowAudit.P022.sqrt_product_le_arithmetic
+#print axioms AronowAudit.P022.allocation_coefficient_product

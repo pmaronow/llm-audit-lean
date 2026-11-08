@@ -1,0 +1,59 @@
+[
+ {
+  "target_id": "P008-T11",
+  "decision": "restricted",
+  "theorem": "SAP.P008a.T11",
+  "restriction": "Retains the exact sums of the displayed five and eight estimates, the full rounding envelope for the five estimates, the exclusion of a displayed sum 12.38, and the strict comparison with every number displayed as 7.97. Omits the identification of the actual unrounded cumulative effect as 7.99649 and its corrected display as 8.00; the rounding envelope alone does not establish that actual display. The kept empirical permutation percentiles -7.97 and 7.97 are not certified as outputs.",
+  "rows_used": [
+   "AronowAudit.P008.printed_toy_sums",
+   "AronowAudit.P008.toy_sum_rounding"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P008a.T11Statement"
+ },
+ {
+  "target_id": "P008-T12",
+  "decision": "whole",
+  "theorem": "SAP.P008a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.printed_grid_counterexample",
+   "AronowAudit.P008.printed_grid_empty_percentiles",
+   "AronowAudit.P008.zero_sum_quantiles"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P008a.T12Statement"
+ },
+ {
+  "target_id": "P008-T13",
+  "decision": "whole",
+  "theorem": "SAP.P008a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.corrected_grid"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P008a.T13Statement"
+ },
+ {
+  "target_id": "P008-T14",
+  "decision": "whole",
+  "theorem": "SAP.P008a.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.amr_misprint",
+   "AronowAudit.P008.amr_misprint_witness"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.amr_display",
+    "reason": "Its definitional content is expressed directly for the finite mean data by substitution, avoiding spatial assumptions unrelated to this identity."
+   },
+   {
+    "lean_name": "AronowAudit.P008.amr_display_on_valid_circles",
+    "reason": "The abstract finite-mean identity avoids this row's extra all-assignment integrability and spatial restrictions."
+   }
+  ],
+  "statement_definition": "SAP.P008a.T14Statement"
+ }
+]

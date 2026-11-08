@@ -10,7 +10,7 @@ open scoped BigOperators Topology
 open Filter MeasureTheory ProbabilityTheory Function
 attribute [local instance] Classical.propDecidable
 
-/-! Scalar normalization and the atomic product law. -/
+/-! Record 0: scalar normalization and the actual atomic product law. -/
 
 def all_pps_shapeMass (s : ℝ) (j : ℕ) : ℝ :=
   (∏ i ∈ Finset.range j, (s + (i : ℝ))) / (j.factorial : ℝ) *
@@ -179,7 +179,9 @@ theorem all_pps_configurations_invalid_proof (row : Fin 6) :
     rw [hD z] at hle
     exact (not_lt_of_ge hle) hgt
 
-/-! Factorial moments and their transport to the eight-coordinate law. -/
+example : type_of% @AronowAudit.P027.all_pps_configurations_invalid := all_pps_configurations_invalid_proof
+
+/-! Record 1: factorial moments and their transport to the eight-coordinate law. -/
 
 lemma nb_generated_rising_shift (s : ℝ) (j : ℕ) :
     (∏ i ∈ Finset.range (j+1), (s+(i:ℝ))) =
@@ -307,7 +309,9 @@ theorem nb_generated_witness_proof :
   · rw [nb_generated_witness_mass]
     exact nb_witness_positive
 
-/-! Half-open cumulative intervals and the uniform-start law. -/
+example : type_of% @AronowAudit.P027.nb_generated_witness := nb_generated_witness_proof
+
+/-! Record 2: half-open cumulative intervals and the uniform-start law. -/
 
 lemma systematic_left_nonneg {N : ℕ} (π : Fin N → ℝ)
     (hp : ∀ k, 0 ≤ π k) (k : Fin N) : 0 ≤ cumulativeLeft π k := by
@@ -568,6 +572,8 @@ theorem systematic_probability_construction_proof {N : ℕ} (hN : 2 ≤ N)
       ∂(MeasureTheory.volume.restrict (Set.Ico 0 1))) = π k) := by
   exact ⟨fun u hu₀ hu₁ => systematic_cardinality π m hm hp hs u hu₀ hu₁,
     systematic_marginal_integral π m hm hp hs⟩
+
+example : type_of% @AronowAudit.P027.systematic_probability_construction := systematic_probability_construction_proof
 
 end
 end AronowAudit.P027.Wave1

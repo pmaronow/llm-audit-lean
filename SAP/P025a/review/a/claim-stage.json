@@ -1,0 +1,68 @@
+[
+  {
+    "theorem": "SAP.P025a.T1",
+    "target_id": "P025-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:10-32 retains the two-unit numerical counterexample, full attainable interval, normalized design and probability of the full sample, and the general zero-cut/strict-nonoptimality result. Canonical parts (e),(f),(g) additionally display two all-weight residual equalities, the general mean-minus-minimum residual identity and the exact one-coordinate change formula; these equalities are absent. Independence of the inclusion indicators is not asserted. No added hypothesis; all retained expressions have positive denominators."
+  },
+  {
+    "theorem": "SAP.P025a.T2",
+    "target_id": "P025-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:34-44 states the numerical two-class values, probability bounds, strict ordering, population mean, separation (Assumption 2), and global box inequalities. It does not state the design/replication construction, singleton class sizes and true weights, upper first-cut identification, residual decompositions, or canonical part (h), the general weighted zero-cut/nonoptimality result. These are omissions, with no inconsistent extra assumptions."
+  },
+  {
+    "theorem": "SAP.P025a.T3",
+    "target_id": "P025-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:10-63 covers the corrected first cuts, last-cut inequalities, prescribed feasible optimizers, endpoint/full-image identities, segment attainment, both increments and the lower termwise residual certificate under exactly the canonical hypotheses. Canonical part (d) also asserts continuity of the ratio on the optimizer segment; no continuity assertion is present. The existential segment parameter is quantified after the desired value."
+  },
+  {
+    "theorem": "SAP.P025a.T4",
+    "target_id": "P025-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:65-76 retains both corrected first cuts, attained least/greatest values and infimum/supremum formulas for arbitrary positive class masses. Canonical parts (a),(b),(d) also give the last-cut inequalities, feasibility/value identities/optimality of the specified scaled threshold vectors, and both weighted increments. The theorem only identifies values, without exporting those further assertions. Strict outcome order and positive masses are canonical, not extra assumptions."
+  },
+  {
+    "theorem": "SAP.P025a.T5",
+    "target_id": "P025-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part4.lean:10-58 retains the two rational prevalence witnesses, directional ratios, exact rounded-input variants, interval memberships, rounding of counts, and seven nonempty uniform fixed-size subset laws with normalized probabilities and correct marginals. It does not construct a joint independent product design, attach its draws to the gallery/exchange populations, or quantify every joint draw to assert its sample counts and Hajek estimates, as canonical parts (A),(B) require. Thus the retained arithmetic is true, but the full design-based counterexample is not exported."
+  },
+  {
+    "theorem": "SAP.P025a.T6",
+    "target_id": "P025-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part5.lean:10-49 states all canonical overlap equivalences, both exact numerical odds ratios and thresholds, disjointness at three/overlap at four, reweighted odds, equality iff the directional-ratio product is the sample odds ratio, and the common-cap consequence with the required positive-probability hypotheses. The additional rational brackets for square roots are valid. It equates reweighted estimates, not arbitrary true population prevalences."
+  },
+  {
+    "theorem": "SAP.P025a.T7",
+    "target_id": "P025-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "Faithful refutation of the printed claim, as allowed by the task: Defs/Part6.lean:10-18 uses the printed >= lower test and <= upper test on their valid finite ranges, least/greatest attainable values, and the printed interval identity. Lines 30-35 negate that universal assertion and retain its valid universal upper half. The realizable n=2, y=(0,1), alpha=1/2, beta=1 instance has printed cut zero, printed value 1/2 and feasible value 1/3, so the refutation also refutes the literal printed reading; it does not repair the sign inside the negation."
+  },
+  {
+    "theorem": "SAP.P025a.T8",
+    "target_id": "P025-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "Faithful refutation of the exact optimization claim printed after Specifically: Defs/Part6.lean:20-28 uses the printed >= lower test and duplicated-tail display, and lines 37-44 negate this conjunction while retaining the valid universal upper endpoint formula. The two-class realizable example already refutes its asserted lower optimum, independent of the optional-real encoding of undefined tail indices. The opening asymptotic sharpness sentence is explicitly excluded from this target by claims.json and is not silently discarded."
+  },
+  {
+    "theorem": "SAP.P025a.T9",
+    "target_id": "P025-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part6.lean:46-65 matches every canonical part: partition identity for all 0<=k<=J, equality to the minimum conditional on the corrected first cut, the exact two duplicated classes and difference identity for 2<=k<=J, and undefined printed indices at k=0,1. Translating the paper's one-based class k-1 to zero-based k-2 is correct; the Option guard prevents truncated subtraction from manufacturing a numerical value."
+  },
+  {
+    "theorem": "SAP.P025a.T10",
+    "target_id": "P025-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:46-69 includes the normalized six-unit design, exact inclusion probabilities/class totals/class sizes/true weights/population mean, corrected first cut and tested values, attainable value 7/6 and global lower inequality, erroneous printed value one, and undefined printed display at the printed zero cut. Canonical part (b) additionally gives the all-weight residual equality and characterizes equality uniquely at (2,2,1,1); neither assertion is present."
+  },
+  {
+    "theorem": "SAP.P025a.T11",
+    "target_id": "P025-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part7.lean:10-50 gives the normalized increment, normalized singleton box and all threshold values at gamma=1, strict-gamma equality of stationary and outcome-test sets, the pointwise sign equivalence and one-step persistence, and all two-coordinate identities and strict/equal-boundary objective comparisons. It omits alpha=beta and the original-scale singleton/vector identities, identification of sample optimization endpoints and boundary first cut, strict-case existence/equality of first indices and the global threshold maximum, and canonical (B-iv)'s equal-inclusion class/population calibration and population-mean identities. The positive a,b formulation harmlessly generalizes the reciprocal probability parameters."
+  }
+]

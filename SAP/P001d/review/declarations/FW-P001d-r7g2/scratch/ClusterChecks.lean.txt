@@ -1,0 +1,68 @@
+import SAP.P001d.Challenge
+
+open MeasureTheory ProbabilityTheory SAP.P001d
+open scoped BigOperators ENNReal NNReal
+noncomputable section
+namespace ReviewClusters
+
+abbrev Ω := ℕ → ℝ
+def μ : Measure Ω := Measure.infinitePi (fun _ : ℕ => gaussianReal 0 1)
+instance : IsProbabilityMeasure μ := by unfold μ; infer_instance
+def X (i : ℕ) (ω : Ω) (_ : Fin 2) : ℝ := ω i
+
+lemma evalLaw (i : ℕ) : IdentDistrib (fun ω : Ω => ω i) id μ (gaussianReal 0 1) := by
+  refine ⟨(measurable_pi_apply i).aemeasurable, measurable_id.aemeasurable, ?_⟩
+  simp [μ, Measure.infinitePi_map_eval]
+
+lemma iid : IID μ X := by
+  refine ⟨by intro i; fun_prop [X], ?_, ?_⟩
+  · exact iIndepFun_infinitePi
+      (P := fun _ : ℕ => gaussianReal 0 1)
+      (X := fun _ : ℕ => fun t : ℝ => fun _ : Fin 2 => t) (by fun_prop)
+  · intro i
+    exact ((evalLaw i).trans (evalLaw 0).symm).comp
+      (u := fun t : ℝ => fun _ : Fin 2 => t) (by fun_prop)
+
+lemma moment (i : ℕ) (j : Fin 2) : MemLp (fun ω => X i ω j) 2 μ := by
+  exact (evalLaw i).memLp_iff.mpr (memLp_id_gaussianReal 2)
+
+lemma var (i : ℕ) (j : Fin 2) : variance (fun ω => X i ω j) μ = 1 := by
+  simpa [X] using (evalLaw i).variance_eq.trans (variance_id_gaussianReal (μ := 0) (v := 1))
+
+-- All T63 premises hold with two nondegenerate coordinates, variance one.
+example : (0 < (2 : ℕ)) ∧ IID μ X ∧
+    (∀ j, MemLp (fun ω => X 0 ω j) 2 μ) ∧
+    (∀ i j, 0 < variance (fun ω => X i ω j) μ) := by
+  exact ⟨by norm_num, iid, moment 0, by intro i j; rw [var]; norm_num⟩
+
+-- All first-conjunct T64 premises hold at s=1, rho=1, l=3, m=2.
+-- Distinct-pair requirements are nonempty, so this is not a singleton test.
+example : (0 < (2 : ℕ)) ∧ IID μ X ∧
+    (∀ i j, MemLp (fun ω => X i ω j) 2 μ) ∧ (0 < (3 : ℕ)) ∧
+    (1 : ℝ) ∈ Set.Icc 0 1 ∧
+    (∀ i j, variance (fun ω => X i ω j) μ = 1) ∧
+    (∀ i j k, j ≠ k →
+      0 < Real.sqrt (variance (fun ω => X i ω j) μ) ∧
+      0 < Real.sqrt (variance (fun ω => X i ω k) μ)) ∧
+    (∀ i j k, j ≠ k → wholeCorrelation μ (fun ω => X i ω j) (fun ω => X i ω k) = 1) := by
+  refine ⟨by norm_num, iid, moment, by norm_num, by norm_num, var, ?_, ?_⟩
+  · intro i j k _
+    simp [var]
+  · intro i j k _
+    change covariance (fun ω : Ω => ω i) (fun ω : Ω => ω i) μ /
+      (Real.sqrt (variance (fun ω : Ω => ω i) μ) *
+       Real.sqrt (variance (fun ω : Ω => ω i) μ)) = 1
+    rw [covariance_self (evalLaw i).aemeasurable_fst]
+    have hv : variance (fun ω : Ω => ω i) μ = 1 := var i 0
+    simp [hv]
+
+-- The block-resampling part has genuinely distinct arrays at l=2,m=2.
+def data : Fin 2 → Fin 2 → ℝ := fun i j => 10 * (i : ℝ) + (j : ℝ)
+example : (0 < (2 : ℕ)) ∧
+    blockResample data (fun _ => 1) 0 0 = 10 ∧
+    blockResample data (fun _ => 1) 0 1 = 11 ∧
+    blockResample data id 0 0 = 0 ∧
+    blockResample data id 1 0 = 10 := by
+  norm_num [blockResample, data]
+
+end ReviewClusters

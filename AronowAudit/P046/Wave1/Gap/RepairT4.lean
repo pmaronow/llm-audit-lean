@@ -431,5 +431,7 @@ theorem regression_counterexample_proof : ValidStudy RegressionExample.study ∧
     RepairT4_normal_limits.1, RepairT4_normal_limits.2, by norm_num,
     RepairT4_norm, RepairT4_risks.1, RepairT4_risks.2⟩
 
+example : type_of% @AronowAudit.P046.RegressionExample.counterexample := regression_counterexample_proof
+
 end
 end AronowAudit.P046.Wave1

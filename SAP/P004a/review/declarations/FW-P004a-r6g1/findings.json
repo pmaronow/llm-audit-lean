@@ -1,0 +1,78 @@
+[
+  {
+    "target_id": "P004-T1",
+    "theorem": "SAP.P004a.T1",
+    "fingerprint": "7caebb50c2cb3a28d6f3cae1e8d2c15e0861e9e84ee3ec99d0e9a48c986d7698",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/ReviewChecks.lean compiled from Defs/WholeW1 and Mathlib without importing Challenge. It constructs a full sequence of actual constrained likelihood maximizers over threeTypeParameterSet using compactness and continuity, computes w1ThreeP 3 = (1/3,1/2,2/3), and independently proves the actual one-block mean, second moment and fourth moment by enumerating all eight assignments. For the full regularity conjunction: the nodes are distinct singleton centers spaced ten apart, the spatial measure is finite counting measure, and the deterministic field is bounded by 21/20. Every d>=0 includes its own atom and has finite positive mass. The tables have only self-interference, the ball cardinality is at most r/5+1, the truth is interior, and the cyclic Gram quadratic form is uniformly positive eventually (each type occurs at least floor(N/3) times). All independent-coin assignment masses are positive. On N=3K both homophily expressions vanish and N times the printed variance is 1753/750000>0. scratch/ReviewExact.py independently verifies all rational population/variance constants, the single-block moments, and the independent-block moment/tail formulas for K=1,...,5; results are in scratch/ReviewExact.json. The asymptotic conclusions themselves are the supplied certified statement, not newly reproved by these finite checks.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T2",
+    "theorem": "SAP.P004a.T2",
+    "fingerprint": "6c38d758dfef20eec7b8a8ced2b1cfba372e4e934ec0f5210eb0f2c053be56cd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/ReviewChecks.lean compiles a complete finite-premise instance: N=2, k=1, p=(1/2,1/2), O_i=1, R_i(z)=i+1, B_i={i}; information is 1/4, its determinant is a unit, and the source-disjointness, self-membership, and symmetry hypotheses all hold. It also constructs an actual intercept-only MLE sequence satisfying every LogisticConditions clause over [-1,1], proves interior truth zero, and proves overlap. Full asymptotic nonvacuity follows by putting this intercept design at the linePopulation singleton centers, using counting measure and fixed alternating outcomes +1,-1, with d=h=0. This spatial model has uniformly bounded outcomes, well-defined finite positive averages, local tables at every distance, and ball counts at most r/5+1. Here f_i(1)=f_i(0)=the population outcome mean, Q_int=0, and V_C=4(1-mean(outcomes)^2)/N, so NV_C>=3 eventually. Thus the normal and both interval branches have simultaneously satisfiable premises. The spatial regularity and variance calculation in this last construction are justified mathematically here rather than separately reproved as Lean lemmas.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, round 5: the T2 docstring omitted the required notice that the usual measure-theoretic conditions are assumed.",
+        "status": "fixed",
+        "reason": "SAP/P004a/Challenge/Part1.lean:25 now explicitly says \"The usual measure-theoretic conditions are assumed.\" Eventual WellDefined remains at SAP/P004a/Defs/Part3.lean:53 and unfolds to precisely the usual measurable, positive finite, integrable average-domain conditions at SAP/P004a/Defs/Part1.lean:110-113. No mathematical restriction or hypothesis change is needed."
+      }
+    ]
+  },
+  {
+    "target_id": "P004-T3",
+    "theorem": "SAP.P004a.T3",
+    "fingerprint": "050298fabb647f92a62a5f9151e8b9a90185d70831b951ea44b8d3d6910b6d0a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem is a closed assertion about a specified sequence, so there is no universal-premise implication to satisfy artificially. The concrete witness has finite counting measure at separated singleton centers and a bounded measurable field on the entire disjoint unit disks. All d>=0 averages have positive finite mass. The two group likelihoods separate, and each concave Bernoulli likelihood is maximized by its sample fraction clipped to [1/20,19/20]; the stated logit is therefore an actual constrained MLE, including the explicit parameter fallback for absent groups. The true parameter is interior, the true probabilities are 1/2 and 1/10 with overlap 1/25, the Gram matrix is uniformly positive eventually, and on N=8r the printed homophily expression is exactly 1/4. Every assignment has positive product probability, and opposite single-treated high-group assignments give distinct positive/negative fitted estimates, ensuring positive variance. scratch/ReviewChecks.lean independently checks the N=8 group sizes. scratch/ReviewExact.py uses the three independent binomial counts to reproduce exactly both actual variances and both printed-variance expectations at N=32,64, plus every displayed rounding inequality and strict finite underestimation. The full spatial/likelihood justification is mathematical; it is not a new Lean proof of the entire asymptotic theorem.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "architect-report.md, Declaration review round 2: summaries omitted normalization of the residual sum.",
+        "status": "fixed",
+        "reason": "SAP/P004a/Challenge/Part1.lean:35-36 and SAP/P004a/Defs/WholeW1.lean:482-483 both explicitly give N1/N and R/N, matching the limits at Defs/WholeW1.lean:455-456."
+      }
+    ]
+  },
+  {
+    "target_id": "P004-T4",
+    "theorem": "SAP.P004a.T4",
+    "fingerprint": "5eee998fa187d0a96ce40a0d338d27d250b4013658611ae65297b92b294e9a85",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/ReviewChecks.lean independently constructs every hypothesis of the first universal assertion using N=2, valid propensities 1/2 and assignment (true,false). For the second assertion it constructs p=(1/2,1/2), R_i(z)=i+1, g=0 and B_i={i}, proves every self-membership/symmetry/outside-covariance condition, and proves the residual-contrast mean has variance 5, so the bound has a nondegenerate instance. The fixed fitted-MLE comparison uses the genuine T3 witness justified above. scratch/ReviewExact.py independently enumerates its binomial counts and verifies E[V_raw,32]=493725989/38038425600>18239/1505280=Var(T_32).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T5",
+    "theorem": "SAP.P004a.T5",
+    "fingerprint": "2d8b4eaa582c799a376ac655a382626aafd218437deacb0505f8fdc4537eedb6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit two-disk fields supply genuine binary measurable outcomes, not abstract entered tables. Disks centered 100 apart have disjoint radius-six supports; polar integration of the angular threshold gives each bin mean q_j(z_i). Bin areas are pi*(2j+1)>0, union area is 36*pi, and bounded fields are integrable on these finite-area regions. Independent fair assignment has mass 1/4 at the displayed assignment (true,false), with both arms nonempty. scratch/ReviewChecks.lean independently proves both arm counts, all case shares in [0,1], and the Case B unweighted sum and weighted union effect. scratch/ReviewExact.py checks every case sum, all three union effects, the sign/range assertions, and positive refined-bin areas summing to the same union area. The geometric and polar-integration nonvacuity argument is mathematical rather than a new Lean proof of all spatial integral identities. The counterexample addresses precisely the normalized-union interpretation of the printed wording, and assigns no corrected empirical application effect.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "architect-report.md, Declaration review round 1: identify the precise interpretation refuted and avoid asserting a corrected empirical area effect.",
+        "status": "fixed",
+        "reason": "SAP/P004a/Challenge/Part1.lean:53-54 and SAP/P004a/Defs/WholeW1.lean:593-594 identify the unweighted-sum versus normalized-union-share reading. Challenge/Part1.lean:62 and Defs/WholeW1.lean:602 explicitly assert no corrected empirical area effect."
+      }
+    ]
+  }
+]

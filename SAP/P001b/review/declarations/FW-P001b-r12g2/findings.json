@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P001-T25",
+    "theorem": "SAP.P001b.T25",
+    "fingerprint": "dd39628fb8a6e3ebabd0bbe8ff6b522c75291f1a3cc4ac220d581b4058c22386",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:11 and :14: zeroMass on Fin 1 has nonnegative weights summing to one; T25Statement is proved independently by norm_num after unfolding. The constant-zero map under the one-point Dirac probability measure is measurable, has countable range, has below-four probability one, and has zero PMF away from zero. This satisfies every condition of the printed third bullet.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T26",
+    "theorem": "SAP.P001b.T26",
+    "fingerprint": "f03b38a04b08a4f758d88f490ed70bad8420a3968dbf876df5ea6fb995712a17",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:27: on Bool with Dirac(false), X(false)=0 and X(true)=1/2. The measure is a probability measure, X is measurable with countable range, and every noninteger singleton fiber has probability zero; the noninteger sample value is explicitly null. Compiled :86 also verifies the fair-die weights are nonnegative and normalized.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T27",
+    "theorem": "SAP.P001b.T27",
+    "fingerprint": "fbe8f7388910432d6032ec6a3510a256652e202fe2632930baeab085f6209a06",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:40, :48, :56, and :65 independently establish the exact dyadic level masses, summability, total weight one, full sigma-algebra, measurable dyadicLocation, probability-measure status of W1DyadicLaw, strictly positive weights, and the first atom at 1/2. The target has no input hypotheses. The canonical fixed witness and all further injectivity, range, CDF, continuity, and non-flatness properties are exactly the certified conclusions, not assumed properties encoded in the definitions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T28",
+    "theorem": "SAP.P001b.T28",
+    "fingerprint": "26e358b51a2d300338d9eba6658beba2a7a23c98ab3b04b099df907be843ac41",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:82 supplies the countable-range Bool/Dirac model. Compiled :86 verifies nonnegative normalized fair-die weights and StrictMono dieValue, satisfying the ordered finite clause. Compiled :95 verifies the no-atom hypothesis on (6,7], satisfying the separate constancy clause. All distinct hypothesis sets have concrete instances; only the n=0 specialization cannot satisfy normalization.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T29",
+    "theorem": "SAP.P001b.T29",
+    "fingerprint": "3af3e0707e33e24bbd24809fff61cee2d712c61e43e1aaed042e01047543ddf5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:117 onward proves integrability of the closed/open uniform indicators and of the modified density (via almost-everywhere equality), total integral one for the closed indicator, and actual endpoint/interior pointwise discrepancies. Compiled :153 and :157 identify volume restricted to [0,1] as a probability measure with exactly the clamped CDF used in the target. Together with the explicit definitions and certified half-line integral and difference-quotient conclusions, these are genuine measurable density versions of the same uniform law, contradicting pointwise uniqueness and differentiability at every point.",
+    "confidence": 0.99
+  }
+]

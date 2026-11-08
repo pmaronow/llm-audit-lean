@@ -1,0 +1,423 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "cross_target_rows": [
+      {
+        "credited_target": "P040-T3",
+        "lean_name": "AronowAudit.P040.printed_wald_arithmetic",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      }
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P040.binomialMass_nonneg",
+        "reason": "Finite-probability helper used within the exported counterexample proofs; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.binomialMass_total",
+        "reason": "Finite-probability normalization used within the exported bounds; not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.exclude_observed_count_bound",
+        "reason": "The method-free and lower-bound rows already export its required consequences."
+      },
+      {
+        "lean_name": "AronowAudit.P040.printed_patron_claim_refuted",
+        "reason": "The method-free bound already gives the canonical calibration obstruction; the historical exact-coverage proposition is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P040.observed_count_mass",
+      "AronowAudit.P040.method_free_counterexample",
+      "AronowAudit.P040.lower_bound_counterexample",
+      "AronowAudit.P040.printed_endpoint_excludes_witness",
+      "AronowAudit.P040.printed_wald_arithmetic",
+      "AronowAudit.P040.wald_membership_sq",
+      "AronowAudit.P040.wald_witness_membership",
+      "AronowAudit.P040.wald_lower_membership",
+      "AronowAudit.P040.wald_coverage_counterexample",
+      "AronowAudit.P040.wald_lower_failure_probability",
+      "AronowAudit.P040.waldRadius_sq",
+      "AronowAudit.P040.exact_interval_contains_eighty_percent",
+      "AronowAudit.P033.Wave1.native_power_correction_critical_cdf",
+      "AronowAudit.P033.Wave1.binary_standardization.critical_bounds",
+      "AronowAudit.P053.NormalCompletion.strictMono_normal_cdf"
+    ],
+    "statement_definition": "SAP.P040.T1WholeStatement",
+    "target_id": "P040-T1",
+    "theorem": "SAP.P040.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "cross_target_rows": [
+      {
+        "credited_target": "P040-T1",
+        "lean_name": "AronowAudit.P040.method_free_counterexample",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      },
+      {
+        "credited_target": "P040-T1",
+        "lean_name": "AronowAudit.P040.lower_bound_counterexample",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      }
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P040.countProbability_complement",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.countProbability_mono",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.countProbability_union_le",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.exact_endpoint_sign_certificates",
+        "reason": "The exported endpoint theorem already supplies the actual roots and their brackets."
+      },
+      {
+        "lean_name": "AronowAudit.P040.lower_tail_rejection_le",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unique_bracketed_root",
+        "reason": "Root existence and uniqueness are already exported by corrected_binomial_endpoints."
+      },
+      {
+        "lean_name": "AronowAudit.P040.upper_tail_rejection_le",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P040.observed_proportion_rounds",
+      "AronowAudit.P040.observed_tail_identities",
+      "AronowAudit.P040.observedUpper_continuous",
+      "AronowAudit.P040.observedUpper_strictMono",
+      "AronowAudit.P040.observedLower_strictAnti",
+      "AronowAudit.P040.observedUpper_hasDerivAt",
+      "AronowAudit.P040.observed_upper_boundary_values",
+      "AronowAudit.P040.corrected_binomial_endpoints",
+      "AronowAudit.P040.corrected_six_decimal_rounding",
+      "AronowAudit.P040.exact_interval_contains_eighty_percent",
+      "AronowAudit.P040.exact_binomial_coverage",
+      "AronowAudit.P040.method_free_counterexample",
+      "AronowAudit.P040.lower_bound_counterexample"
+    ],
+    "target_id": "P040-T2",
+    "theorem": "SAP.P040.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "cross_target_rows": [],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P040.printed_wald_arithmetic"
+    ],
+    "target_id": "P040-T3",
+    "theorem": "SAP.P040.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "cross_target_rows": [
+      {
+        "credited_target": "P040-T5",
+        "lean_name": "AronowAudit.P040.recorded_statistic_identity",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      },
+      {
+        "credited_target": "P040-T5",
+        "lean_name": "AronowAudit.P040.recorded_df_identity",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      },
+      {
+        "credited_target": "P040-T5",
+        "lean_name": "AronowAudit.P040.corrected_regression_degrees_of_freedom",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      },
+      {
+        "credited_target": "P040-T5",
+        "lean_name": "AronowAudit.P040.adjusted_columns_independent",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      },
+      {
+        "credited_target": "P040-T5",
+        "lean_name": "AronowAudit.P040.corrected_student_reference_rounding",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      }
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P040.adjusted_coefficients_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.adjusted_crossproduct_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.adjusted_gram_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.adjusted_gram_inverse",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.adjusted_hc1_variance_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.adjusted_inverse_product_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.adjusted_residuals_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.adjusted_squared_statistics_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.adjusted_treatment_weights_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.normal_decimal_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.normal_integral_enclosure",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.normal_kernel_error",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.normal_p_enclosure",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.normal_polynomial_integral",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.normal_reference_antitone",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.normal_reference_rounding_mismatch",
+        "reason": "recorded_normal_counterexample states the mismatch directly on the actual fitted statistics."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_coefficients_certificate",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_crossproduct_certificate",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_gram_certificate",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_gram_inverse",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_hc1_variance_certificate",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_inverse_product_certificate",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_residuals_certificate",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_squared_statistics_certificate",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      },
+      {
+        "lean_name": "AronowAudit.P040.unadjusted_treatment_weights_certificate",
+        "reason": "Wrong credit for T4: this row concerns the unadjusted design, whereas both T4 witnesses use the adjusted design."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P040.recorded_regression_identification",
+      "AronowAudit.P040.regression_witness_arithmetic",
+      "AronowAudit.P040.recorded_table_cells_round",
+      "AronowAudit.P040.normal_reference_counterexample_bounds",
+      "AronowAudit.P040.recorded_normal_counterexample",
+      "AronowAudit.P040.recorded_statistic_identity",
+      "AronowAudit.P040.recorded_df_identity",
+      "AronowAudit.P040.corrected_regression_degrees_of_freedom",
+      "AronowAudit.P040.adjusted_columns_independent",
+      "AronowAudit.P040.corrected_student_reference_rounding"
+    ],
+    "target_id": "P040-T4",
+    "theorem": "SAP.P040.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "cross_target_rows": [
+      {
+        "credited_target": "P040-T4",
+        "lean_name": "AronowAudit.P040.recorded_normal_counterexample",
+        "reason": "Same mathematical component, shared or explicitly cross-referenced by this unit's canonical claims."
+      }
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P040.corrected_student_reference_rounding",
+        "reason": "recorded_corrected_p_values already gives both rounding conclusions on the fitted statistics."
+      },
+      {
+        "lean_name": "AronowAudit.P040.recorded_day_summary",
+        "reason": "The canonical regression conclusions use the defined data and designs; this finite summary is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.reference_p_at_max_21",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.reference_p_at_max_28",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student21_decimal_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student21_kernel_bracket",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student21_p_enclosure",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student21_polynomial_integral",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_decimal_certificate",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_density_identity",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_kernel_bracket",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_kernel_upper",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_p_enclosure",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_polynomial_integral",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_square_certificate_10",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_square_certificate_11",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_taylor_integral",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student28_upper_polynomial_nonneg",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student_density_regular",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.student_reference_antitone",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P040.table_effects_not_significant",
+        "reason": "The selected aggregate row exports the required component; this supporting certificate is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P040.corrected_regression_degrees_of_freedom",
+      "AronowAudit.P040.unadjusted_columns_independent",
+      "AronowAudit.P040.adjusted_columns_independent",
+      "AronowAudit.P040.centered_weekdays_sum_zero",
+      "AronowAudit.P040.adjusted_design_same_range",
+      "AronowAudit.P040.recorded_df_identity",
+      "AronowAudit.P040.student21_density_identity",
+      "AronowAudit.P040.corrected_student_reference_bounds",
+      "AronowAudit.P040.recorded_corrected_p_values",
+      "AronowAudit.P040.recorded_statistic_identity",
+      "AronowAudit.P040.recorded_effects_not_significant",
+      "AronowAudit.P040.table_statistics_bounded",
+      "AronowAudit.P040.unadjusted_bulk_minimizes_reference_p",
+      "AronowAudit.P040.smallest_reference_p_bounds",
+      "AronowAudit.P040.recorded_normal_counterexample"
+    ],
+    "target_id": "P040-T5",
+    "theorem": "SAP.P040.T5"
+  }
+]

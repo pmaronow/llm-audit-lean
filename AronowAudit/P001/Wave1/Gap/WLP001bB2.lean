@@ -7,8 +7,9 @@ open scoped BigOperators ENNReal NNReal Topology
 noncomputable section
 local instance instDecidableWLP001bB2 (p : Prop) : Decidable p := Classical.propDecidable p
 
-/-- P001-T17: iid placebo F/Wald failure, using finite-support regression,
-OLS/HC0 covariance estimates, reference quantiles, and rejection probabilities. -/
+/-- Record 15 (P001-T17): the full iid placebo F/Wald failure, with the mapper's
+exact contract. The shared finite-support, OLS/HC0, reference-quantile, and
+rejection-probability proofs are already established in `PlaceboFTest`. -/
 theorem placebo_iid_f_wald_failure {Ω : Type*} [MeasurableSpace Ω]
   (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → Fin 12)
   (hiid : IID μ Z) (hlaw : μ.map (Z 0)=finiteLawMeasure placeboLaw) :

@@ -4,7 +4,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
-P012: finite graph model of Definitions 1--4 and related statements.
+P012: finite graph model of Definitions 1--4 and the audited statements.
 Source: American Journal of Epidemiology 187(1), 153--160, and its Web Appendix.
 Vertices have two disjoint namespaces. `s i` names observed subject i when
 i belongs to the observed sample; `u i k` is an unobserved vertex. Unused `s`
@@ -64,8 +64,7 @@ structure Data where
 
 /-- "V_SU = V_S ∪ U ... E_SU = E_S ∪ E_U" (p. 155).
 Raw states also admit malformed proposals, so incompatibility can be expressed.
-Edges are stored as finite vertex sets; `Simple` requires exactly two distinct
-endpoints. The outer finite set prevents parallel copies. -/
+An edge is a two-element finite set; parallel copies are impossible. -/
 structure State where
   vertices : Finset Vertex
   edges : Finset (Finset Vertex)
@@ -97,7 +96,7 @@ def sampledTraitDegree (D : Data) (z : Bool) : ℕ :=
   ∑ i ∈ D.sampled.filter (fun i => D.trait i = z), D.degree i
 
 /-- Standing assumptions: distinct entry times; exactly one earlier recruiter
-for each nonseed; seeds have no recruiter; d_i ≥ d_i^r (pp. 154--155). -/
+for each nonseed; seeds have no recruiter; d_i ≥ d_i^r (pp. 154--155; target R3). -/
 abbrev Admissible (D : Data) : Prop :=
   D.seeds ⊆ D.sampled ∧
   (∀ i ∈ D.sampled, ∀ j ∈ D.sampled, D.time i = D.time j → i = j) ∧
@@ -480,11 +479,11 @@ theorem corrected_trait_preserves (D : Data) (H K : State)
     simpa [flipTrait,Function.update_of_ne hneq] using hH.2.2.2.1 i hi
 
 /- Concrete observed data. Unobserved label 3 in a displayed example is u 3 0. -/
-/-- Example T1(a): "V_R={1,2}, M={1}, E_R={(1,2)}, d_R=(2,1), Z_R=(0,1)"; entry order is 1,2. Counterexample to Web Appendix 2, pp. 2-3. -/
+/-- Validator instance T1(a): "V_R={1,2}, M={1}, E_R={(1,2)}, d_R=(2,1), Z_R=(0,1)"; entry order is 1,2. Counterexample to Web Appendix 2, pp. 2-3. -/
 def proposalData : Data :=
   ⟨{1,2}, {1}, fun _ => 1, id, fun i => if i = 1 then 2 else 1,
     fun i => i == 2⟩
-/-- Example T1(a): "V_SU={1,2,3}, E_SU={{1,2},{1,3}}, Z_3=0". Unsampled vertex 3 is named u 3 0; Web Appendix 2 counterexample. -/
+/-- Validator T1(a): "V_SU={1,2,3}, E_SU={{1,2},{1,3}}, Z_3=0". Unsampled vertex 3 is named u 3 0; Web Appendix 2 counterexample. -/
 def proposalStart : State :=
   ⟨{s 1,s 2,u 3 0}, {{s 1,s 2},{s 1,u 3 0}}, fun v => decide (v = s 2)⟩
 /-- The literal T1(a) output: delete {1,3}, invent vertex 4 with trait t, add {1,4} and {3,4}, then apply printed cleanup. Web Appendix 2, lines 4-27. -/
@@ -775,7 +774,7 @@ theorem corrected_graph_preserves (D : Data) (H K : State)
 
 /-- T2: every execution of both corrected mechanisms preserves Definition 3;
 the pools are still those of the original state, and no new data assumption is
-imposed. Web Appendix 2, pp. 2--3, as corrected for P012-E001. -/
+imposed. Web Appendix 2, pp. 2--3, as corrected for E001. -/
 theorem corrected_proposal_preserves (D : Data) (H K : State)
     (hD : Admissible D) (hH : Compatible D H) (hP : Proposal D true H K) :
     Compatible D K := by
@@ -783,15 +782,18 @@ theorem corrected_proposal_preserves (D : Data) (H K : State)
   · exact corrected_graph_preserves D H K hD hH hP
   · exact corrected_trait_preserves D H K hH hP
 
-/- T19: the printed claim that every proposal stays in C is false, as
-proposal_counterexample demonstrates. Web Appendix 2, pp. 2--3. -/
+/- T19: the literal printed claim that every proposal stays in C. This is
+false, as proposal_counterexample demonstrates; it is retained as a draft,
+never used in another proof. Web Appendix 2, pp. 2--3. -/
+/- The false assertion `printed_proposal_preserves` is retired.
+Its original closed contract is archived in the confidence-all campaign,
+and its checked refutation is recorded in the completion ledger. -/
 
-
-/-- Example T8-T9 data: "V_R={1,2,3}, E_R={(1,2),(2,3)}, d_R=(3,2,3), Z_R=(0,0,1)"; seed 1 and entry order 1,2,3. Appendix p. 160 counterexamples. -/
+/-- Validator T8-T9 data: "V_R={1,2,3}, E_R={(1,2),(2,3)}, d_R=(3,2,3), Z_R=(0,0,1)"; seed 1 and entry order 1,2,3. Appendix p. 160 counterexamples. -/
 def proofStepData : Data :=
   ⟨{1,2,3}, {1}, fun j => if j = 3 then 2 else 1, id,
     fun i => if i = 2 then 2 else 3, fun i => i == 3⟩
-/-- Example T8 starting graph: the sampled triangle and two edges from vertices 1 and 3 to shared unsampled vertex 4. Traits extend (0,0,1) with Z_4=0; Appendix p. 160. -/
+/-- Validator T8 starting graph: the sampled triangle and two edges from vertices 1 and 3 to shared unsampled vertex 4. Traits extend (0,0,1) with Z_4=0; Appendix p. 160. -/
 def result1BadStart : State :=
   ⟨{s 1,s 2,s 3,u 4 0},
     {{s 1,s 2},{s 2,s 3},{s 1,s 3},{s 1,u 4 0},{s 3,u 4 0}},
@@ -821,7 +823,7 @@ theorem result1_proof_counterexample :
     recruitmentDegree, recruitmentEdges, graphDegree, sampledVertices, nonseeds, s, u]
   decide
 
-/-- Example T9 starting graph: recruitment edges and all four ties from sampled 1,3 to unsampled 4,5, with traits Z_4=0 and Z_5=1. The cross edges are already present; p. 160. -/
+/-- Validator T9 starting graph: recruitment edges and all four ties from sampled 1,3 to unsampled 4,5, with traits Z_4=0 and Z_5=1. The cross edges are already present; p. 160. -/
 def result2BadStart : State :=
   ⟨{s 1,s 2,s 3,u 4 0,u 5 0},
     {{s 1,s 2},{s 2,s 3},{s 1,u 4 0},{s 3,u 5 0},{s 1,u 5 0},{s 3,u 4 0}},
@@ -849,19 +851,19 @@ theorem result2_proof_counterexample :
     recruitmentEdges, graphDegree, sampledVertices, nonseeds, s, u]
   decide
 
-/-- Example T12: "V_R={1,2,3}, M={1}, E_R={(1,2),(1,3)}, t_R=(0,1,2), d_R=(3,1,1), Z_R=(1,1,1)". Counterexample to (A2), Appendix p. 160. -/
+/-- Validator T12: "V_R={1,2,3}, M={1}, E_R={(1,2),(1,3)}, t_R=(0,1,2), d_R=(3,1,1), Z_R=(1,1,1)". Counterexample to (A2), Appendix p. 160. -/
 def a2Data : Data :=
   ⟨{1,2,3}, {1}, fun _ => 1, fun i => i-1,
     fun i => if i = 1 then 3 else 1, fun _ => true⟩
-/-- Example T12 graph: "E_SU={{1,2},{1,3},{1,4}}", with vertex 4 unsampled and its trait equal to t. The three sampled traits are all 1; Appendix p. 160, (A2). -/
+/-- Validator T12 graph: "E_SU={{1,2},{1,3},{1,4}}", with vertex 4 unsampled and its trait equal to t. The three sampled traits are all 1; Appendix p. 160, (A2). -/
 def a2State (t : Bool) : State :=
   ⟨{s 1,s 2,s 3,u 4 0}, {{s 1,s 2},{s 1,s 3},{s 1,u 4 0}},
     fun v => match v with | Sum.inl _ => true | Sum.inr _ => t⟩
 
-/-- T12: the pre-flip functional minus the post-flip functional is -5/12
-in the admissible two-recruit example, whereas printed (A2) gives -1/6 or -1/4. The private neighbour
+/-- T12: the entire functional changes by -5/12 in the admissible two-recruit
+example, whereas printed (A2) gives -1/6 or -1/4. The private neighbour
 assumption, both compatibilities, the times and the spare degree are explicit.
-Appendix p. 160, (A2), counterexample from P012-E002. -/
+Appendix p. 160, (A2), counterexample from E002. -/
 theorem a2_counterexample :
     Admissible a2Data ∧ Compatible a2Data (a2State true) ∧
     Compatible a2Data (a2State false) ∧
@@ -883,19 +885,19 @@ theorem a2_counterexample :
     susceptible, sameSusceptible, preferential, PreferentialDefined, pValue, pSum, s, u]
   decide
 
-/-- Example T14(A): "V_R={1,2}, M={1}, E_R={(1,2)}, d_R=(1,1), Z_R=(0,0)". A zero-variance boundary of Definition 1, p. 155. -/
+/-- Validator T14(A): "V_R={1,2}, M={1}, E_R={(1,2)}, d_R=(1,1), Z_R=(0,0)". A zero-variance boundary of Definition 1, p. 155. -/
 def domainA : Data :=
   ⟨{1,2},{1},fun _ => 1,fun i => i-1,fun _ => 1,fun _ => false⟩
 /-- The simple two-vertex graph "E_SU={{1,2}}", with active traits t1,t2. Used in the domain and empty-unsampled-pool counterexamples to Definitions 1-2 and Web Appendix 2. -/
 def dyad (t1 t2 : Bool) : State :=
   ⟨{s 1,s 2},{{s 1,s 2}},fun v => if v = s 1 then t1 else t2⟩
-/-- Example T14(B): "V_R=M={1,2}, E_R=empty, d_R=(1,1), Z_R=(0,1)". Definition 2 has an empty average although the dyad homophily is defined; p. 155. -/
+/-- Validator T14(B): "V_R=M={1,2}, E_R=empty, d_R=(1,1), Z_R=(0,1)". Definition 2 has an empty average although the dyad homophily is defined; p. 155. -/
 def domainB : Data := {domainA with seeds := {1,2}, trait := fun i => i == 2}
-/-- Example T14(C): "V_R=M={1}, E_R=empty, d_1=0, Z_1=0". The edgeless boundary of Definitions 1-2, p. 155. -/
+/-- Validator T14(C): "V_R=M={1}, E_R=empty, d_1=0, Z_1=0". The edgeless boundary of Definitions 1-2, p. 155. -/
 def domainC : Data := ⟨{1},{1},fun _ => 1,id,fun _ => 0,fun _ => false⟩
 /-- The T14(C) graph has the single sampled seed, no edges and trait 0. Definitions 1-2, p. 155, edgeless counterexample. -/
 def domainCState : State := ⟨{s 1},∅,fun _ => false⟩
-/-- Example T14(D): "V_R={1,2}, M={1}, E_R={(1,2)}, d_R=(1,4), Z_R=(1,1)". Compatible states need not share the homophily domain; Definition 4, p. 155. -/
+/-- Validator T14(D): "V_R={1,2}, M={1}, E_R={(1,2)}, d_R=(1,4), Z_R=(1,1)". Compatible states need not share the homophily domain; Definition 4, p. 155. -/
 def domainD : Data :=
   ⟨{1,2},{1},fun _ => 1,fun i => i-1,fun i => if i = 1 then 1 else 4,fun _ => true⟩
 /-- The T14(D) graph is the recruitment dyad plus three private leaves at vertex 2. The three independent unsampled traits are t3,t4,t5; Definitions 1 and 4, p. 155. -/
@@ -908,7 +910,7 @@ def domainDState (t3 t4 t5 : Bool) : State :=
 /-- T14(A--D): explicit compatible data for a 0/0 correlation, an empty
 recruitment average, an edgeless graph, and mixed defined/undefined compatible
 states. Zero denominators are asserted; no fictitious value is assigned.
-Definitions 1, 2, 4, p. 155, domain counterexamples from P012-E006. -/
+Definitions 1, 2, 4, p. 155, domain counterexamples from E006. -/
 theorem domain_counterexamples :
     (Admissible domainA ∧ Compatible domainA (dyad false false) ∧
       hNumerator (dyad false false) = 0 ∧ hDenominator (dyad false false) = 0 ∧
@@ -961,11 +963,11 @@ theorem domain_counterexamples :
         norm_num [preferential, PreferentialDefined, pValue, pSum, susceptible,
           sameSusceptible, nonseeds, domainD, domainDState, s, u]
 
-/-- Example T1(b): "V_R={1,2,3}, E_R={(1,2),(2,3)}, M={1}, d_R=(1,3,1), Z_R=(0,1,0)". Entry order 1,2,3; Web Appendix 2 counterexample. -/
+/-- Validator T1(b): "V_R={1,2,3}, E_R={(1,2),(2,3)}, M={1}, d_R=(1,3,1), Z_R=(0,1,0)". Entry order 1,2,3; Web Appendix 2 counterexample. -/
 def proposalDataB : Data :=
   ⟨{1,2,3},{1},fun j => if j = 3 then 2 else 1,id,
     fun i => if i = 2 then 3 else 1,fun i => i == 2⟩
-/-- Example T1(b): recruitment edges plus the private tie {2,4}, with Z_4=0. Vertex 4 is unsampled; Web Appendix 2 counterexample. -/
+/-- Validator T1(b): recruitment edges plus the private tie {2,4}, with Z_4=0. Vertex 4 is unsampled; Web Appendix 2 counterexample. -/
 def proposalStartB : State :=
   ⟨{s 1,s 2,s 3,u 4 0}, {{s 1,s 2},{s 2,s 3},{s 2,u 4 0}}, fun v => decide (v = s 2)⟩
 /-- The T1(b) printed output replaces {2,4} by {2,5} and also adds the forbidden {4,5}, for either new trait t. Web Appendix 2, line 22. -/
@@ -974,7 +976,7 @@ def proposalBadB (t : Bool) : State :=
     (addEdge (addVertex (removeEdge proposalStartB (s 2) (u 4 0)) (u 5 0) t)
       (s 2) (u 5 0)) (u 4 0) (u 5 0))
 
-/-- T1(b): the explicit three-subject example returns
+/-- T1(b): the second validator's explicit three-subject example also returns
 an incompatible graph for both choices of the fresh trait. Web Appendix 2. -/
 theorem proposal_counterexample_b :
     Admissible proposalDataB ∧ Compatible proposalDataB proposalStartB ∧
@@ -991,7 +993,7 @@ theorem proposal_counterexample_b :
       (Replacement.fresh (u 5 0) (by decide) t)
   · cases t <;> decide
 
-/-- Example T1(c): "V_R={1,2,3}, M={1,3}, E_R={(1,2)}, d_R=(1,1,0), Z_R=(0,1,0)". Sampled vertex 3 is an isolated seed; Web Appendix 2, line 27. -/
+/-- Validator T1(c): "V_R={1,2,3}, M={1,3}, E_R={(1,2)}, d_R=(1,1,0), Z_R=(0,1,0)". Sampled vertex 3 is an isolated seed; Web Appendix 2, line 27. -/
 def cleanupData : Data :=
   ⟨{1,2,3},{1,3},fun _ => 1,id,fun i => if i = 3 then 0 else 1,fun i => i == 2⟩
 /-- The T1(c) compatible graph has three sampled vertices but only edge {1,2}; sampled seed 3 must remain in the graph. Web Appendix 2, line 27 counterexample. -/
@@ -1014,7 +1016,7 @@ theorem cleanup_counterexample :
   · norm_num [preferential, PreferentialDefined, pValue, pSum, susceptible,
       sameSusceptible, nonseeds, cleanupData, cleanupStart, s]
 
-/-- Example T1(d): "V_R={1,2}, M={1}, E_R={(1,2)}, d_R=(1,1), Z_R=(0,1)". The compatible dyad has no unsampled vertex; Web Appendix 2 trait mechanism. -/
+/-- Validator T1(d): "V_R={1,2}, M={1}, E_R={(1,2)}, d_R=(1,1), Z_R=(0,1)". The compatible dyad has no unsampled vertex; Web Appendix 2 trait mechanism. -/
 def emptyPoolData : Data := {domainA with trait := fun i => i == 2}
 
 /-- T1(d): the printed trait mechanism has no possible execution when there
@@ -1034,6 +1036,10 @@ theorem empty_trait_pool_counterexample :
       graphDegree, adjacency, z, dyad, s]
   · norm_num [preferential, PreferentialDefined, pValue, pSum, susceptible,
       sameSusceptible, nonseeds, emptyPoolData,domainA,dyad,s]
+
+
+
+
 
 
 /-- Children R_i in the repaired (A2) calculation (Appendix p. 160, T13). -/
@@ -1059,7 +1065,7 @@ theorem full_p_domain_conditions (D : Data) (hD : Admissible D) :
 
 /-- T17: deleting U gives the degree-upper-bound compatibility from the
 opening of the proof, and gives degree-equality compatibility precisely when
-there were no unsampled vertices. Appendix p. 160, corrected P012-N005. -/
+there were no unsampled vertices. Appendix p. 160, corrected N005. -/
 theorem induced_compatibility (D : Data) (H : State) (hD : Admissible D)
     (hH : GraphCompatible D H) :
     InducedCompatible D (induced D H) ∧
@@ -1117,7 +1123,7 @@ theorem induced_compatibility (D : Data) (H : State) (hD : Admissible D)
 
 /-- T18: homophily has only the augmented graph and its traits as inputs;
 changing recruitment data cannot change it. This is the corrected two-argument
-notation of equation (1), pp. 155, 160 (P012-N006). -/
+notation of equation (1), pp. 155, 160 (N006). -/
 theorem homophily_arguments (D₁ D₂ : Data) (H K : State)
     (hD₁ : Admissible D₁) (hD₂ : Admissible D₂)
     (hH : Compatible D₁ H) (hK : Compatible D₂ K)
@@ -1174,7 +1180,8 @@ def printed_table_intervals (Dsex Dcrack Dhome : Data) : Prop :=
       |Lc - (-6918/10000)| ≤ 1/20000 ∧ |Uc - 8231/10000| ≤ 1/20000 ∧
       |Lh - (-7179/10000)| ≤ 1/20000 ∧ |Uh - 8242/10000| ≤ 1/20000
 
-/- Algebraic supporting lemmas for the graph theorems exact_h_region and exact_p_region. -/
+/- Algebraic supporting lemmas: these are separately audited, not substitutes
+   for the graph theorems exact_h_region and exact_p_region. -/
 
 /-- T6(i), finite algebra: the two forms of φ agree on the ordinary domain. -/
 theorem phi_formula (x y c : ℝ) (hx : 2*x+c ≠ 0) (hy : 2*y+c ≠ 0) :
@@ -1215,7 +1222,7 @@ theorem phi_anti_c (x y c C : ℝ) (hx : 0 ≤ x) (hy : 0 ≤ y) (h : c ≤ C)
   linarith
 
 /-- T6(ii) implies T6(iii): edge-count bounds yield both endpoint inequalities,
-with explicitly positive intermediate denominators. Correction P012-N007. -/
+with explicitly positive intermediate denominators. Correction N007. -/
 theorem count_bounds_imply_h_bounds (a b A B cR C x y c : ℝ)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hcR : 0 ≤ cR)
     (hax : a ≤ x) (hxA : x ≤ A) (hby : b ≤ y) (hyB : y ≤ B)
@@ -1243,7 +1250,7 @@ theorem count_bounds_imply_h_bounds (a b A B cR C x y c : ℝ)
         (phi_anti_c A B cR c hA hB hcRc hu1 hAc hu0 hBc))
 
 /-- T7(ii), finite algebra: obligatory and at most s extra susceptible neighbours
-give the printed sharp bounds for a single recruitment baseline. P012-N007. -/
+give the printed sharp bounds for a single recruitment baseline. N007. -/
 theorem susceptible_fraction_bounds (a b s q y : ℝ)
     (ha : 0 ≤ a) (hab : a ≤ b) (hb : 0 < b)
     (hy : 0 ≤ y) (hys : y ≤ s) (hq : 0 ≤ q) (hqy : q ≤ y) :
@@ -1262,7 +1269,7 @@ theorem susceptible_fraction_bounds (a b s q y : ℝ)
     nlinarith
 
 /-- T3(c), uniform real-valued certificate: for all nonnegative counts summing
-to 521, the opposite-leaf value is at most -1462/1983. P012-N002, Table 1 p. 158. -/
+to 521, the opposite-leaf value is at most -1462/1983. N002, Table 1 p. 158. -/
 theorem uniform_leaf_bound (a b c : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hc : 0 ≤ c) (hsum : a+b+c = 521) :
     (4*a*b-(c+3445)^2)/((2*a+c+3445)*(2*b+c+3445)) ≤ -1462/1983 := by
@@ -1343,7 +1350,7 @@ theorem objective_bounds (ε h p : ℝ) (hε : 0 < ε) (hh : -1 ≤ h) :
     ring
 
 /-- T16(a): no positive nondecreasing temperature sequence tends to zero.
-The index 0 represents printed t=1. Web Appendix p. 1, correction P012-E007. -/
+The index 0 represents printed t=1. Web Appendix p. 1, correction E007. -/
 theorem no_positive_nondecreasing_zero_limit (T : ℕ → ℝ)
     (hp : ∀ n, 0 < T n) (hm : Monotone T) :
     ¬ Tendsto T atTop (𝓝 0) := by
@@ -1456,7 +1463,7 @@ theorem cooling_series_diverges (ε D : ℝ) (hε : 0 < ε)
     exact (cooling_term_bound ε D ((n:ℝ)+2) hε (by have hn : (0:ℝ) ≤ n := Nat.cast_nonneg n; linarith) hD hdepth).2
   exact (tendsto_const_nhds (x := first)).add_atTop hcomp
 
-/-- Renaming unsampled vertices in the model of Definition 3.
+/-- Renaming unsampled vertices (standing reading R2 of Definition 3).
 The permutation fixes every observed identity and carries both graph and traits. -/
 def Relabeling (D : Data) (H K : State) : Prop :=
   ∃ e : Equiv.Perm Vertex,
@@ -1506,6 +1513,28 @@ noncomputable def optimumSet {X : Type*} [Fintype X] (repr : X → State) (ε : 
   univ.filter (fun x => ∀ y, objective ε (hValue (repr y)) 0 ≤
     objective ε (hValue (repr x)) 0)
 
+/-- T24: Proposition 1's convergence-in-probability conclusion, with its
+necessary ordinary domain and the corrected proposal and first temperature
+made explicit. It is stated as the actual chain law's mass on M tending to 1.
+The paper's cited Hajek convergence theorem and structural kernel proofs are
+not assumed as unnamed axioms, and the limit is not replaced by finite bounds.
+Web Appendix p. 2, Proposition 1; corrections T2, T15 and T16. -/
+theorem annealing_convergence {X : Type*} [Fintype X] [Nonempty X] [DecidableEq X]
+    (D : Data) (hD : Admissible D)
+    (h0 : 0 < sampledTraitDegree D false) (h1 : 0 < sampledTraitDegree D true)
+    (hN : D.seeds.card < D.sampled.card)
+    (repr : X → State) (hC : EnumeratesCompatible D repr)
+    (K : X → X → ℝ) (hK : ProposalKernel D repr K)
+    (ε T₁ : ℝ) (hε : 0 < ε) (hfirst : 1/(ε*Real.log 2) ≤ T₁)
+    (μ : ℕ → X → ℝ) (hμ : ChainLaw repr K ε T₁ μ) :
+    Tendsto (fun n => ∑ x ∈ optimumSet repr ε, μ n x) atTop (𝓝 1) := by
+  sorry
+
+/-- T24 finite-state completeness: C really has a finite enumeration up to
+unsampled relabeling, with no hidden restriction on the possible population. -/
+theorem compatible_finite_up_to_names (D : Data) (hD : Admissible D) :
+    ∃ m : ℕ, ∃ repr : Fin m → State, EnumeratesCompatible D repr := by
+  sorry
 
 /-- Q=∑ d_i Z_i in the Appendix p. 160, (A1), and correction T15(a). -/
 def degreeTraitSum (H : State) : ℝ := ∑ v ∈ H.vertices, (graphDegree H v : ℝ)*z H v
@@ -1798,7 +1827,7 @@ theorem critical_depth_singleton (repr : Unit → State) (K : Unit → Unit → 
   rw [criticalDepth,if_pos hex,hleast.csInf_eq]
 
 
-/-- T11 exact numerical instance of (A1), from P012-E003: both legal completions
+/-- T11 exact numerical instance of (A1), from E003: both legal completions
 have m=3, Q=3, D=3/2 and h1-h2=4/3=2/D. It permits i,j to be joined by a
 recruitment edge, as the printed Result 2 does. Appendix p. 160. -/
 theorem a1_exact_instance :
@@ -1986,7 +2015,7 @@ theorem boundary_numerator_zero (H : State) (hS : Simple H) (hm : 0 < H.edges.ca
 
 /-- T15(a): the exact denominator identity, its positivity criterion, and the
 0/0 boundary cases of Definition 1. m=0 is excluded from the identity.
-Correction P012-E006, p. 155. -/
+Correction E006, p. 155. -/
 theorem homophily_domain (H : State) (hS : Simple H) (hm : 0 < H.edges.card) :
     hDenominator H = (traitDegree H true : ℝ) -
       (traitDegree H true : ℝ)^2 / (2*(H.edges.card : ℝ)) ∧
@@ -2081,7 +2110,7 @@ theorem leaf_same_zero_trait (D : Data) (hD : Admissible D) (t : Bool)
 /-- T15(b--d): exact observable regularity conditions for Definitions 1, 2 and
 4 over the full compatible set. The sets for h and p are qualified separately;
 the Result 2 and Result 3 premises supply the respective conditions. p. 155,
-correction P012-E006. -/
+correction E006. -/
 theorem full_domain_conditions (D : Data) (hD : Admissible D) :
     (∀ H, Compatible D H → HomophilyDefined H) ↔
       0 < sampledTraitDegree D false ∧ 0 < sampledTraitDegree D true := by
@@ -2168,6 +2197,7 @@ theorem unsampled_card_bound (D : Data) (H : State) (hD : Admissible D)
     _ ≤ totalSpare D := sum_le_sum hN
 
 
+
 /-- T3--T6: each trait-1 edge contributes two to the ordered adjacency sum
 in (1). This counts the actual graph, rather than assuming the reduction.
 Definition 1, p. 155; Appendix p. 160 (A1). -/
@@ -2216,7 +2246,7 @@ theorem ordered_trait_adjacency (H : State) (hS : Simple H) :
   exact_mod_cast degree_sum_twice_edges F hF
 
 /-- T3--T6: reduction of the full ordered numerator to 2x-Q²/(2m).
-Equation (1), p. 155, with the ordered-pair convention. -/
+Equation (1), p. 155, with the audited ordered-pair convention. -/
 theorem numerator_edge_identity (H : State) (hS : Simple H) :
     hNumerator H = 2*(edgeCount H true : ℝ) -
       (degreeTraitSum H)^2/(2*(H.edges.card:ℝ)) := by
@@ -2263,6 +2293,7 @@ theorem graph_homophily_formula (H : State) (hS : Simple H)
   field_simp
   rw [hs]
   ring
+
 
 
 /-- T5--T6 finite degree budget: a family of nonrecruitment edges, each
@@ -2382,7 +2413,7 @@ theorem compatible_edge_counts (D : Data) (H : State) (hD : Admissible D)
 
 /-- T3 and T6: the number of private leaf edges is the sum of sampled spare
 degrees; their distinct owners and indices prevent duplicates. Corrections
-P012-N002–P012-N007, Definition 3 p. 155. -/
+N002--N007, Definition 3 p. 155. -/
 theorem leaf_edge_card (D : Data) : (leafEdges D).card = totalSpare D := by
   have hdis : (D.sampled : Set ℕ).PairwiseDisjoint
       (fun i => (range (spare D i)).image (fun k => ({s i,u i k} : Finset Vertex))) := by
@@ -2409,7 +2440,7 @@ theorem leaf_edge_card (D : Data) : (leafEdges D).card = totalSpare D := by
 /-- T3(b): in the opposite-trait private-leaf completion, the recruitment
 same-trait counts stay a,b and every new edge is mixed, so c=c_R+S.
 This proves the graph construction's counts, not just a scalar certificate.
-Corrections P012-N002–P012-N003; Table 1 p. 158. -/
+Corrections N002--N003; Table 1 p. 158. -/
 theorem opposite_leaf_counts (D : Data) (hD : Admissible D) :
     edgeCount (leafCompletion D false) true = a D ∧
     edgeCount (leafCompletion D false) false = b D ∧
@@ -2544,7 +2575,7 @@ theorem table_counterexample (D : Data) (hD : Admissible D)
 /-- T4: the true lower h endpoint is at most both certified bounds, and has
 the specified gaps below the three printed endpoints. A different degree
 vector yielding a printed endpoint cannot have degree total 4487. Table 1
-p. 158, correction P012-N002; the bound is not asserted to be the exact endpoint. -/
+p. 158, correction N002; the bound is not asserted to be the exact endpoint. -/
 theorem corrected_table_bound (D : Data) (hD : Admissible D)
     (hn : D.sampled.card = 527) (hM : D.seeds.card = 6)
     (hd : ∑ i ∈ D.sampled, D.degree i = 4487)
@@ -2565,7 +2596,7 @@ theorem corrected_table_bound (D : Data) (hD : Admissible D)
 /-- T4's converse: a degree vector whose true lower bound rounds to a printed
 Table 1 lower endpoint cannot have total 4487. Therefore it differs at some
 sampled vertex from the nomination-network degree vector, and that graph
-fails Definition 3's degree-preservation condition. Correction P012-N002. -/
+fails Definition 3's degree-preservation condition. Correction N002. -/
 theorem table_degree_converse (D : Data) (Hnom : State) (hD : Admissible D)
     (hn : D.sampled.card = 527) (hM : D.seeds.card = 6)
     (hNom : (∑ i ∈ D.sampled, graphDegree Hnom (s i)) = 4487)
@@ -2593,9 +2624,10 @@ theorem table_degree_converse (D : Data) (Hnom : State) (hD : Admissible D)
   exact htotal (heq.trans hNom)
 
 
+
 /-- T6 finite cardinality: private edges indexed by any finite set of sampled
 owners have cardinality equal to their spare-degree sum. Private-leaf
-construction, corrections P012-N003 and P012-N007, Definition 3 p. 155. -/
+construction, corrections N003 and N007, Definition 3 p. 155. -/
 theorem private_edge_card (D : Data) (I : Finset ℕ) :
     (I.biUnion (fun i => (range (spare D i)).image
       (fun k => ({s i,u i k} : Finset Vertex)))).card = ∑ i ∈ I, spare D i := by
@@ -2620,7 +2652,7 @@ theorem private_edge_card (D : Data) (I : Finset ℕ) :
 
 /-- T6(iv): the same-trait private-leaf completion has counts a+S_1,b+S_0,c_R.
 Together with the opposite-trait counts, these are the actual endpoint
-witnesses for the corrected homophily bounds. Correction P012-N007. -/
+witnesses for the corrected homophily bounds. Correction N007. -/
 theorem same_leaf_counts (D : Data) (hD : Admissible D) :
     edgeCount (leafCompletion D true) true = a D+traitSpare D true ∧
     edgeCount (leafCompletion D true) false = b D+traitSpare D false ∧
@@ -2707,7 +2739,7 @@ theorem same_leaf_counts (D : Data) (hD : Admissible D) :
 
 /-- T5: the corrected lower h bound for general admissible data is sharp,
 including when only the attaining completion is nondegenerate. It specializes
-to c_R+3445 for the Hartford totals. Correction P012-N003, Table 1 p. 158. -/
+to c_R+3445 for the Hartford totals. Correction N003, Table 1 p. 158. -/
 theorem exact_h_lower (D : Data) (hD : Admissible D)
     (hreg : 0 < totalSpare D ∨
       (0 < 2*a D + cR D ∧ 0 < 2*b D + cR D)) :
@@ -2770,7 +2802,7 @@ theorem exact_h_lower (D : Data) (hD : Admissible D)
 
 /-- T6: every defined compatible pair has the printed assortativity formula
 reduced to φ, the edge-count bounds, the two sharp endpoint bounds, and the
-private-leaf attainments. Correction P012-N007 of Web Appendix p. 1. -/
+private-leaf attainments. Correction N007 of Web Appendix p. 1. -/
 theorem exact_h_region (D : Data) (hD : Admissible D)
     (h0 : 0 < sampledTraitDegree D false) (h1 : 0 < sampledTraitDegree D true) :
     (∀ H, Compatible D H →
@@ -2862,9 +2894,10 @@ theorem exact_h_region (D : Data) (hD : Admissible D)
     exact (hbds H hH).2
 
 
+
 /-- T7(i): all not-yet-entered children are mandatory susceptible neighbours;
 j itself is one, and the matching-child count is at most the child count.
-Definition 2, p. 155; corrected closed forms P012-N007. -/
+Definition 2, p. 155; corrected closed forms N007. -/
 theorem later_children_susceptible (D : Data) (H : State) (hH : Compatible D H)
     (j : ℕ) (hj : j ∈ nonseeds D) :
     (laterChildren D j).image s ⊆ susceptible D H (D.parent j) j ∧
@@ -2916,7 +2949,7 @@ theorem susceptible_recruitment_edges (D : Data) (H : State) (hD : Admissible D)
     exact mem_image_of_mem _ hk
 
 /-- T7(i): the same-trait count within the compulsory child neighbours is
-the observed count a_j; no unsampled trait enters this identity. P012-N007. -/
+the observed count a_j; no unsampled trait enters this identity. N007. -/
 theorem matching_child_card (D : Data) (H : State) (hD : Admissible D)
     (hH : Compatible D H) (j : ℕ) (hj : j ∈ nonseeds D) :
     (((laterChildren D j).image s).filter
@@ -2936,7 +2969,7 @@ theorem matching_child_card (D : Data) (H : State) (hD : Admissible D)
 
 /-- T7(i)--(ii): the susceptible set decomposes into b_j compulsory children
 and y_j≤s_r extra neighbours, with q_j≤y_j matching extras. The two sharp
-baseline fraction inequalities follow from those actual finite sets. P012-N007. -/
+baseline fraction inequalities follow from those actual finite sets. N007. -/
 theorem susceptible_decomposition (D : Data) (H : State) (hD : Admissible D)
     (hH : Compatible D H) (j : ℕ) (hj : j ∈ nonseeds D) :
     (laterChildren D j).image s ⊆ susceptible D H (D.parent j) j ∧
@@ -2999,7 +3032,7 @@ theorem susceptible_decomposition (D : Data) (H : State) (hD : Admissible D)
 /-- T7(iv): at every recruitment event, the private-leaf construction has
 b_j+s_r susceptible neighbours and a_j+s_r matches for same-trait leaves,
 or a_j matches for opposite-trait leaves. All events are covered at once.
-Definition 2 p. 155; correction P012-N007. -/
+Definition 2 p. 155; correction N007. -/
 theorem leaf_susceptible_counts (D : Data) (hD : Admissible D) (same : Bool)
     (j : ℕ) (hj : j ∈ nonseeds D) :
     (susceptible D (leafCompletion D same) (D.parent j) j).card =
@@ -3067,7 +3100,7 @@ theorem leaf_susceptible_counts (D : Data) (hD : Admissible D) (same : Bool)
     cases same <;> simp [hLc]
 
 /-- T7(iv): both exact closed-form preferential endpoints are attained by
-the two compatible private-leaf trait assignments, under n>|M|. P012-N007. -/
+the two compatible private-leaf trait assignments, under n>|M|. N007. -/
 theorem leaf_preferential_endpoints (D : Data) (hD : Admissible D)
     (hN : D.seeds.card < D.sampled.card) :
     preferential D (leafCompletion D true) = some (pLower D) ∧
@@ -3099,7 +3132,7 @@ theorem leaf_preferential_endpoints (D : Data) (hD : Admissible D)
 
 /-- T7: closed-form sharp p bounds and simultaneous private-leaf attainment;
 the susceptible decomposition has at most s_r extra neighbours. Correction
-P012-N007 of Web Appendix p. 1; equation (2), p. 155. -/
+N007 of Web Appendix p. 1; equation (2), p. 155. -/
 theorem exact_p_region (D : Data) (hD : Admissible D)
     (hN : D.seeds.card < D.sampled.card) :
     (∀ H, Compatible D H → ∀ j ∈ nonseeds D,
@@ -3202,8 +3235,8 @@ theorem point_identified_iff_equal_extrema (S : Set ℝ) (L U : ℝ)
       exact hL.1
 
 /-- T7 and T22(iv): the preferential interval width is the average of the
-nonnegative recruiter spare-degree fractions s_r/(b_j+s_r). Correction P012-N007
-and identification criterion P012-E005; equation (2), p. 155. -/
+nonnegative recruiter spare-degree fractions s_r/(b_j+s_r). Correction N007
+and identification criterion E005; equation (2), p. 155. -/
 theorem preferential_endpoint_gap (D : Data) :
     pUpper D-pLower D =
       (∑ j ∈ nonseeds D, (spare D (D.parent j):ℝ)/
@@ -3217,7 +3250,7 @@ theorem preferential_endpoint_gap (D : Data) :
 
 /-- T22(iv): under a nonempty recruitment sample, the sharp preferential
 endpoints agree exactly when every actual recruitment event's recruiter has
-zero spare degree. Identification criterion P012-E005, pp. 154--156. -/
+zero spare degree. Identification criterion E005, pp. 154--156. -/
 theorem preferential_endpoints_equal_iff (D : Data) (hD : Admissible D)
     (hN : D.seeds.card < D.sampled.card) :
     pLower D = pUpper D ↔ ∀ j ∈ nonseeds D, spare D (D.parent j) = 0 := by
@@ -3254,7 +3287,7 @@ theorem preferential_endpoints_equal_iff (D : Data) (hD : Admissible D)
 
 /-- T22(iv): p alone is point identified exactly when every actual recruiter
 has no spare degree. Vertices that never recruit can have spare degree.
-Identification headline pp. 154--156, P012-E005. -/
+Identification headline pp. 154--156, precise form established in E005. -/
 theorem preferential_identification (D : Data) (hD : Admissible D)
     (h0 : 0 < sampledTraitDegree D false) (h1 : 0 < sampledTraitDegree D true)
     (hN : D.seeds.card < D.sampled.card) :
@@ -3279,7 +3312,7 @@ theorem preferential_identification (D : Data) (hD : Admissible D)
 
 
 /-- T22: the binary-trait spare totals partition the full sampled spare total.
-Definitions 3--4, p. 155; P012-E005. -/
+Definitions 3--4, p. 155; identification derivation E005. -/
 theorem trait_spare_partition (D : Data) :
     traitSpare D true+traitSpare D false = totalSpare D := by
   unfold traitSpare totalSpare
@@ -3323,7 +3356,7 @@ theorem zero_spare_compatible_unique (D : Data) (hD : Admissible D)
 /-- T22: whenever any sampled spare degree is positive, the sharp homophily
 interval has strictly positive width on the full homophily domain. This uses
 both endpoint constructions, not a restricted compatible-graph class.
-Identification headline pp. 153--156; P012-E005. -/
+Identification headline pp. 153--156; derivation E005. -/
 theorem homophily_endpoints_strict (D : Data) (hD : Admissible D)
     (h0 : 0 < sampledTraitDegree D false) (h1 : 0 < sampledTraitDegree D true)
     (hs : 0 < totalSpare D) : hLower D < hUpper D := by
@@ -3522,10 +3555,9 @@ theorem flip_false_filter (H : State) (S : Finset Vertex) (v : Vertex)
       obtain ⟨hs,hz'⟩ := mem_filter.mp hin
       exact mem_filter.mpr ⟨hs,by rw [ht]; exact hz'⟩
 
-/-- T13 finite identity: the contribution before the 1-to-0 flip minus its
-contribution after the flip is (1-2Z_i)/|S_i(t)| for a child of the private
-neighbour’s owner, and zero at every other recruitment. Corrected (A2),
-Appendix p. 160. -/
+/-- T13 finite identity: each recruitment contribution changes by
+(1-2Z_i)/|S_i(t)| for a child of the private neighbour's owner, and by zero
+at every other recruitment. Corrected (A2), Appendix p. 160. -/
 theorem private_flip_event_difference (D : Data) (H : State) (hD : Admissible D)
     (hH : Compatible D H) (i : ℕ) (hi : i ∈ D.sampled)
     (v : Vertex) (hv : v ∈ unsampled D H)
@@ -3588,9 +3620,9 @@ theorem private_flip_event_difference (D : Data) (H : State) (hD : Admissible D)
     rw [he,if_neg hri]
     ring
 
-/-- T13 finite identity: the pre-flip preferential value minus the post-flip
-value is the signed sum of reciprocals over every child of the private
-neighbour's owner, including later children. Corrected (A2), Appendix p. 160. -/
+/-- T13 finite identity: the complete preferential change is the signed
+sum of reciprocals over every child of the private neighbour's owner,
+including later children. Corrected (A2), Appendix p. 160. -/
 theorem private_flip_full_sum (D : Data) (H : State) (hD : Admissible D)
     (hH : Compatible D H) (i : ℕ) (hi : i ∈ D.sampled)
     (v : Vertex) (hv : v ∈ unsampled D H)
@@ -3674,7 +3706,7 @@ theorem unsampled_trait_update_preserves (D : Data) (H : State)
 
 /-- T10--T13 and T22: each constructed leaf is genuinely unsampled and has
 exactly its owner as a sampled neighbour. It may have either binary trait.
-Private-leaf construction, Appendix p. 160 and corrections P012-E001/P012-E003/P012-E005. -/
+Private-leaf construction, Appendix p. 160 and corrections E001/E003/E005. -/
 theorem private_leaf_member (D : Data) (hD : Admissible D) (same : Bool)
     (i k : ℕ) (hi : i ∈ D.sampled) (hk : k < spare D i) :
     u i k ∈ unsampled D (leafCompletion D same) ∧
@@ -3702,7 +3734,7 @@ theorem private_leaf_member (D : Data) (hD : Admissible D) (same : Bool)
 
 /-- T13(b--d), corrected (A2) at any compatible starting pair with the stated
 private unsampled neighbour, irrespective of all other traits and edges.
-The difference p(H)-p(flipTrait H v) has sign 1-2Z_i. Appendix p. 160. -/
+The full sum over every child has sign 1-2Z_i. Appendix p. 160. -/
 theorem private_trait_flip_difference (D : Data) (hD : Admissible D)
     (H : State) (hH : Compatible D H) (i j : ℕ) (hi : i ∈ D.sampled)
     (hj : j ∈ nonseeds D) (hr : D.parent j = i)
@@ -3769,9 +3801,9 @@ theorem private_trait_flip_difference (D : Data) (hD : Admissible D)
 
 
 /-- T13: Result 3, unchanged, with the corrected full difference. For the
-pre-flip value minus the post-flip value, the sign is 1-2 Z_i and every child
-contributes. Under Z_i=1 this difference is negative, at most the printed
-one-child value, with equality exactly for a sole child. Appendix p. 160, corrected (A2). -/
+1-to-0 trait change, the sign is 1-2 Z_i and every child contributes. Under
+Z_i=1 it is negative, at most the printed one-child value, with equality
+exactly for a sole child. Appendix p. 160, corrected (A2). -/
 theorem result3 (D : Data) (hD : Admissible D) (i j : ℕ)
     (hi : i ∈ D.sampled) (hj : j ∈ nonseeds D) (hr : D.parent j = i)
     (hdi : recruitmentDegree D i < D.degree i) :
@@ -4278,7 +4310,7 @@ theorem result2 (D : Data) (hD : Admissible D) (i j : ℕ)
 /-- T13 and T22: in an augmented simple compatible graph, a private
 unsampled neighbour is incident only to its owner's edge. The model permits
 shared neighbours generally; privacy is used here exactly as in the witness.
-Appendix p. 160, corrected (A2); P012-E005. -/
+Appendix p. 160, corrected (A2); identification derivation E005. -/
 theorem private_edge_incidence (D : Data) (H : State) (hH : Compatible D H)
     (i : ℕ) (hi : i ∈ D.sampled) (v : Vertex) (hv : v ∈ unsampled D H)
     (hprivate : ∀ k ∈ D.sampled, {s k,v} ∈ H.edges ↔ k = i)
@@ -4298,7 +4330,7 @@ theorem private_edge_incidence (D : Data) (H : State) (hH : Compatible D H)
 
 /-- T22: flipping one same-trait private leaf removes exactly its one
 homogeneous edge and adds one mixed edge; every other edge-type assignment
-is unchanged. Identification witness in P012-E005, pp. 153--156. -/
+is unchanged. Identification witness in E005, pp. 153--156. -/
 theorem leaf_flip_edge_counts (D : Data) (hD : Admissible D)
     (i : ℕ) (hi : i ∈ D.sampled) (hsp : 0 < spare D i) :
     let H := leafCompletion D true
@@ -4387,7 +4419,7 @@ theorem leaf_flip_edge_counts (D : Data) (hD : Admissible D)
 
 /-- T22 finite algebra: increasing the mixed-edge count strictly decreases
 homophily whenever a homogeneous edge exists and both initial trait stub
-counts are positive. Identification witness in P012-E005, pp. 153--156. -/
+counts are positive. Identification witness in E005, pp. 153--156. -/
 theorem phi_strict_anti_c (x y c C : ℝ) (hx : 0 ≤ x) (hy : 0 ≤ y)
     (hh : 0 < x ∨ 0 < y) (hc : c < C) (hxc : 0 < 2*x+c) (hyc : 0 < 2*y+c) :
     phi x y C < phi x y c := by
@@ -4413,7 +4445,7 @@ theorem phi_strict_anti_c (x y c C : ℝ) (hx : 0 ≤ x) (hy : 0 ≤ y)
 
 /-- T22(ii): one private leaf's trait already separates h when any sampled
 vertex has spare degree, under the full homophily domain. This fixes the two
-witnesses for the identification headline (pp. 153--156). -/
+witnesses stated in the audited identification headline (pp. 153--156). -/
 theorem joint_leaf_flip_witness (D : Data) (hD : Admissible D)
     (h0 : 0 < sampledTraitDegree D false) (h1 : 0 < sampledTraitDegree D true)
     (i : ℕ) (hi : i ∈ D.sampled) (hdi : recruitmentDegree D i < D.degree i) :
@@ -4509,3 +4541,161 @@ theorem compatible_objective_bounds (D : Data) (H : State) (hH : Compatible D H)
 end
 end AronowAudit.P012
 
+#print axioms AronowAudit.P012.proposal_counterexample
+#print axioms AronowAudit.P012.corrected_proposal_preserves
+#print axioms AronowAudit.P012.result1_proof_counterexample
+#print axioms AronowAudit.P012.result2_proof_counterexample
+#print axioms AronowAudit.P012.a2_counterexample
+#print axioms AronowAudit.P012.domain_counterexamples
+#print axioms AronowAudit.P012.table_counterexample
+#print axioms AronowAudit.P012.corrected_table_bound
+#print axioms AronowAudit.P012.exact_h_lower
+#print axioms AronowAudit.P012.exact_h_region
+#print axioms AronowAudit.P012.exact_p_region
+#print axioms AronowAudit.P012.result1
+#print axioms AronowAudit.P012.result2
+#print axioms AronowAudit.P012.result3
+#print axioms AronowAudit.P012.homophily_domain
+#print axioms AronowAudit.P012.full_domain_conditions
+#print axioms AronowAudit.P012.full_p_domain_conditions
+#print axioms AronowAudit.P012.induced_compatibility
+#print axioms AronowAudit.P012.homophily_arguments
+#print axioms AronowAudit.P012.joint_identification
+#print axioms AronowAudit.P012.preferential_identification
+#print axioms AronowAudit.P012.figure1_extrema
+#print axioms AronowAudit.P012.printed_table_intervals
+
+#print axioms AronowAudit.P012.phi_formula
+#print axioms AronowAudit.P012.phi_mono_x
+#print axioms AronowAudit.P012.phi_mono_y
+#print axioms AronowAudit.P012.phi_anti_c
+#print axioms AronowAudit.P012.count_bounds_imply_h_bounds
+#print axioms AronowAudit.P012.susceptible_fraction_bounds
+#print axioms AronowAudit.P012.uniform_leaf_bound
+#print axioms AronowAudit.P012.uniform_integer_leaf_bound
+#print axioms AronowAudit.P012.table_numeric_gaps
+#print axioms AronowAudit.P012.figure1_endpoint_arithmetic
+#print axioms AronowAudit.P012.objective_bounds
+#print axioms AronowAudit.P012.no_positive_nondecreasing_zero_limit
+#print axioms AronowAudit.P012.printed_first_temperature_undefined
+#print axioms AronowAudit.P012.cooling_properties
+#print axioms AronowAudit.P012.cooling_term_bound
+#print axioms AronowAudit.P012.cooling_series_diverges
+#print axioms AronowAudit.P012.annealing_convergence
+#print axioms AronowAudit.P012.unsampled_card_bound
+#print axioms AronowAudit.P012.compatible_finite_up_to_names
+
+#print axioms AronowAudit.P012.leafCompletion_compatible
+#print axioms AronowAudit.P012.recruit_is_susceptible
+#print axioms AronowAudit.P012.corrected_trait_preserves
+
+#print axioms AronowAudit.P012.proposal_counterexample_b
+#print axioms AronowAudit.P012.cleanup_counterexample
+#print axioms AronowAudit.P012.empty_trait_pool_counterexample
+
+#print axioms AronowAudit.P012.denominator_sum_identity
+#print axioms AronowAudit.P012.degree_sum_twice_edges
+#print axioms AronowAudit.P012.trait_degree_partition
+#print axioms AronowAudit.P012.degreeTraitSum_eq
+#print axioms AronowAudit.P012.denominator_domain_criterion
+
+#print axioms AronowAudit.P012.table_degree_converse
+#print axioms AronowAudit.P012.result_domain_conditions
+#print axioms AronowAudit.P012.harmonic_tail_log_bound
+#print axioms AronowAudit.P012.critical_depth_bound
+#print axioms AronowAudit.P012.a1_exact_instance
+
+#print axioms AronowAudit.P012.recruitment_skeleton_counts
+#print axioms AronowAudit.P012.spare_total_identity
+
+#print axioms AronowAudit.P012.pair_edge_eq
+#print axioms AronowAudit.P012.joint_leaf_flip_witness
+#print axioms AronowAudit.P012.degree_eq_neighbor_card
+#print axioms AronowAudit.P012.adjacency_row_sum
+#print axioms AronowAudit.P012.zero_degree_no_edge
+#print axioms AronowAudit.P012.zero_trait_degree
+#print axioms AronowAudit.P012.boundary_numerator_zero
+#print axioms AronowAudit.P012.sampled_trait_positive_transfer
+#print axioms AronowAudit.P012.leaf_same_zero_trait
+#print axioms AronowAudit.P012.result2_swap_formula
+#print axioms AronowAudit.P012.private_trait_flip_difference
+
+#print axioms AronowAudit.P012.degree_remove_step
+#print axioms AronowAudit.P012.degree_add_step
+#print axioms AronowAudit.P012.remove_edge_base
+#print axioms AronowAudit.P012.add_edge_base
+#print axioms AronowAudit.P012.add_vertex_base
+#print axioms AronowAudit.P012.replacement_properties
+#print axioms AronowAudit.P012.cleanup_compatible
+#print axioms AronowAudit.P012.recruitment_edge_sampled
+#print axioms AronowAudit.P012.corrected_graph_preserves
+#print axioms AronowAudit.P012.trait_degree_edge_incidence
+#print axioms AronowAudit.P012.binary_edge_counts
+#print axioms AronowAudit.P012.ordered_trait_adjacency
+#print axioms AronowAudit.P012.numerator_edge_identity
+#print axioms AronowAudit.P012.graph_homophily_formula
+
+#print axioms AronowAudit.P012.leaf_edge_card
+
+#print axioms AronowAudit.P012.opposite_leaf_counts
+
+#print axioms AronowAudit.P012.optimum_exact_zero_depth
+
+#print axioms AronowAudit.P012.critical_depth_singleton
+
+#print axioms AronowAudit.P012.extra_edge_budget
+
+#print axioms AronowAudit.P012.compatible_filtered_edge_bounds
+
+#print axioms AronowAudit.P012.compatible_edge_counts
+
+#print axioms AronowAudit.P012.private_edge_card
+
+#print axioms AronowAudit.P012.same_leaf_counts
+
+#print axioms AronowAudit.P012.later_children_susceptible
+
+#print axioms AronowAudit.P012.susceptible_recruitment_edges
+
+#print axioms AronowAudit.P012.matching_child_card
+
+#print axioms AronowAudit.P012.susceptible_decomposition
+
+#print axioms AronowAudit.P012.leaf_susceptible_counts
+
+#print axioms AronowAudit.P012.leaf_preferential_endpoints
+
+#print axioms AronowAudit.P012.point_identified_iff_equal_extrema
+#print axioms AronowAudit.P012.preferential_endpoint_gap
+#print axioms AronowAudit.P012.preferential_endpoints_equal_iff
+
+#print axioms AronowAudit.P012.trait_spare_partition
+#print axioms AronowAudit.P012.zero_spare_compatible_unique
+#print axioms AronowAudit.P012.homophily_endpoints_strict
+
+#print axioms AronowAudit.P012.unsampled_not_yet
+#print axioms AronowAudit.P012.flip_susceptible
+#print axioms AronowAudit.P012.private_susceptible_iff
+#print axioms AronowAudit.P012.flip_true_filter
+#print axioms AronowAudit.P012.flip_false_filter
+#print axioms AronowAudit.P012.private_flip_event_difference
+#print axioms AronowAudit.P012.private_flip_full_sum
+
+#print axioms AronowAudit.P012.child_reciprocal_sum
+#print axioms AronowAudit.P012.unsampled_trait_update_preserves
+#print axioms AronowAudit.P012.private_leaf_member
+
+#print axioms AronowAudit.P012.compatible_same_graph
+#print axioms AronowAudit.P012.private_leaf_swap_graph
+
+#print axioms AronowAudit.P012.same_degree_h_denominator
+#print axioms AronowAudit.P012.private_swap_true_edge_count
+#print axioms AronowAudit.P012.private_leaf_swap_value
+
+#print axioms AronowAudit.P012.private_swap_reversed
+#print axioms AronowAudit.P012.private_edge_incidence
+#print axioms AronowAudit.P012.leaf_flip_edge_counts
+#print axioms AronowAudit.P012.phi_strict_anti_c
+
+#print axioms AronowAudit.P012.homophily_global_range
+#print axioms AronowAudit.P012.compatible_objective_bounds

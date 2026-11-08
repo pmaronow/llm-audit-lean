@@ -2,7 +2,9 @@ import Mathlib
 
 /-!
 P029: Beyond LATE (Aronow and Carnegie, 2013).
-Definitions, finite counterexamples, and probability identities.
+The audit distinguishes printed assertions, repaired assertions, and proved
+finite lemmas. A `sorry` is an unfinished proof, including for a false printed
+assertion; it is never evidence that the assertion is true.
 -/
 
 namespace AronowAudit.P029
@@ -51,8 +53,8 @@ def PotentialUnit.outcome {X : Type*} (u : PotentialUnit X) (z : Bool) : ℝ :=
   if u.receipt z then u.y1 else u.y0
 
 /-- A finite probability law is nonnegative and has total mass one. Finite
-counterexamples and finite randomization expectations use these sums;
-this does not replace general probability statements. -/
+validator witnesses and finite randomization expectations use these sums;
+this does not replace the general probability statements below. -/
 def ValidLaw {L : Type*} [Fintype L] (p : L → ℝ) : Prop :=
   (∀ i, 0 ≤ p i) ∧ (∑ i, p i) = 1
 
@@ -69,7 +71,7 @@ def fCE {L : Type*} [Fintype L] (p v : L → ℝ) (A : L → Prop) : ℝ :=
   fE p (fun i => if A i then v i else 0) / fP p A
 
 /-- Population covariance (denominator N for a uniform finite population),
-used in the corrected comparisons. -/
+used in the corrected comparisons of the validator. -/
 def fCov {L : Type*} [Fintype L] (p u v : L → ℝ) : ℝ :=
   fE p (fun i => u i * v i) - fE p u * fE p v
 
@@ -171,19 +173,20 @@ theorem randomized_independent {L A : Type*} [Fintype L] (p : L → ℝ) (e : �
     ring
 
 /-- T1/T2/T15 type law: C, A, N have probabilities 1/2, 1/4, 1/4.
-The six atoms are (type, assignment); this law is a counterexample construction. -/
+The six atoms are (type, assignment); this is the validator's law, not a
+definition supplied by the paper (E003 derivation, "Common probability law"). -/
 def typeMass (i : Fin 3) : ℝ := if i.val = 0 then 1/2 else 1/4
 
-/-- Case 1 (T1): Y₀=0, Y₁=1 for compliers and zero otherwise. -/
+/-- The validator's Case 1 (T1): Y₀=0, Y₁=1 for compliers and zero otherwise. -/
 def case1Unit (i : Fin 3) : PotentialUnit Unit :=
   ⟨(), decide (i.val = 1), decide (i.val ≠ 2), 0, if i.val = 0 then 1 else 0⟩
 
-/-- Case 2 (T2): Y₀=1 for always-takers and Y₁=Y₀+1. -/
+/-- The validator's Case 2 (T2): Y₀=1 for always-takers and Y₁=Y₀+1. -/
 def case2Unit (i : Fin 3) : PotentialUnit Unit :=
   ⟨(), decide (i.val = 1), decide (i.val ≠ 2),
     if i.val = 1 then 1 else 0, (if i.val = 1 then 1 else 0) + 1⟩
 
-/-- The constant-effect law of T13/T15 (P029-E005/P029-E006). -/
+/-- The constant-effect law of T13/T15, E005/E006 validator witnesses. -/
 def constantUnit (i : Fin 3) : PotentialUnit Unit :=
   ⟨(), decide (i.val = 1), decide (i.val ≠ 2), 0, 1⟩
 
@@ -258,22 +261,22 @@ theorem baseline_selection_counterexample :
     case2Unit, bit, PotentialUnit.receipt, PotentialUnit.defier,
     Fintype.sum_prod_type, Fin.sum_univ_succ]
 
-/- The P029-E004 witnesses use (C, tau, X), then independent H and Z. -/
+/- The E004 witnesses use (C, tau, X), then independent H and Z. -/
 abbrev Triple := Bool × Bool × Bool
 
-/-- T3(A)'s eight-atom (C,τ,X) distribution. -/
+/-- T3(A)'s eight-atom (C,τ,X) distribution, E004 derivation §4. -/
 def marginalMass (i : Triple) : ℝ :=
   if i.1 ∧ i.2.1 then (if i.2.2 then 3/16 else 1/16)
   else (if i.2.2 then 1/16 else 3/16)
 
-/-- T3(B)'s eight-atom distribution. -/
+/-- T3(B)'s eight-atom distribution, E004 derivation §5. -/
 def conditionalMass (i : Triple) : ℝ :=
   if i.1 = i.2.1 then
     (if i.1 = i.2.2 then 9/32 else 1/32)
   else 3/32
 
 /-- Both T3 witnesses: A=(1-C)H, D₀=A, D₁=A+C, Y₀=0, Y₁=τ;
-H is an independent Bernoulli(1/2) draw. -/
+H is an independent Bernoulli(1/2) draw, E004 derivation §3. -/
 def independenceUnit (i : Triple × Bool) : PotentialUnit Bool :=
   ⟨i.1.2.2, (!i.1.1) && i.2, ((!i.1.1) && i.2) || i.1.1, 0, bit i.1.2.1⟩
 
@@ -494,6 +497,139 @@ records its covariate profile and the final Bool its assignment. -/
 def kernelPopulationUnit {Ω X : Type*} (U : Ω → PotentialUnit X) :
     ((X × Ω) × Bool) → PotentialUnit X := fun i => U i.1.2
 
+/-- T20, the printed ordering at EVERY covariate profile in support, p. 499.
+The conditional laws are probability kernels on the actual units and are
+supported on the named profile. Thus a zero-probability covariate singleton
+does not make the assertion vacuous. The assertion is false (T1). -/
+theorem printed_ignorability_ordering_all_profiles {Ω X : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace X] [MeasurableSingletonClass X]
+    [TopologicalSpace X] [SecondCountableTopology X] [BorelSpace X]
+    (μX : Measure X) [IsProbabilityMeasure μX] (κ : Kernel X Ω) [IsMarkovKernel κ]
+    (U : Ω → PotentialUnit X) (e : ℝ) (he0 : 0 < e) (he1 : e < 1)
+    (hprofile : ∀ x ∈ μX.support, ∀ᵐ ω ∂κ x, (U ω).x = x)
+    (hiv : IVAssumptions (kernelPopulationLaw μX κ e) (kernelPopulationUnit U) Prod.snd)
+    (x : X) (hx : x ∈ μX.support)
+    (hy0 : Integrable (fun ω => (U ω).y0) (κ x))
+    (hy1 : Integrable (fun ω => (U ω).y1) (κ x))
+    (hc : 0 < mP (κ x) {ω | (U ω).complier})
+    (hi : typicalAt ((κ x).prod (bernoulliMeasure e)) (liftUnit U) Prod.snd x) :
+    (∫ ω, (U ω).tau ∂κ x) =
+      mCE (κ x) (fun ω => (U ω).tau) {ω | (U ω).complier} := by
+  sorry
+
+/-- T2(c): with no control-arm receipt, randomized assignment, integrable
+outcomes and positive profile/complier probabilities, (I) implies Assumption 1.
+This is the validator's correct one-sided boundary, not the general ordering. -/
+theorem one_sided_ignorability_implication {Ω X : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hiv : IVAssumptions μ U Z) (hside : ∀ᵐ ω ∂μ, (U ω).d0 = false)
+    (x : X) (hx : 0 < mP μ {ω | (U ω).x = x}) (hc : 0 < scoreAt μ U x)
+    (hi : typicalAt μ U Z x) : latentAt μ U x := by
+  sorry
+
+/-- T20, printed p. 499 comparison under its natural reading: (I) implies (L)
+under the five IV assumptions. This is FALSE in two-sided settings (T1);
+its unfinished proof must not be interpreted as evidence for the claim. -/
+theorem printed_ignorability_ordering {Ω X : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hiv : IVAssumptions μ U Z) (x : X)
+    (hx : 0 < mP μ {ω | (U ω).x = x}) (hc : 0 < scoreAt μ U x)
+    (hi : typicalAt μ U Z x) : latentAt μ U x := by
+  sorry
+
+/-- T25(a)-(c): the exact LATE identity (3), p. 495, under all five standing IV
+assumptions. It includes the treatment and outcome ITT identities from which
+the ratio follows. Arbitrary integrable potential outcomes are allowed. -/
+theorem late_identity {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hiv : IVAssumptions μ U Z) :
+    mCE μ (fun ω => bit ((U ω).receipt (Z ω))) {ω | Z ω = true} -
+      mCE μ (fun ω => bit ((U ω).receipt (Z ω))) {ω | Z ω = false} =
+        mP μ {ω | (U ω).complier} ∧
+    mCE μ (fun ω => (U ω).outcome (Z ω)) {ω | Z ω = true} -
+      mCE μ (fun ω => (U ω).outcome (Z ω)) {ω | Z ω = false} =
+        (∫ ω, if (U ω).complier then (U ω).tau else 0 ∂μ) ∧
+    (∫ ω, if (U ω).complier then (U ω).tau else 0 ∂μ) =
+      mP μ {ω | (U ω).complier} * mCE μ (fun ω => (U ω).tau) {ω | (U ω).complier} ∧
+    mCE μ (fun ω => (U ω).tau) {ω | (U ω).complier} =
+      mWald μ U Z (fun _ => 1) := by
+  sorry
+
+/-- T4(i)-(v): corrected exact weighted limits for a finite-valued covariate,
+including the covariance gap and the separate sufficiency of marginal and
+conditional complier mean equality (E004 derivation §2; pp. 499 and 504).
+The probability space and outcomes remain unrestricted. -/
+theorem corrected_weighted_limits {Ω X : Type*} [MeasurableSpace Ω]
+    [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hiv : IVAssumptions μ U Z)
+    (hpos : ∀ x, 0 < mP μ {ω | (U ω).x = x} → 0 < scoreAt μ U x)
+    (w : X → ℝ) (hw : ∀ x, 0 < w x) :
+    mWald μ U Z (fun ω => w (U ω).x) =
+      (∫ ω, w (U ω).x * (if (U ω).complier then (U ω).tau else 0) ∂μ) /
+      (∫ ω, w (U ω).x * (if (U ω).complier then 1 else 0) ∂μ) ∧
+    mWald μ U Z (fun ω => w (U ω).x) =
+      (∑ x, mP μ {ω | (U ω).x = x} * w x * scoreAt μ U x * complierAt μ U x) /
+      (∑ x, mP μ {ω | (U ω).x = x} * w x * scoreAt μ U x) ∧
+    mWald μ U Z (fun _ => 1) = mCE μ (fun ω => (U ω).tau) {ω | (U ω).complier} ∧
+    mWald μ U Z (fun ω => 1 / scoreAt μ U (U ω).x) =
+      ∑ x, mP μ {ω | (U ω).x = x} * complierAt μ U x ∧
+    mWald μ U Z (fun _ => 1) - mWald μ U Z (fun ω => 1 / scoreAt μ U (U ω).x) =
+      mCov μ (fun ω => scoreAt μ U (U ω).x) (fun ω => complierAt μ U (U ω).x) /
+      mP μ {ω | (U ω).complier} ∧
+    (mCE μ (fun ω => (U ω).tau) {ω | (U ω).complier} = (∫ ω, (U ω).tau ∂μ) →
+      mWald μ U Z (fun _ => 1) = (∫ ω, (U ω).tau ∂μ)) ∧
+    ((∀ x, 0 < mP μ {ω | (U ω).x = x} → latentAt μ U x) →
+      mWald μ U Z (fun ω => 1 / scoreAt μ U (U ω).x) = (∫ ω, (U ω).tau ∂μ)) := by
+  sorry
+
+/-- T4(vii): either stronger joint independence condition gives BOTH the
+marginal and every conditional complier mean equality. The finite-covariate
+version is the one fixed in the target; no finite-atom restriction is imposed. -/
+theorem joint_independence_suffices {Ω X : Type*} [MeasurableSpace Ω]
+    [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hiv : IVAssumptions μ U Z)
+    (hpos : ∀ x, 0 < mP μ {ω | (U ω).x = x} → 0 < scoreAt μ U x)
+    (hind : IndepFun (fun ω => (U ω).tau)
+        (fun ω => (decide (U ω).complier, (U ω).x)) μ ∨
+      IndepFun (fun ω => decide (U ω).complier)
+        (fun ω => ((U ω).tau, (U ω).x)) μ) :
+    mCE μ (fun ω => (U ω).tau) {ω | (U ω).complier} = (∫ ω, (U ω).tau ∂μ) ∧
+    (∀ x, 0 < mP μ {ω | (U ω).x = x} → latentAt μ U x) ∧
+    mWald μ U Z (fun _ => 1) = (∫ ω, (U ω).tau ∂μ) ∧
+    mWald μ U Z (fun ω => 1 / scoreAt μ U (U ω).x) = (∫ ω, (U ω).tau ∂μ) := by
+  sorry
+
+/-- T21(b), printed marginal-independence reading, p. 499. This assertion is
+FALSE, as the finite T3(A) witness shows; the statement is preserved as printed. -/
+theorem printed_marginal_sufficiency {Ω X : Type*} [MeasurableSpace Ω]
+    [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hiv : IVAssumptions μ U Z)
+    (hpos : ∀ x, 0 < mP μ {ω | (U ω).x = x} → 0 < scoreAt μ U x)
+    (hind : IndepFun (fun ω => (U ω).tau) (fun ω => decide (U ω).complier) μ) :
+    (∀ x, 0 < mP μ {ω | (U ω).x = x} → latentAt μ U x) ∧
+    mWald μ U Z (fun _ => 1) = (∫ ω, (U ω).tau ∂μ) ∧
+    mWald μ U Z (fun ω => 1 / scoreAt μ U (U ω).x) = (∫ ω, (U ω).tau ∂μ) := by
+  sorry
+
+/-- T21(c), printed conditional-independence reading, p. 499. Conditioning is
+normalized restriction to X=x. This assertion is FALSE (T3(B)). -/
+theorem printed_conditional_sufficiency {Ω X : Type*} [MeasurableSpace Ω]
+    [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hiv : IVAssumptions μ U Z)
+    (hpos : ∀ x, 0 < mP μ {ω | (U ω).x = x} → 0 < scoreAt μ U x)
+    (hind : ∀ x, 0 < mP μ {ω | (U ω).x = x} →
+      IndepFun (fun ω => (U ω).tau) (fun ω => ((U ω).d0, (U ω).d1))
+        (ENNReal.ofReal ((mP μ {ω | (U ω).x = x})⁻¹) • μ.restrict {ω | (U ω).x = x})) :
+    (∀ x, 0 < mP μ {ω | (U ω).x = x} → latentAt μ U x) ∧
+    mWald μ U Z (fun _ => 1) = (∫ ω, (U ω).tau ∂μ) ∧
+    mWald μ U Z (fun ω => 1 / scoreAt μ U (U ω).x) = (∫ ω, (U ω).tau ∂μ) := by
+  sorry
 
 /-- Bernoulli likelihood contribution, equation (7), p. 497; natural powers
 implement the printed 0^0=1 closure convention. -/
@@ -509,7 +645,7 @@ def packageObjective {I : Type*} [Fintype I] (L w : I → ℝ) : ℝ :=
   -(∑ i, Real.log (L i * w i))
 
 /-- Corrected observation-weighted negative log likelihood -Σ wᵢlog Lᵢ,
-T8 (P029-E016 and P029-E014). A zero observation weight contributes zero. -/
+T8 (E016 and E014). A zero observation weight contributes zero. -/
 def weightedObjective {I : Type*} [Fintype I] (L w : I → ℝ) : ℝ :=
   -(∑ i, w i * Real.log (L i))
 
@@ -518,7 +654,7 @@ without making claims about a stochastic numerical optimizer. -/
 def IsMinimizer {Θ : Type*} (Q : Θ → ℝ) (θ : Θ) : Prop := ∀ t, Q θ ≤ Q t
 
 /-- T7(i): positive weights INSIDE the logarithm only add a parameter-free
-constant. This is the exact defect in the package's two-sided fit. -/
+constant. This is the exact defect in the staged package's two-sided fit. -/
 theorem inside_log_weights_identity {I : Type*} [Fintype I]
     (L w : I → ℝ) (hL : ∀ i, 0 < L i) (hw : ∀ i, 0 < w i) :
     packageObjective L w = packageObjective L (fun _ => 1) - ∑ i, Real.log (w i) := by
@@ -664,12 +800,12 @@ theorem weighted_cell_strict_concavity (S F : ℝ) (hS : 0 < S) (hF : 0 < F) :
   unfold cellLog
   nlinarith
 
-/-- Success-weight total S_c, T8(b): sum of observation
+/-- Success-weight total S_c, T8(b), E016 derivation §2: sum of observation
 weights in cell c over observations with D=1. -/
 def cellSuccessWeight {I C : Type*} [Fintype I] (cell : I → C) (D : I → Bool)
     (w : I → ℝ) (c : C) : ℝ := ∑ i, if cell i = c ∧ D i = true then w i else 0
 
-/-- Failure-weight total F_c, T8(b): sum of observation
+/-- Failure-weight total F_c, T8(b), E016 derivation §2: sum of observation
 weights in cell c over observations with D=0. -/
 def cellFailureWeight {I C : Type*} [Fintype I] (cell : I → C) (D : I → Bool)
     (w : I → ℝ) (c : C) : ℝ := ∑ i, if cell i = c ∧ D i = false then w i else 0
@@ -824,7 +960,7 @@ theorem two_sided_weight_counterexample :
       packageCells, Fintype.prod_prod_type, Fintype.prod_bool]
 
 /-- T7(v): the refitted bootstrap slope (t+11)/(t+7) has nonzero derivative
--1/16 at t=1. With scores fixed, the slope is the constant 3/2. -/
+-1/16 at t=1. The frozen-score slope is the constant 3/2. -/
 theorem bootstrap_first_step_derivative :
     HasDerivAt (fun t : ℝ => (t + 11) / (t + 7)) (-1/16) 1 ∧
     HasDerivAt (fun _ : ℝ => (3/2 : ℝ)) 0 1 := by
@@ -834,6 +970,16 @@ theorem bootstrap_first_step_derivative :
       first | rfl | norm_num
   · exact hasDerivAt_const _ _
 
+/-- T23: the package-help claim rendered as a mathematical assertion: an
+exact minimizer of the implemented inside-log criterion also minimizes the
+correct observation-weighted negative log likelihood. This is FALSE for the
+T7 cell samples; the 2013 article's bootstrap recommendation is unaffected. -/
+theorem printed_package_weighted_fit {I Θ : Type*} [Fintype I]
+    (L : Θ → I → ℝ) (w : I → ℝ) (hL : ∀ θ i, 0 < L θ i)
+    (hw : ∀ i, 0 < w i) (θ : Θ)
+    (hfit : IsMinimizer (fun t => packageObjective (L t) w) θ) :
+    IsMinimizer (fun t => weightedObjective (L t) w) θ := by
+  sorry
 
 /-- RMSE over R replicates, supplement A5/A7, T6(b)/T22. The supplement
 prints no formula; this is the mathematical meaning of "RMSE". -/
@@ -950,9 +1096,22 @@ theorem uniform_covariate_moments :
       integral_pow]
     norm_num [Real.volume_Ioo]
 
+/-- T6(c): with 3n independent uniform(-1,1) covariates, the CODED benchmark
+has mean 5 and variance 25/n. This does not identify any estimator-benchmark
+covariance or the sign of the RMSE discrepancy. -/
+theorem heterogeneous_benchmark_moments {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (n : ℕ) (hn : 0 < n)
+    (X : Fin n → Fin 3 → Ω → ℝ)
+    (hm : ∀ i j, Measurable (X i j))
+    (hind : iIndepFun (fun ij : Fin n × Fin 3 => X ij.1 ij.2) μ)
+    (hlaw : ∀ i j, Measure.map (X i j) μ = uniformMinusOneOne) :
+    (∫ ω, heterogeneousBenchmark (fun i j => X i j ω) ∂μ) = 5 ∧
+    mCov μ (fun ω => heterogeneousBenchmark (fun i j => X i j ω))
+      (fun ω => heterogeneousBenchmark (fun i j => X i j ω)) = 25 / n := by
+  sorry
 
 /-- T5: five observed-noise profiles, each paired with Z=0 and Z=1 and
-repeated 50 times. -/
+repeated 50 times, E011 adjudicating derivation §3. -/
 def noiseProfile (k : Fin 5) : Fin 3 → ℝ :=
   if k.val = 0 then ![0,0,0] else
   if k.val = 1 then ![1/2,0,0] else
@@ -969,8 +1128,8 @@ def rmseQ : Matrix RMSEIndex (Fin 5) ℝ :=
 def rmseGram : Matrix (Fin 5) (Fin 5) ℝ :=
   !![500,250,0,0,0; 250,250,0,0,0; 0,0,50,25,25; 0,0,25,50,25; 0,0,25,25,50]
 
-/-- T5's two explicit homogeneous potential-outcome inputs:
-"Y₀ᵢ=5+εᵞᵢ", "Y2ᵢ=Y₀ᵢ+5Dᵢ". The fixed realized noise is zero in
+/-- T5's two explicit homogeneous potential-outcome inputs, E011 adjudication
+§3: "Y₀ᵢ=5+εᵞᵢ", "Y2ᵢ=Y₀ᵢ+5Dᵢ". The fixed realized noise is zero in
 the perfect input and the stored assignment bit in the opposite input.
 Both have D₀=0,D₁=1 and a potential treatment effect exactly 5. -/
 def rmseHomogeneousUnit (opposite : Bool) (i : RMSEIndex) : PotentialUnit (Fin 3 → ℝ) :=
@@ -1067,7 +1226,7 @@ theorem rmse_positive_weight_recovery (w : RMSEIndex → ℝ) (hw : ∀ i, 0 < w
   rw [heq]
   exact normal_equation_exact_recovery _ _ hG
 
-/-- T9's observed cells (race, assignment, contact).
+/-- T9's observed cells (race, assignment, contact), E N004 derivation §7.
 Rows are Raleigh W contacted / uncontacted-treatment / control, Raleigh
 other contacted / uncontacted-treatment / control, then blank-race outside
 Raleigh with the same three statuses. Counts total 18,933. -/
@@ -1087,7 +1246,7 @@ def canvassMass (_ : CanvassRecord) : ℝ := 1/18933
 
 attribute [reducible] canvassContact raceWorldA raceWorldB canvassRace canvassMass
 
-/-- Exact compressed cell masses for T9. A cell with
+/-- Exact compressed cell masses for T9, N004 derivation §7. A cell with
 n_k actual records has mass n_k/18933; the underlying individual population
 is still CanvassRecord, rather than a nine-unit population. -/
 def canvassCellMass (k : Fin 9) : ℝ := (canvassCount k : ℝ)/18933
@@ -1140,7 +1299,7 @@ theorem canvass_cell_conditional_mean (v : Fin 9 → ℝ) (A : Fin 9 → Prop) :
   convert hsum using 1 <;> congr 1 <;> ext i <;> split_ifs <;> rfl
 
 /-- Potential responses in BOTH T9 completions: D₀=0,D₁=recorded contact,
-and Y₀=Y₁=the recorded outcome. Every control has C=0. -/
+and Y₀=Y₁=the recorded outcome. Every control has C=0 as in the validator. -/
 def canvassUnit (Y : CanvassRecord → ℝ) (i : CanvassRecord) : PotentialUnit Unit :=
   ⟨(), false, canvassContact i, Y i, Y i⟩
 
@@ -1214,7 +1373,7 @@ theorem canvass_assignment_supported (e : ℝ) (he0 : 0 < e) (he1 : e < 1) :
   split <;> linarith
 
 /-- A T9 race completion appends the latent White classification to the
-stored race code; it does not overwrite that code. -/
+stored race code; it does not overwrite that code (N004 derivation §7). -/
 def completedRaceRecord (R : CanvassRecord → Option String)
     (W : CanvassRecord → Bool) (i : CanvassRecord) : Option String × Bool :=
   (R i, W i)
@@ -1272,14 +1431,14 @@ theorem raleigh_recorded_comparison :
     (602/1370 - 160/315 : ℝ) < 0 ∧ (602/1370 - 155/308 : ℝ) < 0 := by
   norm_num
 
-/-- "n_W = #{W=1}" (and similarly n_C), T9/T10(a).
+/-- "n_W = #{W=1}" (and similarly n_C), T9/T10(a), N004 derivation §5.
 This is the actual count of a binary variable over a finite population. -/
 def binaryCount {n : ℕ} (W : Fin n → Bool) : ℕ :=
   by
   classical
   exact (Finset.univ.filter (fun i => W i = true)).card
 
-/-- "n₁₁ = #{W=1,C=1}", T9/T10(a). -/
+/-- "n₁₁ = #{W=1,C=1}", T9/T10(a), N004 derivation §5. -/
 def binaryJointCount {n : ℕ} (C W : Fin n → Bool) : ℕ :=
   by
   classical
@@ -1429,10 +1588,38 @@ theorem binary_population_count_sign {n : ℕ} (C W : Fin (n+1) → Bool)
   simpa only [countCov, countComplianceGap, countRaceGap, sub_pos] using hid
 
 /-- Group means for a finite law, used in T10(d)'s within/between-city
-covariance decomposition. -/
+covariance decomposition (N004 derivation §6). -/
 def fGroupMean {L G : Type*} [Fintype L] (p s : L → ℝ) (group : L → G) (g : G) : ℝ :=
   fCE p s (fun i => group i = g)
 
+/-- T10(d): total covariance equals weighted within-group covariance plus
+covariance between group means. Groups may be empty; zero-mass terms vanish. -/
+theorem grouped_covariance_decomposition {n : ℕ} {G : Type*} [Fintype G]
+    (s A : Fin (n+1) → ℝ) (group : Fin (n+1) → G) :
+    let p : Fin (n+1) → ℝ := fun _ => 1/(n+1)
+    fCov p s A =
+      fE p (fun i => (s i - fGroupMean p s group (group i)) *
+        (A i - fGroupMean p A group (group i))) +
+      fE p (fun i => (fGroupMean p s group (group i) - fE p s) *
+        (fGroupMean p A group (group i) - fE p A)) ∧
+    (∀ g, (∀ i, group i ≠ g → ∀ j, group j = group i → A j = A i) →
+      fE p (fun i => (s i - fGroupMean p s group (group i)) *
+        (A i - fGroupMean p A group (group i))) =
+      ((Finset.univ.filter (fun i => group i = g)).card : ℝ)/(n+1) *
+        fCE p (fun i => (s i - fGroupMean p s group g) *
+          (A i - fGroupMean p A group g)) (fun i => group i = g)) := by
+  sorry
+
+/-- T24's formalizable empirical race clause, p. 501: "compliers are
+more likely ... to identify as white". U and W describe the unknown COMPLETE
+potential responses and racial classification. In particular, the unobserved
+compliance of control units is not fixed to the contact indicator chosen in
+the separate T9 witness. This is a proposition, with no proof inferred from
+the recorded labels or Table A7's fitted-score correlations. -/
+def printedRaceClause (U : CanvassRecord → PotentialUnit Unit)
+    (W : CanvassRecord → Bool) : Prop :=
+  fCE canvassMass (fun i => bit (W i)) (fun i => (U i).complier) >
+    fCE canvassMass (fun i => bit (W i)) (fun i => ¬ (U i).complier)
 
 /-- T11(A): complier probability 3/4, defier probability 1/4. -/
 def semTypeMass (t : Bool) : ℝ := if t then 1/4 else 3/4
@@ -1564,7 +1751,7 @@ theorem heterogeneous_iv_counterexample :
     PotentialUnit.tau, Fintype.sum_prod_type, Fintype.sum_bool]
 
 /-- Closed saturated likelihood for a stratum, equation (7), pp. 496-497,
-with q≤p and boundary fits included (T13/T14). -/
+with q≤p and boundary fits admitted (the T13/T14 validator convention). -/
 def saturatedLikelihood (n1 n0 k1 k0 : ℕ) (p q : ℝ) : ℝ :=
   p^k1 * (1-p)^(n1-k1) * q^k0 * (1-q)^(n0-k0)
 
@@ -1579,6 +1766,21 @@ def saturatedFit (n1 n0 k1 k0 : ℕ) : ℝ × ℝ :=
 /-- T14's fitted score max(r₁-r₀,0), before clipping or Winsorization. -/
 def positiveScore (r1 r0 : ℝ) : ℝ := max (r1 - r0) 0
 
+/-- T14(a): the stated fit is the UNIQUE maximizer of the actual closed
+binomial likelihood on 0≤q≤p≤1, for arbitrary positive arm sizes and counts. -/
+theorem saturated_ml_characterization (n1 n0 k1 k0 : ℕ)
+    (hn1 : 0 < n1) (hn0 : 0 < n0) (hk1 : k1 ≤ n1) (hk0 : k0 ≤ n0) :
+    saturatedFit n1 n0 k1 k0 ∈ receiptTriangle ∧
+    (∀ v ∈ receiptTriangle,
+      saturatedLikelihood n1 n0 k1 k0 v.1 v.2 ≤
+        saturatedLikelihood n1 n0 k1 k0 (saturatedFit n1 n0 k1 k0).1
+          (saturatedFit n1 n0 k1 k0).2 ∧
+      (saturatedLikelihood n1 n0 k1 k0 v.1 v.2 =
+        saturatedLikelihood n1 n0 k1 k0 (saturatedFit n1 n0 k1 k0).1
+          (saturatedFit n1 n0 k1 k0).2 ↔ v = saturatedFit n1 n0 k1 k0)) ∧
+    (saturatedFit n1 n0 k1 k0).1 - (saturatedFit n1 n0 k1 k0).2 =
+      positiveScore ((k1 : ℝ)/n1) ((k0 : ℝ)/n0) := by
+  sorry
 
 /-- T13's two-observation extended ML fit, one independent receipt per arm. -/
 def twoObservationFit (d : Bool × Bool) : ℝ × ℝ :=
@@ -1677,6 +1879,41 @@ theorem positive_part_bias_identity {L : Type*} [Fintype L] (p T : L → ℝ)
     intro i _
     exact mul_nonneg (hp i) (le_max_right _ _)
 
+/-- T14(b)-(c): exact binomial bias, strict bias under two-sided
+noncompliance, and Chebyshev bound for every finite pair of arm sizes. -/
+theorem saturated_binomial_bias_bound (n1 n0 : ℕ) (hn1 : 0 < n1) (hn0 : 0 < n0)
+    (p1 p0 : ℝ) (hp0 : 0 ≤ p0) (horder : p0 ≤ p1) (hp1 : p1 ≤ 1) :
+    fE (binomialArmLaw n1 n0 p1 p0) (armRateScore n1 n0) - (p1-p0) =
+      fE (binomialArmLaw n1 n0 p1 p0)
+        (fun k => positiveScore ((k.2.val : ℝ)/n0) ((k.1.val : ℝ)/n1)) ∧
+    0 ≤ fE (binomialArmLaw n1 n0 p1 p0) (armRateScore n1 n0) - (p1-p0) ∧
+    (0 < p0 → p1 < 1 → 0 < fE (binomialArmLaw n1 n0 p1 p0) (armRateScore n1 n0) - (p1-p0)) ∧
+    (∀ δ : ℝ, 0 < δ →
+      fP (binomialArmLaw n1 n0 p1 p0) (fun k => δ < |armRateScore n1 n0 k - (p1-p0)|) ≤
+        (p1*(1-p1)/n1 + p0*(1-p0)/n0) / δ^2) := by
+  sorry
+
+/-- T14(c): the saturated score converges in probability as BOTH arm sizes
+tend to infinity. Its changing finite sample spaces are represented by their
+exact tail probabilities; this is not a weakened deterministic limit. -/
+theorem saturated_score_consistency (n1 n0 : ℕ → ℕ)
+    (hn1 : ∀ n, 0 < n1 n) (hn0 : ∀ n, 0 < n0 n)
+    (ht1 : Tendsto n1 atTop atTop) (ht0 : Tendsto n0 atTop atTop)
+    (p1 p0 : ℝ) (hp0 : 0 ≤ p0) (horder : p0 ≤ p1) (hp1 : p1 ≤ 1) :
+    ∀ δ : ℝ, 0 < δ → Tendsto (fun n =>
+      fP (binomialArmLaw (n1 n) (n0 n) p1 p0)
+        (fun k => δ < |armRateScore (n1 n) (n0 n) k - (p1-p0)|)) atTop (𝓝 0) := by
+  sorry
+
+/-- T14(d): with no always-takers, the control count is zero almost surely,
+the fitted score is the treated mean, and that mean is unbiased. -/
+theorem one_sided_saturated_unbiasedness (n1 n0 : ℕ) (hn1 : 0 < n1) (hn0 : 0 < n0)
+    (p1 : ℝ) (hp1 : p1 ∈ Icc (0 : ℝ) 1) :
+    fP (binomialArmLaw n1 n0 p1 0) (fun k => k.2.val = 0) = 1 ∧
+    (∀ k : Fin (n1+1) × Fin (n0+1), k.2.val = 0 →
+      armRateScore n1 n0 k = (k.1.val : ℝ)/n1) ∧
+    fE (binomialArmLaw n1 n0 p1 0) (armRateScore n1 n0) = p1 := by
+  sorry
 
 /-- Successor order-statistic index, capped at the last observation. -/
 def nextOrderIndex {n : ℕ} (j : Fin (n+1)) : Fin (n+1) :=
@@ -2041,6 +2278,17 @@ def latentC (indexAC indexA : ℝ) : ℝ := latentAC indexAC - latentA indexAC i
 def latentD (indexAC indexA : ℝ) (z : Bool) : ℝ :=
   latentC indexAC indexA * bit z + latentA indexAC indexA
 
+/-- Baseline latent indices, supplement A1 corrected: coefficients are
+drawn once per dataset; supplied noises are Normal with mean 0 and SD 3. -/
+def baselineACIndex (a b c d x1 x2 x3 ε : ℝ) : ℝ := 2+a+b*x1+c*x2+d*x3+ε
+/-- "-2+e+fX1ᵢ+gX2ᵢ+hX3ᵢ+N(0,3)", supplement A1 always-taker index. -/
+def baselineAIndex (e f g h x1 x2 x3 ε : ℝ) : ℝ := -2+e+f*x1+g*x2+h*x3+ε
+
+/-- Nonlinear misspecified latent indices, supplement A2 corrected, with
+Logistic(location 0, scale 3) shocks supplied as ℓ. -/
+def nonlinearACIndex (a b c d x1 x2 x3 ℓ : ℝ) : ℝ := 2+a+(1+b*x1)*(1+c*x2)+d*x3^3/3+ℓ
+/-- "-2+e+(1+fX1ᵢ)(1+gX2ᵢ)+hX3ᵢ³/3+Logistic(0,3)", supplement A2. -/
+def nonlinearAIndex (e f g h x1 x2 x3 ℓ : ℝ) : ℝ := -2+e+(1+f*x1)*(1+g*x2)+h*x3^3/3+ℓ
 
 /-- T19(i)-(ii): for ALL real latent indices the corrected recipe gives
 binary receipt, mutually exclusive A/C, and monotone potential treatments.
@@ -2232,7 +2480,7 @@ theorem profile_inverse_score_cancellation {X : Type*} [Fintype X]
   rw [hnum,hden,div_one]
 
 /-- T4(iv): exact finite covariance gap between the unweighted and true-score
-weighted limits. -/
+weighted limits. The profile moments are the validator's equation (4). -/
 theorem profile_covariance_gap {X : Type*} [Fintype X] (f p μ : X → ℝ)
     (hden : fE f p ≠ 0) :
     (fE f (fun x => p x*μ x))/(fE f p) - fE f μ = fCov f p μ / fE f p := by
@@ -2270,7 +2518,7 @@ theorem appendix_finite_identities {X : Type*} [Fintype X]
 
 /-- T27(a), finite Bayes/averaging lemma: g(x)=f(x)p(x)/Pr(C) is the
 complier covariate distribution, and averaging μ against g gives the LATE
-profile ratio. -/
+profile ratio. The bridge to an arbitrary population law is stated below. -/
 theorem complier_profile_bayes {X : Type*} [Fintype X] (f p μ : X → ℝ)
     (hf : ValidLaw f) (hp : ∀ x, 0 ≤ p x) (hC : 0 < fE f p) :
     ValidLaw (fun x => f x*p x/fE f p) ∧
@@ -2315,7 +2563,7 @@ def jointVariables {Ω X : Type*} (U : Ω → PotentialUnit X) (Z : Ω → Bool)
     Ω → (X × Bool × Bool × ℝ × ℝ) × Bool :=
   fun ω => (((U ω).x,(U ω).d0,(U ω).d1,(U ω).y0,(U ω).y1),Z ω)
 
-/-- Uniform samplewise score error max_{i≤N}|P̂_Ci-P_Ci|, an
+/-- Uniform samplewise score error max_{i≤N}|P̂_Ci-P_Ci|, the validator's
 explicit sufficient regularity condition for T16/T26/T27. -/
 def uniformScoreError {Ω X : Type*} (U : ℕ → Ω → PotentialUnit X)
     (c : X → ℝ) (s : ℕ → ℕ → Ω → ℝ) (n : ℕ) (ω : Ω) : ℝ :=
@@ -2327,7 +2575,7 @@ pp. 498, 504-505. All rows are iid from a genuine probability law, satisfy
 the five IV assumptions, have integrable potential outcomes, and have true
 scores bounded below by one common ε>0. Estimated scores are in (0,1] and
 their maximum error converges in probability to zero. The uniform condition
-is a sufficient specification of the article's unlisted conditions;
+is this audit's sufficient specification of the article's unlisted conditions;
 it is not asserted to follow from pointwise Assumption 2 alone. -/
 structure ICSWConditions {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
     (μ : Measure Ω) (U : ℕ → Ω → PotentialUnit X) (Z : ℕ → Ω → Bool)
@@ -2358,6 +2606,61 @@ def winsorizedSequence {Ω X : Type*} (U : ℕ → Ω → PotentialUnit X) (Z : 
     (fun i => (U i.val ω).outcome (Z i.val ω))
     (fun i => (U i.val ω).receipt (Z i.val ω)) (fun i => Z i.val ω)
 
+/-- T26: the headline consistency assertion, pp. 498, 504-505, as a genuine
+convergence-in-probability statement. Covariates need NOT have finite support;
+the law-of-X formulation of the Appendix integral is used. The explicit
+uniform-score condition specifies sufficient regularity and is disclosed above. -/
+theorem icsw_consistency {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
+    [TopologicalSpace X] [SecondCountableTopology X] [BorelSpace X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : ℕ → Ω → PotentialUnit X)
+    (Z : ℕ → Ω → Bool) (c m : X → ℝ) (s : ℕ → ℕ → Ω → ℝ)
+    (h : ICSWConditions μ U Z c m s) (a : X → ℝ)
+    (ha : Measurable a)
+    (haVersion : ∀ i, (fun ω => a (U i ω).x) =ᵐ[μ]
+      condExp (covariateSigma (U i)) μ (fun ω => (U i ω).tau))
+    (hA1 : ∀ x ∈ (Measure.map (fun ω => (U 0 ω).x) μ).support, m x = a x)
+    (hA3 : ∃ ε : ℝ, 0 < ε ∧ ∀ x ∈ (Measure.map (fun ω => (U 0 ω).x) μ).support,
+      ε < c x ∧ c x ≤ 1) :
+    TendstoInMeasure μ (icswSequence U Z s) atTop (fun _ => ∫ ω, (U 0 ω).tau ∂μ) := by
+  sorry
+
+/-- T27(b): without Assumption 1, ICSW converges to complier effects averaged
+against the FULL covariate distribution, p. 499. No equality to ATE is asserted.
+The expectation of μ(X) is exactly ∫ μ(x)f(x)dx when a density f is used. -/
+theorem icsw_complier_effect_limit {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
+    [TopologicalSpace X] [SecondCountableTopology X] [BorelSpace X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : ℕ → Ω → PotentialUnit X)
+    (Z : ℕ → Ω → Bool) (c m : X → ℝ) (s : ℕ → ℕ → Ω → ℝ)
+    (h : ICSWConditions μ U Z c m s)
+    (hA3 : ∃ ε : ℝ, 0 < ε ∧ ∀ x ∈ (Measure.map (fun ω => (U 0 ω).x) μ).support,
+      ε < c x ∧ c x ≤ 1) :
+    TendstoInMeasure μ (icswSequence U Z s) atTop (fun _ => ∫ ω, m (U 0 ω).x ∂μ) := by
+  sorry
+
+/-- T16(iv): the corrected Winsorization limit, with the actual type-7
+quantile at N^{-α}, fixed α>0, finite-valued X, and the validator's explicit
+regularity. Both estimators have the same probability limit and their
+difference tends to zero. It asserts NO first-order distributional equivalence. -/
+theorem winsorization_corrected_limit {Ω X : Type*} [MeasurableSpace Ω]
+    [Fintype X] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : ℕ → Ω → PotentialUnit X)
+    (Z : ℕ → Ω → Bool) (c m : X → ℝ) (s : ℕ → ℕ → Ω → ℝ)
+    (cutoff : ℕ → Ω → ℝ) (h : ICSWConditions μ U Z c m s) (α : ℝ) (hα : 0 < α)
+    (hA3 : ∃ ε : ℝ, 0 < ε ∧ ∀ x, 0 < mP μ {ω | (U 0 ω).x = x} →
+      ε < scoreAt μ (U 0) x ∧ scoreAt μ (U 0) x ≤ 1)
+    (hcmeas : ∀ n, Measurable (cutoff n))
+    (hquantile : ∀ n, ∀ᵐ ω ∂μ,
+      Type7Quantile (fun i : Fin (n+1) => s n i.val ω)
+        (((n+1 : ℕ) : ℝ)^(-α)) (cutoff n ω)) :
+    TendstoInMeasure μ (fun n ω => winsorizedSequence U Z s cutoff n ω -
+      icswSequence U Z s n ω) atTop (fun _ => 0) ∧
+    TendstoInMeasure μ (icswSequence U Z s) atTop
+      (fun _ => ∑ x, mP μ {ω | (U 0 ω).x = x} * complierAt μ (U 0) x) ∧
+    TendstoInMeasure μ (winsorizedSequence U Z s cutoff) atTop
+      (fun _ => ∑ x, mP μ {ω | (U 0 ω).x = x} * complierAt μ (U 0) x) ∧
+    ((∀ x, 0 < mP μ {ω | (U 0 ω).x = x} → latentAt μ (U 0) x) →
+      (∑ x, mP μ {ω | (U 0 ω).x = x} * complierAt μ (U 0) x) = ∫ ω, (U 0 ω).tau ∂μ) := by
+  sorry
 
 /-- The covariate distribution among compliers, g(x) on p. 499: the
 pushforward of the normalized complier subpopulation measure. -/
@@ -2366,6 +2669,57 @@ def complierCovariateLaw {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
   Measure.map (fun ω => (U ω).x)
     (ENNReal.ofReal ((mP μ {ω | (U ω).complier})⁻¹) • μ.restrict {ω | (U ω).complier})
 
+/-- T27(a): Bayes reweights the actual law of X by P_C(x)/Pr(C); the LATE
+is the conditional complier effect integrated against this complier covariate
+law. This states the paper's integral using measures, without a density or
+finite-atom restriction. -/
+theorem complier_covariate_distribution {Ω X : Type*} [MeasurableSpace Ω] [MeasurableSpace X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hiv : IVAssumptions μ U Z) (c m : X → ℝ) (hversions : ScoreVersions μ U c m)
+    (hc : 0 < mP μ {ω | (U ω).complier}) :
+    complierCovariateLaw μ U =
+      (Measure.map (fun ω => (U ω).x) μ).withDensity
+        (fun x => ENNReal.ofReal (c x / mP μ {ω | (U ω).complier})) ∧
+    mCE μ (fun ω => (U ω).tau) {ω | (U ω).complier} =
+      ∫ x, m x ∂complierCovariateLaw μ U := by
+  sorry
+
+/-- T26 L1-L6 and T27 L2-L3: the Appendix's EXACT general population
+identities, including the bridge to OBSERVED weighted arm differences.
+Assumption 1 is used only for the final ATE substitution. -/
+theorem appendix_population_identities {Ω X : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace X] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (U : Ω → PotentialUnit X) (Z : Ω → Bool) (hiv : IVAssumptions μ U Z)
+    (c m : X → ℝ) (hv : ScoreVersions μ U c m)
+    (ε : ℝ) (he : 0 < ε) (hpos : ∀ᵐ ω ∂μ, ε < c (U ω).x ∧ c (U ω).x ≤ 1) :
+    mP μ {ω | (U ω).complier} * mCE μ (fun ω => (U ω).tau) {ω | (U ω).complier} =
+      (∫ ω, c (U ω).x * m (U ω).x ∂μ) ∧
+    mP μ {ω | (U ω).complier} = (∫ ω, c (U ω).x ∂μ) ∧
+    (mArm μ Z (fun ω => 1/c (U ω).x) (fun ω => (U ω).outcome (Z ω)) true -
+      mArm μ Z (fun ω => 1/c (U ω).x) (fun ω => (U ω).outcome (Z ω)) false) =
+        (∫ ω, m (U ω).x ∂μ)/(∫ ω, 1/c (U ω).x ∂μ) ∧
+    (mArm μ Z (fun ω => 1/c (U ω).x) (fun ω => bit ((U ω).receipt (Z ω))) true -
+      mArm μ Z (fun ω => 1/c (U ω).x) (fun ω => bit ((U ω).receipt (Z ω))) false) =
+        1/(∫ ω, 1/c (U ω).x ∂μ) ∧
+    mWald μ U Z (fun ω => 1/c (U ω).x) = (∫ ω, m (U ω).x ∂μ) ∧
+    (A1Versions μ U m → mWald μ U Z (fun ω => 1/c (U ω).x) = (∫ ω, (U ω).tau ∂μ)) := by
+  sorry
+
+/-- T21(a): constant effects satisfy Assumption 1 and give both population
+limits equal to the common effect. This true part is separate from the false
+independence shortcuts in the same printed paragraph, p. 499. -/
+theorem constant_effect_population_limits {Ω X : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (U : Ω → PotentialUnit X) (Z : Ω → Bool) (hiv : IVAssumptions μ U Z)
+    (c m : X → ℝ) (hv : ScoreVersions μ U c m)
+    (ε : ℝ) (he : 0 < ε) (hpos : ∀ᵐ ω ∂μ, ε < c (U ω).x ∧ c (U ω).x ≤ 1)
+    (τ : ℝ) (hτ : ∀ ω, (U ω).tau = τ) :
+    (∀ x, 0 < mP μ {ω | (U ω).x = x} → 0 < scoreAt μ U x →
+      mCE μ (fun ω => (U ω).tau) {ω | (U ω).x = x} = τ ∧ complierAt μ U x = τ) ∧
+    A1Versions μ U m ∧ mWald μ U Z (fun _ => 1) = τ ∧
+      mWald μ U Z (fun ω => 1/c (U ω).x) = τ := by
+  sorry
 
 /-- Conditional always-taker share among A or C, equation (6), p. 496. -/
 def alwaysAmongAC {Ω X : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
@@ -2373,6 +2727,29 @@ def alwaysAmongAC {Ω X : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
   mP μ {ω | (U ω).d0 = true ∧ (U ω).d1 = true ∧ (U ω).x = x} /
     mP μ {ω | (U ω).d1 = true ∧ (U ω).x = x}
 
+/-- T18(i)-(ii): corrected nested conditional probabilities and the receipt
+model with conditioning on BOTH X and Z. Only receipt/randomization hypotheses
+are needed here, rather than outcome assumptions or relevance. -/
+theorem corrected_nested_receipt_model {Ω X : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace X] [MeasurableSingletonClass X]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (U : Ω → PotentialUnit X) (Z : Ω → Bool)
+    (hxmeas : Measurable (fun ω => (U ω).x))
+    (hd0 : Measurable (fun ω => (U ω).d0)) (hd1 : Measurable (fun ω => (U ω).d1))
+    (hz : Measurable Z)
+    (hmon : μ {ω | (U ω).defier} = 0)
+    (hi : IndepFun Z (fun ω => ((U ω).x, (U ω).d0, (U ω).d1)) μ)
+    (hz0 : 0 < mP μ {ω | Z ω = true}) (hz1 : mP μ {ω | Z ω = true} < 1)
+    (x : X) (hx : 0 < mP μ {ω | (U ω).x = x})
+    (hAC : 0 < mCE μ (fun ω => bit (U ω).d1) {ω | (U ω).x = x}) :
+    let a := mCE μ (fun ω => bit (U ω).d1) {ω | (U ω).x = x}
+    let b := alwaysAmongAC μ U x
+    a*b = mCE μ (fun ω => bit (U ω).d0) {ω | (U ω).x = x} ∧
+    a*(1-b) = scoreAt μ U x ∧
+    (∀ z, mCE μ (fun ω => bit ((U ω).receipt (Z ω))) {ω | (U ω).x = x ∧ Z ω = z} =
+      scoreAt μ U x * bit z + mCE μ (fun ω => bit (U ω).d0) {ω | (U ω).x = x} ∧
+      mCE μ (fun ω => bit ((U ω).receipt (Z ω))) {ω | (U ω).x = x ∧ Z ω = z} =
+        nestedReceipt a b z) := by
+  sorry
 
 /-- T2(a)-(b), corrected comparison: the two ignorability conditions are
 not ordered in general, with BOTH directions witnessed under all five IV
@@ -2513,6 +2890,52 @@ theorem unit_itt_identities {X : Type*} (u : PotentialUnit X) (h : ¬ u.defier) 
     simp_all [PotentialUnit.receipt, PotentialUnit.outcome, PotentialUnit.complier,
       PotentialUnit.defier, PotentialUnit.tau,bit]
 
+/-- T25 finite core: the exact LATE identity for EVERY finite population law
+with independent nondegenerate assignment, fixed potential outcomes, no defiers
+on its unit list and positive complier mass. The general almost-sure version
+is the separately drafted `late_identity`; no limit theorem is assumed here. -/
+theorem finite_late_identity {L X : Type*} [Fintype L]
+    (p : L → ℝ) (U : L → PotentialUnit X) (hp : ValidLaw p)
+    (hmono : ∀ i, ¬ (U i).defier) (hc : 0 < fP p (fun i => (U i).complier))
+    (e : ℝ) (he0 : 0 < e) (he1 : e < 1) :
+    fCE (randomized p e) (fun i => bit ((U i.1).receipt i.2)) (fun i => i.2 = true) -
+      fCE (randomized p e) (fun i => bit ((U i.1).receipt i.2)) (fun i => i.2 = false) =
+        fP p (fun i => (U i).complier) ∧
+    fCE (randomized p e) (fun i => (U i.1).outcome i.2) (fun i => i.2 = true) -
+      fCE (randomized p e) (fun i => (U i.1).outcome i.2) (fun i => i.2 = false) =
+        fE p (fun i => if (U i).complier then (U i).tau else 0) ∧
+    fCE p (fun i => (U i).tau) (fun i => (U i).complier) =
+      fWald (randomized p e) (liftUnit U) Prod.snd (fun _ => 1) := by
+  have hD : fE p (fun i => bit ((U i).receipt true)) -
+      fE p (fun i => bit ((U i).receipt false)) = fP p (fun i => (U i).complier) := by
+    unfold fE fP
+    rw [← Finset.sum_sub_distrib]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [← mul_sub, (unit_itt_identities (U i) (hmono i)).1]
+    split_ifs <;> ring
+  have hY : fE p (fun i => (U i).outcome true) -
+      fE p (fun i => (U i).outcome false) =
+        fE p (fun i => if (U i).complier then (U i).tau else 0) := by
+    unfold fE
+    rw [← Finset.sum_sub_distrib]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [← mul_sub, (unit_itt_identities (U i) (hmono i)).2]
+  have hm : ∀ z, fCE (randomized p e) (fun _ => (1 : ℝ)) (fun i => i.2 = z) = 1 := by
+    intro z
+    rw [randomized_conditional_mean p e hp he0 he1]
+    simpa [fE] using hp.2
+  refine ⟨?_, ?_, ?_⟩
+  · simp_rw [randomized_conditional_mean p e hp he0 he1]
+    exact hD
+  · simp_rw [randomized_conditional_mean p e hp he0 he1]
+    exact hY
+  · unfold fWald
+    simp only [liftUnit, one_mul, hm, div_one]
+    simp_rw [randomized_conditional_mean p e hp he0 he1]
+    rw [hD,hY]
+    rfl
 
 /-- T15 complete counterexample: the explicit six-atom IV law satisfies
 Assumption 1 and overlap, the oracle score error tends to zero, yet every
@@ -2569,3 +2992,123 @@ theorem saturated_ml_bias_full_counterexample :
 end
 end AronowAudit.P029
 
+#print axioms AronowAudit.P029.randomized_valid
+#print axioms AronowAudit.P029.randomized_independent
+#print axioms AronowAudit.P029.bernoulli_measure_probability
+#print axioms AronowAudit.P029.printed_ignorability_ordering_all_profiles
+#print axioms AronowAudit.P029.ignorability_counterexample
+#print axioms AronowAudit.P029.baseline_selection_counterexample
+#print axioms AronowAudit.P029.marginal_independence_counterexample
+#print axioms AronowAudit.P029.conditional_independence_counterexample
+#print axioms AronowAudit.P029.one_sided_ignorability_implication
+#print axioms AronowAudit.P029.printed_ignorability_ordering
+#print axioms AronowAudit.P029.late_identity
+#print axioms AronowAudit.P029.corrected_weighted_limits
+#print axioms AronowAudit.P029.joint_independence_suffices
+#print axioms AronowAudit.P029.printed_marginal_sufficiency
+#print axioms AronowAudit.P029.printed_conditional_sufficiency
+#print axioms AronowAudit.P029.inside_log_weights_identity
+#print axioms AronowAudit.P029.inside_log_minimizers
+#print axioms AronowAudit.P029.zero_weight_infinite_contribution
+#print axioms AronowAudit.P029.zero_weight_objective_infinite
+#print axioms AronowAudit.P029.corrected_objective_zero_unit
+#print axioms AronowAudit.P029.integer_weight_replication
+#print axioms AronowAudit.P029.weighted_cell_unique_max
+#print axioms AronowAudit.P029.weighted_cell_strict_concavity
+#print axioms AronowAudit.P029.saturated_weighted_objective_minimum
+#print axioms AronowAudit.P029.constant_weight_minimizers
+#print axioms AronowAudit.P029.weighted_score_counterexample
+#print axioms AronowAudit.P029.two_sided_weight_counterexample
+#print axioms AronowAudit.P029.bootstrap_first_step_derivative
+#print axioms AronowAudit.P029.printed_package_weighted_fit
+#print axioms AronowAudit.P029.homogeneous_sample_effect
+#print axioms AronowAudit.P029.homogeneous_population_effect
+#print axioms AronowAudit.P029.homogeneous_rmse_rule
+#print axioms AronowAudit.P029.squared_error_discrepancy
+#print axioms AronowAudit.P029.finite_run_mse_discrepancy
+#print axioms AronowAudit.P029.finite_expected_mse_discrepancy
+#print axioms AronowAudit.P029.expected_mse_discrepancy
+#print axioms AronowAudit.P029.uniform_covariate_moments
+#print axioms AronowAudit.P029.heterogeneous_benchmark_moments
+#print axioms AronowAudit.P029.rmse_design_gram
+#print axioms AronowAudit.P029.rmse_design_determinant
+#print axioms AronowAudit.P029.normal_equation_exact_recovery
+#print axioms AronowAudit.P029.rmse_witness_outcomes
+#print axioms AronowAudit.P029.homogeneous_rmse_counterexample
+#print axioms AronowAudit.P029.rmse_positive_weight_recovery
+#print axioms AronowAudit.P029.racial_completion_counterexample
+#print axioms AronowAudit.P029.canvass_cell_expectation
+#print axioms AronowAudit.P029.canvass_cell_probability
+#print axioms AronowAudit.P029.canvass_cell_conditional_mean
+#print axioms AronowAudit.P029.canvass_assignment_supported
+#print axioms AronowAudit.P029.racial_raw_code_preservation
+#print axioms AronowAudit.P029.binary_count_sign_identity
+#print axioms AronowAudit.P029.raleigh_recorded_comparison
+#print axioms AronowAudit.P029.binary_population_count_sign
+#print axioms AronowAudit.P029.grouped_covariance_decomposition
+#print axioms AronowAudit.P029.sem_defier_counterexample
+#print axioms AronowAudit.P029.sem_dependence_counterexample
+#print axioms AronowAudit.P029.sem_forces_constant_effect
+#print axioms AronowAudit.P029.heterogeneous_iv_counterexample
+#print axioms AronowAudit.P029.saturated_ml_characterization
+#print axioms AronowAudit.P029.two_observation_ml_maxima
+#print axioms AronowAudit.P029.saturated_unbiasedness_counterexample
+#print axioms AronowAudit.P029.saturated_ml_bias_full_counterexample
+#print axioms AronowAudit.P029.five_per_arm_bias_counterexample
+#print axioms AronowAudit.P029.positive_part_error_bound
+#print axioms AronowAudit.P029.positive_part_bias_identity
+#print axioms AronowAudit.P029.saturated_binomial_bias_bound
+#print axioms AronowAudit.P029.saturated_score_consistency
+#print axioms AronowAudit.P029.one_sided_saturated_unbiasedness
+#print axioms AronowAudit.P029.constant_quantile
+#print axioms AronowAudit.P029.cutoff_not_zero
+#print axioms AronowAudit.P029.winsorization_cutoff_counterexample
+#print axioms AronowAudit.P029.constant_score_counterexample_law
+#print axioms AronowAudit.P029.quantile_count_and_lower_bound
+#print axioms AronowAudit.P029.quantile_changed_fraction_tends_zero
+#print axioms AronowAudit.P029.weight_change_bound
+#print axioms AronowAudit.P029.bounded_weighted_mean_change
+#print axioms AronowAudit.P029.inverse_score_accuracy
+#print axioms AronowAudit.P029.outcome_tail_weight_bound
+#print axioms AronowAudit.P029.ratio_perturbation
+#print axioms AronowAudit.P029.one_sided_unit_likelihood
+#print axioms AronowAudit.P029.one_sided_likelihood_reduction
+#print axioms AronowAudit.P029.printed_one_sided_factor_countercheck
+#print axioms AronowAudit.P029.nested_probability_range
+#print axioms AronowAudit.P029.nested_receipt_parameters
+#print axioms AronowAudit.P029.compliance_type_partition
+#print axioms AronowAudit.P029.corrected_equation_nine_integrand
+#print axioms AronowAudit.P029.corrected_simulation_types
+#print axioms AronowAudit.P029.printed_simulation_equation_failure
+#print axioms AronowAudit.P029.simulation_outcome_identity
+#print axioms AronowAudit.P029.sample_arm_scale
+#print axioms AronowAudit.P029.sample_wald_scale
+#print axioms AronowAudit.P029.constant_scores_equal_iv
+#print axioms AronowAudit.P029.sample_wald_bivariate_2sls
+#print axioms AronowAudit.P029.sample_cross_raw
+#print axioms AronowAudit.P029.sample_arm_unweighted_raw
+#print axioms AronowAudit.P029.bivariate_ratio_algebra
+#print axioms AronowAudit.P029.gender_worked_example
+#print axioms AronowAudit.P029.profile_inverse_score_cancellation
+#print axioms AronowAudit.P029.profile_covariance_gap
+#print axioms AronowAudit.P029.appendix_finite_identities
+#print axioms AronowAudit.P029.complier_profile_bayes
+#print axioms AronowAudit.P029.icsw_consistency
+#print axioms AronowAudit.P029.icsw_complier_effect_limit
+#print axioms AronowAudit.P029.winsorization_corrected_limit
+#print axioms AronowAudit.P029.complier_covariate_distribution
+#print axioms AronowAudit.P029.appendix_population_identities
+#print axioms AronowAudit.P029.constant_effect_population_limits
+#print axioms AronowAudit.P029.corrected_nested_receipt_model
+#print axioms AronowAudit.P029.corrected_ignorability_incomparability
+#print axioms AronowAudit.P029.potential_pair_independent_of_receipt
+#print axioms AronowAudit.P029.conditional_witness_not_marginally_independent
+#print axioms AronowAudit.P029.marginal_witness_nested_probabilities
+#print axioms AronowAudit.P029.receipt_conditioning_countercheck
+#print axioms AronowAudit.P029.rmse_witness_admissible
+#print axioms AronowAudit.P029.bootstrap_refit_ratio
+#print axioms AronowAudit.P029.randomized_conditional_mean
+#print axioms AronowAudit.P029.unit_itt_identities
+#print axioms AronowAudit.P029.finite_late_identity
+
+#print axioms AronowAudit.P029.printedRaceClause

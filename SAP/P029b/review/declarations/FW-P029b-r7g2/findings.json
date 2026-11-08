@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P029-T19",
+    "theorem": "SAP.P029b.T19",
+    "fingerprint": "c52455114e21b5e39dda75689af3709dca99229afedc3781d2876f2648f57729",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/PointCheck.lean compiled: k=1, zero coefficient/error/covariate coordinates and assignment subset {0} give a balanced nonempty design, AC=1, A=0, C=1, assigned receipt 1, and Y0=tau=5. The full recipe has no input hypotheses; its existential distribution is the ordinary location-zero scale-three logistic law, and its nonempty finite product with uniform, Gaussian and balanced-assignment laws is a probability measure.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T20",
+    "theorem": "SAP.P029b.T20",
+    "fingerprint": "70c4cb49a211c8b66e35c5b1eee7ce9c3c907dba317b3ba03237bbee8473d028",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/MeasureCheck.lean compiled an eight-atom product probability measure satisfying the actual IVAssumptions and typicalAt at its sole profile but not latentAt. Row types are C,C,A,N, with y0=0 and y1=1 on C and 0 otherwise, and independent fair assignment. Both receipt groups have probability 1/2; typical y1 means are 1/2 but population and complier effects are 1/2 and 1. scratch/FiniteCheck.lean also proves the finite version. scratch/witnesses.py exactly checks the separate baseline-selection example occurring in the statement.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T21",
+    "theorem": "SAP.P029b.T21",
+    "fingerprint": "a92215332a6bdac0dc616ff8eb9b17c5305d2491be5eb099f5612e9185e968c3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/ConstantCheck.lean compiled data satisfying every constant-effect hypothesis: uniform Boolean assignment, constant covariate, all compliers, y0=0, y1=2, c=1, m=2, epsilon=1/2, with the required conditional-expectation versions. scratch/witnesses.py exactly checks two genuine IV counterexamples: independent fair C,T,Z and X=1_{C=T} give marginal full-type independence but failure of A1; uniform X,J,Z with compliance rates 1/4 and 3/4 and effect X give conditional full-type independence, ATE=1/2 and unweighted Wald=3/4. All relevant events and moments are defined; see refutation-checks.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T22",
+    "theorem": "SAP.P029b.T22",
+    "fingerprint": "24966f442c15ce1b7ee603e5d3257a489ce50972ca274a9122ff76ed634a1c0c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/BasicCheck.lean compiled both 2500-entry constant estimate arrays: t=5 gives empiricalRMSE=0 and t=6 gives empiricalRMSE=1 against benchmark 5. The theorem has no hypotheses on its supplied real array, and its replicate count is strictly positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T23",
+    "theorem": "SAP.P029b.T23",
+    "fingerprint": "521cc10daf5d0edf9569518cd5c06eb7c707017ce9a53dbe08ed322ade83ad07",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/BasicCheck.lean compiled the stated interior fit q0=(1/4,1/2,1/4,3/4), positive weights and likelihoods, and an interior weighted-rate competitor. scratch/WeightedCheck.lean proves for the actual SAP definitions that changing only q(true,true) from 3/4 to 9/10 gives a strictly lower weighted negative log likelihood, hence q0 is not its minimizer. The package criterion differs from the unweighted criterion by a constant; each cell has successes and failures, so the displayed proportions are its genuine unique minimizer. The 16 observations satisfy the interior nested representation a=q1, b=q0/q1.",
+    "confidence": 0.99
+  }
+]

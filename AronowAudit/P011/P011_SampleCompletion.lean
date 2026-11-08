@@ -1,4 +1,4 @@
-/- P011 T3(iii): sample-variance concentration. The moving centre retains average marginal variance plus between-unit mean spread, allowing heterogeneous means and variances. -/
+/- Original P011 T3(iii) sample-variance concentration with unchanged hypotheses. The moving centre retains average marginal variance plus between-unit mean spread, allowing heterogeneous means and variances. -/
 import AronowAudit.P011.P011_ExpectationCompletion
 
 namespace AronowAudit.P011.SampleCompletion
@@ -247,3 +247,4 @@ theorem revised_sample_variance (F : Family) (c1 c2 c3 c4 : ℝ)
   exact SampleCompletion.revised_sample_variance_completed F c1 c2 c3 c4 h
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.revised_sample_variance

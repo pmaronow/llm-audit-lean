@@ -1,18 +1,26 @@
 import AronowAudit.P006.Wave1.BinaryExperimentBlueprint
 
 /-!
-# P006-T26: counterexample to the printed average-reward best-response claim
+# Blueprint: P006-T26, refutation of `T26_printed_average_best_response`
 
-Propositions 6–7 as printed (PDF pp. 15–16) assert that the arg-max-only
-rules are best responses for the unconditional ATO and ATT rewards.
-`Target` is the negation of this claim for sample and covariate types in
-universe 0; a universe-polymorphic claim would imply this instance.
+Wave 1, group P005-P006-P017-P023-P046-P047. Resolution `refute` (mapper §4, accepted by both
+referees with no fixes).
 
-The witness is the two-unit experiment `E26`: fair covariates, Bernoulli
-treatment, `Y0 = 0`, `Y1 = effectE001 X` and `μhat = 0`. Its actual ATO and
-ATT rewards equal `rewardE001 = (9u+10v)(4-u-v)/40`. The printed rule `(0,1)`
-earns `3/4`, while treat-all earns `19/20`, as in `T1_average_counterexample`.
-`Witness` states this counterexample explicitly and implies `Target`.
+The frozen record `AronowAudit.P006.T26_printed_average_best_response`
+(P006_CounterfactualMetrics.lean, line 864) asserts Propositions 6–7 as printed (PDF pp. 15–16):
+the arg-max-only rules are best responses for the unconditional ATO and ATT rewards. `Target`
+is the negation of its universe-0 instance (checked by `rfl`; the universe-polymorphic frozen
+theorem would in particular give this instance).
+
+Witness (mapper): the two-unit experiment `BinaryExperiment.binExp 2 _ effectE001 0`
+(fair covariate, Bernoulli treatment, `Y0 = 0`, `Y1 = effectE001 X`, `μhat = 0`). Its actual
+ATO and ATT rewards equal the proved finite sum `rewardE001 = (9u+10v)(4-u-v)/40`; the printed
+rule `(0,1)` earns `3/4` while treat-all earns `19/20` (proved `T1_average_counterexample`).
+`Witness` is the mapper's explicit-witness statement; `Target` follows from it.
+
+Writers: prove `theorem n1_proof : N1` in `AronowAudit/P006/Wave1/AverageBestResponse/N1.lean`.
+The shared nodes `BinaryExperiment.N1`–`N5` are proved in
+`AronowAudit/P006/Wave1/BinaryExperiment/`. Do not cite the admitted `T26_...` or `T2_...`.
 -/
 
 set_option autoImplicit false
@@ -24,12 +32,10 @@ open scoped BigOperators ENNReal NNReal
 
 noncomputable section
 
-/-!
-## Target
--/
+/-! ## Frozen target -/
 
-/-- **Target (P006-T26).** The negation of Propositions 6–7 as printed,
-for sample and covariate types in universe 0. -/
+/-- **Target (P006-T26).** The exact negation of the frozen printed contract
+`T26_printed_average_best_response` (Propositions 6–7 as printed), universe-0 instance. -/
 def Target : Prop :=
   ¬ ∀ {Ω C : Type} [MeasurableSpace Ω] [MeasurableSpace C] [Countable C]
       [MeasurableSingletonClass C] {n : ℕ} (E : Experiment Ω C n),
@@ -37,31 +43,31 @@ def Target : Prop :=
       IsBest {π | Admissible π} E.expectedATO (printedAverageRule E.μ1) ∧
       IsBest {π | Admissible π} E.expectedATT (printedAverageRule E.τ)
 
-/-- The two-unit witness experiment. -/
+/-- The two-unit witness experiment (mapper §4). -/
 def E26 : Experiment (Fin 2 → Bool × Bool) Bool 2 :=
   binExp 2 (by norm_num) effectE001 (fun _ _ _ => 0)
 
-/-- The explicit counterexample, implying `Target`. -/
+/-- The mapper's explicit-witness statement (stronger presentation of `Target`). -/
 def Witness : Prop :=
   ∃ E : Experiment (Fin 2 → Bool × Bool) Bool 2,
     Standing E ∧ PointwiseUnbiased E {π | Admissible π} ∧
     ¬ (IsBest {π | Admissible π} E.expectedATO (printedAverageRule E.μ1) ∧
        IsBest {π | Admissible π} E.expectedATT (printedAverageRule E.τ))
 
-/-! ## Reward identity -/
+/-! ## Node statement -/
 
-/-- **Statement S1.** Expanding the integral under νπ⊗νπ over x0,x1,t0,t1
-gives twoATO(1/2,effectE001,p)=rewardE001(p). Since μhat=0, the actual ATT
-reward equals ATO pointwise. Thus both expected rewards of the witness equal
-the finite sum. The calculation uses `BinaryExperiment.S2`,
-`realized_rewards_SUTVA` and `wATT_zero`, reindexing `Fin 2 → Bool × Bool`
-as two pairs and expanding `twoATO`, with coinMass(1/2,x)=1/2 and
-binaryRule(π false,π true)=π. -/
+/-- **Statement S1** (mapper §4 step 2, "expand the integral under νπ⊗νπ over x0,x1,t0,t1 ...
+This is precisely twoATO(1/2,effectE001,p)=rewardE001(p). Since μhat=0, the actual ATT reward
+equals ATO pointwise"): the actual expected rewards of the witness are the proved finite sum.
+Use `BinaryExperiment.S2`, `realized_rewards_SUTVA`, `wATT_zero`, reindexing of `Fin 2 → Bool × Bool` by `Fintype.sum_equiv (finTwoArrowEquiv _)`
+(or `Fin.consEquiv`) with `Fintype.sum_prod_type`, and the definition
+of `twoATO` (with `coinMass (1/2) x = 1/2`, `binaryRule (π false, π true) = π`). -/
 def S1 : Prop :=
   ∀ π : Bool → ℝ, Admissible π →
     E26.expectedATO π = rewardE001 (π false, π true) ∧
     E26.expectedATT π = rewardE001 (π false, π true)
 
+/-- Node N1: may use the shared statements `BinaryExperiment.S1`, `BinaryExperiment.S2`. -/
 def N1 : Prop := BinaryExperiment.S1 → BinaryExperiment.S2 → S1
 
 /-! ## Assembly -/
@@ -97,13 +103,18 @@ theorem assemble_witness (b1 : BinaryExperiment.N1) (b2 : BinaryExperiment.N2)
     norm_num at h hlt
     linarith
 
-/-- **Assembly.** The stated implications suffice for the refutation. -/
+/-- **Assembly.** The nodes suffice for the refutation. -/
 theorem assemble (b1 : BinaryExperiment.N1) (b2 : BinaryExperiment.N2)
     (b3 : BinaryExperiment.N3) (b4 : BinaryExperiment.N4) (b5 : BinaryExperiment.N5)
     (h1 : N1) : Target := by
   intro hall
   obtain ⟨E, hS, hU, hneg⟩ := assemble_witness b1 b2 b3 b4 b5 h1
   exact hneg (hall E hS hU)
+
+/-- Fidelity check: `Target` is literally the negation of the universe-0 instance of the frozen
+statement `AronowAudit.P006.T26_printed_average_best_response` (only its type is read). -/
+example : Target =
+    ¬ (type_of% @AronowAudit.P006.T26_printed_average_best_response.{0, 0}) := rfl
 
 end
 

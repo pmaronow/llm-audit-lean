@@ -1,0 +1,143 @@
+[
+ {
+  "target_id": "P002-T16",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.maximum_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.coordinate_example_admissible",
+    "reason": "Not invoked separately; the maximum counterexample already contains the admissibility certificate."
+   },
+   {
+    "lean_name": "AronowAudit.P002.coordinate_population_ols",
+    "reason": "Not invoked separately; the numerical covariate counterexample is already exported."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T16Statement"
+ },
+ {
+  "target_id": "P002-T17",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.corrected_E14",
+   "AronowAudit.P002.corrected_E14_order"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.le_maximum",
+    "reason": "The two corrected E14 declarations already export the required bounds and order statement."
+   },
+   {
+    "lean_name": "AronowAudit.P002.maximum_le",
+    "reason": "The two corrected E14 declarations already export the required bounds and order statement."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T17Statement"
+ },
+ {
+  "target_id": "P002-T18",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.corrected_adjusted_difference",
+   "AronowAudit.P002.corrected_E21_E23"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.dot_xCirc",
+    "reason": "Its algebra is already contained in the exported corrected difference identities."
+   },
+   {
+    "lean_name": "AronowAudit.P002.observedW_control",
+    "reason": "Not needed separately for T18; used in the T19 fitted-response bridge."
+   },
+   {
+    "lean_name": "AronowAudit.P002.observedW_treated",
+    "reason": "Not needed separately for T18; used in the T19 fitted-response bridge."
+   },
+   {
+    "lean_name": "AronowAudit.P002.score_congr",
+    "reason": "Not needed separately for T18; used in the T19 fitted-response bridge."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T18Statement"
+ },
+ {
+  "target_id": "P002-T19",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.corrected_E41_cross_term",
+   "AronowAudit.P002.score_dot",
+   "AronowAudit.P002.score_congr",
+   "AronowAudit.P002.observedW_control",
+   "AronowAudit.P002.observedW_treated"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.gram_quadratic",
+    "reason": "The canonical sign correction does not require an additional Gram quadratic identity."
+   },
+   {
+    "lean_name": "AronowAudit.P002.ols_error",
+    "reason": "The corrected coefficient-error declaration already contains this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.residual_sum_squares_identity",
+    "reason": "The canonical target asks for the coefficient error and cross term, not the additional residual-sum-of-squares identity."
+   },
+   {
+    "lean_name": "AronowAudit.P002.score_of_dot",
+    "reason": "The exported coefficient-error theorem and score-dot identity suffice."
+   },
+   {
+    "lean_name": "AronowAudit.P002.score_residual",
+    "reason": "The corrected coefficient-error declaration already contains this component."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T19Statement"
+ },
+ {
+  "target_id": "P002-T20",
+  "decision": "whole",
+  "theorem": "SAP.P002b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_E29_proof",
+   "AronowAudit.P002.corrected_oracle_expansion",
+   "AronowAudit.P002.mean_w_equal_at_late",
+   "AronowAudit.P002.population_intercept_mean",
+   "SAP.P002b.WH.W1.T20_whole",
+   "SAP.P002b.WH.W1.T20_assembly",
+   "AronowAudit.P002.sum_w_difference",
+   "AronowAudit.P002.groupMean_congr",
+   "AronowAudit.P002.observedW_treated",
+   "AronowAudit.P002.observedW_control",
+   "SAP.P002b.Bridge.toPopulation",
+   "SAP.P002b.Bridge.toCovPopulation"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.groupMean_add_const",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.ols_normal_equations",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   },
+   {
+    "lean_name": "AronowAudit.P002.w_difference_compliers",
+    "reason": "Not invoked separately; the selected complete statement already supplies this component."
+   }
+  ],
+  "statement_definition": "SAP.P002b.T20WholeStatement"
+ }
+]

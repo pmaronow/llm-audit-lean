@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P037b.T18",
+    "target_id": "P037-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part1.lean:223-254 formalizes the residual-multiplier identities of (b), leverage identities of (c), the matrix shortfall in (d), and a separate positive-norm weighted-row identity. It does not identify the estimator or bootstrap with released R code, state the second expanded sandwich equality or the SE/normal-Wald formulas of (a), or identify the abstract row quotient with the coefficient expected-variance/true-variance quotient. Coordinate and product integrability express the finite moments already needed by the canonical expectations. Full column rank is exactly injectivity of X.mulVec. All retained statements are true, with no singular inverse or undefined moment doing the work. Nonvacuity: X=[1], a balanced Rademacher on two atoms for both multipliers and errors, sigma-squared=1; more generally independent Rademachers in any finite dimension."
+  },
+  {
+    "theorem": "SAP.P037b.T23",
+    "target_id": "P037-T23",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:118-139 uses exactly the canonical six groups, ordinary replicated-row Gram and HC0 meat, both proposed fits, predicted levels, variance values and comparisons. It omits an explicit rank statement, the contrast mean/decomposition equations, explicit control residual mean/sample-variance certificates, square-root interval widths, and identification of the plotting routines. The number 1/5400 appears as scalar residual-variance arithmetic, not a separately defined sample-variance statistic. Exact rational checks confirm all retained matrices, fits, residuals and quadratic forms; the inverse certificate gives actual nonsingularity. There are 56 genuine rows and 28 schools in each arm."
+  },
+  {
+    "theorem": "SAP.P037b.T24",
+    "target_id": "P037-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:142-172 retains the prediction-row expansions and difference, the symmetric quadratic-form identity and equality criterion, and the same-sample full-rank recentering identities for fitted values, residuals, treatment coefficient and its HC0 variance. It omits interval endpoints (b), examples of both variance orderings (c), the residual-control-band failure/certificate (e),(f), the explicit identification of the centered variance with d'Vd, and released-code certification. Allowing arbitrary real T and arbitrary nuisance row in the algebraic clauses is a valid generalization; no false covariance interpretation is asserted for an arbitrary symmetric matrix. The recentering assumption is satisfiable: rows (1,0,0),(1,1,0),(1,1,1) have determinant one."
+  },
+  {
+    "theorem": "SAP.P037b.T19",
+    "target_id": "P037-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:14-35 faithfully represents the fixed four-school experiment, all six kept contrasts and weights, finite expectations, constant effects on every nonempty subset, and convergence in probability of the explicitly defined block ratio. The algebraic profiling equations are present, but the assertion in (v) identifying that ratio as the OLS treatment coefficient with block indicators is absent. Every kept arm is nonempty; for B>=1 every weight is at least 2/3, so the ratio denominator is positive. The B=0 totalized value is irrelevant to a limit at infinity. Independent bounded-block averages give the claimed probability limit. This counterexample does not assert that the paper's descriptive sentence about record availability is false."
+  },
+  {
+    "theorem": "SAP.P037b.T20",
+    "target_id": "P037-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:38-59 states (a),(b) as finite inverse-probability identities and the same-side threshold sufficient condition in (c). The varying-inclusion joint-probability quotient is precisely the conditional inclusion probability at positive exposure probability. It omits the sharp-null specialization, the T19 school-specific conditional probabilities and numerical counterexample in (d), and verification of the scripts and descriptive reporting/count claims. Zero exposure denominators in excluded-unit summands multiply an identically zero numerator; active-unit and averaging denominators are explicitly positive. A uniform five-state design with fixed or exposure-varying inclusion supplies nontrivial instances."
+  },
+  {
+    "theorem": "SAP.P037b.T21",
+    "target_id": "P037-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:62-91 contains both exact probability vectors, both raw histograms, sums/positivity/cutoff comparisons, valid seed selections with the two direct/nonseed labels, and a supported 10000-draw frequency witness. The treatment branch has the intended independent uniform six-of-twelve seed law; extra seed blocks with no focal peers can be adjoined without changing any probability. Missing from W2(vii) are the explicit conditional masses 1/924 and the assertion about membership in the full outcome-specific analysis set; changing a seed label alone does not certify all availability/screen/frequency masks. The 924-state exact enumeration verifies the numerical claims, and an explicit supported list realizes the frequency witness."
+  },
+  {
+    "theorem": "SAP.P037b.T22",
+    "target_id": "P037-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:94-115 states (a), the set inclusions in (b), nonseed containment, the scalar 101-hit cutoff event's nondegenerate probability, the seed-exclusion lower bound, and the reciprocal bound. It omits the coordinatewise zero-probability implication as a separate assertion, strict-inclusion examples (c), the binomial law in (d), joint-four-screen/full-analysis-set randomness in (d),(e), and fitted-prediction averages/denominator in (f). Four mutually exclusive positive exposure events each have probability below one even when a fifth direct category has mass. Strictly positive assignment masses make the empirical support inclusion valid for every draw list. Uniform Fin 5 gives all four probabilities 1/5, and the scalar cutoff has all-hit and no-hit witnesses with positive product masses."
+  },
+  {
+    "theorem": "SAP.P037b.T29",
+    "target_id": "P037-T29",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:243-261 contains the four-block law, exact exposure probabilities and positivity, the universal grid-error floor, expected hits/zero hits/centered second moment for independent draws, probability bounds, and relative/control variance arithmetic. It omits the event-specific counts/unique avoiding state (i), an explicit exposure-probability-sum assertion (ii), the full binomial law (iv), the split r=0/r>=1 error assertions, and an explicit relative-standard-error comparison with 3.5. The centered second moment is the canonical variance because the empirical frequency is an unbiased independent-draw mean. Latent seed choices in control schools are ignored by exposure, giving exactly the intended pushed-forward law. Exact 252-squared enumeration confirms the rare probability, and no positive-probability event is empty."
+  },
+  {
+    "theorem": "SAP.P037b.T30",
+    "target_id": "P037-T30",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part3.lean:14-62 covers the exact binomial law/moments/zero-hit law (a), finite-frequency grid and error floor/positive variance (b), precision and union bounds (c), zero-probability/no-false-positive results with a positive-population false-negative witness (d), and the actual independent blocked subset-avoidance law with all four numerical specializations (e). Product masses encode independence explicitly. J>0, t_h<=n_h and peer subsets of Fin(n_h) are the well-definedness conditions already inherent in the canonical sampling setup, so no zero divisor or truncated subtraction changes the claim. The extra scalar and support consequences strengthen the presentation without narrowing the canonical assertion."
+  },
+  {
+    "theorem": "SAP.P037b.T31",
+    "target_id": "P037-T31",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:65-88 retains the actual 56-school support cardinalities, one unblocked pair value and one within-four-block pair value, the eight-school support witness and four exact uncentered second moments, and the general mean-zero/second-moment identity conditional on half marginals. It omits full 56-school support inclusion/probability/ratio, universal marginal/pair/covariance laws, the full eight-school pair family and explicit 34 count, explicit identification of the concrete second moments with their variances, and the two actual 56-school variance examples. The half-marginal premise is satisfiable and does not assume the second-moment formula. Exact enumeration verifies the eight-school values and zero means, although the latter are not concrete theorem conjuncts."
+  },
+  {
+    "theorem": "SAP.P037b.T32",
+    "target_id": "P037-T32",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:91-103 supplies the blocked mass definition's support cardinality and normalization, general uniform-sampling marginal/pair formulas, and the local half-treatment mixture for normalized nonnegative school and seed masses. It omits explicit block-component independence and actual seed-sampler repair (a), the numerical specializations in (b), the control/other-exposure specializations and equality of exposure probabilities/populations/estimands for the two actual school laws in (c), and joint-control/variance comparisons in (d). The mixture legitimately assumes a half marginal and product independence; it does not prove those for either school law. The real pair fraction uses real subtraction and n>=2; the subset/cardinality and mass definitions are nondegenerate for every positive B."
+  },
+  {
+    "theorem": "SAP.P037b.T25",
+    "target_id": "P037-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part2.lean:175-208 and the underlying graph definitions represent every specified edge (with zero-based indices), indegrees, interpolated quantiles, referents, focal seed/nonseed counts, seed-set histograms, both probability vectors, positivity and changed inverse weights of W1 and W2. The union graph retains referents from the directed nomination graph as required. W2 uses the canonical three-of-six general finite design, which the canonical definitions explicitly distinguish from the study's four-block seed design. This certifies the ambiguity witness between the nomination-row and either-direction-row readings, rather than contradicting an assertion that the paper explicitly chose either one. Exact enumeration of the 20 supported seed sets verifies the probabilities."
+  },
+  {
+    "theorem": "SAP.P037b.T26",
+    "target_id": "P037-T26",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part2.lean:211-240 contains the Boolean union properties and count decompositions, the scalar equal-label criterion and monotonic label implications under r<=c and q<=b, and normalized positive-weight scalar probability inequalities with strictness. It omits explicit graph-instantiated subset-count inequalities, the all-supported-assignments reciprocal-possible-seed sufficient condition in (d), the referenced concrete examples (f), and released-code/Fig. S5 verification. Boolean OR counts reciprocal nominations once and incoming-only counts use not B_ij and B_ji. The scalar hypotheses exactly express referent-count containment; they are realizable, including strict-change cases, and are not the conclusion."
+  }
+]

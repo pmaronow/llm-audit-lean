@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -17,13 +16,17 @@ public import Mathlib.MeasureTheory.Function.L2Space
 
 Fix a coupling `π ∈ Π(μ, ν)` with `L²` marginals. Writing
 `Φ q p = signedTail p.1 q.1 * signedTail p.2 q.2` for the product tail
-representation of `p.1 * p.2`, this file computes fibre integrals in terms of
-survival functions. In `fiber_integral_pi`, the inner `π`-integral evaluates,
-by linearity of the expectation of a product of tail indicators, to
-`S s t - 𝟙{t<0}·SX s - 𝟙{s<0}·SY t + 𝟙{s<0}·𝟙{t<0}`.
+representation of `p.1 * p.2` (see `TailIntegral.lean`), this file performs the
+two Fubini swaps that turn the moments of `π` into Lebesgue integrals of
+survival functions:
 
-The domination for the Fubini swaps in `HoeffdingFubiniIntegrability.lean` is
-`∫∫ |Φ q p| dq = |p.1| * |p.2|`
+* `integral_prod_eq_integral_fiber` : `E_π[XY] = ∫∫ (∫ Φ q p ∂π) dq`;
+* `mean_fst_tail` / `mean_snd_tail` : `E[X] = ∫ (SX s - 𝟙{s<0}) ds`, likewise `E[Y]`;
+* `fiber_integral_pi` : the inner `π`-integral evaluates, by linearity of the
+  expectation of a product of tail indicators, to
+  `S s t - 𝟙{t<0}·SX s - 𝟙{s<0}·SY t + 𝟙{s<0}·𝟙{t<0}`.
+
+The domination that legitimises both swaps is `∫∫ |Φ q p| dq = |p.1| * |p.2|`
 (`integral_norm_signedTail_prod`), whose `π`-integral is finite by Cauchy–Schwarz
 on the `L²` marginals. Subtracting `E[X]·E[Y]` (rewritten as a double integral
 via `integral_prod_mul`) cancels the three inhomogeneous terms and leaves the
@@ -216,6 +219,6 @@ lemma fiber_integral_pi (h : IsCoupling π μ ν) (s t : ℝ) :
   rw [hIntA, hIntB, hIntC, integral_const]
   simp [jointSurv, survFst, survSnd, A, B, C, a, b, Measure.real, smul_eq_mul]
 
-
+/-! ### Integrability on the triple product, and the two swaps -/
 
 end Causalean.Stat

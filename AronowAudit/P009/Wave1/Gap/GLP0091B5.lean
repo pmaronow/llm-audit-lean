@@ -13,7 +13,7 @@ set_option maxRecDepth 4000
 set_option backward.isDefEq.respectTransparency false
 
 -- The following two update identities specialize the finite Bernoulli
--- numerator formulas to the fair law.
+-- numerator proofs in Wave1/Gap/GP0092B1.lean to the fair law.
 lemma oneSourceFormulas_one_numerator (n : ℕ) (i : Fin n) (a : Bool)
     (f : Assignment n → ℝ) :
     mean (fairLaw n) (fun z => if z i = a then f z else 0) =
@@ -444,6 +444,8 @@ theorem corrected_one_source_formulas_proof {n : ℕ} (hn : 0 < n) (b : ℕ)
           ((n : ℝ) + (b : ℝ) * ((b : ℝ) - 1)) := by
         field_simp
       _ = _ := by rw [hg]
+
+example : type_of% @AronowAudit.P009.corrected_one_source_formulas := corrected_one_source_formulas_proof
 
 end
 end AronowAudit.P009.Wave1

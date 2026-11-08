@@ -146,12 +146,29 @@ lemma mutually_independent_other_blocks_completed {B:Type*} [Fintype B] [Decidab
   · funext w j
     simp [ψ,X,paddedBlock,fittingAssignments]
 
+#print axioms product_independent_rest
+#print axioms mutually_independent_leave_out_completed
+#print axioms mutually_independent_other_blocks_completed
 end
 end AronowAudit.P026.IndependenceCompletion
 
 namespace AronowAudit.P026
 open Finset
 variable {Ω I : Type*} [Fintype Ω] [Fintype I] [DecidableEq I]
+theorem mutually_independent_leave_out (D : Design Ω I ℝ) (hD : probabilityDesign D)
+    (h : mutuallyIndependentAssignments D) (i : I) :
+    independent D (fun w => D.treatment w i) (fittingAssignments D (univ.erase i)) := by
+  exact IndependenceCompletion.mutually_independent_leave_out_completed D hD h i
 
+#print axioms mutually_independent_leave_out
+
+theorem mutually_independent_other_blocks {B : Type*} [Fintype B] [DecidableEq B]
+    (D : Design Ω I ℝ) (hD : probabilityDesign D) (c : I → B)
+    (h : mutuallyIndependentBlocks D c) (i : I) :
+    independent D (fun w => D.treatment w i)
+      (fittingAssignments D (univ.filter (fun j => c j ≠ c i))) := by
+  exact IndependenceCompletion.mutually_independent_other_blocks_completed D hD c h i
+
+#print axioms mutually_independent_other_blocks
 
 end AronowAudit.P026

@@ -1,0 +1,60 @@
+[
+  {
+    "target_id": "P029-T14",
+    "theorem": "SAP.P029b.T14",
+    "fingerprint": "0cc67c27ab6b1c382f0b1b08ae758328302e75f4db2b483013b01ff69fce6bc9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:8 and :14: n1=n0=1, p1=3/4, p0=1/4 gives exact bias 1/16; both separate and pooled fits are evaluated. Compiled scratch/AdditionalInstances.lean:22: two nonempty strata, n1(n)=n0(n)=n+1, p1=1, p0=0, a probability Dirac space, measurable deterministic counts (n+1,0), growing sizes and the exact required product-binomial marginals. Interior parameters and one-sided hypotheses are also realized by the displayed numerical choices.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T15",
+    "theorem": "SAP.P029b.T15",
+    "fingerprint": "2d10055578d62f673fecb1227a935b706266ab3a86e2dc0b0be33b6f67016e11",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:19, :25, :35, :86 and :92 directly from the finite definitions: normalized nonnegative sixMass, independence of assignment from all potential data, FIV, latent ignorability, receipt means 3/4 and 1/4, score 1/2, ATE 1, and population ICSW 1. The true half scores exceed epsilon=1/4 and have identically zero estimation error. Independent repeated observations can be taken on the product of this six-atom probability law; oracle scores remain constant on every draw sequence. The nonempty constant vectors genuinely have cutoff 1/2 under both defined quantile conventions, with no changed entries.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T16",
+    "theorem": "SAP.P029b.T16",
+    "fingerprint": "bbca180e6563fd4cf4075f3495cb88ed6cefd22db0ec0cde86286b5139f9ad03",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:50 and :59: the vector (1/4,3/4) has type-7 median 1/2, exactly one changed entry, and inverse-weight change 2 for that entry. Compiled scratch/MeasureNonvacuity.lean:84: all of FiniteSampleConditionsW1 hold on the infinite product of fair Boolean laws, with independent coordinate assignments, constant all-complier potential units (X=(), d0=false, d1=true, y0=0, y1=1), c=1 and estimated scores 1. The same file at :115 verifies alpha=1 and measurable constant cutoff 1 is a valid type-7 power-level quantile for every sample size. Latent ignorability holds because every unit is a complier with effect 1. No eventual-definedness or conclusion hypothesis is supplied.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T17",
+    "theorem": "SAP.P029b.T17",
+    "fingerprint": "531ce419c3f64298a9bfcdd084b0caa1a2519e25e9fd04560ac3f3075e3660bc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:73: an inhabited parameter type Unit, three observations, interior probability 3/4, assignment pattern (false,true,true) and receipt pattern (false,true,false) satisfy every likelihood-reduction hypothesis. The control factor is 1 under the intended 0^0=1 convention, and both treated receipt outcomes occur. The additive-expression comparisons concern valid interior probabilities, including 3/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T18",
+    "theorem": "SAP.P029b.T18",
+    "fingerprint": "f4f4c75e1e907f56c919437b8b3e744dcb661cb04a58deff5d6fcb3f3180619f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/AdditionalInstances.lean:76: the product of two independent fair Boolean laws with X=(), d0=false and d1 equal to the first coin, and assignment equal to the second coin, satisfies ReceiptConditionsW1, positive profile probability, zero always-taker probability, conditional compliance 1/2, and assignment probability 1/2 simultaneously. Compiled scratch/MeasureNonvacuity.lean:46 and :58: a fair-assignment all-complier law satisfies IVAssumptions, ScoreVersions with c=m=1, positive compliance, integrable inverse scores and both weighted potential outcomes, and nonzero mean inverse score. Its positive AC mass is 1. The interior range hypotheses have a=b=1/2. Compiled scratch/Nonvacuity.lean:81 constructs positive half scores and two assignment arms with a nonzero sample first stage, satisfying SampleDefined.",
+    "confidence": 0.99,
+    "resolved": [
+      "Fixed: the sole earlier issue was the phrase \"three specified half-probabilities\" in both docstrings. SAP/P029b/Challenge/Part1.lean:52 and SAP/P029b/Defs/WholeW1.lean:247 now explicitly state no always-takers, conditional compliance probability one half at the profile, and assignment probability one half. These exactly match the zero/half/half antecedents at SAP/P029b/Defs/WholeW1.lean:269. The architect accepted the issue and the current wording implements the stated fix; no mathematical statement was changed."
+    ]
+  }
+]

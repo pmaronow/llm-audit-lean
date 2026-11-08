@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.Probability.Moments.SubGaussian
 import Mathlib.Probability.Process.Filtration
 import AronowAudit.External.StatLean.ConcentrationInequalities.McDiarmid.CondHoeffding
@@ -22,8 +18,9 @@ MGF bound: `∀ λ, E[exp(λ(f(X) − E[f(X)]))] ≤ exp(λ² ∑ₖ cₖ²/8)`.
    `condExpKernel_ae_eq_const_of_measurable` (fiber-constancy), `increment_factorization`
    (`Mⱼ = condMean` of the prefix block), `condMean_update_le` (oscillation `≤ cₖ`).
 3. `increment_bounded_of_bounded_differences` — the per-increment `[−cₖ, cₖ]` / fiber-wise
-   `[a, a+cₖ]` bounds, assembled from the §5.1 machinery.
-4. `increment_hasCondSubgaussianMGF` — conditional Hoeffding bounds applied fiber-by-fiber.
+   `[a, a+cₖ]` bounds, assembled from the §5.1 machinery (zero `sorry`).
+4. `increment_hasCondSubgaussianMGF` — proved by wrapping `condExp_hoeffding_mgf`
+   (CondHoeffding.lean) fiber-by-fiber.
 5. `mgf_sub_expectation_le` — proved rigorously via
    `HasSubgaussianMGF.sum_of_hasCondSubgaussianMGF`.
 -/

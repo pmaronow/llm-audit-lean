@@ -127,5 +127,8 @@ theorem balanced_shuffle_not_linear_polylog_proof (c : ℝ) (hc : 0 ≤ c) :
   exact (balanced_shuffle_lower_bounds_proof r (recommendedK (1/8) (2^r))
     (by omega) hK).2 hr hKlog
 
+example : type_of% @AronowAudit.P003.balanced_shuffle_not_linear_polylog :=
+  balanced_shuffle_not_linear_polylog_proof
+
 end AronowAudit.P003.Wave1
 

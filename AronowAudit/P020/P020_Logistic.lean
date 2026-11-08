@@ -76,7 +76,7 @@ theorem logistic_concrete_counterexample :
   linarith
 
 /-- Conditional repair: "define s_j = n_j/1000" in the logistic display only;
-P020-E003, correction of Section 6.2, p. 61. This scale is not recovered from
+validator E003, repair of Section 6.2, p. 61. This scale is not recovered from
 the publication. The treatment log-odds contrast is 0.4 - 0.0009 n_j. -/
 noncomputable def repairedContrast (n : ℝ) : ℝ := 2 / 5 - 9 / 10000 * n
 
@@ -160,3 +160,14 @@ theorem repaired_average_sign (N : ℕ) (hN : 0 < N)
 
 end AronowAudit.P020
 
+#print axioms AronowAudit.P020.logistic_strictMono
+#print axioms AronowAudit.P020.printed_contrast_bound
+#print axioms AronowAudit.P020.printed_model_unit_negative
+#print axioms AronowAudit.P020.printed_model_average_negative
+#print axioms AronowAudit.P020.printed_model_average_ne_reported
+#print axioms AronowAudit.P020.logistic_concrete_counterexample
+#print axioms AronowAudit.P020.repaired_scale_equivalence
+#print axioms AronowAudit.P020.repaired_real_sign
+#print axioms AronowAudit.P020.repaired_integer_sign
+#print axioms AronowAudit.P020.repaired_probability_sign
+#print axioms AronowAudit.P020.repaired_average_sign

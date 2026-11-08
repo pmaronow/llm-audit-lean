@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P021.T2",
+  "target_id": "P021-T2",
+  "round": 3,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P021/Defs/Part2.lean:24: The dependent vhEstimator docstring says \"the consistency statement requires nonempty samples almost surely\". The active theorem uses T2WholeStatement, whose random and deterministic hypotheses at SAP/P021/Defs/WholeW1.lean:19 and SAP/P021/Defs/WholeW1.lean:31 have no nonempty-sample guard; the target docstring at SAP/P021/Challenge/Part1.lean:18 expressly permits empty finite-stage samples. The compiled sequence in scratch/Check.lean:85 satisfies every random-clause hypothesis while its first sample is empty almost surely, and scratch/Check.lean:97 checks the deterministic clause too. This is a misleading restriction in a dependent definition docstring; the mathematical statement covers the whole canonical claim and the record whole label is correct."
+  ]
+ }
+]

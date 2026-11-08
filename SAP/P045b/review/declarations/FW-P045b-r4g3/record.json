@@ -1,0 +1,88 @@
+[
+ {
+  "target_id": "P045-T27",
+  "decision": "refuted",
+  "theorem": "SAP.P045b.T27",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.Wave1.all_control_as_documented_refuted"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T27_glue",
+  "statement_definition": "SAP.P045b.T27Statement"
+ },
+ {
+  "target_id": "P045-T29",
+  "decision": "refuted",
+  "theorem": "SAP.P045b.T29",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.Wave1.cluster_sampler_as_documented_refuted"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T29_glue",
+  "statement_definition": "SAP.P045b.T29Statement",
+  "description": "Refutes the documented universal contract for the package sampler as coded, including its singleton-number rule and retry traces."
+ },
+ {
+  "target_id": "P045-T30",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T30",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.ht_unbiased_headline"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T30_glue",
+  "statement_definition": "SAP.P045b.T30Statement"
+ },
+ {
+  "target_id": "P045-T31",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T31",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.contagion_decomposition"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T31_glue",
+  "statement_definition": "SAP.P045b.T31Statement"
+ },
+ {
+  "target_id": "P045-T32",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T32",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.ExposureVariance.clique_all_fixed_table_counterexamples",
+   "AronowAudit.P045.ExposureVariance.clique_exact_profile_estimates",
+   "AronowAudit.P045.ExposureVariance.clique_full_counts",
+   "AronowAudit.P045.ExposureVariance.clique_probability_laws",
+   "AronowAudit.P045.ExposureVariance.clique_real_variance_shortfall",
+   "AronowAudit.P045.ExposureVariance.clique_relabeling_verified",
+   "AronowAudit.P045.ExposureVariance.clique_retained_weights",
+   "AronowAudit.P045.ExposureVariance.clique_structure",
+   "AronowAudit.P045.ExposureVariance.clique_variance_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P045.ExposureVariance.clique_exact_moments",
+    "reason": "Included by clique_variance_counterexample."
+   },
+   {
+    "lean_name": "AronowAudit.P045.ExposureVariance.clique_fixed_table_counterexamples",
+    "reason": "The all-fixed-table result includes both representative tables."
+   },
+   {
+    "lean_name": "AronowAudit.P045.ExposureVariance.clique_joint_moments",
+    "reason": "Included by clique_variance_counterexample."
+   }
+  ],
+  "bridge": "SAP.P045b.Bridge.T32_glue",
+  "statement_definition": "SAP.P045b.T32Statement",
+  "supporting_declarations": [
+   "AronowAudit.P045.ExposureVariance.clique_observation_marginal",
+   "AronowAudit.P045.ExposureVariance.clique_observation_independent_mass"
+  ]
+ }
+]

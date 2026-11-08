@@ -2,8 +2,10 @@ import AronowAudit.Shared.MapTailB.DensityQMD
 import AronowAudit.P001.Wave1.Gap.DecideB
 
 /-!
-P001-T12: normal efficiency on a common measurable set of full model probability.
-Score transport uses measurable versions on this set.
+The already approved common-measurable-full-law-set repair of P001-T12.
+The Prop contract below copies the approved complete signature, independently
+of the defective frozen main declaration. The helper alone retains the frozen
+helper's exact type check. All score transport uses measurable versions on S.
 -/
 
 open MeasureTheory ProbabilityTheory Filter AronowAudit.P001
@@ -46,6 +48,70 @@ theorem TailB_regular_local_alternative_score_identity {K τ : ℕ}
   exact regular_local_alternative_score_identity_proof νX κ g θ δ hδ hg hpos hnorm hqm
     hs2 hs0 I hI hpd T ψ hregular
 
+example : type_of% @AronowAudit.P001.regular_local_alternative_score_identity :=
+  @TailB_regular_local_alternative_score_identity
+
+/-- The full approved repaired signature, copied as a Prop contract. -/
+def TailBApprovedRegularEfficiency : Prop :=
+  ∀ {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+   {M K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+   (hiid : IID μ (fun i ω => (X i ω,Y i ω)))
+   (νX : Measure (Fin K → ℝ)) [IsProbabilityMeasure νX] (κ : Measure ℝ) [SFinite κ]
+   (p : (Fin τ → ℝ) → Fin M → ℝ)
+   (g : Fin M → ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+   (Θ : Set (Fin τ → ℝ)) (θ : Fin τ → ℝ) (δ : ℝ) (hδ : 0 < δ)
+   (hinterior : Metric.ball θ δ⊆Θ)
+   (hp : ∀ t∈Θ,(∀ m,0 ≤ p t m) ∧ (∑ m,p t m)=1)
+   (hg : ∀ t∈Θ,∀ m,Measurable (fun xy : (Fin K → ℝ) × ℝ => g m xy.2 xy.1 t))
+   (hnonneg : ∀ t∈Θ,∀ m y x,0 ≤ g m y x t)
+   (hnorm : ∀ t∈Θ,∀ m x,(∫⁻ y,ENNReal.ofReal (g m y x t) ∂κ)=1)
+   (htrue : μ.map (fun ω => (X 0 ω,Y 0 ω))=conditionalModelLaw νX κ (mixtureFamily p g) θ)
+   (S : Set ((Fin K → ℝ) × ℝ)) (hS : MeasurableSet S)
+   (hSfull : (μ.map (fun ω => (X 0 ω,Y 0 ω))) S = 1)
+   (hpositive : ∀ xy ∈ S,∀ t∈Metric.ball θ δ,
+     0 < mixtureFamily p g xy.2 xy.1 t)
+   (hdiff : ∀ xy ∈ S,ContDiffOn ℝ 2
+     (fun t => Real.log (mixtureFamily p g xy.2 xy.1 t)) (Metric.ball θ δ))
+   (hs2 : ∀ j,MemLp (fun ω => modelScore (mixtureFamily p g) (Y 0 ω) (X 0 ω) θ j) 2 μ)
+   (hszero : ∀ j,mean μ (fun ω => modelScore (mixtureFamily p g) (Y 0 ω) (X 0 ω) θ j)=0)
+   (hinfo : (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ).PosDef)
+   (hHinfo : populationHessian μ (X 0) (Y 0) (mixtureFamily p g) θ=
+     -informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)
+   (hHcont : ContinuousAt (populationHessian μ (X 0) (Y 0) (mixtureFamily p g)) θ)
+   (hHi : ∀ t∈Metric.ball θ δ,∀ j k,
+     Integrable (fun ω => modelHessian (mixtureFamily p g) (Y 0 ω) (X 0 ω) t j k) μ)
+   (ΔH : ℕ → Ω → ℝ) (hHbound : ∀ n ω t,t∈Metric.ball θ δ → ∀ j k,
+     |sampleHessian X Y (mixtureFamily p g) n ω t j k-
+       populationHessian μ (X 0) (Y 0) (mixtureFamily p g) t j k| ≤ ΔH n ω)
+   (hHlim : CP μ ΔH 0)
+   (that : ℕ → Ω → Fin τ → ℝ) (hmeas : ∀ n,Measurable (that n))
+   (hthat : ∀ n ω,that n ω∈Θ)
+   (hmax : ∀ n ω t,t∈Θ → sampleLikelihood X Y (mixtureFamily p g) n ω t ≤ 
+     sampleLikelihood X Y (mixtureFamily p g) n ω (that n ω))
+   
+  (hcompact : IsCompact Θ) (hθ : θ ∈ Θ)
+  (hlog : ∀ t ∈ Θ, Integrable (fun ω =>
+    Real.log (mixtureFamily p g (Y 0 ω) (X 0 ω) t)) μ)
+  (hposAll : ∀ xy ∈ S, ∀ t ∈ Θ, 0 < mixtureFamily p g xy.2 xy.1 t)
+  (hM : ContinuousOn (expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g)) Θ)
+  (hunique : ∀ t ∈ Θ,
+    expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) t ≤
+      expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) θ ∧
+    (expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) t =
+      expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) θ → t=θ))
+  (Δ : ℕ → Ω → ℝ) (hΔ : CP μ Δ 0)
+  (hbound : ∀ n ω t, t ∈ Θ →
+    |sampleLogLikelihood X Y (mixtureFamily p g) n ω t-
+      expectedLogLikelihood μ (X 0) (Y 0) (mixtureFamily p g) t| ≤ Δ n ω)
+  (hqm : QuadraticMeanModel νX κ (mixtureFamily p g) θ) ,
+   CP μ that θ ∧ WeakLimit μ (fun n ω => Real.sqrt n • (that n ω-θ))
+     (normalVectorLaw (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)⁻¹) ∧
+  (∀ T : (n : ℕ) → (Fin n → (Fin K → ℝ) × ℝ) → Fin τ → ℝ,
+    ∀ ψ : (Fin K → ℝ) × ℝ → Fin τ → ℝ,
+    RegularAL (conditionalModelLaw νX κ (mixtureFamily p g)) θ T ψ →
+    ∀ a : Fin τ → ℝ, 0 ≤ ∑ j, ∑ k, a j*
+      (covarianceMatrix (conditionalModelLaw νX κ (mixtureFamily p g) θ) ψ j k-
+       (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ)⁻¹ j k)*a k)
 
 theorem identified_mixture_ml_normal_efficiency_common_regular_set {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
    {M K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
@@ -169,6 +235,15 @@ theorem identified_mixture_ml_normal_efficiency_common_regular_set {Ω : Type*} 
       (fun t ht => hmixnonneg t (hinterior ht))
       (fun t ht => hmixnorm t (hinterior ht)) hqm hsmodel hsmodel0
       (informationMatrix μ (X 0) (Y 0) (mixtureFamily p g) θ) hI hinfo T ψ hregular).2
+
+/-- The final theorem inhabits the independently copied approved contract. -/
+example : TailBApprovedRegularEfficiency :=
+  @identified_mixture_ml_normal_efficiency_common_regular_set
+
+/-- An explicit contract-to-final type check, without consulting the old main type. -/
+example : type_of% @identified_mixture_ml_normal_efficiency_common_regular_set :=
+  (show TailBApprovedRegularEfficiency from
+    @identified_mixture_ml_normal_efficiency_common_regular_set)
 
 end
 end AronowAudit.P001.Wave1

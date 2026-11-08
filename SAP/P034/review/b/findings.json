@@ -1,0 +1,52 @@
+[
+  {
+    "target_id": "P034-T1",
+    "theorem": "SAP.P034.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A closed construction with no premises: World A has 32 points, total mass 1, and minimum point mass 169/20000; World B has 64 points, total mass 1, and minimum point mass 169/40000. All 12 observed cells have positive mass. In World A, P(T=t)=1/2, P(T=t,X=x)=1/4, P(T=t,X=x,Y=y)=1/8, P(T=t,R=1)=1/4, and P(R=1)=1/2. Every Pearson expected count is 100. The population determinant is 1/16, and the sample Gram matrix is 200 times that matrix, so both real normal equations have an actual unique solution. WorldANumericalFacts, SampleNumericalFacts, and WorldBFacts were checked by native_decide in scratch/Check.lean, importing only Defs. Independent exact rational calculations also checked normalization, positivity, all observed-law equalities, and the actual population moments. The counterexample concerns the interpretation licensing complete-case OLS; it does not refute the article's empirical report of no detected completion-rate difference.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P034-T2",
+    "theorem": "SAP.P034.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles a simultaneous instance of every hypothesis: Omega=Bool with its uniform probability, k=1, T(omega)=omega, Y0=0, Y1=1, R0=R1=true, and X=0. Its normal equations have solutions beta=(0,1,c) for every real c, so the assertion about every solution remains substantive when the covariate Gram matrix is singular. A second explicit instance also makes the nonsingularity condition true and has genuine attrition: let T,X,R0,R1 be four independent fair bits, Y0=X, Y1=X+1. Then each potential completion rate is 1/2, H1 and H2 hold, p=1/2, tau=1, G=[[1,1/2,1/2],[1/2,1/2,1/4],[1/2,1/4,1/2]], det G=1/16, and beta=(0,1,1). The latter is a mathematical instance, not an additional Lean compilation. Positive arm response probabilities and finite second moments guard all conditional means and Gram/RHS integrals. The separate fixed failure proposition EqualCompletionFailure also compiles in the scratch check.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P034-T3",
+    "theorem": "SAP.P034.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no premises. All four factor cells exist, with values 0,0,0,2; the interpolation vector (0,0,0,2) exists and is unique by successive evaluation at (0,0),(1,0),(0,1),(1,1). The no-covariate dimension is exactly the canonical witness, not an empty treatment or observation index. Both reference contrasts are 0 and both equal-weight contrasts are 1. Unique exact interpolation is also the unique least-squares fit because it uniquely attains zero residual sum of squares. The docstring distinguishes the averaged-effect interpretation from the printed row labels.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P034-T4",
+    "theorem": "SAP.P034.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All coefficients and finite covariate vectors are universally quantified without premises. For an inhabited covariate index and a nonzero interaction, take k=1, a=1, b=2, c=3, d=4, gamma=(5), z=(6), and p=q=1/2. The main contrasts are 2 and 3 and the weighted contrasts are 4 and 5. Thus the identities and positive-weight equivalences do substantive work. The step-2 classification 'broader' records that the unaveraged identities also hold for arbitrary real factor values; this true polynomial extension contains every required binary case and does not reduce canonical coverage. The architect's 'whole' coverage decision is therefore correct without changing the step-2 reading.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P034-T5",
+    "theorem": "SAP.P034.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no premises. The fixed 13-row and 3-column index types are inhabited, and all denominators are the positive totals 2898,2877,5775. The two corrected fractions are 712/77 and 28/33, lying respectively in [9.15,9.25) and [0.75,0.85); the printed 9.3 and 0.9 fail their required rounding intervals. All 39 corrected roundings, row sums, column sums, and 5775=3*1925 were checked in the compiled T5Statement scratch example; independent exact rational arithmetic also verified every rounding and count total.",
+    "confidence": "high"
+  }
+]

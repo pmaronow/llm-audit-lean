@@ -1,0 +1,178 @@
+import SAP.P042.Defs
+
+set_option autoImplicit false
+set_option maxRecDepth 2000
+open MeasureTheory ProbabilityTheory Finset
+open scoped BigOperators
+
+namespace ReviewP042
+noncomputable section
+
+abbrev G : Measure ℝ := gaussianReal 0 1
+abbrev GP (ι : Type) [Fintype ι] : Measure (ι → ℝ) := Measure.pi (fun _ : ι => G)
+
+lemma gLp : MemLp (fun x : ℝ => x) 2 G := memLp_id_gaussianReal 2
+lemma gVar : variance (fun x : ℝ => x) G = 1 := by simp
+
+lemma evalLp {ι : Type} [Fintype ι] (i : ι) :
+    MemLp (fun x : ι → ℝ => x i) 2 (GP ι) := by
+  exact gLp.comp_measurePreserving (measurePreserving_eval (fun _ : ι => G) i)
+
+lemma evalVar {ι : Type} [Fintype ι] (i : ι) :
+    variance (fun x : ι → ℝ => x i) (GP ι) = 1 := by
+  simpa using (measurePreserving_eval (fun _ : ι => G) i).variance_fun_comp
+    (f := fun x : ℝ => x) measurable_id.aemeasurable
+
+lemma evalIndep {ι : Type} [Fintype ι] {i j : ι} (h : i ≠ j) :
+    IndepFun (fun x : ι → ℝ => x i) (fun x : ι → ℝ => x j) (GP ι) := by
+  exact (iIndepFun_pi (μ := fun _ : ι => G) (X := fun _ => id)
+    (fun _ => measurable_id.aemeasurable)).indepFun h
+
+lemma evalCov {ι : Type} [Fintype ι] {i j : ι} (h : i ≠ j) :
+    covariance (fun x : ι → ℝ => x i) (fun x : ι → ℝ => x j) (GP ι) = 0 :=
+  (evalIndep h).covariance_eq_zero (evalLp i) (evalLp j)
+
+-- T1: genuine finite uniform support, all sharp-null arms, and the rational moments.
+example : SAP.P042.sixAllocations.Nonempty ∧ SAP.P042.sixAllocations.card = 90 := by
+  native_decide
+
+example :
+    SAP.P042.rationalMean SAP.P042.sixAllocations SAP.P042.sixD1 = 0 ∧
+    SAP.P042.rationalMean SAP.P042.sixAllocations SAP.P042.sixD2 = 0 ∧
+    SAP.P042.rationalVariance SAP.P042.sixAllocations SAP.P042.sixD1 = 3/10 ∧
+    SAP.P042.rationalVariance SAP.P042.sixAllocations SAP.P042.sixD2 = 3/10 ∧
+    SAP.P042.rationalCovariance SAP.P042.sixAllocations SAP.P042.sixD1 SAP.P042.sixD2 = 3/20 ∧
+    SAP.P042.rationalVariance SAP.P042.sixAllocations
+      (fun a => (SAP.P042.sixD1 a + SAP.P042.sixD2 a)/2) = 9/40 := by
+  native_decide
+
+example : SAP.P042.binomialArmExpectation (fun _ => 1) = 1 ∧
+    SAP.P042.binomialArmExpectation (fun x => (x.val : ℚ)) = 50 ∧
+    SAP.P042.binomialArmExpectation (fun x => ((x.val : ℚ)-50)^2) = 25 := by
+  native_decide
+
+example : SAP.P042.coversZero (SAP.P042.binomialPooled 50 50 50 : ℝ) 0 := by
+  norm_num [SAP.P042.coversZero, SAP.P042.binomialPooled, SAP.P042.binomialD1,
+    SAP.P042.binomialD2]
+
+-- T2: nonconstant independent L² variables with positive variance for laws 1,2,3,6,7.
+example : ∃ D : Fin 3 → (Fin 3 → ℝ) → ℝ,
+    (∀ j, MemLp (D j) 2 (GP (Fin 3))) ∧
+    (∀ j, 0 < variance (D j) (GP (Fin 3))) ∧
+    (∀ j k, j ≠ k → covariance (D j) (D k) (GP (Fin 3)) = 0) ∧
+    (∀ j, SAP.P042.normalizedWeight
+      (fun k => variance (D k) (GP (Fin 3))) j = (1:ℝ)/3) := by
+  refine ⟨fun j x => x j, evalLp, ?_, ?_, ?_⟩
+  · intro j; rw [evalVar]; norm_num
+  · intro j k h; exact evalCov h
+  · intro j
+    simp [evalVar, SAP.P042.normalizedWeight, SAP.P042.precisionWeight,
+      SAP.P042.totalWeight]
+
+example : ({0} : Finset (Fin 3)).Nonempty ∧
+    ({1,2} : Finset (Fin 3)).Nonempty ∧
+    Disjoint ({0} : Finset (Fin 3)) {1,2} := by decide
+
+example : ∃ e : Fin 3 ↪ Fin 3, ∀ j, e j = j := ⟨Function.Embedding.refl _, fun _ => rfl⟩
+
+-- T2 law 4: the exact nested-sum observation index, positive sizes and common variance.
+abbrev ArmIndex := Fin 1 ⊕ (Fin 1 ⊕ Fin 1)
+example : ∃ X : ArmIndex → (ArmIndex → ℝ) → ℝ,
+    (0 < (1:ℕ)) ∧ (0 < (1:ℝ)) ∧
+    (∀ i, MemLp (X i) 2 (GP ArmIndex)) ∧
+    Pairwise (fun i j => IndepFun (X i) (X j) (GP ArmIndex)) ∧
+    (∀ i, variance (X i) (GP ArmIndex) = 1) := by
+  exact ⟨fun i x => x i, by norm_num, by norm_num, evalLp,
+    fun _ _ h => evalIndep h, evalVar⟩
+
+-- T2 law 5: a genuine unit-variance centered factor satisfying the equality premises.
+example : ∃ D : Fin 3 → ℝ → ℝ,
+    (∀ j, MemLp (D j) 2 G) ∧
+    (∀ j, variance (D j) G = (1:ℝ)^2) ∧
+    MemLp (fun x : ℝ => x) 2 G ∧
+    (∫ x : ℝ, x ∂G) = 0 ∧ variance (fun x : ℝ => x) G = 1 ∧
+    (∀ j, (fun x => D j x - ∫ y, D j y ∂G) =ᵐ[G] (fun x : ℝ => (1:ℝ)*x)) := by
+  refine ⟨fun _ x => x, fun _ => gLp, ?_, gLp, by simp, gVar, ?_⟩
+  · intro j; simp
+  · intro j; filter_upwards [] with x; simp
+
+-- T2 law 8: N=3, each of three groups has one unit, genuine finite allocation support.
+example : (2 ≤ (3:ℕ)) ∧ (∀ g : Fin 3, 0 < (fun _ : Fin 3 => (1:ℕ)) g) ∧
+    (∑ g : Fin 3, (fun _ : Fin 3 => (1:ℕ)) g) ≤ 3 ∧
+    (SAP.P042.completeThreeAllocations 3 (fun _ => 1)).Nonempty := by
+  native_decide
+
+-- T3 and T4: both fixed data sets avoid zero denominators and invalid variances.
+example :
+    (∀ j, 0 < SAP.P042.roboVariances j) ∧
+    0 < SAP.P042.totalWeight SAP.P042.roboVariances ∧
+    0 < SAP.P042.roboC ∧ 0 < SAP.P042.roboTauSq ∧
+    (∀ j, 0 < SAP.P042.roboRandomVariances j) ∧
+    0 < SAP.P042.roboFixedVariance ∧ 0 < SAP.P042.roboRandomVariance := by
+  norm_num [SAP.P042.roboVariances, SAP.P042.roboSE, SAP.P042.totalWeight,
+    SAP.P042.precisionWeight, SAP.P042.normalizedWeight, SAP.P042.roboC,
+    SAP.P042.roboTauSq, SAP.P042.roboQ, SAP.P042.roboEffects,
+    SAP.P042.roboFixedMean, SAP.P042.roboRandomVariances,
+    SAP.P042.roboFixedVariance, SAP.P042.roboRandomVariance, Fin.sum_univ_two,
+    Fin.forall_fin_two]
+
+example : (19599:ℝ)/10000 ≤ (49:ℝ)/25 ∧
+    (0:ℝ) < 1 ∧ (1:ℝ) < 2 ∧ 0 ≤ (1:ℝ) ∧ 0 ≤ (1:ℝ) := by norm_num
+
+-- T4: real random variables with exactly the stipulated marginal variances and covariance 0.
+def roboD (j : Fin 2) (x : Fin 2 → ℝ) : ℝ := SAP.P042.roboSE j * x j
+
+example : ∃ D : Fin 2 → (Fin 2 → ℝ) → ℝ,
+    (∀ j, MemLp (D j) 2 (GP (Fin 2))) ∧
+    (∀ j, variance (D j) (GP (Fin 2)) = SAP.P042.roboVariances j) ∧
+    covariance (D 0) (D 1) (GP (Fin 2)) = 0 := by
+  refine ⟨roboD, ?_, ?_, ?_⟩
+  · intro j; exact (evalLp j).const_mul _
+  · intro j
+    change variance (fun x : Fin 2 → ℝ => SAP.P042.roboSE j * x j) (GP (Fin 2)) = _
+    rw [variance_const_mul, evalVar]
+    simp [SAP.P042.roboVariances]
+  · change covariance (fun x : Fin 2 → ℝ => SAP.P042.roboSE 0 * x 0)
+      (fun x : Fin 2 → ℝ => SAP.P042.roboSE 1 * x 1) (GP (Fin 2)) = _
+    rw [covariance_const_mul_left, covariance_const_mul_right,
+      evalCov (by decide : (0 : Fin 2) ≠ 1)]
+    simp
+
+-- T5 witness 1: two copies of a N(0,1) variable. Every H1/H2 premise holds;
+-- pooled actual variance is 1 and the diagonal formula is 1/2.
+example : ∃ D : Fin 2 → ℝ → ℝ,
+    (0 < (2:ℕ)) ∧ (∀ j, MemLp (D j) 2 G) ∧
+    (∀ j, 0 < variance (D j) G) ∧
+    variance (SAP.P042.pooled
+      (SAP.P042.normalizedWeight (fun j => variance (D j) G)) D) G = 1 ∧
+    (SAP.P042.totalWeight (fun j => variance (D j) G))⁻¹ = (1:ℝ)/2 := by
+  refine ⟨fun _ x => x, by norm_num, fun _ => gLp, ?_, ?_, ?_⟩
+  · intro j; simp
+  · have hpool : SAP.P042.pooled
+        (SAP.P042.normalizedWeight (fun _ : Fin 2 => variance (fun x : ℝ => x) G))
+        (fun _ : Fin 2 => fun x : ℝ => x) = (fun x : ℝ => x) := by
+      funext x
+      simp [SAP.P042.pooled, SAP.P042.normalizedWeight, SAP.P042.totalWeight,
+        SAP.P042.precisionWeight]
+    rw [hpool]; simp
+  · norm_num [SAP.P042.totalWeight, SAP.P042.precisionWeight, Fin.sum_univ_two]
+
+-- T5 witness 2: nonempty disjoint singleton index pools with that same variable.
+-- Their difference is identically zero; the asserted sum of diagonal variances is 2.
+example : ∃ (N A : Finset (Fin 2)) (D : Fin 2 → ℝ → ℝ),
+    N.Nonempty ∧ A.Nonempty ∧ Disjoint N A ∧
+    (∀ j, MemLp (D j) 2 G) ∧ (∀ j, 0 < variance (D j) G) ∧
+    variance (fun x =>
+      SAP.P042.pooled (SAP.P042.subsetWeight N (fun j => variance (D j) G)) D x -
+      SAP.P042.pooled (SAP.P042.subsetWeight A (fun j => variance (D j) G)) D x) G = 0 ∧
+    (∑ j ∈ N, (variance (D j) G)⁻¹)⁻¹ +
+      (∑ j ∈ A, (variance (D j) G)⁻¹)⁻¹ = (2:ℝ) := by
+  refine ⟨{0}, {1}, fun _ x => x, by decide, by decide, by decide,
+    fun _ => gLp, ?_, ?_, ?_⟩
+  · intro j; simp
+  · simp [SAP.P042.pooled, SAP.P042.subsetWeight]
+    exact variance_zero G
+  · norm_num
+
+end
+end ReviewP042

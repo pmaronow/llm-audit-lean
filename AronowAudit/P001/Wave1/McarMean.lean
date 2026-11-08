@@ -20,6 +20,8 @@ theorem mcar_paper_support_mean :
     mean μ Y = conditionalMeanAt μ R (fun ω => censored (Y ω) (R ω)) 1 :=
   McarMean.assemble McarMean.n1_proof
 
+example : McarMean.Target.{u} := mcar_paper_support_mean
+
 end
 
 end AronowAudit.P001.Wave1

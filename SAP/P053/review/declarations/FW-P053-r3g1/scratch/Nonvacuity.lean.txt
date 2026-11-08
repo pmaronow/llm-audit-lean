@@ -1,0 +1,235 @@
+import SAP.P053.Defs
+import SAP.P053.Defs.WholeW1
+
+set_option autoImplicit false
+set_option maxRecDepth 4000
+set_option maxHeartbeats 800000
+
+open Filter
+open scoped BigOperators Topology
+open SAP.P053
+
+namespace AuditP053
+noncomputable section
+
+-- T1: two positive arms, a nonconstant binary outcome vector, and a
+-- nonconstant symmetric arm-sample statistic with a real codomain.
+def symmetricStatistic (x1 x0 : Fin 2 → Bool) : ℝ :=
+  (∑ i, binaryReal (x1 i)) - (∑ i, binaryReal (x0 i))
+
+example : 0 < (2 : ℕ) ∧ 0 < (2 : ℕ) ∧
+    fourA ∈ support (ι := Fin 4) 2 ∧ fourB ∈ support (ι := Fin 4) 2 := by
+  decide
+
+example (x1 x0 : Fin 2 → Bool) (p1 p0 : Equiv.Perm (Fin 2)) :
+    symmetricStatistic (x1 ∘ p1) (x0 ∘ p0) = symmetricStatistic x1 x0 := by
+  unfold symmetricStatistic
+  change (∑ i, binaryReal (x1 (p1 i))) - (∑ i, binaryReal (x0 (p0 i))) = _
+  rw [Equiv.sum_comp p1 (fun i => binaryReal (x1 i)),
+    Equiv.sum_comp p0 (fun i => binaryReal (x0 i))]
+
+example : symmetricStatistic (fun _ => true) (fun _ => false) = 2 ∧
+    symmetricStatistic (fun _ => false) (fun _ => true) = -2 := by
+  norm_num [symmetricStatistic, binaryReal]
+
+-- T2: verify the finite counterexample directly, without a Challenge theorem.
+lemma four_counterexample : FourCounterexample := by
+  have hc : (support (ι := Fin 4) 2).card = 6 := by decide
+  have hA : fourA ∈ support 2 := by decide
+  have hB : fourB ∈ support 2 := by decide
+  have hM : totalSuccesses fourY = 2 := by decide
+  have ha : successes fourY fourA = 1 := by decide
+  have hb : successes fourY fourB = 1 := by decide
+  have hMX : totalSuccesses (fun i => fourX i && fourY i) = 1 := by decide
+  have hax : successes (fun i => fourX i && fourY i) fourA = 1 := by decide
+  have hbx : successes (fun i => fourX i && fourY i) fourB = 0 := by decide
+  have hLA : labelStatistic fourA = 1 := by norm_num [labelStatistic, fourA]
+  have hLB : labelStatistic fourB = 0 := by norm_num [labelStatistic, fourB]
+  norm_num [FourCounterexample, hc, hA, hB, binaryTau, hM, ha, hb,
+    hMX, hax, hbx, countTable, hLA, hLB]
+
+example : FourNonfactorization := by
+  have h : FourCounterexample := four_counterexample
+  rcases h with ⟨_, hA, hB, htA, htB, _, _, hLA, hLB, hXA, hXB⟩
+  constructor
+  · rintro ⟨g, hg⟩
+    have eA := hg fourA hA
+    have eB := hg fourB hB
+    rw [htA, hLA] at eA
+    rw [htB, hLB] at eB
+    linarith
+  · rintro ⟨g, hg⟩
+    have eA := hg fourA hA
+    have eB := hg fourB hB
+    rw [htA, hXA] at eA
+    rw [htB, hXB] at eB
+    linarith
+
+-- The outcome at the labelled unit equals one, so the indicator in the
+-- implementation is exactly z_1*y_1 from the canonical claim.
+example (s : Finset (Fin 4)) :
+    labelStatistic s = (if (0 : Fin 4) ∈ s then 1 else 0) * binaryReal (fourY 0) := by
+  simp [labelStatistic, fourY, binaryReal]
+
+example : RepeatedCounterexample 1 (by decide) := by
+  have hA : repeatA 1 ∈ support 2 := by decide
+  have hB : repeatB 1 ∈ support 2 := by decide
+  have hM : totalSuccesses (repeatY 1) = 2 := by decide
+  have ha : successes (repeatY 1) (repeatA 1) = 1 := by decide
+  have hb : successes (repeatY 1) (repeatB 1) = 1 := by decide
+  have hMX : totalSuccesses (fun i => repeatX 1 i && repeatY 1 i) = 1 := by decide
+  have hax : successes (fun i => repeatX 1 i && repeatY 1 i) (repeatA 1) = 1 := by decide
+  have hbx : successes (fun i => repeatX 1 i && repeatY 1 i) (repeatB 1) = 0 := by decide
+  have hLA : repeatLabel 1 (by decide) (repeatA 1) = 1 := by
+    norm_num [repeatLabel, repeatA, fourA]
+  have hLB : repeatLabel 1 (by decide) (repeatB 1) = 0 := by
+    norm_num [repeatLabel, repeatB, fourB]
+  norm_num [RepeatedCounterexample, hA, hB, binaryTau, hM, ha, hb, hMX,
+    hax, hbx, countTable, hLA, hLB]
+
+-- T3: independent enumeration of the finite p-values and their ties.
+example : SixDistribution := by
+  constructor
+  · decide
+  constructor
+  · decide
+  constructor
+  · decide
+  constructor
+  · decide
+  · intro z hz
+    have hm : totalSuccesses sixY = 3 := by decide
+    norm_num [binaryTau, hm]
+    ring
+
+example : (support (ι := Fin 6) 3).card = 20 ∧ sixTop ∈ support 3 ∧
+    successes sixY sixTop = 3 ∧ totalSuccesses sixY = 3 := by decide
+
+example : binaryTau 3 3 sixY sixTop = 1 := by
+  have ha : successes sixY sixTop = 3 := by decide
+  have hM : totalSuccesses sixY = 3 := by decide
+  norm_num [binaryTau, ha, hM]
+
+example : ((support (ι := Fin 6) 3).filter (fun z => successes sixY z = 3)).card = 1 ∧
+    ((support (ι := Fin 6) 3).filter
+      (fun z => successes sixY z = 0 ∨ successes sixY z = 3)).card = 2 := by decide
+
+example : (support (ι := Fin 4) 2).card = 6 ∧
+    ((support (ι := Fin 4) 2).filter (fun z => successes fourY z = 0)).card = 1 ∧
+    ((support (ι := Fin 4) 2).filter (fun z => successes fourY z = 1)).card = 4 ∧
+    ((support (ι := Fin 4) 2).filter (fun z => successes fourY z = 2)).card = 1 := by decide
+
+example : fourTop ∈ support 2 ∧ fourBottom ∈ support 2 ∧
+    successes fourY fourTop = 2 ∧ successes fourY fourBottom = 0 := by decide
+
+example : binaryTau 2 2 fourY fourTop = 1 ∧ binaryTau 2 2 fourY fourBottom = -1 := by
+  have ha : successes fourY fourTop = 2 := by decide
+  have hb : successes fourY fourBottom = 0 := by decide
+  have hM : totalSuccesses fourY = 2 := by decide
+  norm_num [binaryTau, ha, hb, hM]
+
+example : StrictMonoOn (fun x : ℝ => 2*x+1)
+    ((fun z : Finset (Fin 4) => sampleMean z (fun i => binaryReal (fourY i)) -
+      sampleMean zᶜ (fun i => binaryReal (fourY i))) '' {z | z ∈ support 2}) := by
+  intro a _ b _ hab
+  dsimp
+  linarith
+
+-- T4: both strict sign cases and equality cases are inhabited.
+example : 0 < (3/4 : ℝ) ∧ (3/4 : ℝ) < 1 ∧ 0 ≤ (2 : ℝ) ∧ 0 ≤ (1 : ℝ) ∧
+    (2:ℝ)^2/(3/4)+1^2/(1-3/4) < 1^2/(3/4)+2^2/(1-3/4) := by
+  norm_num
+
+example : 0 < (1/4 : ℝ) ∧ (1/4 : ℝ) < 1 ∧ 0 ≤ (1 : ℝ) ∧ 0 ≤ (2 : ℝ) ∧
+    (1:ℝ)^2/(1/4)+2^2/(1-1/4) < 2^2/(1/4)+1^2/(1-1/4) := by
+  norm_num
+
+example : 0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1 ∧ 0 ≤ (0 : ℝ) ∧
+    (2:ℝ)^2/(1/2)+0^2/(1-1/2) = 0^2/(1/2)+2^2/(1-1/2) := by
+  norm_num
+
+-- T5: construct every S5 hypothesis independently. The effect is nonzero.
+def locationFamily (k : ℕ) : Population where
+  n1 := k+2
+  n0 := k+2
+  Y1 := fun _ => 1
+  Y0 := fun _ => 0
+
+lemma location_size_positive (k : ℕ) : 0 < (locationFamily k).size := by
+  simp [locationFamily, Population.size]
+
+lemma populationMean_const (P : Population) (h : 0 < P.size) (c : ℝ) :
+    populationMean P (fun _ => c) = c := by
+  have hn : (P.size : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt h)
+  simp only [populationMean, sampleMean, Finset.sum_const, nsmul_eq_mul,
+    Finset.card_univ, Fintype.card_fin]
+  exact mul_div_cancel_left₀ c hn
+
+lemma populationVariance_const (P : Population) (h : 0 < P.size) (c : ℝ) :
+    populationVariance P (fun _ => c) = 0 := by
+  have hm : sampleMean (Finset.univ : Finset (Fin P.size)) (fun _ => c) = c :=
+    populationMean_const P h c
+  simp [populationVariance, sampleVariance, centeredSS, hm]
+
+lemma location_regularity : Regularity locationFamily (1/2) 0 0 0 1 := by
+  constructor
+  · exact tendsto_atTop_mono (fun k => by simp [locationFamily, Population.size]; omega)
+      tendsto_id
+  · exact Eventually.of_forall (fun k => by simp [locationFamily])
+  · norm_num
+  · norm_num
+  · have heq : (fun k : ℕ => ((locationFamily k).n1 : ℝ)/(locationFamily k).size) =
+        fun _ => (1/2 : ℝ) := by
+      funext k
+      have hn : (k : ℝ)+2 ≠ 0 := by positivity
+      simp only [locationFamily, Population.size, Nat.cast_add, Nat.cast_ofNat]
+      field_simp; ring
+    rw [heq]
+    exact tendsto_const_nhds
+  · have heq : (fun k => populationVariance (locationFamily k) (locationFamily k).Y1) =
+        fun _ => (0 : ℝ) := by
+      funext k
+      exact populationVariance_const _ (location_size_positive k) 1
+    rw [heq]
+    exact tendsto_const_nhds
+  · have heq : (fun k => populationVariance (locationFamily k) (locationFamily k).Y0) =
+        fun _ => (0 : ℝ) := by
+      funext k
+      exact populationVariance_const _ (location_size_positive k) 0
+    rw [heq]
+    exact tendsto_const_nhds
+  · have heq : (fun k => populationVariance (locationFamily k) (unitEffects (locationFamily k))) =
+        fun _ => (0 : ℝ) := by
+      funext k
+      change populationVariance (locationFamily k) (fun _ => (1 : ℝ)-0) = 0
+      simpa using populationVariance_const (locationFamily k) (location_size_positive k) 1
+    rw [heq]
+    exact tendsto_const_nhds
+  · have heq : (fun k => averageEffect (locationFamily k)) = fun _ => (1 : ℝ) := by
+      funext k
+      unfold averageEffect
+      change populationMean (locationFamily k) (fun _ => (1 : ℝ)) -
+        populationMean (locationFamily k) (fun _ => (0 : ℝ)) = 1
+      rw [populationMean_const _ (location_size_positive k) 1,
+        populationMean_const _ (location_size_positive k) 0]
+      norm_num
+    rw [heq]
+    exact tendsto_const_nhds
+  · refine ⟨1, by norm_num, ?_⟩
+    intro k
+    have hn : ((locationFamily k).size : ℝ) ≠ 0 := by
+      exact_mod_cast (Nat.ne_of_gt (location_size_positive k))
+    dsimp only [locationFamily]
+    norm_num only [one_pow, zero_pow (by decide : 4 ≠ 0), add_zero,
+      Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one]
+    change ((Finset.univ : Finset (Fin ((k+2)+(k+2)))).card : ℝ) /
+      (((k+2)+(k+2) : ℕ) : ℝ) ≤ 1
+    have hc : (Finset.univ : Finset (Fin ((k+2)+(k+2)))).card = (k+2)+(k+2) := by simp
+    rw [hc]
+    exact le_of_eq (div_self hn)
+
+example : ∃ E : ℕ → Population, Regularity E (1/2) 0 0 0 1 :=
+  ⟨locationFamily, location_regularity⟩
+
+end
+end AuditP053

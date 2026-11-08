@@ -1,11 +1,13 @@
 import AronowAudit.P001.P001_Foundations
 
 /-!
-# Conditional-independence characterization and placebo regression
+# Conditional assessment for cond-P001b
 
-Statement definitions for conditional independence of arbitrary sub-sigma-fields
-and a conditional placebo-regression result. The characterization from Kallenberg
-is an explicit hypothesis of the regression statement.
+Statement definitions only. No proof of a held result is used here.
+The accepted input is a conditional-independence characterization for arbitrary
+sub-sigma-fields. A general extremum-estimator candidate is retained separately;
+its application to record 0 is rejected for a missing smoothness premise.
+See runs/cond-P001b/REPORT.md for scope, rejected candidates, and source checks.
 -/
 
 noncomputable section
@@ -15,6 +17,70 @@ set_option linter.unusedVariables false
 set_option pp.universes true
 
 namespace AronowAudit.Literature
+
+/-- Coordinate gradient of an arbitrary real criterion on a finite-dimensional
+real parameter space. The sup norm on the coordinates is immaterial in finite dimension. -/
+def criterionGradient {d : ℕ} (q : (Fin d → ℝ) → ℝ)
+    (t : Fin d → ℝ) : Fin d → ℝ :=
+  fun j => fderiv ℝ q t (Pi.single j 1)
+
+/-- Coordinate Hessian of an arbitrary real criterion. -/
+def criterionHessian {d : ℕ} (q : (Fin d → ℝ) → ℝ)
+    (t : Fin d → ℝ) : Matrix (Fin d) (Fin d) ℝ :=
+  fun j k => fderiv ℝ (fun u => criterionGradient q u j) t (Pi.single k 1)
+
+/-- Newey, Whitney K., and Daniel McFadden (1994), "Large Sample Estimation
+and Hypothesis Testing", Handbook of Econometrics, vol. IV, ch. 36,
+Theorem 3.1, p. 2143; eq. (1.1), p. 2115; complete proof, section 3.5, p. 2152.
+Source: https://users.ssc.wisc.edu/~xshi/Newey_Mcfadden_handbook.pdf
+
+General finite-dimensional random-criterion statement. All probability spaces,
+parameter dimensions, criteria, estimators, parameter sets, neighborhoods,
+Hessian limits and Gaussian covariance matrices are quantified internally.
+Random vectors are represented by a.e. measurable functions. `CP` uses outer
+measure for arbitrary events; uniform convergence is expressed by the outer
+probability of an epsilon violation somewhere in the neighborhood, avoiding
+any finiteness convention for a real supremum. This is equivalent to the
+source's uniform convergence in outer probability (footnote 9, pp. 2121-2122).
+The source's unspecified finite-dimensional matrix norm is represented by the
+coordinate sup norm. `WeakLimit` is the bounded continuous test-function
+characterization, with measurability of the score made explicit.
+`V.PosSemidef` expresses that V is a Gaussian covariance, including singular V.
+The a.e. conditions identify random objects up to null sets; no data model,
+iid assumption, statistical score, identification, or information bound occurs.
+-/
+def NeweyMcFadden1994Theorem31.{u} : Prop :=
+  ∀ (Ω : Type u) [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ],
+  ∀ (d : ℕ) (Θ : Set (Fin d → ℝ)) (θ : Fin d → ℝ)
+    (Q : ℕ → Ω → (Fin d → ℝ) → ℝ) (that : ℕ → Ω → Fin d → ℝ)
+    (N : Set (Fin d → ℝ))
+    (H : (Fin d → ℝ) → Matrix (Fin d) (Fin d) ℝ)
+    (V : Matrix (Fin d) (Fin d) ℝ),
+  (∀ n, AEMeasurable (that n) μ) →
+  (∀ n, ∀ᵐ ω ∂μ, that n ω ∈ Θ ∧
+    ∀ t ∈ Θ, Q n ω t ≤ Q n ω (that n ω)) →
+  AronowAudit.P001.CP μ that θ →
+  θ ∈ interior Θ →
+  IsOpen N → θ ∈ N → N ⊆ Θ →
+  (∀ n, ∀ᵐ ω ∂μ, ContDiffOn ℝ 2 (Q n ω) N) →
+  (∀ n, AEMeasurable (fun ω => criterionGradient (Q n ω) θ) μ) →
+  V.PosSemidef →
+  AronowAudit.P001.WeakLimit μ
+    (fun n ω => Real.sqrt n • criterionGradient (Q n ω) θ)
+    (AronowAudit.P001.normalVectorLaw V) →
+  ContinuousAt H θ →
+  (∀ ε : ℝ, 0 < ε → Tendsto
+    (fun n => (μ {ω | ∃ t ∈ N,
+      ∃ j k, ε ≤ |criterionHessian (Q n ω) t j k - H t j k|}).toReal)
+    atTop (nhds 0)) →
+  IsUnit (H θ).det →
+  AronowAudit.P001.WeakLimit μ
+    (fun n ω => Real.sqrt n • (that n ω - θ))
+    (AronowAudit.P001.normalVectorLaw ((H θ)⁻¹ * V * (H θ)⁻¹))
+
+#print NeweyMcFadden1994Theorem31
+#check @NeweyMcFadden1994Theorem31
+#print axioms NeweyMcFadden1994Theorem31
 
 
 /-- Conditional independence of three sub-sigma-fields, using exactly the
@@ -49,15 +115,27 @@ def Kallenberg2002Proposition66.{u} : Prop :=
   (eventConditionalIndependence μ F G H ↔
     ∀ B : Set Ω, MeasurableSet[H] B → (μ⟦B | F ⊔ G⟧) =ᵐ[μ] (μ⟦B | G⟧))
 
+set_option pp.explicit true in
+#print eventConditionalIndependence
+set_option pp.explicit true in
+#print Kallenberg2002Proposition66
+#check @Kallenberg2002Proposition66
+#print axioms Kallenberg2002Proposition66
+
 end AronowAudit.Literature
 
 namespace AronowAudit.P001
 
+/- Record 0 has no accepted conditional proposal: its held observation-0
+C2 assumption does not supply the simultaneous observation-law event needed
+to transfer smoothness to all observations on an arbitrary probability space.
+The general Newey-McFadden definition above is retained as an independently
+source-checked candidate, not an accepted application to that record. -/
 
-
-/-- Conditional placebo-regression result using the published sigma-field
-characterization, binary treatment with both values in support, and an invertible
-Gram matrix. -/
+/-- The complete repair in map-P001b record 16, approved by both ref1-P001b
+and ref2-P001b (verdict accept, statement_ok true). Only the general published
+sigma-field characterization is added. Binary support and rank already belong
+to that approved repair, rather than being added to discharge the literature input. -/
 def placebo_linear_cef_correction_supporting_conditional_statement.{u} : Prop :=
   AronowAudit.Literature.Kallenberg2002Proposition66.{u} →
   ∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
@@ -78,5 +156,9 @@ def placebo_linear_cef_correction_supporting_conditional_statement.{u} : Prop :=
      (mean μ (fun ω => (D ω-(a+(∑ k,b k*X ω k)+(∑ k,c k*W ω k)))^2)=
        mean μ (fun ω => (D ω-linearPredictor γ (X ω))^2)) ↔
        a=γ 0 ∧ (∀ k,b k=γ k.succ) ∧ (∀ k,c k=0)
+
+#print placebo_linear_cef_correction_supporting_conditional_statement
+#check @placebo_linear_cef_correction_supporting_conditional_statement
+#print axioms placebo_linear_cef_correction_supporting_conditional_statement
 
 end AronowAudit.P001

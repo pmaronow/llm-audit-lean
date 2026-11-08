@@ -1,0 +1,20 @@
+[
+  {
+    "theorem": "SAP.P047.T1",
+    "target_id": "P047-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part2.lean:15-47 states every canonical item (i)-(vi): the correct observed-data inverse-probability scores; conditional and unconditional ATE means; the contribution bound; all positive sample sizes and nonnegative tail thresholds with the exact Hoeffding constant; every nominal level in (0,1); coverage and the deterministic root-n width identities; and the separate treated-mean branch with its weaker one-arm outcome and positivity assumptions and its exact tail and interval constants. CausalLaw uses armwise, not joint, ignorability, calibrates the propensity through the constant test, and sampleLaw supplies genuinely iid observations. Bounds and positivity exclude the relevant integral and division defaults. The concrete baseline S constructed independently in scratch/Check.lean satisfies BoundedOverlap S 1 (1/4) and TreatedMeanModel S (1/4), so neither branch is vacuous. Only the author's usual measurability conditions are made explicit. No missing clause or substantive extra hypothesis was found."
+  },
+  {
+    "theorem": "SAP.P047.T2",
+    "target_id": "P047-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part2.lean:51-69 implements the canonical simultaneous supremum over every positive n and every population with the same B and epsilon, tending to zero as real K tends to infinity. Its pointwise bound uses the required weak tail event and exact exponential constant for every K>=0. Its normal limit is for each fixed law, centered at the actual mean effect, with variance Var(score)<=B^2/epsilon^2 and a Dirac-at-zero Gaussian in the zero-variance case. Each law's estimator uses its own known propensity. The inserted zero is neutral because the probability supremum is bounded in [0,1]; outcome and overlap bounds guarantee finite moments rather than a variance-toReal default. The independent baseline S in scratch/Check.lean has the required bounds and nonzero effect, with a nonconstant score. The audit-history finite_lemmas are not treated as extra clauses of this target. No missing clause or substantive extra hypothesis was found."
+  },
+  {
+    "theorem": "SAP.P047.T3",
+    "target_id": "P047-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/WholeW1.lean:95-116 states the canonical finite minimax lower bound, strict-error limsup obstruction, the exact specified full baseline, the honest-coverage antecedent, the fixed-baseline liminf width lower bound, and failure of uniform width shrinkage. Its UnknownModel is exactly the uniform-covariate, binary-outcome, jointly ignorable, common-overlap hard model, with no smoothness or other nuisance restrictions. Estimators and endpoints use only the first n observed triples and an independent seed shared across laws. Universally quantified containing models explicitly include the hard model, with only existence of the mean effect required on additional laws. Measurable extended-real endpoints implement legitimate possibly empty or unbounded intervals; finite endpoint shifts avoid undefined width subtraction. Supremum, infimum, limsup and liminf operands are bounded probabilities, not junk values. scratch/Check.lean constructs the full baseline independently, proves UnknownModel and mean effect 1/2, verifies integrability throughout the hard model, and supplies an independent seed and measurable full intervals meeting the honesty antecedent. The docstring's exclusion of a separate notion of testability or a sufficiency assertion agrees with clause (c). No missing clause or substantive extra hypothesis was found."
+  }
+]

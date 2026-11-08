@@ -1,0 +1,146 @@
+[
+ {
+  "target_id": "P006-T6",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.Wave1.T6_corrected_TT_minimal_integrability",
+   "AronowAudit.P006.Wave1.T6_independent_estimation_minimal_integrability"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P006.T6_finite_aux_actual_identity",
+    "reason": "Finite specialization or auxiliary reduction not needed: the two credited general measurable-experiment results establish the stated target."
+   },
+   {
+    "lean_name": "AronowAudit.P006.T6_finite_auxiliary_estimation",
+    "reason": "Finite specialization or auxiliary reduction not needed: the two credited general measurable-experiment results establish the stated target."
+   },
+   {
+    "lean_name": "AronowAudit.P006.T6_finite_corrected_alignment",
+    "reason": "Finite specialization or auxiliary reduction not needed: the two credited general measurable-experiment results establish the stated target."
+   },
+   {
+    "lean_name": "AronowAudit.P006.T6_finite_reward_identity",
+    "reason": "Finite specialization or auxiliary reduction not needed: the two credited general measurable-experiment results establish the stated target."
+   }
+  ],
+  "statement_definition": "SAP.P006a.T6Statement"
+ },
+ {
+  "target_id": "P006-T7",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.Wave1.T7_corrected_weighted_alignment_treated_integrability"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P006.T7_finite_positive_rule",
+    "reason": "The general measurable-experiment theorem covers the canonical target; this finite specialization is not needed."
+   },
+   {
+    "lean_name": "AronowAudit.P006.pointwise_policy_gain_le",
+    "reason": "The full weighted-alignment theorem is used directly; its supporting pointwise inequality is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P006a.T7Statement"
+ },
+ {
+  "target_id": "P006-T8",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.Wave1.T8_corrected_information_bound_proof",
+   "SAP.P006a.WH.W2.T8_whole",
+   "SAP.P006a.WH.W2.T8_assembly",
+   "SAP.P006a.WH.W2.T8_L1_proof",
+   "SAP.P006a.WH.W2.T8_L2_proof",
+   "SAP.P006a.WH.W2.T8_L3_proof",
+   "SAP.P006a.WH.W2.T8_L4_proof",
+   "SAP.P006a.WH.W2.T8_L5_proof",
+   "SAP.P006a.WH.W2.normalizedBestW2",
+   "SAP.P006a.WH.W2.regretEqW2",
+   "SAP.P006a.WH.W2.proposition10OfErrorW2",
+   "SAP.P006a.WH.W2.informationBoundW2",
+   "SAP.P006a.WH.W2.factorizationAtW2",
+   "SAP.P006a.WH.W2.qualifiedAtW2",
+   "SAP.P006a.WH.W2.evaluatedIntegrableW2",
+   "SAP.P006a.WH.W2.commonLawErrorAtW2",
+   "AronowAudit.P006.bestValue_eq",
+   "AronowAudit.P006.Wave1.RepairT6T7_actual_treated_score",
+   "AronowAudit.P006.Wave1.T8_information_integral_bias_bound",
+   "AronowAudit.P006.Wave1.RepairT6T7_actual_welfare",
+   "AronowAudit.P006.Wave1.T8_lemma2_signed_residual_integrable",
+   "AronowAudit.P006.Wave1.T7_policy_mul",
+   "SAP.P006a.WH.W2.P.T8_L1.weighted_coin_integrals_eq",
+   "AronowAudit.P006.Wave1.RepairT6T7_mul_integrable",
+   "AronowAudit.P006.Wave1.RepairT6T7_bit_norm",
+   "AronowAudit.P006.Wave1.RepairT6T7_unit_outcome_moments",
+   "AronowAudit.P006.Wave1.RepairT6T7_law_transport",
+   "AronowAudit.P006.Wave1.RepairT6T7_admissible_norm",
+   "SAP.P006a.WH.W2.P.T8_L2.bit_measurable",
+   "SAP.P006a.WH.W2.P.T8_L2.bit_integrable",
+   "SAP.P006a.WH.W2.P.T8_L2.integrable_of_measurable_bounded",
+   "SAP.P006a.WH.W2.P.T8_L2.setIntegral_restrict_eq_bit",
+   "SAP.P006a.WH.W2.P.T8_L2.residual_setIntegral_eq",
+   "SAP.P006a.WH.W2.P.T8_L2.treatedMeasure_setIntegral",
+   "SAP.P006a.WH.W2.P.T8_L2.treatedNull_iff",
+   "SAP.P006a.WH.W2.P.T8_L2.nullOnSet_iff_pos",
+   "AronowAudit.P006.Wave1.RepairT6T7_binary_conditional_moment_extension",
+   "AronowAudit.P006.Wave1.RepairT6T7_auxiliary_condExp",
+   "AronowAudit.P006.Wave1.T7_bit_mul",
+   "SAP.P006a.Bridge.experiment",
+   "SAP.P006a.Bridge.policyDesign"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P006.Wave1.T8_lemma2_proposition10_proof",
+    "reason": "Final status wrong_credit: not usable for this target; no statement or proof is taken from this row."
+   },
+   {
+    "lean_name": "AronowAudit.P006.uniform_error_regret",
+    "reason": "The experiment theorem already exports the regret bound, so the abstract decision helper is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P006a.T8WholeStatement_W2"
+ },
+ {
+  "target_id": "P006-T9",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T9_corrected_numeric_intervals",
+   "AronowAudit.P006.T9_denominator_identity",
+   "AronowAudit.P006.T9_from_printed_table"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P006a.T9Statement"
+ },
+ {
+  "target_id": "P006-T10",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T10_singleton_feasible_counterexample",
+   "AronowAudit.P006.oneATOExpectation_formula",
+   "AronowAudit.P006.oneATO_invariance"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P006.treatedCount_one",
+    "reason": "The exact one-unit expectation is used directly; the count helper is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P006.wATO_one",
+    "reason": "The actual ATO reward occurs in the expectation definition; its exported expectation formula supplies the needed reduction."
+   }
+  ],
+  "statement_definition": "SAP.P006a.T10Statement"
+ }
+]

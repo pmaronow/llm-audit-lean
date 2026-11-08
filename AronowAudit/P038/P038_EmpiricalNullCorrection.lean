@@ -13,10 +13,19 @@ The result below is conditional on the tail counts read from the published
 figure. It does not certify those pixel readings or the unavailable FARS data.
 All decimal values are represented by exact rational expressions in ℝ.
 The reference RR function is unrestricted outside the window being considered.
+Specific Mathlib imports follow the brief's later memory instruction.
 -/
 
 namespace AronowAudit.P038
 
+/-- The RR statistic for a fixed time-of-day category. Methods, PDF p. 1:
+"comparing this to the average of the number of individuals in fatal crashes
+during the same hours one week before and one week after". The arguments are
+the three counts of persons in fatal crashes; the quotient is used when the
+comparison average is positive. No unavailable counts are supplied here. -/
+noncomputable def relativeRisk (onDay oneWeekBefore oneWeekAfter : ℕ)
+    (_hcomparison : 0 < oneWeekBefore + oneWeekAfter) : ℝ :=
+  (onDay : ℝ) / (((oneWeekBefore : ℝ) + (oneWeekAfter : ℝ)) / 2)
 
 /-- Reference Tuesdays: Methods, PDF p. 2, "the 100 Tuesdays before and after"
 and "these 200 RRs"; footnote 2, PDF p. 3, "the surrounding 12, 25 and 50
@@ -48,14 +57,14 @@ noncomputable def tailCount (R : ℝ) (r : ℤ → ℝ) (m : ℕ) : ℕ :=
 
 /-- P_m: Methods, PDF p. 2, "non-parametric two-tailed P values computed as
 the proportion of RRs more extreme". There are 2m reference Tuesdays, and
-the election-day observation is excluded. All windows considered here have m ≥ 1. -/
+the election-day observation is excluded. All audited windows have m ≥ 1. -/
 noncomputable def empiricalP (R : ℝ) (r : ℤ → ℝ) (m : ℕ) : ℝ :=
   (tailCount R r m : ℝ) / (2 * (m : ℝ))
 
 /-- Two-decimal rounding as explicitly specified in target P038-T1:
 v - 1/200 ≤ x < v + 1/200. Footnote 2 (PDF p. 3) prints two-decimal P values
 without stating a tie rule. This half-open convention comes from the target;
-none of the values considered here lies at a rounding boundary. -/
+none of the audited values lies at a rounding boundary. -/
 def roundsTo (x v : ℝ) : Prop := v - 1 / 200 ≤ x ∧ x < v + 1 / 200
 
 /-- The alternative (k_m + 1)/(2m + 1) discussed in P038-N005's derivation,
@@ -71,6 +80,25 @@ theorem mem_referenceWeeks (m : ℕ) (w : ℤ) :
     w ∈ referenceWeeks m ↔ w ≠ 0 ∧ -(m : ℤ) ≤ w ∧ w ≤ (m : ℤ) := by
   simp [referenceWeeks]
 
+/-- The finite integer window is exactly the target's 1 ≤ |w| ≤ m window;
+this makes the Methods/footnote window interpretation explicit. -/
+theorem mem_referenceWeeks_abs (m : ℕ) (w : ℤ) :
+    w ∈ referenceWeeks m ↔ (1 : ℤ) ≤ |w| ∧ |w| ≤ (m : ℤ) := by
+  have h : (1 : ℤ) ≤ |w| ↔ w ≠ 0 := by
+    change (0 : ℤ) + 1 ≤ |w| ↔ w ≠ 0
+    rw [Int.add_one_le_iff, abs_pos]
+  rw [mem_referenceWeeks, h, abs_le]
+
+/-- The paper's m Tuesdays before and m after supply exactly 2m reference
+RRs (Methods, PDF p. 2; footnote 2, PDF p. 3). -/
+theorem referenceWeeks_card (m : ℕ) : (referenceWeeks m).card = 2 * m := by
+  unfold referenceWeeks
+  rw [Finset.card_erase_of_mem (by simp), Int.card_Icc]
+  have h : (m : ℤ) + 1 - (-(m : ℤ)) = ((2 * m + 1 : ℕ) : ℤ) := by
+    push_cast
+    ring
+  rw [h]
+  simp only [Int.toNat_natCast, Nat.add_sub_cancel_right]
 
 /-- Shortening the footnote 2 window only removes reference Tuesdays; it
 never changes the election-day threshold or the reference RR statistic. -/
@@ -87,6 +115,22 @@ theorem mem_tailWeeks (R : ℝ) (r : ℤ → ℝ) (m : ℕ) (w : ℤ) :
   classical
   simp [tailWeeks]
 
+/-- A tail count is between zero and 2m, as required by P038-T1(ii)'s
+integer-count statement. The lower bound is automatic for a natural count. -/
+theorem tailCount_le (R : ℝ) (r : ℤ → ℝ) (m : ℕ) :
+    tailCount R r m ≤ 2 * m := by
+  classical
+  calc
+    tailCount R r m ≤ (referenceWeeks m).card :=
+      Finset.card_le_card (Finset.filter_subset _ _)
+    _ = 2 * m := referenceWeeks_card m
+
+/-- `empiricalP` is literally the proportion of outside reference Tuesdays
+in the finite window, as in Methods and the Fig. 1 caption, PDF p. 2. -/
+theorem empiricalP_eq_proportion (R : ℝ) (r : ℤ → ℝ) (m : ℕ) :
+    empiricalP R r m = (tailWeeks R r m).card / ((referenceWeeks m).card : ℝ) := by
+  rw [referenceWeeks_card]
+  simp [empiricalP, tailCount]
 
 /-- P038-T1(iii): k_m ≤ k_n whenever m ≤ n. This follows by inclusion of
 the reference windows while keeping R and every r_w fixed (footnote 2). -/
@@ -189,8 +233,8 @@ theorem figure_based_correction (R : ℝ) (r : ℤ → ℝ)
     6 / 100 - empiricalP R r 25 = 1 / 50 := by
   norm_num [empiricalP, hcount]
 
-/-- P038-T1(iii): if the 25-week tail set is exactly {-14,7}, as in
-P038-N005's reading of Fig. 1's top panel (PDF p. 2), the 12-week count is one and
+/-- P038-T1(iii): if the 25-week tail set is exactly {-14,7}, as read by
+P038-N005 from Fig. 1's top panel (PDF p. 2), the 12-week count is one and
 the 25-week count is two. The set read from the raster is an explicit
 hypothesis, not an axiom or a conclusion established from FARS counts. -/
 theorem figure_tail_counts (R : ℝ) (r : ℤ → ℝ)
@@ -204,6 +248,42 @@ theorem figure_tail_counts (R : ℝ) (r : ℤ → ℝ)
   · simp [tailCount, h12]
   · norm_num [tailCount, hfigure]
 
+/-- P038-T1(iii): under the figure-tail hypothesis the 12-week value is
+1/24, in [0.035,0.045), hence rounds to footnote 2's 0.04. The 25-week
+value is exactly 0.04 and does not round to the printed 0.06. -/
+theorem figure_window_values (R : ℝ) (r : ℤ → ℝ)
+    (hfigure : tailWeeks R r 25 = {-14, 7}) :
+    empiricalP R r 12 = 1 / 24 ∧
+    (35 / 1000 : ℝ) ≤ empiricalP R r 12 ∧
+    empiricalP R r 12 < 45 / 1000 ∧
+    roundsTo (empiricalP R r 12) (4 / 100) ∧
+    empiricalP R r 25 = 4 / 100 ∧
+    ¬ roundsTo (empiricalP R r 25) (6 / 100) := by
+  obtain ⟨h12, h25⟩ := figure_tail_counts R r hfigure
+  norm_num [empiricalP, h12, h25, roundsTo]
+
+/-- P038-T1(iv), checking the alternative mentioned in P038-N005:
+including election day as an additional extreme observation gives
+3/51=1/17 at 25 weeks, in [0.055,0.065), hence rounding to 0.06. But it
+gives 2/25=0.08 at 12 weeks, which cannot round to 0.04. Therefore neither
+this convention nor the paper's reference-only convention gives both
+printed election-hours values under the same figure-tail hypothesis. -/
+theorem counting_election_day_does_not_reconcile (R : ℝ) (r : ℤ → ℝ)
+    (hfigure : tailWeeks R r 25 = {-14, 7}) :
+    electionDayAdjustedP R r 25 = 3 / 51 ∧
+    electionDayAdjustedP R r 25 = 1 / 17 ∧
+    (55 / 1000 : ℝ) ≤ electionDayAdjustedP R r 25 ∧
+    electionDayAdjustedP R r 25 < 65 / 1000 ∧
+    roundsTo (electionDayAdjustedP R r 25) (6 / 100) ∧
+    electionDayAdjustedP R r 12 = 2 / 25 ∧
+    electionDayAdjustedP R r 12 = 8 / 100 ∧
+    ¬ roundsTo (electionDayAdjustedP R r 12) (4 / 100) ∧
+    ¬ (roundsTo (empiricalP R r 12) (4 / 100) ∧
+        roundsTo (empiricalP R r 25) (6 / 100)) ∧
+    ¬ (roundsTo (electionDayAdjustedP R r 12) (4 / 100) ∧
+        roundsTo (electionDayAdjustedP R r 25) (6 / 100)) := by
+  obtain ⟨h12, h25⟩ := figure_tail_counts R r hfigure
+  norm_num [electionDayAdjustedP, empiricalP, h12, h25, roundsTo]
 
 /-- Complete corrected-statement target P038-T1, parts (i)--(iv), attached
 to footnote 2 (PDF p. 3), Fig. 1 and Methods (PDF p. 2). Part (i) quantifies
@@ -270,3 +350,20 @@ theorem corrected_election_hours_window :
 
 end AronowAudit.P038
 
+#print axioms AronowAudit.P038.mem_referenceWeeks
+#print axioms AronowAudit.P038.mem_referenceWeeks_abs
+#print axioms AronowAudit.P038.referenceWeeks_card
+#print axioms AronowAudit.P038.referenceWeeks_mono
+#print axioms AronowAudit.P038.mem_tailWeeks
+#print axioms AronowAudit.P038.tailCount_le
+#print axioms AronowAudit.P038.empiricalP_eq_proportion
+#print axioms AronowAudit.P038.tailCount_mono
+#print axioms AronowAudit.P038.tailWeeks_restrict
+#print axioms AronowAudit.P038.integer_count_characterization
+#print axioms AronowAudit.P038.natural_count_characterization
+#print axioms AronowAudit.P038.p25_count_characterization
+#print axioms AronowAudit.P038.figure_based_correction
+#print axioms AronowAudit.P038.figure_tail_counts
+#print axioms AronowAudit.P038.figure_window_values
+#print axioms AronowAudit.P038.counting_election_day_does_not_reconcile
+#print axioms AronowAudit.P038.corrected_election_hours_window

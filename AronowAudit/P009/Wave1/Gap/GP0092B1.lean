@@ -3,7 +3,10 @@ import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.Real.Sqrt
 
 /-!
-Finite variance-bias identities and conservative average-degree inflation bounds.
+Draft for records 4--6 of gap-P009-2. No Lean process was run.
+The finite-law lemmas below use only proved declarations from the imported
+completion and audit modules. In particular the held targets are used only
+in the three `type_of%` checks.
 -/
 namespace AronowAudit.P009.Wave1
 
@@ -16,7 +19,7 @@ attribute [local instance] Classical.propDecidable
 set_option maxHeartbeats 1500000
 set_option maxRecDepth 4000
 
-/-! Finite-law algebra, concentration, and exact centering. -/
+/-! Record 4: common finite-law algebra, concentration, and exact centering. -/
 
 private lemma variance_bias_limit_d_symm {n : ℕ} (E : Experiment n) (i j : Fin n) :
     d E i j = d E j i := by
@@ -271,9 +274,8 @@ private lemma variance_bias_limit_vber_variance {n : ℕ} (hn : 0 < n)
     _ ≤ 2 * (k^8*dAvg E/(n:ℝ) + k^8*dAvg E/(n:ℝ)) := by linarith
     _ = _ := by ring
 
-/-- A second-moment bound tending to zero gives changing-space convergence in
-probability, without a mean-zero assumption. Strict and non-strict cutoffs are
-kept separate. -/
+/-- A zero-mean second-moment bound tending to zero gives changing-space
+convergence in probability. Strict and non-strict cutoffs are kept separate. -/
 private lemma variance_bias_limit_probability_of_mse (S : Study)
     (X : (t : ℕ) → Assignment (S.N t) → ℝ) (a : ℕ → ℝ)
     (ha : Tendsto a atTop (nhds 0))
@@ -318,9 +320,8 @@ private lemma variance_bias_limit_scaled_probability (S : Study) (k q s : ℝ)
     _ = (4*k^8/size S t)/dAvg E := by field_simp <;> ring
     _ ≤ 4*k^8/size S t := div_le_self (by positivity) hd
 
-/-- Under a Bernoulli design, the mean of an arbitrary function restricted to
-one treatment coordinate equals the coordinate's marginal probability times
-the mean with that coordinate fixed. -/
+/-- Reuse the proved one-coordinate Bernoulli identity with an arbitrary
+outcome function by putting that function at every unit of an experiment. -/
 private lemma variance_bias_limit_one_numerator {n : ℕ} (E : Experiment n)
     (hb : Bernoulli E) (i : Fin n) (a : Bool) (f : Assignment n → ℝ) :
     mean E.design (fun z => if z i = a then f z else 0) =
@@ -479,8 +480,8 @@ private lemma variance_bias_limit_pair_partition {n : ℕ} (E : Experiment n)
   funext z
   cases z i <;> cases z j <;> simp
 
-/-- Off-diagonal covariance decomposes into an interference product, two
-cross terms, and the weighted conditional covariances over the four treatment cells. -/
+/-- Keep both cross terms at the pair level; their equality is used only
+AFTER summing over ordered pairs. -/
 private lemma variance_bias_limit_offdiag {n : ℕ} (E : Experiment n)
     (hb : Bernoulli E) (i j : Fin n) (hij : i ≠ j) :
     cov E.design (variance_bias_limit_U E i) (variance_bias_limit_U E j) =
@@ -706,7 +707,10 @@ theorem variance_bias_limit_proof (S : Study) (k q s : ℝ)
     variance_bias_limit_noI_B2 _ (hBER t) (hNo t)
   simpa only [hd, hb1, hb2, div_one, sub_zero] using hfirst
 
-/-! Average-degree inflation bounds without a Regular assumption. -/
+example : type_of% @AronowAudit.P009.variance_bias_limit := variance_bias_limit_proof
+
+/-! Record 5. The finite helpers are also used by record 6 below; they do not
+require Regular and do not invoke the held finite inflation theorem. -/
 
 private lemma average_inflation_conservative_graph_variance {n : ℕ} (hn : 0 < n)
     (E : Experiment n) (hb : Bernoulli E) :
@@ -860,7 +864,11 @@ theorem average_inflation_conservative_proof (S : Study) (k q s : ℝ)
   refine ⟨fun _ => 0, ?_, tendsto_const_nhds⟩
   exact average_inflation_conservative_tail_bridge S X Y r hX hr hXY
 
-/-! Two unconditional finite average-degree inflation inequalities. -/
+example : type_of% @AronowAudit.P009.average_inflation_conservative :=
+  average_inflation_conservative_proof
+
+/-! Record 6: the two unconditional finite inequalities were established as
+shared helpers before record 5, so this assembly adds no hypotheses. -/
 
 theorem average_inflation_finite_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
     (hBER : Bernoulli E) :
@@ -869,6 +877,8 @@ theorem average_inflation_finite_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
       aVariance E+dRMS E*sdSigmaSq E/dAvg E := by
   exact ⟨average_inflation_conservative_graph_variance hn E hBER,
     average_inflation_conservative_finite_bound hn E hBER⟩
+
+example : type_of% @AronowAudit.P009.average_inflation_finite := average_inflation_finite_proof
 
 end
 end AronowAudit.P009.Wave1

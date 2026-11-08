@@ -1,0 +1,154 @@
+[
+  {
+    "target_id": "P004-T16",
+    "theorem": "SAP.P004b.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete counterexamples. Rectangle witness has positive-area regions at d=0 and fair Bernoulli assignments; the crowding family is asserted only for n>0. No external hypotheses can make it vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T17",
+    "theorem": "SAP.P004b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For DiameterCutoff, finitely many singleton grid nodes, counting measure, d=dbar=D=0 and fixed bounded outcomes satisfy every hypothesis. For PolygonCountBound, a single closed unit square, a=1, D=2 and r=0 give nonempty interior, positive area and all diameter/disjointness premises. The counterexample clauses are unconditional.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T18",
+    "theorem": "SAP.P004b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Analytic instance in verification.md: singleton nodes (i,0), finite counting measure, bands(d)=[0,d], analyzed d=0, fixed outcomes (-1)^i, p=1/2, uniform kernel and bandwidth 1+N^(1/12). Averages have mass one; metric distances, uniform quadratic spacing and zero-error NED hold. Node effects are zero, but N Var(linearHajek)>=3 for N>=2. SpatialLocalConditions holds with cutoff zero; well-definedness holds at all sample sizes, stronger than required.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T19",
+    "theorem": "SAP.P004b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional explicit independent array: one fair Rademacher and N-1 constant zeros. For every N>0 its sum variance is one, not zero. Its CDF at -1/2 is 1/2, differing from the standard normal CDF.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T20",
+    "theorem": "SAP.P004b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Omega_N={-1,1}^N with uniform product probability, coordinate Rademachers V_Ni and B_Ni={i}. They are measurable, centered, uniformly bounded and fully independent, with sum variance N. M=1, D=1, v=1 satisfy all hypotheses, including at N=0 via the empty product singleton.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T21",
+    "theorem": "SAP.P004b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: N=2, p_i=1/2, fixed R=(1,-1), B_i={i}, g=0, and observed z=(true,false). Both arms have count one; excluded pairs share no source; AME=0, Var(linearHajek)=2 and det(X'X)=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T22",
+    "theorem": "SAP.P004b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: N=2, p_i=1/2, fixed R=(1,-1), B_i={i}, g=0, and observed z=(true,false). Both arms have count one; excluded pairs share no source; AME=0, Var(linearHajek)=2 and det(X'X)=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T23",
+    "theorem": "SAP.P004b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: N=2, p_i=1/2, fixed R=(1,-1), B_i={i}, g=0, and observed z=(true,false). Both arms have count one; excluded pairs share no source; AME=0, Var(linearHajek)=2 and det(X'X)=1. Set phat_i=1/2; arbitrary fits and neighborhoods are permitted in this pointwise identity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T24",
+    "theorem": "SAP.P004b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: N=2, p_i=1/2, fixed R=(1,-1), B_i={i}, g=0, and observed z=(true,false). Both arms have count one; excluded pairs share no source; AME=0, Var(linearHajek)=2 and det(X'X)=1. e and Q are arbitrary, so one may take e=(1,-1) and Q=identity without introducing any additional hypothesis.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T25",
+    "theorem": "SAP.P004b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: N=2, p_i=1/2, fixed R=(1,-1), B_i={i}, g=0, and observed z=(true,false). Both arms have count one; excluded pairs share no source; AME=0, Var(linearHajek)=2 and det(X'X)=1. Choose mu1=mu0=0. All expectations are finite sums and N and propensity denominators are nonzero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T26",
+    "theorem": "SAP.P004b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Analytic instance in verification.md: singleton nodes (i,0), finite counting measure, bands(d)=[0,d], analyzed d=0, fixed outcomes (-1)^i, p=1/2, uniform kernel and bandwidth 1+N^(1/12). Averages have mass one; metric distances, uniform quadratic spacing and zero-error NED hold. Node effects are zero, but N Var(linearHajek)>=3 for N>=2. Choose phi=0: its exterior-tail maximum is zero for every positive N and every radius, while the variance lower bound in the example shows the outcomes need not be trivial.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T27",
+    "theorem": "SAP.P004b.T27",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "The restriction in SAP/P004b/Challenge/Part1.lean:75 and record.json does not disclose omission of W1's NED assertion at every other distance d. The canonical statement explicitly includes that all-distance property, whereas SAP/P004b/Defs/Part7.lean:16 asserts only NEDConditions sparsePopulation (1/2) 1. Describing the retained content as the witness's NED properties without this qualification is incomplete. The retained fixed-distance assertions remain true."
+    ],
+    "fix": "Restriction: States the sparse witness's bounded-outcome and spacing properties, NED only at the analyzed distance d=1, kernel and bandwidth properties, well-defined averages, homophily, degenerating scaled variance, and the following valid-interval counterexample facts: the balanced-count event has probability tending to one; on it both arms and the variance are positive and the interval with critical values plus/minus two covers exactly when the first node is treated; that treatment has probability one half; and the nominal coverage is at least three quarters. Omits W1's additional NED assertion for every other distance d; the unconditional coverage-limit assertion; the exact variance formula W2, arm-count distribution and exceptional-event probability; the estimator, variance and statistic formulas W3; the conditional statistic limits and 95-percent quantile comparison W4; and the rates, bias and expectation formulas W5.",
+    "nonvacuity": "Unconditional explicit sparse population. For N>=10 on SparseGood, both arm counts are at least 2N/5 and the arm containing node zero has q>=4 observations. Its HAC variance is y^2(q-1)/q^3>0 for y in {1,1/4}. The good-event probability tends to one. Thus the inclusion equivalence concerns defined intervals and witnesses actual undercoverage, not totalized 0/0.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P004-T28",
+    "theorem": "SAP.P004b.T28",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Analytic instance in verification.md: singleton nodes (i,0), finite counting measure, bands(d)=[0,d], analyzed d=0, fixed outcomes (-1)^i, p=1/2, uniform kernel and bandwidth 1+N^(1/12). Averages have mass one; metric distances, uniform quadratic spacing and zero-error NED hold. Node effects are zero, but N Var(linearHajek)>=3 for N>=2. This includes the conditional coverage premise Nondegenerate with v=3. For 0<alpha<1 the standard normal inverse-CDF sets at alpha/2 and 1-alpha/2 are nonempty and bounded below.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T29",
+    "theorem": "SAP.P004b.T29",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Analytic instance in verification.md: singleton nodes (i,0), finite counting measure, bands(d)=[0,d], analyzed d=0, fixed outcomes (-1)^i, p=1/2, uniform kernel and bandwidth 1+N^(1/12). Averages have mass one; metric distances, uniform quadratic spacing and zero-error NED hold. Node effects are zero, but N Var(linearHajek)>=3 for N>=2. For FarCovarianceBound use psi=0 and G=1; b_N>=1 at every N. The finite HAC/mean clauses also have the compiled N=2, p=1/2, split-arm instance. The product identity admits any nonzero real N and p with p!=1, for example N=2 and p=1/2.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T30",
+    "theorem": "SAP.P004b.T30",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: N=2 and n1=1 give positive conditioning and remainder-support cardinalities for both a=true and a=false at i=0 (each cardinality is one). The Bernoulli/class clauses admit the compiled finite interior-probability instance. No division by zero or truncated-subtraction branch is used.",
+    "confidence": 0.99
+  }
+]

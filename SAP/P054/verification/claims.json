@@ -1,0 +1,53 @@
+{
+ "work_id": "P054",
+ "unit_id": "P054",
+ "citation": {
+  "arxiv_id": "",
+  "authors": [
+   "P. M. Aronow",
+   "Benjamin T. Miller"
+  ],
+  "doi": "10.1016/S0140-6736(16)00042-8",
+  "title": "Policy Misperceptions and Support for Gun Control Legislation",
+  "type": "Letter",
+  "venue": "The Lancet",
+  "year": "2016"
+ },
+ "standing_assumptions": "The letter prints no variance formula. These are audit reconstruction identities for accepted P054-N001, conditional on fixed binary responses, positive survey weights and the stated independent-respondent linearisation. They do not establish historical procedure, full survey-design validity or national 95% coverage. The original data weights, nine interval reconstructions and historical-procedure report are empirical/provenance inputs rather than Lean conclusions. The author reports intercept-only classical weighted least squares in R; independent identification of its historical use remains absent.",
+ "targets": [
+  {
+   "target_id": "P054-T1",
+   "canonical_claim": {
+    "target_id": "P054-T1",
+    "kind": "corrected_statement",
+    "name_in_paper": "Audit reconstruction: weighted-ratio residual and linearisation identities",
+    "location": "Letter p.223; audit P054-N001, final Evidence formulas",
+    "statement": "For N≥2 observations, d_i∈{0,1}, y_i∈{0,1}, w_i>0, n=sum d_i>0, W=sum d_i w_i and pHat=sum d_i w_i y_i/W, let z_i=d_i w_i(y_i−pHat). Then sum z_i=0 and [sum z_i^2/(N(N−1))]/(W/N)^2 = [N/(N−1)] sum d_i w_i^2(y_i−pHat)^2/W^2. With equal weights, sum d_i w_i^2(y_i−pHat)^2/W^2=pHat(1−pHat)/n; hence V=N/(N−1) times V0. No general inequality V≥V0 is asserted for unequal weights.",
+    "definitions_needed": "d: group membership/valid response; y: binary answer; w: fixed positive weight; N: full respondent count; n: group count; W: group weight; pHat: weighted ratio.",
+    "finite_lemmas": "Finite weighted binary-response algebra; denominator nonzero follows from n>0 and positive weights.",
+    "note": "The letter prints no variance formula. These are audit reconstruction identities for accepted P054-N001, conditional on fixed binary responses, positive survey weights and the stated independent-respondent linearisation. They do not establish historical procedure, full survey-design validity or national 95% coverage.",
+    "asymptotic": false,
+    "related_finding": "P054-N001"
+   },
+   "claim_correction_state": "none",
+   "no_lean": false
+  },
+  {
+   "target_id": "P054-T2",
+   "canonical_claim": {
+    "target_id": "P054-T2",
+    "kind": "result_touched_by_finding",
+    "name_in_paper": "Audit reconstruction: classical intercept-only weighted least-squares variance",
+    "location": "Letter p.223; audit P054-N001, final Evidence classical-WLS formula",
+    "statement": "Under the finite binary/positive-weight setting of T1 and n≥2, the weighted squared residual sum equals W*pHat*(1−pHat). For an intercept-only weighted least-squares fit with classical variance RSS_w/((n−1)W), the variance is pHat*(1−pHat)/(n−1), equal to n/(n−1) times V0. This algebra demonstrates compatibility of the author-reported method with the matching calculation, not independently established historical use or validity of inverse-variance assumptions.",
+    "definitions_needed": "As in T1; RSS_w=sum d_i w_i(y_i−pHat)^2; V0=pHat(1−pHat)/n.",
+    "finite_lemmas": "Binary-response identity and nonzero n−1.",
+    "note": "The letter prints no variance formula. These are audit reconstruction identities for accepted P054-N001, conditional on fixed binary responses, positive survey weights and the stated independent-respondent linearisation. They do not establish historical procedure, full survey-design validity or national 95% coverage.",
+    "asymptotic": false,
+    "related_finding": "P054-N001"
+   },
+   "claim_correction_state": "none",
+   "no_lean": false
+  }
+ ]
+}

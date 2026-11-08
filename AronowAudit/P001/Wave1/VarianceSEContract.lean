@@ -24,5 +24,7 @@ theorem variance_estimator_consistency_contract
     (VarianceConsistent μ Vhat (var ν id) ↔ SEConsistent μ Vhat (var ν id)) :=
   VarianceSEContract.n1_proof μ θhat Vhat θ hθmeas hVmeas hVnonneg ν hν2 hlimit
 
+example : VarianceSEContract.Target := variance_estimator_consistency_contract
+
 end
 end AronowAudit.P001.Wave1

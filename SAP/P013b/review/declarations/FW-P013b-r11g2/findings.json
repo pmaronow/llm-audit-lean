@@ -1,0 +1,64 @@
+[
+  {
+    "target_id": "P013-T20",
+    "theorem": "SAP.P013b.T20",
+    "fingerprint": "1f9a82794ece849a640f0227d2f7929d6e433cccd229cb1515bff163bbc56dd8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:12-44, importing only SAP.P013b.Defs: the exact fair two-point design measure is a probability measure with both singleton masses 1/2. On its countable product, coordinate draws are measurable, mutually independent and each has exactly that law. Choose N=K=2 and calibrationPopulation.exposure for a nonconstant exposure map. All T20 hypotheses are simultaneously satisfied.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, round 10, issue 1: provenance-based restricted label despite complete canonical coverage.",
+        "status": "fixed",
+        "reason": "record.json:4 now declares whole and record.json:6 sets restriction to null. SAP/P013b/Challenge/Part2.lean:6-16 accurately describes the whole independent exact-law theorem and usual measure-theoretic conditions without a restriction label. record.json:50 keeps proof credit separate from claim coverage. The current Part11 statement retains both limits on one probability-one event and same-exposure convergence for K=1. The architect report's latest resolution agrees with the current files; its earlier contrary provenance rationale is historical."
+      }
+    ]
+  },
+  {
+    "target_id": "P013-T22",
+    "theorem": "SAP.P013b.T22",
+    "fingerprint": "eb98fbd18571040458fd70db7768bf7bdbc588a942412a255bbfbbb6e2fc66bf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:78-86: N=K=2, the fair one-treated calibrationPopulation has positive selected probabilities (indeed both are 1/2), distinct exposures 1 and 0, exactly m=1 selected unit on every assignment, and HT count 2. Fixed prediction/change vectors may all be zero and c=1, so all generic hypotheses and the calibration hypotheses are satisfiable. This also gives a genuine case where predictions remain numerically fixed and total equivariance holds.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T21",
+    "theorem": "SAP.P013b.T21",
+    "fingerprint": "f3150e3a28abcb87a25085a313c90fe2e998d7a6107f084edca7b80bdf903ac4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:46-76: the specified three-unit population has strict positivity, predictions equal to its fixed potentials, zero covariance with each own-treatment indicator, and exposure counts 1 and 2. At assignment 0 the total is 10 before the shift and 14 after it, rather than 13, and the contrast changes from 0 to 2/9. The full tables in Defs/Part6.lean were checked against the canonical clauses. There are no external hypotheses or unspecified witnesses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T24",
+    "theorem": "SAP.P013b.T24",
+    "fingerprint": "94028f757c84df9deae68f5dbeeb34c80eb0ffb845fe600934500980c1799329",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:118-147 and scratch/ScalingNonvacuity.lean:8-40. The two-unit world 0 with twoRecording has positive selected probabilities, nonnegative potentials, and zero unrecorded potentials, while one recorded potential is 1. The three-unit deletion instance satisfies subset, positive-cardinality, positive-weight and nonzero-retention hypotheses; all four exposure denominators are positive, and the full/retained Hajek contrasts are -1/2 and 0. Finite subsets of Fin 2050 with cardinalities 2050, 1708 and 1899, weights 2 and a retained nonzero score satisfy all numeric scaling premises. These are mathematical instances, not verification of the reconstruction data.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T23",
+    "theorem": "SAP.P013b.T23",
+    "fingerprint": "803f5cc3be6eec8a15f78a94eda2e3ce9a8889e25ff1fdfb95d97e3d28788814",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:88-116: all three worlds have binary potentials, exposure probabilities strictly between zero and one, and consistent observation of the recorded population. Worlds indexed 1 and 2 have identical complete record functions but wearing effects 1 and 0; the recorded HT estimator has expectation 1/2. These satisfy the canonical zero-scoring reading and establish a genuine failure of wearing identification, without invoking nonmeasurable functions or undefined expectations. The remaining explicit tables and respondent comparison match Defs/Part8.lean:16-71.",
+    "confidence": 0.99
+  }
+]

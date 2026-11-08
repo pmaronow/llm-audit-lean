@@ -1,0 +1,22 @@
+[
+  {
+    "target_id": "P054-T1",
+    "theorem": "SAP.P054.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled with /home/ubuntu/sap/tools/sap-lean scratch/Check.lean, importing only SAP.P054.Defs. unequal_hypotheses and unequal_values give N=3, d=(1,1,0), y=(0,1,1), w=(1,2,3), n=2, W=3, pHat=2/3, sum z=0, S=8/81, L=4/27, and V0=1/9. equal_hypotheses and equal_values use the same d,y with all weights 2 and c=2, giving W=4, pHat=1/2, S=V0=1/8, and L=3/16. Thus both the main hypotheses and the equal-weight branch are jointly satisfiable with positive variances. weight_positive also proves W>0 generically from binary d, positive weights, and n>0. The record's whole decision is correct and requires no revision of the saved step-2 verdict.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P054-T2",
+    "theorem": "SAP.P054.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled with /home/ubuntu/sap/tools/sap-lean scratch/Check.lean, importing only SAP.P054.Defs. unequal_hypotheses and unequal_values give N=3, d=(1,1,0), y=(0,1,1), w=(1,2,3), n=2, W=3, pHat=2/3, RSS_w=2/3, classicalWlsVariance=2/9, and V0=1/9. Every T2 hypothesis holds, including n>=2; all variance denominators and the resulting variance are positive. The equal-weight instance additionally gives classicalWlsVariance=1/4 and V0=1/8. weight_positive proves the general W>0 consequence, and n>=2 implies n-1>0. The record's whole decision is correct and requires no revision of the saved step-2 verdict.",
+    "confidence": "high"
+  }
+]

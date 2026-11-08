@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P040.T1",
+    "target_id": "P040-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem retains A1, both method-free A2 bounds, the printed-interval exclusions, all A3 Wald arithmetic, both exact coverage/failure calculations, and A4 robustness for every z in [1.9599,1.9601]. Instantiating z=49/25 gives A3. It omits precisely A4's assertion that this range contains the actual standard-normal .975 quantile (including the corresponding exact-quantile identification in definitions_needed). Defs/Part1.lean:77-102 contains no normal CDF or quantile. It is a calibration witness under the explicitly added binomial model; it does not refute the printed nominal approximate-confidence interpretation. Independent exact checks confirm all retained arithmetic; the multiplier and exclusion antecedents have explicit witnesses."
+  },
+  {
+    "theorem": "SAP.P040.T2",
+    "target_id": "P040-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The definitions use exactly the inclusive binomial tails and the two test-inversion sets of the canonical claim. The theorem covers (i)-(vi): estimate, tail formulas and strict monotonicity/derivative, actual unique endpoint roots and whole-set equalities, numerical bounds and two/six-place rounding, inclusion of .80 and the one-sided tail value, uniform coverage >=.95, and the method-free obstruction. The binomial law is represented directly by its finite masses, rather than assuming a sampling conclusion. Extending polynomial identities to every real p is harmless algebra; coverage still quantifies only over [0,1]. No independence or population-generalization conclusion is inferred beyond the declared model. Positivity, exact roots, and proper boundary cases prevent zero-division, truncation, or empty-space artifacts."
+  },
+  {
+    "theorem": "SAP.P040.T3",
+    "target_id": "P040-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical statement explicitly retains the formalizable arithmetic P1 and P2 and explicitly does not attribute uniform exact finite-sample coverage to the paper. T3Statement is precisely proportion rounding plus the reconstructed Wald arithmetic (with additional true arithmetic consequences). Empirical counts are fixed inputs from the standing assumptions. Neither the historical auxiliary exact-coverage proposition nor its negation is a required T3 clause; the statement and definitions_needed describe the interpretation as nominal/approximate. Thus omission of an exact-coverage assertion is no restriction of this canonical claim."
+  },
+  {
+    "theorem": "SAP.P040.T4",
+    "target_id": "P040-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "The 30 supplied rows and the 30x9 adjusted design reproduce S6/S7 exactly. The theorem establishes actual OLS treatment coefficients and HC1 variances (not merely assumed q witnesses), their positivity, both exact q values and all printed/six-place rounding, then B3/B4 normal-reference enclosures and the two rounding mismatches. The full design rank and residual df are asserted rather than assumed; the extra Student-reference rounding agrees with the stated consequence. Exact rational recomputation gives Gram determinant 323086400 and the claimed coefficients, variances, and statistics. Both reference integrands are continuous at the used positive df and q, so their integrals have the intended meaning."
+  },
+  {
+    "theorem": "SAP.P040.T5",
+    "target_id": "P040-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem covers all canonical parts (i)-(iv): N=30, ranks/injectivity and the redundant centered weekday column, residual df 28/21, the correct Student-21 density, both printed Student-reference values and enclosures, identification of all eight actual fitted statistics with the canonical rational table, all eight p>.10 under each reference, the unadjusted-bulk minimum with both tight enclosures, and the alternative normal rounding .58/.28. Exact rank/HC1 computations and alternating-series enclosures independently confirm these finite claims. Natural residual-df subtraction is safe because ranks are 2 and 9; real HC1 subtraction has positive denominators 28 and 21. No exact Student null distribution or exact test-size guarantee is asserted."
+  }
+]

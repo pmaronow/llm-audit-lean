@@ -1,0 +1,155 @@
+import SAP.P037c.Challenge
+
+open scoped BigOperators
+open SAP.P037c
+
+set_option maxHeartbeats 1500000
+
+-- T35: the observed seed assignment is in the stated design and has a real
+-- direct effect while holding all other assignments fixed.
+example : pairedObserved ∈ pairedSupport := by decide
+example : directOnly pairedObserved (0,false) = 1 ∧
+    directOnly pairedObserved (0,true) = 0 := by
+  norm_num [directOnly, pairedObserved]
+example : (1/126 : ℝ) < 1/100 ∧ (8/63 : ℝ) > 1/100 := by norm_num
+
+-- T36: all hypotheses of both general conjuncts hold simultaneously.
+-- Two distinct assignments, positive nomination denominators, a normalized
+-- law, and nonconstant outcomes that are fixed across assignments.
+example :
+    ∃ (E : Finset (Fin 2)) (A : Fin 2 → Fin 2 → ℝ)
+      (M : Fin 2 → ℝ) (Z : Fin 2 → Fin 2 → ℝ)
+      (p : Fin 2 → ℝ) (Y : Fin 2 → Fin 2 → ℝ)
+      (z0 : Fin 2) (α : ℝ),
+      (∀ i j, 0 ≤ A i j) ∧
+      (∀ i, M i = 0 ∨ M i = 1) ∧
+      (∀ z i, Z z i = 0 ∨ Z z i = 1) ∧
+      (∀ z i, i ∉ E → Z z i = 0) ∧
+      (∀ z, 0 < ∑ i ∈ E, ∑ j, A i j * M j * Z z i) ∧
+      (∀ z, 0 < ∑ i ∈ E, ∑ j, A i j * M j * (1-Z z i)) ∧
+      (∀ z, 0 < p z) ∧ (∑ z, p z = 1) ∧
+      (∀ z z' i, Y z i = Y z' i) ∧ (0 ≤ α ∧ α ≤ 1) ∧
+      Z 0 ≠ Z 1 ∧ Y z0 0 ≠ Y z0 1 := by
+  classical
+  refine ⟨Finset.univ, (fun i j => if i = j then 0 else 1),
+    (fun _ => 1), (fun z i => if i = z then 1 else 0),
+    (fun _ => 1/2), (fun _ i => (i.val : ℝ)), 0, 1/2, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i j; dsimp; split_ifs <;> norm_num
+  · intro i; exact Or.inr rfl
+  · intro z i; dsimp; split_ifs <;> norm_num
+  · simp
+  · intro z; fin_cases z <;> norm_num [Fin.sum_univ_two]
+  · intro z; fin_cases z <;> norm_num [Fin.sum_univ_two]
+  · intro z; norm_num
+  · norm_num [Fin.sum_univ_two]
+  · intros; rfl
+  · norm_num
+  · intro h; have hh := congrFun h 0; norm_num at hh
+  · norm_num
+
+-- T27: an actual supported E2 realization gives all twelve observed categories.
+def witness27Seeds : Fin 6 → Bool × Bool :=
+  ![(false,false),(false,false),(false,false),(false,false),(false,true),(true,false)]
+
+example : ({3,4,5} : Finset (Fin 6)) ∈ Finset.univ.powersetCard 3 := by decide
+example (i : Fin 4 × Fin 3) :
+    regression12HierarchicalExposure {3,4,5} witness27Seeds i = i.1 := by
+  rcases i with ⟨k,j⟩
+  fin_cases k <;> fin_cases j <;>
+    norm_num [regression12HierarchicalExposure, regression12School, witness27Seeds]
+example : (0 : ℝ) < (1/4 : ℝ)^12 ∧ (0 : ℝ) < 1/(20*4^6) := by norm_num
+example : (∀ k : Fin 4, (0:ℝ) < (![4,4,4,4] : Fin 4 → ℝ) k) ∧
+    (∀ k : Fin 4, (0:ℝ) < (![2,8,8,4] : Fin 4 → ℝ) k) := by
+  constructor <;> intro k <;> fin_cases k <;> norm_num
+
+-- T28: eight units, two distinct x values in each category. Every general
+-- WLS hypothesis, including both full-rank conditions, is met.
+abbrev I28 := Fin 4 × Fin 2
+def x28 (i : I28) (_ : Fin 1) : ℝ := i.2.val
+
+theorem pooled28_injective :
+    Function.Injective (Matrix.mulVec (pooledExposureRow Prod.fst x28)) := by
+  intro v v' h
+  have h0 := congrFun h (0,0)
+  have h1 := congrFun h (1,0)
+  have h2 := congrFun h (2,0)
+  have h3 := congrFun h (3,0)
+  have hx := congrFun h (0,1)
+  norm_num [pooledExposureRow, x28, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+    at h0 h1 h2 h3 hx
+  funext j
+  fin_cases j
+  · exact h0
+  · exact h1
+  · exact h2
+  · exact h3
+  · change v 4 = v' 4
+    linarith
+
+theorem separate28_injective (k : Fin 4) :
+    Function.Injective (fun v => fun i : {i : I28 // i.1 = k} =>
+      (Matrix.mulVec (separateExposureRow x28)) v i.val) := by
+  intro v v' h
+  have h0 := congrFun h ⟨(k,0), rfl⟩
+  have h1 := congrFun h ⟨(k,1), rfl⟩
+  norm_num [separateExposureRow, x28, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+    at h0 h1
+  funext j
+  fin_cases j
+  · exact h0
+  · change v 1 = v' 1
+    linarith
+
+theorem zero_minimum {I K : Type*} [Fintype I] [Fintype K]
+    (w : I → ℝ) (hw : ∀ i, 0 ≤ w i) (X : Matrix I K ℝ) :
+    regressionMinimum w X (fun _ => 0) (fun _ => 0) := by
+  intro c
+  have hz : X.mulVec (fun _ => (0:ℝ)) = 0 := Matrix.mulVec_zero X
+  rw [hz]
+  simp only [Pi.zero_apply, sub_self, zero_pow (by decide : 2 ≠ 0),
+    mul_zero, Finset.sum_const_zero]
+  exact Finset.sum_nonneg (fun i _ => mul_nonneg (hw i) (sq_nonneg _))
+
+example : 0 < Fintype.card I28 ∧
+    (∀ i : I28, (0:ℝ) < 1) ∧
+    Function.Injective (Matrix.mulVec (pooledExposureRow Prod.fst x28)) ∧
+    (∀ k, Function.Injective (fun v => fun i : {i : I28 // i.1 = k} =>
+      (Matrix.mulVec (separateExposureRow x28)) v i.val)) ∧
+    regressionMinimum (fun _ : I28 => 1) (pooledExposureRow Prod.fst x28)
+      (fun _ => 0) (fun _ => 0) ∧
+    (∀ k : Fin 4, regressionMinimum (fun i : I28 => if i.1 = k then 1 else 0)
+      (separateExposureRow x28) (fun _ => 0) (fun _ => 0)) := by
+  refine ⟨by decide, by intros; norm_num, pooled28_injective,
+    separate28_injective, zero_minimum _ (by intros; norm_num) _, ?_⟩
+  intro k
+  apply zero_minimum
+  intro i; split_ifs <;> norm_num
+
+example (k : Fin 4) :
+    let W := ∑ i : I28, if i.1 = k then (1:ℝ) else 0
+    let xb := (∑ i : I28, if i.1 = k then (i.2.val:ℝ) else 0)/W
+    (0 < W) ∧ (0 < ∑ i : I28, if i.1 = k then ((i.2.val:ℝ)-xb)^2 else 0) := by
+  simp only [Fintype.sum_prod_type, Fin.sum_univ_four, Fin.sum_univ_two]
+  fin_cases k <;> norm_num
+
+-- T33: the observed exposure vector is supported with positive probability;
+-- every marginal used for a weight is strictly positive.
+example (i : Fin 4 × Fin 2) :
+    controlExposure (0,fun _ => true) i = controlObserved i := by
+  rcases i with ⟨j,e⟩
+  fin_cases j <;> fin_cases e <;>
+    norm_num [controlExposure, controlObserved, controlPair]
+example : controlMass (0,fun _ => true) = 1/1200 := by
+  norm_num [controlMass, controlPair, pairReferentRate, Fin.prod_univ_succ]
+example : (0:ℝ) < 1/1200 := by norm_num
+example (i : Fin 4 × Fin 2) (k : Fin 4) : 0 < controlPi i k := by
+  rcases i with ⟨j,e⟩
+  fin_cases j <;> fin_cases e <;> fin_cases k <;>
+    norm_num [controlPi, controlPiI, pairReferentRate]
+
+-- Semantic checks on the only analytic junk convention that occurs.
+example : Real.sqrt controlFullVarianceCertificate > 0 ∧
+    Real.sqrt controlCollapsedVarianceCertificate > 0 := by
+  constructor <;> apply Real.sqrt_pos.2 <;>
+    norm_num [controlFullVarianceCertificate, controlCollapsedVarianceCertificate]

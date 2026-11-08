@@ -1,0 +1,22 @@
+import SAP.P039.Defs.WholeW1
+
+set_option autoImplicit false
+open SAP.P039 MeasureTheory ProbabilityTheory
+open scoped BigOperators ENNReal
+
+-- The pushforward defining the Student reference is a measurable statistic.
+example (ν : ℕ) : Measurable
+    (fun z : Fin (ν+1) → ℝ =>
+      z 0 / Real.sqrt ((∑ i ∈ Finset.univ.erase (0 : Fin (ν+1)), (z i)^2) / ν)) := by
+  fun_prop
+
+example (ν : ℕ) : IsProbabilityMeasure (studentLaw ν) := by
+  unfold studentLaw
+  infer_instance
+
+-- ENNReal.toReal is never evaluated at infinity in the tail definition.
+example (ν : ℕ) (t : ℝ) : (studentLaw ν) {s : ℝ | t ≤ |s|} ≠ ∞ := by
+  haveI : IsProbabilityMeasure (studentLaw ν) := by
+    unfold studentLaw
+    infer_instance
+  exact measure_ne_top _ _

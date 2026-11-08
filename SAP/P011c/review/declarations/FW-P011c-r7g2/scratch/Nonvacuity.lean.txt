@@ -1,0 +1,307 @@
+import SAP.P011c.Defs.WholeW1
+import SAP.P011c.Defs.WholeW2
+
+open MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology Classical ENNReal Matrix
+namespace Audit
+noncomputable section
+set_option maxHeartbeats 800000
+
+def sign (b : Bool) : ℝ := if b then 1 else -1
+def signLaw : Measure ℝ :=
+  ((PMF.uniformOfFintype Bool).map sign).toMeasure
+
+instance : IsProbabilityMeasure signLaw := by unfold signLaw; infer_instance
+
+lemma signLaw_eq : signLaw = (PMF.uniformOfFintype Bool).toMeasure.map sign := by
+  exact (PMF.toMeasure_map sign _ (by fun_prop)).symm
+
+lemma integral_signLaw (f : ℝ → ℝ) (hf : Measurable f) :
+    ∫ x, f x ∂signLaw = (f 1 + f (-1)) / 2 := by
+  rw [signLaw_eq, integral_map (by fun_prop) hf.aestronglyMeasurable]
+  simp [PMF.integral_eq_sum, PMF.uniformOfFintype_apply, sign]
+  ring
+
+lemma signLaw_bound : ∀ᵐ x ∂signLaw, |x| ≤ 1 := by
+  rw [signLaw_eq]
+  apply (ae_map_iff (f := sign) (p := fun x : ℝ => |x| ≤ 1) (by fun_prop)
+    (measurableSet_le (measurable_id.abs) measurable_const)).2
+  exact Filter.Eventually.of_forall (by intro b; cases b <;> norm_num [sign])
+
+lemma signLaw_L2 : MemLp (id : ℝ → ℝ) 2 signLaw := by
+  exact MemLp.of_bound (by fun_prop) 1
+    (by simpa only [Real.norm_eq_abs, id_eq] using signLaw_bound)
+
+lemma signLaw_mean : ∫ x, x ∂signLaw = 0 := by
+  change (∫ x, id x ∂signLaw) = 0
+  rw [integral_signLaw id measurable_id]
+  norm_num
+
+lemma signLaw_var : ProbabilityTheory.variance id signLaw = 1 := by
+  rw [variance_eq_integral (by fun_prop)]
+  change (∫ x, (x - ∫ t, t ∂signLaw)^2 ∂signLaw) = 1
+  rw [signLaw_mean, integral_signLaw _ (by fun_prop)]
+  norm_num
+
+def emptyGraph (n : ℕ) : SAP.P011c.Graph n :=
+  ⟨fun _ _ => false, ⟨by intros; rfl, by intros; rfl⟩⟩
+
+def signModel (n : ℕ) : SAP.P011c.Model n where
+  law := Measure.pi (fun _ : Fin n => signLaw)
+  probability := by infer_instance
+  theta := fun _ => 1
+  G := emptyGraph n
+  R := emptyGraph n
+  d := fun _ => 0
+
+lemma signModel_dependency (n : ℕ) : SAP.P011c.Dependency (signModel n) := by
+  intro S T hST _
+  exact (iIndepFun_pi (μ := fun _ : Fin n => signLaw)
+    (X := fun _ => (id : ℝ → ℝ)) (fun _ => aemeasurable_id)).indepFun_finset
+      S T hST (fun i => measurable_pi_apply i)
+
+lemma signModel_beta (n : ℕ) : SAP.P011c.beta (signModel n) = 0 := by
+  unfold SAP.P011c.beta SAP.P011c.expectation SAP.P011c.betaHat SAP.P011c.average
+  simp only [SAP.P011c.weighted, signModel, one_mul]
+  rw [integral_div, integral_finsetSum]
+  · simp [integral_eval, signLaw_mean]
+  · intro i _
+    exact integrable_eval (signLaw_L2.integrable (by norm_num))
+
+lemma signModel_var (n : ℕ) :
+    SAP.P011c.var (signModel n) (SAP.P011c.betaHat (signModel n)) =
+      (n : ℝ) / (n : ℝ)^2 := by
+  have hm : Measurable (SAP.P011c.betaHat (signModel n)) := by
+    unfold SAP.P011c.betaHat SAP.P011c.average SAP.P011c.weighted
+    simp only [signModel, one_mul]
+    fun_prop
+  rw [show SAP.P011c.var (signModel n) (SAP.P011c.betaHat (signModel n)) =
+      ProbabilityTheory.variance (SAP.P011c.betaHat (signModel n)) (signModel n).law by
+    exact (variance_eq_integral hm.aemeasurable).symm]
+  unfold SAP.P011c.betaHat SAP.P011c.average SAP.P011c.weighted
+  simp only [signModel, one_mul]
+  change ProbabilityTheory.variance
+    (fun y : Fin n → ℝ => (∑ i, y i) / (n : ℝ))
+    (Measure.pi (fun _ : Fin n => signLaw)) = _
+  have hfun : (fun y : Fin n → ℝ => (∑ i, y i) / (n : ℝ)) =
+      (fun y => (n : ℝ)⁻¹ * (∑ i, y i)) := by funext y; ring
+  rw [hfun]
+  rw [variance_const_mul]
+  have hsum : ProbabilityTheory.variance (fun y : Fin n → ℝ => ∑ i, y i)
+      (Measure.pi (fun _ : Fin n => signLaw)) = (n : ℝ) := by
+    have hfun_sum : (fun y : Fin n → ℝ => ∑ i, y i) =
+        ∑ i : Fin n, (fun y : Fin n → ℝ => y i) := by
+      funext y
+      simp only [Finset.sum_apply]
+    rw [hfun_sum]
+    simpa [signLaw_var] using
+      (variance_sum_pi (μ := fun _ : Fin n => signLaw)
+        (X := fun _ => (id : ℝ → ℝ)) (fun _ => signLaw_L2))
+  rw [hsum]
+  simp only [div_eq_mul_inv, inv_pow]
+  ring
+
+def signFamily : SAP.P011c.Family where
+  size := fun k => k + 1
+  positive := by intro k; omega
+  grows := tendsto_add_atTop_nat 1
+  model := fun k => signModel (k + 1)
+
+lemma signModel_bound (n : ℕ) :
+    ∀ᵐ y ∂(signModel n).law, ∀ i,
+      |SAP.P011c.weighted (signModel n) y i - SAP.P011c.beta (signModel n)| ≤ 1 := by
+  rw [signModel_beta]
+  change ∀ᵐ y ∂Measure.pi (fun _ : Fin n => signLaw), ∀ i, |1 * y i - 0| ≤ 1
+  simp only [one_mul, sub_zero]
+  exact ae_all_iff.2 (fun i =>
+    (Measure.tendsto_eval_ae_ae (μ := fun _ : Fin n => signLaw) (i := i)).eventually signLaw_bound)
+
+lemma signFamily_scaling : SAP.P011c.WholeScaling signFamily 1 1 1 2 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+    (fun k => signModel_dependency (k + 1)), (fun k => signModel_bound (k + 1)),
+    ?_, ?_, ?_⟩
+  · intro k i
+    simp [SAP.P011c.degree, signFamily, signModel, emptyGraph]
+  · have hconst : SAP.P011c.scaledTrue signFamily = fun _ => 1 := by
+      funext k
+      change (k + 1 : ℕ) * SAP.P011c.var (signModel (k + 1))
+        (SAP.P011c.betaHat (signModel (k + 1))) = 1
+      rw [signModel_var]
+      have hn : ((k + 1 : ℕ) : ℝ) ≠ 0 := by positivity
+      field_simp
+    rw [hconst]
+    exact tendsto_const_nhds
+  · intro k i
+    change |(1 : ℝ)| < 2
+    norm_num
+
+lemma signFamily_scaling2 : SAP.P011c.WholeW2Scaling signFamily 1 1 1 2 :=
+  signFamily_scaling
+
+lemma signFamily_valid : SAP.P011c.Valid signFamily := by
+  intro k
+  constructor
+  · intros i j h
+    exact h
+  · intro i
+    simp [SAP.P011c.degree, signFamily, signModel, emptyGraph]
+
+lemma signModel_homoskedastic (n : ℕ) : SAP.P011c.Homoskedastic (signModel n) := by
+  have hm (i : Fin n) :
+      SAP.P011c.expectation (signModel n) (fun y => SAP.P011c.weighted (signModel n) y i) = 0 := by
+    simp [SAP.P011c.expectation, SAP.P011c.weighted, signModel, integral_eval, signLaw_mean]
+  intro i j
+  simp only [SAP.P011c.covariance, hm, sub_zero]
+  simp only [SAP.P011c.expectation, SAP.P011c.weighted, signModel, one_mul]
+  exact (integral_comp_eval (μ := fun _ : Fin n => signLaw) (i := i)
+    (f := fun x : ℝ => x * x) (by fun_prop)).trans
+    (integral_comp_eval (μ := fun _ : Fin n => signLaw) (i := j)
+      (f := fun x : ℝ => x * x) (by fun_prop)).symm
+
+lemma signFamily_homoskedastic : ∀ k, SAP.P011c.Homoskedastic (signFamily.model k) :=
+  fun k => signModel_homoskedastic (k + 1)
+
+lemma signFamily_nested : SAP.P011c.Nested signFamily := by
+  refine ⟨by intro a b hab; exact Nat.add_le_add_right hab 1, ?_⟩
+  intro k
+  refine ⟨⟨fun i => ⟨i.val, by have := i.isLt; dsimp [signFamily] at *; omega⟩,
+    fun a b h => by
+      apply Fin.ext
+      exact congrArg (fun z : Fin ((k + 1) + 1) => z.val) h⟩, ?_⟩
+  intros
+  rfl
+
+-- Independent of the audited Challenge theorems: every hypothesis of T36 and T38.
+example : ∃ F : SAP.P011c.Family,
+    SAP.P011c.WholeScaling F 1 1 1 2 ∧
+    SAP.P011c.WholeW2Scaling F 1 1 1 2 ∧
+    (∀ k, SAP.P011c.Homoskedastic (F.model k)) ∧
+    SAP.P011c.Valid F ∧ SAP.P011c.Nested F :=
+  ⟨signFamily, signFamily_scaling, signFamily_scaling2,
+    signFamily_homoskedastic, signFamily_valid, signFamily_nested⟩
+
+lemma compatible_zero_unique {n : ℕ} (B : SAP.P011c.Graph n)
+    (h : SAP.P011c.Compatible (emptyGraph n) (fun _ => 0) B) : B = emptyGraph n := by
+  apply Subtype.ext
+  funext i j
+  have hd : SAP.P011c.degree B i = 0 := Nat.eq_zero_of_le_zero (h.2 i)
+  have hj := Finset.sum_eq_zero_iff.mp hd j (Finset.mem_univ j)
+  change (if B.val i j then 1 else 0 : ℕ) = 0 at hj
+  change B.val i j = false
+  cases hb : B.val i j <;> simp_all
+
+lemma signFamily_maximizing : ∀ k y,
+    SAP.P011c.Maximizes (signFamily.model k).R (signFamily.model k).d
+      (fun B => SAP.P011c.V2 B (SAP.P011c.weighted (signFamily.model k) y))
+      (emptyGraph (signFamily.size k)) := by
+  intro k y
+  refine ⟨signFamily_valid k, ?_⟩
+  intro B hB
+  rw [compatible_zero_unique B hB]
+
+-- Every hypothesis, including the maximizing selector, of the universal T37.
+example : ∃ (F : SAP.P011c.Family)
+    (A : ∀ k, (Fin (F.size k) → ℝ) → SAP.P011c.Graph (F.size k)),
+    SAP.P011c.WholeW2Scaling F 1 1 1 2 ∧
+    (∀ k, SAP.P011c.Homoskedastic (F.model k)) ∧ SAP.P011c.Valid F ∧
+    (∀ k y, SAP.P011c.Maximizes (F.model k).R (F.model k).d
+      (fun B => SAP.P011c.V2 B (SAP.P011c.weighted (F.model k) y)) (A k y)) :=
+  ⟨signFamily, fun k _ => emptyGraph (signFamily.size k), signFamily_scaling2,
+    signFamily_homoskedastic, signFamily_valid, signFamily_maximizing⟩
+
+lemma uniformPMF_measure (α : Type*) [Fintype α] [Nonempty α]
+    [MeasurableSpace α] [MeasurableSingletonClass α] :
+    (PMF.uniformOfFintype α).toMeasure = uniformOn (Set.univ : Set α) := by
+  ext s hs
+  let : Fintype s := Fintype.ofFinite s
+  rw [PMF.toMeasure_uniformOfFintype_apply s hs, uniformOn_univ]
+  congr 1
+  rw [Set.fintypeCard_eq_ncard, Set.ncard_eq_toFinset_card s s.toFinite]
+  exact (Measure.count_apply_finite s s.toFinite).symm
+
+lemma wholeFairSignLaw_pi (n : ℕ) :
+    SAP.P011c.wholeFairSignLaw n = Measure.pi (fun _ : Fin n => signLaw) := by
+  unfold SAP.P011c.wholeFairSignLaw
+  rw [← PMF.toMeasure_map (fun u : Fin n → Bool => fun i => if u i then (1 : ℝ) else -1)
+    _ (by fun_prop)]
+  rw [uniformPMF_measure]
+  have hunif : uniformOn (Set.univ : Set (Fin n → Bool)) =
+      Measure.pi (fun _ : Fin n => uniformOn (Set.univ : Set Bool)) := by
+    have h := uniformOn_pi (ι := Fin n) (f := fun _ => (Set.univ : Set Bool))
+    rw [show (Set.univ.pi (fun _ : Fin n => (Set.univ : Set Bool))) = Set.univ by
+      ext x; simp] at h
+    exact h
+  rw [hunif]
+  change (Measure.pi (fun _ : Fin n => uniformOn (Set.univ : Set Bool))).map
+    (fun x i => sign (x i)) = _
+  rw [Measure.pi_map_pi (fun _ => (by fun_prop : Measurable sign).aemeasurable)]
+  congr 1
+  funext i
+  rw [← uniformPMF_measure, ← signLaw_eq]
+
+-- Every data/hypothesis clause of the T34 existential witness, without using T34.
+example : ∃ F : SAP.P011c.Family,
+    (∀ k, F.size k = k + 1) ∧ SAP.P011c.Nested F ∧
+    SAP.P011c.WholeScaling F 1 1 1 2 ∧ SAP.P011c.Valid F ∧
+    (∀ k, (F.model k).law = SAP.P011c.wholeFairSignLaw (F.size k) ∧
+      (∀ i, (F.model k).theta i = 1) ∧
+      (∀ i j, (F.model k).G.val i j = false) ∧
+      SAP.P011c.Homoskedastic (F.model k) ∧ SAP.P011c.beta (F.model k) = 0 ∧
+      SAP.P011c.scaledTrue F k = 1) := by
+  refine ⟨signFamily, (fun _ => rfl), signFamily_nested, signFamily_scaling,
+    signFamily_valid, ?_⟩
+  intro k
+  refine ⟨(wholeFairSignLaw_pi _).symm, (fun _ => rfl), (fun _ _ => rfl),
+    signFamily_homoskedastic k, signModel_beta _, ?_⟩
+  change ((k + 1 : ℕ) : ℝ) * SAP.P011c.var (signModel (k + 1))
+    (SAP.P011c.betaHat (signModel (k + 1))) = 1
+  rw [signModel_var]
+  have hn : ((k + 1 : ℕ) : ℝ) ≠ 0 := by positivity
+  field_simp
+
+-- Finite identities for an independent reconstruction of the T35 witness.
+def path3 : SAP.P011c.Graph 3 :=
+  ⟨fun i j => decide ((i.val = 1 ∧ j.val ≠ 1) ∨ (j.val = 1 ∧ i.val ≠ 1)),
+    ⟨by intro i j; apply Bool.eq_iff_iff.mpr; simp only [decide_eq_true_eq]; tauto,
+     by intro i; simp⟩⟩
+
+def mean3 : Fin 3 → ℝ := ![1, -2, 1]
+def design3 : Matrix (Fin 3) (Fin 2) ℝ := !![1, 1; 1, -2; 1, 1]
+
+lemma gram3 : design3ᵀ * design3 = (!![3, 0; 0, 6] : Matrix (Fin 2) (Fin 2) ℝ) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [design3, Matrix.mul_apply, Fin.sum_univ_succ]
+
+example : (design3ᵀ * design3).det ≠ 0 := by rw [gram3]; norm_num [Matrix.det_fin_two]
+
+lemma inv_gram3 : (design3ᵀ * design3)⁻¹ =
+    (!![1 / 3, 0; 0, 1 / 6] : Matrix (Fin 2) (Fin 2) ℝ) := by
+  apply Matrix.inv_eq_left_inv
+  rw [gram3]
+  ext i j
+  fin_cases i <;> fin_cases j <;> norm_num [Matrix.mul_apply, Fin.sum_univ_succ]
+
+example : design3 *ᵥ (![0, 1] : Fin 2 → ℝ) = mean3 := by
+  ext i
+  fin_cases i <;> norm_num [design3, mean3, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+
+example : ∀ i, SAP.P011c.olsTheta design3 (0 : Fin 2) i = 1 := by
+  intro i
+  unfold SAP.P011c.olsTheta
+  rw [inv_gram3]
+  fin_cases i <;> norm_num [design3, Matrix.mul_apply, Matrix.vecMul, dotProduct,
+    Fin.sum_univ_succ]
+
+example : 3 * SAP.P011c.V1 path3 mean3 = -(2 / 3 : ℝ) := by
+  norm_num [SAP.P011c.V1, SAP.P011c.quadratic, SAP.P011c.adjacency,
+    SAP.P011c.centered, SAP.P011c.average, path3, mean3, Fin.sum_univ_succ]
+
+-- Finite identity for T36's alternating-mean witness: the between-mean variance is 1.
+example : SAP.P011c.average (![1, -1] : Fin 2 → ℝ) = 0 ∧
+    SAP.P011c.sampleVariance (![1, -1] : Fin 2 → ℝ) = 1 := by
+  norm_num [SAP.P011c.average, SAP.P011c.sampleVariance, SAP.P011c.centered,
+    Fin.sum_univ_succ]
+
+end
+end Audit

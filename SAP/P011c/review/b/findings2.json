@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P011-T29",
+    "theorem": "SAP.P011c.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For a nondegenerate dependent example, take n=2, p=1, D=(1,1)^T, b=0, Y_1=Y_2 a fair sign, and theta=(1,1). The Gram matrix is 2, all coordinates are square integrable, and both the estimator variance and its covariance-sum expression equal 1. scratch/Check.lean also compiles an explicit n=p=1 Dirac mean model with invertible Gram matrix.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T30",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is asserted. The canonical note permits omission when the complexity assertion cannot be faithfully stated. The revised record still credits only a feasibility encoding, which does not establish an objective-preserving optimization equivalence, NP-hardness or its refutation, or a PTAS. The visible Defs/Challenge package supplies no replacement complexity assertion.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P011-T31",
+    "theorem": "SAP.P011c.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A full refutation witness exists with n_k=4(k+1), G_k disjoint K_{2,2} blocks, s=(1,1,-1,-1) per block, independent fair signs epsilon_i, theta_i=s_i, and raw Y_i=2+s_i epsilon_i. Weighted X_i=2s_i+epsilon_i, beta=0, and n var(betaHat)=1. These are genuinely nested full and observed graphs. Scaling holds with (c1,c2,c3,c4)=(3,2,1,2). The identity n V1=-3-4 sum_i(s_i epsilon_i)/n+2 sum_edges(epsilon_i epsilon_j)/n-3 betaHat^2 gives n V1 -> -3 in probability. Thus, for epsilon=2, the printed inconsistency event has probability tending to 1. Finite quadratic algebra is compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T32",
+    "theorem": "SAP.P011c.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the T31 witness and set R_k=G_k and every d_i=2. Each mandatory graph already saturates all degrees, so it is the unique compatible graph and supplies a maximizer for every raw outcome. Weighted coordinate variances are all 1. Since n(var-V1) -> 4, the underestimation probability for epsilon=1 tends to 1. This refutes the combined printed contract, exactly as recorded; the theorem does not separately assert a negation of the homoskedastic specialization.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T33",
+    "theorem": "SAP.P011c.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the T32 witness. Its unique maximizing estimate satisfies n V1 -> -3. For every alpha in (0,1), printedCoverage is at most Pr(V1>=0), which tends to 0, below 1-alpha. This is a refutation of the actual printed-interval interpretation, not an artifact of Real.sqrt on negative numbers.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T34",
+    "theorem": "SAP.P011c.T34",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n_k=k+1, independent fair-sign outcomes, theta_i=1, empty G_k and R_k, and d_i=0. Scaling holds with (c1,c2,c3,c4)=(1,1,1,2): the observed graphs admit induced embeddings into their successors, all weighted variables are bounded and measurable, and n_k var(betaHat)=1. The retained degree inequality is nonvacuous and gFactor=1 at every row. The observed-nesting restriction is now explicitly disclosed in both the Challenge docstring and record2.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T35",
+    "theorem": "SAP.P011c.T35",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The T31/T32 construction is an exact OLS slope example: p=2, j=1 in zero-based Fin 2 indexing, D_i=(1,s_i), and b=(2,0), fixed for every row. E[Y_i]=2=(D b)_i, all moments are finite, D^T D=n I_2, and olsTheta(D)_{1i}=s_i=theta_i. Therefore the estimator is that actual unbiased OLS coefficient. R=G,d=2 force the unique maximizer, with n V1 -> -3 and n var=1; conservativeness and printed coverage both fail. The n=4 Gram matrix, nonsingularity, and exact slope weights compile in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T36",
+    "theorem": "SAP.P011c.T36",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n_k=k+1, independent fair-sign raw outcomes, theta_i=1 and empty observed graphs, the constants (1,1,1,2) satisfy Scaling, and all weighted coordinate variances equal 1. The displayed conservativeness theorem is mathematically true under these and the other stated hypotheses; equal individual means are not required in general.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T37",
+    "theorem": "SAP.P011c.T37",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the n_k=k+1 independent fair-sign family with theta=1, G=R empty, and d=0. Scaling (1,1,1,2), Valid, and homoskedasticity all hold. The empty graph is the unique compatible maximizer for every raw outcome, and V2 and V2prime both equal sampleVariance/n. There is no hidden bound on the supplied degree caps and no empty-feasible-set issue.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T38",
+    "theorem": "SAP.P011c.T38",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n_k=k+1 independent fair signs, theta=1, and empty G_k, Scaling holds with (1,1,1,2), var(betaHat)=1/n_k>0, and standardized is sum_i Y_i/sqrt(n_k). Thus the antecedent has nondegenerate examples. Bounded-degree dependency gives the asserted CLT after centering each coordinate at its own mean, even with unequal means.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T39",
+    "theorem": "SAP.P011c.T39",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n_k=k+1, independent fair signs, theta=1, empty G_k, and constants (1,1,1,2). The deterministic Borel statistic V_k(y)=1/n_k has n_k V_k=n_k var(betaHat)=1, so its consistency and conservativeness premises both hold with zero bad-event probability. Coverage probabilities lie in [0,1], so their real liminf has its ordinary meaning.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T40",
+    "theorem": "SAP.P011c.T40",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independent fair-sign family with n_k=k+1, theta=1, empty G=R and d=0 has Scaling (1,1,1,2), equal weighted variances, valid constraints, and a unique maximizing empty graph for every raw outcome. Both estimates equal sampleVariance/n and are everywhere nonnegative, so no undefined square root, nonmeasurable selector value or vacuous maximization supports the result.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T41",
+    "theorem": "SAP.P011c.T41",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=4 and R=K_{2,2}, with every h_i=3. Then degrees are 2 and h_i=2r_i-1; the capacity matrix is 2I+A_R, a nonzero PSD matrix with the alternating sign vector in its kernel. The capacity condition and this exact matrix identity compile in scratch/Check.lean. For nonconstant maximization, n=2, R empty, d=(1,1), and f(B)=adjacency(B)_{01} give the edge as unique maximizer both before and after any fixed real shift. The omitted decomposition and the n>0 condition for normalization are accurately disclosed; the empty-index case is not doing the work.",
+    "confidence": 0.99
+  }
+]

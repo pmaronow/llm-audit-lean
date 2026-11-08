@@ -1,0 +1,116 @@
+import SAP.P002a.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxHeartbeats 2000000
+
+open scoped BigOperators Classical ENNReal
+open SAP.P002a
+
+namespace SequenceAudit
+noncomputable section
+
+def signs (m : ℕ) (i : Fin (2*m)) : ℝ := if i.val < m then -1 else 1
+
+lemma signs_sum (m : ℕ) : (∑ i, signs m i) = 0 := by
+  unfold signs
+  rw [two_mul, Fin.sum_univ_add]
+  have hnot (i : Fin m) : ¬m+i.val < m := by omega
+  simp [Fin.is_lt, hnot]
+
+lemma signs_sq (m : ℕ) : (∑ i, signs m i ^ 2) = (2*m : ℕ) := by
+  have h (i : Fin (2*m)) : signs m i ^ 2 = 1 := by
+    unfold signs
+    split_ifs <;> norm_num
+  simp [h]
+
+lemma signs_fourth (m : ℕ) : (∑ i, signs m i ^ 4) = (2*m : ℕ) := by
+  have h (i : Fin (2*m)) : signs m i ^ 4 = 1 := by
+    unfold signs
+    split_ifs <;> norm_num
+  simp [h]
+
+lemma signs_mean (m : ℕ) : mean (signs m) = 0 := by
+  simp [mean, signs_sum]
+
+lemma signs_var (m : ℕ) : popVar (signs m) = (2*m : ℕ) / ((2*m : ℕ) - (1:ℝ)) := by
+  simp [popVar, signs_mean, signs_sq]
+
+lemma signs_fourth_norm (m : ℕ) (hm : 0 < m) : fourthNorm (signs m) = 1 := by
+  simp [fourthNorm, mean, signs_fourth, ne_of_gt hm]
+
+lemma signs_var_ge_one (m : ℕ) (hm : 0 < m) : 1 ≤ popVar (signs m) := by
+  have hn : 1 < ((2*m : ℕ) : ℝ) := by exact_mod_cast (show 1 < 2*m by omega)
+  rw [signs_var]
+  apply (le_div_iff₀ (by linarith)).2
+  linarith
+
+lemma signs_guard (m : ℕ) (hm : 0 < m) :
+    fourthNorm (signs m) ≤ 2 * Real.sqrt (popVar (signs m)) := by
+  rw [signs_fourth_norm m hm]
+  have hv := signs_var_ge_one m hm
+  have hs := Real.sq_sqrt (show 0 ≤ popVar (signs m) by linarith)
+  have hp := Real.sqrt_nonneg (popVar (signs m))
+  nlinarith
+
+abbrev sizes (j : ℕ) : ℕ := 2*(j+1)
+abbrev models (j : ℕ) : Population (sizes j) := signModel (j+1)
+
+lemma models_late (j : ℕ) : late (models j) = 0 := by
+  simp [models, signModel, late, groupMean]
+
+lemma models_w (j : ℕ) (a : Bool) : w (models j) a 0 = signs (j+1) := by
+  funext i
+  simp [models, signModel, w, signs]
+
+lemma models_compliers (j : ℕ) : compliers (models j) = Finset.univ := by
+  ext i
+  simp [models, signModel, compliers]
+
+lemma models_theta (j : ℕ) : Theta (models j) 0 (1/2) 2 := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [models, sizes, signModel, ValidDesign]
+  · intro i h
+    simpa [models, signModel] using h
+  · rw [models_compliers]
+    exact ⟨⟨0, by unfold sizes; omega⟩, Finset.mem_univ _⟩
+  · norm_num [models, sizes, signModel]
+    nlinarith
+  · norm_num [models, sizes, signModel]
+    nlinarith
+  · rw [models_late, models_w, models_w, models_compliers]
+    have hn : 2 ≤ sizes j := by unfold sizes; omega
+    have hcov : groupCov Finset.univ (signs (j+1)) (signs (j+1)) =
+        popVar (signs (j+1)) := by
+      simp [groupCov, groupMean, popVar, mean, pow_two, hn, sizes]
+    rw [hcov]
+    simp only [neg_zero, zero_mul, ge_iff_le]
+    exact le_trans (by norm_num) (signs_var_ge_one (j+1) (by omega))
+  · intro a
+    rw [models_late, models_w]
+    have hv : v (models j) a 0 = signs (j+1) := by
+      funext i
+      simp [v, models_w, signs_mean]
+    rw [hv]
+    exact signs_guard (j+1) (by omega)
+
+-- Every hypothesis of T5Sharpness, with explicit constants and an infinite
+-- deterministic sequence. No Challenge theorem or sharpness conclusion is used.
+example : StrictMono sizes ∧
+    (∀ j, Theta (models j) 0 (1/2) 2) ∧
+    (∀ j, ∃ β : ℝ, ∀ i, (models j).y i true = (models j).y i false + β) ∧
+    (∀ j, 0 < popVar (fun i => (models j).y i false)) ∧
+    (0:ℝ) < 1 ∧ (0 < (1/2:ℝ) ∧ (1/2:ℝ) ≤ 1/2) ∧
+    (0:ℝ) < 2 ∧ (0 < (1/20:ℝ) ∧ (1/20:ℝ) < 1) := by
+  refine ⟨?_, models_theta, ?_, ?_, by norm_num, by norm_num, by norm_num, by norm_num⟩
+  · intro i j hij
+    unfold sizes
+    omega
+  · intro j
+    exact ⟨0, fun i => by simp [models, signModel]⟩
+  · intro j
+    change 0 < popVar (signs (j+1))
+    linarith [signs_var_ge_one (j+1) (by omega)]
+
+end
+end SequenceAudit

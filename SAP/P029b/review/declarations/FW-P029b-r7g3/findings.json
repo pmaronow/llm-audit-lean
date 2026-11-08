@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P029-T25",
+    "theorem": "SAP.P029b.T25",
+    "fingerprint": "c75353a08998af1d5ec2f6d95ac8d24cb4f50415576e4656a47e37b210fbf7d9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean without any sorry/admit. The population example at line 45 uses uniform Boolean assignment and a constant Unit-covariate pure complier with d0=false, d1=true, y0=0, y1=1, satisfying every IVAssumptions field. The finite example at line 49 has two observations, D=Z=(false,true), positive arm counts and nonzero first stage; Y is unrestricted and may be (0,1). All population and sample denominators are genuine.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T26",
+    "theorem": "SAP.P029b.T26",
+    "fingerprint": "600376f4b61d3e1f649de49cb98cd50f5412ceacfe0c4d427d727f627a4d3fab",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean without any sorry/admit. Line 74 constructs every population hypothesis, including A1. The example at line 188 constructs all sample hypotheses together: infinite independent fair Boolean assignments, constant pure-complier records with effect one, Unit covariate, c=m=a=s=1, and overlap margin 1/2. Maximum score error is zero. A Borel-Cantelli argument proves both assignment values appear almost surely; thereafter both arm sums are positive and the receipt contrast is one, proving RatiosEventuallyDefined. The classification is faithful to the recorded restricted result: the docstring discloses uniform score consistency, eventual definedness, and omission of the two separate sample contrast limits.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T27",
+    "theorem": "SAP.P029b.T27",
+    "fingerprint": "04260fab203166d2bf45df2ce3f0ed888972e66eea33cd855bd015c377f4e833",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The statement has no outer hypotheses: it supplies a fixed twelve-atom uniform population and its actual infinite iid product law. claim-analysis.md first states the printed reading and checks every condition, including randomization, relevance, heterogeneous effects, failure of A1 at both positive-mass profiles, strict overlap, correct saturated nested-probit ML specification and score consistency. Compiled scratch/Nonvacuity.lean independently checks every atom's observed outcome is zero (line 207), the population ATE is zero (line 212), and a complete twelve-atom finite prefix has the genuine interior receipt rates 1/3 and 2/3 and defined fitted-score Wald ratios (lines 222, 230, 234). That finite prefix is a domain test, not a replacement for the iid sampling law. The counterexample refutes the categorical asymptotic-bias sentence actually quoted in the canonical statement; it does not refute, and agrees with, the integral formulas and constant-score identity (a)-(c).",
+    "confidence": 0.97
+  }
+]

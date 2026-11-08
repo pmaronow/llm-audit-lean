@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P008-T15",
+    "theorem": "SAP.P008b.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the measurable field R^2, nodes (0,0) and (100,0), measure δ_(1,0)+δ_(101,0), and Y(x,z)=bit(z_0)+bit(z_1). At i=0, d=1 and k=1/2 the band has mass 1, every potential outcome is integrable, its mean can be nonzero, and both intervention nodes are outside it. The other node is at distance 100>3/2, so even the separation premise is substantive. The geometry and genuine atomic averages are checked in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T16",
+    "theorem": "SAP.P008b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional explicit counterexample. Each rectangle has a nonempty boundary and four specified cells; all cross-polygon distances exceed 5. At (true,false), the first polygon's inner/full buffers have counts 1 and 3, the added annulus and centered band each have 2 cells, and both treatment-arm counts are 1. Exact rational checks in scratch/verify.py give contrasts 1, 4 and 2; scratch/Check.lean checks the corresponding nonempty four-distance counting means. The revised record2 decision refuted is accepted: using the supplied adjacent-buffer formula, (6-4)/(3-1)=1 differs from the centered [3,5] mean 4, and the nonempty control means are zero. This refutes the canonical assertion that the archived outer-radius estimate is a centered-band average. The rectangles realize the stated distances; the canonical note explicitly makes distances and outcomes the arithmetic fixture. All definitions and mathematical clauses match the original reading; the only Challenge change is the refutation prefix. The required existing verdict correct_whole here means complete coverage of the canonical counterexample, not an architect decision whole. Exact checks were rerun in scratch/finite-checks2.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T17",
+    "theorem": "SAP.P008b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The revised docstring now states width 2k only when k≤d, matching the unchanged Lean clause and canonical T17(a). For example d=4,k=1 gives [3,5], width 2. At d=1,k=2 the valid clipped band is [0,3], width 3; the repaired conditional makes no width-4 claim there. The positive-radius circles are nonempty. For the finite-buffer conclusions take B_0={0}, B_1={0,1}, j=1, or the supplied radii 2 and 4 with cardinalities 1<3. All relevant averages have positive denominators. The prior Lean instances and exact rational checks were rerun against the revised Defs; see scratch/lean-check2.log and scratch/finite-checks2.json.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P008-T18",
+    "theorem": "SAP.P008b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take C=1, base=0, Q uniform on all 16 assignments, w_(i,0)=1 and r_(i,0)=1 for all four nodes. The nonnegative normalized weights and distances satisfy every hypothesis, with four nonempty singleton means; geometrically four distinct nodes can all be at unit distance from the sole cell centroid. More generally the kernel lower bound follows from (128/3)r^4 exp(-4r)≤128/(3 exp(4))<384/437 and positivity of 2 exp(-2r); normalized convex weights preserve the strict bound. scratch/Check.lean checks a singleton-cell normalized-weight instance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T19",
+    "theorem": "SAP.P008b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The statement itself supplies the 200-cell field, two disjoint 25-cell polygons, their 16-cell boundaries and 9-cell interiors, all four potential assignments, and the fair product law. The observed assignment has mass 1/4 and one node in each arm. scratch/verify.py independently enumerates all 200 cells and all four assignments, checks the eight-neighbor boundary convention, and obtains Hájek contrasts 0 and 9/25 and AMRs 0 and 9/50 using only nonempty averages. The revised record2 decision refuted is accepted: the unequal nonempty-arm contrasts 0 and 9/25, and unequal AMRs 0 and 9/50 under a genuine fair product law, refute the identification of edge-zero and area summaries as functionals under the supplied eight-neighbor boundary convention. The theorem retains every clause of the canonical finite example. Its mathematics matches the original reading; the only Challenge change is the refutation prefix. The required existing verdict correct_whole here means complete coverage of the canonical counterexample, not an architect decision whole. Exact checks were rerun in scratch/finite-checks2.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T20",
+    "theorem": "SAP.P008b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the discrete clauses use R={0,...,4}×{0,...,4}; its eight-neighbor inner boundary has 16 cells and its interior 9. T19 supplies nonconstant outcomes with distinct boundary and area summaries. For the continuous clause use the closed Euclidean unit disk, whose nonempty frontier is the unit circle; the center has boundary distance 1. scratch/Check.lean verifies nonempty discrete and continuous boundary instances; scratch/verify.py verifies the complete finite contrast witness. The nonempty-frontier hypothesis excludes infDist(empty)=0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T21",
+    "theorem": "SAP.P008b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no hypotheses or quantified data. The unconditional rational inequality -321/10000 < -19/625 is proved independently by norm_num in scratch/Check.lean and checked with exact fractions in scratch/verify.py. No actual quantile or significance assertion is present.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P008-T22",
+    "theorem": "SAP.P008b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are no hypotheses. The second disjunct, 797/100 < 619/50, is true. scratch/Check.lean proves the complete disjunction by norm_num and scratch/verify.py checks its true disjunct with exact fractions. The docstring explicitly declines to validate these numbers as a statistic and quantiles or to claim actual error rate 0.05.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P008-T23",
+    "theorem": "SAP.P008b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Ω=Fin 4 with uniform masses 1/4, N=2, φ_0=[0,0,1,1], φ_1=[0,1,0,1], D_ii=0, D_ij=1 for i≠j and c=0. Both off-cutoff covariances vanish, while each diagonal covariance is 1/4 and Var(φ_0+φ_1)=1/2>0. This exercises actual excluded pairs and a positive retained variance. scratch/Check.lean checks the zero-tail premise and positive variance; scratch/verify.py checks the full covariance matrix exactly.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T24",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is exported. The canonical note says the three particular reported values were not refuted or reproduced, and the paper does not define the claimed cumulative forest-loss probability. All three numbers are in [-1,1] and individually can be differences of probabilities: -0.0304=0-0.0304, 0.0336=0.0336-0 and -0.0321=0-0.0321. A different numerical array whose sum is -4 cannot refute these specific empirical interpretations. The missing event and empirical reconstruction justify omission on the supplied evidence; the record's row-status labels are not used as independent mathematical evidence.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P008-T25",
+    "theorem": "SAP.P008b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use activeTwoModel from scratch/Check.lean: F=R^2, nodes (0,0),(100,0), ζ=δ_(1,0)+δ_(101,0), Y(x,z)=bit(z_0)+bit(z_1), and Q uniform on the four assignments. At d=1 each node circle has mass 1 and all potential outcomes are integrable; each point effect, node effect and the AMR is 1. The file kernel-checks validity of both circles. The independent four-node toy clauses have 16 assignments, with exactly eight in each fixed-coordinate group.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T26",
+    "theorem": "SAP.P008b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the implication, use the two-node atomic geometry of activeTwoModel with all outcomes replaced by zero. It has N=2, measurable field, sharp null and two positive-mass integrable radius-one circles; scratch/Check.lean checks this nullTwoModel. For the converse, the actual finite field {-1,0,1} has circle sizes 1 and 2 at its only nonempty radii, 0 and 1. Its potential outcomes cancel separately for each assignment, giving zero AMR for every law, while the point +1 changes from 0 to 1. Lean checks the circle sizes and nonzero point contrast, and exact enumeration checks the cancellation without any empty mean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T27",
+    "theorem": "SAP.P008b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same activeTwoModel has baseline zero, additive coefficients g_i(x)=1 and homogeneous radial coefficient g(r)=1. At d=1 all circles have mass 1 with integrable potential outcomes and measurable field; the additive representation and validity hypotheses are kernel-checked together in scratch/Check.lean. Under any assignment law its point effects, circle effects and AMR are 1, so the hypotheses allow a nonzero identified coefficient.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T28",
+    "theorem": "SAP.P008b.T28",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N=n+1 take Q uniform on {false,true}^N, p=1/2, M_i(z)=bit(z_i), H=1, D=0 and exceptional=0. The empty graph is a genuine collection-dependency graph: each pair (z_i,bit(z_i)) is a function of its own independent coordinate, so arbitrary predicates of disjoint collections are independent. For prescribed patterns on disjoint A,B the joint probability is 2^(-|A|-|B|), proving the factorization at every N. The AMR is 1, the nonempty-arm Hájek estimate is 1 and empty arms have total probability 2^(1-N)→0. scratch/Check.lean checks the Bernoulli law for every N and the uniform bound; scratch/verify.py verifies collection factorization and completed-estimator error for N=1,...,6, with a general counting argument recorded in scratch/finite-checks.json.",
+    "confidence": 0.99
+  }
+]

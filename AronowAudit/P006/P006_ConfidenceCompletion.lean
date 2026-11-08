@@ -9,10 +9,7 @@ set_option maxHeartbeats 2000000
 
 namespace AronowAudit.P006.ConfidenceFollowup02
 
-/-- P006-T28: counterexample to the two Section 6 beneficiary-average
-claims as printed (PDF pp. 7–8). The fitted sums, cohort counts and
-notebook-output utility intervals are explicit hypotheses. They are
-satisfiable and contradict the asserted rounding to 0.147 and 0.025. -/
+/-- The exact conditional reporting contract fails on satisfiable source inputs. -/
 theorem T28_printed_beneficiary_report_refuted :
     ¬ (∀ vH bH vS bS : ℝ,
       293907/2000000 ≤ vH → vH ≤ 293909/2000000 → bH = vH*(255/62) →
@@ -26,3 +23,4 @@ theorem T28_printed_beneficiary_report_refuted :
 
 end AronowAudit.P006.ConfidenceFollowup02
 
+#print axioms AronowAudit.P006.ConfidenceFollowup02.T28_printed_beneficiary_report_refuted

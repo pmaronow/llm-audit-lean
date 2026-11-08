@@ -1,0 +1,9 @@
+SAP.P016a.T6 (P016-T6): **faithful**, severity **none**, as an accurately disclosed restricted result.
+
+The blind reading is in `reading.md`; all twelve closure entries, including the two generated numeral proofs, were inspected. `claim-stage.json` was saved before opening `record.json` and classifies the statement as narrower than the canonical claim. That assessment is unchanged after reading the record.
+
+The retained result is algebraic recovery from the forward form of the printed application model, together with the strict rejection convention p < 0.05. The raw exposure is Γz. The definition of sample variance uses the across-unit mean and real denominator n−1; n≥2 excludes zero denominators. The distance-matrix predicate permits coincident units. No junk-value convention affects the theorem.
+
+The arbitrary map g need only produce sample variance one on each design assignment; it need not be affine or express a linear indirect effect in raw distances. The docstring at `SAP/P016a/Challenge/Part1.lean:25–27` and restriction at `record.json:6` disclose exactly this limitation, the chosen variance convention, and the omission of the full SSR + Design/testing procedure and empirical simulation results. The record's `restricted` decision is correct. The result makes no refutation claim.
+
+`scratch/Nonvacuity.lean` compiled successfully. It constructs a three-unit real-line distance matrix, two distinct assignments with exposure vectors [0,1,2] and [2,1,0], identity g, nonconstant baseline [10,11,12], nonzero coefficients 2 and 3, and explicit generated outcomes satisfying every hypothesis simultaneously. It also verifies recovery independently and checks the strict cutoff boundary. `scratch/Blind.lean` compiled successfully for the elaboration checks. No changes to the supplied Lean sources were needed.

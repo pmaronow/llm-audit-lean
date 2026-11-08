@@ -200,5 +200,7 @@ theorem compatible_finite_up_to_names_proof (D : Data) (hD : Admissible D) :
       exact Quotient.sound hij
     exact e.symm.injective (Subtype.ext hq)
 
+example : type_of% @AronowAudit.P012.compatible_finite_up_to_names := compatible_finite_up_to_names_proof
+
 end
 end AronowAudit.P012.Wave1

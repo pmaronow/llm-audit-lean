@@ -1,7 +1,7 @@
 import AronowAudit.P026.P026_LogitApproximation
 import AronowAudit.P026.P026_LogitFiniteMoments
 /-! Complete actual-table logistic theorem: unique MLEs, certified coefficients,
-exact means, variances over all 90 allocations and certified standard-deviation bounds. -/
+exact means, finite90-allocation variances and certified standard-deviation bounds. -/
 namespace AronowAudit.P026.LogitCompletion
 noncomputable section
 theorem logit_table_corrected_completed :
@@ -29,6 +29,8 @@ theorem logit_table_corrected_completed :
 
 end
 end AronowAudit.P026.LogitCompletion
+#print axioms AronowAudit.P026.LogitCompletion.logit_table_corrected_completed
+
 namespace AronowAudit.P026
 theorem logit_table_corrected :
     (∃! β, logitMaximizer false β) ∧ (∃! β, logitMaximizer true β) ∧
@@ -47,4 +49,5 @@ theorem logit_table_corrected :
     Real.sqrt (variance realTableDesign (printedVariance realTableDesign 16 tableLogitResidual tableLogitResidual)) < 135/10000 := by
   exact LogitCompletion.logit_table_corrected_completed
 
+#print axioms logit_table_corrected
 end AronowAudit.P026

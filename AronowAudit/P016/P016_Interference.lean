@@ -14,6 +14,7 @@ import Mathlib.Data.Fintype.Powerset
 
 /-!
 P016: Bowers, Fredrickson and Aronow (2016), pp. 395–403.
+Printed statements, repairs and validator witnesses are kept separate.
 All population and exact-design quantities below are genuine finite sums.
 General exchangeable-reference statements use probability measures of total mass one.
 -/
@@ -32,30 +33,30 @@ abbrev Assignment (n : ℕ) := Fin n → Bool
 /-- "binary treatment", p. 397: the real 0/1 indicator of own assignment. -/
 def bit (b : Bool) : ℝ := if b then 1 else 0
 
-/-- "n_g = #{i : z_i = g} > 0", correction P016-E002 to (1), p. 397. -/
+/-- "n_g = #{i : z_i = g} > 0", correction E002 to (1), p. 397. -/
 def groupSize {n : ℕ} (z : Assignment n) (g : Bool) : ℕ :=
   ∑ i, if z i = g then 1 else 0
 
-/-- The group sum in "bar u_g = n_g⁻¹ sum_{i:z_i=g} u_i", P016-E002, p. 397. -/
+/-- The group sum in "bar u_g = n_g⁻¹ sum_{i:z_i=g} u_i", E002, p. 397. -/
 noncomputable def groupSum {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) : ℝ :=
   ∑ i, if z i = g then u i else 0
 
-/-- "bar u_g = n_g⁻¹ sum_{i:z_i=g} u_i", correction P016-E002, p. 397. -/
+/-- "bar u_g = n_g⁻¹ sum_{i:z_i=g} u_i", correction E002, p. 397. -/
 noncomputable def groupMean {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) : ℝ :=
   groupSum u z g / groupSize z g
 
 /-- Fixed-outcome pooled mean; the pooled reading of the undefined bar in (1), p. 397. -/
 noncomputable def pooledMean {n : ℕ} (u : Outcome n) : ℝ := (∑ i, u i) / n
 
-/-- "sum_i (u_i - bar u)^2", pooled interpretation of (1), p. 397; P016-E002. -/
+/-- "sum_i (u_i - bar u)^2", pooled interpretation of (1), p. 397; E002. -/
 noncomputable def tss {n : ℕ} (u : Outcome n) : ℝ := ∑ i, (u i - pooledMean u)^2
 
 /-- "sums the squared differences ... from the respective assignment-group means",
-correction P016-E002 to (1), p. 397; the intercept-and-treatment SSR. -/
+correction E002 to (1), p. 397; the released intercept-and-treatment SSR. -/
 noncomputable def rss {n : ℕ} (u : Outcome n) (z : Assignment n) : ℝ :=
   ∑ i, (u i - groupMean u z (z i))^2
 
-/-- Difference of the two means of the uniformity outcomes, corrected p. 397 (P016-N002). -/
+/-- Difference of the two means of the uniformity outcomes, corrected p. 397 (N002). -/
 noncomputable def meanDifference {n : ℕ} (u : Outcome n) (z : Assignment n) : ℝ :=
   groupMean u z true - groupMean u z false
 
@@ -63,11 +64,11 @@ noncomputable def meanDifference {n : ℕ} (u : Outcome n) (z : Assignment n) : 
 noncomputable def ecdf {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) (t : ℝ) : ℝ :=
   (∑ i, if z i = g ∧ u i ≤ t then (1 : ℝ) else 0) / groupSize z g
 
-/-- "F(x) = (1/n) sum_i I(x_i ≤ x)", footnote 3, p. 396; P016-E011(b). -/
+/-- "F(x) = (1/n) sum_i I(x_i ≤ x)", footnote 3, p. 396; E011(b). -/
 noncomputable def sampleECDF {n : ℕ} (u : Outcome n) (t : ℝ) : ℝ :=
   (∑ i, if u i ≤ t then (1 : ℝ) else 0) / n
 
-/-- "max_i |F_1(u_i) - F_0(u_i)|", correction P016-E002 to footnote 3, p. 396.
+/-- "max_i |F_1(u_i) - F_0(u_i)|", correction E002 to footnote 3, p. 396.
 The fold takes the maximum of the n sample-point distances and 0; the distances
 are nonnegative, so this is exactly the sample maximum whenever n > 0. -/
 noncomputable def ks {n : ℕ} (u : Outcome n) (z : Assignment n) : ℝ :=
@@ -92,7 +93,7 @@ the implied uniformity adjustment, for a nonzero multiplicative parameter. -/
 noncomputable def multiplicativeAdjust {n : ℕ} (Y : Outcome n) (Z : Assignment n) (a : ℝ) : Outcome n :=
   fun i => Y i / (1 + bit (Z i) * (a - 1))
 
-/-- The multiplicative forward outcomes y_i[1+z_i(a−1)], p. 397 and P016-N003 calibration. -/
+/-- The multiplicative forward outcomes y_i[1+z_i(a−1)], p. 397 and N003 calibration. -/
 noncomputable def multiplicativeGenerate {n : ℕ} (y : Outcome n) (z : Assignment n) (a : ℝ) : Outcome n :=
   fun i => y i * (1 + bit (z i) * (a - 1))
 
@@ -109,27 +110,27 @@ the "distribution ... from repetitions of the treatment assignment process", p. 
 noncomputable def mass {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (E : Ω → Prop) : ℝ :=
   by classical exact ∑ ω, if E ω then P.weight ω else 0
 
-/-- Expectation over the fixed randomization design (p. 396; P016-E004). -/
+/-- Expectation over the fixed randomization design (p. 396; E004 derivation §6). -/
 noncomputable def expectation {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (f : Ω → ℝ) : ℝ :=
   ∑ ω, P.weight ω * f ω
 
-/-- Design-based covariance of the group summaries, P016-E004, p. 397. -/
+/-- Design-based covariance of the group summaries, E004 derivation §6, p. 397. -/
 noncomputable def covariance {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (f g : Ω → ℝ) : ℝ :=
   expectation P (fun ω => f ω * g ω) - expectation P f * expectation P g
 
-/-- Design-based variance, P016-E004, p. 397. -/
+/-- Design-based variance, E004 derivation §6, p. 397. -/
 noncomputable def variance {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (f : Ω → ℝ) : ℝ :=
   covariance P f f
 
-/-- Inclusive exact upper tail, corrected sharp-null validity text, p. 397 (P016-E005). -/
+/-- Inclusive exact upper tail, corrected sharp-null validity text, p. 397 (E005). -/
 noncomputable def upperP {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (s : Ω → ℝ) (z : Ω) : ℝ :=
   mass P (fun w => s z ≤ s w)
 
-/-- Inclusive exact lower tail, corrected sharp-null validity text, p. 397 (P016-E005). -/
+/-- Inclusive exact lower tail, corrected sharp-null validity text, p. 397 (E005). -/
 noncomputable def lowerP {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (s : Ω → ℝ) (z : Ω) : ℝ :=
   mass P (fun w => s w ≤ s z)
 
-/-- "min{1,2 min(p_U,p_L)}", simulations' two-tail convention (P016-E006/P016-E008), p. 400. -/
+/-- "min{1,2 min(p_U,p_L)}", simulations' two-tail convention (E006/E008), p. 400. -/
 noncomputable def doubledP (L U : ℝ) : ℝ := min 1 (2 * min L U)
 
 /-- "completely at random", p. 397: the uniform law on a nonempty finite design. -/
@@ -138,21 +139,21 @@ noncomputable def uniformLaw (Ω : Type) [Fintype Ω] [Nonempty Ω] : FiniteLaw 
   nonneg := fun _ => by positivity
   total := by simp [div_eq_mul_inv, Fintype.card_ne_zero]
 
-/-- Six assignments with two of four treated; the complete randomization
-design in P016-E004 and P016-E001 witnesses (not paper data). -/
+/-- Six assignments with two of four treated, in the validator's stated order;
+the complete randomization design in E004 and E001 witnesses (not paper data). -/
 def complete4 : Fin 6 → Assignment 4 :=
   ![![true,true,false,false], ![true,false,true,false], ![true,false,false,true],
     ![false,true,true,false], ![false,true,false,true], ![false,false,true,true]]
 
-/-- Four assignments treating one in each block {1,3},{2,4}, P016-E004 witness. -/
+/-- Four assignments treating one in each block {1,3},{2,4}, E004 witness §6. -/
 def blocked4 : Fin 4 → Assignment 4 :=
   ![![true,true,false,false], ![true,false,false,true],
     ![false,true,true,false], ![false,false,true,true]]
 
-/-- Fixed outcomes (0,1,2,3) of the exact P016-E004/P016-E001/P016-E002/P016-E005 witnesses, not the paper's data. -/
+/-- Fixed outcomes (0,1,2,3) of the exact E004/E001/E002/E005 witnesses, not the paper's data. -/
 def u4 : Outcome 4 := ![0,1,2,3]
 
-/-- "sum_i {u_i - (X b)_i}²", corrected equation (2), p. 399; P016-E002. -/
+/-- "sum_i {u_i - (X b)_i}²", corrected equation (2), p. 399; E002. -/
 noncomputable def lsObjective {n k : ℕ} (u : Outcome n) (X : Fin n → Fin k → ℝ)
     (b : Fin k → ℝ) : ℝ := ∑ i, (u i - ∑ j, X i j * b j)^2
 
@@ -160,7 +161,7 @@ noncomputable def lsObjective {n k : ℕ} (u : Outcome n) (X : Fin n → Fin k �
 noncomputable def fitted {n k : ℕ} (X : Fin n → Fin k → ℝ) (b : Fin k → ℝ) : Outcome n :=
   fun i => ∑ j, X i j * b j
 
-/-- "min_b ‖u−Xb‖²", correction P016-E002 to (2), p. 399. The infimum formulation
+/-- "min_b ‖u−Xb‖²", correction E002 to (2), p. 399. The infimum formulation
 does not impose full rank; attainment is stated in T10(b). -/
 noncomputable def lsRSS {n k : ℕ} (u : Outcome n) (X : Fin n → Fin k → ℝ) : ℝ :=
   sInf (Set.range (lsObjective u X))
@@ -172,7 +173,7 @@ noncomputable def treatedNeighbors {n : ℕ} (S : Fin n → Fin n → ℝ)
 /-- "1^T S ... degree of the node", p. 399, §2.1. -/
 noncomputable def degree {n : ℕ} (S : Fin n → Fin n → ℝ) (i : Fin n) : ℝ := ∑ j, S j i
 
-/-- "X ... Z_i, z^T S, 1^T S", p. 399, (2), with the intercept made explicit by P016-E002. -/
+/-- "X ... Z_i, z^T S, 1^T S", p. 399, (2), with the intercept made explicit by E002. -/
 noncomputable def networkX {n : ℕ} (S : Fin n → Fin n → ℝ) (z : Assignment n) :
     Fin n → Fin 4 → ℝ := fun i => ![1,bit (z i),treatedNeighbors S z i,degree S i]
 
@@ -180,11 +181,11 @@ noncomputable def networkX {n : ℕ} (S : Fin n → Fin n → ℝ) (z : Assignme
 noncomputable def basicX {n : ℕ} (z : Assignment n) : Fin n → Fin 2 → ℝ :=
   fun i => ![1,bit (z i)]
 
-/-- Two group multisets, P016-E004 correction to the information contrast, p. 397. -/
+/-- Two group multisets, E004 correction to the information contrast, p. 397. -/
 noncomputable def groupValues {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) : Multiset ℝ :=
   ((Finset.univ.filter (fun i => z i = g)).val).map u
 
-/-- "same multiset of treated values ... and ... control values", P016-E004 correction. -/
+/-- "same multiset of treated values ... and ... control values", E004 correction §5. -/
 def sameMargins {n : ℕ} (u : Outcome n) (z : Assignment n) (v : Outcome n) (w : Assignment n) : Prop :=
   ∀ g, groupValues u z g = groupValues v w g
 
@@ -199,6 +200,12 @@ macro "audit_num" : tactic => `(tactic|
     List.foldr_cons, List.foldr_nil]
    norm_num))
 
+/-- Every exact-design event has nonnegative probability, p. 396, step (3). -/
+theorem mass_nonneg {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (E : Ω → Prop) :
+    0 ≤ mass P E := by
+  classical
+  unfold mass
+  exact Finset.sum_nonneg (fun i _ => by split_ifs <;> simp [P.nonneg])
 
 /-- Monotonicity of probability for the finite assignment law, p. 396. -/
 theorem mass_mono {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) {E F : Ω → Prop}
@@ -216,7 +223,7 @@ theorem mass_mono {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) {E F : Ω → Prop
 theorem mass_all {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) :
     mass P (fun _ => True) = 1 := by simp [mass, P.total]
 
-/-- The union bound for exact randomization events, P016-E005 validity. -/
+/-- The union bound for exact randomization events, E005 validity derivation §3. -/
 theorem mass_or_le {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (E F : Ω → Prop) :
     mass P (fun i => E i ∨ F i) ≤ mass P E + mass P F := by
   classical
@@ -226,7 +233,7 @@ theorem mass_or_le {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (E F : Ω → Pro
   by_cases hE : E i <;> by_cases hF : F i <;> simp [hE,hF,P.nonneg]
 
 /-- Inclusive upper-tail calibration for any statistic under a sharp null,
-p. 397, validity sentence, corrected P016-E005; T12(iii), upper tail. -/
+p. 397, validity sentence, corrected E005; T12(iii), upper tail. -/
 theorem upper_tail_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (s : Ω → ℝ)
     (α : ℝ) (hα : 0 ≤ α) : mass P (fun z => upperP P s z ≤ α) ≤ α := by
   classical
@@ -245,7 +252,7 @@ theorem upper_tail_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (s : Ω →
       exact hA ⟨z,Finset.mem_filter.mpr ⟨Finset.mem_univ _,hz⟩⟩
     simpa [mass,hnone] using hα
 
-/-- Inclusive lower-tail calibration for any statistic, p. 397, P016-E005;
+/-- Inclusive lower-tail calibration for any statistic, p. 397, E005;
 T12(iii), lower tail. No effect-increasing premise is imposed. -/
 theorem lower_tail_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (s : Ω → ℝ)
     (α : ℝ) (hα : 0 ≤ α) : mass P (fun z => lowerP P s z ≤ α) ≤ α := by
@@ -256,7 +263,7 @@ theorem lower_tail_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (s : Ω →
   exact upper_tail_bound P _ α hα
 
 /-- The capped doubled minimum of inclusive exact tails is valid, p. 397,
-corrected P016-E005; T12(iii), including ties and nonuniform assignment weights. -/
+corrected E005; T12(iii), including ties and nonuniform assignment weights. -/
 theorem two_tail_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (s : Ω → ℝ)
     (α : ℝ) (hα : 0 ≤ α) (hα1 : α ≤ 1) :
     mass P (fun z => doubledP (lowerP P s z) (upperP P s z) ≤ α) ≤ α := by
@@ -286,7 +293,7 @@ theorem two_tail_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (s : Ω → �
       _ = α := by ring
 
 /-- T12(iii): the corrected upper-tail level bound on a finite assignment
-support with strictly positive probabilities and alpha in [0,1], p. 397 (P016-E005). -/
+support with strictly positive probabilities and alpha in [0,1], p. 397 (E005). -/
 theorem t12_upper_valid {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
     (hP : ∀ z, 0 < P.weight z) (s : Ω → ℝ)
     (α : ℝ) (hα : 0 ≤ α) (hα1 : α ≤ 1) :
@@ -294,7 +301,7 @@ theorem t12_upper_valid {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
   upper_tail_bound P s α hα
 
 /-- T12(iii): the corrected lower-tail level bound with strictly positive
-support probabilities and alpha in [0,1], p. 397 (P016-E005). -/
+support probabilities and alpha in [0,1], p. 397 (E005). -/
 theorem t12_lower_valid {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
     (hP : ∀ z, 0 < P.weight z) (s : Ω → ℝ)
     (α : ℝ) (hα : 0 ≤ α) (hα1 : α ≤ 1) :
@@ -302,21 +309,30 @@ theorem t12_lower_valid {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
   lower_tail_bound P s α hα
 
 /-- T12(iii): the corrected capped doubled-minimum level bound with strictly
-positive support probabilities and alpha in [0,1], p. 397 (P016-E005). -/
+positive support probabilities and alpha in [0,1], p. 397 (E005). -/
 theorem t12_two_tail_valid {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
     (hP : ∀ z, 0 < P.weight z) (s : Ω → ℝ)
     (α : ℝ) (hα : 0 ≤ α) (hα1 : α ≤ 1) :
     mass P (fun z => doubledP (lowerP P s z) (upperP P s z) ≤ α) ≤ α :=
   two_tail_bound P s α hα hα1
 
+/-- The six listed assignments are exactly complete randomization of two of
+four units; certificate supporting T1/T7/T9/T12 witnesses, E004 §6. -/
+theorem complete4_support : Function.Injective complete4 ∧
+    ∀ z : Assignment 4, groupSize z true = 2 ↔ ∃ k, complete4 k = z := by
+  decide
 
-/-- Listed-order covariance with divisor two, P016-E004 witness (not a paper definition). -/
+/-- The blocked witness really treats one in each block {1,3},{2,4}, E004 §6. -/
+theorem blocked4_support : Function.Injective blocked4 ∧
+    ∀ z : Assignment 4, (z 0 ≠ z 2 ∧ z 1 ≠ z 3) ↔ ∃ k, blocked4 k = z := by decide
+
+/-- Listed-order covariance with divisor two, E004 witness §5 (not a paper definition). -/
 noncomputable def pairedCovariance2 (t c : Outcome 2) : ℝ :=
   ((t 0 - (t 0+t 1)/2)*(c 0 - (c 0+c 1)/2) +
     (t 1 - (t 0+t 1)/2)*(c 1 - (c 0+c 1)/2))/2
 
 /-- T1(i): reversing the listed control pairing reverses covariance but leaves
-the simple SSR and KS unchanged; P016-E004 exact witness, p. 397 contrast. -/
+the simple SSR and KS unchanged; E004 exact witness, p. 397 contrast. -/
 theorem t1_pairing_witness :
     pairedCovariance2 ![0,2] ![1,3] = 1 ∧
     pairedCovariance2 ![0,2] ![3,1] = -1 ∧
@@ -326,7 +342,7 @@ theorem t1_pairing_witness :
   audit_num
 
 /-- T1(ii): exact values of both statistics under complete and blocked designs,
-P016-E004, not a printed data set. -/
+E004 §6, not a printed data set. -/
 theorem t1_design_tables :
     (∀ k, rss u4 (complete4 k) = (![1,4,5,5,4,1] : Fin 6 → ℝ) k ∧
       ks u4 (complete4 k) = (![1,1/2,1/2,1/2,1/2,1] : Fin 6 → ℝ) k) ∧
@@ -335,7 +351,7 @@ theorem t1_design_tables :
   constructor <;> intro k <;> fin_cases k <;> audit_num
 
 /-- T1(ii): changing only the design changes both tail probabilities and the
-covariance of the two means; P016-E004, p. 397 information contrast. -/
+covariance of the two means; E004 §6, p. 397 information contrast. -/
 theorem t1_design_probabilities :
     mass (uniformLaw (Fin 6)) (fun k => rss u4 (complete4 k) ≤ rss u4 (complete4 0)) = 1/3 ∧
     mass (uniformLaw (Fin 6)) (fun k => ks u4 (complete4 0) ≤ ks u4 (complete4 k)) = 1/3 ∧
@@ -346,13 +362,13 @@ theorem t1_design_probabilities :
     covariance (uniformLaw (Fin 4)) (fun k => groupMean u4 (blocked4 k) true)
       (fun k => groupMean u4 (blocked4 k) false) = -1/2 := by audit_num
 
-/-- T2(G): a scalar KS distance does not determine SSR, P016-E004 corrected explanation. -/
+/-- T2(G): a scalar KS distance does not determine SSR, E004 corrected explanation §5. -/
 theorem t2_scalar_ks_witness :
     ks u4 (complete4 1) = 1/2 ∧ ks u4 (complete4 2) = 1/2 ∧
     rss u4 (complete4 1) = 4 ∧ rss u4 (complete4 2) = 5 := by audit_num
 
 /-- T9(i): the literal signed footnote-3 statistic is different from two-sided
-KS and changes on swapping labels, p. 396; P016-E002 exact witness. -/
+KS and changes on swapping labels, p. 396; E002 exact witness. -/
 theorem t9_signed_ks_witness :
     (∀ i : Fin 4, ecdf u4 (complete4 5) true (u4 i) - ecdf u4 (complete4 5) false (u4 i) =
       (![-1/2,-1,-1/2,0] : Outcome 4) i) ∧
@@ -363,14 +379,14 @@ theorem t9_signed_ks_witness :
   · audit_num
 
 /-- T9(ii): the pooled reading of (1) has a point-mass reference distribution,
-whereas the intended group-mean SSR is nonconstant; P016-E002, p. 397. -/
+whereas the intended group-mean SSR is nonconstant; E002, p. 397. -/
 theorem t9_pooled_witness : tss u4 = 5 ∧
     lowerP (uniformLaw (Fin 6)) (fun _ => tss u4) 0 = 1 ∧
     upperP (uniformLaw (Fin 6)) (fun _ => tss u4) 0 = 1 ∧
     lowerP (uniformLaw (Fin 6)) (fun k => rss u4 (complete4 k)) 0 = 1/3 := by audit_num
 
 /-- T11(i)–(ii): KS decreases when treated responses rise and control responses
-fall (also with strict changes in both groups), P016-E005, p. 397. -/
+fall (also with strict changes in both groups), E005, p. 397. -/
 theorem t11_ks_witness :
     (∀ i : Fin 4, if complete4 0 i then u4 i ≤ (![2,3,2,3] : Outcome 4) i
       else (![2,3,2,3] : Outcome 4) i ≤ u4 i) ∧
@@ -383,7 +399,7 @@ theorem t11_ks_witness :
   all_goals first | (intro i; fin_cases i <;> audit_num) | audit_num
 
 /-- T11(iii): raising a treated response can decrease or increase SSR,
-so neither orientation is effect increasing; P016-E005 witness, p. 397. -/
+so neither orientation is effect increasing; E005 witness, p. 397. -/
 theorem t11_rss_witness :
     rss ![0,2,0,2] (complete4 0) = 4 ∧
     rss ![1,2,0,2] (complete4 0) = 5/2 ∧
@@ -394,14 +410,14 @@ theorem t11_rss_witness :
   all_goals first | (intro i; fin_cases i <;> audit_num) | audit_num
 
 /-- T8(a): the corrected adjusted vector equals y0+(tau−tau0)Z and is fixed
-at the true additive hypothesis, p. 396, steps (1)–(2); P016-E001. -/
+at the true additive hypothesis, p. 396, steps (1)–(2); E001. -/
 theorem t8_additive_mapping {n : ℕ} (y : Outcome n) (z : Assignment n) (t t0 : ℝ) :
     additiveAdjust (additiveGenerate y z t) z t0 = additiveGenerate y z (t-t0) ∧
     additiveAdjust (additiveGenerate y z t) z t = y := by
   constructor <;> funext i <;> simp [additiveAdjust,additiveGenerate] <;> ring
 
 /-- T7(i): all six raw observed mean differences are far outside the adjusted
-reference distribution under the true additive effect 10; P016-E001 exact witness. -/
+reference distribution under the true additive effect 10; E001 exact witness. -/
 theorem t7_mean_witness :
     (∀ k : Fin 6, meanDifference u4 (complete4 k) = (![-2,-1,0,0,1,2] : Fin 6 → ℝ) k ∧
       meanDifference (additiveGenerate u4 (complete4 k) 10) (complete4 k) =
@@ -415,7 +431,7 @@ theorem t7_mean_witness :
   intro k; fin_cases k <;> audit_num
 
 /-- T7(i): the printed raw-versus-adjusted comparison rejects the true
-hypothesis with probability one at every positive level; P016-E001, step (4), p. 396. -/
+hypothesis with probability one at every positive level; E001, step (4), p. 396. -/
 theorem t7_mean_rejects_truth (α : ℝ) (hα : 0 < α) :
     mass (uniformLaw (Fin 6)) (fun k =>
       mass (uniformLaw (Fin 6)) (fun j => |meanDifference u4 (complete4 j)| ≥
@@ -427,14 +443,14 @@ theorem t7_mean_rejects_truth (α : ℝ) (hα : 0 < α) :
   simpa only [hα] using mass_all (uniformLaw (Fin 6))
 
 /-- T12(iv): the non-effect-increasing KS nevertheless has valid exact
-upper-tail p values on the six-assignment example, P016-E005 validity check. -/
+upper-tail p values on the six-assignment example, E005 validity check. -/
 theorem t12_ks_p_table : ∀ k : Fin 6,
     upperP (uniformLaw (Fin 6)) (fun j => ks u4 (complete4 j)) k =
       (![1/3,1,1,1,1,1/3] : Fin 6 → ℝ) k := by
   intro k; fin_cases k <;> audit_num
 
 /-- T12(iv): the exact rejection probability is 0, 1/3 or 1 according to the
-printed threshold ranges in the P016-E005 six-assignment check, p. 397. -/
+printed threshold ranges in the E005 six-assignment check, p. 397. -/
 theorem t12_ks_size (α : ℝ) (hα : 0 ≤ α) (hα1 : α ≤ 1) :
     mass (uniformLaw (Fin 6)) (fun k => upperP (uniformLaw (Fin 6))
       (fun j => ks u4 (complete4 j)) k ≤ α) =
@@ -455,11 +471,11 @@ theorem t12_ks_size (α : ℝ) (hα : 0 ≤ α) (hα1 : α ≤ 1) :
       have hyes3 : (1/3 : ℝ) ≤ α := by linarith
       norm_num [hsmall,hmid,hyes1,hyes3]
 
-/-- The row-oriented application exposure (Sz)_i, p. 400; P016-E006 correction. -/
+/-- The row-oriented application exposure (Sz)_i, p. 400; E006 correction. -/
 noncomputable def exposureSum {n : ℕ} (S : Fin n → Fin n → ℝ) (z : Assignment n)
     (i : Fin n) : ℝ := ∑ j, S i j * bit (z j)
 
-/-- "S_ij=1−|s_i−s_j|/2 ... diagonal and undefined entries zero", P016-E006
+/-- "S_ij=1−|s_i−s_j|/2 ... diagonal and undefined entries zero", E006
 corrected application model, p. 400. Optional scores model undefined coordinates. -/
 noncomputable def similarity {n : ℕ} (s : Fin n → Option ℝ) (i j : Fin n) : ℝ :=
   if i = j then 0 else match s i, s j with
@@ -470,69 +486,78 @@ noncomputable def similarity {n : ℕ} (s : Fin n → Option ℝ) (i j : Fin n) 
 noncomputable def distance {n : ℕ} (s : Outcome n) (i j : Fin n) : ℝ := |s i-s j|
 
 /-- "mu_ia ... mean of (Sz')_i among saved ... assignments with z'_i=a",
-P016-E006 correction to the application, p. 400. The theorem premises require both
+E006 correction to the application, p. 400. The theorem premises require both
 conditioning sets to be nonempty. -/
 noncomputable def conditionalMean {n : ℕ} {Ω : Type} [Fintype Ω] (S : Fin n → Fin n → ℝ)
     (bank : Ω → Assignment n) (i : Fin n) (a : Bool) : ℝ :=
   (∑ b, if bank b i = a then exposureSum S (bank b) i else 0) /
     (∑ b, if bank b i = a then (1 : ℝ) else 0)
 
-/-- "h_i(z)=(Sz)_i−z_i mu_i1−(1−z_i)mu_i0", P016-E006 correction, p. 400. -/
+/-- "h_i(z)=(Sz)_i−z_i mu_i1−(1−z_i)mu_i0", E006 correction, p. 400. -/
 noncomputable def centeredExposure {n : ℕ} {Ω : Type} [Fintype Ω] (S : Fin n → Fin n → ℝ)
     (bank : Ω → Assignment n) (z : Assignment n) : Outcome n :=
   fun i => exposureSum S z i - bit (z i)*conditionalMean S bank i true -
     (1-bit (z i))*conditionalMean S bank i false
 
-/-- "s_h(z)^2=(n−1)⁻¹ sum_i(h_i−bar h)^2", P016-E006 correction, p. 400.
+/-- "s_h(z)^2=(n−1)⁻¹ sum_i(h_i−bar h)^2", E006 correction, p. 400.
 The subtraction is in ℝ; all uses of sample variance have n ≥ 2. -/
 noncomputable def sampleVariance {n : ℕ} (h : Outcome n) : ℝ :=
   (∑ i, (h i-pooledMean h)^2) / ((n : ℝ)-1)
 
-/-- "sample standard deviation across all units", P016-E006 correction, p. 400. -/
+/-- "sample standard deviation across all units", E006 correction, p. 400. -/
 noncomputable def sampleSD {n : ℕ} (h : Outcome n) : ℝ := Real.sqrt (sampleVariance h)
 
 /-- "e_i(z)=(h_i(z)−bar h(z))/s_h(z)", positive denominator,
-P016-E006 corrected application model, p. 400. -/
+E006 corrected application model, p. 400. -/
 noncomputable def standardize {n : ℕ} (h : Outcome n) : Outcome n :=
   fun i => (h i-pooledMean h) / sampleSD h
 
-/-- Bank-centered, standardized exposure in the released application, P016-E006, p. 400. -/
+/-- Bank-centered, standardized exposure in the released application, E006, p. 400. -/
 noncomputable def codedExposure {n N : ℕ} (S : Fin n → Fin n → ℝ)
     (bank : Fin N → Assignment n) (z : Assignment n) : Outcome n :=
   standardize (centeredExposure S bank z)
 
-/-- "u=Y−beta1 Z−beta2 e(Z), held fixed", P016-E006 correction, p. 400. -/
+/-- "u=Y−beta1 Z−beta2 e(Z), held fixed", E006 correction, p. 400. -/
 noncomputable def applicationAdjust {n : ℕ} (Y : Outcome n) (Z : Assignment n)
     (e : Outcome n) (b1 b2 : ℝ) : Outcome n := fun i => Y i-bit (Z i)*b1-b2*e i
 
-/-- "u ~ 1+z+e(z)", application regression, P016-E006 correction, p. 400. -/
+/-- "u ~ 1+z+e(z)", application regression, E006 correction, p. 400. -/
 noncomputable def applicationX {n : ℕ} (z : Assignment n) (e : Outcome n) :
     Fin n → Fin 3 → ℝ := fun i => ![1,bit (z i),e i]
 
+/-- The ordinary standardized raw-distance reading of "g(Gamma z) ... unit variance",
+AS PRINTED, p. 400, §3. The printed g is otherwise unspecified. -/
+noncomputable def printedExposure {n : ℕ} (Γ : Fin n → Fin n → ℝ) (z : Assignment n) : Outcome n :=
+  standardize (exposureSum Γ z)
+
+/-- "y0=yz−beta1 z−beta2 g(Gamma z)", AS PRINTED, §3, p. 400. -/
+noncomputable def printedApplicationAdjust {n : ℕ} (Y : Outcome n) (z : Assignment n)
+    (Γ : Fin n → Fin n → ℝ) (b1 b2 : ℝ) : Outcome n :=
+  applicationAdjust Y z (printedExposure Γ z) b1 b2
 
 /-- "p values ... less than .05", AS PRINTED, pp. 398, 400 and Fig. 3, p. 401. -/
 def printedReject (p : ℝ) : Prop := p < 1/20
 
-/-- "p <= .05", the released simulations, explicitly specified by P016-E006, p. 400. -/
+/-- "p <= .05", the released simulations, explicitly specified by E006, p. 400. -/
 def codedReject (p : ℝ) : Prop := p ≤ 1/20
 
-/-- The four matched-pair bank assignments of P016-E006 T3(i), not paper data. -/
+/-- The four matched-pair bank assignments of E006 T3(i), not paper data. -/
 def matchedBank4 : Fin 4 → Assignment 4 :=
   ![![false,true,false,true], ![false,true,true,false],
     ![true,false,false,true], ![true,false,true,false]]
 
-/-- The eight matched-pair assignments of P016-E006 T3(ii), indexed by three bits. -/
+/-- The eight matched-pair assignments of E006 T3(ii), indexed by three bits. -/
 def matchedBank6 (b : Fin 3 → Bool) : Assignment 6 :=
   ![b 0, !(b 0), b 1, !(b 1), b 2, !(b 2)]
 
-/-- Scores of the four-unit P016-E006 witness, not the legislative data. -/
+/-- Scores of the four-unit E006 witness, not the legislative data. -/
 noncomputable def scores4 : Outcome 4 := ![-1,-1/2,1/2,1]
 
-/-- Scores of the six-unit P016-E006 witness, not the legislative data. -/
+/-- Scores of the six-unit E006 witness, not the legislative data. -/
 noncomputable def scores6 : Outcome 6 := ![-1,-3/4,-1/2,0,1/4,1]
 
 /-- T3(i): the exposure at equal raw exposures for two treated units is unequal,
-so no changed intercept/direct coefficient/rescaling recovers it; P016-E006, p. 400. -/
+so no changed intercept/direct coefficient/rescaling recovers it; E006, p. 400. -/
 theorem t3_four_unit_exposure :
     (∀ i j : Fin 4, similarity (fun k => some (scores4 k)) i j =
       (!![0,3/4,1/4,0; 3/4,0,1/2,1/4; 1/4,1/2,0,3/4; 0,1/4,3/4,0] :
@@ -567,7 +592,7 @@ theorem t3_four_unit_exposure :
     norm_num [complete4,bit] at h0 h2
     linarith
 
-/-- T3(i),(iii): exact nonzero determinant certificates, P016-E006. The second matrix
+/-- T3(i),(iii): exact nonzero determinant certificates, E006. The second matrix
 uses the first four table rows as exact recorded rationals, not rounded estimates. -/
 theorem t3_determinants :
     Matrix.det (!![1,1,1/4,1/8; 1,0,5/4,1/8; 1,1,1/4,-1/8; 1,0,3/4,-1/8] :
@@ -582,7 +607,7 @@ theorem t3_determinants :
   norm_num [Fin.succAbove]
 
 /-- T3(iii): in the four exact recorded application rows h is not an affine
-function of own treatment and raw exposure, P016-E006, p. 400. -/
+function of own treatment and raw exposure, E006, §3, p. 400. -/
 theorem t3_table_not_affine :
     ¬ ∃ A B C : ℝ, ∀ i : Fin 4,
       (![370753999962044/10^15,240866262449021/10^15,
@@ -596,7 +621,7 @@ theorem t3_table_not_affine :
   linarith
 
 /-- T4(a): the corrected application adjustment is fixed under a true model,
-P016-E006 corrected model, p. 400. -/
+E006 corrected §3 model, p. 400. -/
 theorem t4_application_mapping {n N : ℕ} (hn : 2 ≤ n)
     (S : Fin n → Fin n → ℝ) (hS : ∀ i j, S i j = S j i) (hdiag : ∀ i, S i i = 0)
     (bank : Fin N → Assignment n) (hbank : ∀ i a, ∃ b, bank b i = a)
@@ -651,7 +676,7 @@ theorem t6_printed_general_model_consistency {n : ℕ} (hn : 2 ≤ n)
   simp only [applicationAdjust,hy]
   ring
 
-/-- T4(e): weak and strict cutoffs differ exactly at equality, P016-E006,
+/-- T4(e): weak and strict cutoffs differ exactly at equality, E006,
 pp. 398, 400 and Fig. 3. -/
 theorem t4_cutoff_difference (p α : ℝ) : (p ≤ α ∧ ¬ p < α) ↔ p = α := by
   constructor
@@ -661,7 +686,7 @@ theorem t4_cutoff_difference (p α : ℝ) : (p ≤ α ∧ ¬ p < α) ↔ p = α 
     exact ⟨le_rfl,lt_irrefl _⟩
 
 /-- Sum of squared residuals at a least-squares minimizer really is the minimum,
-corrected (2), p. 399 (P016-E002). -/
+corrected (2), p. 399 (E002). -/
 theorem lsRSS_of_minimizer {n k : ℕ} (u : Outcome n) (X : Fin n → Fin k → ℝ)
     (b : Fin k → ℝ) (hb : ∀ c, lsObjective u X b ≤ lsObjective u X c) :
     lsRSS u X = lsObjective u X b := by
@@ -669,7 +694,7 @@ theorem lsRSS_of_minimizer {n k : ℕ} (u : Outcome n) (X : Fin n → Fin k → 
   exact ⟨⟨b,rfl⟩,fun x ⟨c,hc⟩ => hc ▸ hb c⟩
 
 /-- A finite OLS minimum can be certified by its exact excess sum of squares;
-this avoids numerical inversion and is used for P016-E002/P016-E004/P016-E006 witnesses. -/
+this avoids numerical inversion and is used for E002/E004/E006 witnesses. -/
 theorem lsRSS_of_square_certificate {n k : ℕ} (u : Outcome n) (X : Fin n → Fin k → ℝ)
     (b : Fin k → ℝ) (hcert : ∀ c, lsObjective u X c = lsObjective u X b +
       ∑ i, (fitted X c i-fitted X b i)^2) : lsRSS u X = lsObjective u X b := by
@@ -679,7 +704,7 @@ theorem lsRSS_of_square_certificate {n k : ℕ} (u : Outcome n) (X : Fin n → F
   apply le_add_of_nonneg_right
   exact Finset.sum_nonneg (fun i _ => sq_nonneg (fitted X c i-fitted X b i))
 
-/-- Both groups' sums together give the full population sum, P016-E004 decomposition. -/
+/-- Both groups' sums together give the full population sum, E004 decomposition. -/
 theorem group_sums {n : ℕ} (u : Outcome n) (z : Assignment n) :
     groupSum u z false + groupSum u z true = ∑ i, u i := by
   classical
@@ -688,7 +713,7 @@ theorem group_sums {n : ℕ} (u : Outcome n) (z : Assignment n) :
   intro i _
   cases z i <;> simp
 
-/-- Group sizes partition the population, P016-E004, p. 397. -/
+/-- Group sizes partition the population, E004, p. 397. -/
 theorem group_sizes {n : ℕ} (z : Assignment n) : groupSize z false + groupSize z true = n := by
   classical
   rw [groupSize,groupSize,← Finset.sum_add_distrib]
@@ -698,14 +723,14 @@ theorem group_sizes {n : ℕ} (z : Assignment n) : groupSize z false + groupSize
     cases z i <;> simp
   · simp
 
-/-- The mean times the nonempty group's size equals its sum, P016-E004. -/
+/-- The mean times the nonempty group's size equals its sum, E004 §2. -/
 theorem group_mean_sum {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool)
     (hg : 0 < groupSize z g) : (groupSize z g : ℝ) * groupMean u z g = groupSum u z g := by
   have hne : (groupSize z g : ℝ) ≠ 0 := ne_of_gt (Nat.cast_pos.mpr hg)
   unfold groupMean
   field_simp
 
-/-- Expanding squares about an arbitrary group center, P016-E004 finite identity. -/
+/-- Expanding squares about an arbitrary group center, E004 §2 finite identity. -/
 theorem group_square_expansion {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) (c : ℝ) :
     groupSum (fun i => (u i-c)^2) z g = groupSum (fun i => (u i)^2) z g -
       2*c*groupSum u z g + (groupSize z g : ℝ)*c^2 := by
@@ -724,7 +749,7 @@ theorem group_square_expansion {n : ℕ} (u : Outcome n) (z : Assignment n) (g :
       simp only [Finset.sum_add_distrib,Finset.sum_sub_distrib,← Finset.mul_sum,← Finset.sum_mul]
 
 /-- Centering a nonempty group at its mean gives the square decomposition,
-P016-E004, finite lemma supporting corrected equation (1), p. 397. -/
+E004 §2, finite lemma supporting corrected equation (1), p. 397. -/
 theorem group_center_decomposition {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool)
     (hg : 0 < groupSize z g) (c : ℝ) :
     groupSum (fun i => (u i-c)^2) z g =
@@ -733,7 +758,7 @@ theorem group_center_decomposition {n : ℕ} (u : Outcome n) (z : Assignment n) 
   rw [group_square_expansion,group_square_expansion,← group_mean_sum u z g hg]
   ring
 
-/-- The corrected group SSR is the sum of the two group objectives, P016-E004. -/
+/-- The corrected group SSR is the sum of the two group objectives, E004 §2. -/
 theorem rss_groups {n : ℕ} (u : Outcome n) (z : Assignment n) :
     rss u z = groupSum (fun i => (u i-groupMean u z false)^2) z false +
       groupSum (fun i => (u i-groupMean u z true)^2) z true := by
@@ -745,7 +770,7 @@ theorem rss_groups {n : ℕ} (u : Outcome n) (z : Assignment n) :
   cases hz : z i <;> simp [hz]
 
 /-- Splitting the intercept-and-treatment objective into the two groups,
-P016-E004, correction of equation (1), p. 397. -/
+E004 §2, correction of equation (1), p. 397. -/
 theorem basic_objective_groups {n : ℕ} (u : Outcome n) (z : Assignment n) (a b : ℝ) :
     lsObjective u (basicX z) ![a,b] = groupSum (fun i => (u i-a)^2) z false +
       groupSum (fun i => (u i-(a+b))^2) z true := by
@@ -757,7 +782,7 @@ theorem basic_objective_groups {n : ℕ} (u : Outcome n) (z : Assignment n) (a b
   cases hz : z i <;> simp [hz,bit,Fin.sum_univ_succ] <;> ring
 
 /-- Exact excess of any coefficient objective above the group-mean objective,
-P016-E004, finite lemma supporting corrected (1), p. 397. -/
+E004 §2, finite lemma supporting corrected (1), p. 397. -/
 theorem basic_objective_decomposition {n : ℕ} (u : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) (a b : ℝ) :
     lsObjective u (basicX z) ![a,b] = rss u z +
@@ -767,7 +792,7 @@ theorem basic_objective_decomposition {n : ℕ} (u : Outcome n) (z : Assignment 
     group_center_decomposition u z true h1 (a+b),rss_groups]
   ring
 
-/-- The exact second-moment expression of within-group SSR, P016-E004. -/
+/-- The exact second-moment expression of within-group SSR, E004 §2. -/
 theorem rss_second_moments {n : ℕ} (u : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) :
     rss u z = (∑ i, (u i)^2) - (groupSize z false : ℝ)*(groupMean u z false)^2 -
@@ -779,7 +804,7 @@ theorem rss_second_moments {n : ℕ} (u : Outcome n) (z : Assignment n)
 
 /-- T2(A),T10(a): the simple regression has the unique coefficient minimum
 alpha=m0, beta=m1−m0; its value is the sum of within-group squared residuals
-and the second-moment expression, corrected (1), p. 397 (P016-E004/P016-E002). -/
+and the second-moment expression, corrected (1), p. 397 (E004/E002). -/
 theorem t2_least_squares {n : ℕ} (hn : 2 ≤ n) (u : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) :
     lsRSS u (basicX z) = rss u z ∧
@@ -816,7 +841,7 @@ theorem t2_least_squares {n : ℕ} (hn : 2 ≤ n) (u : Outcome n) (z : Assignmen
       simp [meanDifference]
 
 /-- Centering the whole population: TSS has the exact second-moment form,
-P016-E004, finite lemma supporting the decomposition in corrected (1), p. 397. -/
+E004 §3, finite lemma supporting the decomposition in corrected (1), p. 397. -/
 theorem tss_second_moments {n : ℕ} (hn : 0 < n) (u : Outcome n) :
     tss u = (∑ i, (u i)^2)-(n : ℝ)*(pooledMean u)^2 := by
   have hsum : (n : ℝ)*pooledMean u = ∑ i, u i := by
@@ -834,7 +859,7 @@ theorem tss_second_moments {n : ℕ} (hn : 0 < n) (u : Outcome n) :
     _ = _ := by rw [← hsum]; ring
 
 /-- T2(B): within-group SSR equals TSS minus the scaled squared mean difference,
-corrected explanation of (1), p. 397 (P016-E004). -/
+corrected explanation of (1), p. 397 (E004). -/
 theorem t2_decomposition {n : ℕ} (hn : 2 ≤ n) (u : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) :
     rss u z = tss u - (groupSize z false : ℝ)*groupSize z true/n*(meanDifference u z)^2 := by
@@ -853,7 +878,7 @@ theorem t2_decomposition {n : ℕ} (hn : 2 ≤ n) (u : Outcome n) (z : Assignmen
   ring
 
 /-- T2(C): for the SAME fixed outcomes and positive fixed group sizes, ordering
-SSR reverses ordering of absolute differences of means; P016-E004, p. 397. -/
+SSR reverses ordering of absolute differences of means; E004, p. 397. -/
 theorem t2_tail_equivalence {n : ℕ} (hn : 2 ≤ n) (u : Outcome n) (z w : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true)
     (hw : groupSize w true = groupSize z true) :
@@ -881,7 +906,7 @@ theorem t2_tail_equivalence {n : ℕ} (hn : 2 ≤ n) (u : Outcome n) (z w : Assi
   rw [horder,sq_le_sq]
 
 /-- T2(C), probability consequence: the lower SSR tail and the absolute mean-
-difference upper tail are identical for every fixed-size finite design; P016-E004. -/
+difference upper tail are identical for every fixed-size finite design; E004. -/
 theorem t2_tail_probability {n : ℕ} {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
     (hn : 2 ≤ n) (u : Outcome n) (zobs : Assignment n) (assign : Ω → Assignment n)
     (h0 : 0 < groupSize zobs false) (h1 : 0 < groupSize zobs true)
@@ -895,7 +920,7 @@ theorem t2_tail_probability {n : ℕ} {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω
   simp only [t2_tail_equivalence hn u zobs (assign ω) h0 h1 (hsize ω)]
 
 /-- T2(D): the basic SSR uses only the first two empirical group moments,
-P016-E004 corrected information contrast, p. 397. -/
+E004 corrected information contrast, p. 397. -/
 theorem t2_group_moments {n : ℕ} (hn : 2 ≤ n) (u : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) :
     rss u z = (groupSize z false : ℝ) * (groupMean (fun i => (u i)^2) z false -
@@ -907,7 +932,7 @@ theorem t2_group_moments {n : ℕ} (hn : 2 ≤ n) (u : Outcome n) (z : Assignmen
   have hm1 := group_mean_sum (fun i => (u i)^2) z true h1
   nlinarith
 
-/-- Group-multiset cardinality is the group size, P016-E004, p. 397. -/
+/-- Group-multiset cardinality is the group size, E004 §5, p. 397. -/
 theorem group_values_card {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) :
     (groupValues u z g).card = groupSize z g := by
   classical
@@ -917,7 +942,7 @@ theorem group_values_card {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool
   rfl
 
 /-- Summing the empirical group multiset gives the group outcome sum,
-P016-E004, p. 397. -/
+E004 §5, p. 397. -/
 theorem group_values_sum {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) :
     (groupValues u z g).sum = groupSum u z g := by
   classical
@@ -925,7 +950,7 @@ theorem group_values_sum {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool)
   simp only [Finset.sum_filter,groupSum]
 
 /-- The exact second moment is also a sum over the empirical group multiset,
-P016-E004, p. 397. -/
+E004 §5, p. 397. -/
 theorem group_values_square {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) :
     ((groupValues u z g).map (fun x => x^2)).sum = groupSum (fun i => (u i)^2) z g := by
   classical
@@ -933,7 +958,7 @@ theorem group_values_square {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bo
   change (∑ i ∈ Finset.univ.filter (fun i => z i = g), (u i)^2) = groupSum (fun i => (u i)^2) z g
   simp only [Finset.sum_filter,groupSum]
 
-/-- The simple SSR is determined by the two group multisets, P016-E004 correction,
+/-- The simple SSR is determined by the two group multisets, E004 correction,
 p. 397; finite portion of T2(D), also refuting the AS-PRINTED T5 claim. -/
 theorem t2_rss_margin_invariance {n : ℕ} (hn : 2 ≤ n) (u v : Outcome n) (z w : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) (hm : sameMargins u z v w) :
@@ -974,7 +999,7 @@ theorem le_fold_max (l : List ℝ) (x : ℝ) (hx : x ∈ l) : x ≤ l.foldr max 
     · exact (ih hx).trans (le_max_right _ _)
 
 /-- The sample KS distance bounds the ECDF difference at EVERY real threshold,
-including ties; finite lemma for corrected footnote 3, p. 396 (P016-E002). -/
+including ties; finite lemma for corrected footnote 3, p. 396 (E002). -/
 theorem ks_threshold_bound {n : ℕ} (u : Outcome n) (z : Assignment n) (t : ℝ) :
     |ecdf u z true t-ecdf u z false t| ≤ ks u z := by
   classical
@@ -1004,7 +1029,7 @@ theorem ks_threshold_bound {n : ℕ} (u : Outcome n) (z : Assignment n) (t : ℝ
     | cons a l ih => exact ih.trans (le_max_right _ _)
 
 /-- The sample-point maximum is the supremum over all thresholds, including
-ties; correction to footnote 3, p. 396 (P016-E002), without any full-rank or untied-
+ties; correction to footnote 3, p. 396 (E002), without any full-rank or untied-
 outcome premise. -/
 theorem ks_threshold_sup {n : ℕ} (u : Outcome n) (z : Assignment n) :
     ks u z = sSup (Set.range (fun t : ℝ => |ecdf u z true t-ecdf u z false t|)) := by
@@ -1020,7 +1045,7 @@ theorem ks_threshold_sup {n : ℕ} (u : Outcome n) (z : Assignment n) :
   · exact csSup_le hne (fun x ⟨t,ht⟩ => ht ▸ ks_threshold_bound u z t)
 
 /-- Each group ECDF lies between zero and one when the group is nonempty,
-footnote 3, p. 396 (P016-E002). -/
+footnote 3, p. 396 (E002). -/
 theorem ecdf_range {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) (t : ℝ)
     (hg : 0 < groupSize z g) : 0 ≤ ecdf u z g t ∧ ecdf u z g t ≤ 1 := by
   classical
@@ -1036,7 +1061,7 @@ theorem ecdf_range {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) (t : 
   exact ⟨div_nonneg hn hd.le,(div_le_iff₀ hd).mpr (by simpa using hle)⟩
 
 /-- Group ECDFs are interchanged by swapping binary labels, correction to
-footnote 3, p. 396 (P016-E002). -/
+footnote 3, p. 396 (E002). -/
 theorem ecdf_swap_labels {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) (t : ℝ) :
     ecdf u (fun i => !(z i)) g t = ecdf u z (!g) t := by
   have hb : ∀ i, (Bool.not (z i) = g) ↔ z i = Bool.not g := by
@@ -1044,7 +1069,7 @@ theorem ecdf_swap_labels {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool)
   simp only [ecdf,groupSize,hb]
 
 /-- Integrating an arbitrary function of empirical group values gives its
-group sum, P016-E004 margin-invariance correction, p. 397. -/
+group sum, E004 margin-invariance correction, p. 397. -/
 theorem group_values_function {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) (f : ℝ → ℝ) :
     ((groupValues u z g).map f).sum = groupSum (fun i => f (u i)) z g := by
   classical
@@ -1053,7 +1078,7 @@ theorem group_values_function {n : ℕ} (u : Outcome n) (z : Assignment n) (g : 
   simp only [Finset.sum_filter,groupSum]
 
 /-- Each empirical group CDF is the group mean of threshold indicators,
-footnote 3, p. 396 and P016-E004 covariance correction. -/
+footnote 3, p. 396 and E004 covariance correction. -/
 theorem ecdf_indicator_mean {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) (x : ℝ) :
     ecdf u z g x = groupMean (fun i => if u i ≤ x then 1 else 0) z g := by
   classical
@@ -1064,7 +1089,7 @@ theorem ecdf_indicator_mean {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bo
   by_cases hi : z i = g <;> by_cases hu : u i ≤ x <;> simp [hi,hu]
 
 /-- T2(D): neither simple SSR nor KS uses information beyond the two group
-multisets; corrected P016-E004 information contrast, p. 397. -/
+multisets; corrected E004 information contrast, p. 397. -/
 theorem t2_margin_invariance {n : ℕ} (hn : 2 ≤ n) (u v : Outcome n) (z w : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) (hm : sameMargins u z v w) :
     rss u z = rss v w ∧ ks u z = ks v w := by
@@ -1081,9 +1106,12 @@ theorem t2_margin_invariance {n : ℕ} (hn : 2 ≤ n) (u v : Outcome n) (z w : A
   rw [ks_threshold_sup,ks_threshold_sup]
   simp only [hCDF]
 
+/-- Finite design expectation of a constant, E004 design dependence, p. 397. -/
+theorem expectation_const {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (c : ℝ) :
+    expectation P (fun _ => c) = c := by simp [expectation,← Finset.sum_mul,P.total]
 
 /-- Under a deterministic affine relation, covariance is the corresponding
-multiple of variance; P016-E004, finite randomization lemma. -/
+multiple of variance; E004 §6, finite randomization lemma. -/
 theorem covariance_affine {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
     (f g : Ω → ℝ) (C k : ℝ) (hg : ∀ ω, g ω = C-k*f ω) :
     covariance P f g = -k*variance P f := by
@@ -1108,7 +1136,7 @@ theorem covariance_affine {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
   ring
 
 /-- The fixed-size two means obey a deterministic linear constraint under
-every realized assignment, P016-E004, p. 397. -/
+every realized assignment, E004 §6, p. 397. -/
 theorem design_mean_constraint {n : ℕ} {Ω : Type} [Fintype Ω] (hn : 0 < n)
     (u : Outcome n) (assign : Ω → Assignment n) (n0 n1 : ℕ) (h0 : 0 < n0) (h1 : 0 < n1)
     (hsize : ∀ ω, groupSize (assign ω) false = n0 ∧ groupSize (assign ω) true = n1) :
@@ -1126,7 +1154,7 @@ theorem design_mean_constraint {n : ℕ} {Ω : Type} [Fintype Ω] (hn : 0 < n)
   field_simp
 
 /-- A fixed-size linear constraint entails the finite-design covariance
-identity, P016-E004, p. 397. -/
+identity, E004 §6, p. 397. -/
 theorem covariance_from_constraint {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
     (f g : Ω → ℝ) (n0 n1 C : ℝ) (h0 : n0 ≠ 0)
     (hrel : ∀ ω, n1*f ω+n0*g ω = C) : covariance P f g = -n1/n0*variance P f := by
@@ -1137,7 +1165,7 @@ theorem covariance_from_constraint {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
   simpa only [neg_div] using covariance_affine P f g (C/n0) (n1/n0) hg
 
 /-- T2(E): both means AND ECDFs have the design-induced linear dependence and
-covariance identity, P016-E004 corrected explanation, p. 397. -/
+covariance identity, E004 corrected explanation, p. 397. -/
 theorem t2_design_dependence {n : ℕ} {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
     (hn : 2 ≤ n) (u : Outcome n) (assign : Ω → Assignment n) (n0 n1 : ℕ)
     (h0 : 0 < n0) (h1 : 0 < n1)
@@ -1164,7 +1192,7 @@ theorem t2_design_dependence {n : ℕ} {Ω : Type} [Fintype Ω] (P : FiniteLaw �
     exact ⟨hCDF,covariance_from_constraint P _ _ n0 n1 _ hne hCDF⟩
 
 /-- T2(F): extra network degree carries alignment information beyond group
-margins; P016-E004 four-node path witness (not a paper data set), p. 399. -/
+margins; E004 four-node path witness (not a paper data set), p. 399. -/
 theorem t2_network_alignment :
     let z := complete4 1
     let S : Fin 4 → Fin 4 → ℝ := !![0,0,1,0; 0,0,0,1; 1,0,0,1; 0,1,1,0]
@@ -1210,11 +1238,15 @@ theorem t2_network_alignment :
     | (simp only [lsObjective,degree,Fin.sum_univ_succ,Fin.sum_univ_zero]; audit_num)
     | audit_num
 
-
-
+/- Formalizable reading of the p. 397 information contrast AS PRINTED (T5):
+SSR distinguishes a cross-group relation that unchanged margins and KS do not.
+E004 refutes this assertion; it is deliberately left as a drafted false statement. -/
+/- The false assertion `t5_printed_information_contrast` is retired.
+Its original closed contract is archived in the confidence-all campaign,
+and its checked refutation is recorded in the completion ledger. -/
 
 /-- Refutation of T5's AS-PRINTED information contrast: identical empirical
-group margins force identical simple SSR, P016-E004 correction, p. 397. -/
+group margins force identical simple SSR, E004 correction, p. 397. -/
 theorem t5_printed_contrast_refuted :
     ¬ (∃ n : ℕ, ∃ u v : Outcome n, ∃ z w : Assignment n,
       2 ≤ n ∧ 0 < groupSize z false ∧ 0 < groupSize z true ∧
@@ -1223,7 +1255,7 @@ theorem t5_printed_contrast_refuted :
   exact hne (t2_rss_margin_invariance hn u v z w h0 h1 hm)
 
 /-- T10(b): least squares attains its minimum even for rank-deficient X, and
-all minimizers have the same fitted vector, corrected (2), p. 399 (P016-E002). -/
+all minimizers have the same fitted vector, corrected (2), p. 399 (E002). -/
 theorem least_squares_attained {n k : ℕ} (u : Outcome n) (X : Fin n → Fin k → ℝ) :
     (∃ b, lsObjective u X b = lsRSS u X) ∧
     (∀ b c, lsObjective u X b = lsRSS u X → lsObjective u X c = lsRSS u X → fitted X b = fitted X c) := by
@@ -1290,7 +1322,7 @@ theorem least_squares_attained {n k : ℕ} (u : Outcome n) (X : Fin n → Fin k 
 
 /-- T10(b): on the correction's outcome/assignment domain with both groups
 nonempty, every real design matrix has an attained least-squares minimum and
-all minimizers yield the same fitted vector, corrected (2), p. 399 (P016-E002). -/
+all minimizers yield the same fitted vector, corrected (2), p. 399 (E002). -/
 theorem t10_general_least_squares {n k : ℕ} (u : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true)
     (X : Fin n → Fin k → ℝ) :
@@ -1299,7 +1331,7 @@ theorem t10_general_least_squares {n k : ℕ} (u : Outcome n) (z : Assignment n)
   least_squares_attained u X
 
 /-- T10(c): the sample maximum equals the real-threshold supremum, with ties;
-KS is label-symmetric and in [0,1], corrected footnote 3, p. 396 (P016-E002). -/
+KS is label-symmetric and in [0,1], corrected footnote 3, p. 396 (E002). -/
 theorem t10_ks_supremum {n : ℕ} (u : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) :
     ks u z = sSup (Set.range (fun t : ℝ => |ecdf u z true t - ecdf u z false t|)) ∧
@@ -1320,7 +1352,7 @@ theorem t10_ks_supremum {n : ℕ} (u : Outcome n) (z : Assignment n)
     exact abs_le.mpr ⟨by linarith,by linarith⟩
 
 /-- T10(d): for the undirected graph the column formulas in (2) are the row
-formulas for numbers of treated neighbors and degree, p. 399 (P016-E002). -/
+formulas for numbers of treated neighbors and degree, p. 399 (E002). -/
 theorem t10_symmetric_network {n : ℕ} (S : Fin n → Fin n → ℝ)
     (hS : ∀ i j, S i j = S j i) (hbin : ∀ i j, S i j = 0 ∨ S i j = 1)
     (hdiag : ∀ i, S i i = 0) (z : Assignment n) (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) (i : Fin n) :
@@ -1330,20 +1362,20 @@ theorem t10_symmetric_network {n : ℕ} (S : Fin n → Fin n → ℝ)
   · exact hS j i
 
 /-- Inclusive lower count among B reference values, simulations described on
-p. 400; P016-E006/P016-E008 make the tail convention explicit. -/
+p. 400; E006/E008 make the tail convention explicit. -/
 noncomputable def lowerCount {B : ℕ} (ref : Fin B → ℝ) (obs : ℝ) : ℕ :=
   ∑ b, if ref b ≤ obs then 1 else 0
 
-/-- Inclusive upper count among B reference values, p. 400; P016-E006/P016-E008. -/
+/-- Inclusive upper count among B reference values, p. 400; E006/E008. -/
 noncomputable def upperCount {B : ℕ} (ref : Fin B → ℝ) (obs : ℝ) : ℕ :=
   ∑ b, if obs ≤ ref b then 1 else 0
 
-/-- "min{1,2 min(L,U)/B}", simulation raw p value, P016-E008, p. 400. -/
+/-- "min{1,2 min(L,U)/B}", archived simulation raw p value, E008, p. 400. -/
 noncomputable def rawP {B : ℕ} (ref : Fin B → ℝ) (obs : ℝ) : ℝ :=
   doubledP ((lowerCount ref obs : ℝ)/B) ((upperCount ref obs : ℝ)/B)
 
 /-- T4(e): inclusive lower and upper sampled tails sum to at least one,
-P016-E006 corrected test specification, p. 400 (ties are counted in both). -/
+E006 corrected test specification, p. 400 (ties are counted in both). -/
 theorem t4_tail_coverage {B : ℕ} (hB : 0 < B) (ref : Fin B → ℝ) (obs : ℝ) :
     (lowerCount ref obs : ℝ)/B + (upperCount ref obs : ℝ)/B ≥ 1 := by
   have h : B ≤ lowerCount ref obs + upperCount ref obs := by
@@ -1358,7 +1390,7 @@ theorem t4_tail_coverage {B : ℕ} (hB : 0 < B) (ref : Fin B → ℝ) (obs : ℝ
   exact (le_div_iff₀ hb).mpr (by simpa using hc)
 
 /-- Inclusive counts for the bank 1,...,B, without expanding a thousand terms,
-finite lemma for P016-E006 cutoff/tail witness, p. 400. -/
+finite lemma for E006 cutoff/tail witness, p. 400. -/
 theorem consecutive_counts {B : ℕ} (k : Fin B) :
     lowerCount (fun b : Fin B => (b.val : ℝ)+1) ((k.val : ℝ)+1) = k.val+1 ∧
     upperCount (fun b : Fin B => (b.val : ℝ)+1) ((k.val : ℝ)+1) = B-k.val := by
@@ -1383,7 +1415,7 @@ theorem consecutive_counts {B : ℕ} (k : Fin B) :
 
 /-- T3(iv): at the specified observed values in the 1000-point reference bank,
 the code and printed cutoff differ and the two tail rules are incomparable;
-P016-E006 witness, pp. 398, 400. -/
+E006 witness, pp. 398, 400. -/
 theorem t3_cutoff_witness :
     let ref : Fin 1000 → ℝ := fun b => (b.val : ℝ)+1
     (lowerCount ref 25 = 25 ∧ upperCount ref 25 = 976 ∧ rawP ref 25 = 1/20 ∧
@@ -1401,7 +1433,7 @@ theorem t3_cutoff_witness :
   norm_num [doubledP,codedReject,printedReject]
 
 /-- Expanding a finite Boolean assignment bank by its first bit; finite
-calculation lemma for the six-unit P016-E006 witness, p. 400. -/
+calculation lemma for the six-unit E006 witness, p. 400. -/
 theorem sum_bool_fin_succ (n : ℕ) (f : (Fin (n+1) → Bool) → ℝ) :
     (∑ b, f b) = ∑ a : Bool, ∑ t : Fin n → Bool, f (Fin.cons a t) := by
   rw [← (Fin.consEquiv (fun _ : Fin (n+1) => Bool)).sum_comp f,
@@ -1409,13 +1441,13 @@ theorem sum_bool_fin_succ (n : ℕ) (f : (Fin (n+1) → Bool) → ℝ) :
   rfl
 
 /-- Three-bit bank indices written as explicit binary vectors; finite
-enumeration lemma for the matched-pair P016-E006 witness, p. 400. -/
+enumeration lemma for the matched-pair E006 witness, p. 400. -/
 theorem bool_cons_vec_three (a b c : Bool) (v : Fin 0 → Bool) :
     Fin.cons a (Fin.cons b (Fin.cons c v)) = ![a,b,c] := by
   funext i; fin_cases i <;> rfl
 
 /-- T4(b): centering/scaling produces mean zero and sample variance one and
-preserves OLS SSR with intercept and own treatment, P016-E006 correction, p. 400. -/
+preserves OLS SSR with intercept and own treatment, E006 correction, p. 400. -/
 theorem t4_standardization {n : ℕ} (hn : 2 ≤ n) (h u : Outcome n) (z : Assignment n)
     (hs : 0 < sampleSD h) :
     (∑ i, standardize h i) = 0 ∧ (∑ i, (standardize h i)^2)/((n : ℝ)-1) = 1 ∧
@@ -1476,7 +1508,7 @@ theorem t4_standardization {n : ℕ} (hn : 2 ≤ n) (h u : Outcome n) (z : Assig
       exact ⟨_,(hb c).symm⟩
 
 /-- T3(ii): the full six-unit centered-similarity witness, including its
-three exact least-squares minima, P016-E006 correction, p. 400. -/
+three exact least-squares minima, E006 correction, p. 400. -/
 theorem t3_six_unit_exposure :
     let S := similarity (fun k => some (scores6 k))
     let z : Assignment 6 := ![true,false,true,false,true,false]
@@ -1574,7 +1606,7 @@ theorem t3_six_unit_exposure :
 
 /-- T4(d): the complete four-unit bank has positive exposure SD and even the
 standardized coded exposure cannot be absorbed into an intercept, own-treatment
-coefficient and raw similarity sum, P016-E006 corrected model, p. 400. -/
+coefficient and raw similarity sum, E006 corrected model, p. 400. -/
 theorem t4_centering_not_rescaling :
     let S := similarity (fun k => some (scores4 k))
     let h := centeredExposure S matchedBank4 (complete4 1)
@@ -1609,7 +1641,7 @@ theorem t4_centering_not_rescaling :
 
 /-- T4(c): similarity sums equal m−z_i−half the distance sums; with the SAME
 fixed-size bank conditional centering cancels the first two terms and the
-standardized exposures differ in sign, P016-E006 corrected model, p. 400. -/
+standardized exposures differ in sign, E006 corrected model, p. 400. -/
 theorem t4_similarity_orientation {n N : ℕ} (hn : 2 ≤ n) (s : Outcome n)
     (bank : Fin N → Assignment n) (hbank : ∀ i a, ∃ b, bank b i = a)
     (z : Assignment n) (m : ℕ) (hz : groupSize z true = m)
@@ -1697,7 +1729,7 @@ theorem t4_similarity_orientation {n N : ℕ} (hn : 2 ≤ n) (s : Outcome n)
   field_simp [ne_of_gt hs] <;> ring
 
 /-- "effect increasing": for EVERY fixed binary assignment, raising treated
-and lowering control outcomes cannot decrease the statistic, P016-E005 correction,
+and lowering control outcomes cannot decrease the statistic, E005 correction,
 p. 397. The paper itself does not define this directional property. -/
 def EffectIncreasing {n : ℕ} (T : Outcome n → Assignment n → ℝ) : Prop :=
   ∀ z y y', (∀ i, if z i then y i ≤ y' i else y' i ≤ y i) → T y z ≤ T y' z
@@ -1709,7 +1741,7 @@ def EffectIncreasingOnGroups {n : ℕ} (T : Outcome n → Assignment n → ℝ) 
     (∀ i, if z i then y i ≤ y' i else y' i ≤ y i) → T y z ≤ T y' z
 
 /-- T12(i): the directional difference of group means IS effect increasing,
-P016-E005 corrected explanatory text, p. 397. -/
+E005 corrected explanatory text, p. 397. -/
 theorem t12_mean_effect_increasing {n : ℕ} : EffectIncreasingOnGroups (meanDifference (n := n)) := by
   intro z h0 h1 y y' h
   have ht : groupSum y z true ≤ groupSum y' z true := by
@@ -1728,7 +1760,7 @@ theorem t12_mean_effect_increasing {n : ℕ} : EffectIncreasingOnGroups (meanDif
 
 /-- T12(ii): the recommended divergence property does not imply directional
 effect increasing: neither two-sided nor printed signed KS satisfies it;
-P016-E005 corrected explanation, p. 397, using the T11(i) witness. -/
+E005 corrected explanation, p. 397, using the T11(i) witness. -/
 theorem t12_ks_not_effect_increasing :
     ¬ EffectIncreasing (ks (n := 4)) ∧ ¬ EffectIncreasing (signedKS (n := 4)) := by
   constructor <;> intro h
@@ -1743,7 +1775,7 @@ theorem t12_ks_not_effect_increasing :
       norm_num at hi
 
 /-- T8(b): observed and reference statistics have the same law under a true
-additive hypothesis, and the exact inclusive upper p value is valid; P016-E001
+additive hypothesis, and the exact inclusive upper p value is valid; E001
 corrected step (4), p. 396, for every statistic and every finite design. -/
 theorem t8_corrected_comparison {n : ℕ} {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω)
     (assign : Ω → Assignment n) (y0 : Outcome n) (t : ℝ)
@@ -1760,7 +1792,7 @@ theorem t8_corrected_comparison {n : ℕ} {Ω : Type} [Fintype Ω] (P : FiniteLa
   · simpa only [hm] using upper_tail_bound P (fun w => T y0 w) α hα
 
 /-- Equality of outcomes within one group suffices for equality of its mean,
-corrections P016-E001/P016-E011/P016-N002, pp. 396–398. -/
+corrections E001/E011/N002, pp. 396–398. -/
 theorem group_mean_congr {n : ℕ} (u v : Outcome n) (z : Assignment n) (g : Bool)
     (h : ∀ i, z i = g → u i = v i) : groupMean u z g = groupMean v z g := by
   classical
@@ -1774,7 +1806,7 @@ theorem group_mean_congr {n : ℕ} (u v : Outcome n) (z : Assignment n) (g : Boo
   · simp [hi]
 
 /-- Adding a constant shifts a nonempty group's mean by that constant,
-finite lemma for corrected P016-E001/P016-N002/P016-N003, pp. 396–398. -/
+finite lemma for corrected E001/N002/N003, pp. 396–398. -/
 theorem group_mean_shift {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool)
     (hg : 0 < groupSize z g) (c : ℝ) : groupMean (fun i => u i+c) z g = groupMean u z g+c := by
   classical
@@ -1792,7 +1824,7 @@ theorem group_mean_shift {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool)
   rw [hsum]
   field_simp
 
-/-- Scaling all group outcomes scales its mean, P016-N003 mean reductions, p. 398. -/
+/-- Scaling all group outcomes scales its mean, N003 mean reductions, p. 398. -/
 theorem group_mean_scale {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool) (c : ℝ) :
     groupMean (fun i => c*u i) z g = c*groupMean u z g := by
   classical
@@ -1803,7 +1835,7 @@ theorem group_mean_scale {n : ℕ} (u : Outcome n) (z : Assignment n) (g : Bool)
   intro i _
   split_ifs <;> ring
 
-/-- Each group mean under the additive adjustment, P016-E001/P016-N002, pp. 396–397. -/
+/-- Each group mean under the additive adjustment, E001/N002, pp. 396–397. -/
 theorem additive_group_means {n : ℕ} (Y : Outcome n) (z : Assignment n)
     (h1 : 0 < groupSize z true) (t : ℝ) :
     groupMean (additiveAdjust Y z t) z false = groupMean Y z false ∧
@@ -1821,7 +1853,7 @@ theorem additive_group_means {n : ℕ} (Y : Outcome n) (z : Assignment n)
 
 /-- T8(c): the raw difference of means retains exactly the hypothesized
 additive shift and coincides with the adjusted difference iff that shift is zero,
-P016-E001 correction of step (4), p. 396. -/
+E001 correction of step (4), p. 396. -/
 theorem t8_raw_mean_shift {n : ℕ} (Y : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) (t : ℝ) :
     meanDifference Y z = meanDifference (additiveAdjust Y z t) z + t ∧
@@ -1835,7 +1867,7 @@ theorem t8_raw_mean_shift {n : ℕ} (Y : Outcome n) (z : Assignment n)
 
 /-- T17: both means in the intended comparison are of uniformity outcomes;
 the imputed-treated reading of the undefined printed symbol instead yields
-the raw contrast, independent of tau, p. 397 (P016-N002 correction). -/
+the raw contrast, independent of tau, p. 397 (N002 correction). -/
 theorem t17_adjusted_comparison {n : ℕ} (Y : Outcome n) (z : Assignment n)
     (h0 : 0 < groupSize z false) (h1 : 0 < groupSize z true) (t : ℝ) :
     let u := additiveAdjust Y z t
@@ -1855,7 +1887,7 @@ theorem t17_adjusted_comparison {n : ℕ} (Y : Outcome n) (z : Assignment n)
     linarith
 
 /-- T17 exact instance: the corrected contrast is 2 and the printed-imputation
-contrast is 12, P016-N002 correction witness, p. 397. -/
+contrast is 12, N002 correction witness, p. 397. -/
 theorem t17_comparison_witness :
     meanDifference u4 (complete4 5) = 2 ∧
     groupMean (fun i => u4 i+10) (complete4 5) true - groupMean u4 (complete4 5) false = 12 := by audit_num
@@ -1893,17 +1925,17 @@ noncomputable def balancedSetEquiv (n m : ℕ) : Balanced n m ≃ {s : Finset (F
     simp
 
 /-- The complete n-unit, m-treated assignment support has choose(n,m) points,
-p. 397 and P016-E008. -/
+p. 397 and E008 validator derivation section 3. -/
 theorem balanced_card (n m : ℕ) : Fintype.card (Balanced n m) = Nat.choose n m := by
   rw [Fintype.card_congr (balancedSetEquiv n m),Fintype.card_finset_len]
   simp
 
 /-- Natural binary subset-sum code of a treatment assignment, a parity
-certificate for the P016-E008 power-of-two population. -/
+certificate for the E008 power-of-two population, derivation section 3. -/
 def binaryCode {n : ℕ} (z : Assignment n) : ℕ := ∑ i, if z i then 2^i.val else 0
 
 /-- Splitting off the least significant treatment bit, finite certificate
-for P016-E008 subset-sum uniqueness. -/
+for E008 subset-sum uniqueness, derivation section 3. -/
 theorem binaryCode_succ {n : ℕ} (z : Assignment (n+1)) :
     binaryCode z = (if z 0 then 1 else 0) + 2*binaryCode (fun i => z i.succ) := by
   simp only [binaryCode, Fin.sum_univ_succ, Fin.val_zero, pow_zero, Fin.val_succ, pow_succ]
@@ -1913,7 +1945,8 @@ theorem binaryCode_succ {n : ℕ} (z : Assignment (n+1)) :
   intro i _
   by_cases hzi : z i.succ = true <;> simp [hzi,mul_comm]
 
-/-- Binary subset sums uniquely identify the assignment, P016-E008; proved by parity and induction, without enumeration. -/
+/-- Binary subset sums uniquely identify the assignment, E008 derivation
+section 3; proved by parity and induction, without enumeration. -/
 theorem binaryCode_injective (n : ℕ) : Function.Injective (binaryCode (n := n)) := by
   induction n with
   | zero => intro z w _; funext i; exact Fin.elim0 i
@@ -1929,23 +1962,24 @@ theorem binaryCode_injective (n : ℕ) : Function.Injective (binaryCode (n := n)
     funext i
     refine Fin.cases hhead (fun j => congrFun heq j) i
 
-/-- Real treated-outcome sum for y_i=2^i, the P016-E008 exact witness population. -/
+/-- Real treated-outcome sum for y_i=2^i, the E008 exact witness population,
+validator derivation section 3. -/
 noncomputable def binarySum {n : ℕ} (z : Assignment n) : ℝ := ∑ i, if z i then (2:ℝ)^i.val else 0
 
 /-- The real power-of-two sum is the cast of its natural binary code,
-P016-E008 finite witness certificate. -/
+E008 finite witness certificate, derivation section 3. -/
 theorem binarySum_cast {n : ℕ} (z : Assignment n) : binarySum z = (binaryCode z : ℝ) := by
   simp only [binarySum,binaryCode,Nat.cast_sum,Nat.cast_ite,Nat.cast_pow,Nat.cast_ofNat,Nat.cast_zero]
 
-/-- The treated sum of the P016-E008 power-of-two population identifies each
-assignment. -/
+/-- The treated sum of the E008 power-of-two population identifies each
+assignment, validator derivation section 3. -/
 theorem binarySum_injective (n : ℕ) : Function.Injective (binarySum (n := n)) := by
   intro z w h
   rw [binarySum_cast,binarySum_cast] at h
   exact binaryCode_injective n (Nat.cast_injective h)
 
 /-- A complementary assignment has treated sum 65535 minus the original
-sum, P016-E008 16-unit witness. -/
+sum, E008 16-unit witness, validator derivation section 3. -/
 theorem binarySum_complement (z : Assignment 16) :
     binarySum (fun i => !(z i)) = 65535-binarySum z := by
   have h : binarySum z + binarySum (fun i => !(z i)) = ∑ i : Fin 16, (2:ℝ)^i.val := by
@@ -1957,13 +1991,13 @@ theorem binarySum_complement (z : Assignment 16) :
   rw [hs] at h
   linarith
 
-/-- The polynomial Q-(s^2+(S-s)^2)/8 of the 16-unit P016-E008 witness. This is a
+/-- The polynomial Q-(s^2+(S-s)^2)/8 of the 16-unit E008 witness. This is a
 certificate expression; t13_rss_identity connects it to the actual SSR. -/
 noncomputable def powerTwoRSSExpression (z : Assignment 16) : ℝ :=
   1431655765-((binarySum z)^2+(65535-binarySum z)^2)/8
 
-/-- Equality of the P016-E008 SSR polynomial occurs exactly on an assignment
-and its complement. -/
+/-- Equality of the E008 SSR polynomial occurs exactly on an assignment
+and its complement, validator derivation section 3. -/
 theorem powerTwoRSSExpression_equal (z w : Assignment 16) : powerTwoRSSExpression z = powerTwoRSSExpression w ↔
     z = w ∨ z = fun i => !(w i) := by
   constructor
@@ -1983,7 +2017,7 @@ theorem powerTwoRSSExpression_equal (z w : Assignment 16) : powerTwoRSSExpressio
       ring
 
 /-- An abstract finite statistic with exactly two points in every fiber
-has half as many values as input points; P016-E008 finite counting certificate. -/
+has half as many values as input points; E008 finite counting certificate. -/
 theorem two_fiber_image_card {Ω : Type} [Fintype Ω] (f : Ω → ℝ)
     (hfiber : ∀ x, (Finset.univ.filter (fun y => f y = f x)).card = 2) :
     Fintype.card Ω = 2*(Finset.univ.image f).card := by
@@ -2000,7 +2034,7 @@ theorem two_fiber_image_card {Ω : Type} [Fintype Ω] (f : Ω → ℝ)
       _ = _ := by simp
   simpa only [hs,Finset.card_univ,Nat.mul_comm] using hcount
 
-/-- The P016-E008 SSR polynomial has exactly 6435 distinct values on the
+/-- The E008 SSR polynomial has exactly 6435 distinct values on the
 16-unit, eight-treated support, each on a complementary pair. -/
 theorem powerTwoRSSExpression_card :
     (Finset.univ.image (fun z : Balanced 16 8 => powerTwoRSSExpression z.val)).card = 6435 := by
@@ -2054,13 +2088,41 @@ noncomputable def uniformMass (Ω : Type) [Fintype Ω] (E : Ω → Prop) : ℝ :
   classical
   exact (∑ ω, if E ω then (1 : ℝ) else 0) / Fintype.card Ω
 
-/-- Uniform design expectation for complete randomization, p. 397 and P016-N003. -/
+/-- Uniform design expectation for complete randomization, p. 397 and N003 §4. -/
 noncomputable def uniformExpectation (Ω : Type) [Fintype Ω] (f : Ω → ℝ) : ℝ :=
   (∑ ω, f ω) / Fintype.card Ω
 
+/-- T7(ii): the printed raw-versus-adjusted comparison rejects a true negative
+additive effect in every eight-unit assignment, with signed and absolute KS;
+E001 witness, p. 396 step (4), not the paper's simulation data. -/
+theorem t7_ks_witness :
+    let y : Outcome 8 := fun i => i.val
+    let sp := fun z : Balanced 8 4 => signedKS y z.val
+    let dp := fun z : Balanced 8 4 => ks y z.val
+    Fintype.card (Balanced 8 4) = 70 ∧
+    (∀ z : Balanced 8 4,
+      additiveAdjust (additiveGenerate y z.val (-100)) z.val (-100) = y ∧
+      signedKS (additiveGenerate y z.val (-100)) z.val = 1 ∧
+      ks (additiveGenerate y z.val (-100)) z.val = 1) ∧
+    uniformMass (Balanced 8 4) (fun z => 1 ≤ sp z) = 1/70 ∧
+    uniformMass (Balanced 8 4) (fun z => 1 ≤ dp z) = 1/35 ∧
+    uniformMass (Balanced 8 4) (fun z =>
+      uniformMass (Balanced 8 4) (fun w => sp z ≤ sp w) < 1/20) = 1/70 ∧
+    uniformMass (Balanced 8 4) (fun z =>
+      uniformMass (Balanced 8 4) (fun w => dp z ≤ dp w) < 1/20) = 1/35 ∧
+    uniformMass (Balanced 8 4) (fun z =>
+      uniformMass (Balanced 8 4) (fun w =>
+        signedKS (additiveGenerate y z.val (-100)) z.val ≤ sp w) < 1/20) = 1 ∧
+    uniformMass (Balanced 8 4) (fun z =>
+      uniformMass (Balanced 8 4) (fun w =>
+        ks (additiveGenerate y z.val (-100)) z.val ≤ dp w) < 1/20) = 1 := by
+  refine ⟨?_,?_,?_,?_,?_,?_,?_,?_⟩
+  · rw [balanced_card]
+    decide
+  all_goals sorry
 
 /-- T9(iii): including the conventional intercept changes the minimum from
-2 to 0 in the exact six-unit one-edge witness, P016-E002, equation (2), p. 399. -/
+2 to 0 in the exact six-unit one-edge witness, E002, equation (2), p. 399. -/
 theorem t9_intercept_witness :
     let S : Fin 6 → Fin 6 → ℝ := fun i j => if (i=0 ∧ j=1) ∨ (i=1 ∧ j=0) then 1 else 0
     let z : Assignment 6 := ![true,false,true,false,true,false]
@@ -2096,23 +2158,23 @@ theorem t9_intercept_witness :
   all_goals norm_num [lsObjective,X,W,networkX,degree,treatedNeighbors,S,z,u,bit,Fin.sum_univ_succ]
 
 /-- Joint statistic vector (T0,...,TB) for the sampled-reference test, p. 400,
-correction P016-E008. Its measure space has the usual Borel sigma algebra. -/
+correction E008. Its measure space has the usual Borel sigma algebra. -/
 abbrev ReferenceVector (B : ℕ) := Fin (B+1) → ℝ
 
 /-- "exchangeable (invariant under every permutation of B+1 indices)",
-P016-E008 repair of sampled-reference validity, p. 400. -/
+E008 repair of sampled-reference validity, p. 400. -/
 def Exchangeable {B : ℕ} (μ : Measure (ReferenceVector B)) : Prop :=
   ∀ π : Equiv.Perm (Fin (B+1)), Measure.map (fun t i => t (π i)) μ = μ
 
 /-- Inclusive rank among ALL B+1 statistics, including the observed statistic;
-lower when upper=false and upper when upper=true. P016-E008 correction, p. 400. -/
+lower when upper=false and upper when upper=true. E008 correction, p. 400. -/
 noncomputable def coordinateCount {B : ℕ} (upper : Bool) (t : ReferenceVector B)
     (i : Fin (B+1)) : ℝ :=
   ∑ j, if (if upper then t i ≤ t j else t j ≤ t i) then (1 : ℝ) else 0
 
 open scoped Classical in
 /-- Exact uniform mass is the indicator sum divided by the support size,
-finite bridge for the exchangeable-rank correction P016-E008, p. 400. -/
+finite bridge for the exchangeable-rank correction E008, p. 400. -/
 theorem uniform_mass_sum {Ω : Type} [Fintype Ω] [Nonempty Ω] (E : Ω → Prop) :
     mass (uniformLaw Ω) E = (∑ ω, if E ω then (1 : ℝ) else 0)/Fintype.card Ω := by
   classical
@@ -2122,14 +2184,14 @@ theorem uniform_mass_sum {Ω : Type} [Fintype Ω] [Nonempty Ω] (E : Ω → Prop
   split_ifs <;> simp
 
 /-- Inclusive coordinate ranks are permuted when the statistic indices are
-permuted; P016-E008 exchangeability argument, p. 400. -/
+permuted; E008 exchangeability argument, p. 400. -/
 theorem coordinate_count_perm {B : ℕ} (upper : Bool) (t : ReferenceVector B)
     (π : Equiv.Perm (Fin (B+1))) (i : Fin (B+1)) :
     coordinateCount upper (fun j => t (π j)) i = coordinateCount upper t (π i) := by
   classical
   exact Equiv.sum_comp π (fun j => if (if upper then t (π i) ≤ t j else t j ≤ t (π i)) then (1 : ℝ) else 0)
 
-/-- Coordinate ranks are measurable functions of real statistics, P016-E008
+/-- Coordinate ranks are measurable functions of real statistics, E008
 correction under their usual Borel joint distribution, p. 400. -/
 theorem measurable_coordinate_count {B : ℕ} (upper : Bool) (i : Fin (B+1)) :
     Measurable (fun t : ReferenceVector B => coordinateCount upper t i) := by
@@ -2145,7 +2207,7 @@ theorem measurable_coordinate_count {B : ℕ} (upper : Bool) (i : Fin (B+1)) :
   · exact measurable_const
 
 /-- For any fixed statistic vector, at most c+1 indices have inclusive rank
-at most c+1, including ties. P016-E008 finite counting lemma, p. 400. -/
+at most c+1, including ties. E008 finite counting lemma, p. 400. -/
 theorem coordinate_rank_count {B : ℕ} (upper : Bool) (t : ReferenceVector B) (c : ℕ) :
     (∑ i, if coordinateCount upper t i ≤ (c+1 : ℝ) then (1 : ℝ) else 0) ≤ c+1 := by
   classical
@@ -2172,7 +2234,7 @@ theorem coordinate_rank_count {B : ℕ} (upper : Bool) (t : ReferenceVector B) (
   exact hv
 
 /-- Integrating the finite count with exchangeability bounds the probability
-of an extreme inclusive coordinate rank; P016-E008 correction, p. 400. -/
+of an extreme inclusive coordinate rank; E008 correction, p. 400. -/
 theorem exchangeable_coordinate_bound {B : ℕ} (μ : Measure (ReferenceVector B))
     [IsProbabilityMeasure μ] (hex : Exchangeable μ) (upper : Bool) (c : ℕ) :
     μ.real {t | coordinateCount upper t 0 ≤ (c+1 : ℝ)} ≤ (c+1 : ℝ)/(B+1) := by
@@ -2211,7 +2273,7 @@ theorem exchangeable_coordinate_bound {B : ℕ} (μ : Measure (ReferenceVector B
   simpa only [mul_comm,E] using hb
 
 /-- The inclusive rank among B+1 coordinates counts the observed value once,
-so it is 1 plus the reference count, P016-E008 correction, p. 400. -/
+so it is 1 plus the archived reference count, E008 correction, p. 400. -/
 theorem coordinate_count_observed {B : ℕ} (t : ReferenceVector B) :
     coordinateCount false t 0 = 1+(lowerCount (fun b => t b.succ) (t 0) : ℝ) ∧
     coordinateCount true t 0 = 1+(upperCount (fun b => t b.succ) (t 0) : ℝ) := by
@@ -2220,8 +2282,9 @@ theorem coordinate_count_observed {B : ℕ} (t : ReferenceVector B) :
     le_refl,lowerCount,upperCount,Nat.cast_sum,Nat.cast_ite,Nat.cast_one,Nat.cast_zero]
   trivial
 
-/-- With distinct statistic values, the lower reference count equals the strict
-observed rank, and the upper reference count is its complement in B. -/
+/-- T13(i): without ties the observed rank is uniform and the archived weak
+cutoff has size 2(c+1)/(B+1), E008 counterexample mechanism, p. 400. -/
+
 lemma observed_counts_injective {B : ℕ} (t : ReferenceVector B) (ht : Function.Injective t) :
     lowerCount (fun b => t b.succ) (t 0) = RankCompletion.strictRank t 0 ∧
     upperCount (fun b => t b.succ) (t 0) = B-RankCompletion.strictRank t 0 := by
@@ -2299,10 +2362,6 @@ lemma rank_tail_card {B c : ℕ} (hc : 2*c < B) :
   simp only [l,u]
   omega
 
-/-- T13(i): under an exchangeable probability law with almost-sure distinctness,
-the observed strict rank is uniform on 0,...,B. For B > 0, 0 ≤ α < 1,
-c = floor(α*B/2), and 2*c < B, the weak raw-p-value cutoff has rejection
-probability 2*(c+1)/(B+1) (P016-E008, p. 400). -/
 theorem t13_no_ties {B : ℕ} (hB : 0 < B) (μ : Measure (ReferenceVector B))
     [IsProbabilityMeasure μ] (hex : Exchangeable μ) (hnt : ∀ᵐ t ∂μ, Function.Injective t)
     (α : ℝ) (hα : 0 ≤ α) (hα1 : α < 1)
@@ -2353,14 +2412,15 @@ theorem t13_no_ties {B : ℕ} (hB : 0 < B) (μ : Measure (ReferenceVector B))
     ring
 
 
-/-- The exact finite-design binomial mixture S_B(c) in the P016-E008 witness, not a formula printed in the paper. -/
+/-- The exact finite-design binomial mixture S_B(c) in the E008 witness,
+derivation §3, not a formula printed in the paper. -/
 noncomputable def binomialMixture (M B c : ℕ) : ℝ :=
   2/(M : ℝ) * ∑ r : Fin M, ∑ k ∈ Finset.range (c+1),
     (Nat.choose B k : ℝ) * (((r.val+1 : ℕ) : ℝ)/M)^k *
       (((M : ℝ)-(r.val+1))/M)^(B-k)
 
 /-- T13(ii) finite identity: on the exact power-of-two population, the balanced
-SSR has the integer-moment formula used by the P016-E008 counterexample.
+SSR has the integer-moment formula used by the validator's counterexample.
 This lemma does not assert the separate multiplicity or sampled-size claims. -/
 theorem t13_rss_identity (z : Assignment 16) (hz : groupSize z true = 8) :
     let y : Outcome 16 := fun i => (2 : ℝ)^i.val
@@ -2382,7 +2442,7 @@ theorem t13_rss_identity (z : Assignment 16) (hz : groupSize z true = 8) :
   ring
 
 /-- T13(ii): the explicit 16-unit power-of-two population has 12870 balanced
-assignments and exactly 6435 SSR values, each on a complementary pair; P016-E008. -/
+assignments and exactly 6435 SSR values, each on a complementary pair; E008. -/
 theorem t13_finite_design :
     let y : Outcome 16 := fun i => (2 : ℝ)^i.val
     Fintype.card (Balanced 16 8) = 12870 ∧
@@ -2411,6 +2471,36 @@ theorem t13_finite_design :
     rw [hr z,hr w]
     exact powerTwoRSSExpression_equal z.val w.val
 
+/-- T13(ii)–(iii): true-null iid assignment draws for the concrete 16-unit SSR
+have the stated mixture probabilities; the weak .05 rule exceeds .05 at both
+reference sizes and has positive probability of p=0, while the strict rule is
+below .05. E008 witness; no simulation estimate is used. -/
+theorem t13_finite_rejection :
+    let y : Outcome 16 := fun i => (2 : ℝ)^i.val
+    (∀ B : ℕ, 0 < B → ∀ c : ℕ, 2*c < B →
+      uniformMass (Fin (B+1) → Balanced 16 8) (fun draw =>
+        lowerCount (fun b => rss y (draw b.succ).val) (rss y (draw 0).val) ≤ c ∨
+        upperCount (fun b => rss y (draw b.succ).val) (rss y (draw 0).val) ≤ c) =
+          binomialMixture 6435 B c) ∧
+    (∀ B c : ℕ, 0 < B → c < B →
+      2*(c+1)/(B+1)-2/(6435 : ℝ) ≤ binomialMixture 6435 B c ∧
+      binomialMixture 6435 B c ≤ 2*(c+1)/(B+1)) ∧
+    (∀ B ∈ ({1000,10000} : Finset ℕ),
+      uniformMass (Fin (B+1) → Balanced 16 8) (fun draw =>
+        rawP (fun b => rss y (draw b.succ).val) (rss y (draw 0).val) ≤ 1/20) =
+        binomialMixture 6435 B (B/40)) ∧
+    (∀ B ∈ ({1000,10000} : Finset ℕ),
+      uniformMass (Fin (B+1) → Balanced 16 8) (fun draw =>
+        rawP (fun b => rss y (draw b.succ).val) (rss y (draw 0).val) < 1/20) =
+        binomialMixture 6435 B (B/40-1)) ∧
+    1/20 < binomialMixture 6435 1000 25 ∧ 1/20 < binomialMixture 6435 10000 250 ∧
+    binomialMixture 6435 1000 24 < 1/20 ∧ binomialMixture 6435 10000 249 < 1/20 ∧
+    (∀ B : ℕ, 0 < B → uniformMass (Fin (B+1) → Balanced 16 8) (fun draw =>
+      rawP (fun b => rss y (draw b.succ).val) (rss y (draw 0).val) = 0) =
+      binomialMixture 6435 B 0 ∧ binomialMixture 6435 B 0 =
+        2*(∑ r ∈ Finset.range 6434, (6434-r : ℝ)^B)/(6435 : ℝ)^(B+1) ∧
+      0 < binomialMixture 6435 B 0) := by
+  sorry
 
 /-- T13 arithmetic certificates: no-tie weak sizes and the finite-design lower
 bound exceed .05. These calculations alone do not prove the probability laws. -/
@@ -2419,7 +2509,7 @@ theorem t13_numeric_certificates :
     (4/77 : ℝ)-2/6435 = 2326/45045 ∧ (1/20 : ℝ) < 2326/45045 := by norm_num
 
 /-- T14(a): exchangeability with ties gives each inclusive reference rank the
-bound (c+1)/(B+1), P016-E008 correction of sampled-reference validity, p. 400. -/
+bound (c+1)/(B+1), E008 correction of sampled-reference validity, p. 400. -/
 theorem t14_rank_bound {B : ℕ} (hB : 0 < B) (μ : Measure (ReferenceVector B))
     [IsProbabilityMeasure μ] (hex : Exchangeable μ) (c : ℕ) (hc : c ≤ B) :
     μ.real {t | lowerCount (fun b => t b.succ) (t 0) ≤ c} ≤ (c+1 : ℝ)/(B+1) ∧
@@ -2445,7 +2535,7 @@ theorem t14_rank_bound {B : ℕ} (hB : 0 < B) (μ : Measure (ReferenceVector B))
   · rw [← heU]; exact exchangeable_coordinate_bound μ hex true c
 
 /-- T14(b): the raw strict test has size at most 2 ceil(alpha B/2)/(B+1),
-P016-E008 corrected validity statement, pp. 400–401. Ties are allowed. -/
+E008 corrected validity statement, pp. 400–401. Ties are allowed. -/
 theorem t14_strict_bound {B : ℕ} (hB : 0 < B) (μ : Measure (ReferenceVector B))
     [IsProbabilityMeasure μ] (hex : Exchangeable μ) (α : ℝ) (hα : 0 < α) (hα1 : α < 1) :
     μ.real {t | rawP (fun b => t b.succ) (t 0) < α} ≤
@@ -2500,15 +2590,15 @@ theorem t14_strict_bound {B : ℕ} (hB : 0 < B) (μ : Measure (ReferenceVector B
   rw [mul_div_assoc]
   linarith [hbound.1,hbound.2]
 
-/-- "(1+C)/(B+1)", rank-corrected inclusive empirical tails, P016-E008, p. 400. -/
+/-- "(1+C)/(B+1)", rank-corrected inclusive empirical tails, E008, p. 400. -/
 noncomputable def correctedLower {B : ℕ} (t : ReferenceVector B) : ℝ :=
   (1+(lowerCount (fun b => t b.succ) (t 0) : ℝ))/(B+1)
 
-/-- "(1+C)/(B+1)", rank-corrected upper empirical tail, P016-E008, p. 400. -/
+/-- "(1+C)/(B+1)", rank-corrected upper empirical tail, E008, p. 400. -/
 noncomputable def correctedUpper {B : ℕ} (t : ReferenceVector B) : ℝ :=
   (1+(upperCount (fun b => t b.succ) (t 0) : ℝ))/(B+1)
 
-/-- The all-coordinate count is a positive integer, P016-E008 corrected empirical
+/-- The all-coordinate count is a positive integer, E008 corrected empirical
 rank calculation, p. 400. -/
 theorem coordinate_count_integer {B : ℕ} (upper : Bool) (t : ReferenceVector B) :
     coordinateCount upper t 0 =
@@ -2519,7 +2609,7 @@ theorem coordinate_count_integer {B : ℕ} (upper : Bool) (t : ReferenceVector B
   · exact (coordinate_count_observed t).2
 
 /-- The one-sided corrected rank probability has the sharper integer floor
-bound at every nonnegative threshold; P016-E008 correction, p. 400. -/
+bound at every nonnegative threshold; E008 correction, p. 400. -/
 theorem corrected_coordinate_floor {B : ℕ} (μ : Measure (ReferenceVector B))
     [IsProbabilityMeasure μ] (hex : Exchangeable μ) (upper : Bool) (a : ℝ) (ha : 0 ≤ a) :
     μ.real {t | coordinateCount upper t 0/(B+1) ≤ a} ≤
@@ -2555,14 +2645,14 @@ theorem corrected_coordinate_floor {B : ℕ} (μ : Measure (ReferenceVector B))
     rw [hcq] at hb
     exact hb
 
-/-- The floor rank bound is at most the nominal threshold, P016-E008, p. 400. -/
+/-- The floor rank bound is at most the nominal threshold, E008, p. 400. -/
 theorem corrected_floor_le {B : ℕ} (a : ℝ) (ha : 0 ≤ a) :
     (Nat.floor (a*(B+1)) : ℝ)/(B+1) ≤ a := by
   have hN : (0 : ℝ) < B+1 := by positivity
   exact (div_le_iff₀ hN).mpr (Nat.floor_le (mul_nonneg ha hN.le))
 
 /-- T14(c): rank-corrected empirical p values are valid at every threshold,
-including the sharper floor bound for each one-sided tail, P016-E008, p. 400. -/
+including the sharper floor bound for each one-sided tail, E008, p. 400. -/
 theorem t14_corrected_valid {B : ℕ} (hB : 0 < B) (μ : Measure (ReferenceVector B))
     [IsProbabilityMeasure μ] (hex : Exchangeable μ) (α : ℝ) (hα : 0 ≤ α) (hα1 : α ≤ 1) :
     μ.real {t | correctedLower t ≤ α} ≤ (Nat.floor (α*(B+1)) : ℝ)/(B+1) ∧
@@ -2604,12 +2694,12 @@ theorem t14_corrected_valid {B : ℕ} (hB : 0 < B) (μ : Measure (ReferenceVecto
     linarith [hL (α/2) hhalf,hU (α/2) hhalf]
 
 /-- Independent draws from a finite design have product weight, p. 400,
-fresh-reference interpretation of the permutation simulation (P016-E008). -/
+fresh-reference interpretation of the permutation simulation (E008). -/
 noncomputable def iidWeight {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (m : ℕ)
     (draw : Fin m → Ω) : ℝ := ∏ i, P.weight (draw i)
 
 /-- Independent product weights sum to one; fresh-reference design of
-p. 400, P016-E008. No nonzero-measure premise is left implicit. -/
+p. 400, E008. No nonzero-measure premise is left implicit. -/
 noncomputable def iidLaw {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (m : ℕ) :
     FiniteLaw (Fin m → Ω) where
   weight := iidWeight P m
@@ -2619,19 +2709,19 @@ noncomputable def iidLaw {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (m : ℕ) :
     rw [← Fintype.sum_pow,P.total]
     simp
 
-/-- Probability of an event in m independent design draws, p. 400 (P016-E008). -/
+/-- Probability of an event in m independent design draws, p. 400 (E008). -/
 noncomputable def iidMass {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (m : ℕ)
     (E : (Fin m → Ω) → Prop) : ℝ := by
   classical
   exact ∑ draw, if E draw then iidWeight P m draw else 0
 
 /-- Independent-draw event probabilities are exactly the product-law mass,
-p. 400, P016-E008 fresh-reference correction. -/
+p. 400, E008 fresh-reference correction. -/
 theorem iid_mass_law {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (m : ℕ)
     (E : (Fin m → Ω) → Prop) : iidMass P m E = mass (iidLaw P m) E := rfl
 
 /-- T14(d): applying ONE fixed statistic to iid draws from ONE assignment law
-gives an exchangeable joint statistic law; P016-E008 premise for p. 400. A finite-
+gives an exchangeable joint statistic law; E008 premise for p. 400. A finite-
 design event formulation avoids constructing a continuous law unnecessarily. -/
 theorem t14_iid_exchangeable {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (B : ℕ)
     (s : Ω → ℝ) (π : Equiv.Perm (Fin (B+1))) (E : ReferenceVector B → Prop) :
@@ -2656,7 +2746,7 @@ theorem t14_iid_exchangeable {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (B : �
     _ = _ := e.sum_comp (fun draw => if E (fun i => s (draw i)) then iidWeight P (B+1) draw else 0)
 
 /-- The general exchangeable-rank bound for iid finite-design statistics,
-proved directly by weighted finite sums; P016-E008, p. 400. -/
+proved directly by weighted finite sums; E008, p. 400. -/
 theorem iid_coordinate_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (B : ℕ)
     (s : Ω → ℝ) (upper : Bool) (c : ℕ) :
     iidMass P (B+1) (fun draw => coordinateCount upper (fun j => s (draw j)) 0 ≤ (c+1 : ℝ)) ≤
@@ -2704,7 +2794,7 @@ theorem iid_coordinate_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (B : �
   simpa only [mul_comm,Q,E] using hb
 
 /-- Inclusive reference-count events are exactly inclusive all-coordinate
-rank events with one added to the count; P016-E008, p. 400. -/
+rank events with one added to the count; E008, p. 400. -/
 theorem coordinate_count_le_iff {B : ℕ} (upper : Bool) (t : ReferenceVector B) (c : ℕ) :
     coordinateCount upper t 0 ≤ (c+1 : ℝ) ↔
       (if upper then upperCount (fun b => t b.succ) (t 0)
@@ -2715,7 +2805,7 @@ theorem coordinate_count_le_iff {B : ℕ} (upper : Bool) (t : ReferenceVector B)
   omega
 
 /-- The raw strict rejection event is contained in the two corresponding
-integer-rank tails, P016-E008 correction of the p. 400 cutoff. -/
+integer-rank tails, E008 correction of the p. 400 cutoff. -/
 theorem raw_strict_rank_event {B : ℕ} (hB : 0 < B) (α : ℝ) (hα : 0 < α) (hα1 : α < 1)
     (t : ReferenceVector B) (ht : rawP (fun b => t b.succ) (t 0) < α) :
     lowerCount (fun b => t b.succ) (t 0) ≤ Nat.ceil (α*B/2)-1 ∨
@@ -2749,7 +2839,7 @@ theorem raw_strict_rank_event {B : ℕ} (hB : 0 < B) (α : ℝ) (hα : 0 < α) (
     omega
 
 /-- Strict sampled-reference validity for every fixed statistic and every
-finite iid randomization law, P016-E008 premise for the headline on p. 400. -/
+finite iid randomization law, E008 premise for the headline on p. 400. -/
 theorem iid_strict_bound {Ω : Type} [Fintype Ω] (P : FiniteLaw Ω) (B : ℕ) (hB : 0 < B)
     (s : Ω → ℝ) (α : ℝ) (hα : 0 < α) (hα1 : α < 1) :
     iidMass P (B+1) (fun draw => rawP (fun b => s (draw b.succ)) (s (draw 0)) < α) ≤
@@ -2790,7 +2880,7 @@ theorem t14_printed_bounds :
     (50/1001 : ℝ) < 1/20 ∧ (500/10001 : ℝ) < 1/20 := by norm_num
 
 /-- T15(a): hypotheses change treated ECDFs and leave controls unchanged;
-P016-E011 witness against the printed "control group" sentence, p. 398. -/
+E011 witness against the printed "control group" sentence, p. 398. -/
 theorem t15_adjustment_witness :
     let Y : Outcome 4 := ![9,11,10,12]
     let z := complete4 5
@@ -2806,12 +2896,12 @@ theorem t15_adjustment_witness :
   · audit_num
 
 /-- T15(b): ECDF is evaluated at its argument, not at the indexed sample point,
-footnote 3, p. 396 (P016-E011 exact witness). -/
+footnote 3, p. 396 (E011 exact witness). -/
 theorem t15_ecdf_witness : sampleECDF (![1,3] : Outcome 2) 2 = 1/2 ∧
     sampleECDF (![1,3] : Outcome 2) 3 = 1 := by audit_num
 
 /-- T15(c): the printed family is exactly the diagonal and misses the stated
-true parameter pair, p. 400 (P016-E011 exact witness). -/
+true parameter pair, p. 400 (E011 exact witness). -/
 theorem t15_diagonal_witness :
     (∀ t b : ℝ, (∃ t0 : ℝ, t=t0 ∧ b=t0) ↔ b=t) ∧
     ¬ (∃ t0 : ℝ, (1/2 : ℝ)=t0 ∧ (2 : ℝ)=t0) := by
@@ -2824,7 +2914,7 @@ theorem t15_diagonal_witness :
 
 /-- T16(a): controls stay unchanged under every additive or nonzero
 multiplicative hypothesis, while treated adjustments depend on the parameter;
-P016-E011 corrected explanation, p. 398. -/
+E011 corrected explanation, p. 398. -/
 theorem t16_group_adjustments {n : ℕ} (Y : Outcome n) (z : Assignment n) (i : Fin n)
     (t t' a a' : ℝ) (ha : a ≠ 0) (ha' : a' ≠ 0) :
     (z i = false → additiveAdjust Y z t i = Y i ∧ multiplicativeAdjust Y z a i = Y i) ∧
@@ -2847,7 +2937,7 @@ theorem t16_group_adjustments {n : ℕ} (Y : Outcome n) (z : Assignment n) (i : 
       exact hc he
 
 /-- T16(a), ECDF consequence: controls' empirical distributions are identical
-under hypotheses of either model, P016-E011 corrected sentence, p. 398. -/
+under hypotheses of either model, E011 corrected sentence, p. 398. -/
 theorem t16_control_ecdf {n : ℕ} (Y : Outcome n) (z : Assignment n) (t a x : ℝ) (ha : a ≠ 0) :
     ecdf (additiveAdjust Y z t) z false x = ecdf Y z false x ∧
     ecdf (multiplicativeAdjust Y z a) z false x = ecdf Y z false x := by
@@ -2859,43 +2949,42 @@ theorem t16_control_ecdf {n : ℕ} (Y : Outcome n) (z : Assignment n) (t a x : �
     cases hi : z i <;> simp [hi,additiveAdjust,multiplicativeAdjust,bit]
 
 /-- T16(b): the indicator-sum ECDF is exactly the proportion at or below its
-argument, corrected footnote 3, p. 396 (P016-E011). -/
+argument, corrected footnote 3, p. 396 (E011). -/
 theorem t16_ecdf_argument {n : ℕ} (u : Outcome n) (x : ℝ) :
     sampleECDF u x = ((Finset.univ.filter (fun i => u i ≤ x)).card : ℝ)/n := by
   classical
   simp [sampleECDF]
 
 /-- T16(c): the corrected two-parameter family contains the stated truth,
-whereas the printed diagonal family does not, p. 400 (P016-E011). -/
+whereas the printed diagonal family does not, p. 400 (E011). -/
 theorem t16_joint_hypothesis :
     (∃ t0 b0 : ℝ, (1/2 : ℝ)=t0 ∧ (2 : ℝ)=b0) ∧
     ¬ (∃ t0 : ℝ, (1/2 : ℝ)=t0 ∧ (2 : ℝ)=t0) := by
   exact ⟨⟨1/2,2,rfl,rfl⟩,t15_diagonal_witness.2⟩
 
 /-- "median ... average of the m-th and (m+1)-th smallest" for 2m units,
-the released calibration criterion (P016-N003), Fig. 2, p. 398. Indices in Lean are
-zero-based. The middle-order-statistic interpretation requires m ≥ 1;
-at m = 0 the definition uses zero defaults. -/
+the released calibration criterion (N003), Fig. 2, p. 398. Indices in Lean are
+zero-based; all claims about this median require m ≥ 1. -/
 noncomputable def evenMedian {m : ℕ} (v : Outcome (2*m)) : ℝ :=
   let ordered := (List.ofFn v).mergeSort (fun a b => decide (a ≤ b))
   (ordered.getD (m-1) 0 + ordered.getD m 0)/2
 
 /-- "absolute difference ... generated by multiplicative and additive model",
-the full-population calibration objective, P016-N003, Fig. 2, p. 398. -/
+the full-population calibration objective, N003, Fig. 2, p. 398. -/
 noncomputable def discrepancy {n : ℕ} (y : Outcome n) (z : Assignment n) (t a : ℝ) : Outcome n :=
   fun i => |multiplicativeGenerate y z a i - additiveGenerate y z t i|
 
-/-- The 256-unit half-treated exact calibration witness of P016-N003, not paper data. -/
+/-- The 256-unit half-treated exact calibration witness of N003, not paper data. -/
 def calibrationZ : Assignment 256 := fun i => decide (128 ≤ i.val)
 
-/-- P016-N003 witness outcomes: controls 64 nines/64 elevens; treated one eight,
+/-- N003 witness outcomes: controls 64 nines/64 elevens; treated one eight,
 63 nines, 63 elevens, one twelve. Printed scale/design p. 397; constructed data. -/
 def calibrationY : Outcome 256 := fun i =>
   if i.val < 64 then 9 else if i.val < 128 then 11 else if i.val = 128 then 8
   else if i.val < 192 then 9 else if i.val < 255 then 11 else 12
 
 /-- Six constant-block aggregate certificate for the actual 256 outcomes and
-128/128 assignment in P016-N003, Fig. 2, p. 398.
+128/128 assignment in N003, validator derivation section 3, Fig. 2, p. 398.
 No index-wise expansion of a real 256-coordinate sum is required. -/
 theorem calibration_sum (f : ℝ → Bool → ℝ) :
     (∑ i : Fin 256, f (calibrationY i) (calibrationZ i)) =
@@ -2958,7 +3047,7 @@ theorem calibration_sum (f : ℝ → Bool → ℝ) :
   ring
 
 /-- T19(a): controls' forward discrepancies vanish and treated discrepancies
-are |(a−1)y_i−t|, P016-N003 correction of the Fig. 2 calibration, p. 398. -/
+are |(a−1)y_i−t|, N003 correction of the Fig. 2 calibration, p. 398. -/
 theorem discrepancy_formula {n : ℕ} (y : Outcome n) (z : Assignment n) (t a : ℝ) (i : Fin n) :
     discrepancy y z t a i = if z i then |(a-1)*y i-t| else 0 := by
   cases hi : z i <;> simp [discrepancy,multiplicativeGenerate,additiveGenerate,bit,hi]
@@ -2967,7 +3056,7 @@ theorem discrepancy_formula {n : ℕ} (y : Outcome n) (z : Assignment n) (t a : 
 
 /-- Finite algebraic part of T19(c): matching one treated nonzero outcome
 annuls its discrepancy and leaves a differently valued treated outcome
-unmatched when t≠0; P016-N003 calibration correction, Fig. 2, p. 398. -/
+unmatched when t≠0; N003 calibration correction, Fig. 2, p. 398. -/
 theorem root_discrepancies {n : ℕ} (y : Outcome n) (z : Assignment n) (t : ℝ)
     (j : Fin n) (hj : z j = true) (hyj : y j ≠ 0) :
     discrepancy y z t (1+t/y j) j = 0 ∧
@@ -2993,7 +3082,7 @@ theorem root_discrepancies {n : ℕ} (y : Outcome n) (z : Assignment n) (t : ℝ
     exact hne (by simpa using (div_eq_iff hyj).mp hr)
 
 /-- A nonnegative finite list has nonnegative default-zero order statistics,
-finite order-statistic lemma for P016-N003's full-population median, p. 398. -/
+finite order-statistic lemma for N003's full-population median, p. 398. -/
 theorem list_getD_nonneg (l : List ℝ) (hl : ∀ x ∈ l, 0 ≤ x) (k : ℕ) :
     0 ≤ l.getD k 0 := by
   by_cases hk : k < l.length
@@ -3014,7 +3103,7 @@ theorem median_discrepancy_nonneg {m : ℕ} (y : Outcome (2*m)) (z : Assignment 
   exact div_nonneg (add_nonneg (list_getD_nonneg l hl (m-1)) (list_getD_nonneg l hl m)) (by norm_num)
 
 /-- T19(a): the forward discrepancy formula for a positive balanced
-2m-unit design, P016-N003 corrected calibration explanation, Fig. 2, p. 398. -/
+2m-unit design, N003 corrected calibration explanation, Fig. 2, p. 398. -/
 theorem t19_discrepancy_formula {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
     (z : Assignment (2*m)) (hz : groupSize z true = m) (t a : ℝ) (i : Fin (2*m)) :
     discrepancy y z t a i = if z i then |(a-1)*y i-t| else 0 :=
@@ -3022,7 +3111,7 @@ theorem t19_discrepancy_formula {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
 
 /-- T19(c), component identities on the balanced calibration domain:
 a root matches its chosen unit and leaves different treated outcomes unmatched,
-P016-N003 correction, Fig. 2, p. 398. -/
+N003 correction, Fig. 2, p. 398. -/
 theorem t19_root_discrepancies {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
     (z : Assignment (2*m)) (hz : groupSize z true = m) (t : ℝ)
     (j : Fin (2*m)) (hj : z j = true) (hyj : y j ≠ 0) :
@@ -3032,14 +3121,14 @@ theorem t19_root_discrepancies {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
   root_discrepancies y z t j hj hyj
 
 /-- T19(c), the median criterion is nonnegative on the positive balanced
-2m-unit design, P016-N003 corrected Fig. 2 calibration, p. 398. -/
+2m-unit design, N003 corrected Fig. 2 calibration, p. 398. -/
 theorem t19_median_nonneg {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
     (z : Assignment (2*m)) (hz : groupSize z true = m) (t a : ℝ) :
     0 ≤ evenMedian (discrepancy y z t a) :=
   median_discrepancy_nonneg y z t a
 
 /-- Finite counting lemma: the length of a filtered index list equals the
-number of included units, supporting P016-N003 calibration, Fig. 2, p. 398. -/
+number of included units, supporting N003 calibration, Fig. 2, p. 398. -/
 theorem filter_indices_length {n : ℕ} (p : Fin n → Bool) :
     ((List.ofFn id).filter p).length = ∑ i, if p i then 1 else 0 := by
   induction n with
@@ -3055,7 +3144,7 @@ theorem filter_indices_length {n : ℕ} (p : Fin n → Bool) :
       ↓reduceIte, List.length_cons, List.filter_map, List.length_map, Function.comp_def]
     all_goals omega
 
-/-- P016-N003 order-statistic lemma: with m control zeros and m nonnegative treated
+/-- N003 order-statistic lemma: with m control zeros and m nonnegative treated
 values, the full even median is half the smallest treated value. This uses
 the actual sorted list, including multiplicities, Fig. 2, p. 398. -/
 theorem even_median_partition {m : ℕ} (hm : 0 < m)
@@ -3142,7 +3231,7 @@ theorem even_median_partition {m : ℕ} (hm : 0 < m)
   ring
 
 /-- T19(b): the median criterion sees only the smallest discrepancy of a
-treated unit, P016-N003 corrected calibration explanation, Fig. 2, p. 398. -/
+treated unit, N003 corrected calibration explanation, Fig. 2, p. 398. -/
 theorem t19_median_identity {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
     (z : Assignment (2*m)) (hz : groupSize z true = m) (t a : ℝ) :
     evenMedian (discrepancy y z t a) = (1/2) *
@@ -3161,7 +3250,7 @@ theorem t19_median_identity {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
 
 /-- T19(c): matching any nonzero treated unit gives a global zero of the median
 criterion and leaves every differently valued treated unit unmatched if t≠0,
-P016-N003 correction, Fig. 2, p. 398. -/
+N003 correction, Fig. 2, p. 398. -/
 theorem t19_calibration_roots {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
     (z : Assignment (2*m)) (hz : groupSize z true = m) (t : ℝ) (j : Fin (2*m))
     (hj : z j = true) (hyj : y j ≠ 0) :
@@ -3188,7 +3277,7 @@ theorem t19_calibration_roots {m : ℕ} (hm : 0 < m) (y : Outcome (2*m))
   · exact (root_discrepancies y z t j hj hyj).2
 
 /-- T19(d): additive and multiplicative adjustments reduce the treated mean
-by t and (1−1/a) times its observed mean, P016-N003 corrected Fig. 2 comparison. -/
+by t and (1−1/a) times its observed mean, N003 corrected Fig. 2 comparison. -/
 theorem t19_mean_reductions {n : ℕ} (Y : Outcome n) (z : Assignment n)
     (h1 : 0 < groupSize z true) (t a : ℝ) (ha : a ≠ 0) :
     groupMean Y z true - groupMean (additiveAdjust Y z t) z true = t ∧
@@ -3208,13 +3297,13 @@ theorem t19_mean_reductions {n : ℕ} (Y : Outcome n) (z : Assignment n)
     ring
 
 /-- Index-count certificate for the 127 nonzero treated discrepancies in the
-256-unit P016-N003 witness, Fig. 2, p. 398. This is
+256-unit N003 witness, validator derivation section 3, Fig. 2, p. 398. This is
 a small natural-number comparison certificate, with no real-valued enumeration. -/
 theorem calibration_index_count :
     (Finset.univ.filter (fun i : Fin 256 => 129 ≤ i.val)).card = 127 := by decide
 
 /-- T18: a full-sample median of zero coexists with 127 unmatched treated units
-and different treated mean shifts, P016-N003 exact 256-unit witness, Fig. 2, p. 398.
+and different treated mean shifts, N003 exact 256-unit witness, Fig. 2, p. 398.
 The variance divisor is 256, not the sample-variance divisor 255. -/
 theorem t18_calibration_witness :
     let y := calibrationY
@@ -3335,7 +3424,7 @@ theorem t18_calibration_witness :
 
 
 /-- Exchanging treated and control labels preserves the complete balanced
-design, p. 397 and the P016-N003 corrected expected-mean calculation. -/
+design, p. 397 and the N003 corrected expected-mean calculation. -/
 noncomputable def balancedComplement (m : ℕ) : Equiv.Perm (Balanced (2*m) m) := by
   classical
   let f : Balanced (2*m) m → Balanced (2*m) m := fun z =>
@@ -3352,7 +3441,7 @@ noncomputable def balancedComplement (m : ℕ) : Equiv.Perm (Balanced (2*m) m) :
     fun z => by apply Subtype.ext; funext i; simp [f]⟩
 
 /-- Each balanced design has positive cardinality: treat the first m of 2m
-units, complete randomization p. 397, P016-N003 mean-shift correction. -/
+units, complete randomization p. 397, N003 mean-shift correction. -/
 theorem balanced_card_pos (m : ℕ) : 0 < Fintype.card (Balanced (2*m) m) := by
   have hn : Nonempty (Balanced (2*m) m) := by
     rw [two_mul]
@@ -3364,7 +3453,7 @@ theorem balanced_card_pos (m : ℕ) : 0 < Fintype.card (Balanced (2*m) m) := by
   exact Fintype.card_pos_iff.mpr hn
 
 /-- The complete balanced design makes the treated mean unbiased for the
-finite population mean, p. 397, finite identity for the P016-N003 correction. -/
+finite population mean, p. 397, finite identity for the N003 correction. -/
 theorem balanced_expected_mean {m : ℕ} (hm : 0 < m) (y : Outcome (2*m)) :
     uniformExpectation (Balanced (2*m) m) (fun z => groupMean y z.val true) = pooledMean y := by
   classical
@@ -3405,7 +3494,7 @@ theorem balanced_expected_mean {m : ℕ} (hm : 0 < m) (y : Outcome (2*m)) :
 
 /-- T19(d): under complete balanced randomization and no effect, the expected
 treated mean is the population mean, so expected reductions are t and
-(1−1/a)bar y; P016-N003 correction, design p. 397 and Fig. 2, p. 398. -/
+(1−1/a)bar y; N003 correction, design p. 397 and Fig. 2, p. 398. -/
 theorem t19_expected_reductions {m : ℕ} (hm : 0 < m) (y : Outcome (2*m)) (t a : ℝ) (ha : a ≠ 0) :
     uniformExpectation (Balanced (2*m) m) (fun z => groupMean y z.val true) = pooledMean y ∧
     uniformExpectation (Balanced (2*m) m) (fun z =>
@@ -3434,7 +3523,7 @@ theorem t19_expected_reductions {m : ℕ} (hm : 0 < m) (y : Outcome (2*m)) (t a 
     exact congrArg ((1-1/a) * ·) (balanced_expected_mean hm y)
 
 /-- T19(e): the unique parameter matching expected ADJUSTED mean drops is
-bar y/(bar y−t), P016-N003 corrected matching target, Fig. 2, p. 398. -/
+bar y/(bar y−t), N003 corrected matching target, Fig. 2, p. 398. -/
 theorem t19_matched_parameter (μ t a : ℝ) (hμ : μ ≠ 0) (hμt : μ ≠ t) :
     (1-1/a)*μ = t ↔ a = μ/(μ-t) := by
   have hd : μ-t ≠ 0 := sub_ne_zero.mpr hμt
@@ -3455,7 +3544,7 @@ theorem t19_matched_parameter (μ t a : ℝ) (hμ : μ ≠ 0) (hμt : μ ≠ t) 
       ring
 
 /-- T19(f): the zero-criterion parameter differs from the matched parameter
-and the two mean reductions differ in the P016-N003 witness. This arithmetic lemma
+and the two mean reductions differ in the N003 witness. This arithmetic lemma
 does not by itself establish the witness's median or group sums. -/
 theorem t19_mismatch_numbers :
     (10 : ℝ)/(10-34/99) = 495/478 ∧ (413/396 : ℝ) ≠ 495/478 ∧
@@ -3614,5 +3703,168 @@ theorem t21_sampled_level (P : FiniteLaw (Balanced 256 128))
   have h10000 := iid_strict_bound P 10000 (by decide) (fun z => T y0 z.val) (1/20) (by norm_num) (by norm_num)
   norm_num at h1000 h10000
   exact ⟨h1000,by norm_num,h10000,by norm_num⟩
+
+#print axioms mass_nonneg
+#print axioms mass_mono
+#print axioms mass_all
+#print axioms mass_or_le
+#print axioms t12_upper_valid
+#print axioms upper_tail_bound
+#print axioms t12_lower_valid
+#print axioms lower_tail_bound
+#print axioms t12_two_tail_valid
+#print axioms two_tail_bound
+#print axioms complete4_support
+#print axioms blocked4_support
+#print axioms t1_pairing_witness
+#print axioms t1_design_tables
+#print axioms t1_design_probabilities
+#print axioms t2_scalar_ks_witness
+#print axioms t9_signed_ks_witness
+#print axioms t9_pooled_witness
+#print axioms t11_ks_witness
+#print axioms t11_rss_witness
+#print axioms t8_additive_mapping
+#print axioms t7_mean_witness
+#print axioms t7_mean_rejects_truth
+#print axioms t12_ks_p_table
+#print axioms t12_ks_size
+#print axioms t3_four_unit_exposure
+#print axioms t3_determinants
+#print axioms t3_table_not_affine
+#print axioms t4_application_mapping
+#print axioms t6_printed_model_consistency
+#print axioms t6_printed_cutoff
+#print axioms t6_printed_general_model_consistency
+#print axioms t4_cutoff_difference
+#print axioms lsRSS_of_minimizer
+#print axioms lsRSS_of_square_certificate
+#print axioms group_sums
+#print axioms group_sizes
+#print axioms group_mean_sum
+#print axioms group_square_expansion
+#print axioms group_center_decomposition
+#print axioms rss_groups
+#print axioms basic_objective_groups
+#print axioms basic_objective_decomposition
+#print axioms rss_second_moments
+#print axioms t2_least_squares
+#print axioms tss_second_moments
+#print axioms t2_decomposition
+#print axioms t2_tail_equivalence
+#print axioms t2_tail_probability
+#print axioms t2_group_moments
+#print axioms group_values_card
+#print axioms group_values_sum
+#print axioms group_values_square
+#print axioms t2_rss_margin_invariance
+#print axioms fold_max_le
+#print axioms le_fold_max
+#print axioms ks_threshold_bound
+#print axioms ks_threshold_sup
+#print axioms ecdf_range
+#print axioms ecdf_swap_labels
+#print axioms group_values_function
+#print axioms ecdf_indicator_mean
+#print axioms t2_margin_invariance
+#print axioms expectation_const
+#print axioms covariance_affine
+#print axioms design_mean_constraint
+#print axioms covariance_from_constraint
+#print axioms t2_design_dependence
+#print axioms t2_network_alignment
+#print axioms t5_printed_contrast_refuted
+#print axioms least_squares_attained
+#print axioms t10_general_least_squares
+#print axioms t10_ks_supremum
+#print axioms t10_symmetric_network
+#print axioms t4_tail_coverage
+#print axioms consecutive_counts
+#print axioms t3_cutoff_witness
+#print axioms sum_bool_fin_succ
+#print axioms bool_cons_vec_three
+#print axioms t4_standardization
+#print axioms t3_six_unit_exposure
+#print axioms t4_centering_not_rescaling
+#print axioms t4_similarity_orientation
+#print axioms t12_mean_effect_increasing
+#print axioms t12_ks_not_effect_increasing
+#print axioms t8_corrected_comparison
+#print axioms group_mean_congr
+#print axioms group_mean_shift
+#print axioms group_mean_scale
+#print axioms additive_group_means
+#print axioms t8_raw_mean_shift
+#print axioms t17_adjusted_comparison
+#print axioms t17_comparison_witness
+#print axioms t7_ks_witness
+#print axioms t9_intercept_witness
+#print axioms uniform_mass_sum
+#print axioms coordinate_count_perm
+#print axioms measurable_coordinate_count
+#print axioms coordinate_rank_count
+#print axioms exchangeable_coordinate_bound
+#print axioms coordinate_count_observed
+#print axioms t13_no_ties
+#print axioms t13_rss_identity
+#print axioms balanced_card
+#print axioms binaryCode_succ
+#print axioms binaryCode_injective
+#print axioms binarySum_cast
+#print axioms binarySum_injective
+#print axioms binarySum_complement
+#print axioms powerTwoRSSExpression_equal
+#print axioms two_fiber_image_card
+#print axioms powerTwoRSSExpression_card
+#print axioms t13_finite_design
+#print axioms t13_finite_rejection
+#print axioms t13_numeric_certificates
+#print axioms t14_rank_bound
+#print axioms t14_strict_bound
+#print axioms coordinate_count_integer
+#print axioms corrected_coordinate_floor
+#print axioms corrected_floor_le
+#print axioms t14_corrected_valid
+#print axioms iid_mass_law
+#print axioms t14_iid_exchangeable
+#print axioms iid_coordinate_bound
+#print axioms coordinate_count_le_iff
+#print axioms raw_strict_rank_event
+#print axioms iid_strict_bound
+#print axioms t14_printed_bounds
+#print axioms t15_adjustment_witness
+#print axioms t15_ecdf_witness
+#print axioms t15_diagonal_witness
+#print axioms t16_group_adjustments
+#print axioms t16_control_ecdf
+#print axioms t16_ecdf_argument
+#print axioms t16_joint_hypothesis
+#print axioms calibration_sum
+#print axioms calibration_index_count
+#print axioms t18_calibration_witness
+#print axioms discrepancy_formula
+#print axioms t19_discrepancy_formula
+#print axioms root_discrepancies
+#print axioms t19_root_discrepancies
+#print axioms list_getD_nonneg
+#print axioms median_discrepancy_nonneg
+#print axioms t19_median_nonneg
+#print axioms filter_indices_length
+#print axioms even_median_partition
+#print axioms t19_median_identity
+#print axioms t19_calibration_roots
+#print axioms t19_mean_reductions
+#print axioms balanced_card_pos
+#print axioms balanced_expected_mean
+#print axioms t19_expected_reductions
+#print axioms t19_matched_parameter
+#print axioms t19_mismatch_numbers
+#print axioms t20_additive_identity
+#print axioms t20_model_positive
+#print axioms t20_zero_assignment
+#print axioms t20_model_composition
+#print axioms t20_model_uniformity
+#print axioms t21_exact_level
+#print axioms t21_sampled_level
 
 end AronowAudit.P016

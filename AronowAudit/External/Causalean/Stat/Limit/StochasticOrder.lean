@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -15,7 +14,8 @@ This module provides filter-general, row-varying stochastic big-O and little-o. 
 `Causalean.Stat.Limit.Modes`, it supplies one vocabulary for scalar and vector statistics,
 triangular arrays, and finite-design rows.  The definitions are filter-general, row-varying
 extensions of the sequence definitions in van der Vaart (1998), §2.2, and Hansen (2022), §5.11;
-the eventually-small formulation of `O_p` composes directly with filters.
+the eventually-small formulation of `O_p` is primary because it composes directly with filters,
+while `boundedInProbability_iff_limsup` recovers the textbook limsup form.
 -/
 
 @[expose] public section
@@ -46,6 +46,88 @@ def IsLittleOpF {ι : Type*} {Ω : ι → Type*} [∀ i, MeasurableSpace (Ω i)]
   ∀ ε : ℝ, 0 < ε →
     Tendsto (fun i => μ i {ω | ε * r i ≤ ‖X i ω‖}) l (𝓝 0)
 
+private lemma measure_norm_tail_mono
+    {Ω E : Type*} [MeasurableSpace Ω] [SeminormedAddCommGroup E]
+    (μ : Measure Ω) (X : Ω → E) {a b : ℝ} (hab : a ≤ b) :
+    μ {ω | b ≤ ‖X ω‖} ≤ μ {ω | a ≤ ‖X ω‖} :=
+  measure_mono fun _ h => hab.trans h
+
+/-- If [the rate is eventually positive](hyp:hr), then for [row measures](hyp:μ), [row
+variables](hyp:X), [a filter](hyp:l), and [that rate](hyp:r), [boundedness in probability using
+weak tail events is equivalent to the usual strict-tail formulation](goal). -/
+theorem boundedInProbability_iff_strict
+    {ι : Type*} {Ω : ι → Type*} [∀ i, MeasurableSpace (Ω i)]
+    {E : Type*} [SeminormedAddCommGroup E]
+    (μ : (i : ι) → Measure (Ω i)) (X : (i : ι) → Ω i → E) (l : Filter ι)
+    (r : ι → ℝ) (hr : ∀ᶠ i in l, 0 < r i) :
+    BoundedInProbability μ X l r ↔
+      ∀ δ : ℝ≥0∞, 0 < δ → ∃ M : ℝ, 0 < M ∧
+        ∀ᶠ i in l, μ i {ω | M * r i < ‖X i ω‖} ≤ δ := by
+  constructor
+  · intro h δ hδ
+    obtain ⟨M, hM, htail⟩ := h δ hδ
+    refine ⟨M, hM, ?_⟩
+    filter_upwards [htail] with i hi
+    exact (measure_mono fun _ hω => (show M * r i ≤ _ from hω.le)).trans hi
+  · intro h δ hδ
+    obtain ⟨M, hM, htail⟩ := h δ hδ
+    refine ⟨2 * M, by positivity, ?_⟩
+    filter_upwards [hr, htail] with i hri hi
+    refine (measure_mono fun _ hω => ?_).trans hi
+    change M * r i < _
+    exact (by nlinarith : M * r i < 2 * M * r i).trans_le hω
+
+/-- If [the rate is eventually positive](hyp:hr), then for [row measures](hyp:μ), [row
+variables](hyp:X), [a filter](hyp:l), and [that rate](hyp:r), [stochastic little-o using weak
+tail events is equivalent to the usual strict-tail formulation](goal). -/
+theorem isLittleOpF_iff_strict
+    {ι : Type*} {Ω : ι → Type*} [∀ i, MeasurableSpace (Ω i)]
+    {E : Type*} [SeminormedAddCommGroup E]
+    (μ : (i : ι) → Measure (Ω i)) (X : (i : ι) → Ω i → E) (l : Filter ι)
+    (r : ι → ℝ) (hr : ∀ᶠ i in l, 0 < r i) :
+    IsLittleOpF μ X l r ↔
+      ∀ ε : ℝ, 0 < ε →
+        Tendsto (fun i => μ i {ω | ε * r i < ‖X i ω‖}) l (𝓝 0) := by
+  constructor
+  · intro h ε hε
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (h ε hε)
+      (fun _ => zero_le) ?_
+    intro i
+    exact measure_mono fun _ hω => (show ε * r i ≤ _ from hω.le)
+  · intro h ε hε
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
+      (h (ε / 2) (by positivity)) (.of_forall fun _ => zero_le) ?_
+    filter_upwards [hr] with i hri
+    refine measure_mono fun _ hω => ?_
+    change ε / 2 * r i < _
+    exact (by nlinarith : ε / 2 * r i < ε * r i).trans_le hω
+
+/-- For [row measures](hyp:μ), [row variables](hyp:X), [a filter](hyp:l), and [a
+rate](hyp:r), [boundedness in probability is equivalent to the textbook limsup tail
+criterion](goal). -/
+theorem boundedInProbability_iff_limsup
+    {ι : Type*} {Ω : ι → Type*} [∀ i, MeasurableSpace (Ω i)]
+    {E : Type*} [SeminormedAddCommGroup E]
+    (μ : (i : ι) → Measure (Ω i)) (X : (i : ι) → Ω i → E) (l : Filter ι)
+    (r : ι → ℝ) :
+    BoundedInProbability μ X l r ↔
+      ∀ δ : ℝ≥0∞, 0 < δ → ∃ M : ℝ, 0 < M ∧
+        l.limsup (fun i => μ i {ω | M * r i ≤ ‖X i ω‖}) ≤ δ := by
+  constructor
+  · intro h δ hδ
+    obtain ⟨M, hM, htail⟩ := h δ hδ
+    exact ⟨M, hM, Filter.limsup_le_of_le (u := fun i => μ i {ω | M * r i ≤ ‖X i ω‖})
+      (a := δ) (h := htail)⟩
+  · intro h δ hδ
+    by_cases hδtop : δ = ∞
+    · exact ⟨1, one_pos, by simp [hδtop]⟩
+    have hhalf : 0 < δ / 2 := ENNReal.div_pos hδ.ne' (by norm_num)
+    obtain ⟨M, hM, hlim⟩ := h (δ / 2) hhalf
+    refine ⟨M, hM, ?_⟩
+    have hhalf_lt : δ / 2 < δ := ENNReal.half_lt_self hδ.ne' hδtop
+    exact (((Filter.limsup_le_iff
+      (u := fun i => μ i {ω | M * r i ≤ ‖X i ω‖}) (x := δ / 2)).mp hlim)
+        δ hhalf_lt).mono fun _ hi => hi.le
 
 /-- If [a row family is stochastic little-o at a rate](hyp:h), then [it is bounded in
 probability at the same rate](goal). -/
@@ -61,6 +143,17 @@ theorem IsLittleOpF.boundedInProbability
   rw [ENNReal.tendsto_nhds_zero] at ht
   simpa only [one_mul] using ht δ hδ
 
+/-- For [row measures](hyp:μ), [normed row random variables](hyp:X), and [an index
+filter](hyp:l), [convergence to zero in the row measures is equivalent to stochastic little-o at the
+constant unit rate in those same measures](goal). -/
+theorem tendstoInProbability_zero_iff_isLittleOpF_one
+    {ι : Type*} {Ω : ι → Type*} [∀ i, MeasurableSpace (Ω i)]
+    {E : Type*} [SeminormedAddCommGroup E]
+    (μ : (i : ι) → Measure (Ω i)) (X : (i : ι) → Ω i → E) (l : Filter ι) :
+    TendstoInProbability μ X l (fun _ _ => 0) ↔
+      IsLittleOpF μ X l (fun _ => 1) := by
+  rw [tendstoInProbability_iff_norm]
+  simp only [IsLittleOpF, sub_zero, mul_one]
 
 private lemma measure_add_norm_tail_le
     {Ω E : Type*} [MeasurableSpace Ω] [SeminormedAddCommGroup E]
@@ -224,5 +317,29 @@ theorem IsLittleOpF.mul
     IsLittleOpF μ (fun i ω => X i ω * Y i ω) l (fun i => r i * s i) :=
   hX.mul_boundedInProbability hY.boundedInProbability hr hs
 
+/-- If [a row family is bounded in probability at a rate](hyp:hX), [the comparison rate is
+eventually positive](hyp:hs), and [the ratio of the first rate to the comparison rate tends to
+zero](hyp:hrs), then [the family is stochastic little-o at the comparison rate](goal). -/
+theorem BoundedInProbability.isLittleOpF_of_tendsto_ratio
+    {ι : Type*} {Ω : ι → Type*} [∀ i, MeasurableSpace (Ω i)]
+    {E : Type*} [SeminormedAddCommGroup E]
+    {μ : (i : ι) → Measure (Ω i)} {X : (i : ι) → Ω i → E}
+    {l : Filter ι} {r s : ι → ℝ}
+    (hX : BoundedInProbability μ X l r) (hs : ∀ᶠ i in l, 0 < s i)
+    (hrs : Tendsto (fun i => r i / s i) l (𝓝 0)) :
+    IsLittleOpF μ X l s := by
+  intro ε hε
+  rw [ENNReal.tendsto_nhds_zero]
+  intro δ hδ
+  obtain ⟨M, hM, htail⟩ := hX δ hδ
+  have hratio : ∀ᶠ i in l, r i / s i < ε / M :=
+    hrs.eventually_lt_const (div_pos hε hM)
+  filter_upwards [hs, hratio, htail] with i hsi hri hi
+  have hquot : (M * r i) / s i < ε := by
+    calc
+      (M * r i) / s i = (r i / s i) * M := by ring
+      _ < ε := (lt_div_iff₀ hM).mp hri
+  have hrate : M * r i ≤ ε * s i := ((div_lt_iff₀ hsi).mp hquot).le
+  exact (measure_norm_tail_mono (μ i) (X i) hrate).trans hi
 
 end Causalean.Stat.Modes

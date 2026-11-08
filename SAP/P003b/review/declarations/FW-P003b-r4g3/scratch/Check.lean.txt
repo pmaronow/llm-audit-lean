@@ -1,0 +1,99 @@
+import SAP.P003b.Challenge
+
+-- These checks never invoke any Challenge theorem (the imported stubs use sorry).
+open SAP.P003b
+open scoped BigOperators
+namespace Review
+
+set_option maxRecDepth 100000
+set_option maxHeartbeats 2000000
+
+def z2 : Assignment 2 1 := ⟨{0}, by decide⟩
+def z16 : Assignment 16 8 :=
+  ⟨Finset.univ.filter (fun i : Fin 16 => i.val < 8), by decide⟩
+
+def pool2 : W1Pool 2 1 1 := fun _ _ => z2
+
+def labeled2 : PotentialTable 2 := fun i => if i.val = 0 then (true,false) else (false,true)
+
+-- T7: all hypotheses, including the second-inclusion positivity guard, are consistent.
+example : ∃ (v : Counts) (m K : ℕ) (α ε : ℝ),
+    0 < m ∧ v.total = 2*m ∧ 0 < K ∧
+    (0 < α ∧ α < 1) ∧ (0 < ε ∧ ε < α) ∧ 0 < α-2*ε := by
+  refine ⟨⟨0,1,1,0⟩,1,1,1/2,1/8,?_⟩
+  norm_num [Counts.total]
+
+example : (canonicalObserved (⟨0,1,1,0⟩ : Counts) z2.val) = ⟨1,0,1,0⟩ := by decide
+example : w1Observed labeled2 z2.val = ⟨1,0,1,0⟩ := by decide
+
+-- The positive-history premise in the conditional component is actually inhabited.
+example : 0 < uniformProb (fun p : W1Pool 2 1 1 =>
+    w1History false 0 (1/2) (1/8) ⟨0,1,0,1⟩ p = []) := by
+  classical
+  letI : Nonempty (Assignment 2 1) := ⟨z2⟩
+  simp [uniformProb, w1History, w1Start, Fintype.card_ne_zero]
+
+-- T32: balanced n=16 satisfies the full exact-search hypothesis list.
+example : ∃ (o : Counts) (α : ℝ),
+    (0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) ∧ 15 ≤ o.total ∧ (0 < α ∧ α < 1) := by
+  exact ⟨⟨0,8,0,8⟩,1/2,by norm_num [Counts.total]⟩
+
+-- A nonempty accepted set is independent of sSup/sInf conventions.
+example : Possible ⟨0,8,0,8⟩ ⟨0,8,8,0⟩ ∧ pValue ⟨0,8,8,0⟩ ⟨0,8,0,8⟩ = 1 := by
+  native_decide
+
+-- T34: construct K satisfying the logarithmic requirement, and epsilon<alpha/3.
+example : ∃ (v : Counts) (m K : ℕ) (α ε : ℝ),
+    0 < m ∧ v.total = 2*m ∧ 15 ≤ v.total ∧ 0 < K ∧
+    (0 < α ∧ α < 1) ∧ (0 < ε ∧ ε < α) ∧ ε < α/3 ∧
+    Real.log (4*(v.total : ℝ)*logTwo v.total/ε)/(2*ε^2) ≤ (K : ℝ) := by
+  let r : ℝ := Real.log (4*(16 : ℝ)*logTwo 16/(1/8))/(2*(1/8 : ℝ)^2)
+  refine ⟨⟨0,8,8,0⟩,8,⌈r⌉₊+1,1/2,1/8,?_⟩
+  have hr : r ≤ (⌈r⌉₊+1 : ℕ) := by
+    rw [Nat.cast_add_one]
+    linarith [Nat.le_ceil r]
+  norm_num [Counts.total, r] at hr ⊢
+  exact hr
+
+-- T6: a genuine labeled assignment realizing the printed data, and exact mass.
+def z30 : Assignment 30 15 :=
+  ⟨Finset.univ.filter (fun i : Fin 30 => i.val < 2 ∨ (3 ≤ i.val ∧ i.val < 16)), by decide⟩
+
+example : canonicalObserved ⟨3,0,0,27⟩ z30.val = adaptiveData := by decide
+example : observed ⟨3,0,0,27⟩ ⟨2,0,0,13⟩ = adaptiveData := by decide
+example : (SAP.P003b.multiplicity ⟨3,0,0,27⟩ ⟨2,0,0,13⟩ : ℚ) / binomial 30 15 = 45/116 := by
+  native_decide
+example : 0 < traceProbabilityQ adaptiveData w1Trace_A ∧
+    0 < traceProbabilityQ adaptiveData w1Trace_B ∧
+    0 < traceProbabilityQ adaptiveData w1Trace_D := by native_decide
+example : upperRun false adaptiveData (exactRejectQ (1/20) adaptiveData) = ⟨some 10,w1Trace_exact⟩ ∧
+    upperRun false adaptiveData (fun _ i => decide (i ≠ 0)) = ⟨some 9,w1Trace_A⟩ ∧
+    upperRun false adaptiveData (fun _ i => decide (i = 0)) = ⟨some 16,w1Trace_B⟩ ∧
+    upperRun false adaptiveData (fun _ i => decide (i < 2)) = ⟨some 16,w1Trace_D⟩ := by native_decide
+
+-- T35: the finite experiment and both observations really exist.
+example : Fintype.card (Assignment 2 1) = 2 := by decide
+example : (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) < 1 ∧ 0 < (1 : ℕ) ∧ 1 < (2 : ℕ) := by norm_num
+example : Possible ⟨0,1,0,1⟩ w1T35Population ∧
+    w1T35Population ∉ w1LiteralVisited ⟨0,1,0,1⟩ ∧
+    w1T35Population ∈ w1LiteralVisited ⟨1,0,1,0⟩ := by native_decide
+
+lemma constant_rank (K : ℕ) (o v : Counts) (samples : Fin K → Counts) :
+    rankValue (fun _ _ => 0) o v samples = 1 := by
+  have hp : (0 : ℝ) < (K : ℝ)+1 := by positivity
+  simp [rankValue, add_comm, ne_of_gt hp]
+
+-- The corrected full-j schedule reaches the omitted vector on all-zero data.
+example (K : ℕ)
+    (initial : (Fin 3 × Fin 3) → Fin K → Assignment 2 1)
+    (seeds : (Fin 3 × Fin 3) → Fin 2 → Fin K → (Fin 2 × Fin 2)) :
+    w1T35Theta w1T35Population ∈
+      generalSet (1/4) w1T35Theta (fun _ _ => 0) ⟨0,1,0,1⟩ initial seeds := by
+  refine ⟨(1,1),w1T35Population,?_,0,by decide,by decide,by decide,?_,?_,?_⟩
+  · decide
+  · native_decide
+  · rfl
+  · rw [constant_rank]
+    norm_num
+
+end Review

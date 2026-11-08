@@ -1,0 +1,164 @@
+import SAP.P030.Defs
+
+open scoped BigOperators
+open SAP.P030
+
+set_option maxRecDepth 4000
+set_option maxHeartbeats 1000000
+
+-- T6: the realized assignment is possible, and every outcome-null hypothesis
+-- is simultaneously satisfied by the actual ten-unit schedule.
+example : tenAssignment 6 ∈ tenΩ := by
+  classical
+  exact Finset.mem_image.mpr ⟨6, Finset.mem_univ _, rfl⟩
+
+example : NoEffects tenΩ tenYnull ∧ NoInterference tenΩ tenYnull ∧
+    FixedOutcomeNull (conditionalAssignments tenΩ tenS (tenAssignment 6)) tenS tenYnull := by
+  exact ⟨fun _ _ _ _ _ => rfl, fun _ _ _ _ _ _ => rfl,
+    fun _ _ _ _ _ _ => rfl⟩
+
+-- The two assignments named by the T6 counterexample really are possible
+-- conditional assignments. Their treatment patterns differ in variant units.
+example : tenAssignment (tableTreatment 0) ∈
+    conditionalAssignments tenΩ tenS (tenAssignment 6) ∧
+    tenAssignment (tableTreatment 3) ∈
+    conditionalAssignments tenΩ tenS (tenAssignment 6) := by
+  classical
+  constructor
+  · apply Finset.mem_filter.mpr
+    constructor
+    · exact Finset.mem_image.mpr ⟨tableTreatment 0, Finset.mem_univ _, rfl⟩
+    · intro i hi
+      fin_cases i <;> simp_all [tenS, tenAssignment, tableTreatment]
+  · apply Finset.mem_filter.mpr
+    constructor
+    · exact Finset.mem_image.mpr ⟨tableTreatment 3, Finset.mem_univ _, rfl⟩
+    · intro i hi
+      fin_cases i <;> simp_all [tenS, tenAssignment, tableTreatment]
+
+-- T7: use two variant assignments on a genuinely nonempty conditional support,
+-- with a nonzero direct effect at a fixed unit.
+def checkZ0 : Assignment 2 := fun _ => false
+def checkZ1 : Assignment 2 := ![false, true]
+def checkΩ : AssignmentSet 2 := {checkZ0, checkZ1}
+def checkS : FixedIndicator 2 := ![true, false]
+def checkY : PotentialOutcomes 2 := fun i z => 7 + 2 * treatment z i
+def checkInterference : PotentialOutcomes 2 :=
+  fun _ z => treatment z 1
+
+example : checkZ0 ∈ checkΩ ∧ checkZ1 ∈ checkΩ ∧ checkZ0 ≠ checkZ1 ∧
+    conditionalAssignments checkΩ checkS checkZ0 = checkΩ ∧
+    NoInterference checkΩ checkY ∧
+    FixedOutcomeNull (conditionalAssignments checkΩ checkS checkZ0) checkS checkY ∧
+    NoEffects checkΩ (fun _ _ => (7 : ℝ)) := by
+  classical
+  have hz : checkZ0 ≠ checkZ1 := by
+    intro h
+    have h1 := congrFun h (1 : Fin 2)
+    norm_num [checkZ0, checkZ1] at h1
+  have hc : conditionalAssignments checkΩ checkS checkZ0 = checkΩ := by
+    ext z
+    simp only [conditionalAssignments, Finset.mem_filter]
+    constructor
+    · exact And.left
+    · intro h
+      refine ⟨h, ?_⟩
+      simp only [checkΩ, Finset.mem_insert, Finset.mem_singleton] at h
+      rcases h with rfl | rfl
+      · intros; rfl
+      · intro i hi
+        fin_cases i <;> simp_all [checkS, checkZ0, checkZ1]
+  refine ⟨by simp [checkΩ], by simp [checkΩ], hz, hc, ?_, ?_, ?_⟩
+  · intro i z hz z' hz' he
+    simp only [checkY, treatment, he]
+  · rw [hc]
+    intro i hi z hz z' hz'
+    fin_cases i
+    · simp only [checkΩ, Finset.mem_insert, Finset.mem_singleton] at hz hz'
+      rcases hz with rfl | rfl <;> rcases hz' with rfl | rfl <;> rfl
+    · norm_num [checkS] at hi
+  · exact fun _ _ _ _ _ => rfl
+
+example : ∃ i : Fin 2, checkS i = true ∧
+    ∃ z ∈ conditionalAssignments checkΩ checkS checkZ0,
+    ∃ z' ∈ conditionalAssignments checkΩ checkS checkZ0,
+    checkInterference i z ≠ checkInterference i z' := by
+  classical
+  refine ⟨0, by norm_num [checkS], checkZ0, ?_, checkZ1, ?_, ?_⟩
+  · apply Finset.mem_filter.mpr
+    exact ⟨by simp [checkΩ], by intros; rfl⟩
+  · apply Finset.mem_filter.mpr
+    refine ⟨by simp [checkΩ], ?_⟩
+    intro i hi
+    fin_cases i <;> simp_all [checkS, checkZ0, checkZ1]
+  · norm_num [checkInterference, treatment, checkZ0, checkZ1]
+
+-- T8: the observed row and its comparison outcome vector are both genuinely
+-- nonconstant and their denominator is positive. These are raw numeral vectors,
+-- independently of the audited theorem.
+example : Nonconstant (![6,1,2,3] : Fin 4 → ℝ) ∧
+    Nonconstant (![1,3,2,1] : Fin 4 → ℝ) := by
+  exact ⟨⟨0, 1, by norm_num⟩, ⟨0, 1, by norm_num⟩⟩
+
+example : averageRank (![6,1,2,3] : Fin 4 → ℝ) = ![4,1,2,3] ∧
+    averageRank (![1,3,2,1] : Fin 4 → ℝ) = ![3/2,4,3,3/2] := by
+  classical
+  constructor <;> funext k <;> fin_cases k <;>
+    norm_num [averageRank, Fin.univ_succ, Finset.filter_insert, Finset.filter_singleton]
+
+example : rankSquares (![6,1,2,3] : Fin 4 → ℝ) = 5 ∧
+    rankSquares (![1,3,2,1] : Fin 4 → ℝ) = 9/2 ∧
+    rankCross (![6,1,2,3] : Fin 4 → ℝ) ![1,3,2,1] = -9/2 := by
+  norm_num [rankSquares, rankCross, centeredRanks, averageRank, Fin.sum_univ_succ,
+    Fin.card_filter_univ_succ]
+
+-- T9: all universal hypotheses, including both nonconstant vectors and m>0,
+-- hold simultaneously. The weak-order example is nonconstant on both sides.
+example : 2 ≤ (3 : ℕ) ∧ Nonconstant (![1,2,3] : Fin 3 → ℝ) ∧
+    Nonconstant (![0,0,1] : Fin 3 → ℝ) ∧ (0 : ℝ) < 3 ∧ (0 : ℝ) < 2 := by
+  exact ⟨by norm_num, ⟨0, 2, by norm_num⟩, ⟨0, 2, by norm_num⟩,
+    by norm_num, by norm_num⟩
+
+example : (∀ i j : Fin 3, (![1,2,3] : Fin 3 → ℝ) i ≤ (![1,2,3] : Fin 3 → ℝ) j →
+    (![0,0,1] : Fin 3 → ℝ) i ≤ (![0,0,1] : Fin 3 → ℝ) j) ∧
+    rankSquares (![1,2,3] : Fin 3 → ℝ) = 2 ∧
+    rankSquares (![0,0,1] : Fin 3 → ℝ) = 3/2 := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro i j
+    fin_cases i <;> fin_cases j <;> norm_num
+  · norm_num [rankSquares, centeredRanks, averageRank, Fin.sum_univ_succ,
+      Fin.card_filter_univ_succ]
+  · norm_num [rankSquares, centeredRanks, averageRank, Fin.sum_univ_succ,
+      Fin.card_filter_univ_succ]
+
+-- T10: an ordinary two-point Euclidean distance matrix gives nonempty
+-- off-diagonal sums, a zero self-distance, and strictly positive other distances.
+def checkD (i j : Fin 2) : ℝ := |(i.val : ℝ) - (j.val : ℝ)|
+
+example : (∀ i : Fin 2, checkD i i = 0) ∧
+    (∀ i j : Fin 2, i ≠ j → 0 < checkD i j) ∧
+    inverseSquareIndirect checkD checkZ1 0 = 4/9 ∧
+    inverseSquareSpatial checkD 0 = 4/9 ∧
+    partialRealQuotient (0 : ℝ) 0 = none := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro i
+    simp [checkD]
+  · intro i j h
+    fin_cases i <;> fin_cases j <;> simp_all [checkD]
+  · norm_num [inverseSquareIndirect, inverseSquare, treatment, checkZ1,
+      Fin.univ_succ, checkD]
+  · norm_num [inverseSquareSpatial, inverseSquare, Fin.univ_succ, checkD]
+  · simp [partialRealQuotient]
+
+-- A concrete point in the divergence-bound hypothesis, B=1 and d=1/3.
+example : (0 : ℝ) < 1 ∧ (0 : ℝ) < 1/3 ∧
+    (1/3 : ℝ) < 2/(3*Real.sqrt 1) ∧ (1 : ℝ) < inverseSquare (1/3) := by
+  norm_num [inverseSquare]
+
+-- Check exactly the junk conventions potentially relevant to the closures.
+example : inverseSquare 0 = 0 ∧
+    spearman (![1,1] : Fin 2 → ℝ) ![1,2] = 0 ∧
+    uniformProbability (∅ : Finset (Fin 2)) (fun _ => True) = 0 := by
+  norm_num [inverseSquare, spearman, rankSquares, rankCross, centeredRanks,
+    averageRank, uniformProbability, Fin.sum_univ_succ, Fin.card_filter_univ_succ]

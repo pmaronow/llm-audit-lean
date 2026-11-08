@@ -1,0 +1,14 @@
+[
+  {
+    "theorem": "SAP.P054.T1",
+    "target_id": "P054-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement matches every mathematical clause of the canonical fixed-data reconstruction: N >= 2; binary d and y; positive weights; selected count n > 0; W and pHat as the specified finite sums and ratio; centered residuals z; zero residual sum; the full-N normalized variance identity; and both equal-weight consequences with the factor N/(N-1). The theorem imposes no unequal-weight inequality, statistical-validity conclusion, or historical-procedure conclusion. Its SAP definitions are the unsimplified sums and formulas specified by the canonical claim, not conclusions built into definitions. Binary indicators make the real-valued sum n an actual selected count. Lean checks in scratch/Nonvacuity.lean construct all hypotheses, including the positive constant-weight branch, with nonzero variances, and also check unequal weights and a proper subgroup. scratch/Denominators.lean proves that all denominators are nonzero from the hypotheses. There is no hidden extra hypothesis, vacuity, or dependence on a junk value."
+  },
+  {
+    "theorem": "SAP.P054.T2",
+    "target_id": "P054-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement independently includes T1's finite binary and positive-weight setting and the additional selected-count bound n >= 2. It states the exact weighted RSS identity W*pHat*(1-pHat), the classical intercept-only formula RSS_w/((n-1)*W), its simplification pHat*(1-pHat)/(n-1), and its equality to n/(n-1) times the specified V0. The definitions explicitly compute the weighted ratio, RSS, and classical formula; they do not define those quantities to equal the desired conclusions. The canonical compatibility and provenance qualification is respected: no historical use, inverse-variance assumption, survey-design validity, or coverage is asserted by the proposition. The generated _proof_1 declaration is merely a numeral type-class instance, not an extra premise. scratch/Nonvacuity.lean constructs all T2 hypotheses with positive RSS and variance, for equal and unequal weights and a proper subgroup; scratch/Denominators.lean proves all relevant denominators nonzero. All hypotheses are jointly satisfiable and no junk value enters."
+  }
+]

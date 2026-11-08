@@ -1,0 +1,125 @@
+import SAP.P003a.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 10000
+set_option maxHeartbeats 0
+
+open SAP.P003a
+open scoped BigOperators
+
+namespace Audit
+
+-- No example below uses T21, T22, T23, or any WholeStatement as a proof.
+
+def z21 : Finset (Fin 9) := {0, 1, 2, 3, 4, 5, 6}
+def w21 : PotentialTable 9 := fun i => canonicalPair ⟨0,1,0,8⟩ i.val
+
+example : z21.card = 7 ∧
+    tableCounts w21 = ⟨0,1,0,8⟩ ∧
+    unitObserved (unitOutcomes w21 z21) z21 = ⟨1,6,0,2⟩ ∧
+    Possible ⟨1,6,0,2⟩ ⟨0,1,0,8⟩ ∧
+    pValue ⟨0,1,0,8⟩ ⟨1,6,0,2⟩ = 1 := by native_decide
+
+example : T21Statement := by
+  unfold T21Statement
+  native_decide
+
+-- Check every finite p-value fiber, not just one maximizing population.
+example : (possibleTables ⟨1,6,0,2⟩).toFinset.card = 42 ∧
+    (w1FootnoteMaxima.all fun dp =>
+      let fiber := (possibleTables ⟨1,6,0,2⟩).filter (fun v => v.effect = dp.1)
+      fiber.all (fun v => decide (pValue v ⟨1,6,0,2⟩ ≤ dp.2)) &&
+        fiber.any (fun v => decide (pValue v ⟨1,6,0,2⟩ = dp.2))) = true := by
+  native_decide
+
+def draw22 : Assignment 2 1 := ⟨{0}, by decide⟩
+def initial22 : (Fin 3 × Fin 3) → Fin 1 → Assignment 2 1 := fun _ _ => draw22
+def seeds22 : (Fin 3 × Fin 3) → Fin 2 → Fin 1 → (Fin 2 × Fin 2) :=
+  fun _ _ _ => (0,0)
+
+example : (0 : ℕ) < 1 ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    (initial22 (0,0) 0).val.card = 1 ∧
+    (seeds22 (0,0) 0 0).1.val < (2 : ℕ).factorial := by
+  norm_num [initial22, draw22, seeds22]
+
+example :
+    ((w1Traversal false ⟨0,1,0,1⟩).map (fun s => reuseVector s.base s.k)).toFinset =
+      {⟨0,0,0,2⟩, ⟨0,0,1,1⟩, ⟨0,1,0,1⟩} ∧
+    ((w1Traversal true ⟨0,1,0,1⟩).map (fun s => reuseVector s.base s.k)).toFinset =
+      {⟨0,0,0,2⟩, ⟨0,0,1,1⟩, ⟨0,1,0,1⟩, ⟨0,1,1,0⟩} ∧
+    ((w1Traversal false ⟨0,1,0,1⟩).map
+      (fun s => let v := reuseVector s.base s.k; v.b+v.c)).toFinset = {0,1} ∧
+    ((w1Traversal true ⟨0,1,0,1⟩).map
+      (fun s => let v := reuseVector s.base s.k; v.b+v.c)).toFinset = {0,1,2} := by
+  native_decide
+
+lemma constant_rank (K : ℕ) (o v : Counts) (s : Fin K → Counts) :
+    rankValue (fun _ _ => 0) o v s = 1 := by
+  simp only [rankValue, abs_zero, le_refl, ite_true, Finset.sum_const,
+    Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one]
+  have h : (K : ℝ) + 1 ≠ 0 := by positivity
+  simpa only [add_comm] using div_self h
+
+example : tableCounts w1OmittedTable = ⟨0,1,1,0⟩ ∧
+    unitOutcomes w1OmittedTable draw22.val = (fun _ => false) ∧
+    unitObserved (unitOutcomes w1OmittedTable draw22.val) draw22.val = ⟨0,1,0,1⟩ ∧
+    Possible ⟨0,1,0,1⟩ ⟨0,1,1,0⟩ := by native_decide
+
+-- A separate legal line exercises actual positive reuse, rather than an empty line.
+def drawReuse : Assignment 4 2 := ⟨{0,2}, by decide⟩
+def seedsReuse : Fin 4 → Fin 1 → (Fin 24 × Fin 24) := fun _ _ => (0,0)
+
+example : firstOnLine ⟨1,1,1,1⟩ 0 2 = some ⟨2,0,0,2⟩ ∧
+    w1ReuseLine ⟨1,1,1,1⟩ ⟨2,0,0,2⟩ = [1,2] ∧
+    w1ReusedSamples ⟨2,0,0,2⟩ (fun _ : Fin 1 => drawReuse) seedsReuse 0 0 = ⟨1,0,0,1⟩ ∧
+    w1ReusedSamples ⟨2,0,0,2⟩ (fun _ : Fin 1 => drawReuse) seedsReuse 1 0 = ⟨1,0,0,1⟩ ∧
+    w1ReusedSamples ⟨2,0,0,2⟩ (fun _ : Fin 1 => drawReuse) seedsReuse 2 0 = ⟨0,1,1,0⟩ ∧
+    observed (reuseVector ⟨2,0,0,2⟩ 2) ⟨0,1,1,0⟩ = ⟨1,1,1,1⟩ := by native_decide
+
+-- A nonmonotone decision function and a domain containing negative integers.
+example : sentinelSearch 8 (fun x => decide (x = 3)) (-3) 5 = (2,[1,3,2]) := by
+  native_decide
+
+def o23 : Counts := ⟨0,2,0,2⟩
+def draw23a : Assignment 4 2 := ⟨{0,2}, by decide⟩
+def draw23b : Assignment 4 2 := ⟨{1,3}, by decide⟩
+def pool23 : Fin (2*w1TestBudget o23.total+1) → Fin 1 →
+    Assignment o23.total (o23.a+o23.b) :=
+  fun slot _ => if slot.val % 2 = 0 then draw23a else draw23b
+
+example : (0 < o23.a+o23.b ∧ o23.a+o23.b = o23.c+o23.d) ∧
+    (0 : ℕ) < 1 ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧
+    (0 ≤ (0 : ℝ) ∧ (0 : ℝ) < 1/2) := by
+  norm_num [o23]
+
+example : (pool23 ⟨0,by decide⟩ 0).val ≠ (pool23 ⟨1,by decide⟩ 0).val := by
+  change ({0,2} : Finset (Fin 4)) ≠ {1,3}
+  decide
+
+def reject23Q (v : Counts) (idx : ℕ) : Bool :=
+  decide (w1MonteMean v o23 (w1Batch pool23 idx) < (1/2 : ℚ))
+
+lemma actual_reject23 : w1ApproxReject (1/2) 0 o23 pool23 = reject23Q := by
+  funext v idx
+  unfold w1ApproxReject reject23Q
+  simp only [add_zero]
+  have hhalf : ((1/2 : ℚ) : ℝ) = (1/2 : ℝ) := by norm_num
+  rw [← hhalf]
+  simp only [Rat.cast_lt]
+
+example : w1MonteMean ⟨0,1,0,3⟩ o23 (w1Batch pool23 0) = 1 ∧
+    w1MonteMean ⟨0,2,0,2⟩ o23 (w1Batch pool23 1) = 0 := by native_decide
+
+example : w1EffectUpperRun o23 reject23Q =
+    ⟨some 1, [⟨1,0,false⟩,⟨2,1,true⟩],
+      [(⟨0,1,0,3⟩,false),(⟨0,2,0,2⟩,true)]⟩ := by native_decide
+
+example : (w1EffectUpperRun o23 (w1ApproxReject (1/2) 0 o23 pool23)).value = some 1 ∧
+    (w1EffectUpperRun o23 (w1ApproxReject (1/2) 0 o23 pool23)).queries =
+      [⟨1,0,false⟩,⟨2,1,true⟩] := by
+  rw [actual_reject23]
+  native_decide
+
+example : intervalQ (1/2) o23 = some (-1/4,1/4) := by native_decide
+
+end Audit

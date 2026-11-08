@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P001b.T36",
+  "target_id": "P001-T36",
+  "round": 11,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "Refutation recheck (weaker_reading): The target is a pointwise identity for a real marginal PDF, while the task additionally assumes existence of the quantities appearing in that identity (items.json:612; items.json:613). The actual Lean statement proves joint normalization and an infinite nonnegative slice integral, and restricts its finite-slice assertion to y not equal to zero (/home/ubuntu/sap/wt/ARCH-P001b/SAP/P001b/Defs/Part4.lean:79). Scratch Lean confirms that this zero slice is not integrable, so the exceptional point is outside the required finite-real domain rather than a failed equality of defined real quantities (scratch/DomainChecks.lean:10). The finite marginal-density-version identity is true, while pointwise equality to a particular derivative version needs further pointwise regularity; the witness validly illustrates the defect in an extension allowing infinite slices, not a refutation under the stipulated existence convention (/home/ubuntu/sap/ref/llm-audit/data/works/P001.json:1554; /home/ubuntu/sap/ref/llm-audit/data/works/P001.json:1556). Violated conditions: [\"At the queried y=0 the displayed real slice integral fails the task's assumed finite-existence condition.\", 'If the marginal PDF is read via the printed derivative definition, the requisite finite marginal derivative at zero also fails.']. Printed reading: For jointly continuous real random variables with joint PDF f and the usual existence conditions, the real marginal PDF of Y equals the integral of f(x,y) over x for every real y."
+  ]
+ }
+]

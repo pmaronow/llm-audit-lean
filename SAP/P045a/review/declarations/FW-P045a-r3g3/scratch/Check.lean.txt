@@ -1,0 +1,132 @@
+import SAP.P045a.Defs
+
+set_option autoImplicit false
+open scoped BigOperators Classical
+open Finset SAP.P045a
+
+-- T11: a genuine nonempty graph and completed admissible run.
+example : (0 : ℕ) < 1 ∧
+    greedyRun (⊥ : SimpleGraph (Fin 1)).edist 3 [0] ∧
+    marked (⊥ : SimpleGraph (Fin 1)).edist 3 ({0} : Finset (Fin 1)) = univ := by
+  norm_num [greedyRun, marked, Finset.ext_iff, Subsingleton.elim]
+
+-- T12: all 45 outcomes treat exactly two distinct units, with ordinary positive weights.
+example : treatmentPairs.Nonempty ∧
+    ∀ e ∈ treatmentPairs, treatedCount (pairAssignment e) = 2 := by
+  constructor
+  · exact ⟨(0, 1), by decide⟩
+  · intro e he
+    have hlt : e.1 < e.2 := (mem_filter.mp he).2
+    have hset : (univ.filter (fun i => pairAssignment e i = true)) = {e.1, e.2} := by
+      ext i
+      simp [pairAssignment]
+    rw [treatedCount, hset]
+    simp [ne_of_lt hlt]
+
+example : treatmentPairs.card = 45 := by decide
+
+-- General-hypothesis data for T13, with both treated exposures genuinely possible.
+noncomputable def fairTwo : Design (Assignment 2) where
+  mass := SAP.P045a.bernoulli (1/2)
+  nonneg := by
+    intro z
+    unfold SAP.P045a.bernoulli
+    apply Finset.prod_nonneg
+    intro i hi
+    split_ifs <;> norm_num
+  total := by
+    norm_num [SAP.P045a.bernoulli, Fin.prod_univ_two]
+
+def adjacentTwo : Network 2 where
+  adj := edge2
+  symmetric := by intro i j; simp [edge2, ne_comm]
+  loopless := by intro i; simp [edge2]
+
+lemma sum_assign2 (f : Assignment 2 → ℝ) :
+    (∑ z, f z) = f ![true,true] + f ![true,false] +
+      f ![false,true] + f ![false,false] := by
+  calc
+    (∑ z, f z) = ∑ b : Bool × Bool, f ![b.1,b.2] := by
+      apply Fintype.sum_equiv (finTwoArrowEquiv Bool)
+      intro x
+      congr 1
+      ext i
+      fin_cases i <;> rfl
+    _ = _ := by simp [Fintype.sum_prod_type, add_assoc]
+
+lemma fairTwo_own (i : Fin 2) : ownProb fairTwo.mass i = 1/2 := by
+  fin_cases i <;>
+    norm_num [ownProb, prob, SAP.P045a.expect, sum_assign2, fairTwo,
+      SAP.P045a.bernoulli, Fin.prod_univ_two]
+
+-- Satisfies also the HT-domain and no-isolates hypotheses, not just the base domain.
+example : (0 : ℕ) < 2 ∧
+    (∀ i, 0 < ownProb fairTwo.mass i) ∧
+    (∀ i, 0 < exposureProb fairTwo.mass (exposure adjacentTwo.adj) i .d11 ∧
+      0 < exposureProb fairTwo.mass (exposure adjacentTwo.adj) i .d10) ∧
+    (∀ i : Fin 2, ∃ j, adjacentTwo.adj i j = true) := by
+  refine ⟨by decide, ?_, ?_, ?_⟩
+  · intro i; rw [fairTwo_own]; norm_num
+  · intro i
+    fin_cases i <;>
+      norm_num [exposureProb, prob, SAP.P045a.expect, sum_assign2, fairTwo,
+        SAP.P045a.bernoulli, Fin.prod_univ_two, exposure, adjacentTwo,
+        edge2, Fin.exists_fin_two]
+  · intro i
+    fin_cases i
+    · exact ⟨1, by decide⟩
+    · exact ⟨0, by decide⟩
+
+-- The cancellation schedule is observed under independent fair assignments.
+example :
+    SAP.P045a.expect fairTwo.mass (naiveTreated fairTwo.mass adjacentTwo.adj cancellingOut2) = 3/2 ∧
+    mean (fun i : Fin 2 => cancellingOut2 i .d11) = 3/2 := by
+  have hp (i : Fin 2) : ownProb (SAP.P045a.bernoulli (1/2)) i = 1/2 :=
+    fairTwo_own i
+  norm_num [SAP.P045a.expect, sum_assign2, naiveTreated, fairTwo_own, mean,
+    cancellingOut2, fairTwo, hp, SAP.P045a.bernoulli, Fin.prod_univ_two,
+    Fin.sum_univ_two, adjacentTwo, edge2, exposure, Fin.exists_fin_two]
+
+-- Counting the actual 75-person assignments does not enumerate 2^75 outcomes.
+lemma witness_count (g : Fin 6) :
+    treatedCount (tractWitnessAssignment g) = if g.val < 3 then 50 else 25 := by
+  fin_cases g <;> decide
+
+lemma crMass_positive_of_count {n k : ℕ} (z : Assignment n)
+    (hz : treatedCount z = k) : 0 < crMass n k z := by
+  have hm : z ∈ fixedAssignments n k := by
+    simpa [fixedAssignments, treatedCount] using hz
+  rw [crMass, if_pos hm]
+  apply one_div_pos.mpr
+  exact_mod_cast (Finset.card_pos.mpr ⟨z, hm⟩)
+
+-- T14: the actual witness has positive mass in every second-stage group law.
+example : ({0,1,2} : Finset (Fin 6)) ∈ firstStageSets 6 3 ∧
+    ∀ g : Fin 6,
+      0 < crMass 75 (if g.val < 3 then 50 else 25) (tractWitnessAssignment g) := by
+  constructor
+  · decide
+  · intro g
+    exact crMass_positive_of_count _ (witness_count g)
+
+-- T15: the full 450-unit data have positive probability, not just compatible marginals.
+example : ∃ ω : Finset (Fin 6) × TractAssignment,
+    0 < tractTwoStageMass ω ∧
+      ω.1 ∈ firstStageSets 6 3 ∧
+      ∀ g, treatedCount (ω.2 g) = tractRegimeCount ω.1 g := by
+  let H : Finset (Fin 6) := {0,1,2}
+  have hH : H ∈ firstStageSets 6 3 := by decide
+  have hr (g : Fin 6) : tractRegimeCount H g = if g.val < 3 then 50 else 25 := by
+    fin_cases g <;> decide
+  have hc (g : Fin 6) :
+      treatedCount (tractWitnessAssignment g) = tractRegimeCount H g := by
+    rw [hr]; exact witness_count g
+  refine ⟨(H, tractWitnessAssignment), ?_, hH, hc⟩
+  change 0 < if H ∈ firstStageSets 6 3 then
+    (1 / ((firstStageSets 6 3).card : ℝ)) * tractSecondStageMass H tractWitnessAssignment else 0
+  rw [if_pos hH]
+  apply mul_pos
+  · apply one_div_pos.mpr
+    exact_mod_cast (Finset.card_pos.mpr ⟨H, hH⟩)
+  · unfold tractSecondStageMass
+    exact Finset.prod_pos (fun g _ => crMass_positive_of_count _ (hc g))

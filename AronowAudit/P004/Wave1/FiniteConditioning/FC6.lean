@@ -19,7 +19,7 @@ theorem fc6_proof : FC6 := by
     have h := expect_mono p hp (fun _ => 0) (fun z => (X z)^2)
       (fun z => sq_nonneg (X z))
     simpa only [expect_const] using h
-  -- This is the defining cylinder invariance.
+  -- This is the defining cylinder invariance, so FC6 does not need an FC1 import.
   have hdepends : ∀ (K : Finset (Fin N)) (X : Assignment N → ℝ)
       (z z' : Assignment N), (∀ k ∈ K, z k = z' k) →
       conditionOn p K X z = conditionOn p K X z' := by

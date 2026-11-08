@@ -1,13 +1,19 @@
 import AronowAudit.P002.P002_Audit
 
 /-!
-# Finite quantiles and algorithm correctness (P002-T22, P002-T23, P002-T27, P002-T28)
+# Shared blueprint nodes for the P002 algorithm records (T22, T23, T27, T28)
 
-This module contains finite-quantile, interval and algorithm geometry statements
-for arbitrary families of real curves `g : Fin M → ℝ → ℝ`, together with lemmas
-that combine them. The statements use the P002 definitions of empirical critical
-values, quantile indices, confidence sets, crossings, gaps and algorithm runs.
-None assumes a rank or interval-wide correctness conclusion.
+Wave 1 blueprint, group P002-P031. This module contains no `Target`: it holds the
+generic finite-quantile, interval and run-geometry nodes shared by the four algorithm
+records, together with short fully proved glue lemmas that combine them. Every node is a
+statement about arbitrary families of real curves `g : Fin M → ℝ → ℝ` using the frozen
+P002 definitions (`mcCritical`, `mcIndices`, `mcSet`, `crossing`, `gapEndpoints`,
+`Algorithm1Run`, `Algorithm2Step`, `Algorithm2Run`). None of them assumes a rank or
+interval-wide correctness conclusion.
+
+Writers prove `theorem nk_proof : Nk` in `AronowAudit/P002/Wave1/AlgorithmSupport/Nk.lean`.
+The admitted frozen declarations `quantile_index_interval`, `corrected_H1`,
+`corrected_algorithm2` and `algorithm_correctness` must not be used.
 -/
 
 namespace AronowAudit.P002.Wave1.AlgorithmSupport
@@ -16,7 +22,7 @@ open scoped BigOperators ENNReal Matrix Topology
 open Filter MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-/-- Node 1 (P002-T27; main p. 14, (13) and (17)):
+/-- Node 1 (map T27 node `mcCritical_attained_nonnegative`; main p. 14, (13) and (17)):
 for `M > 0`, `0 < α < 1` and nonnegative squared curves at `β`, the empirical quantile
 index set is nonempty and the empirical critical value is nonnegative. -/
 def N1 : Prop :=
@@ -24,21 +30,20 @@ def N1 : Prop :=
     (∀ m, 0 ≤ g m β) →
     (mcIndices g α β).Nonempty ∧ 0 ≤ mcCritical g α β
 
-/-- Node 2 (P002-T27; Supplement H.1 continuity step):
+/-- Node 2 (map T27 node `finite_quantile_lipschitz`; Supplement H.1 continuity step):
 the empirical critical value of finitely many continuous squared curves is continuous.
-The critical value of a vector is 1-Lipschitz in the sup norm, ties
-included; this applies to the continuous square roots. -/
+Recommended route: the critical value of a vector is 1-Lipschitz in the sup norm, ties
+included, applied to the continuous square roots. -/
 def N2 : Prop :=
   ∀ (M : ℕ) (g : Fin M → ℝ → ℝ) (α : ℝ), 0 < M → (0 < α ∧ α < 1) →
     (∀ m, Continuous (g m)) →
     Continuous (fun β => mcCritical g α β)
 
-/-- Node 3 (P002-T27; single-curve form for Algorithm 2; main p. 14 Lemma 1(i)): if the selected
-curve `g m` meets no
+/-- Node 3 (map T27 node `rank_sign_constancy`, single-curve form required by Algorithm 2;
+main p. 14 Lemma 1(i) and dossier note under T22): if the selected curve `g m` meets no
 globally distinct curve inside the open interval and `m` is a quantile index at one
 interior point, then `m` is a quantile index at every interior point. Crossings between
-two unselected curves are allowed. The rank characterization and intermediate value theorem give
-sign constancy. -/
+two unselected curves are allowed. Route: `quantile_index_rank` plus IVT sign constancy. -/
 def N3 : Prop :=
   ∀ (M : ℕ) (g : Fin M → ℝ → ℝ) (α : ℝ) (m : Fin M) (l u : EReal) (x₀ : ℝ),
     0 < M → (0 < α ∧ α < 1) → (∀ s, Continuous (g s)) → (∀ s β, 0 ≤ g s β) →
@@ -47,8 +52,8 @@ def N3 : Prop :=
     m ∈ mcIndices g α x₀ →
     ∀ x ∈ openInterval l u, m ∈ mcIndices g α x
 
-/-- Node 4 (P002-T27; main p. 14 Lemma 1(ii)-(iv)): continuity of the critical value extends
-validity of an index from the
+/-- Node 4 (map T27 node `quantile_endpoint_and_paper_instance`, endpoint half; main p. 14
+Lemma 1(ii)-(iv)): continuity of the critical value extends validity of an index from the
 open interval to every real point of the closed interval, including finite endpoints.
 No value at an infinite endpoint is involved since members are real. -/
 def N4 : Prop :=
@@ -57,8 +62,8 @@ def N4 : Prop :=
     (∀ x ∈ openInterval l u, m ∈ mcIndices g α x) →
     ∀ β ∈ closedInterval l u, m ∈ mcIndices g α β
 
-/-- Node 5 (P002-T22; corrected (H.1), Supplement p. 45): on a recorded piece whose index is
-valid at every real point of its
+/-- Node 5 (map T22 node `valid_piece_and_union`, piece half; corrected (H.1),
+Supplement p. 45): on a recorded piece whose index is valid at every real point of its
 closed interval, the selected squared curve is the square of the absolute critical value,
 and the Step 4/5 piece set equals the Monte Carlo confidence set on that interval. -/
 def N5 : Prop :=
@@ -68,7 +73,7 @@ def N5 : Prop :=
     (∀ β ∈ closedInterval p.left p.right, g p.index β = (mcCritical g α β) ^ 2) ∧
     pieceSet f g p = mcSet f g α ∩ closedInterval p.left p.right
 
-/-- Node 6 (P002-T23; main p. 15, Algorithm 1 Steps 2-3):
+/-- Node 6 (map T23 node `algorithm1_gap_geometry`; main p. 15, Algorithm 1 Steps 2-3):
 every gap of a strictly sorted list has strictly ordered endpoints, its prescribed sample
 point lies in its open interior, and no list element lies in that interior. This also
 holds for the empty list, whose sole gap is `(⊥, ⊤)` with sample `0`. -/
@@ -77,26 +82,26 @@ def N6 : Prop :=
     ∀ lu ∈ gapEndpoints J, lu.1 < lu.2 ∧ gapSample lu.1 lu.2 ∈ openInterval lu.1 lu.2 ∧
       ∀ β ∈ openInterval lu.1 lu.2, β ∉ J
 
-/-- Node 7 (P002-T28; main p. 15, Algorithm 1 Step 2): the closed gaps of any list cover the
-real line. -/
+/-- Node 7 (map T28 node `algorithm1_exists_and_covers`, covering half; main p. 15,
+Algorithm 1 Step 2): the closed gaps of any list cover the real line. -/
 def N7 : Prop :=
   ∀ (J : List ℝ) (β : ℝ), ∃ lu ∈ gapEndpoints J, β ∈ closedInterval lu.1 lu.2
 
-/-- Node 8 (P002-T28; main p. 15 Step 1 and Remark 7):
+/-- Node 8 (map T28 node `intersection_list_exists`; main p. 15 Step 1 and Remark 7):
 a regular family (continuous, nonnegative, distinct pairs meet finitely often) has a
 complete strictly sorted intersection list. -/
 def N8 : Prop :=
   ∀ (M : ℕ) (g : Fin M → ℝ → ℝ), CurveRegularity g → ∃ J, IntersectionList g J
 
-/-- Node 9 (P002-T28; main p. 15, Algorithm 1 Step 3): if every quantile index set is nonempty,
-every complete
+/-- Node 9 (map T28 node `algorithm1_exists_and_covers`, existence half; main p. 15,
+Algorithm 1 Step 3): if every quantile index set is nonempty, every complete
 intersection list admits an Algorithm 1 run (choose an index at each gap sample). -/
 def N9 : Prop :=
   ∀ (M : ℕ) (g : Fin M → ℝ → ℝ) (α : ℝ) (J : List ℝ), IntersectionList g J →
     (∀ β, (mcIndices g α β).Nonempty) → ∃ pieces, Algorithm1Run g α J pieces
 
-/-- Statement of Node 10 (P002-T22; main p. 16 Algorithm 2 Step 4 and the last-crossing branch):
-from any left endpoint and
+/-- Statement of Node 10 (map T22 node `algorithm2_run_by_remaining_crossings`, construction half;
+main p. 16 Algorithm 2 Step 4 and the last-crossing branch): from any left endpoint and
 any starting index, the Step 4 loop can be run to termination. Recursion on the number
 of list elements to the right of the current left endpoint. -/
 def Alg2TailExists : Prop :=
@@ -106,8 +111,8 @@ def Alg2TailExists : Prop :=
       (∃ r, pieces.head? = some ⟨l, r, m⟩) ∧
       ∀ i : Fin pieces.length, Algorithm2Step g α J (pieces.get i) (pieces[i.val+1]?)
 
-/-- Statement of Node 11 (P002-T22): every encoded Algorithm 2 run has at most `|J|+1` pieces,
-strictly
+/-- Statement of Node 11 (map T22 node `algorithm2_run_by_remaining_crossings`, bound half; dossier T22
+formal content (i)): every encoded Algorithm 2 run has at most `|J|+1` pieces, strictly
 increasing right endpoints, each right endpoint `⊤` or an element of `J`, and every piece
 has `left < right`. -/
 def Alg2RunEndpoints : Prop :=
@@ -118,7 +123,7 @@ def Alg2RunEndpoints : Prop :=
     (∀ p ∈ pieces, p.right = ⊤ ∨ ∃ e : ℝ, p.right = (e : EReal) ∧ e ∈ J) ∧
     (∀ p ∈ pieces, p.left < p.right)
 
-/-- Statement of Node 12 (P002-T22; Supplement p. 45 H.2): the
+/-- Statement of Node 12 (dossier T22 formal content (i), covering clause; Supplement p. 45 H.2): the
 closed pieces of every Algorithm 2 run cover the real line (first left endpoint `⊥`,
 consecutive pieces meet, last right endpoint `⊤`). -/
 def Alg2RunCover : Prop :=
@@ -126,7 +131,7 @@ def Alg2RunCover : Prop :=
     Algorithm2Run g α J pieces →
     ∀ β : ℝ, ∃ p ∈ pieces, β ∈ closedInterval p.left p.right
 
-/-- Statement of Node 13 (P002-T22; Supplement p. 45 H.2, corrected):
+/-- Statement of Node 13 (map T22 paper proof, sample-point paragraph; Supplement p. 45 H.2 corrected):
 in every Algorithm 2 run, each piece's index is a quantile index at some point of the
 piece's open interior (the initial sample `J.head!-1`, a midpoint `(e+V)/2`, or `e+1` in
 the empty-`E` branch), and the selected curve meets no globally distinct curve inside the
@@ -157,7 +162,7 @@ def N13 : Prop := StepsCons → Alg2RunSample
 /-- Node 14: the step bookkeeping lemma. -/
 def N14 : Prop := StepsCons
 
-/-! ## Lemmas combining the statements -/
+/-! ## Fully proved glue lemmas (part of the proof that the nodes suffice) -/
 
 /-- The union of valid pieces covering the real line is the confidence set. -/
 theorem glue_union {M : ℕ} (f : ℝ → ℝ) (g : Fin M → ℝ → ℝ) (α : ℝ)
@@ -246,7 +251,7 @@ theorem glue_algorithm2_exists (h1 : N1) (h10 : N10) (h14 : N14) {M : ℕ} (g : 
     cases hp
     exact ⟨rfl, hm₀⟩
 
-/-- Every Algorithm 2 run satisfies the corrected Step 4/5 conclusions. -/
+/-- Every Algorithm 2 run satisfies the corrected Step 4/5 contract. -/
 theorem glue_algorithm2_props (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h11 : N11)
     (h12 : N12) (h13 : N13) (h14 : N14) {M : ℕ} (f : ℝ → ℝ) (g : Fin M → ℝ → ℝ) (α : ℝ)
     (hM : 0 < M) (hα : 0 < α ∧ α < 1) (hc : ∀ s, Continuous (g s))
@@ -271,6 +276,17 @@ theorem glue_algorithm2_props (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h11 : N11
     fun p hp => (h5 M f g α p hf hn (hvalid p hp)).2
   exact ⟨hlen, hpair, hright, hcover, hvalid, hpiece, glue_union f g α pieces hcover hpiece⟩
 
+/-- Nonvacuity of the coefficient hypotheses shared by T22, T23, T27 and T28: the proved
+four-unit common-data example (`data_ar_nonvacuous`, observed `{0,1}`, simulations
+`{0,1}`, `{0,2}`) gives data-generated coefficients satisfying Assumption 6 with a genuine
+crossing at `-1`. (Referees: the complete sorted list is `J = [-4,-1]`; the pieces
+`(⊥,-4,1), (-4,-1,0), (-1,⊤,1)` with samples `-5, -5/2, 0` realize both runs.) -/
+theorem nonvacuous_coefficients :
+    ∃ (Qf : QuadraticAR) (Qg : Fin 2 → QuadraticAR),
+      DataGeneratedCoefficients Qf Qg ∧ ARRegular Qf ∧ (∀ m, ARRegular (Qg m)) ∧
+      crossing (fun m => arFunction (Qg m)) (-1) := by
+  obtain ⟨Qf, Qg, hd, hf, hg, hc⟩ := data_ar_nonvacuous
+  exact ⟨Qf, Qg, hd, paperAR_regular Qf hf, fun m => paperAR_regular (Qg m) (hg m), hc⟩
 
 end
 end AronowAudit.P002.Wave1.AlgorithmSupport

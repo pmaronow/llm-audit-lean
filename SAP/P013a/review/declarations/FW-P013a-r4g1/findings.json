@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P013-T1",
+    "theorem": "SAP.P013a.T1",
+    "fingerprint": "d136d8af74a1be1448bd8abe312ca3fa3ea39e527bdb8deed816a79039f73337",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit independent paired family for every r >= 2, N=2r, with fixed parity outcomes, marginals 1/2, uniform bounds 1 and 2, genuine row bound 2 and N*Var tending to 8. scratch/Checks.lean independently compiles all N=4 marginal identities; reading.md and claim-checks.md check the full witness conditions, including stability across population sizes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T2",
+    "theorem": "SAP.P013a.T2",
+    "fingerprint": "8b9855b4ebd1c731b7a52a78f01f3c3749a464c83213423f8802acac9953d5d8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N independent fair Bernoulli exposures with y_i(0)=y_i(1)=1. The identity graph has row bound 1; comparison bounds are 1 and 2; true variance and estimator (11) both equal 4/N. Thus Condition 6 has limit 4 and every lower-tail probability is zero; all positive off-diagonal joints are 1/4 for N>=2. scratch/SequenceCheck.lean compiles the sequence construction, product moments, marginals and comparison bounds, plus a finite true-variance and estimator check. The remaining general graph and variance identities, and hence full hypothesis satisfiability, are established by the explicit calculation in claim-checks.md rather than a full Lean sequence proof.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T3",
+    "theorem": "SAP.P013a.T3",
+    "fingerprint": "79c63805f1e97bc001c047cf5d7adb062b36c547ee2dc85681d6a3a6774e6394",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Checks.lean independently compiles positivity of both labels, independent Bernoulli factorization of the four design masses, expectations 2/9 and -1/3 for the signed and zero-total examples, and equality with the general R=1 simulated estimator. Actual and simulated assignments use product weights, so the witness meets the printed independent-draw reading.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T4",
+    "theorem": "SAP.P013a.T4",
+    "fingerprint": "f2e1676604dc2611c1bb53774339aeeb76754267f8d734503fdb4cef800b38d6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Checks.lean compiles every input hypothesis for signedReplicationPopulation a, all real a, with N=K=2, R=1, p0=1/3 and the required product law. The choices a=2, a=1 and a=-1 exercise nonzero mixed-sign, zero-total and nonzero common-sign cases respectively. Denominators and logarithms are on their intended domains whenever used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T5",
+    "theorem": "SAP.P013a.T5",
+    "fingerprint": "2e003e83a219890599be48267ff378b9cb1c9fd16beb12e346273b5622b95c4e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/SequenceCheck.lean independently compiles a complete sharedSequence witness satisfying all-label positivity, Condition 3, printed Condition 5 and not Condition 4. scratch/Checks.lean separately verifies shared marginals 1/2, failure of pair independence and the forced exact N^2 dependence-indicator count for every N.",
+    "confidence": 0.99
+  }
+]

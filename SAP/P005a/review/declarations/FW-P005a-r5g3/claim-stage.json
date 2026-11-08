@@ -1,0 +1,20 @@
+[
+  {
+    "theorem": "SAP.P005a.T12",
+    "target_id": "P005-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "The closed statement contains every canonical counterexample clause: the specified six-unit population, distinct scaled covariates, standardization, all-assignment treated and control positivity, leverage identities, slope decomposition, zero covariate/slope-product expectations, both exact nuisance/fitted expectations, the unequal printed-estimator expectation, the corrected expectation, numerical approximations, arm sizes, scale identities and coefficient 1/8. Printed reading: under complete randomization and the standing finite-population assumptions, the displayed control expression with the treated-arm inverse is unbiased for E[xbar_C dot (nu1C+nu2C+nu3C)]. Conditions checked: (1) fixed finite real potential outcomes and covariates, with n=6,d=1,m=2; (2) uniform sampling over all 15 two-element treated subsets, with complementary controls of size four; (3) zero population covariate mean and identity Gram; (4) nonsingular treated and control covariances on every assignment; (5) finite uniformly bounded second moments at this size (K=121 suffices) and allocation 1/3 strictly between 1/4 and 3/4; (6) all moments exist since the assignment space is finite. Each is met. The witness therefore contradicts the printed unbiasedness assertion itself, which is included in the canonical target, rather than an alternative reading. Independent exact rational enumeration reproduces both distinct expectations and the corrected equality. The definitions use the actual finite design, covariances and arm inverses, with no conclusion encoded in them."
+  },
+  {
+    "theorem": "SAP.P005a.T13",
+    "target_id": "P005-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "The quantifiers and hypotheses agree with the corrected canonical statement: n>=3, nonempty treated and control arms, fixed finite arrays, standardization, and a nonsingular control Gram on every assignment. The conclusion states the full unbiasedness/fitted-product expectation chain, the assignmentwise second component, both other component expectations, the expected control leverage covariance, and both coefficient identities with the correct signs. NCCC uses the control size n-m, whose natural subtraction is protected by m<n. No treated-arm regularity, extra moment rate or stronger allocation bound is imposed. The hypotheses have independently checked positive-dimensional four-unit and six-unit instances; the latter has nonconstant leverage and nonzero nuisance expectation. Finite real arrays automatically provide the finite-size moment/existence conditions. Every dependent statistical definition is the stated finite-sum notion."
+  },
+  {
+    "theorem": "SAP.P005a.T14",
+    "target_id": "P005-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every canonical part is present: (a) the corrected debiased first line; (b) inverse cancellation and the inverse-free expansion; (c) residual identities for every vector, with the control sum over the complement; (d) the centered arm-mean identities and the actual expectation bias decomposition under the standing standardization and regularity; (e) observability by one function of assignment, covariates and observed outcomes chosen before all potential outcomes. The final observability conjunct omits standardization, so the originally standardized inner version does not narrow the whole statement. The purely algebraic block correctly has no population assumption beyond its explicit size, design and inverse conditions. The concrete standardized, everywhere regular four-unit witness realizes the canonical assertion that the printed treated-set control sum can differ: its two values are 1/3 and 1. No expression relies on singular inverses or empty means. A positive-dimensional instance of every hypothesis is compiled independently, and an explicit observations-only observing function is being checked separately."
+  }
+]

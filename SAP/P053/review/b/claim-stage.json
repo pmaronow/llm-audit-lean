@@ -1,0 +1,50 @@
+[
+  {
+    "theorem": "SAP.P053.T1",
+    "target_id": "P053-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "T1Statement renders canonical clauses (a)-(e): both affine identities, both equivalences, an explicit factor uniform over every binary vector with the same M, the canonical-sample formula for every separately permutation-invariant F and its converse, and the exact table-constancy criterion. The integer floor only extends the factor away from attainable values; on support its argument is the integer treated-success count. Positive arm sizes are canonical. The fixed Boolean vector represents the sharp null without an extra assumption. The treatment-size support is nonempty, and the natural subtraction M-a in the control canonical sample is ordinary subtraction because a<=M. No monotonicity assumption is added."
+  },
+  {
+    "theorem": "SAP.P053.T2",
+    "target_id": "P053-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "FourCounterexample, FourNonfactorization and the universal repeated-block counterexamples include both of the canonical statistics and all their specified values. LabelStatistic is the indicator of treatment of label 0, equal to the canonical z_1*y_1 because y_1=1; Boolean conjunction exactly represents the fixed covariate product. RepeatedScaling asserts size divergence, allocation and success-fraction limits and a fourth-moment bound, but no full S5 certificate with potential-outcome variance, unit-effect variance and average-effect limits, whereas canonical clause (v) asserts that the standing asymptotic conditions hold. The missing certificate is true for the concrete family (variance limits 1/4,1/4,0 and average-effect limit 0) but is not an asserted component. The Challenge docstring discloses precisely this limitation and identifies the unrestricted reading being refuted; it does not label the corrected table-statistic claim false."
+  },
+  {
+    "theorem": "SAP.P053.T3",
+    "target_id": "P053-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "SixDistribution, SixInference and FourInference contain the canonical six-unit distribution, both p-values and the level-1/20 rejection contrast, all four-unit cases, and the universal increasing-transformation assertion for real outcomes. UpperP is the exact uniform inclusive upper tail; StrictMonoOn is imposed only on attainable statistic values, as required by canonical clause (c). Every asserted support is nonempty and every arm is positive. Independent exact rational enumeration confirms all finite values, including the ties."
+  },
+  {
+    "theorem": "SAP.P053.T4",
+    "target_id": "P053-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "The quantifiers, 0<p<1 and nonnegative standard-deviation hypotheses, difference identity and strict-inequality equivalence agree with the canonical formal reading. Nonnegativity is canonical and is required to replace comparisons of squares by comparisons of standard deviations. The denominator p*(1-p) is strictly positive. Factoring the difference establishes the claimed sign criterion, including the equality boundary cases. For example p=3/4, S1=2, S0=1 satisfies the hypotheses and strict inequality."
+  },
+  {
+    "theorem": "SAP.P053.T5",
+    "target_id": "P053-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "Regularity spells out S5 using only allocation, finite-population moment/effect limits, size divergence and a raw fourth-moment bound; it assumes no estimator-consistency or CLT conclusion. Eventual arm sizes at least two follow already from diverging size and interior allocation. The three first-order assertions and both scaled probability limits in FisherOLSAsymptotics are the canonical ones, with the correct N-1 population and N-2 pooled divisors. InProbability is convergence under the finite complete-randomization law, and LittleOInvSize means N times the remainder tends to zero in probability. Nonconstant bounded two-point sequences satisfy all hypotheses; scratch/Check.lean also compiles a complete zero-outcome Regularity instance without Challenge imports."
+  },
+  {
+    "theorem": "SAP.P053.T6",
+    "target_id": "P053-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The local variance difference, both constant-effect approximations, and the sharp-null CDF and two-sided size conclusions have the canonical formulas. However, the ratio conclusion and both studentized conclusions additionally require PositiveOLS: eventually, at every supported assignment, V_OLS is strictly positive. Canonical (a) and (c) do not contain that hypothesis. It is not implied by S5 and a positive variance limit: a balanced binary sharp-null population with half successes has supported assignments with both within-arm variances zero at every size. The docstring also explicitly omits the FRT/Wald test equivalence invoked by the quoted Introduction; the Lean proposition contains only variance and Wald-distribution conclusions. The extra positivity and the omission are accurately disclosed. A sharp-null two-point sequence with N=10m, n1=2m, n0=8m and 5m units of each sign satisfies S5 with (p,v1,v0,vt,tauInf)=(1/5,1,1,0,0), and every control sample contains both signs, so all added antecedents are jointly satisfiable."
+  },
+  {
+    "theorem": "SAP.P053.T8",
+    "target_id": "P053-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "NeymanBound gives the exact actual-variance limit, bound and Neyman estimator limit. ConstantLimitAgreement gives finite variance identities, equality of limiting coefficients and the scaled estimator difference; T8 additionally states the canonical standard-deviation equalities explicitly. HeterogeneousFinite and HeterogeneousLimit use exactly the canonical N=10m, n1=2m, n0=8m, Y0=+/-1, Y1=2*Y0 witness, with every finite formula, full S5 certificate and actual/OLS/Neyman coefficients 81/4,10,85/4. The canonical statement itself limits this target to variance assertions, so there is no missing test-size conclusion. Independent exact enumeration at m=1 and m=2 gives actual variances 9/4 and 81/76 and checks every displayed finite identity."
+  },
+  {
+    "theorem": "SAP.P053.T7",
+    "target_id": "P053-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "WaldComparison supplies the Neyman expansion, OLS-minus-Neyman expansion, both probability limits, the difference identity and the variance-limit necessary conditions. T7Statement uses nonnegative standard-deviation parameters squared in Regularity and additionally gives the necessary condition in standard-deviation form, matching canonical S4/S5. Under the canonical tau_N->0 condition, LocalFisherComparison retains the expansion and both probability limits; their coefficients are the same constants appearing in the preceding identity and necessary conditions. No all-assignment positivity or distributional hypothesis is added. Bounded nonconstant sharp-null sequences provide nonvacuity, and arbitrary distinct variances such as the heterogeneous witness are also allowed."
+  }
+]

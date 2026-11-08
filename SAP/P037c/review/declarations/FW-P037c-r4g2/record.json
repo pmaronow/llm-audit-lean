@@ -1,0 +1,63 @@
+[
+ {
+  "target_id": "P037-T34",
+  "decision": "whole",
+  "theorem": "SAP.P037c.T34",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.same_controls_residual_imputation",
+   "SAP.P037c.WH.W1.T34_whole",
+   "SAP.P037c.WH.W1.T34_assembly",
+   "SAP.P037c.WH.W1.T34_L1_proof",
+   "SAP.P037c.WH.W1.T34_L2_proof",
+   "SAP.P037c.WH.W1.reduced_controls",
+   "SAP.P037c.WH.W1.strict_control_space",
+   "SAP.P037c.WH.W1.sum_control_space",
+   "SAP.P037c.WH.W1.two_control_space",
+   "SAP.P037c.WH.W1.omitted_outside",
+   "SAP.P037c.WH.W1.inverse_minimum",
+   "SAP.P037c.WH.W1.minimum_transport",
+   "SAP.P037c.WH.W1.minimum_shift",
+   "SAP.P037c.WH.W1.estimable_equal_fit",
+   "SAP.P037c.WH.W1.t33_base",
+   "AronowAudit.P037.RegressionCompletion.weighted_left_inverse",
+   "AronowAudit.P037.RegressionCompletion.weighted_gram_unit",
+   "AronowAudit.P037.regression_unique_of_normal",
+   "AronowAudit.P037.RegressionCompletion.pooled_prediction",
+   "AronowAudit.P037.RegressionCompletion.finite_variance_add_const",
+   "AronowAudit.P037.Wave1.collapsed_controls_variance_counterexample_proof",
+   "AronowAudit.P037.collapsed_controls_certificate_inequalities"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P037.linear_residual_refit_shift",
+    "reason": "Auxiliary left-inverse identity; the credited same_controls_residual_imputation already exports the required WLS coefficient and mean shifts."
+   }
+  ],
+  "statement_definition": "SAP.P037c.T34WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P037.RegressionCompletion.pooled_prediction",
+   "AronowAudit.P037.RegressionCompletion.finite_variance_add_const"
+  ]
+ },
+ {
+  "target_id": "P037-T43",
+  "decision": "whole",
+  "theorem": "SAP.P037c.T43",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.ExpectedProjection.block_model_bias_identity",
+   "AronowAudit.P037.ExpectedProjection.common_intercept_identifies_slope",
+   "SAP.P037c.WH.W1.T43_whole",
+   "SAP.P037c.WH.W1.T43_assembly",
+   "AronowAudit.P037.ExpectedProjection.demeaned_treatment_mean",
+   "AronowAudit.P037.ExpectedProjection.demeaned_composition_mean",
+   "AronowAudit.P037.ExpectedProjection.residual_nuisance_orthogonal",
+   "AronowAudit.P037.ExpectedProjection.residual_mean_zero",
+   "AronowAudit.P037.ExpectedProjection.residual_composition_moment",
+   "AronowAudit.P037.ExpectedProjection.block_model_nondegenerate_instance"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037c.T43WholeStatement"
+ }
+]

@@ -29,5 +29,7 @@ theorem continuous_range_complete_correction
   IrrationalRange.assemble IrrationalRange.n1_proof IrrationalRange.n2_proof
     IrrationalRange.n3_proof IrrationalRange.n4_proof μ X hX f hf
 
+example : IrrationalRange.Target := continuous_range_complete_correction
+
 end
 end AronowAudit.P001.Wave1

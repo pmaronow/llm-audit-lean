@@ -1,0 +1,184 @@
+[
+ {
+  "target_id": "P012-T6",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.exact_h_region",
+   "AronowAudit.P012.phi_formula",
+   "SAP.P012a.WH.W2.T6_whole",
+   "SAP.P012a.WH.W2.T6_assembly",
+   "SAP.P012a.WH.W2.T6_L1_proof",
+   "SAP.P012a.WH.W2.T6_L2_proof",
+   "AronowAudit.P012.binary_edge_counts",
+   "AronowAudit.P012.leafCompletion_compatible",
+   "AronowAudit.P012.private_edge_incidence",
+   "AronowAudit.P012.private_leaf_member",
+   "AronowAudit.P012.recruitment_skeleton_counts",
+   "AronowAudit.P012.trait_spare_partition"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P012.compatible_edge_counts",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.compatible_filtered_edge_bounds",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.count_bounds_imply_h_bounds",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.extra_edge_budget",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.graph_homophily_formula",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.numerator_edge_identity",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.ordered_trait_adjacency",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.phi_anti_c",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.phi_mono_x",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.phi_mono_y",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.private_edge_card",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.same_leaf_counts",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.trait_degree_edge_incidence",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P012a.T6WholeStatement"
+ },
+ {
+  "target_id": "P012-T7",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.exact_p_region",
+   "SAP.P012a.WH.W1.T7_whole",
+   "SAP.P012a.WH.W1.T7_assembly",
+   "SAP.P012a.WH.W1.T7_L1_proof",
+   "SAP.P012a.WH.W1.T7_L2_proof",
+   "SAP.P012a.WH.W1.T7_L3_proof",
+   "AronowAudit.P012.leafCompletion_compatible",
+   "AronowAudit.P012.private_leaf_member",
+   "AronowAudit.P012.pair_edge_eq"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P012.later_children_susceptible",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.leaf_preferential_endpoints",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.leaf_susceptible_counts",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.matching_child_card",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.susceptible_decomposition",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.susceptible_fraction_bounds",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P012.susceptible_recruitment_edges",
+    "reason": "The selected aggregate declaration supplies the needed component; this supporting row is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P012a.T7WholeStatement",
+  "declaration_review_round1": {
+   "finding": "Endpoint-attainment prose incorrectly suggested that one graph/trait pair attains both endpoints.",
+   "resolution": "The Challenge and shared statement docstrings now assign p_min to same-trait private leaves and p_max to opposite-trait private leaves.",
+   "formal_statement_changed": false,
+   "proof_changed": false
+  }
+ },
+ {
+  "target_id": "P012-T8",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.result1_proof_counterexample"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P012-T9",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.result2_proof_counterexample",
+   "SAP.P012a.WH.W1.T9_whole",
+   "SAP.P012a.WH.W1.T9_assembly",
+   "AronowAudit.P012.denominator_sum_identity"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P012a.T9WholeStatement"
+ },
+ {
+  "target_id": "P012-T10",
+  "decision": "whole",
+  "theorem": "SAP.P012a.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P012.result1",
+   "SAP.P012a.WH.W1.T10_whole",
+   "SAP.P012a.WH.W1.T10_assembly",
+   "SAP.P012a.WH.W1.T10_L1_proof",
+   "SAP.P012a.WH.W1.T10_L2_proof",
+   "SAP.P012a.WH.W1.T10_L3_proof",
+   "AronowAudit.P012.compatible_same_graph",
+   "AronowAudit.P012.corrected_graph_preserves",
+   "AronowAudit.P012.induced_compatibility",
+   "AronowAudit.P012.leafCompletion_compatible",
+   "AronowAudit.P012.private_leaf_member",
+   "AronowAudit.P012.recruitment_edge_sampled",
+   "AronowAudit.P012.pair_edge_eq"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P012a.T10WholeStatement",
+  "declaration_review_round1": {
+   "finding": "The prose incorrectly described the selected sampled vertices as neighbours.",
+   "resolution": "The Challenge and shared statement docstrings now say sampled vertices not joined by a recruitment edge, each with positive spare degree.",
+   "formal_statement_changed": false,
+   "proof_changed": false
+  }
+ }
+]

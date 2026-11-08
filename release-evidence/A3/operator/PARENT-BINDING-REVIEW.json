@@ -1,0 +1,104 @@
+{
+  "at": "2026-11-07T20:03:40.772864+00:00",
+  "author_seal_sha256": "337869c1f8a4ee910a6d6eb9df878d12fe2fd30c8623d0797a795fd592794e71",
+  "independent_review_sha256": "3dbcb461ed059ac3e2e902d37f35ce7ab75050d9f4ab639a4ff7321e19c1e6c7",
+  "review_seal_sha256": "5665fe190261f726023e926fa076b27ee68fd68212f2ba5f578674862ddc55bd",
+  "authenticated_review_payloads": 7,
+  "authenticated_review_refs": 31,
+  "actual_bindings": {
+    "a1_output": null,
+    "argv": [
+      "/usr/bin/python3.12",
+      "-I",
+      "-S",
+      "-B",
+      "/home/ubuntu/sap/assure/a3-work-continuation-v1-reviewed/work-runner/replay.py",
+      "--reviewed-work-runner-lock",
+      "/home/ubuntu/sap/assure/a3-work-continuation-v1-reviewed/work-runner-lock.json",
+      "--expected-work-runner-lock-sha256",
+      "394aa16684b38aba71cff858b15202ac240b9c2bbb7c8ce5fc6e82f309ef5953",
+      "--reviewed-tool-lock",
+      "/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/admission/reviewed-tool-lock.json",
+      "--expected-tool-lock-sha256",
+      "dc23a7cba6b75cda21d0fbeabf48e2a80bb60e16f615fa36fcac6acfac220d9e",
+      "--generation",
+      "/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001",
+      "--storage-root",
+      "/home/ubuntu/sap/assure/sap-release-storage-20261105",
+      "--input-lock",
+      "8c913e20bc27ad7ca604e2c09dbe5f19b6fc2ecdd2682a1ea6b46091ae1dc68e",
+      "--cpu-list",
+      "0,1,2,3,4,5,6,7",
+      "--threads",
+      "2",
+      "--reserve-gib",
+      "40",
+      "--build-min-free-gib",
+      "65",
+      "--unit-min-free-gib",
+      "40",
+      "--continuation-context",
+      "/home/ubuntu/sap/assure/a3-2026-11-05/a3-work-continuation-bindings-002/CONTEXT.json",
+      "--expected-continuation-context-sha256",
+      "074b44141ce90bf54dccb2528f6b8f466cdc467f910283279631690f802e40cd",
+      "--dispatch-protocol",
+      "/home/ubuntu/sap/assure/a3-work-continuation-v2-reviewed/protocol.py",
+      "--expected-dispatch-protocol-sha256",
+      "cfbd14d9475dd111389b5ec9e8508da118c9514964df2870fdd2a0d36b61e494",
+      "--dispatch-selection",
+      "/home/ubuntu/sap/assure/a3-2026-11-05/a3-work-unit-continuation-selection-001/READONLY-SELECTION.json",
+      "--expected-dispatch-selection-sha256",
+      "ec6a3a7c5d81ad0c66ce8d31cb998fae1198811b35dc2dc026690f83dda83777",
+      "all"
+    ],
+    "expected_summary_sha256": null,
+    "operation_root": "/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-all-native-001",
+    "pending_summary_path": "/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/replay/replay-summary.pending.json",
+    "phase": "all",
+    "primary_input_role": "execution_runner_lock",
+    "source_sha256": "dca61c208b7d3bfa46d1dc2a6ba9836de9e6ce60064433abe9744b85fa610cdb",
+    "summary_path": "/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/replay/replay-summary.json"
+  },
+  "materialized_files": {
+    "BINDINGS.json": {
+      "sha256": "9c33deea65c31c90b6a8b649b27adef96e23f44a5a8426733546d0af3b063dfb",
+      "bytes": 2529
+    },
+    "REMOTE.py": {
+      "sha256": "8df77b158141f484b72223d7064b1718a1b6bf5b4769a633f8c43f868b14a125",
+      "bytes": 8126
+    },
+    "run_once.py": {
+      "sha256": "5226913462f4a9dc6fc53c17e501c4a58541f6ec722e87d55b58ee82a0fb2862",
+      "bytes": 815
+    },
+    "preflight_once.py": {
+      "sha256": "02e27c21dc42373726bde59a9ac86ef1bf625a84504b4d61558f71bf64ed51ed",
+      "bytes": 840
+    },
+    "PREFLIGHT.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "PREFLIGHT-INVOCATION.json": {
+      "sha256": "536d8d7c099ff82e80e2169d95558504cf48e55a03b786064ddbb7b3a53f51bd",
+      "bytes": 337
+    },
+    "readback.py": {
+      "sha256": "e4f878476bbd0b23132c79c6c7eba2a29e8697c086ce4747d50813e0fcf087c9",
+      "bytes": 5445
+    },
+    "PREFLIGHT.stdout": {
+      "sha256": "06800d498518f8750dbe0696033802d36e978d32a165b8eeb276c1a9fb614b48",
+      "bytes": 424
+    },
+    "PREFLIGHT.py": {
+      "sha256": "f5d4378982fb0dc366a6ebc516d9248e32f63779aae2b320798dc9813e267d97",
+      "bytes": 8125
+    }
+  },
+  "source_changes_only_two_template_headers": true,
+  "formal_acceptance": false,
+  "native_launches": 0,
+  "local_intake_note": "Initial reference-map inspection expected flat refs; corrected to nested schema. No runtime/source defect, preflight run once read-only and passed; native command not yet launched."
+}

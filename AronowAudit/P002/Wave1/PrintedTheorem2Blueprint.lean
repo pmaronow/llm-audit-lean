@@ -1,18 +1,23 @@
 import AronowAudit.P002.P002_Audit
 
 /-!
-# P002-T30: refutation of printed Theorem 2 (main p. 11)
+# Blueprint: P002-T30, refutation of printed Theorem 2 (main p. 11)
 
-The target is the negation of the universal closure of printed Theorem 2, with its
-numerical guards, the nested `infCoverageXi` (ENNReal, empty inner classes `⊤`) and
+Record P002-T30 (`AronowAudit.P002.printed_theorem2`, resolution `refute`). The target is
+the negation of the universal closure of the exact frozen header: same parameter order,
+same numerical guards, the nested `infCoverageXi` (ENNReal, empty inner classes `⊤`) and
 the ordinary limit to `ofReal (1-α)`.
 
-Witness tuple: `k=1, δ=0, e=1/4, A=4, B=1/2, r=1/4, α=1/2`. Every model of this fixed
-class has zero population residuals (B=1/2 moment collapse after OLS centring); on
-observed assignments whose two arm Gram matrices are invertible the observed adjusted
-AR statistic is `0` and the LATE is accepted; arm rank failure has probability at most
-`1548/(n-1)` uniformly over the class; the class is nonempty (centred grid model);
-hence the nested infimum is squeezed to `1`, not `1/2`.
+Witness tuple: `k=1, δ=0, e=1/4, A=4, B=1/2, r=1/4, α=1/2`. Paper proof (map §6, validator
+E001 §3): every model of this fixed class has zero population residuals (B=1/2 moment
+collapse after OLS centring); on observed assignments whose two arm Gram matrices are
+invertible the observed adjusted AR statistic is `0` and the LATE is accepted; arm rank
+failure has probability at most `1548/(n-1)` uniformly over the class; the class is
+nonempty (centred grid model); hence the nested infimum is squeezed to `1`, not `1/2`.
+
+The admitted `theorem2_sharpness_counterexample` and the admitted `sample_mean_variance`
+must not be used. Dependent nodes are stated as implications from the statements they use,
+so that every node can be proved independently.
 -/
 
 namespace AronowAudit.P002.Wave1.PrintedTheorem2
@@ -21,7 +26,7 @@ open scoped BigOperators ENNReal Matrix Topology
 open Filter MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-/-- Negation of the universal coverage-limit claim in printed Theorem 2. -/
+/-- Frozen final statement of `AronowAudit.P002.Wave1.printed_theorem2_refuted`. -/
 def Target : Prop :=
   ¬ (∀ (k : ℕ) (δ e A B r α : ℝ),
       0 < k → δ < 1 → 0 < e → 0 < A → 0 < B →
@@ -38,16 +43,16 @@ def GramInvertible : Prop :=
   ∀ (n k : ℕ) (P : CovPopulation n k) (δ e A B r : ℝ), 0 < e → Xi P δ e A B r →
     (gram P.x Finset.univ).det ≠ 0
 
-/-- Moment collapse: in the fixed class both population residual vectors at the LATE
-vanish. -/
+/-- Moment collapse (map §6 paper proof, first paragraph): in the fixed class both
+population residual vectors at the LATE vanish. -/
 def ResidualsVanish : Prop :=
   ∀ (n : ℕ) (P : CovPopulation n 1), Xi P 0 (1/4) 4 (1/2) (1/4) →
     ∀ a i, residual P a (late P.pop) i = 0
 
-/-- Acceptance on the full-rank event: with zero residuals, on an observed assignment
-whose two arm Gram matrices are invertible both arm fits recover the population
-coefficients, the intercepts coincide, the observed adjusted statistic and its variance
-are zero, and the LATE is accepted for every `α`. -/
+/-- Acceptance on the full-rank event (map §6, second paragraph): with zero residuals,
+on an observed assignment whose two arm Gram matrices are invertible both arm fits recover
+the population coefficients, the intercepts coincide, the observed adjusted statistic and
+its variance are zero, and the LATE is accepted for every `α`. -/
 def FullRankAcceptance : Prop :=
   ∀ (n : ℕ) (P : CovPopulation n 1) (α : ℝ) (O : Finset (Fin n)),
     Xi P 0 (1/4) 4 (1/2) (1/4) →
@@ -56,8 +61,8 @@ def FullRankAcceptance : Prop :=
     adjustedAccepted P (late P.pop) α O
 
 /-- Exact without-replacement mean-squared error of both arm sample means, in the P002
-expectation operator, using `AronowAudit.P031.sample_mean_squared_error` and
-`AronowAudit.P031.expectation_compl`. -/
+expectation operator (bridge to the proved `AronowAudit.P031.sample_mean_squared_error`
+and `AronowAudit.P031.expectation_compl`; the P002 `sample_mean_variance` is admitted). -/
 def SamplingMSE : Prop :=
   ∀ (n : ℕ) (P : Population n) (q : Fin n → ℝ), 2 ≤ P.n1 → 2 ≤ n - P.n1 →
     expectation P (fun S => (groupMean S q - mean q) ^ 2) =
@@ -71,8 +76,8 @@ def ArmGramDet : Prop :=
   ∀ (n : ℕ) (x : Fin n → Fin 1 → ℝ) (S : Finset (Fin n)), S.Nonempty →
     (gram x S).det = groupMean S (fun i => x i 0 ^ 2) - (groupMean S (fun i => x i 0)) ^ 2
 
-/-- Single-arm rank failure: Chebyshev for `v` and Markov for `u²` give
-`Pr(det = 0) ≤ 16 f/Q² + 2 f ≤ 258 f`, with `f = (n-m)/(m(n-1))` for the arm size
+/-- Single-arm rank failure (map §6, third paragraph): Chebyshev for `v` and Markov for
+`u²` give `Pr(det = 0) ≤ 16 f/Q² + 2 f ≤ 258 f`, with `f = (n-m)/(m(n-1))` for the arm size
 `m`, `Q = mean x² ≥ 1/4`, `mean x⁴ ≤ 4`. -/
 def SingleArmFailure : Prop :=
   ∀ (n : ℕ) (P : CovPopulation n 1), (∑ i, P.x i 0 = 0) →
@@ -89,18 +94,18 @@ def ClassFailure : Prop :=
     probability P.pop (fun S => (gram P.x S).det = 0 ∨ (gram P.x Sᶜ).det = 0) ≤
       1548 / ((n : ℝ) - 1)
 
-/-- Class-uniform coverage lower bound. -/
+/-- Class-uniform coverage lower bound (map §6, end of third paragraph). -/
 def CoverageLowerBound : Prop :=
   ∀ (n : ℕ) (P : CovPopulation n 1) (α : ℝ), 2 ≤ n → Xi P 0 (1/4) 4 (1/2) (1/4) →
     max 0 (1 - 1548 / ((n : ℝ) - 1)) ≤ adjustedCoverage P (late P.pop) α
 
-/-- Nonemptiness: the centred grid model lies in the class for every `n ≥ 2` and every
-real `β`, with LATE `β`. -/
+/-- Nonemptiness (map §6, fourth paragraph): the centred grid model lies in the class for
+every `n ≥ 2` and every real `β`, with LATE `β`. -/
 def GridInClass : Prop :=
   ∀ (n : ℕ), 2 ≤ n → ∀ β : ℝ,
     Xi (degenerateCovModel n β) 0 (1/4) 4 (1/2) (1/4) ∧ late (degenerateCovModel n β).pop = β
 
-/-- The nested ENNReal infimum of the fixed class tends to one. -/
+/-- The nested ENNReal infimum of the fixed class tends to one (map §6, last paragraph). -/
 def InfimumLimitOne : Prop :=
   ∀ α : ℝ, Tendsto (fun n => infCoverageXi n 1 0 (1/4) 4 (1/2) (1/4) α) atTop (nhds 1)
 
@@ -122,15 +127,16 @@ def ProbabilityCalculus : Prop :=
 
 /-- Node 1 (population Gram invertibility). -/
 def N1 : Prop := GramInvertible
-/-- Residual centring from the intercept normal equation, followed by moment collapse. -/
+/-- Node 2 (map node `xi_half_moment_residuals_zero`): residual centring from the
+intercept normal equation, then the proved `half_moment_collapse`. -/
 def N2 : Prop := GramInvertible → ResidualsVanish
-/-- Population Gram invertibility implies acceptance on the full-rank event. -/
+/-- Node 3 (map node `uniform_gram_rank_and_acceptance`, acceptance half). -/
 def N3 : Prop := GramInvertible → FullRankAcceptance
-/-- Exact finite-sampling mean-squared error. -/
+/-- Node 4 (map node `sampling_operator_and_mse_bridge`). -/
 def N4 : Prop := SamplingMSE
 /-- Node 5 (one-covariate arm Gram determinant). -/
 def N5 : Prop := ArmGramDet
-/-- Single-arm Chebyshev bound. -/
+/-- Node 6 (map node `uniform_gram_rank_and_acceptance`, single-arm Chebyshev bound). -/
 def N6 : Prop := SamplingMSE → ArmGramDet → ProbabilityCalculus → SingleArmFailure
 /-- Node 7 (two-arm union bound and the constant `1548`, including small `n`). -/
 def N7 : Prop := ProbabilityCalculus → SingleArmFailure → ClassFailure
@@ -138,9 +144,9 @@ def N7 : Prop := ProbabilityCalculus → SingleArmFailure → ClassFailure
 def N8 : Prop :=
   ProbabilityCalculus → ResidualsVanish → FullRankAcceptance → ClassFailure →
     CoverageLowerBound
-/-- Membership of the centred grid model in the fixed class. -/
+/-- Node 9 (map node `degenerate_grid_xi`). -/
 def N9 : Prop := GridInClass
-/-- Squeeze the nested infimum to one. -/
+/-- Node 10 (map node `class_infimum_limit_and_full_negation`, squeeze half). -/
 def N10 : Prop :=
   ProbabilityCalculus → CoverageLowerBound → GridInClass → InfimumLimitOne
 /-- Node 11 (finite design-probability calculus). -/

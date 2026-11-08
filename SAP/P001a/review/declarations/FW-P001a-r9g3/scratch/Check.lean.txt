@@ -1,0 +1,130 @@
+import SAP.P001a.Challenge
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators ENNReal NNReal Topology Classical Matrix
+
+noncomputable section
+namespace Review
+open SAP.P001a
+
+-- T11: distinct admissible full vectors, with the exact same normalized law.
+example :
+    (![1, 1/3, 1/4] : Fin 3 → ℝ) ∈ disjointMixtureParameterSet ∧
+    (![1, 1/3, 3/4] : Fin 3 → ℝ) ∈ disjointMixtureParameterSet ∧
+    (![1, 1/3, 1/4] : Fin 3 → ℝ) ≠ ![1, 1/3, 3/4] ∧
+    disjointMixture 1 (1/3) (1/4) = disjointMixture 1 (1/3) (3/4) ∧
+    (∑ k : Fin 4, disjointMixture 1 (1/3) (1/4) k) = 1 ∧
+    (∀ k : Fin 4, 0 ≤ disjointMixture 1 (1/3) (1/4) k) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · change (![0, 0, 1/4] : Fin 3 → ℝ) ≤ ![1, 1/3, 1/4] ∧
+      (![1, 1/3, 1/4] : Fin 3 → ℝ) ≤ ![1, 1, 3/4]
+    constructor <;> intro k <;> fin_cases k <;> norm_num
+  · change (![0, 0, 1/4] : Fin 3 → ℝ) ≤ ![1, 1/3, 3/4] ∧
+      (![1, 1/3, 3/4] : Fin 3 → ℝ) ≤ ![1, 1, 3/4]
+    constructor <;> intro k <;> fin_cases k <;> norm_num
+  · intro h
+    have h2 := congrFun h 2
+    norm_num at h2
+  · ext k
+    fin_cases k <;> norm_num [disjointMixture]
+  · norm_num [disjointMixture, Fin.sum_univ_succ]
+  · intro k
+    fin_cases k <;> norm_num [disjointMixture]
+
+-- T12(ii): a positive, normalized one-point experiment and one-dimensional
+-- parameter space. All fields of W2MLProblem are constructed, not assumed.
+def onePointProblem : W2MLProblem (Measure.dirac ())
+    (fun (_ : ℕ) (_ : Unit) (_ : Fin 0) => (0 : ℝ))
+    (fun (_ : ℕ) (_ : Unit) => (0 : ℝ))
+    (fun (_ : ℝ) (_ : Fin 0 → ℝ) (_ : Fin 1 → ℝ) => (1 : ℝ))
+    (0 : Fin 1 → ℝ) where
+  parameterSet := {0}
+  compact := isCompact_singleton
+  truth_mem := Set.mem_singleton _
+  log_integrable := by intros; simp [Real.log_one]
+  log_exists := by intros; filter_upwards [] with ω; norm_num
+  continuous := by
+    have h : expectedLogLikelihood (Measure.dirac ())
+        (fun (_ : Unit) (_ : Fin 0) => (0 : ℝ)) (fun _ => (0 : ℝ))
+        (fun (_ : ℝ) (_ : Fin 0 → ℝ) (_ : Fin 1 → ℝ) => (1 : ℝ)) =
+        (fun _ => (0 : ℝ)) := by
+      ext t
+      simp [expectedLogLikelihood, mean]
+    rw [h]
+    exact continuousOn_const
+  unique := by
+    intro t ht
+    have ht0 : t = 0 := Set.mem_singleton_iff.mp ht
+    subst t
+    exact ⟨le_rfl, fun _ => rfl⟩
+  estimate := fun _ _ => 0
+  measurable := fun _ => measurable_const
+  values := by intros; filter_upwards [] with ω; exact Set.mem_singleton _
+  maximizes := by
+    intros n hn
+    filter_upwards [] with ω
+    intros _ t ht
+    simp [sampleLogLikelihood, sampleMean]
+  uniform := by
+    constructor
+    · intro ε hε
+      have hset : ∀ n : ℕ,
+          {ω : Unit | ∃ t ∈ ({0} : Set (Fin 1 → ℝ)),
+            ε ≤ |sampleLogLikelihood
+              (fun (_ : ℕ) (_ : Unit) (_ : Fin 0) => (0 : ℝ))
+              (fun (_ : ℕ) (_ : Unit) => (0 : ℝ))
+              (fun (_ : ℝ) (_ : Fin 0 → ℝ) (_ : Fin 1 → ℝ) => (1 : ℝ)) n ω t -
+              expectedLogLikelihood (Measure.dirac ())
+                (fun (_ : Unit) (_ : Fin 0) => (0 : ℝ)) (fun _ => (0 : ℝ))
+                (fun (_ : ℝ) (_ : Fin 0 → ℝ) (_ : Fin 1 → ℝ) => (1 : ℝ)) t|} = ∅ := by
+        intro n
+        ext ω
+        simp [sampleLogLikelihood, sampleMean, expectedLogLikelihood, mean,
+          not_le.mpr hε]
+      simp_rw [hset]
+      simpa [prob] using (tendsto_const_nhds : Tendsto (fun (_ : ℕ) => (0 : ℝ)) atTop (nhds 0))
+    · have hset : ∀ n : ℕ,
+          {ω : Unit | ¬ W2LogGood
+            (fun (_ : ℕ) (_ : Unit) (_ : Fin 0) => (0 : ℝ))
+            (fun (_ : ℕ) (_ : Unit) => (0 : ℝ))
+            (fun (_ : ℝ) (_ : Fin 0 → ℝ) (_ : Fin 1 → ℝ) => (1 : ℝ)) {0} n ω} = ∅ := by
+        intro n
+        ext ω
+        simp [W2LogGood]
+      simp_rw [hset]
+      simpa [prob] using (tendsto_const_nhds : Tendsto (fun (_ : ℕ) => (0 : ℝ)) atTop (nhds 0))
+
+example : Nonempty (W2MLProblem (Measure.dirac ())
+    (fun (_ : ℕ) (_ : Unit) (_ : Fin 0) => (0 : ℝ))
+    (fun (_ : ℕ) (_ : Unit) => (0 : ℝ))
+    (fun (_ : ℝ) (_ : Fin 0 → ℝ) (_ : Fin 1 → ℝ) => (1 : ℝ))
+    (0 : Fin 1 → ℝ)) := ⟨onePointProblem⟩
+
+-- T14(ii): the positive-size finite sign experiment is admissible.
+example : (0 : ℕ) < 1 ∧ IsProbabilityMeasure (signProductLaw 1) := by
+  constructor
+  · norm_num
+  · unfold signProductLaw
+    have h : IsProbabilityMeasure
+        ((1/2 : ℝ≥0∞) • Measure.dirac true + (1/2 : ℝ≥0∞) • Measure.dirac false) :=
+      ⟨by simpa using ENNReal.inv_two_add_inv_two⟩
+    exact MeasureTheory.Measure.pi.instIsProbabilityMeasure _
+
+-- Check completions at empty sample size; these values are never limit targets.
+example : hotDeck (fun i : Fin 0 => (0, false, false)) = 50 := by
+  simp [hotDeck]
+example : causalMatch (fun i : Fin 0 => (0, false, false)) = 0 := by
+  simp [causalMatch]
+example : estimatedMatchIntercept (fun i : Fin 0 => (0, false, false)) = 1/8 := by
+  norm_num [estimatedMatchIntercept, clip]
+example : bootVar hotDeck (fun i : Fin 0 => (0, false, false)) = 0 := by
+  simp [bootVar, bootMean, hotDeck, resample]
+
+#check measurePreserving_eval_infinitePi
+#check ProbabilityTheory.iIndepFun_infinitePi
+#check ProbabilityTheory.IdentDistrib
+#check MeasureTheory.withDensity_apply
+#check MeasureTheory.lintegral_prod
+#check MeasureTheory.lintegral_count
+
+end Review

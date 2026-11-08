@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P018-T15",
+    "theorem": "SAP.P018b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take V=Fin 4, E=Fin 6, s=sixMembers, k=1, T_d=1, q_d=(d+1), P=[1]. The two-element and injectivity hypotheses are checked in scratch/Check.lean. Individual meat is 91, overlap meat 385, summed unit-score squares 476, summed once-counted nonincident meat 182, and the ordered version 364. Thus P I P is nonzero and the N>=3 nonidentity clause genuinely applies: 567 differs from 385. The finite-incidence generalization covers all canonical arrays by q_dt=e_dt X_dt.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T16",
+    "theorem": "SAP.P018b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six distinct two-element edges on four units with one nonzero scalar record each give a nonempty instance, with meat 385=476+182-91-2*91. Injectivity and edge cardinalities compile in scratch/Check.lean. Distinct two-element sets share at most one unit, which gives every off-diagonal Appendix C count; diagonals are counted twice, and each record is nonincident to exactly N-2 units. Both decompositions and all five canonical steps are present. Extra empty/zero-record cases are harmless extensions of the universal algebra.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T17",
+    "theorem": "SAP.P018b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual six-row intercept/slope sample has Gram determinant 20, OLS (3,2/5), the specified residuals, and covariance [[-17/50,21/125],[21/125,-58/625]], checked by compiled Lean scratch proofs. Independently, the uniform law on Fin 4 x Bool and the specified symmetric kernel are bounded and have Q determinant 15/16. Exact enumeration verifies beta=(1/3,11/15), the retained leading-covariance matrix (positive definite, determinant 67072/50625), and that the labelled event of probability 1/4096 produces this sample. The docstring accurately lists the omitted clauses and does not claim a distributional limit for that matrix.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T18",
+    "theorem": "SAP.P018b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the four-unit/six-dyad incidence map with nonzero scores and symmetric P=1 for the structural identities. For the limit clauses use a singleton probability space, V=1 and v_N=1/N for N>=1, with any v_0: the scaled error is eventually zero and the negative event is empty. Positive and negative scalar v values both occur in the guarded standard-error domain assertion. The varying-target rarity result and the OLS counterexample are exactly the omissions declared in the docstring; truncation consistency still allows varying nonnegative targets.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T19",
+    "theorem": "SAP.P018b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A witness is the canonical countable iid-unit construction: P(M=m)=2^-m, C uniform on 1,...,m given M, independent fair A,B, delta_m=1/(m^2*2^(m^2+2)); for a small dyad use s=delta_m and a=(A_i+A_j), otherwise s=1,a=0. The two records have X=(1,1+s),(1,1-s) and Y=B_i+B_j+a,B_i+B_j-a. Every sample has det G=4D sum s_d^2>0, data are bounded, and residuals have the stated uniform bound 8. Disjoint events with all M_i=m and distinct colors have positive probabilities; the inverse powers of delta_m force both slope moments and the positive estimator moment to diverge. Outside those events the negative part is bounded for fixed N. The bounded pair-score projection gives v=4H/q^2>0 and the retained Gaussian/sandwich covariance [[4+v,-v],[-v,v]]. This witness is described mathematically, not fully formalized in the scratch checks. The docstring accurately states that only existence and the listed properties are retained.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P018-T20",
+    "theorem": "SAP.P018b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For k=1, take every source space to be Unit with its Dirac probability measure, every xi_N=0, and nu=Dirac 0 on R^1. All four premises, including weak convergence and UI, compile in scratch/Check.lean. A nondegenerate example is the constant sequence of fair signs with its two-point limiting law; squared magnitude is identically 1, so UI holds. The coordinate L2 hypotheses ensure genuine integrable means and covariance products. All omitted estimator, target-subtraction and necessity statements are disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T21",
+    "theorem": "SAP.P018b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take signKernel: iid fair signs, X=1 and Y_ij=U_i+U_j. It is symmetric, measurable and bounded, has an intercept and Q=1. At N=3 the design sigma algebra is trivial, so J_dd=2 and J_df=1 for distinct neighboring dyads; both finite sums equal 12. The retained identity is therefore nontrivial. The docstring correctly omits the counts and the unconditional-variance correction; no false unconditional identity is claimed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T22",
+    "theorem": "SAP.P018b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=3,T=2 supplies an explicit finite product of independent standard normals, with six error coordinates. Every error has variance 3, two records on one dyad have covariance 2, and different dyads have covariance 1. The covariate coordinates occupy a disjoint product factor, establishing independence and the ordinary, integrable zero conditional mean. The omitted conditional response mean and response-regression specification conclusion are exactly disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T23",
+    "theorem": "SAP.P018b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take k=1,x=1,beta=0,y=0: p=1/2, score=-1/2, negative score derivative=1/4 and score outer product=1/4. A singleton observation set gives both sample sums. A fair-sign scalar score on a probability space gives a generic expected same-data outer product equal to 1. All canonical derivative and dimensional formulas are retained; the extra k=0 and arbitrary finite-index cases are harmless. Positivity of exp guarantees that the logistic and logarithm denominators/arguments are valid, and the generic PSD statement has explicit L2 guards.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T24",
+    "theorem": "SAP.P018b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed rational table facts and all listed ratio extrema/rounding bounds pass the independent Fraction checks in scratch/exact_checks.py. The significance premises hold at b=-11/1000,dyadic=8/1000,hc=2/1000, yielding 11/8<41/25 and 11/2>41/25. Every rounding denominator is strictly positive. The docstring accurately discloses the simultaneous two-sided interval restriction on both implications, including the HC interval's positive lower endpoint; it does not attribute a missing-positivity error to the canonical claim.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T25",
+    "theorem": "SAP.P018b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The architect's refuted decision is correct. At N=3 use dyads {0,1} and {1,2}. Their shared-unit covariance entry is 1, while the two-independent-role covariance entry is 0 for arbitrary real variance components, even before imposing nonnegativity. This exact obstruction compiles in scratch/Check.lean. It refutes the printed universal correspondence assertion directly; this verdict certifies the faithful refutation, not the printed correspondence.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T26",
+    "theorem": "SAP.P018b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The architect's refuted decision is correct. Let U_i be iid uniform[-1,1], X_ij=(1,U_i+U_j) and Y_ij=(U_i+U_j)^2. Standing holds with Q=diag(1,2/3) and beta=(2/3,0); for every N>=3 sample rank holds a.s., because equality of all pair sums forces all unit values equal, an atomless null event. Each residual is a function of the design, so all conditional residual covariances and printedSigma are zero. At N=3, the intercept component of the score sum has ordinary variance 12/5 (independently integrated exactly in scratch/exact_checks.py). Thus the finite identity fails in the stated rank class, which suffices to refute the printed conjunction without refuting its asymptotic-law clause separately.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T27",
+    "theorem": "SAP.P018b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair-sign intercept model satisfies every premise jointly. Q=1 and E[X_12 X_13]=1; G_N=D_N>0 on every sample for N>=2; bhat=2*mean(U); and e_ij=U_i+U_j-2*mean(U), so |e|<=4. For N>=2, E[e_d^2]=2-4/N; for distinct neighbors and N>=3, E[e_d e_f]=1-4/N. Thus the eventual moment requirements hold from N=5, and SampleRank holds with deterministic N0=2. Finite exact enumerations at N=3,...,8 confirm these formulas. The added rank requirement is explicitly disclosed and does not assume consistency. The target uses the actual unconditional bounded population-score covariance. Standard bounded U-statistic and residual-replacement arguments give the asserted probability consistency; they do not require finite moments of the inverse sample Gram.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P018-T28",
+    "theorem": "SAP.P018b.T28",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The architect's refuted decision is correct. For the specified fair-sign model, take T(d)=1. The regression and fitted-moment premises hold as described for T27. Since the design is constant, the literal printed inner factor is 2+2(N-2)=2(N-1); its prefactor N/D_N^2 gives exactly 4/D_N. But bhat=(2/N)sum_i U_i and N Var(bhat)=4 for every N>=2, so the deterministic difference tends to 4, not 0. The first conjunct alone refutes the universal printed corollary. All these coefficient moments are finite, and the sample Gram is nonzero on the tail, so no totalized variance or division-by-zero convention is used.",
+    "confidence": 0.99
+  }
+]

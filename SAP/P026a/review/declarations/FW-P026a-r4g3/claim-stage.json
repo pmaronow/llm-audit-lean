@@ -1,0 +1,14 @@
+[
+  {
+    "theorem": "SAP.P026a.T11",
+    "target_id": "P026-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "The three conjuncts of T11Statement cover canonical clauses (a)-(f): the exact arm variance, the exact Young-inequality gap, unbiased estimation of the population bound, conservativeness, and unbiased equation [31] under same-arm support. Quantification over both Boolean arms includes the treatment and control versions. UnitLaw supplies precisely a nonnegative normalized binary-assignment law with positive arm marginals. ClusterLaw supplies a fixed partition into nonempty clusters, and hseparated is the distinct-indicator condition expressly included in the standing assumptions. Arbitrary fixed cluster totals are represented by unit totals over the surjective partition; this loses no outcome vectors. The response uses the cluster indicator in every estimator term, including the corrected unavailable-pair correction. Ordered pairs and the factor 1/2 in the exact gap agree with the claim. Same-arm support is required only for the full-support formula or its conditional equality, never for the general bounds. All marginal divisions are protected by positivity; full-support joint divisions are protected by the stated support hypothesis. Concrete two-cluster laws satisfy all hypotheses, including full same-arm support, and a complementary law admits zero same-arm joints and a strict bound gap. No extra substantive assumption, placeholder, conclusion-encoding definition, or junk-value dependence was found."
+  },
+  {
+    "theorem": "SAP.P026a.T12",
+    "target_id": "P026-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "The five conjuncts of T12Statement cover canonical clauses (a)-(e), equations [20]-[24]. The arm-variance clause explicitly includes both intermediate covariance expansions of [21] and specializes to [22] for the control arm. The general two-arm covariance formula supplies the first equality of [23], while splitPopulationCovariance and the final conjunct supply its second equality. That split ranges over all ordered pairs, including the diagonal and every unavailable directed off-diagonal pair. Expanding armPopulationVariance and distributing -2 over splitPopulationCovariance gives every term of the single corrected expression [24], with the required signs and N-squared normalization. UnitLaw is an arbitrary finite binary-assignment law with exactly the standing positive-marginal requirements; all outcome vectors are fixed. The inhabited unit type expresses N >= 1 and protects the real denominator. Potential-outcome HT totals equal the observed-outcome versions pointwise because the arm indicator selects the corresponding potential outcome. No independence or joint-support assumption is added. The three-allocation law on 00,01,11 constructs all bundled hypotheses and permits an unavailable directed off-diagonal pair. No definition or junk-value mismatch was found."
+  }
+]

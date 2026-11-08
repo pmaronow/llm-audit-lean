@@ -1,0 +1,126 @@
+import SAP.P011a.Challenge
+
+open SAP.P011a MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology Classical Matrix NNReal ENNReal
+
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 8000
+
+noncomputable section
+
+lemma edge_sum {n : ℕ} {M : Type*} [AddCommMonoid M] (f : Edge n → M) :
+    (∑ e, f e) = ∑ i : Fin n, ∑ j : Fin n,
+      if h : i < j then f ⟨(i,j),h⟩ else 0 := by
+  classical
+  calc
+    (∑ e, f e) = ∑ p : Fin n × Fin n,
+        if h : p.1 < p.2 then f ⟨p,h⟩ else 0 := by
+      symm
+      apply Finset.sum_congr_set (s := {p : Fin n × Fin n | p.1 < p.2})
+      · intro p hp
+        exact dif_pos hp
+      · intro p hp
+        exact dif_neg hp
+    _ = _ := by rw [Fintype.sum_prod_type]
+
+-- This hypothesis instance uses the separately certified, explicit T11 witness,
+-- not T12. Finite numerical checks independent of all Challenge stubs are below
+-- and in check_witnesses.py.
+example : ∃ F : Family, WholeScaling F 2 1 1 2 ∧
+    (∀ k, Homoskedastic (F.model k)) := by
+  have h : AlternatingCounterexample := SAP.P011a.T11.1
+  rcases h.1 with ⟨_, h1, h2, h3, h4, hd, hb, hg, hv, ht⟩
+  refine ⟨alternatingFamily, ?_, fun k => (h.2.2.1 k).1⟩
+  exact ⟨h1, h2, h3, h4, hd, hb, hg, hv, ht⟩
+
+-- Basic finite facts about the actual T11 witness; no Challenge theorem used.
+example : alternatingWeight 1 = 1/2 ∧ alternatingWeight 2 = 1 ∧
+    alternatingSpread 1 = 0 ∧ alternatingSpread 2 = 1 := by
+  norm_num [alternatingWeight, alternatingSpread, alternatingParity]
+
+example : (∀ i : Fin 4,
+    |weighted (alternatingModel 4) (alternatingOutcome 4 (fun _ => false)) i - 1| ≤ 2) := by
+  intro i
+  fin_cases i <;> norm_num [weighted, alternatingModel, alternatingOutcome,
+    alternatingWeight, sign]
+
+-- Every finite gadget actually has a maximum matching: the maximum-matching
+-- antecedent of MatchingReduction is inhabited independently of T13.
+example {n : ℕ} (P : DegreeProblem n) :
+    ∃ J : Finset (GadgetEdge P), IsMatching J ∧
+      ∀ J' : Finset (GadgetEdge P), IsMatching J' →
+        (∑ e ∈ J', gadgetWeight e) ≤ ∑ e ∈ J, gadgetWeight e := by
+  classical
+  let choices : Finset (Finset (GadgetEdge P)) := Finset.univ.filter IsMatching
+  have hne : choices.Nonempty := by
+    refine ⟨∅, ?_⟩
+    simp [choices, IsMatching]
+  obtain ⟨J, hJ, hmax⟩ := Finset.exists_max_image choices
+    (fun J => ∑ e ∈ J, gadgetWeight e) hne
+  refine ⟨J, (Finset.mem_filter.mp hJ).2, ?_⟩
+  intro J' hJ'
+  exact hmax J' (by simp [choices, hJ'])
+
+example : EdgeFeasible (matchingWitness false) (matchingWitnessSolution false) := by
+  constructor
+  · simp [matchingWitness, matchingWitnessSolution]
+  · intro i
+    fin_cases i <;> norm_num [edgeDegree, matchingWitness, matchingWitnessSolution,
+      Finset.filter_insert, Finset.filter_singleton]
+
+example : EdgeFeasible (matchingWitness true) (matchingWitnessSolution true) := by
+  constructor
+  · simp [matchingWitness, matchingWitnessSolution]
+  · intro i
+    fin_cases i <;> norm_num [edgeDegree, matchingWitness, matchingWitnessSolution,
+      Finset.filter_insert, Finset.filter_singleton]
+
+example : edgeObjective (matchingWitness false) (matchingWitnessSolution false) = 3/4 ∧
+    edgeObjective (matchingWitness true) (matchingWitnessSolution true) = -3/4 := by
+  norm_num [edgeObjective, matchingWitness, matchingWitnessSolution]
+
+-- Independent compatible integer graph in the six-unit gap example.
+example : Compatible (emptyGraph 6) (fun _ => 1) (fromUpper sixIntegerEdges) := by
+  constructor
+  · simp [emptyGraph]
+  · intro i
+    simp only [degree, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
+    fin_cases i <;> norm_num [fromUpper, sixIntegerEdges]
+
+-- Independent fractional feasibility for the triangle.
+example : RelaxedFeasible (emptyGraph 3) (fun _ => 1) (fun _ => 1/2) := by
+  constructor
+  · intro e
+    norm_num
+  constructor
+  · simp [toUpper, emptyGraph]
+  · intro i
+    rw [edge_sum]
+    fin_cases i <;> norm_num [Fin.sum_univ_succ]
+
+-- A full instance of the general RelaxationUpperBound antecedents.
+-- The certificate 3 is intentionally loose; attainment is not assumed.
+example : (∀ a : Edge 3 → ℝ,
+    RelaxedFeasible (emptyGraph 3) (fun _ => 1) a →
+      relaxedObjective a (fun _ => 1) ≤ 3) ∧
+    ∃ b : Edge 3 → Bool, Compatible (emptyGraph 3) (fun _ => 1) (fromUpper b) := by
+  constructor
+  · intro a ha
+    change (∑ e, 1 * a e) ≤ 3
+    calc
+      (∑ e : Edge 3, 1 * a e) ≤ ∑ _e : Edge 3, (1 : ℝ) :=
+        Finset.sum_le_sum (fun e _ => by simpa using (ha.1 e).2)
+      _ = 3 := by
+        rw [edge_sum]
+        simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
+        norm_num
+  · refine ⟨fun _ => false, ?_⟩
+    constructor
+    · simp [emptyGraph]
+    · intro i
+      simp [degree, fromUpper]
+
+-- The named integral graph's variance is a real, nonzero, positive value.
+example : V1 (fromUpper sixIntegerEdges) (![1,1,1,-1,-1,-1] : Fin 6 → ℝ) = 5/18 := by
+  norm_num [V1, centered, SAP.P011a.average, quadratic, adjacency, fromUpper,
+    sixIntegerEdges, Fin.sum_univ_succ]

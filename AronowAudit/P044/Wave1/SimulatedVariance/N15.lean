@@ -15,7 +15,7 @@ def momentTypeWeight (d a : Exposure) : ℚ :=
 theorem momentTypeWeight_eq (t : Fin 66) (i : Fin 12) (a : Exposure) :
     cliqueWeights t i a = momentTypeWeight (cliqueF t i) a := rfl
 
-/-- Expand the four-element exposure type without enumerating assignments. -/
+/-- Expand the project's four-element exposure type without enumerating assignments. -/
 theorem moment_sum_exposure (f : Exposure → ℚ) :
     (∑ d : Exposure, f d) = f .d11 + (f .d10 + (f .d01 + f .d00)) := by
   change (∑ d ∈ ({Exposure.d11, .d10, .d01, .d00} : Finset Exposure), f d) = _

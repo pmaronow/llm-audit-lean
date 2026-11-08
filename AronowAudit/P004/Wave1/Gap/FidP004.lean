@@ -74,6 +74,12 @@ theorem mc_exact_level {N P : ℕ}
     rw [he]
     linarith
 
+/-- Atom masses after restriction to the same distance band D at node i. -/
+noncomputable def bandAtomMass {N : ℕ} {A : Type*}
+    (mass : A → ℝ) (distance : Fin N → A → ℝ) (D : Set ℝ)
+    (i : Fin N) (x : A) : ℝ := by
+  classical
+  exact if distance i x ∈ D then mass x else 0
 
 /-- Partition the numerator using each node's own masses, including zero shells. -/
 private theorem supported_shell_identity_full {A : Type*} [Fintype A] {m N : ℕ}
@@ -124,7 +130,7 @@ theorem supported_shell_identity {A : Type*} [Fintype A] {m N : ℕ}
     intro k _
     rw [← Finset.mul_sum, mul_div_assoc]
 
-/-- An alias for the node-specific shell identities. -/
+/-- The identical node-specific contract under the canonical shell name. -/
 theorem shell_mass_identity {A : Type*} [Fintype A] {m N : ℕ}
     (a : Fin N → A → ℝ) (shell : Fin N → A → Fin m)
     (δ : Fin N → A → ℝ)

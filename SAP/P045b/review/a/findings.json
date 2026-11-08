@@ -1,0 +1,162 @@
+[
+  {
+    "target_id": "P045-T17",
+    "theorem": "SAP.P045b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: n=2, Delta=Bool, uniform mass 1/4 on all four assignments, D(z,i)=z_i. Every marginal for true and false is 1/2 and P(no true exposure)=1/4. With y_i(d)=1 the total is 2 and the conditional nonempty-cell mean is 8/3, so the strict-difference clause has satisfiable antecedents too.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T18",
+    "theorem": "SAP.P045b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=1 has a genuine coordinate and deletion into the unique empty tuple; the map is Bool equivalent to Bool times a singleton. N=4,i=3 (one-based) gives the required nonempty three-coordinate deletion. Every real function on either assignment space is admissible.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T19",
+    "theorem": "SAP.P045b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: n=3, K=2, psi=2/3, z=[true,true,false]. All count, integrality and strict-saturation hypotheses hold, and both own-treatment cases occur.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T20",
+    "theorem": "SAP.P045b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses to discharge. Exhausted all 512 subsets in scratch/referee_checks.py: zero satisfy the within-three/coverage conjunction and exactly the 13 named subsets satisfy corrected separation/coverage. For example S={1,6} is a nonempty corrected net.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T21",
+    "theorem": "SAP.P045b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For any nonempty finite graph, taking epsilon=1 and S=all vertices gives a net; enumerating all vertices gives a terminating greedy run. Positive epsilon prevents truncated-subtraction artifacts. The nine-path instance has 13 nonempty nets, independently enumerated; the empty-graph case is an additional legitimate boundary case.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T22",
+    "theorem": "SAP.P045b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every n>=0 the sample space has 2^(n+1) assignments with strictly positive fair-product mass; the first coordinate exists and the true variance 1/(n+1) is positive. Exact independent enumeration for N=1 through 8 checks the moments and persistent relative-error tail. The deterministic 5/(4N) bound proves the absolute limit, while the relative tail equals one for all N.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T23",
+    "theorem": "SAP.P045b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A full instance for the quantified implication is fair Bool at every n, T_n(b)=sign(b)/(n+1), Vhat_n(b)=1/(n+1)^2. The variance is positive and equals Vhat_n, tends to zero, and the mean-SE discrepancy is identically zero. Positivity/nonnegativity are compiled in scratch/Check.lean. The finite inequality is nonvacuous already for M=2, s=(0,2), sd=1. All six table-ratio comparisons were independently checked with exact fractions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T24",
+    "theorem": "SAP.P045b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled baseline instance G=1,n_0=3,b_0i=1, giving B=1. Its four regime outcomes are 2,5/4,3/2,1; the direct effects are 3/4 and 1/2, indirect 1/4, total 1, overall 7/12. Both strict antecedents B>0 and B!=0 hold; group size three also permits the stated complete-randomization shares.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T25",
+    "theorem": "SAP.P045b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled exact counterexample in scratch/Check.lean: n=2,p=1/2,b=true,y_i(z)=coMembers(i,z). The conditioning event has probability 3/4, its arm-mean conditional expectation is 1/3, and the average marginal potential outcome is 1/2. Outcomes depend only on the same group and satisfy partial interference; no zero denominator is used on the conditioning event.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T26",
+    "theorem": "SAP.P045b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact counterexample: G=6,C=3,n_g=3,m_g=2 and a_g=b_g=(0,1,2) for every group, with common additive effect d=0. Every arm in support has positive count. All 20 first-stage subsets have the same conditional law; enumerating the 27 assignments in three selected groups gives Var(point)=1/2 and E(estimate)=1/3. The singleton terms are explicitly dropped by the audited implementation, not inferred via division by zero.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T27",
+    "theorem": "SAP.P045b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: the two-vertex single-edge network, z=[true,false], i=0. Its closed neighborhood is both vertices: the returned count<size indicator is true and the all-control assertion is false. The network is symmetric and loopless and has an actual vertex.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T29",
+    "theorem": "SAP.P045b.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Four-vertex path, epsilon=3, p=1/2. Summing all terminating traces, including repeated centres, gives terminal masses {0,1}:1/12, {0,2}:1/12, {0,3}:1/3, {1}:1/4, {2}:1/4. Total mass is 1 and net mass is 5/6. Nontermination has probability zero: centre sets grow except for self retries, and every nonterminal state has a positive-probability choice adding an unmarked vertex. The geometric sums converge; real tsum default-zero behavior is not used.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T30",
+    "theorem": "SAP.P045b.T30",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled fair n=2 own-treatment exposure design used for T17 supplies positive marginals 1/2 for both labels. Any fixed real y is allowed, including nonconstant schedules. The finite probability space is nonempty and normalized.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T31",
+    "theorem": "SAP.P045b.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Nc=1,m_0(z)=z,y_0(z,m)=bit(z)+2*bit(m) gives indirect effect 3, contagion 2 and other-mechanisms effect 1 in both decompositions. Taking m_0 constant instead makes both individual contagion contributions zero. These are real, nonempty schedules satisfying every premise.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T32",
+    "theorem": "SAP.P045b.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Construct E=Fin 4 with its identity labeling, the explicit 66-row pair enumeration and the defined 65-row retained tables, w=smoothedWeight and q=smoothedJoint. All relevant denominators are positive or explicitly branched away. scratch/referee_checks.py independently checks all counts, all 66 fixed tables, all 4356 table/observation pairs, both normalized observation regimes, every rational moment and strict shortfall, and all 66 graph-preserving relabelings. Rational inclusion into R preserves these finite arithmetic identities and inequalities.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T33",
+    "theorem": "SAP.P045b.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled positive-marginal/structural-zero instance: Omega=Bool, mass 1/2, N=2, f(b,0)=b and f(b,1)=not b, a=true,b=false. Both unit marginals are 1/2 and the same-exposure joint across the two units is zero. With outcomes (y_0(a),y_0(b))=(1,3), (y_1(a),y_1(b))=(-2,4), independent exact arithmetic gives contrast values -3,-5, Var=1, variance estimates 43/2,51/2 and surplus 45/2, exactly E(Vhat)-Var. Thus the squared-outcome adjustments are exercised rather than vacuous.",
+    "confidence": "high"
+  }
+]

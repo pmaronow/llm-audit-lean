@@ -1,0 +1,171 @@
+{
+  "work_id": "P018",
+  "unit_id": "P018a",
+  "targets": [
+    {
+      "target_id": "P018-T1",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T1",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.nonlinear_counterexample_proof", "AronowAudit.P018.nonlinear_bounds", "AronowAudit.P018.nonlinear_population_projection", "AronowAudit.P018.nonlinear_matrix_certificate", "SAP.P018a.WH.W2.T1_whole", "SAP.P018a.WH.W2.T1_assembly", "SAP.P018a.WH.W2.T1_L1_proof", "SAP.P018a.WH.W2.T1_L2_proof", "AronowAudit.P018.nonlinear_model_assumptions", "AronowAudit.P018.Standing._proof_1", "AronowAudit.P018.Wave1.GP0182B2b_score_memLp", "AronowAudit.P018.Wave1.corrected_one_beta", "AronowAudit.P018.Wave1.corrected_pair_preserving", "AronowAudit.P018.Wave1.corrected_pair_products", "AronowAudit.P018.Wave1.corrected_single_beta", "AronowAudit.P018.Wave1.vc3_coefficient_limits", "AronowAudit.P018.Wave1.vc3_disjoint_moment", "AronowAudit.P018.Wave1.vc3_dyad_mean", "AronowAudit.P018.Wave1.vc3_overlap_moment", "AronowAudit.P018.firstUnit._proof_2", "AronowAudit.P018.logitH._proof_1", "AronowAudit.P018.logitH._proof_3", "AronowAudit.P018.logitX._proof_1", "AronowAudit.P018.nonlinearH._proof_1", "AronowAudit.P018.nonlinearH._proof_2", "AronowAudit.P018.nonlinearH._proof_3", "AronowAudit.P018.nonlinearH._proof_4", "AronowAudit.P018.nonlinearH._proof_5"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.nonlinear_matrices_positive", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.nonlinear_model_assumptions", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.uniform_pair_monomial", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.uniform_pair_monomial_integrable", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.uniform_polynomial_integral", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.uniform_unit_moment", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.uniform_unit_moments", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.uniform_unit_power_L2", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T1WholeStatement"
+    },
+    {
+      "target_id": "P018-T2",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T2",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.variance_correction_proof", "AronowAudit.P018.Wave1.conditional_moment_correction_proof", "SAP.P018a.WH.W3.T2_whole", "SAP.P018a.WH.W3.T2_assembly", "SAP.P018a.WH.W3.T2_L1_proof", "SAP.P018a.WH.W3.T2_L2_proof", "SAP.P018a.WH.W3.T2_L3_proof", "SAP.P018a.WH.W3.T2_L4_proof", "AronowAudit.P018.nonlinear_model_assumptions", "AronowAudit.P018.Wave1.nonlinear_counterexample_proof", "AronowAudit.P018.Wave1.repeated_target_correction_proof", "AronowAudit.P018.Wave1.vc3_closed_covariance", "AronowAudit.P018.Wave1.vc3_conditional_decomposition", "AronowAudit.P018.Wave1.vc3_corrected_expand", "AronowAudit.P018.Wave1.vc3_design_le", "AronowAudit.P018.Wave1.vc3_dyad_mean", "AronowAudit.P018.Wave1.vc3_overlap_moment", "AronowAudit.P018.Wave1.vc3_pair_preserving", "AronowAudit.P018.Wave1.vc3_same_moment", "AronowAudit.P018.Wave1.vc3_score_lp", "AronowAudit.P018.Wave1.vc3_score_projection", "AronowAudit.P018.Wave1.vc3_sparse_variance", "AronowAudit.P018.Wave1.vc3_total_covariance", "AronowAudit.P018.Wave1.weighted_target_correction_proof", "AronowAudit.P018.Wave1.WeightedConsistency.firstUnit_mem", "AronowAudit.P018.Wave1.WeightedConsistency.secondUnit_mem"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.variance_sparse_identity", "reason": "Generic sparse helper is not called separately; the retained kernel-level sparse identity is already exported."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T2WholeStatement_W3"
+    },
+    {
+      "target_id": "P018-T3",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T3",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.appendixB_counterexample_proof", "AronowAudit.P018.Wave1.inverse_gram_counterexample_proof", "AronowAudit.P018.Wave1.inverse_spike_counterexample_proof", "AronowAudit.P018.fitted_products_counterexample", "AronowAudit.P018.missing_N_counterexample", "SAP.P018a.WH.W2.T3_whole", "SAP.P018a.WH.W2.T3_assembly", "SAP.P018a.WH.W2.T3_L1_proof", "SAP.P018a.WH.W2.T3_L2_proof", "SAP.P018a.WH.W2.T3_L3_proof", "SAP.P018a.WH.W2.T3_L4_proof", "SAP.P018a.WH.W2.T3_L5_proof", "SAP.P018a.WH.W2.T3_L6_proof", "SAP.P018a.WH.W2.T3_L7_proof", "AronowAudit.P018.overlap_meat_identity", "AronowAudit.P018.variance_sum_identity", "AronowAudit.P018.Proposition1Extra._proof_1", "AronowAudit.P018.Wave1.appendixB_coord_mean", "AronowAudit.P018.Wave1.appendixB_coord_product", "AronowAudit.P018.Wave1.appendixB_indicator_sum", "AronowAudit.P018.Wave1.appendixB_linear_product", "AronowAudit.P018.Wave1.appendixB_meat_mean", "AronowAudit.P018.Wave1.appendixB_meat_sandwich", "AronowAudit.P018.Wave1.appendixB_populationBeta", "AronowAudit.P018.Wave1.appendixB_populationGram", "AronowAudit.P018.Wave1.appendixB_residual", "AronowAudit.P018.Wave1.appendixB_residual_bound", "AronowAudit.P018.Wave1.appendixB_residual_linear", "AronowAudit.P018.Wave1.appendixB_residual_product", "AronowAudit.P018.Wave1.appendixB_scoreSum", "AronowAudit.P018.Wave1.appendixB_variance_mean", "AronowAudit.P018.Wave1.inverse_gram_W_lp", "AronowAudit.P018.Wave1.inverse_gram_ae_distinct", "AronowAudit.P018.Wave1.inverse_gram_det_pos", "AronowAudit.P018.Wave1.inverse_gram_exp_bound", "AronowAudit.P018.Wave1.inverse_gram_pareto_eq", "AronowAudit.P018.Wave1.inverse_gram_population_det_pos", "AronowAudit.P018.Wave1.printed_A_limit", "AronowAudit.P018.Wave1.printed_Dpos", "AronowAudit.P018.Wave1.printed_S_second", "AronowAudit.P018.Wave1.printed_S_variance", "AronowAudit.P018.Wave1.printed_endpoints_lt", "AronowAudit.P018.Wave1.printed_fair_probability", "AronowAudit.P018.Wave1.printed_finite_L2", "AronowAudit.P018.Wave1.printed_finite_integrable", "AronowAudit.P018.Wave1.printed_fit", "AronowAudit.P018.Wave1.printed_gram", "AronowAudit.P018.Wave1.printed_inv_n_limit", "AronowAudit.P018.Wave1.printed_members_endpoints", "AronowAudit.P018.Wave1.printed_mkDyad_endpoints", "AronowAudit.P018.Wave1.printed_scaled_sandwich", "AronowAudit.P018.Wave1.printed_sign_probability", "AronowAudit.P018.Wave1.printed_sign_square", "AronowAudit.P018.Wave1.inverse_gram_Q.eq_1", "AronowAudit.P018.Wave1.printed_A._proof_1", "AronowAudit.P018.Wave1.printed_A._proof_2", "AronowAudit.P018.Wave1.printed_A._proof_3"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.intercept4_fit", "reason": "Only the four-unit fit; does not supply the omitted general-N fit clause."}, {"lean_name": "AronowAudit.P018.sign_mean_counterexample", "reason": "Four-unit finite means are redundant with the retained general-N expectation counterexample."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T3WholeStatement"
+    },
+    {
+      "target_id": "P018-T4",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T4",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.variance_consistency_corrected_proof", "AronowAudit.P018.corrected_chebyshev"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.Wave1.dyad_counts_proof", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.Wave1.population_meat_variance_bounds_proof", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.members_card", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.normalized_overlap_coefficient", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.normalized_sample_sandwich", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.number_of_dyads", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.residual_substitution_bound", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.sandwich_difference", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P018-T5",
+      "decision": "restricted",
+      "theorem": "SAP.P018a.T5",
+      "restriction": "Retains the N = 3 covariance matrices and universal parameter mismatch, the fixed-component GLS calculation and variance ratio, and the translation-equivariant intercept variance bound. For that bound, independence of the centered response from the Gaussian unit average, measurability, and both finite second moments are explicit hypotheses; their derivation for design (4) is not asserted. Drops the general-N random-effect covariance derivations, general-N mismatch and binomial(N,3) count, Gaussian average/centered-effect independence, the four displayed numeric lower bounds, and the repeated-observation extension.",
+      "rows_used": ["AronowAudit.P018.two_role_counterexample", "AronowAudit.P018.gls_variance_counterexample", "AronowAudit.P018.Wave1.random_intercept_lower_bound_proof"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P018-T6",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T6",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.benchmark_covariance_correction_proof", "AronowAudit.P018.shared_random_effect_covariance", "AronowAudit.P018.correct_gls_identity"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.shared_role_expansion", "reason": "Its incidence expansion is already included in the retained general-N correction row."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    },
+    {
+      "target_id": "P018-T7",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T7",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.TailB_degenerate_inference_counterexample", "AronowAudit.P018.degenerate_numeric_certificate", "SAP.P018a.WH.W2.T7_whole", "SAP.P018a.WH.W2.T7_assembly", "SAP.P018a.WH.W2.T7_L1_proof", "SAP.P018a.WH.W2.T7_L2_proof", "SAP.P018a.WH.W2.T7_L3_proof", "SAP.P018a.WH.W2.T7_L4_proof", "SAP.P018a.WH.W2.T7_L5_proof", "AronowAudit.P018.overlap_meat_identity", "AronowAudit.P018.Standing._proof_1", "AronowAudit.P018.Wave1.printed_fair_probability", "AronowAudit.P018.Wave1.printed_finite_integrable", "AronowAudit.P018.Wave1.printed_sign_square", "AronowAudit.P018.Wave1.printed_unit_probability", "AronowAudit.P018.Wave1.variance_consistency_corrected_proof", "AronowAudit.P018.Wave1.vc3_closed_covariance", "AronowAudit.P018.Wave1.vc3_members_other", "AronowAudit.P018.Wave1.vc3_other_ne", "AronowAudit.P018.Wave1.vc3_overlap_moment", "AronowAudit.P018.Wave1.vc3_population_mean", "AronowAudit.P018.Wave1.vc3_same_moment", "AronowAudit.P018.Wave1.vc3_sparse_variance", "AronowAudit.P018.Wave1.vc3_triple_preserving", "AronowAudit.P018.logitX._proof_1", "AronowAudit.P018.signPairKernel.eq_1", "AronowAudit.Shared.MapTailB.TailB_gaussian_disk", "AronowAudit.Shared.MapTailB.TailB_weakLimit_continuous_map", "AronowAudit.Shared.MapTailB.TailB_weakLimit_perturbation", "AronowAudit.Shared.MapTailB.tb09_inProbability_pi", "AronowAudit.P018.Wave1.TailBSign.tb05_T_formula", "AronowAudit.P018.Wave1.TailBSign.tb05_box_probability", "AronowAudit.P018.Wave1.TailBSign.tb05_gram_nonsingular_on_box", "AronowAudit.P018.Wave1.TailBSign.tb05_joint_sign_clt", "AronowAudit.P018.Wave1.TailBSign.tb05_model_fitted_residual_bound", "AronowAudit.P018.Wave1.TailBSign.tb05_pivot_not_normal", "AronowAudit.P018.Wave1.TailBSign.tb05_population_gram", "AronowAudit.P018.Wave1.TailBSign.tb05_population_inverse", "AronowAudit.P018.Wave1.TailBSign.tb05_population_residual", "AronowAudit.P018.Wave1.TailBSign.tb05_projection_gamma", "AronowAudit.P018.Wave1.TailBSign.tb05_sample_gram", "AronowAudit.P018.Wave1.TailBSign.tb05_sample_ols", "AronowAudit.P018.Wave1.TailBSign.tb05_second_order_in_probability", "AronowAudit.P018.Wave1.TailBSign.tb05_standing", "AronowAudit.P018.Wave1.TailBSign.tb05_true_target_limit", "AronowAudit.P018.Wave1.TailBSign.tb05_unit_integral", "AronowAudit.P018.Wave1.TailBSign.tb05_units_integral", "AronowAudit.P018.Wave1.WeightedConsistency.members_eq_endpoints", "AronowAudit.P018.Wave1.TailBSign.tb05_average._proof_1", "AronowAudit.P018.Wave1.TailBSign.tb05_fitB.eq_1", "AronowAudit.P018.Wave1.TailBSign.tb05_secondOrderError._proof_1", "AronowAudit.P018.Wave1.TailBSign.tb05_secondOrderError._proof_2"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T7WholeStatement"
+    },
+    {
+      "target_id": "P018-T8",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T8",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.inference_corrected_proof", "AronowAudit.P018.Wave1.contrast_coverage_corrected_proof", "SAP.P018a.WH.W1.T8_whole", "SAP.P018a.WH.W1.T8_assembly", "AronowAudit.P018.Wave1.TailB_degenerate_inference_counterexample", "AronowAudit.P018.Wave1.vc3_shared_integral"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.Wave1.score_projection_decomposition_proof", "reason": "Projection-decomposition helper; the retained CLT and coverage are supplied directly by the inference and coverage rows."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T8WholeStatement"
+    },
+    {
+      "target_id": "P018-T9",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T9",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.concentrated_weights_counterexample_proof", "AronowAudit.P018.Wave1.concentrated_repetitions_counterexample_proof", "SAP.P018a.WH.W1.T9_whole", "SAP.P018a.WH.W1.T9_assembly", "SAP.P018a.WH.W1.T9_L1_proof", "SAP.P018a.WH.W1.T9_L2_proof", "SAP.P018a.WH.W1.T9_L3_proof", "AronowAudit.P018.matrix_ite_apply", "AronowAudit.P018.Wave1.appendixB_coord_mean", "AronowAudit.P018.Wave1.appendixB_populationBeta", "AronowAudit.P018.Wave1.appendixB_sampleRank", "AronowAudit.P018.Wave1.appendixB_sign_abs", "AronowAudit.P018.Wave1.appendixB_standing", "AronowAudit.P018.Wave1.concentrated_repetitions_pair_identity", "AronowAudit.P018.Wave1.concentrated_repetitions_scale_total", "AronowAudit.P018.Wave1.concentrated_weights_S_formula", "AronowAudit.P018.Wave1.concentrated_weights_W_formula", "AronowAudit.P018.Wave1.concentrated_weights_W_lower", "AronowAudit.P018.Wave1.concentrated_weights_bounds", "AronowAudit.P018.Wave1.concentrated_weights_event_probability", "AronowAudit.P018.Wave1.concentrated_weights_factor", "AronowAudit.P018.Wave1.concentrated_weights_ols_linear", "AronowAudit.P018.Wave1.concentrated_weights_ols_scalar", "AronowAudit.P018.Wave1.concentrated_weights_pair_linear", "AronowAudit.P018.Wave1.concentrated_weights_q_pos", "AronowAudit.P018.Wave1.concentrated_weights_sandwich_small", "AronowAudit.P018.Wave1.concentrated_weights_tail_le", "AronowAudit.P018.Wave1.concentrated_weights_variance", "AronowAudit.P018.Wave1.concentrated_weights_variance_limit", "AronowAudit.P018.Wave1.concentrated_weights_variance_lower", "AronowAudit.P018.Wave1.concentrated_weights_variance_scalar", "AronowAudit.P018.Wave1.concentrated_weights_x_bounds", "AronowAudit.P018.Wave1.printed_Dpos", "AronowAudit.P018.Wave1.printed_finite_integrable", "AronowAudit.P018.Wave1.printed_gram", "AronowAudit.P018.Wave1.printed_mkDyad_endpoints", "AronowAudit.P018.Wave1.printed_sign_probability", "AronowAudit.P018.Wave1.concentrated_weights_q._proof_1"],
+      "rows_not_used": [],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T9WholeStatement",
+      "domain_note": "The all-N linear-fit and variance identities include the zero completion when N<2. The lower bounds and counterexample conclusions use N >= 2 or N >= 8 and do not rely on these initial values."
+    },
+    {
+      "target_id": "P018-T10",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T10",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.repeated_consistency_with_overlap_mean_control", "AronowAudit.P018.Wave1.weighted_consistency_common_directed_kernel", "AronowAudit.P018.weighted_scale_invariance", "AronowAudit.P018.Wave1.concentrated_weights_counterexample_proof", "AronowAudit.P018.Wave1.appendixB_counterexample_proof", "SAP.P018a.WH.W1.T10_whole", "SAP.P018a.WH.W1.T10_assembly", "SAP.P018a.WH.W1.T10_L1_proof", "SAP.P018a.WH.W1.T10_L2_proof", "SAP.P018a.WH.W1.T10_L3_proof", "SAP.P018a.WH.W1.T10_L4_proof", "SAP.P018a.WH.W1.T10_L5_proof", "SAP.P018a.WH.W1.T10_L6_proof", "SAP.P018a.WH.W1.T10_L7_proof", "AronowAudit.P018.matrix_inverse_scale_total", "AronowAudit.P018.matrix_ite_apply", "AronowAudit.P018.meanMat_scale", "AronowAudit.P018.members_card", "AronowAudit.P018.number_of_dyads", "AronowAudit.P018.overlap_meat_identity", "AronowAudit.P018.variance_sparse_identity", "AronowAudit.P018.Wave1.GP0182B2b_singleStanding", "AronowAudit.P018.Wave1.printed_endpoints_lt", "AronowAudit.P018.Wave1.printed_incident_add", "AronowAudit.P018.Wave1.printed_members_endpoints", "AronowAudit.P018.Wave1.printed_pair_sum", "AronowAudit.P018.logitX._proof_1", "AronowAudit.P018.meanMat.eq_1", "AronowAudit.P018.meanVec.eq_1", "AronowAudit.P018.Wave1.WeightedConsistency.Dreal_ne_zero", "AronowAudit.P018.Wave1.WeightedConsistency.abs_covariance_le_two_sq", "AronowAudit.P018.Wave1.WeightedConsistency.abs_dot_le_of_norm_le", "AronowAudit.P018.Wave1.WeightedConsistency.blockScore_measurable", "AronowAudit.P018.Wave1.WeightedConsistency.blockScore_support", "AronowAudit.P018.Wave1.WeightedConsistency.dyad_scaled_variance_tendsto", "AronowAudit.P018.Wave1.WeightedConsistency.firstUnit_mem", "AronowAudit.P018.Wave1.WeightedConsistency.firstUnit_ne_secondUnit", "AronowAudit.P018.Wave1.WeightedConsistency.g1_proof", "AronowAudit.P018.Wave1.WeightedConsistency.g2_proof", "AronowAudit.P018.Wave1.WeightedConsistency.g3_proof", "AronowAudit.P018.Wave1.WeightedConsistency.g4_proof", "AronowAudit.P018.Wave1.WeightedConsistency.g5_proof", "AronowAudit.P018.Wave1.WeightedConsistency.g6_proof", "AronowAudit.P018.Wave1.WeightedConsistency.g7_proof", "AronowAudit.P018.Wave1.WeightedConsistency.g8_proof", "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_add", "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_ae_norm_le", "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_continuousAt", "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_deterministic", "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_eventually_eq", "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_product_null", "AronowAudit.P018.Wave1.WeightedConsistency.meat_difference_norm_bound", "AronowAudit.P018.Wave1.WeightedConsistency.meat_normalization_rate", "AronowAudit.P018.Wave1.WeightedConsistency.norm_mulVec_le", "AronowAudit.P018.Wave1.WeightedConsistency.normalized_dyad_count_le", "AronowAudit.P018.Wave1.WeightedConsistency.records_le_two", "AronowAudit.P018.Wave1.WeightedConsistency.secondUnit_mem", "AronowAudit.P018.Wave1.WeightedConsistency.target_rescale", "AronowAudit.P018.Wave1.WeightedConsistency.variance_rescale", "AronowAudit.P018.Wave1.WeightedConsistency.weighted_normal_equation", "AronowAudit.P018.Wave1.WeightedConsistency.G2._proof_1", "AronowAudit.P018.Wave1.WeightedConsistency.G4._proof_1", "AronowAudit.P018.Wave1.WeightedConsistency.RecordRegular._proof_1", "AronowAudit.P018.Wave1.WeightedConsistency.popQ.eq_1", "AronowAudit.P018.Wave1.WeightedConsistency.popR.eq_1"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.covariance_score_scale", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.matrix_inverse_scale", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.matrix_inverse_scale_total", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.meat_scale", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.sandwich_scale_invariance", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.weighted_sample_scale_invariance", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T10WholeStatement"
+    },
+    {
+      "target_id": "P018-T11",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T11",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.printed_targets_counterexample_proof", "AronowAudit.P018.scalar_target_counterexample", "SAP.P018a.WH.W1.T11_whole", "SAP.P018a.WH.W1.T11_assembly", "SAP.P018a.WH.W1.T11_L1_proof", "SAP.P018a.WH.W1.T11_L2_proof", "SAP.P018a.WH.W1.T11_L3_proof", "SAP.P018a.WH.W1.T11_L4_proof", "SAP.P018a.WH.W1.T11_L5_proof", "SAP.P018a.WH.W1.T11_L6_proof", "AronowAudit.P018.instIsProbabilityMeasureRealUniformUnitLaw", "AronowAudit.P018.intersection_count", "AronowAudit.P018.matrix_inverse_scale_total", "AronowAudit.P018.members_card", "AronowAudit.P018.overlap_meat_identity", "AronowAudit.P018.uniform_unit_moments", "AronowAudit.P018.uniform_unit_power_L2", "AronowAudit.P018.Wave1.appendixB_coord_mean", "AronowAudit.P018.Wave1.appendixB_indicator_sum", "AronowAudit.P018.Wave1.appendixB_linear_product", "AronowAudit.P018.Wave1.appendixB_populationBeta", "AronowAudit.P018.Wave1.appendixB_populationGram", "AronowAudit.P018.Wave1.appendixB_scoreSum", "AronowAudit.P018.Wave1.appendixB_standing", "AronowAudit.P018.Wave1.appendixB_variance_mean", "AronowAudit.P018.Wave1.dyad_counts_proof", "AronowAudit.P018.Wave1.printed_S_mean", "AronowAudit.P018.Wave1.printed_S_variance", "AronowAudit.P018.Wave1.printed_endpoints_lt", "AronowAudit.P018.Wave1.printed_fair_integral", "AronowAudit.P018.Wave1.printed_fair_probability", "AronowAudit.P018.Wave1.printed_finite_L2", "AronowAudit.P018.Wave1.printed_finite_integrable", "AronowAudit.P018.Wave1.printed_fit", "AronowAudit.P018.Wave1.printed_gram_inv", "AronowAudit.P018.Wave1.printed_incident_add", "AronowAudit.P018.Wave1.printed_pair_square", "AronowAudit.P018.Wave1.printed_scaled_sandwich", "AronowAudit.P018.Wave1.printed_sign_square", "AronowAudit.P018.Wave1.vc3_dyad_mean", "AronowAudit.P018.Wave1.vc3_overlap_moment", "AronowAudit.P018.Wave1.vc3_pair_preserving", "AronowAudit.P018.Wave1.vc3_pair_score_lp", "AronowAudit.P018.Wave1.vc3_same_moment", "AronowAudit.P018.Wave1.vc3_score_lp", "AronowAudit.P018.Wave1.vc3_triple_preserving", "AronowAudit.P018.logitX._proof_1", "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_add", "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_deterministic"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.printed_bread_numeric_certificate", "reason": "Selected scalar arithmetic does not establish the omitted repeated and two-regressor stochastic models."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T11WholeStatement"
+    },
+    {
+      "target_id": "P018-T12",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T12",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.Wave1.repeated_target_correction_proof", "AronowAudit.P018.Wave1.weighted_target_correction_proof", "AronowAudit.P018.Wave1.corrected_target_reductions_proof", "AronowAudit.P018.repeated_target_normalization", "SAP.P018a.WH.W2.T12_whole", "SAP.P018a.WH.W2.T12_assembly", "SAP.P018a.WH.W2.T12_L1_proof", "SAP.P018a.WH.W2.T12_L2_proof", "SAP.P018a.WH.W2.T12_L3_proof", "SAP.P018a.WH.W2.T12_L4_proof", "SAP.P018a.WH.W2.T12_L5_proof", "AronowAudit.P018.instIsProbabilityMeasureRealUniformUnitLaw", "AronowAudit.P018.matrix_inverse_scale", "AronowAudit.P018.matrix_ite_apply", "AronowAudit.P018.meanMat_scale", "AronowAudit.P018.uniform_pair_monomial", "AronowAudit.P018.uniform_pair_monomial_integrable", "AronowAudit.P018.uniform_unit_moment", "AronowAudit.P018.uniform_unit_moments", "AronowAudit.P018.uniform_unit_power_L2", "AronowAudit.P018.Wave1.appendixB_scoreSum", "AronowAudit.P018.Wave1.appendixB_standing", "AronowAudit.P018.Wave1.printed_Dpos", "AronowAudit.P018.Wave1.printed_S_variance", "AronowAudit.P018.Wave1.printed_card_real", "AronowAudit.P018.Wave1.printed_fair_integral", "AronowAudit.P018.Wave1.printed_fair_probability", "AronowAudit.P018.Wave1.printed_finite_integrable", "AronowAudit.P018.Wave1.vc3_closed_covariance", "AronowAudit.P018.Wave1.vc3_sparse_variance", "AronowAudit.P018.Wave1.WeightedConsistency.g2_proof"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.covariance_linear_map", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.meanMat_scale", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.meanVec_scale", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T12WholeStatement"
+    },
+    {
+      "target_id": "P018-T13",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T13",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.logistic_counterexample", "AronowAudit.P018.logistic_numeric_certificate", "AronowAudit.P018.logistic_covariances_positive", "AronowAudit.P018.logistic_witness_is_MLE", "AronowAudit.P018.logistic_correction", "SAP.P018a.WH.W1.T13_whole", "SAP.P018a.WH.W1.T13_assembly", "SAP.P018a.WH.W1.T13_L1_proof", "AronowAudit.P026.LogitCompletion.bernoulliTerm_strictConcave"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.logLikelihood_tangent", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.logistic_tangent_bound", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "statement_definition": "SAP.P018a.T13WholeStatement"
+    },
+    {
+      "target_id": "P018-T14",
+      "decision": "whole",
+      "theorem": "SAP.P018a.T14",
+      "restriction": null,
+      "rows_used": ["AronowAudit.P018.logistic_correction", "AronowAudit.P018.meat_symmetric", "AronowAudit.P018.logistic_numeric_certificate"],
+      "rows_not_used": [{"lean_name": "AronowAudit.P018.logistic_bread_symmetric", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.printed_logistic_factorization", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.sandwich_symmetric", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}, {"lean_name": "AronowAudit.P018.score_product", "reason": "Supporting fact already subsumed by a retained main row; not called separately in the Solution."}],
+      "proof_status": "proved",
+      "proof_plan": null,
+      "axioms": ["propext", "Classical.choice", "Quot.sound"]
+    }
+  ]
+}

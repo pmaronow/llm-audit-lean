@@ -2,7 +2,7 @@ import AronowAudit.P001.Wave1.Gap.TailA.CDFProcess
 import AronowAudit.P001.Wave1.Lib.TailA.CDFLinearImage
 import AronowAudit.P001.Wave1.Lib.TailA.OuterHadamardDelta
 
-/-! Empirical-CDF delta limits with the derivative-image law. -/
+/-! Exact empirical-CDF delta finals with the proved derivative-image law. -/
 
 noncomputable section
 open MeasureTheory ProbabilityTheory Filter
@@ -12,28 +12,7 @@ namespace AronowAudit.P001.Wave1.TailA
 
 /-- The full process limit and nondegenerate scalar functional limit. -/
 theorem empirical_cdf_delta_nondegenerate_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      [MeasurableSpace KolmogorovSpace]
-      [BorelSpace KolmogorovSpace]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (X : ℕ → Ω → ℝ)
-      (hiid : IID μ X)
-      (T : KolmogorovSpace → ℝ)
-      (L : KolmogorovSpace →L[ℝ] ℝ)
-      (hd : HadamardAt cdfDomain (CDFTangent (cdf μ (X 0))) T (kolmogorovEmbed (cdf μ (X 0))) L)
-      (νB : Measure KolmogorovSpace)
-      [IsProbabilityMeasure νB]
-      (hbridge : IsCDFBridge (cdf μ (X 0)) νB)
-      (hstat : ∀ n, Measurable (fun ω => T (empiricalCDFElement X n ω)))
-      (hL2 : MemLp (fun h => L h) 2 νB)
-      (hv : 0 < var νB (fun h => L h)),
-      OuterWeakLimit μ (fun n ω => Real.sqrt n •
-    (empiricalCDFElement X n ω-kolmogorovEmbed (cdf μ (X 0)))) νB ∧
-  CD μ (fun n ω => Real.sqrt n*(T (empiricalCDFElement X n ω)-
-    T (kolmogorovEmbed (cdf μ (X 0)))))
-    (gaussianReal 0 ⟨var νB (fun h => L h), le_of_lt hv⟩)) := by
+    type_of% @AronowAudit.P001.empirical_cdf_delta_nondegenerate := by
   intro Ω mΩ mK bK μ pμ X hiid T L hd νB pν hbridge hstat hL2 hv
   have hprocess := iid_empirical_cdf_bridge_limit_final μ X hiid νB hbridge
   have hF := CondP001cd_cdf_law μ (X 0) (hiid.1 0)
@@ -62,57 +41,20 @@ theorem empirical_cdf_delta_nondegenerate_final :
   rw [hvnn] at hgauss
   exact ⟨hprocess, hgauss ▸ hdelta.2⟩
 
-/-- The full nondegenerate functional delta correction. -/
+example : type_of% @AronowAudit.P001.empirical_cdf_delta_nondegenerate := AronowAudit.P001.Wave1.TailA.empirical_cdf_delta_nondegenerate_final
+
+/-- The identical full correction statement, under its required record name. -/
 theorem functional_delta_nondegenerate_correction_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      [MeasurableSpace KolmogorovSpace]
-      [BorelSpace KolmogorovSpace]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (X : ℕ → Ω → ℝ)
-      (hiid : IID μ X)
-      (T : KolmogorovSpace → ℝ)
-      (L : KolmogorovSpace →L[ℝ] ℝ)
-      (hd : HadamardAt cdfDomain (CDFTangent (cdf μ (X 0))) T (kolmogorovEmbed (cdf μ (X 0))) L)
-      (νB : Measure KolmogorovSpace)
-      [IsProbabilityMeasure νB]
-      (hbridge : IsCDFBridge (cdf μ (X 0)) νB)
-      (hstat : ∀ n, Measurable (fun ω => T (empiricalCDFElement X n ω)))
-      (hL2 : MemLp (fun h => L h) 2 νB)
-      (hv : 0 < var νB (fun h => L h)),
-      OuterWeakLimit μ (fun n ω => Real.sqrt n •
-    (empiricalCDFElement X n ω-kolmogorovEmbed (cdf μ (X 0)))) νB ∧
-  CD μ (fun n ω => Real.sqrt n*(T (empiricalCDFElement X n ω)-
-    T (kolmogorovEmbed (cdf μ (X 0)))))
-    (gaussianReal 0 ⟨var νB (fun h => L h), le_of_lt hv⟩)) :=
+    type_of% @AronowAudit.P001.functional_delta_nondegenerate_correction :=
   @empirical_cdf_delta_nondegenerate_final
 
-/-- The full process limit and nondegenerate scalar functional limit
-in the Kolmogorov embedding. -/
+example : type_of% @AronowAudit.P001.functional_delta_nondegenerate_correction := AronowAudit.P001.Wave1.TailA.functional_delta_nondegenerate_correction_final
+
+/-- The embedding-named record includes the entire statistical conjunction. -/
 theorem kolmogorov_embedding_preserves_cdf_final :
-    (∀ {Ω : Type*}
-      [MeasurableSpace Ω]
-      [MeasurableSpace KolmogorovSpace]
-      [BorelSpace KolmogorovSpace]
-      (μ : Measure Ω)
-      [IsProbabilityMeasure μ]
-      (X : ℕ → Ω → ℝ)
-      (hiid : IID μ X)
-      (T : KolmogorovSpace → ℝ)
-      (L : KolmogorovSpace →L[ℝ] ℝ)
-      (hd : HadamardAt cdfDomain (CDFTangent (cdf μ (X 0))) T (kolmogorovEmbed (cdf μ (X 0))) L)
-      (νB : Measure KolmogorovSpace)
-      [IsProbabilityMeasure νB]
-      (hbridge : IsCDFBridge (cdf μ (X 0)) νB)
-      (hstat : ∀ n, Measurable (fun ω => T (empiricalCDFElement X n ω)))
-      (hL2 : MemLp (fun h => L h) 2 νB)
-      (hv : 0 < var νB (fun h => L h)),
-      OuterWeakLimit μ (fun n ω => Real.sqrt n •
-    (empiricalCDFElement X n ω-kolmogorovEmbed (cdf μ (X 0)))) νB ∧
-  CD μ (fun n ω => Real.sqrt n*(T (empiricalCDFElement X n ω)-
-    T (kolmogorovEmbed (cdf μ (X 0)))))
-    (gaussianReal 0 ⟨var νB (fun h => L h), le_of_lt hv⟩)) :=
+    type_of% @AronowAudit.P001.kolmogorov_embedding_preserves_cdf :=
   @empirical_cdf_delta_nondegenerate_final
+
+example : type_of% @AronowAudit.P001.kolmogorov_embedding_preserves_cdf := AronowAudit.P001.Wave1.TailA.kolmogorov_embedding_preserves_cdf_final
 
 end AronowAudit.P001.Wave1.TailA

@@ -30,7 +30,7 @@ def oa3Tenths : Fin 13 → Fin 3 → ℕ := ![
   ![8, 9, 8], ![3, 14, 8], ![3, 5, 4], ![2, 1, 2]]
 
 /-- “Each percentage ... is 100 times the count ... divided by ... column
-total” (P034-T5, Table OA3, p. 11). -/
+total” (target P034-T5, the validator's reading of Table OA3, p. 11). -/
 def oa3Percentage (i : Fin 13) (j : Fin 3) : ℚ :=
   100 * (oa3Counts i j : ℚ) / (oa3Totals j : ℚ)
 
@@ -62,3 +62,4 @@ theorem corrected_oa3_table :
 
 end AronowAudit.P034
 
+#print axioms AronowAudit.P034.corrected_oa3_table

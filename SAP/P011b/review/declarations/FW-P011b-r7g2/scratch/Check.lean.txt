@@ -1,0 +1,127 @@
+import SAP.P011b.Defs
+
+open SAP.P011b MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators ENNReal
+
+set_option autoImplicit false
+
+namespace Review
+
+noncomputable def zeroModel : Model 3 where
+  law := Measure.dirac (fun _ => (0 : ℝ))
+  probability := by infer_instance
+  theta := fun _ => 1
+  G := emptyGraph 3
+  R := emptyGraph 3
+  d := fun _ => 0
+
+-- T21: one explicit model satisfies every outer hypothesis, including L².
+example : (0 < (3 : ℕ)) ∧ Dependency zeroModel ∧ Homoskedastic zeroModel ∧
+    (∀ i, MemLp (fun y => weighted zeroModel y i) 2 zeroModel.law) := by
+  refine ⟨by decide, ?_, ?_, ?_⟩
+  · intro S T _ _
+    change IndepFun (fun y : Fin 3 → ℝ => fun i : {i // i ∈ S} => y i.val)
+      (fun y : Fin 3 → ℝ => fun j : {j // j ∈ T} => y j.val)
+      (Measure.dirac (fun _ => (0 : ℝ)))
+    have h : IndepFun
+        (fun _ : Fin 3 → ℝ => fun _ : {i // i ∈ S} => (0 : ℝ))
+        (fun _ : Fin 3 → ℝ => fun _ : {j // j ∈ T} => (0 : ℝ))
+        (Measure.dirac (fun _ : Fin 3 => (0 : ℝ))) := indepFun_const_left _ _
+    apply h.congr <;> simp [Filter.EventuallyEq, MeasureTheory.ae_dirac_eq]
+  · intro i j
+    simp [SAP.P011b.covariance, expectation, weighted, zeroModel]
+  · intro i
+    change eLpNorm (fun y => weighted zeroModel y i) 2
+      (Measure.dirac (fun _ => (0 : ℝ))) < ∞
+    simp [eLpNorm_dirac, weighted, zeroModel]
+
+-- T20: a uniform input has 2^n equally weighted points, all realized as signs.
+example (n : ℕ) : Fintype.card (Fin n → Bool) = 2^n := by simp
+
+example (n : ℕ) (u : Fin n → Bool) :
+    PMF.uniformOfFintype (Fin n → Bool) u = (2^n : ℝ≥0∞)⁻¹ := by
+  simp [PMF.uniformOfFintype_apply]
+
+example (n : ℕ) (u : Fin n → Bool) (i : Fin n) :
+    sign (u i) = 1 ∨ sign (u i) = -1 := by
+  cases u i <;> simp [sign]
+
+-- The estimator's correlation term really vanishes on the empty true graph.
+example (n : ℕ) (hn : 0 < n) (y : Fin n → ℝ) :
+    (n : ℝ) * V2star (signModel n) y = sampleVariance y := by
+  have hnr : (n : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hn)
+  have hx : weighted (signModel n) y = y := by
+    ext i
+    simp [weighted, signModel]
+  unfold V2star
+  rw [hx]
+  simp [signModel, emptyGraph, adjacency]
+  field_simp
+
+def goodSignCount (n : ℕ) : ℕ :=
+  ∑ k ∈ Finset.range (n+1),
+    if 2 * (2*(k : ℤ) - (n : ℤ))^2 < (n : ℤ)^2 then Nat.choose n k else 0
+
+-- Independent integer enumeration of the strict event at epsilon = 1/2.
+example : goodSignCount 2 = 2 := by decide
+example : goodSignCount 4 = 14 := by decide
+example : goodSignCount 16 = 65262 := by decide
+example : (2 : ℚ)/2^2 = 1/2 ∧ (14 : ℚ)/2^4 = 7/8 ∧
+    (65262 : ℚ)/2^16 = 32631/32768 := by norm_num
+
+-- T22: its sole outer hypothesis has a nontrivial finite instance.
+example : 0 < (3 : ℕ) := by decide
+example : Fintype.card (Edge 3) = 3 := by decide
+
+-- T23: both witnesses, and the maximizing edge, checked from the definitions.
+example : Compatible (emptyGraph 3) (fun _ => 1) edge23 := by
+  constructor
+  · intro i j h
+    simp [emptyGraph] at h
+  · intro i
+    fin_cases i <;> simp only [degree, Fin.sum_univ_three] <;> norm_num [edge23]
+
+example : average (![-2, 1/2, 3/2] : Fin 3 → ℝ) = 0 := by
+  norm_num [SAP.P011b.average, Fin.sum_univ_succ]
+
+example : ¬ Compatible (emptyGraph 3) (fun _ => 1)
+    (nonzeroRule (![-2, 1/2, 3/2] : Fin 3 → ℝ)) := by
+  intro h
+  have hi := h.2 (0 : Fin 3)
+  simp only [degree, Fin.sum_univ_three] at hi
+  norm_num [nonzeroRule, fromUpper, centered, SAP.P011b.average, Fin.sum_univ_succ] at hi
+
+example : upperSum (fun i j =>
+    centered (![-2, 1/2, 3/2] : Fin 3 → ℝ) i *
+    centered (![-2, 1/2, 3/2] : Fin 3 → ℝ) j * adjacency edge23 i j) = 3/4 := by
+  unfold upperSum
+  simp only [Finset.sum_filter, Fin.sum_univ_three]
+  norm_num [centered, SAP.P011b.average, adjacency, edge23, Fin.sum_univ_three]
+
+example : ¬ Compatible edge12 (fun _ => 2)
+    (nonzeroRule (![0, 1, -1] : Fin 3 → ℝ)) := by
+  intro h
+  have hi := h.1 (0 : Fin 3) (1 : Fin 3) (by rfl)
+  norm_num [nonzeroRule, fromUpper, centered, SAP.P011b.average, Fin.sum_univ_succ] at hi
+
+-- T24: valid constraints are satisfiable, including when a degree cap is attained.
+example : Compatible edge23 (fun _ => 1) edge23 := by
+  refine ⟨by intro i j h; exact h, ?_⟩
+  intro i
+  fin_cases i <;> simp only [degree, Fin.sum_univ_three] <;> norm_num [edge23]
+
+example : ProgramFeasible edge23 (fun _ => 1) edge23 := by
+  constructor
+  · intro i
+    fin_cases i <;> simp only [Fin.sum_univ_three] <;> norm_num [adjacency, edge23]
+  · intro i j
+    exact le_rfl
+
+example : Compatible (emptyGraph 0) (fun _ => 0) (emptyGraph 0) := by
+  constructor
+  · intro i
+    exact Fin.elim0 i
+  · intro i
+    exact Fin.elim0 i
+
+end Review

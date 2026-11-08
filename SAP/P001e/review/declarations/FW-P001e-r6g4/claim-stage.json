@@ -1,0 +1,26 @@
+[
+  {
+    "theorem": "SAP.P001e.T92",
+    "target_id": "P001-T92",
+    "my_reading_vs_claim": "whole",
+    "reason": "Printed reading: OLS is fitted to the stated six-unit data with X1_3=10, but the two imputation tables both predict unit 3 at the printed X1_3=9 and assert equal differences of completed-column means. Conditions checked: the original Y,D,X1,X2 vectors are encoded exactly; the coefficients are the actual nonsingular OLS fit; both imputation routines use 9 only for prediction; observed outcomes are retained precisely in the missing-only routine; both column means use all six units. The theorem's fixed witness satisfies each condition and yields 12103/4874 versus 6178/2437, with nonzero gap -253/4874. This contradicts the canonical statement's explicit printed equality under exactly its stated inconsistent-table reading, and does not challenge the consistent-data identity. Scratch/Check.lean independently evaluates the tables and normal equations; exact rational elimination gives det(A^T A)=7311. All quantities are finite. No reliance on the audit note is needed."
+  },
+  {
+    "theorem": "SAP.P001e.T93",
+    "target_id": "P001-T93",
+    "my_reading_vs_claim": "whole",
+    "reason": "All corrected table entries, the exact six-unit OLS coefficients and both numerical means are present. The general finite statement quantifies over every pooled OLS minimizer with binary treatment and both arms nonempty, and includes the residual normal equations, filtered residual correction, both completed-column mean formulas and equality to the treatment coefficient. The population clause uses exactly the canonical measurable integrable potential outcomes, binary treatment almost surely, conditional independence, uniform overlap and exact linear observed CEF, and states armwise and potential CEFs, the conditional effect for almost every covariate value and the ATE. The algebraic fitted contrast holds for every covariate vector. Usual integrability/measurability conditions add no restriction; there are no rank, uniqueness, separate covariate-moment, approximation, asymptotic or computational-cost claims. Scratch/Check.lean constructs every finite hypothesis at n=2,K=1 with outcomes (2,5), treatment (0,1), coefficients (2,3,0); it constructs every population hypothesis on a fair two-point law with constant covariates and potential outcomes 2 and 5. All checks compile without using the target theorem."
+  },
+  {
+    "theorem": "SAP.P001e.T94",
+    "target_id": "P001-T94",
+    "my_reading_vs_claim": "whole",
+    "reason": "The model expands strong ignorability exactly as the canonical definition, including uniform overlap; it requires a measurable nonnegative density version of the actual observed conditional law, rather than assuming the desired conditional-mean identity. The statement includes both arm-specific conditional potential means, their marginal integrals over the covariate law, the displayed iterated Lebesgue formula when a covariate density exists, and equal means across models with equal observable laws. For an attained ML maximizer and finite displayed integrals it gives the corrected observed-covariate sample average and empirical-law integral, the collapse of the printed free-x summand, and the ATE average of fitted contrasts. The algebraic estimator clause is valid even for more general real families, so imposes no extra density or sampling restriction. Scratch/Check.lean constructs a complete model on a fair treatment coin times uniform[0,1], with constant covariates, equal continuous potential outcomes, true uniform conditional density and finite moments; using the same model twice satisfies every identification premise. It also constructs an actual density family with an attained singleton-parameter ML fit and all sample-integrability hypotheses. There is no use of an undefined integral or a null-set value as an identified pointwise mean."
+  },
+  {
+    "theorem": "SAP.P001e.T95",
+    "target_id": "P001-T95",
+    "my_reading_vs_claim": "whole",
+    "reason": "The six outcomes, treatment arms, propensity scores, all eight opposite-arm distances, six unique donor choices, second-nearest donor and 0.02 gap, every completed-column value, column means 22/6 and 15/6 and contrast 7/6 agree with the canonical statement. UniqueNearest includes donor membership and strict comparisons; the encoded donor map uses replacement and agrees with every verified nearest choice. All score and denominator values are finite and the candidate sets are nonempty. Scratch/Check.lean proves the entire closed T95Statement by unfolding its definitions and finite real arithmetic, without the Challenge theorem. The known scores need no population fit: these finite data can also occur with positive probability under an i.i.d. finite covariate law with these actual treatment propensities and conditionally deterministic potential outcomes, satisfying strong ignorability and uniform overlap."
+  }
+]

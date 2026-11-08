@@ -1,0 +1,26 @@
+[
+  {
+    "theorem": "SAP.P018b.T25",
+    "target_id": "P018-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "A faithful refutation of the canonical fitted-model correspondence, rather than a proof of that positive assertion. The canonical statement itself specifies independent first-role and second-role random effects and covariance ZZ^T+I. The Lean matrices are exactly these covariance families. At N=3, dyads {0,1} and {1,2} have shared-unit covariance 1 and fitted-model covariance 0 for every variance triple; the same obstruction persists for every N>=3. No condition on normal independent simulation effects is violated. The negation of universal representability suffices to refute the printed correspondence. See refutation-checks.md and the compiled scratch/Checks.lean."
+  },
+  {
+    "theorem": "SAP.P018b.T26",
+    "target_id": "P018-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "A faithful refutation of the canonical conjunction. printedSigma uses conditional covariances given the entire sample design, including the diagonal and all ordered distinct overlapping pairs, exactly as equation (2). trueTarget uses the actual unconditional score variance as equation (1). The weak-limit conjunct asserts a mean-zero finite-second-moment law and the specified limiting covariance without adding a Gaussian requirement. Although the universal assertion being negated has the stronger SampleRank premise, an admissible counterexample satisfies it: iid uniform[-1,1] units, X=(1,u+v), Y=(u+v)^2, Q=diag(1,2/3), beta=(2/3,0). Sample rank holds almost surely for every N>=3. Conditional residual covariances vanish because each residual is a function of the observed design, but the intercept score-sum variance at N=3 is 12/5. All quantities are measurable and finite; even fitted residuals are uniformly bounded. Thus the canonical assertion itself fails, not an alternative reading. The witness conditions and rank argument are written in refutation-checks.md; scratch/Checks.lean independently establishes joint satisfiability of every Lean premise."
+  },
+  {
+    "theorem": "SAP.P018b.T27",
+    "target_id": "P018-T27",
+    "my_reading_vs_claim": "broader",
+    "reason": "The conclusion and estimator are exactly the canonical consistency assertion N Vhat_N - V_N ->p 0, with fitted residuals in the overlap sandwich and the unconditional variance from equation (1) in V_N. Standing is the bounded symmetric iid-unit fixed-kernel setting of S9, with an intercept and nonsingular Q. The theorem is stronger because it drops the extra bounded-fitted-residual and nonzero-moment premises, and uses the explicitly disclosed totalized inverse on singular samples rather than requiring eventual almost-sure sample rank. This strengthening entails the whole canonical conclusion under its stated assumptions; no conclusion is lost, and none of the erroneous printed proof steps is asserted. The nonempty model class is checked by Standing signKernel in scratch/Checks.lean. All measures are probability measures and the population score moments are finite, so toReal and Bochner-integral defaults do not trivialize the limit."
+  },
+  {
+    "theorem": "SAP.P018b.T28",
+    "target_id": "P018-T28",
+    "my_reading_vs_claim": "whole",
+    "reason": "A faithful refutation of the canonical two-limit conjunction by a valid scalar repeated-dyad specialization. Take T(d)=1, intercept X=1, response Z_i+Z_j for iid fair signs. Counts are fixed, finite and uniformly bounded, both rank conditions hold for N>=2, fitted residuals have absolute value <=4, and their second moments 2-4/N and neighboring cross-moments 1-4/N are nonzero for all N>=5. Thus the full asymptotic tail satisfies the inherited Proposition 1 assumptions. The literal displayed repeated-dyad target is exactly [N/D^2][2+2(N-2)]=4/D, while N Var(bhat-beta)=4 for all N>=2, so the first asserted difference tends to 4 rather than zero. The scalar specialization has no dimension mismatch or undefined variance. Subtracting beta=0 is immaterial and deterministic convergence in probability agrees with the ordinary first limit. See refutation-checks.md, compiled scratch/Checks.lean and the exact finite checks in scratch/exact_checks.py."
+  }
+]

@@ -1,6 +1,7 @@
 import AronowAudit.P002.Wave1.Gap.GLP0022B2
 
-/-! Scalar CLT, absolute CDF, and studentization lemmas for regression adjustment. -/
+/-! Scalar CLT, absolute CDF, and studentization helpers reused from the checked
+Theorem 1 proof. These exported versions support the adjusted application. -/
 
 namespace AronowAudit.P002.Wave1
 noncomputable section
@@ -37,6 +38,14 @@ lemma T2C_U_probability_congr {n} (P : Population n)
   · exact T2C_U_probability_mono P (fun S hS => (h S hS).mp)
   · exact T2C_U_probability_mono P (fun S hS => (h S hS).mpr)
 
+lemma T2C_U_probability_union {n} (P : Population n)
+    (E F : Finset (Fin n) → Prop) :
+    probability P (fun S => E S ∨ F S) ≤ probability P E + probability P F := by
+  simp only [DecisionLemma12_probability_eq_expectation]
+  rw [← DecisionLemma12_expectation_add]
+  apply DecisionLemma12_expectation_mono
+  intro S hS
+  by_cases hE : E S <;> by_cases hF : F S <;> simp [hE, hF]
 
 lemma T2C_U_rawTau_mean {n} (P : Population n) (q : Fin n → ℝ)
     (S : Finset (Fin n)) (hS : S ∈ assignments P) :
@@ -63,6 +72,15 @@ lemma T2C_U_rawTau_variance {n} (P : Population n) (hP : ValidDesign P)
       ring
     _ = _ := by rw [NDS_variance_affine P hP, NDS_groupMean_variance P hP]; ring
 
+lemma T2C_U_rawTau_variance_pos {n} (P : Population n) (hP : ValidDesign P)
+    (q : Fin n → ℝ) (hq : 0 < popVar q) :
+    0 < designVariance P (rawTau P q) := by
+  rw [T2C_U_rawTau_variance P hP]
+  have hm : (0 : ℝ) < P.n1 := by exact_mod_cast hP.2.1
+  have hmn : (P.n1 : ℝ) < n := by exact_mod_cast hP.2.2
+  have hn := hm.trans hmn
+  apply mul_pos (mul_pos (sq_pos_of_pos (div_pos hm hn)) _) hq
+  exact sub_pos.mpr ((one_div_lt_one_div hn hm).mpr hmn)
 
 lemma T2C_U_standardize {n} (P : Population n) (hP : ValidDesign P)
     (q : Fin n → ℝ) (hq : 0 < popVar q)

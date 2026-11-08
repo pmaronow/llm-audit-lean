@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P012b.T23",
+  "target_id": "P012-T23",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P012b/Challenge/Part1.lean:83: The following sentence, “These conclusions hold ... for either coding of the binary traits” (line 84), includes the immediately preceding trait-specific edge and stub counts. Those arithmetic counts use only the original coding: the true-true recruitment edge count is 3 there and 0 after complementation, and the true-trait spare stub count is 7 there and 2 after complementation. WholeFigure1Arithmetic is asserted only for the original coding at SAP/P012b/Defs/WholeW2.lean:106. The extrema, bounds, nonuniqueness and statistics do survive complementation; the counts must be described separately.",
+   "SAP/P012b/Defs/WholeW2.lean:101: The duplicate T23WholeStatement docstring repeats the same overbroad “These conclusions ... either coding” wording. The statement itself correctly separates the original arithmetic from the complemented statistical assertions at lines 106-108."
+  ]
+ }
+]

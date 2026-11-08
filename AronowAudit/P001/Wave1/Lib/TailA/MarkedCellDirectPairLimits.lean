@@ -97,5 +97,46 @@ theorem marked_direct_pair_category_limits
   simp only [he,integral_const_mul] at hdraw hret
   simpa only [mean,S,hcount1,hcount2] using And.intro hdraw hret
 
+/-- Single-category limits for the two kernels in the one-replica second
+moment: central-times-recipient and central-retained recipient product. -/
+theorem marked_direct_second_category_limits
+    (m N : ℕ → ℕ) (hm : Tendsto m atTop atTop) (hN : Tendsto N atTop atTop)
+    (E : ℕ → Set MatchUnit) (hE : ∀ n, MeasurableSet (E n)) (rate : ℝ≥0)
+    (hrate : Tendsto (fun n => (m n : ℝ)*matchingUnitLaw.real (E n)) atTop
+      (𝓝 (rate : ℝ))) :
+    Tendsto (fun n => mean (MatchProduct (m n)) (fun z =>
+      markedPairCoefficient (N n)*markedDrawPower (N n) (markedWindowCount (E n) z) 2))
+      atTop (𝓝 (Real.exp (-matchS*(rate : ℝ)))) ∧
+    Tendsto (fun n => mean (MatchProduct (m n)) (fun z =>
+      markedRetainedDrawPower (N n) (markedWindowCount (E n) z) 1 +
+        markedPairCoefficient (N n)*
+          markedRetainedDrawPower (N n) (markedWindowCount (E n) z) 2))
+      atTop (𝓝 (2*matchS*Real.exp (-matchS*(rate : ℝ)))) ∧
+    Tendsto (fun n => mean (MatchProduct (m n)) (fun z =>
+      markedPairCoefficient (N n)*
+        markedRetainedDrawPower (N n) (markedWindowCount (E n) z) 2))
+      atTop (𝓝 (matchS*Real.exp (-matchS*(rate : ℝ)))) := by
+  have hc := marked_pair_coefficient_limit N hN
+  obtain ⟨hD2,hR2⟩ := marked_direct_single_category_limits m N hm hN E hE rate hrate 2
+  have hR1 := (marked_direct_single_category_limits m N hm hN E hE rate hrate 1).2
+  have hi (n k : ℕ) : Integrable (fun z =>
+      markedRetainedDrawPower (N n) (markedWindowCount (E n) z) k) (MatchProduct (m n)) := by
+    have hme : Measurable (fun z : Fin (m n) → MatchUnit =>
+        markedRetainedDrawPower (N n) (markedWindowCount (E n) z) k) :=
+      (measurable_of_countable (fun c => markedRetainedDrawPower (N n) c k)).comp
+        (marked_window_count_measurable _ _ (hE n))
+    apply Integrable.of_bound hme.aestronglyMeasurable 1
+    apply ae_of_all
+    intro z
+    rw [Real.norm_eq_abs,abs_of_nonneg (marked_retained_draw_power_bounds _ _ _).1]
+    exact (marked_retained_draw_power_bounds _ _ _).2
+  refine ⟨?_,?_,?_⟩
+  · simpa only [mean,integral_const_mul,one_mul] using hc.mul hD2
+  · have hh := hR1.add (hc.mul hR2)
+    have hi' (n : ℕ) := integral_add (hi n 1) ((hi n 2).const_mul (markedPairCoefficient (N n)))
+    simpa only [mean,hi',integral_const_mul,one_mul,show
+      matchS*Real.exp (-matchS*(rate : ℝ)) + matchS*Real.exp (-matchS*(rate : ℝ)) =
+        2*matchS*Real.exp (-matchS*(rate : ℝ)) by ring] using hh
+  · simpa only [mean,integral_const_mul,one_mul] using hc.mul hR2
 
 end AronowAudit.P001.TailA

@@ -1,0 +1,149 @@
+import SAP.P022.Challenge
+
+set_option autoImplicit false
+open SAP.P022 Filter MeasureTheory
+open scoped BigOperators Topology ENNReal NNReal
+noncomputable section
+
+lemma empirical_all_le {s : ℕ} (hs : 0 < s) (v : Fin s → ℝ) (x : ℝ)
+    (h : ∀ i, v i ≤ x) : empiricalCDF v x = 1 := by
+  letI : Nonempty (Fin s) := Fin.pos_iff_nonempty.mp hs
+  unfold empiricalCDF finiteMean
+  have hf : (fun i : Fin s => if v i ≤ x then (1 : ℝ) else 0) = fun _ => 1 := by
+    funext i; exact if_pos (h i)
+  rw [hf]
+  exact Fintype.expect_const _
+
+lemma reciprocal_below (t : Bool) (q : ℕ)
+    (i : Fin (reciprocalWitness.design q).N) :
+    rowOutcomes reciprocalWitness t q i < reciprocalThreshold q := by
+  have hi : i.val < q + 4 := by simpa [reciprocalWitness] using i.isLt
+  have hi' : (i.val : ℝ) + 1 ≤ (q : ℝ) + 4 := by exact_mod_cast hi
+  have hd1 : 0 < (i.val : ℝ) + 1 := by positivity
+  have hd2 : 0 < 2 * ((q : ℝ) + 4) := by positivity
+  have hfrac : 1 / (2 * ((q : ℝ) + 4)) < 1 / ((i.val : ℝ) + 1) := by
+    apply (div_lt_div_iff₀ hd2 hd1).mpr
+    nlinarith [(show (0 : ℝ) ≤ (q : ℝ) by positivity)]
+  cases t <;> simpa [rowOutcomes, reciprocalWitness, reciprocalThreshold] using neg_lt_neg hfrac
+
+example (q : ℕ) (t : Bool) :
+    empiricalCDF (rowOutcomes reciprocalWitness t q) (reciprocalThreshold q) = 1 := by
+  apply empirical_all_le (by have := (reciprocalWitness.design q).population_min; omega)
+  intro i; exact (reciprocal_below t q i).le
+
+example (q : ℕ) (t : Bool) (π : Assignment (reciprocalWitness.design q)) :
+    sampledCDF reciprocalWitness t q π (reciprocalThreshold q) = 1 := by
+  cases t
+  · apply empirical_all_le (by have := (reciprocalWitness.design q).control_min; omega)
+    intro i
+    exact (reciprocal_below false q (π ⟨(reciprocalWitness.design q).m + i.val,
+      by have := (reciprocalWitness.design q).sample_le; omega⟩)).le
+  · apply empirical_all_le (by have := (reciprocalWitness.design q).treatment_min; omega)
+    intro i
+    exact (reciprocal_below true q (π ⟨i.val,
+      by have := (reciprocalWitness.design q).sample_le; omega⟩)).le
+
+example (q : ℕ) (t : Bool) : lawCDF originLaw t (reciprocalThreshold q) = 0 := by
+  have hx : reciprocalThreshold q < 0 := by
+    unfold reciprocalThreshold
+    exact neg_lt_zero.mpr (by positivity)
+  cases t <;> simp [lawCDF, originLaw, not_le.mpr hx]
+
+lemma perturbed_bound (i : ℕ) (a : ℝ) (ha0 : 0 ≤ a) (ha1 : a ≤ 1) :
+    |a - 1 / ((i : ℝ) + 3)| < 1 := by
+  have hp : 0 < 1 / ((i : ℝ) + 3) := by positivity
+  have hlt : 1 / ((i : ℝ) + 3) < 1 := by
+    apply (div_lt_one (by positivity)).mpr
+    nlinarith [(show (0 : ℝ) ≤ (i : ℝ) by positivity)]
+  rw [abs_lt]
+  constructor <;> linarith
+
+example (i : ℕ) : |perturbedCornerWitness.y1 i| < 1 ∧ |perturbedCornerWitness.y0 i| < 1 := by
+  constructor
+  · apply perturbed_bound i (cornerWitness.y1 i)
+    · dsimp [cornerWitness]; split <;> norm_num
+    · dsimp [cornerWitness]; split <;> norm_num
+  · apply perturbed_bound i (cornerWitness.y0 i)
+    · dsimp [cornerWitness]; split <;> norm_num
+    · dsimp [cornerWitness]; split <;> norm_num
+
+lemma perturbed_below (t : Bool) (q : ℕ)
+    (i : Fin (perturbedCornerWitness.design q).N) :
+    rowOutcomes perturbedCornerWitness t q i < perturbedThreshold q := by
+  have hi : i.val < q + 4 := by
+    simpa [perturbedCornerWitness, cornerWitness, reciprocalWitness] using i.isLt
+  have hi' : (i.val : ℝ) + 3 ≤ (q : ℝ) + 6 := by exact_mod_cast (by omega : i.val + 3 ≤ q + 6)
+  have hd1 : 0 < (i.val : ℝ) + 3 := by positivity
+  have hd2 : 0 < 2 * ((q : ℝ) + 6) := by positivity
+  have hfrac : 1 / (2 * ((q : ℝ) + 6)) < 1 / ((i.val : ℝ) + 3) := by
+    apply (div_lt_div_iff₀ hd2 hd1).mpr
+    nlinarith [(show (0 : ℝ) ≤ (q : ℝ) by positivity)]
+  cases t <;> dsimp [rowOutcomes, perturbedCornerWitness, cornerWitness, perturbedThreshold] <;>
+    split <;> linarith
+
+lemma perturbed_threshold_interior (q : ℕ) :
+    0 < perturbedThreshold q ∧ perturbedThreshold q < 1 := by
+  have hp : 0 < 1 / (2 * ((q : ℝ) + 6)) := by positivity
+  have hlt : 1 / (2 * ((q : ℝ) + 6)) < 1 := by
+    apply (div_lt_one (by positivity)).mpr
+    nlinarith [(show (0 : ℝ) ≤ (q : ℝ) by positivity)]
+  dsimp [perturbedThreshold]
+  constructor <;> linarith
+
+example (q : ℕ) (t : Bool) :
+    empiricalCDF (rowOutcomes perturbedCornerWitness t q) (perturbedThreshold q) = 1 := by
+  apply empirical_all_le (by have := (perturbedCornerWitness.design q).population_min; omega)
+  intro i; exact (perturbed_below t q i).le
+
+example (q : ℕ) (t : Bool) (π : Assignment (perturbedCornerWitness.design q)) :
+    sampledCDF perturbedCornerWitness t q π (perturbedThreshold q) = 1 := by
+  cases t
+  · apply empirical_all_le (by have := (perturbedCornerWitness.design q).control_min; omega)
+    intro i
+    exact (perturbed_below false q (π ⟨(perturbedCornerWitness.design q).m + i.val,
+      by have := (perturbedCornerWitness.design q).sample_le; omega⟩)).le
+  · apply empirical_all_le (by have := (perturbedCornerWitness.design q).treatment_min; omega)
+    intro i
+    exact (perturbed_below true q (π ⟨i.val,
+      by have := (perturbedCornerWitness.design q).sample_le; omega⟩)).le
+
+example (q : ℕ) (t : Bool) : lawCDF cornerLaw t (perturbedThreshold q) = 1/2 := by
+  obtain ⟨hp, hlt⟩ := perturbed_threshold_interior q
+  cases t <;>
+    norm_num [lawCDF, cornerLaw, Measure.add_apply, Measure.smul_apply,
+      hp.le, not_le.mpr hlt, ENNReal.toReal_add, ENNReal.toReal_inv]
+
+example : (0 : ℝ) < 1 ∧ (1 : ℝ) + 1 + 1 = 3 := by norm_num
+
+example (q : ℕ) : designProbability (cornerWitness.design q) (fun π => (1 - 1 : ℝ) ≤
+    |lastIntegralTerm (cornerWitness.design q) (rowOutcomes cornerWitness true q)
+      (rowOutcomes cornerWitness false q) 1 π|) = 1 := by
+  simp [designProbability, designExpectation]
+
+example : finiteMean (rowOutcomes cornerWitness true 0) = (1/2 : ℝ) ∧
+    finiteMean (rowOutcomes cornerWitness false 0) = (1/2 : ℝ) ∧
+    finiteVariance (rowOutcomes cornerWitness true 0) = (1/4 : ℝ) ∧
+    finiteVariance (rowOutcomes cornerWitness false 0) = (1/4 : ℝ) ∧
+    finiteCovariance (rowOutcomes cornerWitness true 0) (rowOutcomes cornerWitness false 0) = 0 := by
+  dsimp only [rowOutcomes, cornerWitness, reciprocalWitness]
+  norm_num [finiteMean, finiteVariance, finiteCovariance,
+    Fintype.expect_eq_sum_div_card, Fin.sum_univ_succ]
+  norm_num [rowOutcomes]
+
+example (i : ℕ) : |cornerWitness.y1 i| ≤ 1 ∧ |cornerWitness.y0 i| ≤ 1 := by
+  simp only [cornerWitness]
+  constructor <;> split <;> norm_num
+
+example : OriginPartitionMesh 2 (![⊥, 0, ⊤] : Fin 3 → EReal) 1 := by
+  refine ⟨?_, rfl, rfl, ?_⟩
+  · intro a b hab
+    fin_cases a <;> fin_cases b <;> norm_num at *
+  · intro i
+    fin_cases i <;> norm_num [originExtendedLeftCDF, originExtendedCDF]
+
+example : ∀ i : Fin 8, 0 < termRateCoefficient 1 (1/2) i := by
+  intro i
+  fin_cases i <;> norm_num [termRateCoefficient]
+
+#print axioms reciprocal_below
+#print axioms perturbed_below

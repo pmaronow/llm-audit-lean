@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.Core.QMDPath
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.PairwiseQMDAnalytic
 
@@ -39,6 +35,9 @@ structure NondominatedQMDPath (P : Measure Ω) [IsProbabilityMeasure P] where
   /-- Constitutive (vdV §25.3 eq.25.13): right pairwise QMD at zero. -/
   qmd_limit : IsRightQMD P curve (score : Ω → ℝ)
 
+/-- The canonical pairwise QMD path, with no fixed common dominator. -/
+abbrev PairwiseQMDPath {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) [IsProbabilityMeasure P] := NondominatedQMDPath P
 
 /-- Package bare one-sided QMD data after the analytic score theorem.
 
@@ -84,6 +83,40 @@ theorem exists_nondominatedQMDPath_of_bare_qmd
 
 namespace QMDPath
 
+/-- A common-dominator, two-sided `QMDPath` determines a one-sided
+nondominated path. The converse requires additional left-QMD and
+common-domination hypotheses. -/
+noncomputable def toNondominatedQMDPath
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    (γ : AsymptoticStatistics.Core.QMDPath.QMDPath P) :
+    NondominatedQMDPath P where
+  curve := γ.curve
+  curve_at_zero := γ.curve_at_zero
+  curve_isProbability := fun t _ => γ.curve_isProbability t
+  score := γ.score
+  qmd_limit := by
+    apply (isRightQMD_iff_eLpNorm γ.curve (fun t _ => γ.curve_isProbability t)
+      (Lp.aestronglyMeasurable γ.score.val)).2
+    have hfilter : nhdsWithin (0 : ℝ) (Set.Ioi 0) ≤ 𝓝[≠] (0 : ℝ) := by
+      apply nhdsWithin_mono
+      intro t ht
+      simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using ht.ne'
+    have hlegacy := γ.qmd_limit.mono_left hfilter
+    apply hlegacy.congr'
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    have : IsProbabilityMeasure (γ.curve t) := γ.curve_isProbability t
+    let : IsProbabilityMeasure (γ.curve 0) := γ.curve_isProbability 0
+    have hnorm := eLpNorm_residualAgainst_change_dominator
+      (γ.curve 0) (γ.curve t) γ.dominating
+      (γ.curve_absContinuous 0) (γ.curve_absContinuous t)
+      (γ.score : Ω → ℝ) t
+    change eLpNorm (residualAgainst (γ.curve 0) (γ.curve t)
+      γ.dominating (γ.score : Ω → ℝ) t) 2 γ.dominating /
+        ENNReal.ofReal |t| =
+      eLpNorm (residualAgainst P (γ.curve t)
+        (canonicalDominator P (γ.curve t)) (γ.score : Ω → ℝ) t)
+          2 (canonicalDominator P (γ.curve t)) / ENNReal.ofReal t
+    rw [← hnorm, γ.curve_at_zero, abs_of_pos ht]
 
 end QMDPath
 end AsymptoticStatistics.Core.NondominatedQMDPath

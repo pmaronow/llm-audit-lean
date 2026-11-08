@@ -1,0 +1,116 @@
+[
+  {
+    "theorem": "SAP.P001c.T39",
+    "target_id": "P001-T39",
+    "my_reading_vs_claim": "whole",
+    "reason": "The finite independent Gaussian affine-combination theorem contains the one-variable affine and two-variable sum cases, requires a nonzero coefficient and positive individual variances as the canonical normal definition requires, and gives the correct mean and variance. The canonical bivariate density, normalization, moments, correlation and pointwise factorization at rho=0 are present. WholeW2:65-76 transfers the coordinate calculation to arbitrary pairs with that joint law and supplies the marginal normal laws; WholeW2:91-94 supplies Theorem 2.1.20. The extra equal mixture of correlations +/-3/5 genuinely has normal marginals and zero covariance but is dependent: its E[X^2 Y^2]=1+2(3/5)^2=43/25, whereas independence would give 1. Positive parameters remove density and correlation junk values. Nonvacuity: any finite product of nondegenerate normal laws with coordinate variables and a nonzero coefficient; for example n=1, m=0, v=1, a=1, b=0. No substantive extra premise is added."
+  },
+  {
+    "theorem": "SAP.P001c.T40",
+    "target_id": "P001-T40",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The general MSE decomposition and unique constant minimizer, fair-coin PMF moments, loss polynomial, all displayed loss values, and the corrected factor-two polynomial and values are covered. L2 is precisely the standing finite-MSE condition. The source explicitly omits the example's first-order differentiation computation and an assertion about the actual drawn curve; those are in the canonical statement. This is a disclosed reduction, with no misrendered definition. A fair two-point probability space with X=(0,1) satisfies the premises. Exact rational checks verified its moments, polynomial coefficients, completing-the-square identity and displayed values."
+  },
+  {
+    "theorem": "SAP.P001c.T41",
+    "target_id": "P001-T41",
+    "my_reading_vs_claim": "whole",
+    "reason": "Printed reading: for finite positive-variance real random variables, correlation +/-1 is asserted to imply an affine relation at every outcome, in the sign prescribed by the corresponding bullet. Conditions: a probability space, measurable variables, finite moments and positive marginal variances; equality is the canonical Definition 1.3.1 pointwise equality. The exact three-point witness meets all these conditions on the full powerset sigma-algebra with masses (1/2,1/2,0); every mean, variance, covariance, correlation and probability-one relation in the canonical counterexample is stated. Its X,Y ranges equal their supports {0,1}; the null outcome does not violate that qualification. Repeating X=0 with unequal Y at indices 0 and 2 rules out every affine representation, even without restricting the slope. Exact rational checks verified the numerical assertions and these repeated-X contradictions. It refutes the canonical forward pointwise implications, and does not purport to refute the a.s. version or reverse implications."
+  },
+  {
+    "theorem": "SAP.P001c.T42",
+    "target_id": "P001-T42",
+    "my_reading_vs_claim": "whole",
+    "reason": "The interval bound and both iff statements use exactly positive b and a.s. equality, including the negative-slope sign in the third bullet. The positive-variance premises are in Definition 2.2.5; L2 supplies the finite moments of the covariance/variance expressions. A.e. equality is the probability-one reading in the correction. The Cauchy-Schwarz inequality in definitions_needed is equivalent to the stated correlation bound with these positive denominators. Nonvacuity: fair Bernoulli X with Y=X, or Y=1-X, has variance 1/4 in each coordinate. No zero correlation denominator is used."
+  },
+  {
+    "theorem": "SAP.P001c.T43",
+    "target_id": "P001-T43",
+    "my_reading_vs_claim": "whole",
+    "reason": "The actual target uses T43WholeStatement, not the unused older T43Statement. It includes genuine joint smoothness, actual derivative certificates for both first and all second partials, the Hessian determinant, unique normal-equation solution and risk minimum at positive variance, both CEF corollaries, and all three residual orthogonalities. It additionally supplies existence and L2 of CEF versions and the zero-variance footnote, including arbitrary measurable compositions and all affine minimizers. CEF equalities are correctly version/a.s. statements under the canonical standing interpretation of conditional expectations. All these conclusions follow from measurable L2 X,Y and probability; none is smuggled into a premise. Nonvacuity: on the fair two-point space use X=Y=(0,1), m(x)=x, a*=0,b*=1; the zero-variance branch is realized separately by X=0,Y=(0,1), m=1/2. In that branch any finite-valued function of X is a.s. constant and integrable, so its loss comparison does not use nonintegrable-integral defaults."
+  },
+  {
+    "theorem": "SAP.P001c.T44",
+    "target_id": "P001-T44",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Printed reading: with finite second moments and Var(X)>0, the affine BLP is claimed to be the only affine function with Cov(X,g(X))=Cov(X,Y). Conditions: a probability space, genuine finite moments, positive regressor variance, and the book's affine convention for linear functions. The fair +/-1 witness satisfies every condition; g0(x)=x and g1(x)=x+1 differ on positive-probability outcomes, each has covariance 1, and losses are 0 and 1. Its zero-loss g0 is a global MSE minimum by nonnegativity. Thus it contradicts the canonical uniqueness assertion itself. The theorem omits the uniform/Gaussian counterexample (b), its two losses, and the general covariance formula; it also does not export the general BLP theorem quoted in definitions_needed. The docstring's retained scope is explicitly only counterexample (a). Exact rational checks verified every finite arithmetic assertion."
+  },
+  {
+    "theorem": "SAP.P001c.T45",
+    "target_id": "P001-T45",
+    "my_reading_vs_claim": "whole",
+    "reason": "For L2 X,Y and Var(X)>0, every affine a+bX satisfies the covariance equation iff b=Cov(X,Y)/Var(X), with arbitrary a; the covariance and mean equations together hold iff b=b*,a=EY-b*EX. The general global risk minimum and its coefficient uniqueness also cover Theorem 2.2.21 in definitions_needed. This is precisely the corrected characterization, using finite quantities and a positive denominator. Nonvacuity: fair Bernoulli X=Y, with a=0,b=1, meets all hypotheses and both equations."
+  },
+  {
+    "theorem": "SAP.P001c.T46",
+    "target_id": "P001-T46",
+    "my_reading_vs_claim": "whole",
+    "reason": "The source retains the independent U(0,1)/N(0,1) setting, Y=10X^2+W, CEF=10X^2, the conditional square/noise identities and actual conditional-expectation linearity, all moment and covariance computations, both coefficient computations, and the unique affine minimum. WholeW2:188-197 also gives the general BLP theorem and independence conditional-mean theorem required in definitions_needed, with only their clause-specific finite-moment conditions. Nonvacuity: the product of the [0,1] uniform probability and the standard Gaussian, with X,W the two projections. The product supplies independence, correct marginals, all moments used and positive Var(X)=1/12. Conditional expectations onto the sigma-algebra generated by X are well defined here."
+  },
+  {
+    "theorem": "SAP.P001c.T47",
+    "target_id": "P001-T47",
+    "my_reading_vs_claim": "whole",
+    "reason": "The original independent-variable conditional mean, conditional variance and constant BLP statements and the corrected transformed mean E[h(Y)|g(X)]=E[h(Y)] and transformed BLP are all present. Theorem 1.3.17's transformation equivalence, Theorem 2.2.8's factorization/zero covariance/zero correlation/additive variance, and the general positive-variance BLP theorem in definitions_needed are present too. Measurability of g,h follows the brief's usual conditions; L1, L2 and positivity are imposed only on clauses whose expectations, variances, risks or correlation require them. In particular no moment premise on X is attached to the integrable-outcome conditional mean, and coefficient uniqueness is imposed only at positive regressor variance. Nonvacuity: two independent fair Bernoulli coordinates on a four-point product probability, with identity transformations; all clauses then have finite moments and positive variances."
+  },
+  {
+    "theorem": "SAP.P001c.T48",
+    "target_id": "P001-T48",
+    "my_reading_vs_claim": "whole",
+    "reason": "The matrix entries use the correct pair of coordinate indices, and the source states symmetry, variance diagonal and the complete double-covariance sum rule. Coordinate L2 is the usual finite-variance convention, with no independence or nonsingularity premise. Nonvacuity: on a fair Bernoulli space take K=2 and X=(B,2B), yielding the singular matrix (1/4)[[1,2],[2,4]] and variance of the coordinate sum 9/4. K=0 is allowed but does not replace the quantified positive dimensions."
+  },
+  {
+    "theorem": "SAP.P001c.T49",
+    "target_id": "P001-T49",
+    "my_reading_vs_claim": "whole",
+    "reason": "The deterministic part supplies the corrected affine expansion, value at zero, every unit coordinate increment and actual partial derivative. WholeW1 additionally defines a BLP by global minimization of the actual squared residual and proves all three residual identities of Theorem 2.3.8 in definitions_needed. finiteAffineLosses requires finite MSE for every candidate, as the canonical absolute-convergence convention requires; it implies L2 of Y and each Xk by using coefficient vectors 0 and the coordinate selectors. It does not assume an orthogonality, conclusion, uniqueness or invertibility. Nonvacuity: fair Bernoulli B, K=1, X=B,Y=B, b=(0,1); every candidate has finite loss and b attains the nonnegative minimum zero. A duplicate regressor gives a singular design with the same witness, and K=0,Y=B,b0=1/2 supplies the intercept-only case."
+  },
+  {
+    "theorem": "SAP.P001c.T50",
+    "target_id": "P001-T50",
+    "my_reading_vs_claim": "whole",
+    "reason": "The equal-weight finite sums render exactly uniform selection of a finite index, its response PMF (multiplicity/N), mean and variance. The four-response example includes its value set, all stated masses, mean 5 and variance 17/2. The general L2 variance identity has the corrected minus sign and explicitly identifies the plus-sign discrepancy as 2(EZ)^2. For every positive-size deterministic empirical sample it states normalization and the corrected empirical mean and variance formulas, equivalent to the displayed Stieltjes expectations under the empirical law. No IID hypothesis is needed for these exact identities. Nonvacuity and arithmetic were checked using responses (3,4,3,10); all moments are finite and all sample/population denominators are positive."
+  },
+  {
+    "theorem": "SAP.P001c.T51",
+    "target_id": "P001-T51",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both probability-limit formulations and the full quantifier order forall p in [0,1), forall epsilon>0, exists N, forall n>=N are present. The added geometric singleton witness addresses the printed endpoint without replacing or restricting the corrected equivalence. The definition is for arbitrary measurable random-variable sequences and does not require independence of that sequence. Its geometric law is a countable probability, events are measurable, and their exact within-1/2 probabilities are 1-2^(-(n+1))<1 tending to one. Thus all premises are satisfiable and the endpoint counterexample involves no undefined probabilities or moments. If one wants a sampling representation, the same sequence can be made a statistic of the first observation of a genuine IID geometric sample for each n>=1."
+  },
+  {
+    "theorem": "SAP.P001c.T52",
+    "target_id": "P001-T52",
+    "my_reading_vs_claim": "whole",
+    "reason": "The measurable-set indicator identity is stated for every measurable real X and Borel D, and pointwise empirical-CDF consistency for every fixed real x is stated for genuinely IID Xi. The threshold indicators are bounded, so no moment restriction on Xi is added. Both F(x)=0 and F(x)=1 remain covered, as the canonical footnote requires. Nonvacuity: fair Bernoulli coordinates on the countable product probability space, with D={0} and x=1/2 (probability 1/2); thresholds below zero or at least one also realize the degenerate cases. The n=0 sample-average default is irrelevant to the limit."
+  },
+  {
+    "theorem": "SAP.P001c.T53",
+    "target_id": "P001-T53",
+    "my_reading_vs_claim": "whole",
+    "reason": "Printed reading under audit: IID sampling and finite positive Var(X) are alleged to supply the finite-variance WLLN hypothesis for X_i^2. Conditions: genuine independent identically distributed variables, measurable and integrable ordinary moments, finite positive Var(X); the challenged additional hypothesis is finite Var(X^2). The countable product of geometric(7/8) laws and Xi=2^(omega_i) satisfies each original condition. All exact masses and finite moments in the canonical example are present, with Var(X)=7/18; the extended fourth moment and evariance(X^2) are infinity, and not-L2 of X^2 is explicit. Ordinary square expectations remain finite, so the counterexample does not exploit an undefined expected value. Realization as a true infinite IID product is exported, as are both the general and example WLLN/sample-variance conclusions required by definitions_needed. It challenges the stated proof inference only, exactly as the canonical claim specifies; it does not declare Theorem 3.2.19 false. Geometric-series parameters and finite moments were checked by exact rational arithmetic."
+  },
+  {
+    "theorem": "SAP.P001c.T54",
+    "target_id": "P001-T54",
+    "my_reading_vs_claim": "whole",
+    "reason": "The integrable IID WLLN, unrestricted two-variable continuous mapping theorem with constant limits, and finite-positive-variance sample-variance expectation and consistency all appear. Both sample mean and sample second-moment limits are explicit, together with the variance identity for their limiting difference. No fourth-moment or independence-between-the-two-sequences hypothesis is added. Nonvacuity: Bernoulli IID observations give finite positive variance; the power-tail IID sequence of T53 also meets the third block without a fourth moment. For the independent CMT block one may take S_n=T_n=B/(n+1), a=b=0 and any continuous g; the convergences are uniform and the two sequences are deliberately dependent."
+  },
+  {
+    "theorem": "SAP.P001c.T55",
+    "target_id": "P001-T55",
+    "my_reading_vs_claim": "whole",
+    "reason": "The four restored-hat definitions/centered forms and the two-way variance/standard-error consistency equivalence are represented for measurable nonnegative Vhat and a finite-variance root-n limit law. Nonnegativity is intrinsic to the stated real square root of a variance estimator. The unbiased sample variance and sample-mean variance estimator from definitions_needed are explicitly included, with unbiasedness at n>=2, the exact n Var(mean)=Var(X) relation at n>0, the root-n normal limit, both consistencies and both centered variance displays. Real n-1 and positive-size guards avoid bogus finite-sample claims at n=0,1. Nonvacuity of the general block: Z standard normal, theta=0, thetaHat_n=Z/sqrt(n) and Vhat_n=1/n for n>=1, with both set to 0 at n=0; the root-n sequence is exactly Z eventually, and all premises hold. Genuine IID Bernoulli coordinates realize the sample-mean block with variance 1/4."
+  },
+  {
+    "theorem": "SAP.P001c.T56",
+    "target_id": "P001-T56",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Printed reading: an IID empirical-CDF plug-in for every sup-norm Hadamard differentiable CDF functional is asserted to have a centered normal root-n limit with strictly positive finite variance. Conditions: genuine IID real observations, a genuine population CDF and empirical CDF, a continuous linear Hadamard derivative, a measurable scalar statistic; no positive derivative-variance premise is printed. An IID Bernoulli(1/2) countable product meets all conditions. The constant functional 7 has zero derivative and its centered statistic is identically zero; the theorem excludes convergence to every positive-variance Gaussian. For Q(G)=(G(0)-1/2)^2 it states differentiability, Q(F)=0, the exact second-moment formula and degenerate probability limit. It omits the explicit CDF/continuity computations for the constant example and, for Q, separate boundedness, nonconstancy, F(0)=1/2, derivative-zero identification, the binomial law and scalar moment limit. These omissions are disclosed. A genuine Bernoulli product is available mathematically although the theorem does not construct one. Exact binomial rational sums checked the moment formula at n=1 through 40; a fourth-moment expansion proves it for every n."
+  },
+  {
+    "theorem": "SAP.P001c.T57",
+    "target_id": "P001-T57",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem constructs a tight sup-norm Brownian-bridge outer limit from real IID sampling rather than assuming that conclusion. Its bridge covariance min(F(s),F(t))-F(s)F(t) equals F(min(s,t))-F(s)F(t). T is defined on CDFs, and Hadamard differentiation is tangential to any real subspace carrying the bridge a.s., exactly as definitions_needed permits. Neither closedness nor a moment condition on Xi is imposed. It proves a continuous linear extension, its finite centered Gaussian law, scalar plug-in convergence, extension independence, the positive-variance phi^2 conclusion and the degenerate alternative. Measurability of the scalar plug-in is the usual statistical condition. Nonvacuity: genuine IID Bernoulli(1/2) observations. Put h=1_[0,1); the empirical process is Z_n h with Z_n=sqrt(n)(sample fraction of zeros-1/2); its bridge law is Z h, Z~N(0,1/4), a tight law on span(h). Choose H=span(h), ell(c h)=c, T(G)=G(0), L(f)=f(0). All derivative/space/support/measurability hypotheses hold, with positive derivative variance 1/4. The constant functional and ell=0 realize the degenerate branch. All infima and fallback values used in definitions are harmless under these hypotheses."
+  }
+]

@@ -4,9 +4,10 @@ import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-!
-P033-T9: the native-SE normal-power correction.
+Record 16, P033-T9: the native-SE normal-power correction.
 
-The Gaussian probability and the strict power comparison are proved independently.
+This draft uses the held declaration only in the final type check. In particular,
+the Gaussian probability and the strict power comparison are proved independently.
 The P053 quantile results are transported across definitionally equal normal CDFs.
 -/
 
@@ -256,6 +257,8 @@ theorem native_power_correction_proof :
     exact cluster_count_ratio L R hL hR
   · have h := native_power_arithmetic.2.2.2
     exact ⟨h.1, h.2.1, h.1, h.2.2.1, h.2.2.2, h.2.2.1⟩
+
+example : type_of% @AronowAudit.P033.native_power_correction := native_power_correction_proof
 
 end
 end AronowAudit.P033.Wave1

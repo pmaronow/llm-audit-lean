@@ -23,7 +23,8 @@ theorem asymmetric_real_certificate :
     indicator,expectation,printedVariance,estimatedPair,zeroSum,offSum,epsilon,
     variance,covariance,ht,htTotal,observed,Fin.sum_univ_succ,Fin.forall_fin_succ]
 
-/-- Refutation of the printed universal positivity and variance assertion. -/
+/-- Negation of the actual universal positivity/variance assertion: it is
+refuted, rather than registered as a theorem proving the printed conclusion. -/
 theorem printed_cluster_claims_refuted :
     ¬ (∀ (D : Design (Fin 3) (Fin 2) ℝ), probabilityDesign D → positiveMarginals D →
       (∀ i j, i≠j → 0<disagreement D i j) →
@@ -36,7 +37,7 @@ theorem printed_cluster_claims_refuted :
   rw [c.2.2.2.2.1,c.2.2.2.2.2] at hx
   norm_num at hx
 
-/-- Footnote 9 already fails with the identically zero fitting function. -/
+/-- Footnote9 already fails with the identically zero fitting function. -/
 theorem printed_sharp_null_footnote_refuted :
     probabilityDesign realAsymmetricTwo ∧ positiveMarginals realAsymmetricTwo ∧
     (∀ i j : Fin 2, i≠j → 0<disagreement realAsymmetricTwo i j ∧
@@ -71,8 +72,9 @@ theorem printed_table_columns_refuted : ¬ (
   rw [table_linear_moments.2.1] at hx
   norm_num [roundedSD3] at hx
 
-/-- Table 2 corrections for G (Linear), FE (Cov.) moments, HT and G (Prior).
-The logistic column is handled by `logit_table_corrected`. -/
+/-- Complete checked mathematical correction (a)-(d) in target T7.
+The target expressly excludes unspecified FE standard-error conventions and
+assigns the logit column separately to T14. -/
 theorem table2_correction_T7 :
 (expectation tableDesign (ht tableDesign 16 tableLinearResidual tableLinearResidual)=0 ∧
     variance tableDesign (ht tableDesign 16 tableLinearResidual tableLinearResidual)=38307/634880 ∧
@@ -135,5 +137,11 @@ theorem printed_pairwise_fitting_refuted :
   · norm_num [covariance,expectation,indicator,fittingOutcomes,xorFit,realXorThree,
       observed,Fin.sum_univ_succ]
 
+#print axioms printed_pairwise_fitting_refuted
+#print axioms asymmetric_real_certificate
+#print axioms printed_cluster_claims_refuted
+#print axioms printed_sharp_null_footnote_refuted
+#print axioms printed_table_columns_refuted
+#print axioms table2_correction_T7
 end
 end AronowAudit.P026.Refutations

@@ -1,0 +1,96 @@
+import SAP.P030.Defs
+open SAP.P030
+
+set_option maxHeartbeats 1000000
+
+/-- The paper's statistic for the five-unit design: Spearman correlation between the
+fixed units' nearest-treated-variant distances and their outcomes. -/
+noncomputable def g5 (y : {i // fiveS i = true} → ℝ) (z : Assignment 5) : ℝ :=
+  spearman (fun i : Fin 3 => nearestDistance fiveX fiveS z (fiveFixed i))
+    (fun i : Fin 3 => y ⟨fiveFixed i, by fin_cases i <;> decide⟩)
+
+lemma averageRank_add_const {n : ℕ} (a : Fin n → ℝ) (c : ℝ) :
+    averageRank (fun k => a k + c) = averageRank a := by
+  funext k; simp [averageRank]
+
+lemma spearman_add_const {n : ℕ} (a b : Fin n → ℝ) (c : ℝ) :
+    spearman (fun k => a k + c) b = spearman a b := by
+  simp only [spearman, rankCross, rankSquares, centeredRanks, averageRank_add_const]
+
+lemma nd0 (i : Fin 3) : nearestDistance fiveX fiveS (fiveAssignment 0) (fiveFixed i) =
+    |fiveX (fiveFixed i) - fiveX 3| := by
+  have hV : (Finset.univ.filter (fun j : Fin 5 => fiveS j = false ∧ fiveAssignment 0 j = true))
+      = {3} := by decide
+  unfold nearestDistance
+  simp only [hV]
+  simp
+
+lemma nd1 (i : Fin 3) : nearestDistance fiveX fiveS (fiveAssignment 1) (fiveFixed i) =
+    |fiveX (fiveFixed i) - fiveX 4| := by
+  have hV : (Finset.univ.filter (fun j : Fin 5 => fiveS j = false ∧ fiveAssignment 1 j = true))
+      = {4} := by decide
+  unfold nearestDistance
+  simp only [hV]
+  simp
+
+lemma dist_shift : (fun i : Fin 3 => nearestDistance fiveX fiveS (fiveAssignment 1) (fiveFixed i))
+    = fun i => nearestDistance fiveX fiveS (fiveAssignment 0) (fiveFixed i) + 1 := by
+  funext i; rw [nd0, nd1]; fin_cases i <;> norm_num [fiveX, fiveFixed, abs_of_pos]
+
+lemma stat_const (y : {i // fiveS i = true} → ℝ) : g5 y (fiveAssignment 1) = g5 y (fiveAssignment 0) := by
+  unfold g5; rw [dist_shift, spearman_add_const]
+
+lemma noInt : NoInterference fiveΩ fiveY := by
+  intro i z _ z' _ _; rfl
+
+lemma memC (z : Assignment 5) (hz : z ∈ conditionalAssignments fiveΩ fiveS (fiveAssignment 0)) :
+    z = fiveAssignment 0 ∨ z = fiveAssignment 1 := by
+  simp only [conditionalAssignments, Finset.mem_filter, fiveΩ, Finset.mem_image,
+    Finset.mem_univ, true_and] at hz
+  obtain ⟨⟨a, rfl⟩, _⟩ := hz
+  fin_cases a <;> simp
+
+lemma statC (z w : Assignment 5) (hz : z ∈ conditionalAssignments fiveΩ fiveS (fiveAssignment 0))
+    (hw : w ∈ conditionalAssignments fiveΩ fiveS (fiveAssignment 0)) :
+    referenceStatistic fiveS fiveY g5 z w = statistic fiveS fiveY g5 z := by
+  have href : referenceStatistic fiveS fiveY g5 z w = g5 (fixedOutcomes fiveS fiveY z) w := rfl
+  have hst : statistic fiveS fiveY g5 z = g5 (fixedOutcomes fiveS fiveY z) z := rfl
+  rw [href, hst]
+  rcases memC z hz with rfl | rfl <;> rcases memC w hw with rfl | rfl <;>
+    simp [stat_const]
+
+lemma Cne : (conditionalAssignments fiveΩ fiveS (fiveAssignment 0)).Nonempty := by
+  refine ⟨fiveAssignment 0, ?_⟩
+  simp only [conditionalAssignments, Finset.mem_filter, fiveΩ, Finset.mem_image,
+    Finset.mem_univ, true_and]
+  exact ⟨⟨0, rfl⟩, fun _ _ => trivial⟩
+
+lemma unif_all {A : Type*} (Ω : Finset A) (hΩ : Ω.Nonempty) (P : A → Prop) (hP : ∀ z ∈ Ω, P z) :
+    uniformProbability Ω P = 1 := by
+  classical
+  unfold uniformProbability
+  have : Ω.filter P = Ω := Finset.filter_true_of_mem hP
+  have hc : (Ω.card : ℝ) ≠ 0 := by exact_mod_cast hΩ.card_pos.ne'
+  convert div_self hc using 3
+  convert congrArg Finset.card this
+
+/-- In-class witness: Spearman statistic, nonexperimental fixed units, uniform conditional law,
+no interference (indeed no effects), alpha = 1/20; the printed rule's size is 1 > 1/20. -/
+example : ¬ PrintedTwoTailedExactness := by
+  intro h
+  have key := h 5 fiveΩ fiveS (fiveAssignment 0) Cne fiveY g5 noInt (1/20) (by norm_num) (by norm_num)
+  have hp : ∀ z ∈ conditionalAssignments fiveΩ fiveS (fiveAssignment 0),
+      uniformProbability (conditionalAssignments fiveΩ fiveS (fiveAssignment 0))
+        (fun w => referenceStatistic fiveS fiveY g5 z w ≤ statistic fiveS fiveY g5 z) = 1 :=
+    fun z hz => unif_all _ Cne _ (fun w hw => le_of_eq (statC z w hz hw))
+  have hrej : uniformProbability (conditionalAssignments fiveΩ fiveS (fiveAssignment 0)) (fun z =>
+      printedReject (1/20) (uniformProbability (conditionalAssignments fiveΩ fiveS (fiveAssignment 0))
+        (fun w => referenceStatistic fiveS fiveY g5 z w ≤ statistic fiveS fiveY g5 z))) = 1 := by
+    apply unif_all _ Cne
+    intro z hz
+    rw [hp z hz]; right; norm_num
+  rw [hrej] at key; norm_num at key
+
+/-- At alpha = 0 and alpha = 1 no witness is possible (sanity: printed rule at 0 never rejects a probability). -/
+example (p : ℝ) (h0 : 0 ≤ p) (h1 : p ≤ 1) : ¬ printedReject 0 p := by
+  unfold printedReject; intro h; rcases h with h | h <;> linarith

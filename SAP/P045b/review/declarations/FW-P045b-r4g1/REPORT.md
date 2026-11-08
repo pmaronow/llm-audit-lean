@@ -1,0 +1,17 @@
+All five declarations are **faithful**, with severity **none**. Each canonical clause, dependent definition, hypothesis and Challenge docstring was reviewed independently. The record's five `whole` decisions agree with the claim-stage assessment; no assessment changed after reading the record.
+
+| Declaration | Assessment |
+| --- | --- |
+| `SAP.P045b.T17` | Includes empty-cell HT values, unconditional unbiasedness, the conditional identity and discrepancy, the numerical identity, and undefined empty Hájek/sample means. Positive exposure probabilities and positive conditioning probabilities protect the asserted divisions. |
+| `SAP.P045b.T18` | Correct ordered coordinate deletion, independence from the removed coordinate, bijection, unique outcome reexpression, and the four-coordinate example; zero-based index 2 corresponds to the paper's individual 3. |
+| `SAP.P045b.T19` | Correct peer count, treated/control branches, discrepancy from the printed expression, and three-person example. The relevant subtractions are real, not truncated natural subtraction. |
+| `SAP.P045b.T20` | Exactly the canonical upper-bound-reading counterexample and the corrected thirteen-set enumeration. The docstring identifies the reading tested. Its `whole` label is correct: the theorem proves the canonical counterexample assertion. |
+| `SAP.P045b.T21` | Correct separation/covering definition, maximality characterization, finite greedy construction with length bound, existence, and full nine-path instance. Disconnected and empty graphs have the intended meanings. |
+
+For T20, the printed reading tested is: on the path 0,…,8 at ε=3, a nonempty centre set has pairwise distances at most 3 and covers all outside vertices within 2 hops. The formal graph, distances, radius and predicates match each condition. Covering requires a centre at most 2 and a centre at least 6, whose distance is at least 4, ruling out that reading. The corrected witness `{1,6}` satisfies separation and covering. This distinguishes the tested reading from the canonical assertion, which is itself true.
+
+The explicit `n>0` in T17 is the domain of the population mean used in the claim. Every quantity here is a finite sum of real values. No extra independence, integrability or moment condition is imposed. `Option ℝ` preserves the intended undefined empty ratios. Graph distance's empty infimum is infinity, as required between components; ε≥1 protects natural subtraction in the covering radius. The empty set cannot cover the nine-vertex path, so quantification over all subsets in T20/T21 is equivalent to the canonical nonempty enumeration.
+
+The blind reading was saved in [reading.md](reading.md) before opening the claims. [claim-stage.json](claim-stage.json) was saved before opening the record. Every closure entry was read, including generated numeral proofs and decidability auxiliaries, inspected with [scratch/Blind.lean](scratch/Blind.lean).
+
+Validation succeeded with `/home/ubuntu/sap/tools/sap-lean scratch/Instances.lean`. Its examples construct the full T17 hypothesis set, a unique T18 outcome function, both branches of T19's fixed-count example, a genuine T20 corrected net, and T21 terminal runs on disconnected and empty graphs. `python3 scratch/Enumerate.py` independently checked all 512 subsets: 511 nonempty, zero literal W+C sets, and exactly the thirteen stated corrected nets. [findings.json](findings.json) contains one entry per declaration with fingerprints copied from the closure.

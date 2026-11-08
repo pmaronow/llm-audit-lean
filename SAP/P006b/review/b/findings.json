@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P006-T16",
+    "theorem": "SAP.P006b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: n=1, C=Unit x Unit, Omega=Bool, P_C=dirac((),()), Y0=0, Y1=1, and P_pi the Bernoulli law with mass pi((),()) on true. X is constant, T is the Boolean sample, and the estimator is zero. Standing E and fixed-query unbiasedness are proved for all admissible policies. Take P_X=dirac(), kappa_x=dirac(), PiSet={constant 1/2}, b=s=constant 1/2, gamma=0. The joint-measure identity, untreated mass 1/2, selected baseline zero, maximum deviation zero and expected TT=1/2 are checked. The remaining integrability, extrema, estimator and bound premises hold because the baseline and deviation are identically zero.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T17",
+    "theorem": "SAP.P006b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "K=3, p=(1/3,1/3,1/3), m=(0,1,3), j=0. All masses are strictly positive and sum to one; the untreated masses for leave-only and treat-only are 1/3 and 2/3. The selected means are 0 and 2. Positivity, normalization and the complementary selected mean are checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T18",
+    "theorem": "SAP.P006b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Two independent fair binary covariates, deterministic Y0=(-1,4), Y1=(0,1), and independent treatment randomization from each feasible policy. Policy (0,1) yields ATO=1 whenever either covariate is true, hence mean 3/4. Welfare at (1,0) is 1/2 and at (0,1) is -3/2, so regret is 2. The policy square is nonempty and the objectives bounded.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T19",
+    "theorem": "SAP.P006b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "p=1/2, beta=4. These satisfy 0<p<1 and beta>1. The effects are (1,-3), the optimal welfare is 1/2 and selected welfare is -3/2, giving regret 2 and discrepancy 3 from the printed value -1. Parameter admissibility is also checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T20",
+    "theorem": "SAP.P006b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four signed-outcome states (++),(+-),(-+),(--) have masses 1/8,3/8,1/8,3/8. They are strictly positive and sum to one, as independently checked in scratch/Check.lean. A constant covariate, intercept 0, treatment coefficient -log(3) and zero other coefficients realize the stated logistic probabilities.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T21",
+    "theorem": "SAP.P006b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example d=1, x=0 and every coefficient zero. The logistic probability is 1/2 in both arms, the signed means are 0 and the effect is 0. The Bernoulli outcome space has two states with positive probability, so no empty dimension or null law is needed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T22",
+    "theorem": "SAP.P006b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2, C=Nat, X=(0,0), m=(1,3). The queried group has cardinality two, mean 2, deviations -1 and 1, overall mean 2 and empirical gamma 1. The mean computation is checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T23",
+    "theorem": "SAP.P006b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two explicit eight-state laws have total mass one and observed-untreated mass 1/4, both checked in scratch/Check.lean. Untreated mass is 1/2 and observation rate is 1/2. Population untreated means 1/2 and 3/4 differ while the full observed-record distribution agrees. The denominators are positive.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T24",
+    "theorem": "SAP.P006b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Omega=Bool with the fair Bernoulli law; T is constantly false, R is the Boolean sample, Y0=0 and Y1=1. All variables are measurable and integrable; potential outcomes are constant and independent of T. A has mass 1, A1 and A0 each have mass 1/2, so q=1/2 and every branch can apply. Probability, independence and denominator positivity are checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T25",
+    "theorem": "SAP.P006b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=1, alpha=1, beta=1/4 and eta=0. Fair private types, deterministic potential outcomes and estimator zero give Gamma=1 and regret 7/8 at reward-best (1,0). With beta=eta=1/4 the unique reward-best policy is (1,0), with regret 3/4. For arbitrary positive alpha,epsilon, choosing beta=min(epsilon,alpha/2), and delta equal to that minimum in the unique-response variant, supplies the required positive parameters and lower bounds. All laws are finite probability laws.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T26",
+    "theorem": "SAP.P006b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A counterexample satisfies every premise: n=1, fair binary X, deterministic Y0=0 and Y1(false)=1,Y1(true)=2, zero estimator, and P_pi(X=x,T=t)=(1/2)*coinMass(pi(x),t). Conditional ignorability is automatic for deterministic potential outcomes given X, all fixed-query estimator means are zero, and all quantities are integrable on the finite space. The printed rule (0,1) earns 1, while (1,1) earns 3/2 for both ATO and ATT. The one-unit score identity and these reward values are checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T27",
+    "theorem": "SAP.P006b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A counterexample uses n=1, fair binary X, Y0=0,Y1=1, P_pi(X=x,T=t)=(1/2)*coinMass(pi(x),t), and the same estimator procedure for every policy: hat_mu(sample,query)=2 when query=X(sample), otherwise -2. At each fixed query its mean is zero; at the evaluated query X it is constantly 2. Thus Standing and pointwise unbiasedness hold on the finite probability space. Expected TT is -(a+b)/2, best at (0,0); welfare is (a+b)/2, best at (1,1), so the reward-best policy has regret 1. Fixed-query means, the reward formula and its maximizing policy are checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T28",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem is supplied. On the visible evidence, the stated reason for omission is sound: a negated universal implication about hypothetical summaries does not identify or refute the two particular fitted-analysis means. The printed table can motivate a conditional arithmetic comparison, but it supplies no Lean bridge to those actual fitted effects in this package.",
+    "confidence": "medium"
+  },
+  {
+    "target_id": "P006-T29",
+    "theorem": "SAP.P006b.T29",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For any M>0 take n=2, p=1/2 and alpha=-2(M+1). Use deterministic Y1=(0,1), Y0=(alpha,0) and the finite independent covariate/treatment law. Policy (0,1) is ATO-best with reward 3/4; (1,1) is welfare-best and regret at (0,1) is -alpha/2=M+1>M. Thus the headline has an ordinary finite witness for every threshold.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P006-T30",
+    "theorem": "SAP.P006b.T30",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Two agents with common baseline zero, deterministic treated outcome 1, equal constant treatment effect 1, fair binary covariates and zero estimator; their sample sizes are 1 and 2. Each has the full policy square and best policy (1,1). Expected TT is (a+b)/2 for the first and a+b for the second, with attained maxima 1 and 2. All ranking premises hold with equality and each reward uses its own sample.",
+    "confidence": "high"
+  }
+]

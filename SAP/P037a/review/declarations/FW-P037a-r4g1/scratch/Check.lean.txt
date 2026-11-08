@@ -1,0 +1,201 @@
+import SAP.P037a.Challenge
+
+set_option autoImplicit false
+set_option maxHeartbeats 2000000
+
+open SAP.P037a MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal Classical
+
+namespace Review
+
+-- T1: a positive-probability collapsed state and an actual OLS minimizer.
+lemma low_count_zero_positive : 0 < countMass 1 (0 : Fin 13) := by
+  classical
+  unfold countMass
+  apply Finset.sum_pos'
+  · intro c hc
+    split_ifs
+    · exact Finset.prod_nonneg (fun s _ => by unfold stratumMass; positivity)
+    · norm_num
+  · refine ⟨fun _ => 0, Finset.mem_univ _, ?_⟩
+    norm_num [stratumMass, Fin.sum_univ_succ, Nat.choose]
+
+example : 0 < assignmentMass (0, 0, 0) := by
+  have h := low_count_zero_positive
+  simpa [assignmentMass, treatmentPair, stratumReferents] using
+    mul_pos (mul_pos (by norm_num : (0 : ℝ) < 1/6) h) h
+
+example : IsBlockOLS (fun _ : Fin 1 => (0,0,0)) (fun _ => 3/10) ![-1/10,0,0] := by
+  intro alpha theta
+  have h0 : blockRegressionLoss (fun _ : Fin 1 => (0,0,0))
+      (fun _ => 3/10) ![-1/10,0,0] = 0 := by
+    norm_num [blockRegressionLoss, observedOutcome, regressionColumns,
+      compositionColumn, treatment, treatmentPair, eligibleFraction, Fin.sum_univ_succ]
+  rw [h0]
+  exact Finset.sum_nonneg (fun _ _ => Finset.sum_nonneg (fun _ _ => sq_nonneg _))
+
+-- T2: the seed-law domain has a nonempty, variable, feasible finite sample.
+def twoRefs (_ : Fin 4) : Finset (Fin 2) := {0}
+def seedPick : SeedAssignment (fun _ : Fin 4 => 2) (fun _ => 1) :=
+  fun _ => ⟨{0}, by simp⟩
+
+example : (∀ _h : Fin 4, 0 < (2 : ℕ)) ∧
+    (∀ _h : Fin 4, (1 : ℕ) ≤ 2) ∧ 0 < ∑ _h : Fin 4, (1 : ℕ) := by
+  norm_num [Fin.sum_univ_succ]
+
+example : seedComposition (fun _ : Fin 4 => 2) (fun _ => 1) twoRefs seedPick = 1 := by
+  norm_num [seedComposition, seedPick, twoRefs, Fin.sum_univ_succ]
+
+example : seedCompositionMean (fun _ : Fin 4 => 2) (fun _ => 1) (fun _ => 1) = 1/2 ∧
+    eligibleShare (fun _ : Fin 4 => 2) (fun _ => 1) = 1/2 := by
+  norm_num [seedCompositionMean, eligibleShare, Fin.sum_univ_succ]
+
+abbrev Row := Fin 1 × Fin 4
+
+noncomputable def toyDesign : Design (Fin 6 × Fin 2) where
+  weight := fun _ => 1/12
+  nonneg := fun _ => by norm_num
+  total := by norm_num [Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+def toyD (w : Fin 6 × Fin 2) (i : Row) : Bool :=
+  decide (i.2 = (treatmentPair w.1).1 ∨ i.2 = (treatmentPair w.1).2)
+
+noncomputable def toySign (j : Fin 2) : ℝ := if j = 0 then 1/4 else -1/4
+noncomputable def toyC (w : Fin 6 × Fin 2) (i : Row) : ℝ :=
+  1/2 + if i.2 = 0 then toySign w.2 else 0
+noncomputable def toyR (w : Fin 6 × Fin 2) (i : Row) : ℝ :=
+  (if toyD w i then (1 : ℝ) else 0) * (toyC w i - 1/2)
+noncomputable def toyW (_ : Fin 1) (d : Row → Bool) (i : Row) : ℝ :=
+  (if d i then (1 : ℝ) else 0) * (1/2)
+noncomputable def toyY (w : Fin 6 × Fin 2) (i : Row) : ℝ :=
+  toyW 0 (toyD w) i + toyR w i
+
+example : ∀ w i, 0 ≤ toyC w i ∧ toyC w i ≤ 1 := by
+  intro w i
+  simp only [toyC, toySign]
+  split_ifs <;> norm_num
+
+example : ∀ w i, toyY w i = (if toyD w i then (1 : ℝ) else 0) * toyC w i := by
+  intro w i
+  unfold toyY toyW toyR
+  ring
+
+lemma toy_randomized : CompositionRandomized toyDesign toyD toyR := by
+  intro f i
+  unfold mean
+  rw [Fintype.sum_prod_type]
+  apply Finset.sum_eq_zero
+  intro a ha
+  have hD : toyD (a, (1 : Fin 2)) = toyD (a, 0) := rfl
+  norm_num [toyDesign, toyR, toyC, toySign, Fin.sum_univ_succ, hD]
+
+lemma toy_variation : mean toyDesign (fun w => centeredBlockCross (toyR w) (toyR w)) = 3/128 := by
+  norm_num [mean, toyDesign, centeredBlockCross, toyR, toyC, toySign, toyD,
+    treatmentPair, Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+example : 0 < mean toyDesign (fun w => centeredBlockCross (toyR w) (toyR w)) := by
+  rw [toy_variation]
+  norm_num
+
+lemma toy_centered_equations : ExtendedNormalEquations toyDesign
+    (fun k w => toyW k (toyD w)) toyR toyY (fun _ => 1) 1 := by
+  constructor
+  · intro k
+    fin_cases k
+    simp [toyY, ExtendedNormalEquations, centeredBlockCross, mean,
+      Fin.sum_univ_succ, mul_add, Finset.sum_add_distrib]
+  · simp [toyY, centeredBlockCross, mean,
+      Fin.sum_univ_succ, mul_add, Finset.sum_add_distrib]
+
+-- The augmentation index exists, and DC = R + D mu holds pointwise.
+example : (∀ w i, toyW 0 (toyD w) i =
+      (if toyD w i then (1 : ℝ) else 0) * (1/2)) ∧
+    (∀ w i, toyY w i = toyR w i + toyW 0 (toyD w) i) := by
+  constructor
+  · intros; rfl
+  · intros; exact add_comm _ _
+
+lemma toy_augmented_equations : ExtendedNormalEquations toyDesign
+    (fun k w => toyW k (toyD w)) toyY toyY (fun _ => 0) 1 := by
+  constructor <;> simp [ExtendedNormalEquations, Fin.sum_univ_succ]
+
+-- T3: the witnesses and a sample interior ratio are genuine and use positive SEs.
+example : tableS6Bins (-57/1000) (7/250) ∧ tableS6Bins (-57/1000) (17/500) ∧
+    waldStatistic (-57/1000) (7/250) = 57/28 ∧
+    waldStatistic (-57/1000) (17/500) = 57/34 ∧
+    waldStatistic (-57/1000) (17/500) < (19/10 : ℝ) ∧
+    (2 : ℝ) < waldStatistic (-57/1000) (7/250) := by
+  norm_num [tableS6Bins, waldStatistic]
+
+example : ∃ a s : ℝ, 11/200 < a ∧ a < 13/200 ∧ 1/40 < s ∧ s < 7/200 ∧ a/s = 2 := by
+  exact ⟨3/50, 3/100, by norm_num⟩
+
+-- T4 and T5: genuine independent random inputs, on nonzero probability spaces.
+local instance uniform_probability : IsProbabilityMeasure uniformDraw := by
+  constructor
+  simp [uniformDraw, Real.volume_Ioo]
+
+local instance exponential_probability : IsProbabilityMeasure (expMeasure 1) :=
+  isProbabilityMeasure_expMeasure (by norm_num)
+
+example (n : ℕ) : IsProbabilityMeasure (Measure.pi (fun _ : Fin n => uniformDraw)) := by
+  infer_instance
+
+example (n : ℕ) : iIndepFun (fun i (x : Fin n → ℝ) => x i)
+    (Measure.pi (fun _ : Fin n => uniformDraw)) ∧
+    (∀ i : Fin n, Measurable (fun x : Fin n → ℝ => x i)) ∧
+    (∀ i : Fin n, Measure.map (fun x : Fin n → ℝ => x i)
+      (Measure.pi (fun _ : Fin n => uniformDraw)) = uniformDraw) := by
+  refine ⟨iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id), ?_, ?_⟩
+  · exact fun i => measurable_pi_apply i
+  · exact fun i => (measurePreserving_eval (fun _ : Fin n => uniformDraw) i).map_eq
+
+example (n : ℕ) : iIndepFun (fun i (x : Fin n → ℝ) => x i)
+    (Measure.pi (fun _ : Fin n => expMeasure 1)) ∧
+    (∀ i : Fin n, Measurable (fun x : Fin n → ℝ => x i)) ∧
+    (∀ i : Fin n, Measure.map (fun x : Fin n → ℝ => x i)
+      (Measure.pi (fun _ : Fin n => expMeasure 1)) = expMeasure 1) := by
+  refine ⟨iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id), ?_, ?_⟩
+  · exact fun i => measurable_pi_apply i
+  · exact fun i => (measurePreserving_eval (fun _ : Fin n => expMeasure 1) i).map_eq
+
+-- T5: positive chart data and both coordinate maps, including the endpoint gap.
+example : (![1,1] : Fin 2 → ℝ) ∈ positiveOrthantW2 2 ∧
+    forwardNormalizationW2 1 ![1,1] = ![1/2,2] ∧
+    (![1/2,2] : Fin 2 → ℝ) ∈ normalizationDomainW2 1 ∧
+    inverseNormalizationW2 1 ![1/2,2] = ![1,1] := by
+  constructor
+  · intro i; fin_cases i <;> norm_num
+  constructor
+  · ext i; fin_cases i <;>
+      norm_num [forwardNormalizationW2, headCoordinatesW2, normalizedWeights, Fin.sum_univ_succ, Fin.snoc]
+  constructor
+  · norm_num [normalizationDomainW2, headCoordinatesW2, openSimplex, Fin.sum_univ_succ]
+  · ext i; fin_cases i <;>
+      norm_num [inverseNormalizationW2, headCoordinatesW2, appendSimplex, Fin.sum_univ_succ]
+
+-- Positive nonuniform weights and a nonempty, full-rank regression design.
+def fitX : Matrix (Fin 2) (Fin 1) ℝ := fun _ _ => 1
+noncomputable def fitW : Fin 2 → ℝ := ![1,2]
+noncomputable def fitY : Fin 2 → ℝ := ![1,3]
+
+lemma fit_rank : Function.Injective fitX.mulVec := by
+  intro v v' h
+  have h0 := congrFun h 0
+  funext k
+  fin_cases k
+  simpa [Matrix.mulVec, dotProduct, fitX, Fin.sum_univ_succ] using h0
+
+example : (∀ i, 0 < fitW i) ∧ Function.Injective fitX.mulVec ∧
+    (gramWeighted fitW fitX).det = 3 ∧
+    WLS fitW fitX fitY (fun _ => 7/3) ∧
+    normalizedWeights fitW = ![1/3,2/3] := by
+  refine ⟨?_, fit_rank, ?_, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [fitW]
+  · norm_num [gramWeighted, fitW, fitX, Fin.sum_univ_succ, Matrix.det_fin_one]
+  · intro k; fin_cases k
+    norm_num [fitW, fitX, fitY, Fin.sum_univ_succ]
+  · ext i; fin_cases i <;>
+      norm_num [normalizedWeights, fitW, Fin.sum_univ_succ]
+
+end Review

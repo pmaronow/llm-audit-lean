@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P037-T35",
+    "theorem": "SAP.P037c.T35",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed ten-student reciprocal-pair construction, with all 252 five-seed assignments present. Both recipient groups have size five. Independent exact enumeration in scratch/audit_exact.py verifies the six permutation counts, the p-values for all assignments, the 32 split assignments and rejection probability 8/63. The omitted four-block extension is exactly disclosed in the Challenge docstring and record.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T36",
+    "theorem": "SAP.P037c.T36",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general implications, take two students nominating each other, E the whole population, M=1, exactly one uniformly selected seed and assignment-independent outcome Y_i=i. Both recipient denominators are one, masses are positive and normalized, and the global sharp null holds. scratch/Nonvacuity.lean compiles a check of these premises. A second exact three-cycle instance uses three one-seed assignments of masses 1/5, 3/10 and 1/2. The ten-student closed witness has positive denominators five and is independently enumerated. The witness refutes the interpretation that this test isolates social influence; it does not contradict printed global-sharp-null validity.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T27",
+    "theorem": "SAP.P037c.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed synthetic six-school graph with 48 students and exactly 12 focal students satisfying positivity for all four analysis exposures. Exact enumeration of 1280 effective assignments (each a fiber of 4^3 states in the full 20*4^6 design) confirms the marginal probabilities and observed-event probability 1/640. All separate fits have rank two and both pooled fits rank five, with strictly positive weights. The specified coefficients, augmented means and contrasts were checked by exact rational WLS. The E1 probability law, marginals and realization probability are omitted exactly as disclosed; its equal-weight comparison remains deterministic.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T28",
+    "theorem": "SAP.P037c.T28",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take I=Fin 4 x Fin 2, p=1, D(j,a)=j, x(j,a)=a, w(j,a)=1+j+a and Y(j,a)=j^2+(j+1)a. Each exposure contains x=0 and x=1 with positive weights, so every separate design has rank two, the pooled design has rank five, each W_k and Sxx_k is positive, and both minimizers exist. Exact rational fits are computed in scratch/audit_exact.py. The generic averaging identity supplies the separate standardized means by instantiating its slope vector separately for each exposure.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T33",
+    "theorem": "SAP.P037c.T33",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed eight-unit abstract exposure design with 96 strictly positive masses summing to one. Every exposure has two recipients in every assignment, all exposure probabilities are positive, and exact Gaussian elimination finds nonsingular full and collapsed weighted Gram matrices in every state. Independent exact computation verifies the point fit, residuals, both large variance fractions, the imputed full-control variance and the strict variance bounds. The sole omitted assertion is the individual-exposure refitted-mean shift in (iii), exactly disclosed in the docstring and record.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T34",
+    "theorem": "SAP.P037c.T34",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=8 units indexed by (j,a) in Fin 4 x Fin 2, p=1, control C(j,a)=a, D0(j,a)=j, two assignments D_z(j,a)=(j+z) mod 4, w0(j,a)=1+j+a and w_z(i)=1+(i+z) mod 3 under i=2j+a. All weights are positive; the point and both refit designs have rank five. Give the assignments masses 1/3 and 2/3. Exact rational fits for Y(j,a)=j^2+(j+1)a verify the coefficient shift. Clause (d), including the fewer-controls comparison and referenced discrepancy, is omitted exactly as declared.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T37",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem. The canonical assertions are the actual study's reported tests, rounded estimates/standard errors and description of its bootstrap. No dataset, precise robust covariance choice or sidedness is supplied from which a standalone assertion about the reported P-values follows. Omission is justified on that content, without treating an audit-history interpretation as the printed assertion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T38",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem. The canonical item reports empirical school availability and treatment counts, describes missing-value handling, and asserts facts about reporting practices and nonresponse. It supplies no formal decision rule or observed data for those empirical assertions. A theorem about a selected interpretation of availability would not by itself refute this canonical item.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T39",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem. The canonical positivity-based population definition is coherent; its size 2451 and the claim that the reported analyses used it are empirical. The necessary connection condition is consistent with the stated exposure interpretation and is not refuted here. Neither a counterexample to a different selection rule nor a replacement empirical count would settle the printed assertion. Omission of this reporting/definition target is reasonable on the available material.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T40",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem. The canonical item describes particular published figure lines/bands and empirical significance. A generic prediction or covariance identity cannot establish which bands were actually drawn. The canonical text does not specify the robust covariance estimator sufficiently to reconstruct those bands from this package. Omission avoids substituting a refutation of a chosen implementation for the actual caption.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T41",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem. The canonical dot-product counts are definitional identities for the binary peer adjacency chosen; the publication leaves the directed-versus-either-direction convention unspecified. A theorem showing those conventions differ would refute an interpretation, not the printed definition itself. The nominal scalar/vector slip does not justify a mathematical refutation of the displayed vector identity. Omission is appropriate without inventing an additional assertion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T42",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem. This canonical item defines exposure-specific regression and the augmented estimator and describes their use. It does not assert that the exposure-specific and pooled regressions are identical. The separate appearances of pi and simulated pi-hat must be preserved if formalizing the definition, but do not make the definition itself false. T27 and T28 handle the specified mathematical comparison; no additional audit theorem about the actual reported computation follows from this target alone.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T43",
+    "theorem": "SAP.P037c.T43",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A compiled instance in scratch/Nonvacuity.lean uses B=1, Omega=Fin 4 with uniform masses, K=Fin 1, treatments (1100,1100,0011,0011), school-constant compositions (1/4,3/4,1/4,3/4), p=mu=1/2, lambda=0, a=X=(0,1,2,3), eta=0, tau0=tau=0, beta=b=1 and g=1. Every first-moment, span, response and expected-normal-equation premise holds; E[t't]=1 and E[r'r]=1/16, so neither positivity premise is vacuous. Exact rational checks agree. The omitted residual-moment conclusions and four-state certificate are fully disclosed. The normal-equation premise supplies a solution without assuming the bias identity or slope conclusion.",
+    "confidence": "high"
+  }
+]

@@ -1,8 +1,3 @@
-/-
-Documentation corrected for llm-audit-lean.
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.Asymptotics.Defs
@@ -46,11 +41,8 @@ noncomputable def logTaylorRemainder (u : ℝ) : ℝ :=
 
 For every `x > −1`,
   `log(1 + x) = x − x²/2 + x² · logTaylorRemainder (2 · x)`.
-The identity follows by unfolding `logTaylorRemainder` and simplifying
-algebraically. The hypothesis `x > −1` ensures `1 + x > 0`, so `log(1 + x)`
-has its usual real-logarithm meaning. Mathlib totalizes the logarithm by
-`Real.log 0 = 0` and `Real.log (-a) = Real.log a`; negative arguments do not
-generally have logarithm zero. -/
+(Holds by definition of `logTaylorRemainder`; `x > −1` is needed so `log(1+x)`
+is the honest logarithm and not the Mathlib `0`-convention.) -/
 lemma log_one_add_eq_taylor {x : ℝ} (hx : -1 < x) :
     Real.log (1 + x) = x - (1 / 2) * x ^ 2 + x ^ 2 * logTaylorRemainder (2 * x) := by
   by_cases hx0 : x = 0
@@ -177,6 +169,42 @@ lemma logTaylorRemainder_tendsto_zero :
     _ = |u| * |u| ^ 2 := by ring
     _ = |u| * u ^ 2 := by rw [sq_abs]
 
+/-- **Asymptotic form** of the Taylor expansion: the residue
+`log(1 + x) − x + x²/2` is `o(x²)` near `0`.
+
+Equivalent to `logTaylorRemainder_tendsto_zero` (and proven from it), but in
+the Mathlib-idiomatic `IsLittleO` form. Useful when downstream code needs to
+chain asymptotic facts without unpacking the explicit remainder. -/
+lemma log_one_add_sub_taylor_isLittleO :
+    (fun x : ℝ => Real.log (1 + x) - x + (1 / 2) * x ^ 2) =o[𝓝 (0 : ℝ)]
+      (fun x => x ^ 2) := by
+  -- Step 1: rewrite the residue as `x² · logTaylorRemainder (2 * x)` near 0.
+  have h_eq : (fun x : ℝ => Real.log (1 + x) - x + (1 / 2) * x ^ 2)
+                =ᶠ[𝓝 (0 : ℝ)] (fun x => logTaylorRemainder (2 * x) * x ^ 2) := by
+    filter_upwards [Ioi_mem_nhds (show (-1 : ℝ) < 0 by norm_num)] with x hx
+    have h := log_one_add_eq_taylor hx
+    linarith
+  -- Step 2: `logTaylorRemainder (2·) → 0` at `0`.
+  have h_smul_tendsto : Tendsto (fun x : ℝ => 2 * x) (𝓝 0) (𝓝 0) := by
+    simpa using! (continuous_const.mul continuous_id).tendsto (0 : ℝ)
+  have h_R_tendsto :
+      Tendsto (fun x : ℝ => logTaylorRemainder (2 * x)) (𝓝 0) (𝓝 0) :=
+    logTaylorRemainder_tendsto_zero.comp h_smul_tendsto
+  -- Step 3: turn into `=o[𝓝 0] (fun _ => 1)` and multiply by `x²`.
+  have h_R_isLittleO :
+      (fun x : ℝ => logTaylorRemainder (2 * x)) =o[𝓝 (0 : ℝ)]
+        (fun _ => (1 : ℝ)) :=
+    (Asymptotics.isLittleO_const_iff (by norm_num : (1 : ℝ) ≠ 0)).mpr h_R_tendsto
+  have h_sq_isBigO :
+      (fun x : ℝ => x ^ 2) =O[𝓝 (0 : ℝ)] (fun x => x ^ 2) :=
+    Asymptotics.isBigO_refl _ _
+  have h_prod : (fun x : ℝ => logTaylorRemainder (2 * x) * x ^ 2)
+      =o[𝓝 (0 : ℝ)] (fun x : ℝ => (1 : ℝ) * x ^ 2) :=
+    h_R_isLittleO.mul_isBigO h_sq_isBigO
+  have h_simp :
+      (fun x : ℝ => (1 : ℝ) * x ^ 2) = (fun x => x ^ 2) := by funext x; ring
+  rw [h_simp] at h_prod
+  exact h_eq.trans_isLittleO h_prod
 
 end ForMathlib
 end AsymptoticStatistics

@@ -1,0 +1,193 @@
+import SAP.P037c.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 3000
+
+open scoped BigOperators
+open SAP.P037c
+
+namespace Audit
+
+def d8 (z : Fin 2) : Fin 8 → Fin 4 :=
+  if z = 0 then ![0,0,1,1,2,2,3,3] else ![1,1,2,2,3,3,0,0]
+
+def c8 : Matrix (Fin 8) (Fin 1) ℝ := fun i _ => ![0,1,0,1,0,1,0,1] i
+
+lemma d8_rank (z : Fin 2) : Function.Injective (pooledExposureRow (d8 z) c8).mulVec := by
+  intro x y h
+  have h0 := congrFun h (0 : Fin 8)
+  have h1 := congrFun h (1 : Fin 8)
+  have h2 := congrFun h (2 : Fin 8)
+  have h4 := congrFun h (4 : Fin 8)
+  have h6 := congrFun h (6 : Fin 8)
+  fin_cases z <;>
+    norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_succ,
+      pooledExposureRow, d8, c8] at h0 h1 h2 h4 h6 <;>
+    funext j <;> fin_cases j <;> norm_num <;> linarith
+
+-- All premises of both fixed-control assertions, with a nonempty control set,
+-- two distinct assignments, positive weights, and a normalized nontrivial law.
+example :
+    0 < (8 : ℕ) ∧
+    (∀ i : Fin 8, 0 < (1 : ℝ)) ∧
+    (∀ (z : Fin 2) (i : Fin 8), 0 < (1 : ℝ)) ∧
+    Function.Injective (pooledExposureRow (d8 0) c8).mulVec ∧
+    (∀ z, Function.Injective (pooledExposureRow (d8 z) c8).mulVec) ∧
+    (∀ z : Fin 2, 0 ≤ (1/2 : ℝ)) ∧
+    (∑ _z : Fin 2, (1/2 : ℝ)) = 1 := by
+  exact ⟨by norm_num, by intro i; norm_num, by intro z i; norm_num,
+    d8_rank 0, d8_rank, by intro z; norm_num, by norm_num [Fin.sum_univ_two]⟩
+
+-- The reduced-control hypotheses also hold after genuinely dropping c8.
+lemma indicators8_rank :
+    Function.Injective (pooledExposureRow (d8 0) (fun _ : Fin 8 => Fin.elim0)).mulVec := by
+  intro x y h
+  have h0 := congrFun h (0 : Fin 8)
+  have h2 := congrFun h (2 : Fin 8)
+  have h4 := congrFun h (4 : Fin 8)
+  have h6 := congrFun h (6 : Fin 8)
+  norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_succ, pooledExposureRow, d8]
+    at h0 h2 h4 h6
+  funext j
+  fin_cases j <;> assumption
+
+example :
+    (∀ i : Fin 8, 0 < (1 : ℝ)) ∧
+    Function.Injective (pooledExposureRow (d8 0) (fun _ : Fin 8 => Fin.elim0)).mulVec ∧
+    (fun i : Fin 8 => c8 i 0) ∉ wholeColumnSpace
+      (pooledExposureRow (d8 0) (fun _ : Fin 8 => Fin.elim0)) := by
+  refine ⟨by intro i; norm_num, indicators8_rank, ?_⟩
+  rintro ⟨v,hv⟩
+  have h0 := congrFun hv (0 : Fin 8)
+  have h1 := congrFun hv (1 : Fin 8)
+  norm_num [Matrix.mulVecLin, Matrix.mulVec, dotProduct, Fin.sum_univ_succ,
+    pooledExposureRow, d8, c8] at h0 h1
+  linarith
+
+-- A genuinely aliased presentation: both columns are the same intercept.
+def hAlias : Matrix (Fin 1) (Fin 2) ℝ := fun _ _ => 1
+def hBasis : Matrix (Fin 1) (Fin 1) ℝ := fun _ _ => 1
+
+example : Function.Injective hBasis.mulVec ∧ wholeColumnSpace hBasis = wholeColumnSpace hAlias := by
+  constructor
+  · intro x y h
+    funext i
+    fin_cases i
+    have hh := congrFun h (0 : Fin 1)
+    simpa [Matrix.mulVec, dotProduct, Fin.sum_univ_one, hBasis] using hh
+  · ext v
+    constructor
+    · rintro ⟨c,hc⟩
+      refine ⟨![c 0,0], ?_⟩
+      change hBasis.mulVec c = v at hc
+      change hAlias.mulVec ![c 0,0] = v
+      rw [← hc]
+      ext i
+      fin_cases i
+      norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_succ, hAlias, hBasis]
+    · rintro ⟨c,hc⟩
+      refine ⟨![c 0+c 1], ?_⟩
+      change hAlias.mulVec c = v at hc
+      change hBasis.mulVec ![c 0+c 1] = v
+      rw [← hc]
+      ext i
+      fin_cases i
+      norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_succ, hAlias, hBasis]
+
+def ellAlias : (Fin 2 → ℝ) →ₗ[ℝ] ℝ where
+  toFun := fun v => v 0 + v 1
+  map_add' := by intro x y; simp; ring
+  map_smul' := by intro m x; simp [mul_add]
+
+lemma alias_minimum (v : ℝ) : regressionMinimum (fun _ : Fin 1 => 1) hAlias
+    (fun _ => v) ![v,0] := by
+  intro c
+  simp [Matrix.mulVec, dotProduct, Fin.sum_univ_succ, hAlias]
+  positivity
+
+example :
+    (∀ i : Fin 1, 0 < (1 : ℝ)) ∧
+    wholeEstimable hAlias ellAlias ∧
+    regressionMinimum (fun _ : Fin 1 => 1) hAlias (fun _ => 1) ![1,0] ∧
+    regressionMinimum (fun _ : Fin 1 => 1) hAlias
+      ((fun _ => 1) + hAlias.mulVec ![2,3]) ![6,0] ∧
+    (∑ _z : Fin 2, (1/2 : ℝ)) = 1 := by
+  refine ⟨by intro i; norm_num, ?_, alias_minimum 1, ?_, by norm_num [Fin.sum_univ_two]⟩
+  · intro v hv
+    have h := congrFun hv (0 : Fin 1)
+    simpa [ellAlias, Matrix.mulVec, dotProduct, Fin.sum_univ_succ, hAlias] using h
+  · have hs : ((fun _ : Fin 1 => (1 : ℝ)) + hAlias.mulVec ![2,3]) = (fun _ => 6) := by
+      ext i
+      norm_num [Pi.add_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_succ, hAlias]
+    rw [hs]
+    exact alias_minimum 6
+
+macro "t43_arith" : tactic => `(tactic| (
+  simp only [NormalEquations, cross, designMean, SAP.P037c.inner, blockResidual,
+    SAP.P037c.residual, treatmentProjection, blockDemean, whole43Design,
+    Fintype.sum_prod_type, Fin.sum_univ_one, Fin.sum_univ_four]
+  norm_num [whole43Treatment, whole43Composition, whole43Outcome]))
+
+-- Independently verify the fixed T43 data and every premise of the two
+-- regression assertions and the orthogonality assertion. No T34/T43 proof is used.
+example : Whole43Certificate := by
+  constructor
+  · intro i
+    rcases i with ⟨i,j⟩
+    fin_cases i
+    fin_cases j <;>
+      norm_num [designMean, whole43Design, whole43Treatment, Fin.sum_univ_four]
+  constructor
+  · intro i
+    rcases i with ⟨i,j⟩
+    fin_cases i
+    fin_cases j <;>
+      norm_num [designMean, whole43Design, whole43Treatment, whole43Composition,
+        Fin.sum_univ_four]
+  constructor
+  · intro i
+    simp [blockDemean, Fin.sum_univ_four]
+  constructor
+  · t43_arith
+  constructor
+  · t43_arith
+  constructor
+  · t43_arith
+  constructor
+  · intro w i
+    unfold whole43Treatment
+    split <;> simp
+  constructor
+  · intro w
+    simp only [Fintype.sum_prod_type, Fin.sum_univ_one, Fin.sum_univ_four]
+    fin_cases w <;> norm_num [whole43Treatment]
+  constructor
+  · intro i
+    rcases i with ⟨i,j⟩
+    fin_cases i
+    fin_cases j <;> norm_num [whole43Treatment]
+  constructor
+  · intro w i
+    unfold whole43Composition
+    split <;> simp
+  · exact ⟨(0,0),(0,1),by norm_num⟩
+
+example :
+    (∀ (w : Fin 4) (i : Fin 1 × Fin 4),
+      whole43Outcome w i = (i.2.val : ℝ)/10 + whole43Treatment w i *
+        (3/10 + (0 : ℝ) + (2/5)*whole43Composition w i)) ∧
+    cross whole43Design (fun w => blockDemean (whole43Treatment w))
+      (fun w => blockDemean (whole43Treatment w)) ≠ 0 ∧
+    0 < cross whole43Design
+      (blockResidual whole43Design whole43Treatment whole43Composition
+        (fun k : Fin 0 => Fin.elim0 k) (fun k => Fin.elim0 k) (1/2))
+      (blockResidual whole43Design whole43Treatment whole43Composition
+        (fun k : Fin 0 => Fin.elim0 k) (fun k => Fin.elim0 k) (1/2)) := by
+  constructor
+  · intro w i
+    simp [whole43Outcome]
+  constructor
+  · t43_arith
+  · t43_arith
+
+end Audit

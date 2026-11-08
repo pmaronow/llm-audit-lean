@@ -44,6 +44,11 @@ lemma lift_corrected_local {Ω : Type v} {N : ℕ} (L : FiniteLaw Ω)
   · intro σ
     simpa only [liftLaw,prob_map,Function.comp_def,ULift.down_up] using h.2 σ
 
+lemma lift_threshold_expectation {Ω : Type v} {N : ℕ} (L : FiniteLaw Ω)
+    (X : Ω → Fin N → ℝ) (f : Assignment N → ℝ) :
+    ((liftLaw.{u} L).map (fun ω => threshold (X ω.down))).expect f =
+      (L.map (fun ω => threshold (X ω))).expect f := by
+  simp only [liftLaw,expect_map,Function.comp_def,ULift.down_up]
 
 lemma lift_threshold_law {Ω : Type v} {N : ℕ} (L : FiniteLaw Ω)
     (X : Ω → Fin N → ℝ) :
@@ -123,6 +128,9 @@ theorem printed_unbiasedness_intended_local_refuted :
     (lift_corrected_local sixLaw witnessX 2 threeWindow witnessScores witness_corrected_local)
   rw [lift_threshold_law] at hh
   exact t1_counterexample.2.2.2.2.2 hh
+
+#print axioms printed_unbiasedness_refuted
+#print axioms printed_unbiasedness_intended_local_refuted
 
 end
 end AronowAudit.P014.Refutations

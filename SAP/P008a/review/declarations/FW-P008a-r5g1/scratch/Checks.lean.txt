@@ -1,0 +1,90 @@
+import SAP.P008a.Defs
+
+set_option maxRecDepth 4096
+
+open SAP.P008a MeasureTheory
+open scoped BigOperators Classical
+
+namespace Review
+
+-- T1: genuine common observation and its unrestricted within-count swap.
+example : observed121 ∈ unrestricted121 := by
+  rw [unrestricted121, Finset.mem_powersetCard]
+  constructor <;> decide
+
+example : alternative121 ∈ unrestricted121 := by
+  rw [unrestricted121, Finset.mem_powersetCard]
+  constructor <;> decide
+
+example : observed121 ∈ blocked121 := by
+  unfold blocked121
+  rw [Finset.mem_image]
+  refine ⟨(Finset.range 5, Finset.Ico 10 65), ?_, rfl⟩
+  apply Finset.mem_product.mpr
+  constructor <;> rw [Finset.mem_powersetCard] <;> constructor <;> decide
+
+-- T2/T3: the independent fair-bit law exists, and the count-two event is positive.
+example : commonBernoulli (uniformLaw (Assignment 4)) (1 / 2) := by
+  intro z
+  norm_num [uniformLaw, Fin.prod_univ_succ]
+
+example : (uniformLaw (Assignment 4)).prob (fun z => treatedCount z = 2) = 3 / 8 := by
+  have hc : (Finset.univ.filter (fun z : Assignment 4 => treatedCount z = 2)).card = 6 := by
+    decide
+  simp only [FiniteLaw.prob, uniformLaw, Finset.sum_const, nsmul_eq_mul]
+  rw [Finset.filter_congr_decidable _ _ (fun z => Classical.propDecidable (treatedCount z = 2)), hc]
+  norm_num [Assignment]
+
+-- T3: the six actual contrast values, and the finite percentile/rejection computation.
+example (k : Fin 6) :
+    hajek (fun i _ => (i.val : ℝ)) (sixAssignment k) = percentileExample k := by
+  simp only [hajek, nControl, nTreated, Fin.sum_univ_succ]
+  fin_cases k <;>
+    norm_num [sixAssignment, bit, percentileExample]
+
+example : quantile7 percentileExample (1 / 40) = -15 / 8 ∧
+    quantile7 percentileExample (39 / 40) = 15 / 8 := by
+  norm_num [quantile7, percentileExample]
+
+example : (uniformLaw (Fin 6)).prob
+    (fun k => outside (-15 / 8) (15 / 8) (percentileExample k)) = 1 / 3 := by
+  unfold FiniteLaw.prob
+  rw [Finset.sum_filter]
+  simp only [Fin.sum_univ_succ]
+  norm_num [uniformLaw, outside, percentileExample]
+
+-- T4: a nonconstant contrast and an actual product law for B=2 reference draws.
+example : contrast4 ![0, 1, 2, 3] (sixAssignment 0) = -2 := by
+  norm_num [contrast4, sixAssignment, bit, Fin.sum_univ_succ]
+
+example (z : Fin 3 → Fin 2) :
+    (uniformLaw (Fin 3 → Fin 2)).mass z =
+      ∏ k, (uniformLaw (Fin 2)).mass (z k) := by
+  norm_num [uniformLaw, Fin.prod_univ_succ]
+
+example : (0 : ℝ) ≤ 1 / 20 ∧ (1 / 20 : ℝ) ≤ 1 := by norm_num
+
+-- T5: the two finite circles and actual circle means (no empty-mean convention).
+lemma pairCircle0 : lineCircle pairField pairNode 0 1 = {-1, 1} := by
+  norm_num [lineCircle, pairField, pairNode, Finset.filter_insert, Finset.filter_singleton,
+    Finset.filter_empty]
+lemma pairCircle1 : lineCircle pairField pairNode 1 1 = {1, 3} := by
+  norm_num [lineCircle, pairField, pairNode, Finset.filter_insert, Finset.filter_singleton,
+    Finset.filter_empty]
+
+lemma pairMeans (k : Fin 4) :
+    pairM 0 (pairAssignment k) = bit (pairAssignment k 0) + bit (pairAssignment k 1) / 2 ∧
+    pairM 1 (pairAssignment k) = bit (pairAssignment k 1) + bit (pairAssignment k 0) / 2 := by
+  fin_cases k <;> norm_num [pairM, lineM, countMean, pairCircle0, pairCircle1,
+    pairOutcome, pairAssignment, bit, Finset.sum_insert, Finset.filter_insert,
+    Finset.filter_singleton, Finset.filter_empty]
+
+example : (uniformLaw (Fin 4)).cov
+    (fun k => linearizationScore pairM (5 / 4) (1 / 4) 0 (pairAssignment k))
+    (fun k => linearizationScore pairM (5 / 4) (1 / 4) 1 (pairAssignment k)) = 1 / 4 := by
+  norm_num [FiniteLaw.cov, FiniteLaw.expect, uniformLaw, linearizationScore,
+    Fin.sum_univ_succ, pairMeans, pairM, lineM, countMean, pairCircle0, pairCircle1,
+    pairOutcome, pairAssignment, bit, Finset.sum_insert, Finset.filter_insert,
+    Finset.filter_singleton, Finset.filter_empty]
+
+end Review

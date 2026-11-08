@@ -1,0 +1,121 @@
+import SAP.P015a.Defs
+
+open MeasureTheory ProbabilityTheory SAP.P015a
+open scoped BigOperators ENNReal
+
+namespace Audit
+noncomputable section
+local instance : MeasurableSpace (Fin 2) := ⊤
+local instance : MeasurableSpace (Fin 4) := ⊤
+local instance : MeasurableSpace Unit := ⊤
+
+def P : Measure (Fin 2) := (PMF.uniformOfFintype (Fin 2)).toMeasure
+instance : IsProbabilityMeasure P := by unfold P; infer_instance
+def X : Fin 2 → Unit := fun _ => ()
+def D : Fin 2 → ℝ := ![0,1]
+
+lemma D_L2 : MemLp D 2 P := by
+  apply MemLp.of_bound (measurable_of_countable D).aestronglyMeasurable 1
+  exact Filter.Eventually.of_forall (by intro s; fin_cases s <;> norm_num [D])
+
+lemma cell : conditionalCellLaw P X () = P := by
+  simp [conditionalCellLaw, X]
+
+lemma cell_mean : cellExpectation P X D () = 1/2 := by
+  rw [cellExpectation, cell, integral_fintype (D_L2.integrable (by norm_num))]
+  norm_num [P, D, Fin.sum_univ_two, Measure.real, PMF.toMeasure_apply_singleton]
+
+lemma endpoint_zero : cellProbability P X D () 0 = 1/2 := by
+  rw [cellProbability, cell]
+  norm_num [P, D, PMF.toMeasure_apply_fintype, Fin.sum_univ_two, Set.indicator]
+
+lemma endpoint_one : cellProbability P X D () 1 = 1/2 := by
+  rw [cellProbability, cell]
+  norm_num [P, D, PMF.toMeasure_apply_fintype, Fin.sum_univ_two, Set.indicator]
+
+lemma weight : discreteResidualWeight P X D = fun _ => (1/4:ℝ) := by
+  funext s
+  simp only [discreteResidualWeight, X, cell_mean]
+  fin_cases s <;> norm_num [D]
+
+lemma effective_law : discreteEffectiveLaw P X D = P := by
+  norm_num [discreteEffectiveLaw, weight, withDensity_const, smul_smul,
+    ENNReal.mul_inv_cancel]
+  rw [ENNReal.inv_mul_cancel (by norm_num) (by simp), one_smul]
+
+-- All data hypotheses and every nondegenerate branch hypothesis of T4
+-- hold together, including binary endpoint positivity and positive weight mean.
+example :
+    Measurable X ∧ Measurable D ∧ MemLp D 2 P ∧
+    0 < P {s | X s = ()} ∧
+    (0:ℝ) ≠ 1 ∧
+    0 < cellProbability P X D () 0 ∧
+    0 < cellProbability P X D () 1 ∧
+    cellProbability P X D () 1 < 1 ∧
+    (∀ᵐ s ∂P, D s = 0 ∨ D s = 1) ∧
+    Integrable (discreteResidualWeight P X D) P ∧
+    (0 < ∫ s, discreteResidualWeight P X D s ∂P) ∧
+    0 < discreteEffectiveLaw P X D {s | X s = ()} := by
+  refine ⟨measurable_const, measurable_of_countable D, D_L2, ?_, by norm_num,
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simp [X]
+  · rw [endpoint_zero]; norm_num
+  · rw [endpoint_one]; norm_num
+  · rw [endpoint_one]; norm_num
+  · exact Filter.Eventually.of_forall (by intro s; fin_cases s <;> simp [D])
+  · rw [weight]; exact integrable_const _
+  · rw [weight]; norm_num
+  · rw [effective_law]; simp [X]
+
+-- The zero-variance branch also has a genuine instance.
+example : Measurable X ∧ Measurable (fun _ : Fin 2 => (0:ℝ)) ∧
+    MemLp (fun _ : Fin 2 => (0:ℝ)) 2 P ∧
+    0 < P {s | X s = ()} ∧
+    cellVariance P X (fun _ => (0:ℝ)) () = 0 := by
+  refine ⟨measurable_const, measurable_const, memLp_const _, ?_, ?_⟩
+  · simp [X]
+  · simp [cellVariance, cellExpectation]
+
+-- All T19 hypotheses, including its binary branch, hold in the same
+-- nonconstant-treatment probability space; no Challenge theorem is used.
+example : Measurable D ∧ Measurable X ∧ MemLp D 2 P ∧
+    (∀ᵐ s ∂P, D s = 0 ∨ D s = 1) := by
+  refine ⟨measurable_of_countable D, measurable_const, D_L2, ?_⟩
+  exact Filter.Eventually.of_forall (by intro s; fin_cases s <;> simp [D])
+
+-- L² excludes the nonintegrable-input fallback for the residual in T19,
+-- for arbitrary measurable covariates, rather than only this finite example.
+example {Ω B : Type*} [MeasurableSpace Ω] [MeasurableSpace B]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : Ω → ℝ) (V : Ω → B)
+    (hZ : MemLp Z 2 μ) : Integrable (populationResidualWeight μ Z V) μ := by
+  have hc : MemLp (μ[Z | MeasurableSpace.comap V inferInstance]) 2 μ :=
+    hZ.condExp (by norm_num)
+  exact (hZ.sub hc).integrable_sq
+
+def U : Measure (Fin 4) := (PMF.uniformOfFintype (Fin 4)).toMeasure
+instance : IsProbabilityMeasure U := by unfold U; infer_instance
+def drawsLaw : Measure (ℕ → Fin 4) := Measure.infinitePi (fun _ : ℕ => U)
+instance : IsProbabilityMeasure drawsLaw := by unfold drawsLaw; infer_instance
+
+-- The infinite independent-replicate hypothesis is jointly satisfiable.
+example : UniformIndependentSampling drawsLaw (fun i s => s i) := by
+  refine ⟨fun i => measurable_pi_apply i, ?_, ?_⟩
+  · exact iIndepFun_infinitePi (X := fun _ => id) (fun _ => measurable_id)
+  · intro i a
+    have h := congrArg (fun μ : Measure (Fin 4) => μ {a})
+      (Measure.infinitePi_map_eval (fun _ : ℕ => U) i)
+    rw [Measure.map_apply (measurable_pi_apply i) (measurableSet_singleton a)] at h
+    change drawsLaw {s | s i = a} = _ at h
+    rw [h]
+    fin_cases a <;>
+      norm_num [U, PMF.toMeasure_apply_singleton, uniformProbability,
+        ENNReal.ofReal_div_of_pos (by norm_num : (0:ℝ) < 4)]
+
+-- The finite fitted-zero event is a positive-probability ordered sample
+-- from the product law, even though its first two realized atoms coincide.
+example : independentDrawLaw uniformProbability 4 (![0,0,2,3] : Fin 4 → Fin 4) = 1/256 ∧
+    (0:ℝ) < 1/256 := by
+  norm_num [independentDrawLaw, uniformProbability, Fin.prod_univ_succ]
+
+end
+end Audit

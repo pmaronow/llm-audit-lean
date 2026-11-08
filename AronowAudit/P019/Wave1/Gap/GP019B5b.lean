@@ -307,11 +307,17 @@ theorem fisher_sequential_finite_proof :
     GP019B5b_assignment_mass, GP019B5b_influence,
     sequential_influence_centered, sequential_influence_matrix⟩
 
+example : type_of% @AronowAudit.P019.fisher_sequential_finite := fisher_sequential_finite_proof
+
 theorem sequential_own_independence_proof (j : Fin 5) : (sequentialStudy j).treatmentIndependent := by
   exact GP019B5b_own_factorization j
 
+example : type_of% @AronowAudit.P019.sequential_own_independence := sequential_own_independence_proof
+
 theorem sequential_standing_proof (j : Fin 5) : (sequentialStudy j).standing := by
   exact GP019B5b_standing j
+
+example : type_of% @AronowAudit.P019.sequential_standing := sequential_standing_proof
 
 end
 end AronowAudit.P019.Wave1

@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P020.T6",
+    "target_id": "P020-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "Printed reading: for an estimated coefficient from the same cluster-randomized experiment, equation (31)'s identical covariance terms cancel, asserting that the adjusted ATE estimator has expectation Delta. Conditions checked: fixed finite potential outcomes (realized by scratch/Check.lean:slopeIndividuals); M=3, mt=1, mc=2 with 0<mt<M; positive sizes (1,2,3), N=6; complete uniform randomization over all three singletons; OLS with intercept and no treatment indicator, using divisor-M covariance/variance and nonzero size variance 2/3; the coefficient is substituted in both Des Raj arm estimates as the canonical counterexample explicitly requires. The theorem states every listed slope, arm size mean, adjusted estimate, expectation, ATE, bias and covariance, including the corrected bias identity. Thus 1/8 != 1/2 refutes the printed assertion itself. No extra hypothesis or junk-value dependence was found."
+  },
+  {
+    "theorem": "SAP.P020.T7",
+    "target_id": "P020-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical affine-transform clauses are covered: the arbitrary individual-vector sum identity; the correctly aggregated transformed totals; coefficient b0+b1*k; both arm potential identities via a Bool parameter; and the transformed-sum, factored-sum and final scaling equalities for every admissible assignment. The initial observed-arm expression is the estimator's definition. Quantifying over arbitrary cluster totals loses no individual-level instance, and the arbitrary-vector identity supplies the individual aggregation bridge. Natural positive sizes and 0<mt<M are exactly the standing assumptions. The scalar aggregation lemma also correctly includes an empty-vector case, without restricting the claimed result. No conclusion is hidden in a definition."
+  },
+  {
+    "theorem": "SAP.P020.T8",
+    "target_id": "P020-T8",
+    "my_reading_vs_claim": "broader",
+    "reason": "This is a valid algebraic generalization: it allows every real size vector and every M>0, including M=1, rather than only the positive natural sizes and M>=2 inherited from a randomized population. Specialization to the canonical setting states both variance expansions through one universal vector formula, both mean identities, and each of the seven covariance-chain lines with the expectation taken over clusters and divisor M. It does not change the meaning of covariance or the centering. The added cases are true finite-sum identities and every canonical clause follows. There are no substantive extra hypotheses, inverses of variances, or junk values."
+  },
+  {
+    "theorem": "SAP.P020.T9",
+    "target_id": "P020-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "Printed reading (a): the transformed Des Raj estimator equals the displayed sum even when the control sum uses the treatment potential U1; printed reading (b): the covariance equals the displayed expression with the second factor outside the cluster-average bracket. Conditions checked for both witnesses: finite fixed totals realized by individual outcomes; M=2, mt=mc=1, positive sizes (1,2), N=3, admissible singleton assignment; in (a) fixed k=0, b0=0, b1=1 and the canonical affine transform; in (b) k=0, totals y0=y1=(0,2), divisor-M moments and cluster-average interpretation of E. The theorem gives 2/3 versus -2/3 in (a), and covariance 1 versus bracket values -1 and 1 in (b). These are the two canonical witnesses and refute the specified printed assertions, not different design or measurability readings. All listed numerical assertions are present or follow by the identity transform and k=0."
+  },
+  {
+    "theorem": "SAP.P020.T10",
+    "target_id": "P020-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem begins with the individual sharp null and aggregation certificates, identifies observations with both potentials individually and in cluster totals, states both corrected variance facts and the covariance fact, and identifies actual randomization variance with the general equation-(17) expression and the exact observed-total formula. Rewriting that general expression using its preceding moment equalities gives the canonical intermediate display with the observed variance in each term. Assignment independence of that observed variance follows from its equality to the fixed potential variance for every assignment. Individual aggregation certificates express the definition of totals and add no substantive assumption. All denominators are positive from the standing population conditions; zero outcome variance remains allowed."
+  }
+]

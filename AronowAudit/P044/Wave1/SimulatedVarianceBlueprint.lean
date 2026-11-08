@@ -1,24 +1,39 @@
 import AronowAudit.P044.P044_NetworkSpillovers
 
 /-!
-# P044-T11: finite simulated exposure probabilities
+# Wave1 blueprint: P044-T11, `AronowAudit.P044.printed_simulated_variance_claim` (refute)
 
-P044 pp. 213 and 217 (PDF pp. 5, 9) describe "conservative" variance approximations
-computed from finite simulated exposure probabilities. `PrintedSimulatedConservativeness`
-quantifies over finite designs with true marginal support, ordered distinct banks drawn
-by `distinctBankMass`, and smoothed inputs.
+Paper: P044 pp. 213 and 217 (PDF pp. 5, 9), "conservative" variance approximations computed
+from finite simulated exposure probabilities. The registered reading is exactly
+`PrintedSimulatedConservativeness` (all finite designs with true marginal support, ordered
+distinct banks drawn by `distinctBankMass`, smoothed inputs). Resolution: `refute`.
 
-The counterexample has N = 12, three disjoint K4 cliques (`cliqueAdj`), and the design
+Witness (mapper record 8): N = 12, three disjoint K4 cliques (`cliqueAdj`), the design
 uniform on the 66 treat-two profiles (`cliqueMass`, the pushforward of the uniform law on
-`Fin 66` through `cliqueAssignments`). It uses R = 65, all outcomes 1 (`yR`), a = d01,
-and b = d00. The first conjunct, with independent actual assignment, fails:
+`Fin 66` through `cliqueAssignments`), R = 65, all outcomes 1 (`yR`), a = d01, b = d00. Only
+the FIRST conjunct (independent actual assignment) is refuted:
 `E(V̂) - Var(T) = 1040129476423/2326402995840 - 113448938731/232640299584
  = -953130413/23499020160 < 0`. The included-first-bank regime is not needed.
 
-The propositions below separate the finite counts, bank law, and moment identities.
-Counts involve 66 profiles and 144 ordered unit pairs. Type counting reduces the
-rational sums to 4 or 48 terms. Helper propositions such as `DesignFacts` and
-`BankMassFormula` name intermediate conclusions; dependencies appear as hypotheses.
+The admitted source certificates `clique_full_counts`, `clique_structure`,
+`clique_pairs_complete`, `clique_reduced_arithmetic` and every theorem depending on them
+(`clique_retained_weights`, `clique_observation_marginal`, `clique_observation_joint`,
+`clique_conditional_moments`, `clique_joint_moments`, `clique_retained_injective`, ...) must
+NOT be used. Safe reusable lemmas (axioms checked: propext, Classical.choice, Quot.sound):
+`cliqueF_is_exposure`, `count_delete_atom`, `clique_joint_expectation`,
+`clique_observation_independent_mass`, `exhaustive_probabilities`, `htMean_expectation`,
+`htContrast_second_moment`, `varianceEstimate_expectation`, `expect_sub`, the `ratCast_*`
+lemmas, `clique_pair_distinct`, `peerCount_two_treated`.
+Warning from the source campaign: direct kernel enumeration of the clique counts/moments and
+"reflected" rational arithmetic did not finish. The node split below keeps every
+computation small: Nat counts over at most 66 profiles × 144 unit pairs (N2, N3), and the
+rational arithmetic reduced by type counting (N13, N14) to sums of 4 or 48 explicit terms.
+
+Final theorem (writers): `AronowAudit.P044.Wave1.printed_simulated_variance_claim_refuted :
+¬ PrintedSimulatedConservativeness` in `AronowAudit/P044/Wave1/SimulatedVariance.lean`.
+
+Convention: helper `Prop`s (`DesignFacts`, `BankMassFormula`, ...) name node conclusions;
+a node needing earlier nodes takes them (or their conclusions) as hypotheses.
 -/
 
 namespace AronowAudit.P044.Wave1.SimulatedVariance
@@ -29,7 +44,7 @@ open AronowAudit.P044
 
 noncomputable section
 
-/-- The negation of the printed conservativeness proposition. -/
+/-- The frozen final statement: the exact negation of the recorded printed proposition. -/
 def Target : Prop := ¬ PrintedSimulatedConservativeness
 
 /-! ## Witness data -/
@@ -42,7 +57,9 @@ def cliqueMass (z : Assignment 12) : ℝ :=
 def yR : Fin 12 → Exposure → ℝ := fun i d => ((cliqueY i d : ℚ) : ℝ)
 
 /-- Complete joint exposure-count table of the full design, for a unit pair classified by
-`(i = j, same clique)` and an ordered label pair. The class `(true, false)` is impossible. -/
+`(i = j, same clique)` and an ordered label pair (independently checked by exhaustive
+enumeration; `runs/bp-P029-P044/checks/clique_check.py`). The class `(true, false)` is
+impossible. -/
 def cliqueJointTable : Bool → Bool → Exposure → Exposure → ℕ
   | true, _, a, b => if a = b then cliqueFullCount a else 0
   | false, true, .d00, .d00 => 28
@@ -74,24 +91,25 @@ def cliquePairClassCount : Bool → Bool → ℕ
   | false, true => 36
   | false, false => 96
 
-/-- Smoothed marginal inputs computed from a bank. -/
+/-- Smoothed marginal inputs computed from a bank (the contract's `w`). -/
 def bankW (bank : Fin 65 → Assignment 12) : Fin 12 → Exposure → ℝ :=
   smoothedWeight (fun r => exposure cliqueAdj (bank r))
 
-/-- Smoothed joint inputs computed from a bank. -/
+/-- Smoothed joint inputs computed from a bank (the contract's `q`). -/
 def bankQ (bank : Fin 65 → Assignment 12) : Fin 12 → Fin 12 → Exposure → Exposure → ℝ :=
   smoothedJoint (fun r => exposure cliqueAdj (bank r))
 
-/-- The independent-regime law of (bank, actual assignment). -/
+/-- The independent-regime law of (bank, actual assignment) (the contract's
+`independentMass`). -/
 def indepMass (P : FiniteDesign (Assignment 12))
     (x : (Fin 65 → Assignment 12) × Assignment 12) : ℝ :=
   distinctBankMass P x.1 * P.mass x.2
 
-/-- The HT contrast in the independent regime. -/
+/-- The HT contrast in the independent regime (the contract's `independentT`). -/
 def indepT (x : (Fin 65 → Assignment 12) × Assignment 12) : ℝ :=
   htContrast (fun z => exposure cliqueAdj z) yR (bankW x.1) .d01 .d00 x.2
 
-/-- The variance estimate in the independent regime. -/
+/-- The variance estimate in the independent regime (the contract's `independentV`). -/
 def indepV (x : (Fin 65 → Assignment 12) × Assignment 12) : ℝ :=
   varianceEstimate (fun z => exposure cliqueAdj z) yR (bankW x.1) (bankQ x.1) .d01 .d00 x.2
 
@@ -102,18 +120,21 @@ def castW (t : Fin 66) : Fin 12 → Exposure → ℝ := fun i a => ((cliqueWeigh
 def castJ (t : Fin 66) : Fin 12 → Fin 12 → Exposure → Exposure → ℝ :=
   fun i j a b => ((cliqueJoints t i j a b : ℚ) : ℝ)
 
-/-! ## Finite counts -/
+/-! ## Finite certificates (new Wave1 versions of the admitted source certificates) -/
 
-/-- The 66 enumerated treat-two profiles are distinct. The treated set of
-`cliqueAssignments r` is `{u, v}` with `(u, v) = cliquePairs r`, `u < v`,
-and `cliquePairs` is injective. -/
+/-- **Node N1** (`clique_assignments_injective`; mapper record 8, step 1 / suggested node
+`clique_counts_and_structure`). The 66 enumerated profiles are distinct. Suggested proof:
+the treated set of `cliqueAssignments r` is `{u, v}` with `(u, v) = cliquePairs r`, `u < v`,
+and `cliquePairs` is injective (both small `decide`s over `Fin 66`). -/
 def N1 : Prop := Function.Injective cliqueAssignments
 
-/-- The full-design marginal counts are 3, 8, 27, and 28 at every unit.
-These counts can be obtained by reindexing `r ↦ cliquePairs r` onto increasing pairs. -/
+/-- **Node N2** (`clique_marginal_counts`; mapper record 8, step 3, counts (3, 8, 27, 28)).
+New proof of the first half of the admitted `clique_full_counts`. Suggested: `decide` per
+unit after `fin_cases i`, or reindex `r ↦ cliquePairs r` onto increasing pairs. -/
 def N2 : Prop := ∀ (i : Fin 12) (a : Exposure), exposureCount cliqueF i a = cliqueFullCount a
 
-/-- Every joint count of the full design is the class table entry. -/
+/-- **Node N3** (`clique_joint_counts`; mapper record 8, step 3, extended to all 16 label
+pairs). Every joint count of the full design is the class table entry. -/
 def N3 : Prop :=
   ∀ (i j : Fin 12) (a b : Exposure),
     jointCount cliqueF i j a b = cliqueJointTable (decide (i = j)) (decide (i.val / 4 = j.val / 4)) a b
@@ -126,7 +147,8 @@ def DesignFacts : Prop :=
   (∀ z, 0 ≤ cliqueMass z) ∧ (∑ z, cliqueMass z = 1) ∧
     ∀ F : Assignment 12 → ℝ, ∑ z, cliqueMass z * F z = (∑ r, F (cliqueAssignments r)) / 66
 
-/-- The assignment pushforward preserves finite expectations; injectivity is not needed. -/
+/-- **Node N4** (`assignment_design_pushforward`; mapper record 8, shared lemma 4; no
+injectivity needed: `Finset.sum_comm`, `Finset.sum_ite_eq`). -/
 def N4 : Prop := DesignFacts
 
 /-- Conclusion of N5: the support has 66 points (so `R = 65 ≤ #support`) and every unit has
@@ -136,8 +158,8 @@ def SupportMarginals : Prop :=
     ∀ i : Fin 12, marginal cliqueMass (fun z => exposure cliqueAdj z) i .d01 = 9 / 22 ∧
       marginal cliqueMass (fun z => exposure cliqueAdj z) i .d00 = 14 / 33
 
-/-- From N1 (support equal to the range, mass 1/66 on it),
-N2 (`cliqueF_is_exposure` and counts), and N4. -/
+/-- **Node N5** (`clique_design_premises`; mapper record 8, step 1). From N1 (support =
+range, mass 1/66 on it), N2 (`cliqueF_is_exposure` + counts) and N4. -/
 def N5 : Prop := N1 → N2 → DesignFacts → SupportMarginals
 
 /-- Conclusion of N6: exact `distinctBankMass` of an ordered 65-bank. -/
@@ -148,8 +170,8 @@ def BankMassFormula : Prop :=
     (¬ (Function.Injective b ∧ ∀ r, b r ∈ Set.range cliqueAssignments) →
         distinctBankMass P b = 0)
 
-/-- A supported injective bank has mass
-`∏_{r<65} (1/66)/(1 - r/66) = ∏_{r<65} 1/(66 - r) = 1/66!`; a non-injective bank
+/-- **Node N6** (`ordered_bank_mass`; mapper record 8, step 2). A supported injective bank
+has mass `∏_{r<65} (1/66)/(1 - r/66) = ∏_{r<65} 1/(66 - r) = 1/66!`; a non-injective bank
 has mass 0 by definition; an injective bank with an unsupported entry has a zero factor
 (`0 / x = 0`). Uses N1 (mass exactly 1/66 at each enumerated profile) and N4. -/
 def N6 : Prop := N1 → DesignFacts → BankMassFormula
@@ -161,8 +183,9 @@ def BankSumFormula : Prop :=
       ∑ b, distinctBankMass P b * G b =
         (∑ σ : Fin 65 ↪ Fin 66, G (fun r => cliqueAssignments (σ r))) / (Nat.factorial 66 : ℝ)
 
-/-- Banks of positive mass are exactly `cliqueAssignments ∘ σ` for a unique embedding
-`σ` (N1); reindex the sum over the support. -/
+/-- **Node N7** (`bank_sum_to_embeddings`; mapper record 8, step 2). Banks of positive mass
+are exactly `cliqueAssignments ∘ σ` for a unique embedding `σ` (N1); use
+`Finset.sum_bij`/`Finset.sum_map` on the support. -/
 def N7 : Prop := N1 → BankMassFormula → BankSumFormula
 
 /-- Conclusion of N8: summing a function of the omitted point over all embeddings. -/
@@ -171,9 +194,10 @@ def EmbeddingFiberSum : Prop :=
     (∀ (σ : Fin 65 ↪ Fin 66) (t : Fin 66), Finset.univ.map σ = Finset.univ.erase t → F σ = g t) →
       ∑ σ, F σ = (Nat.factorial 65 : ℝ) * ∑ t, g t
 
-/-- Every embedding misses exactly one point (cardinality 65 of the image);
-the fibre of `t` is in bijection with `Fin 65 ↪ {x // x ≠ t}` of cardinality `65!`.
-Summing over these fibres gives the stated identity. -/
+/-- **Node N8** (`omitted_point_fibers`; mapper record 8, step 2 and shared lemma 5). Every
+embedding misses exactly one point (cardinality 65 of the image); the fibre of `t` is in
+bijection with `Fin 65 ↪ {x // x ≠ t}` of cardinality `65!` (`Fintype.card_embedding_eq`,
+`Nat.descFactorial_self`); `Finset.sum_fiberwise`. Pure combinatorics. -/
 def N8 : Prop := EmbeddingFiberSum
 
 /-- Conclusion of N9: a bank enumerating the 66 profiles minus `t` (in any order) has exactly
@@ -183,11 +207,10 @@ def RetainedInputs : Prop :=
     bankW (fun r => cliqueAssignments (σ r)) = castW t ∧
       bankQ (fun r => cliqueAssignments (σ r)) = castJ t
 
-/-- Counts over the bank are counts over `univ.erase t` (order-invariant,
-`cliqueF_is_exposure`), equal to full counts minus the omitted indicator
-(as in `count_delete_atom`); full counts by N2 and N3.
-The function `cliqueFullJoint` agrees with `cliqueJointTable` at every label.
-Casting uses `(65:ℝ)+1 = 66`. -/
+/-- **Node N9** (`bank_count_and_input_transport`; mapper record 8, step 3). Counts over the
+bank are counts over `univ.erase t` (order-invariant, `cliqueF_is_exposure`), equal to full
+counts minus the omitted indicator (as in `count_delete_atom`); full counts by N2 and N3
+(note `cliqueFullJoint` agrees with `cliqueJointTable` at every label). Casting: `(65:ℝ)+1 = 66`. -/
 def N9 : Prop := N2 → N3 → RetainedInputs
 
 /-- Conclusion of N10: every statistic of (bank inputs, actual assignment) has the same
@@ -201,7 +224,8 @@ def IndependentTransport : Prop :=
         expect (fun x : Fin 66 × Fin 66 => ((cliqueJointMass false x : ℚ) : ℝ))
           (fun x => φ (castW x.1) (castJ x.1) (cliqueAssignments x.2))
 
-/-- Split the product sum, apply N4 to the actual assignment, N7, then N8 with
+/-- **Node N10** (`full_law_moment_transport`; mapper record 8, step 4). Split the product sum
+(`Fintype.sum_prod_type`), apply N4 to the actual assignment, N7, then N8 with
 `g t = (∑ r, φ (castW t) (castJ t) (cliqueAssignments r)) / 66` justified by N9;
 `65!/66!/66 = 1/4356`. -/
 def N10 : Prop :=
@@ -216,12 +240,14 @@ def StatisticIdentification : Prop :=
       varianceEstimate (fun z => exposure cliqueAdj z) yR (castW t) (castJ t) .d01 .d00
           (cliqueAssignments r) = ((cliqueV t r : ℚ) : ℝ)
 
-/-- `cliqueF_is_exposure`, then `ratCast_htContrast` and `ratCast_varianceEstimate`. -/
+/-- **Node N11** (`statistic_identification`; mapper record 8, step 3, last sentence).
+`cliqueF_is_exposure`, then `ratCast_htContrast` and `ratCast_varianceEstimate`. -/
 def N11 : Prop := StatisticIdentification
 
 /-! ## Moments of the reduced law -/
 
-/-- Conditional moments given the omitted profile `t` in the independent regime. -/
+/-- Conclusion of N12: conditional moments given the omitted profile `t`, independent regime
+(new version of the independent half of the tainted `clique_conditional_moments`). -/
 def ConditionalMoments : Prop :=
   ∀ t : Fin 66,
     expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (cliqueT t) = cliqueConditionalMean t false ∧
@@ -229,8 +255,9 @@ def ConditionalMoments : Prop :=
       cliqueConditionalSecond t false ∧
     expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (cliqueV t) = cliqueConditionalV t false
 
-/-- The independent conditional moments follow from exhaustive exposure probabilities
-and the marginal and joint counts N2 and N3. -/
+/-- **Node N12** (`clique_conditional_moments_reconstructed`; mapper record 8, step 5,
+first paragraph). Port the independent case of `clique_conditional_moments`, replacing
+`clique_observation_marginal/joint` by `exhaustive_probabilities` + N2/N3. -/
 def N12 : Prop := N2 → N3 → ConditionalMoments
 
 /-- Conclusion of N13: one-unit type counting over (omitted profile, unit). -/
@@ -238,7 +265,8 @@ def TypeCount1 : Prop :=
   ∀ Φ : Exposure → ℚ,
     ∑ t : Fin 66, ∑ i : Fin 12, Φ (cliqueF t i) = 12 * ∑ d : Exposure, (cliqueFullCount d : ℚ) * Φ d
 
-/-- Swap the sums and group by the exposure label, using N2. -/
+/-- **Node N13** (`type_count_units`; mapper record 8, step 5, symmetry reduction replaced by
+counting). Swap the sums and group by the label (`Finset.sum_fiberwise`), then N2. -/
 def N13 : Prop := N2 → TypeCount1
 
 /-- Conclusion of N14: pair type counting over (omitted profile, unit pair). -/
@@ -249,16 +277,18 @@ def TypeCount2 : Prop :=
       ∑ e : Bool, ∑ s : Bool, (cliquePairClassCount e s : ℚ) *
         ∑ d : Exposure, ∑ d' : Exposure, (cliqueJointTable e s d d' : ℚ) * Ψ e s d d'
 
-/-- Swap sums, group the inner sum by `(cliqueF t i, cliqueF t j)` and use N3,
-then group unit pairs by class, with class sizes 12, 36, and 96. -/
+/-- **Node N14** (`type_count_pairs`; mapper record 8, step 5). Swap sums, group the inner
+sum by `(cliqueF t i, cliqueF t j)` and use N3, then group unit pairs by class (the class
+sizes 12/36/96 are a small `decide`). -/
 def N14 : Prop := N3 → TypeCount2
 
 /-- Conclusion of N15: average conditional mean of the HT contrast. -/
 def MeanValue : Prop :=
   expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (fun t => cliqueConditionalMean t false) = -67 / 53592
 
-/-- The summand of `cliqueConditionalMean t false` at unit `i` is a function of
-`cliqueF t i`; applying TypeCount1 reduces it to a 4-term rational sum. -/
+/-- **Node N15** (`independent_mean_value`; mapper record 8, step 5 table). The summand of
+`cliqueConditionalMean t false` at unit `i` is a function of `cliqueF t i`; apply
+TypeCount1; the result is a 4-term rational sum (`norm_num`). -/
 def N15 : Prop := TypeCount1 → MeanValue
 
 /-- Conclusion of N16: average conditional second moment of the HT contrast. -/
@@ -266,41 +296,42 @@ def SecondValue : Prop :=
   expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (fun t => cliqueConditionalSecond t false) =
     234399385 / 480661776
 
-/-- The `(i, j)` summand of `cliqueConditionalSecond t false` is a function of
+/-- **Node N16** (`independent_second_moment_value`; mapper record 8, step 5 table). The
+`(i, j)` summand of `cliqueConditionalSecond t false` is a function of
 `(i = j, same clique, cliqueF t i, cliqueF t j)` (relevant `cliqueFullJoint` entries depend
-only on the class); applying TypeCount2 reduces it to a 48-term rational sum. -/
+only on the class); apply TypeCount2; the result is a 48-term rational sum. -/
 def N16 : Prop := TypeCount2 → SecondValue
 
-/-- Average over the omitted profile of the same-label double sum
-`V̂_a` (a = d01) of the expected variance estimate. -/
+/-- Conclusion of N17: average over the omitted profile of the same-label double sum
+`V̂_a` (a = d01) of the expected variance estimate (mapper's `B_a`, averaged). -/
 def SameLabelValueD01 : Prop :=
   expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (fun t =>
       expectedTotalVariance (cliqueObservationMarginal t false) (cliqueObservationJoint t false)
         cliqueY (cliqueWeights t) (cliqueJoints t) .d01) = 3564985 / 349272
 
-/-- The `(i, j)` summand of `expectedTotalVariance ... .d01` (both guards `0 < q`
-and `i ≠ j ∧ q = 0` included) is a function of
-`(i = j, same clique, cliqueF t i, cliqueF t j)`; applying TypeCount2 reduces it
-to a 48-term rational sum. -/
+/-- **Node N17** (`independent_same_label_sum_d01`; mapper record 8, step 5, `B_a`). The
+`(i, j)` summand of `expectedTotalVariance ... .d01` (both guards `0 < q` and
+`i ≠ j ∧ q = 0` included) is a function of `(i = j, same clique, cliqueF t i, cliqueF t j)`;
+apply TypeCount2 and evaluate a 48-term rational sum. -/
 def N17 : Prop := TypeCount2 → SameLabelValueD01
 
-/-- The analogue of N17 for the label d00. -/
+/-- Conclusion of N18: as N17 for the label d00 (mapper's `B_b`, averaged). -/
 def SameLabelValueD00 : Prop :=
   expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (fun t =>
       expectedTotalVariance (cliqueObservationMarginal t false) (cliqueObservationJoint t false)
         cliqueY (cliqueWeights t) (cliqueJoints t) .d00) = 188343164 / 20398455
 
-/-- As N17. -/
+/-- **Node N18** (`independent_same_label_sum_d00`; mapper record 8, step 5, `B_b`). As N17. -/
 def N18 : Prop := TypeCount2 → SameLabelValueD00
 
-/-- Average of the cross-label double sum `Ĉ_ab`; the cross zero adjustment
-includes every same-clique pair and the diagonal. -/
+/-- Conclusion of N19: average of the cross-label double sum `Ĉ_ab` (mapper's `C`,
+averaged; the cross zero adjustment includes every same-clique pair and the diagonal). -/
 def CrossLabelValue : Prop :=
   expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (fun t =>
       expectedTotalCovariance (cliqueObservationMarginal t false) (cliqueObservationJoint t false)
         cliqueY (cliqueWeights t) (cliqueJoints t) .d01 .d00) = -3863683 / 171941
 
-/-- As N17 for
+/-- **Node N19** (`independent_cross_label_sum`; mapper record 8, step 5, `C`). As N17 for
 `expectedTotalCovariance ... .d01 .d00`. -/
 def N19 : Prop := TypeCount2 → CrossLabelValue
 
@@ -309,10 +340,10 @@ def VarianceEstimateValue : Prop :=
   expect (fun _ : Fin 66 => (1 / 66 : ℚ)) (fun t => cliqueConditionalV t false) =
     1040129476423 / 2326402995840
 
-/-- The conditional identity is `E(V|t) = (B_a + B_b - 2C)/144`, where `B_a` and
-`B_b` are the same-label sums and `C` is the cross-label sum. Unfold
-`cliqueConditionalV` and `expectedVariance`, use `(N : ℚ)^2 = 144`, split the
-expectation linearly, and combine N17-N19. -/
+/-- **Node N20** (`independent_variance_estimate_value`; mapper record 8, step 5,
+`E(V|t) = (B_a + B_b - 2C)/144`). Unfold `cliqueConditionalV` and `expectedVariance`
+(`(N : ℚ)^2 = 144`), split the expectation linearly (`expect_add`, `expect_sub`,
+`expect_div`, `expect_const_mul`), and combine N17-N19. -/
 def N20 : Prop :=
   SameLabelValueD01 → SameLabelValueD00 → CrossLabelValue → VarianceEstimateValue
 
@@ -323,16 +354,16 @@ def RealMoments : Prop :=
     expect (indepMass P) (fun x => indepT x ^ 2) = 234399385 / 480661776 ∧
     expect (indepMass P) indepV = 1040129476423 / 2326402995840
 
-/-- Apply IndependentTransport to the HT contrast, its square, and the variance
-estimate; rewrite by StatisticIdentification, `ratCast_expect`,
-`clique_joint_expectation false`, `clique_observation_independent_mass`,
-ConditionalMoments, and the three values. -/
+/-- **Node N21** (`independent_real_moments`; mapper record 8, steps 4-5). Apply
+IndependentTransport to `φ = HT contrast`, its square, and the variance estimate; rewrite by
+StatisticIdentification; `ratCast_expect`; `clique_joint_expectation false`;
+`clique_observation_independent_mass`; ConditionalMoments; the three values. -/
 def N21 : Prop :=
   IndependentTransport → StatisticIdentification → ConditionalMoments → MeanValue →
     SecondValue → VarianceEstimateValue → RealMoments
 
-/-- Instantiate the printed proposition at the witness; its first conjunct would give
-`Var(T) ≤ E(V̂)`, contradicting the exact values. -/
+/-- The nodes suffice (mapper record 8, step 7): instantiate the printed proposition at the
+witness; its first conjunct would give `Var(T) ≤ E(V̂)`, contradicting the exact values. -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7 : N7)
     (h8 : N8) (h9 : N9) (h10 : N10) (h11 : N11) (h12 : N12) (h13 : N13) (h14 : N14)
     (h15 : N15) (h16 : N16) (h17 : N17) (h18 : N18) (h19 : N19) (h20 : N20)

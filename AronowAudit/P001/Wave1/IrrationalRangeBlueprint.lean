@@ -1,16 +1,23 @@
 import AronowAudit.P001.P001_Foundations
 
-/-!
-# P001-T32: a continuous random variable whose range contains no interval
+/-! # Blueprint: P001-T32 — a continuous random variable whose range contains no interval
 
-Section 1.2.4, p. 24 (PDF p. 42), paragraph before Definition 1.2.14, corrected:
-a continuous random variable has uncountable range and uncountable sample space,
-and its range need not contain an interval of positive length.
+Record 41 of dossier group P001c (`AronowAudit.P001.continuous_range_without_interval_supporting`,
+resolution `repair_and_prove`). Section 1.2.4, p. 24 (PDF p. 42), paragraph before
+Definition 1.2.14, corrected: a continuous random variable has uncountable range (and
+uncountable sample space), and its range need not contain an interval of positive length.
 
-Take the sample space to be the subtype `C = [0, 1/2] \ ℚ` itself, with law
-`ν = 2 • volume.comap (↑)`. The inclusion has range exactly `C` and density
-`2 · 1_C`. In contrast, the identity on all of `ℝ` has range `ℝ` even when its
-law is concentrated on `C`.
+The frozen helper only produces a measure on all of `ℝ` concentrated on a set `C`; the identity
+on `ℝ` then has range `ℝ`. The repair takes the sample space to be the subtype
+`C = [0, 1/2] \ ℚ` itself, with law `ν = 2 • volume.comap (↑)`, so that the inclusion has range
+exactly `C` and density `2 · 1_C`. Neither unfinished fat-Cantor declaration
+(`continuous_range_without_interval_supporting`, `continuous_range_without_interval`, both with
+unfinished placeholder proofs) may be used.
+
+Map-P001c report, record 41; both referees accepted without fixes.
+
+Final declaration (writer): `AronowAudit.P001.Wave1.continuous_range_complete_correction`
+in `AronowAudit/P001/Wave1/IrrationalRange.lean`.
 -/
 
 namespace AronowAudit.P001.Wave1.IrrationalRange
@@ -23,7 +30,8 @@ local instance (p : Prop) : Decidable p := Classical.propDecidable p
 
 universe u
 
-/-- (i) Every real random variable with a PDF has null fibres, uncountable range and uncountable sample space; (ii) for
+/-- Frozen target (map-P001c `continuous_range_complete_correction`): (i) every real random
+variable with a PDF has null fibres, uncountable range and uncountable sample space; (ii) for
 `C = [0,1/2] \ ℚ` there is a probability law on the subtype `C` whose inclusion is a measurable
 random variable with range exactly `C`, density `2 · 1_C`, and no nondegenerate closed
 interval inside its range. -/
@@ -54,15 +62,15 @@ its `Decidable` instance (`Set.decidableSdiff`) is the one elaborated in `Target
 def irrHalfDensity (x : ℝ) : ℝ :=
   if x ∈ Set.Icc (0 : ℝ) (1 / 2) \ Set.range (fun q : ℚ => (q : ℝ)) then 2 else 0
 
-/-- The rationals are countable, Borel and Lebesgue-null, hence `C` is Borel and
-`λ(C) = λ([0,1/2]) = 1/2`. For `a < b`, a rational `q ∈ (a,b)` lies in `[a,b]` but not in
-`C`. -/
+/-- N1 (paper-proof step "`Q` is countable, Borel and Lebesgue-null, hence `C` is Borel and
+`λ(C) = λ([0,1/2]) = 1/2`; for `a < b` a rational `q ∈ (a,b)` lies in `[a,b]` but not in
+`C`"). -/
 def N1 : Prop :=
   MeasurableSet irrHalf ∧ volume irrHalf = 1 / 2 ∧
     ∀ a b : ℝ, a < b → ¬ Set.Icc a b ⊆ irrHalf
 
-/-- For every Borel `A`, `(ν map j)(A) = 2 λ(A ∩ C)`; this is exactly
-the measure with density `2 · 1_C`, by `map_comap_subtype_coe`. The `if` in
+/-- N2 (paper-proof step "for every Borel `A`, `(ν map j)(A) = 2 λ(A ∩ C)`; this is exactly
+the measure with density `2 · 1_C`"). Use `map_comap_subtype_coe`. Writer note: the `if` in
 `irrHalfDensity` carries the instance `Set.decidableSdiff`, while an `if x ∈ irrHalf` written
 in a file with the local classical instance carries another; relate them with
 `simp only [irrHalfDensity, irrHalf]`/`split_ifs`/`by_cases`, never `rfl`. -/
@@ -70,15 +78,15 @@ def N2 : Prop :=
   irrHalfLaw.map (fun x : irrHalf => (x : ℝ)) =
     volume.withDensity (fun x => ENNReal.ofReal (irrHalfDensity x))
 
-/-- The subtype law is a probability measure: `ν(C) = 2 λ(C) = 1`. -/
+/-- N3 (paper-proof step "`ν(C) = 2 λ(C) = 1`"). -/
 def N3 : Prop := IsProbabilityMeasure irrHalfLaw
 
-/-- The density is Borel, nonnegative and integrable, with integral `2 λ(C) = 1`.
-This proposition supplies the measurability and integrability clauses of `HasPDF`. -/
+/-- N4 (paper-proof step "the density is Borel, nonnegative and integrable, with integral
+`2 λ(C) = 1`"): the measurability and integrability halves of the project's `HasPDF`. -/
 def N4 : Prop := AEMeasurable irrHalfDensity volume ∧ Integrable irrHalfDensity volume
 
-/-- The four propositions imply `Target`. Clause (i) follows from
-`continuous_rv_range_uncountable`; the range of the inclusion is `Subtype.range_coe`; `C` is uncountable because a countable set is
+/-- The nodes suffice. Clause (i) is the proved frozen `continuous_rv_range_uncountable`; the
+range of the inclusion is `Subtype.range_coe`; `C` is uncountable because a countable set is
 Lebesgue-null while `λ(C) = 1/2`; the type-level statement is `Set.countable_coe_iff`. -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) : Target.{u} := by
   intro Ω _ μ _ X hX f hf
@@ -99,7 +107,7 @@ theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) : Target.{u} := by
   rw [Subtype.range_coe]
   exact hint a b hab
 
-/- Satisfiable instance of the general hypotheses: `Ω = ℝ` with the unit-uniform
+/- Satisfiable instance of the general hypotheses (referees): `Ω = ℝ` with the unit-uniform
 law, `X = id`, `f = 1_{[0,1]}`; alternatively the witness itself, `Ω = C`, `μ = irrHalfLaw`,
 `X = (↑)`, `f = 2 · 1_C` (by N2–N4). -/
 

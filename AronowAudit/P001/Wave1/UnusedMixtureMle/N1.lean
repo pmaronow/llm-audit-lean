@@ -1,10 +1,10 @@
 import AronowAudit.P001.Wave1.UnusedMixtureMleBlueprint
 
 /-!
-# Selection of attained likelihood maximizers
+# Node UnusedMixtureMle.N1 (proved by the blueprint author; one term)
 
 Chooses, for every sample size and sample, a likelihood maximizer on the compact box given
-by the proved `finite_mixture_compact_attainment`.
+by the proved `finite_mixture_compact_attainment` (P001_Foundations.lean:7241).
 -/
 
 set_option autoImplicit false

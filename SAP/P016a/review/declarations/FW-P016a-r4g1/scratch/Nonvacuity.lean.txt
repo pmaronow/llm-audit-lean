@@ -1,0 +1,89 @@
+import SAP.P016a.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open SAP.P016a
+open scoped BigOperators
+
+namespace T6Audit
+
+def assign : Fin 2 → Assignment 3 :=
+  ![![true, false, false], ![false, false, true]]
+
+def gamma : Fin 3 → Fin 3 → ℝ :=
+  ![![0, 1, 2], ![1, 0, 1], ![2, 1, 0]]
+
+def baseline : Outcome 3 := ![10, 11, 12]
+
+def observed : Fin 2 → Outcome 3 :=
+  ![![12, 14, 18], ![16, 14, 14]]
+
+-- This is the ordinary distance matrix of three distinct points on the real line.
+example (i j : Fin 3) : gamma i j = |(i.val : ℝ) - (j.val : ℝ)| := by
+  fin_cases i <;> fin_cases j <;> norm_num [gamma]
+
+theorem gamma_ok : IsDistanceMatrix gamma := by
+  constructor
+  · intro i j
+    fin_cases i <;> fin_cases j <;> norm_num [gamma]
+  constructor
+  · intro i j
+    fin_cases i <;> fin_cases j <;> norm_num [gamma]
+  constructor
+  · intro i
+    fin_cases i <;> norm_num [gamma]
+  · intro i j k
+    fin_cases i <;> fin_cases j <;> fin_cases k <;> norm_num [gamma]
+
+theorem exposure_table : ∀ ω : Fin 2,
+    exposureSum gamma (assign ω) =
+      (![![0, 1, 2], ![2, 1, 0]] : Fin 2 → Outcome 3) ω := by
+  intro ω
+  funext i
+  fin_cases ω <;> fin_cases i <;>
+    norm_num [exposureSum, gamma, assign, bit, Fin.sum_univ_succ]
+
+theorem unit_variance : ∀ ω : Fin 2,
+    sampleVariance ((fun x : Outcome 3 => x) (exposureSum gamma (assign ω))) = 1 := by
+  intro ω
+  rw [exposure_table]
+  fin_cases ω <;>
+    norm_num [sampleVariance, pooledMean, Fin.sum_univ_succ]
+
+theorem generated : ∀ (ω : Fin 2) (i : Fin 3),
+    observed ω i = baseline i + (2 : ℝ) * bit (assign ω i) +
+      (3 : ℝ) * (fun x : Outcome 3 => x) (exposureSum gamma (assign ω)) i := by
+  intro ω i
+  rw [exposure_table]
+  fin_cases ω <;> fin_cases i <;> norm_num [observed, baseline, assign, bit]
+
+-- All of T6's hypotheses hold at once, with both effect coefficients nonzero.
+example : ∃ (n : ℕ) (_hn : 2 ≤ n)
+    (Ω : Type) (_finite : Fintype Ω) (_nonempty : Nonempty Ω)
+    (a : Ω → Assignment n) (Γ : Fin n → Fin n → ℝ)
+    (g : Outcome n → Outcome n) (y0 : Outcome n) (y : Ω → Outcome n)
+    (b1 b2 : ℝ),
+    IsDistanceMatrix Γ ∧
+    (∀ ω, sampleVariance (g (exposureSum Γ (a ω))) = 1) ∧
+    (∀ ω i, y ω i = y0 i + b1 * bit (a ω i) + b2 * g (exposureSum Γ (a ω)) i) ∧
+    b1 ≠ 0 ∧ b2 ≠ 0 := by
+  refine ⟨3, by norm_num, Fin 2, inferInstance, inferInstance,
+    assign, gamma, id, baseline, observed, 2, 3,
+    gamma_ok, unit_variance, generated, ?_, ?_⟩ <;> norm_num
+
+-- Verify recovery directly, without importing the Challenge theorem or using sorry.
+example : ∀ ω : Fin 2,
+    applicationAdjust (observed ω) (assign ω)
+      (id (exposureSum gamma (assign ω))) 2 3 = baseline := by
+  intro ω
+  funext i
+  rw [applicationAdjust, exposure_table]
+  fin_cases ω <;> fin_cases i <;> norm_num [observed, baseline, assign, bit]
+
+-- Strict cutoff boundary and two ordinary p-value examples.
+example : printedReject (1 / 100 : ℝ) := by norm_num [printedReject]
+example : ¬ printedReject (1 / 20 : ℝ) := by norm_num [printedReject]
+example : ¬ printedReject (1 / 10 : ℝ) := by norm_num [printedReject]
+
+end T6Audit

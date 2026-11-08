@@ -1,0 +1,154 @@
+import SAP.P020.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+namespace ReviewP020
+open SAP.P020
+open scoped BigOperators
+noncomputable section
+
+-- T6: the cluster totals have an individual-outcome realization.
+def slopeIndividuals : IndividualPotentialOutcomes slopePopulation where
+  Y0 := fun _ _ => 0
+  Y1 := fun j _ => if j = 2 then 1 else 0
+  total0 := by
+    intro j
+    fin_cases j <;> norm_num [clusterTotal, slopePopulation, Fin.sum_univ_succ]
+  total1 := by
+    intro j
+    fin_cases j <;> norm_num [clusterTotal, slopePopulation, Fin.sum_univ_succ, Fin.ext_iff]
+
+theorem slopeAssignments : (assignments slopePopulation) =
+    {({0} : Finset (Fin 3)), {1}, {2}} := by
+  decide
+
+theorem controlsTwoZero : controls ({0} : Finset (Fin 2)) = {1} := by decide
+theorem controlsTwoOne : controls ({1} : Finset (Fin 2)) = {0} := by decide
+theorem controlsThreeZero : controls ({0} : Finset (Fin 3)) = {1, 2} := by decide
+theorem controlsThreeOne : controls ({1} : Finset (Fin 3)) = {0, 2} := by decide
+theorem controlsThreeTwo : controls ({2} : Finset (Fin 3)) = {0, 1} := by decide
+
+example : (∀ j, 0 < slopePopulation.n j) ∧
+    0 < slopePopulation.mt ∧ slopePopulation.mt < slopePopulation.M ∧
+    populationSize slopePopulation = 6 ∧
+    clusterVariance (fun j => (slopePopulation.n j : ℝ)) = (2 : ℝ) / 3 := by
+  refine ⟨slopePopulation.n_pos, slopePopulation.mt_pos, slopePopulation.mt_lt, ?_, ?_⟩
+  · norm_num [populationSize, slopePopulation, Fin.sum_univ_succ]
+  · norm_num [clusterVariance, clusterMean, slopePopulation, Fin.sum_univ_succ]
+
+example : observedSlope slopePopulation {0} = 0 ∧
+    observedSlope slopePopulation {1} = 0 ∧
+    observedSlope slopePopulation {2} = (3 : ℝ) / 2 := by
+  norm_num [observedSlope, clusterCovariance, clusterVariance, clusterMean,
+    observedTotal, slopePopulation, Fin.sum_univ_succ]
+
+-- T7: a nonconstant outcome, nonzero shift, nonunit scale and nonzero coefficient.
+example : ({0} : Finset (Fin 2)) ∈ assignments subscriptPopulation ∧
+    desRaj (affinePopulation subscriptPopulation 2 3) (2 + 3 * (1 : ℝ)) {0} =
+      3 * desRaj subscriptPopulation 1 {0} := by
+  constructor
+  · decide
+  · norm_num [desRaj, rajTotal, armSum, rajPotential, differenced, clusterMean,
+      affinePopulation, subscriptPopulation, populationSize, controlCount,
+      controlsTwoZero, Fin.sum_univ_succ, Finset.univ_fin2]
+    norm_num [controlsTwoZero, controls, Finset.univ_fin2, Finset.card_sdiff,
+      Fin.sum_univ_succ]
+
+-- T8: all input vectors vary, and the difference coefficient is nonzero.
+example : 0 < (3 : ℕ) ∧
+    clusterMean (differenced (![0, 1, 4] : Fin 3 → ℝ) ![1, 2, 3] 2) =
+      clusterMean (![0, 1, 4] : Fin 3 → ℝ) ∧
+    clusterVariance (differenced (![0, 1, 4] : Fin 3 → ℝ) ![1, 2, 3] 2) =
+      clusterVariance (![0, 1, 4] : Fin 3 → ℝ) +
+      2^2 * clusterVariance (![1, 2, 3] : Fin 3 → ℝ) -
+      2 * 2 * clusterCovariance (![0, 1, 4] : Fin 3 → ℝ) ![1, 2, 3] ∧
+    clusterCovariance
+        (differenced (![0, 1, 4] : Fin 3 → ℝ) ![1, 2, 3] 2)
+        (differenced (![2, -1, 3] : Fin 3 → ℝ) ![1, 2, 3] 2) =
+      clusterCovariance (![0, 1, 4] : Fin 3 → ℝ) ![2, -1, 3] -
+      2 * clusterCovariance (![0, 1, 4] : Fin 3 → ℝ) ![1, 2, 3] -
+      2 * clusterCovariance (![2, -1, 3] : Fin 3 → ℝ) ![1, 2, 3] +
+      2^2 * clusterVariance (![1, 2, 3] : Fin 3 → ℝ) := by
+  norm_num [clusterMean, clusterVariance, clusterCovariance, differenced,
+    Fin.sum_univ_succ]
+
+-- T9: admissible assignment and genuine arithmetic disagreement.
+example : ({0} : Finset (Fin 2)) ∈ assignments subscriptPopulation ∧
+    ({0} : Finset (Fin 2)) ∈ assignments bracketPopulation := by
+  decide
+
+example : desRaj subscriptPopulation 0 {0} = (2 : ℝ) / 3 ∧
+    (subscriptPopulation.M : ℝ) / populationSize subscriptPopulation *
+      (armSum subscriptPopulation true (rajPotential subscriptPopulation true 0) {0} /
+          subscriptPopulation.mt -
+       armSum subscriptPopulation false (rajPotential subscriptPopulation true 0) {0} /
+          controlCount subscriptPopulation) = -(2 : ℝ) / 3 := by
+  norm_num [desRaj, rajTotal, armSum, rajPotential, differenced, clusterMean,
+    subscriptPopulation, populationSize, controlCount, controls,
+    Fin.sum_univ_succ, Finset.univ_fin2]
+
+example : clusterCovariance bracketPopulation.y0 bracketPopulation.y1 = 1 ∧
+    clusterMean bracketPopulation.y0 * bracketPopulation.y1 0 -
+      clusterMean bracketPopulation.y0 * clusterMean bracketPopulation.y1 = -1 ∧
+    clusterMean bracketPopulation.y0 * bracketPopulation.y1 1 -
+      clusterMean bracketPopulation.y0 * clusterMean bracketPopulation.y1 = 1 := by
+  norm_num [clusterCovariance, clusterMean, bracketPopulation, subscriptPopulation,
+    Fin.sum_univ_succ]
+
+-- Independent finite-sum verification of the entire two-witness statement.
+example : T9Statement := by
+  have hsub : ({0} : Finset (Fin 2)) ∈ assignments subscriptPopulation := by decide
+  have hbr : ({0} : Finset (Fin 2)) ∈ assignments bracketPopulation := by decide
+  norm_num [T9Statement, hsub, hbr, desRaj, rajTotal, armSum, rajPotential,
+    differenced, clusterCovariance, clusterMean, affinePopulation,
+    populationSize, controlCount, bracketPopulation, subscriptPopulation,
+    controlsTwoZero, Fin.sum_univ_succ]
+  norm_num [controls, Finset.univ_fin2, Fin.sum_univ_succ]
+
+-- Independent finite-sum verification of the entire fitted-slope witness.
+example : T6Statement := by
+  norm_num [T6Statement, designBias, designCovariance, expectation, clusterLaw,
+    uniformLaw, slopeAssignments, observedSlope, desRaj, rajTotal,
+    armMeanSize, armSize, armSum, rajPotential, differenced,
+    clusterVariance, clusterCovariance, clusterMean, observedTotal,
+    averageTreatmentEffect, populationSize, controlCount, slopePopulation,
+    controlsThreeZero, controlsThreeOne, controlsThreeTwo, Fin.sum_univ_succ]
+  norm_num [controls, Fin.sum_univ_succ]
+
+-- T10: individual sharp null with unequal sizes and positive total variance.
+def nullIndividuals : IndividualPotentialOutcomes bracketPopulation where
+  Y0 := fun j _ => if j = 0 then 0 else 1
+  Y1 := fun j _ => if j = 0 then 0 else 1
+  total0 := by
+    intro j
+    fin_cases j <;>
+      norm_num [clusterTotal, bracketPopulation, subscriptPopulation, Fin.sum_univ_succ]
+  total1 := by
+    intro j
+    fin_cases j <;>
+      norm_num [clusterTotal, bracketPopulation, subscriptPopulation, Fin.sum_univ_succ]
+
+example : IndividualSharpNull nullIndividuals ∧
+    ({0} : Finset (Fin 2)) ∈ assignments bracketPopulation ∧
+    clusterVariance (observedTotal bracketPopulation {0}) = 1 ∧
+    sharpNullVarianceEstimator bracketPopulation {0} = (16 : ℝ) / 9 := by
+  refine ⟨(by intro j i; rfl), (by decide), ?_, ?_⟩
+  · norm_num [clusterVariance, clusterMean, observedTotal, bracketPopulation,
+      subscriptPopulation, Fin.sum_univ_succ]
+  · norm_num [sharpNullVarianceEstimator, clusterVariance, clusterMean, observedTotal,
+      populationSize, controlCount, bracketPopulation, subscriptPopulation,
+      Fin.sum_univ_succ]
+
+example : designVariance (clusterLaw bracketPopulation)
+    (horvitzThompson bracketPopulation) = (16 : ℝ) / 9 := by
+  have hA : assignments bracketPopulation =
+      {({0} : Finset (Fin 2)), {1}} := by decide
+  norm_num [designVariance, expectation, clusterLaw, uniformLaw, hA,
+    horvitzThompson, htTotal, armSum, populationSize, controlCount,
+    bracketPopulation, subscriptPopulation, controlsTwoZero, controlsTwoOne,
+    Fin.sum_univ_succ]
+  norm_num [controls, Finset.univ_fin2, Fin.sum_univ_succ]
+
+end
+end ReviewP020

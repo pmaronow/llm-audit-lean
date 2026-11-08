@@ -153,6 +153,8 @@ theorem mar_reweighting_corrected_hypothesis_proof {Ω E : Type*} [MeasurableSpa
       intro ω
       rcases hbinary ω with hr | hr <;> simp [censored, hr, div_eq_mul_inv, mul_comm]
 
+example : type_of% @AronowAudit.P001.mar_reweighting_corrected_hypothesis := mar_reweighting_corrected_hypothesis_proof
+
 end
 
 end AronowAudit.P001.Wave1

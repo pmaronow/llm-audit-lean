@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P007-T1",
+    "theorem": "SAP.P007.T1",
+    "fingerprint": "804e6b90a471bf52383d7e5ba4082e28886b00f601d9256ed67b349150948e9b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled successfully with /home/ubuntu/sap/tools/sap-lean. scratch/Check.lean:35 constructs an ObservedArray with 7633 rows containing 406 observed columns and 947 rows containing 405; its integer observed-cell sum is exactly 3482533. All row-set cardinalities are within 0..1205. This is a feasibility witness, not an identification of the empirical data.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T2",
+    "theorem": "SAP.P007.T2",
+    "fingerprint": "7854f2751f3a96096368a77d50e099ce1efe5815a288e6158e252bbb8e639bc7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled successfully with /home/ubuntu/sap/tools/sap-lean. scratch/Mask.lean constructs countMask by taking the complement of countArray on the 1205 retained columns and setting all 19 removed columns missing. countMask_missing gives 7019387 missing cells. The existential examples check all removed entries are missing and the original missing average satisfies the exact 1e-9 tolerance; A=7019387 separately satisfies the scalar hypothesis. The observed-total example of scratch/Check.lean:35 also satisfies the independent population-bound antecedent.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T3",
+    "theorem": "SAP.P007.T3",
+    "fingerprint": "08459f68225faa87cc63422253cd8f4788e90579ee270c9714ddd86959de2756",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled successfully with /home/ubuntu/sap/tools/sap-lean. scratch/Check.lean:98 and :124 independently construct both full existential witnesses, including normalized weights, all probabilities, row independence and the observation bounds. The first law is a point mass on (missing, observed), and the second a point mass on (missing, missing) working for every q in [0,1). No Challenge theorem is imported.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T4",
+    "theorem": "SAP.P007.T4",
+    "fingerprint": "e93ff53e65b59acf844cf37a74511527e1948339372235e6b2bb3c17a9121cbe",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled successfully with /home/ubuntu/sap/tools/sap-lean. scratch/Check.lean:135 independently constructs witness B, including the relation for every v in [0,1]. scratch/Later.lean:195 independently constructs witness C as a uniform mixture of the four possible pairs of its two specified row patterns, proves its weight equals laterNullWeights, and proves mutual row independence, the observation bound, all prefix probabilities and deletion conclusions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T5",
+    "theorem": "SAP.P007.T5",
+    "fingerprint": "8cfd79dac48ca4df21501380ce2a41015e05300af6257a6f648625d3e0d3e69e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled successfully with /home/ubuntu/sap/tools/sap-lean. scratch/Check.lean:147 constructs n=1, h=2, q=1/2 and the point mass on (missing, observed), satisfying all hypotheses including the independence needed by the final implication. The same law at q=0 is checked in the T3 example. scratch/Later.lean also supplies a two-row, three-column witness with positive first-prefix survival and later null prefixes. More generally the point mass on the wholly missing array satisfies the assumptions for every positive n,h and every q in [0,1).",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,72 @@
+[
+ {
+  "target_id": "P061-T12",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.household_sutva",
+   "AronowAudit.P061.sutva_design_free",
+   "AronowAudit.P061.sutva_design_invariance",
+   "AronowAudit.P061.sutva_epo_global"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P061-T13",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.nurva_epo",
+   "AronowAudit.P061.nurva_sutva_observational_equivalence",
+   "AronowAudit.P061.observed_law_support",
+   "AronowAudit.P061.sutva_implies_nurva"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P061-T14",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.household_tables"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P061-T15",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.equilibrium_tables",
+   "AronowAudit.P061.hidden_version_tables"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P061-T16",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.PaperDomains.ht_unbiased_T16_resolved"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P061.PaperDomains.finite_support_ht_T16_resolved",
+    "reason": "The selected targeted-moment result covers the positive mean identity without requiring finite raw support; its historical refutation conjunct is not used."
+   },
+   {
+    "lean_name": "AronowAudit.P061.Refutations.printed_general_ht_unbiased_refuted",
+    "reason": "Refutes unconditional mean existence from positivity, which does not contradict the printed identity under the required existence-of-expectations reading."
+   },
+   {
+    "lean_name": "AronowAudit.P061.ht_contrast_unbiased",
+    "reason": "Final status wrong_credit; not invoked. The contrast follows by existing expectation subtraction and two instances of the selected usable mean row."
+   }
+  ]
+ }
+]

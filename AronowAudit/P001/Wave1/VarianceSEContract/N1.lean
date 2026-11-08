@@ -1,6 +1,7 @@
 import AronowAudit.P001.Wave1.VarianceSEContractBlueprint
 
-/-! P001-T55: variance and standard-error consistency. The identities `sample_mean_variance_estimate_scale` and
+/-! Node N1 (= Target) of the P001-T55 records 47–48 blueprint (trivial; written by the
+blueprint architect): the proved frozen `sample_mean_variance_estimate_scale` and
 `variance_se_consistency_equivalence` give all three equivalences. -/
 
 namespace AronowAudit.P001.Wave1.VarianceSEContract

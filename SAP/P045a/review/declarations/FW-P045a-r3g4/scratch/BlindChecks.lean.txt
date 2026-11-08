@@ -1,0 +1,56 @@
+import SAP.P045a.Defs
+
+open scoped BigOperators Classical
+open Finset SAP.P045a
+
+-- Closed, definition-based checks; no Challenge theorem is used.
+example : treatmentPairs.card = 45 := by decide
+
+example : (5, 8) ∈ treatmentPairs := by decide
+
+example : ∀ i : Fin 10, printedAdj i i = false := by decide
+
+example : ∀ i j : Fin 10, printedAdj i j = printedAdj j i := by decide
+
+example : (univ.filter (fun j => printedAdj (0 : Fin 10) j = true)).card = 3 := by
+  decide
+
+example : ∀ i : Fin 10,
+    3 ≤ (univ.filter (fun j => printedAdj i j = true)).card ∧
+    (univ.filter (fun j => printedAdj i j = true)).card ≤ 6 := by
+  decide
+
+example : ¬pairCellNonempty .d11 (5, 8) := by
+  unfold pairCellNonempty
+  decide
+
+example : ∀ i : Fin 10,
+    exposure printedAdj (pairAssignment (5, 8)) i = .d00 ↔ i = 0 ∨ i = 1 := by
+  decide
+
+example : (treatmentPairs.filter (pairCellNonempty .d11)).card = 20 := by
+  let S := treatmentPairs.filter (fun e =>
+    ∃ i : Fin 10, exposure printedAdj (pairAssignment e) i = .d11)
+  have h : treatmentPairs.filter (pairCellNonempty .d11) = S := by
+    ext e
+    simp only [S, mem_filter]
+    rfl
+  rw [h]
+  decide
+
+example : (treatmentPairs.filter (fun e =>
+    pairCellNonempty .d11 e ∧ pairCellNonempty .d00 e)).card = 19 := by
+  let S := treatmentPairs.filter (fun e =>
+    (∃ i : Fin 10, exposure printedAdj (pairAssignment e) i = .d11) ∧
+    (∃ i : Fin 10, exposure printedAdj (pairAssignment e) i = .d00))
+  have h : (treatmentPairs.filter (fun e =>
+      pairCellNonempty .d11 e ∧ pairCellNonempty .d00 e)) = S := by
+    ext e
+    simp only [S, mem_filter]
+    rfl
+  rw [h]
+  decide
+
+example : (∑ _e ∈ treatmentPairs, (1 / 45 : ℝ)) = 1 := by
+  have h : treatmentPairs.card = 45 := by decide
+  simp [h]

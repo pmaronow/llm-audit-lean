@@ -1,0 +1,105 @@
+import SAP.P040.Challenge
+
+open MeasureTheory ProbabilityTheory Set Filter
+open scoped BigOperators Topology
+namespace AuditP040
+open SAP.P040
+
+set_option maxHeartbeats 200000
+
+-- The canonical witness is a genuine count law and has independent responses.
+noncomputable def p0 : unitInterval := ⟨(4 / 5 : ℝ), by constructor <;> norm_num⟩
+noncomputable def responseLaw : Measure Bool := bernoulliMeasure true false p0
+instance : IsProbabilityMeasure responseLaw := by
+  unfold responseLaw
+  infer_instance
+
+example : IsProbabilityMeasure (Measure.pi (fun _ : Fin 15 => responseLaw)) := inferInstance
+example : iIndepFun (fun i (w : Fin 15 → Bool) => w i)
+    (Measure.pi (fun _ : Fin 15 => responseLaw)) := by
+  exact iIndepFun_pi (fun _ => measurable_id.aemeasurable)
+example (i : Fin 15) :
+    (Measure.pi (fun _ : Fin 15 => responseLaw)).map (fun w => w i) = responseLaw :=
+  (measurePreserving_eval (fun _ : Fin 15 => responseLaw) i).map_eq
+example : responseLaw.real {true} = (4 / 5 : ℝ) := by
+  simp [responseLaw, p0]
+example (k : DetectionCount) :
+    (ProbabilityTheory.binomial 15 p0).real {k.val} = binomialMass (4 / 5) k := by
+  simpa [p0, binomialMass] using binomial_real_singleton 15 k.val p0
+
+example : IsProbabilityMeasure (ProbabilityTheory.binomial 15 p0) := inferInstance
+
+
+#eval IO.println "independent model checked"
+example (k : DetectionCount) : 0 ≤ binomialMass (4 / 5) k := by
+  dsimp [binomialMass]
+  positivity
+example : (4 / 5 : ℝ) ∈ Icc 0 1 ∧
+    (49 / 25 : ℝ) ∈ Icc (19599 / 10000) (19601 / 10000) ∧
+    0 < binomialMass (4 / 5) 14 := by
+  norm_num [binomialMass]
+
+-- Both method-free implication premises have explicit witnesses.
+example : ∃ I : DetectionCount → Set ℝ, (4 / 5 : ℝ) ∉ I 14 := by
+  exact ⟨fun _ => ∅, Set.notMem_empty _⟩
+example : ∃ ell : DetectionCount → ℝ, (4 / 5 : ℝ) < ell 14 := by
+  exact ⟨fun _ => 1, by norm_num⟩
+
+-- Nonvacuity of the actual normal quantile definition, without using T1.
+example : {t : ℝ | (39 / 40 : ℝ) ≤ T1NormalCDF t}.Nonempty := by
+  have h : ∀ᶠ t : ℝ in atTop,
+      (39 / 40 : ℝ) < cdf (gaussianReal 0 1) t :=
+    (tendsto_cdf_atTop (gaussianReal 0 1)).eventually
+      (eventually_gt_nhds (by norm_num : (39 / 40 : ℝ) < 1))
+  obtain ⟨t, ht⟩ := h.exists
+  exact ⟨t, ht.le⟩
+example : BddBelow {t : ℝ | (39 / 40 : ℝ) ≤ T1NormalCDF t} := by
+  have h : ∀ᶠ t : ℝ in atBot,
+      cdf (gaussianReal 0 1) t < (39 / 40 : ℝ) :=
+    (tendsto_cdf_atBot (gaussianReal 0 1)).eventually
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 39 / 40))
+  obtain ⟨a, ha⟩ := eventually_atBot.mp h
+  refine ⟨a, ?_⟩
+  intro t ht
+  by_contra hnot
+  have hta : t ≤ a := le_of_lt (lt_of_not_ge hnot)
+  have hc : cdf (gaussianReal 0 1) t < (39 / 40 : ℝ) :=
+    (monotone_cdf _ hta).trans_lt (ha a le_rfl)
+  exact (not_lt_of_ge ht) hc
+
+-- T2's three root-existence assertions are meaningful, independently of T2.
+example : ∃ L ∈ Icc (680515 / 1000000 : ℝ) (680516 / 1000000),
+    observedUpperPolynomial L = (1 / 40 : ℝ) := by
+  have hc : Continuous observedUpperPolynomial := by
+    unfold observedUpperPolynomial
+    fun_prop
+  exact intermediate_value_Icc (by norm_num) hc.continuousOn
+    (by norm_num [observedUpperPolynomial])
+example : ∃ L ∈ Icc (720603 / 1000000 : ℝ) (720604 / 1000000),
+    observedUpperPolynomial L = (1 / 20 : ℝ) := by
+  have hc : Continuous observedUpperPolynomial := by
+    unfold observedUpperPolynomial
+    fun_prop
+  exact intermediate_value_Icc (by norm_num) hc.continuousOn
+    (by norm_num [observedUpperPolynomial])
+example : ∃ U ∈ Icc (998313 / 1000000 : ℝ) (998314 / 1000000),
+    U ^ 15 = (39 / 40 : ℝ) := by
+  exact intermediate_value_Icc (by norm_num)
+    (by fun_prop : ContinuousOn (fun u : ℝ => u ^ 15) _)
+    (by norm_num)
+
+-- T3 uses a valid observed count, positive variance factor, and positive multiplier.
+example : (14 : DetectionCount).val ≤ 15 ∧
+    roundsTwo (detectionProportion 14) (93 / 100) ∧
+    0 < detectionProportion 14 * (1 - detectionProportion 14) / 15 ∧
+    (0 : ℝ) < 49 / 25 := by
+  norm_num [detectionProportion, roundsTwo]
+example (k : DetectionCount) :
+    0 ≤ detectionProportion k * (1 - detectionProportion k) / 15 := by
+  have h : (k.val : ℝ) ≤ 15 := by exact_mod_cast Nat.le_of_lt_succ k.isLt
+  dsimp [detectionProportion]
+  have hn : (0 : ℝ) ≤ 1 - (k.val : ℝ) / 15 := by linarith
+  exact div_nonneg (mul_nonneg (by positivity) hn) (by norm_num)
+
+
+end AuditP040

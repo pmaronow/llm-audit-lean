@@ -94,5 +94,6 @@ theorem complete_randomization_conditioning {N : ℕ} (n1 : ℕ)
   split_ifs <;> simp
 
 
+#print axioms complete_randomization_conditioning
 end
 end AronowAudit.P004

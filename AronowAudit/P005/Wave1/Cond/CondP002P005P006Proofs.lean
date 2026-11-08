@@ -1,8 +1,9 @@
 import AronowAudit.Literature.CondP002P005P006
 
 /-!
-Conditional covariance bound for P005-T2. The literature premise is the closed
-`LeiDing2021QuadraticSampling` proposition.
+Conditional completion of P005-T2. The only literature premise is the closed
+`LeiDing2021QuadraticSampling` proposition supplied by the statement file.
+No historical admitted covariance or expansion declaration is used.
 -/
 
 noncomputable section
@@ -228,7 +229,7 @@ lemma CondP002P005P006_variance_control {n m : ℕ} (hm : m ≤ n)
   exact CondP002P005P006_expectation_control hm
     (fun S => (f S - expectation (n - m) f)^2)
 
-/-- P005-T2, conditional on `LeiDing2021QuadraticSampling`. -/
+/-- P005-T2, with exactly the literature premise of the frozen statement. -/
 theorem corrected_covariance_lemma_conditional :
     AronowAudit.P005.corrected_covariance_lemma_conditional_statement := by
   unfold AronowAudit.P005.corrected_covariance_lemma_conditional_statement

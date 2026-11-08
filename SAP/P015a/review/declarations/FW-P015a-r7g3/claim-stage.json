@@ -1,0 +1,14 @@
+[
+  {
+    "theorem": "SAP.P015a.T4",
+    "target_id": "P015-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All clauses (i)-(iii) are present for discrete covariates and square-integrable real treatment: distinct-endpoint positivity, zero-variance degeneracy and its contrapositive, both binary equivalences, normalized effective-profile masses, their zero criterion, binary reversal, and positivity at represented effective profiles. All SAP definitions implement the stated centered-square weights, conditional moments and reweighting. Clause (iv)'s fitted-zero and multivalued-support examples are genuine, with a positive-probability iid sample and independent infinite replicates respectively. The rare family has strict positivity and arbitrarily small positive effective-profile mass for every 0<epsilon<1/2, but estimator unbiasedness, moments, deviation bounds and consistency are asserted only at epsilon=1/1000000; the theorem therefore does not state joint compatibility of arbitrary smallness and consistency. The empirical Jensen country-contribution assertion in the canonical statement is also absent; its historical note cannot remove it. These two limitations are explicitly disclosed by the target docstring. All nondegenerate and zero-variance hypotheses have concrete instances in scratch/Nonvacuity.lean, and the finite witnesses were independently checked in scratch/WitnessChecks.lean."
+  },
+  {
+    "theorem": "SAP.P015a.T19",
+    "target_id": "P015-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "For a probability measure, general measurable covariates and measurable square-integrable real treatment, the theorem states the conditional squared-residual identity and the binary propensity formula. Conditional variance is defined by its standard conditional centered-second-moment definition, making the first identity definitional without misrepresenting or assuming any probabilistic conclusion. The separate binary formula is asserted almost everywhere, as appropriate for conditional expectations. Measurability and finite second moment are the canonical/usual conditions; no independence, linear propensity, finite/discrete-covariate or outcome assumptions are added. The conditional-expectation zero defaults are excluded by measurable X, finite measure and L2 integrability, including residual integrability verified generically in scratch/Nonvacuity.lean. That file also constructs a nonconstant binary-treatment instance satisfying every hypothesis."
+  }
+]

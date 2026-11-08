@@ -1,0 +1,99 @@
+import SAP.P019b.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 2000
+set_option maxHeartbeats 800000
+open scoped BigOperators
+open MeasureTheory ProbabilityTheory SAP.P019b
+noncomputable section
+open Classical
+
+abbrev AuditOmega := (Bool × Bool) × Bool
+
+def auditP : Measure AuditOmega :=
+  (PMF.uniformOfFintype (Bool × Bool)).toMeasure.prod
+    (PMF.uniformOfFintype Bool).toMeasure
+
+instance : IsProbabilityMeasure auditP := by
+  unfold auditP
+  infer_instance
+
+lemma audit_mass (ω : AuditOmega) : auditP {ω} = 1/8 := by
+  rcases ω with ⟨a, z⟩
+  rw [auditP, ← Set.singleton_prod_singleton, Measure.prod_prod]
+  norm_num [PMF.toMeasure_apply_singleton, PMF.uniformOfFintype_apply]
+  rw [← ENNReal.mul_inv] <;> norm_num
+
+lemma audit_integral (f : AuditOmega → ℝ) :
+    (∫ ω, f ω ∂auditP) = ∑ ω, (1/8 : ℝ) * f ω := by
+  rw [integral_fintype Integrable.of_finite]
+  simp [Measure.real, audit_mass, smul_eq_mul]
+
+lemma audit_prob (D : AuditOmega → Prop) :
+    (auditP {ω | D ω}).toReal = ∑ ω, (1/8 : ℝ) * (if D ω then 1 else 0) := by
+  have hm : MeasurableSet {ω | D ω} := Set.to_countable _ |>.measurableSet
+  have hi := integral_indicator_one (μ := auditP) hm
+  have he : (auditP {ω | D ω}).toReal =
+      ∫ ω, (if D ω then (1 : ℝ) else 0) ∂auditP := by
+    simpa [Set.indicator, Measure.real] using hi.symm
+  rw [he, audit_integral]
+
+-- Independent fair baseline, direct answer, and assignment; X = Y.
+def auditWhole : WholeStudy AuditOmega where
+  law := auditP
+  probability := inferInstance
+  W := fun ω => if ω.1.1 then 1 else 0
+  X := fun ω => ω.1.2
+  Y := fun ω => ω.1.2
+  Z := fun ω => ω.2
+  V := fun ω => (if ω.1.1 then 1 else 0) + (if ω.1.2 && ω.2 then 1 else 0)
+  measurable_W := measurable_of_countable _
+  measurable_X := measurable_of_countable _
+  measurable_Y := measurable_of_countable _
+  measurable_Z := measurable_of_countable _
+  measurable_V := measurable_of_countable _
+  bounded := ⟨1, Filter.Eventually.of_forall (by
+    rintro ⟨⟨w, y⟩, z⟩
+    cases w <;> cases y <;> cases z <;> decide)⟩
+
+theorem audit_whole_monotone : auditWhole.monotone := by
+  exact Filter.Eventually.of_forall (fun _ h => h)
+
+theorem audit_whole_design : auditWhole.noLiarsDesign := by
+  apply Filter.Eventually.of_forall
+  rintro ⟨⟨w, y⟩, z⟩
+  cases w <;> cases y <;> cases z <;>
+    norm_num [auditWhole, bitVal]
+
+theorem audit_whole_independent : auditWhole.treatmentIndependent := by
+  change IndepFun
+    (fun ω : AuditOmega => ((if ω.1.1 then (1 : ℕ) else 0), ω.1.2, ω.1.2))
+    (fun ω : AuditOmega => ω.2) auditP
+  exact indepFun_prod
+    (μ := (PMF.uniformOfFintype (Bool × Bool)).toMeasure)
+    (ν := (PMF.uniformOfFintype Bool).toMeasure)
+    (X := fun a : Bool × Bool => ((if a.1 then (1 : ℕ) else 0), a.2, a.2))
+    (Y := fun z : Bool => z) (measurable_of_countable _) measurable_id
+
+theorem audit_whole_nondegenerate : auditWhole.nondegenerate := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro z y
+    cases z <;> cases y <;>
+      norm_num [WholeStudy.prob, WholeStudy.cv, WholeStudy.ce, WholeStudy.mean,
+        WholeStudy.cell, auditWhole, audit_prob, audit_integral,
+        Fintype.sum_prod_type, Fintype.sum_bool]
+  · norm_num [WholeStudy.variance, WholeStudy.mean, auditWhole, audit_integral,
+      bitVal, Fintype.sum_prod_type, Fintype.sum_bool]
+  · norm_num [WholeStudy.variance, WholeStudy.mean, auditWhole, audit_integral,
+      bitVal, Fintype.sum_prod_type, Fintype.sum_bool]
+
+-- Every antecedent of T12, including its additional inference antecedent.
+example : auditWhole.monotone ∧ auditWhole.noLiarsDesign ∧
+    auditWhole.treatmentIndependent ∧
+    0 < auditWhole.prob (auditWhole.cell false true) ∧
+    0 < auditWhole.prob (auditWhole.cell true true) ∧ auditWhole.nondegenerate := by
+  exact ⟨audit_whole_monotone, audit_whole_design, audit_whole_independent,
+    (audit_whole_nondegenerate.1 false true).1,
+    (audit_whole_nondegenerate.1 true true).1, audit_whole_nondegenerate⟩
+
+end

@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P005-T15",
+    "theorem": "SAP.P005b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "t=2,c=4,n=6; the finite population above and any treatment pair. The coefficient statements do not require standardization or nonsingularity. n=6,d=1,m=2; x=(-11,-5,-1,1,5,11)/7, yT=x^2, yC=0. Mean x=0, Gram=1; all 15 assignments have nonsingular arm matrices (minimum variances 1/49 and 13/49) and common matrix (minimum 17/49). Compiled directly against SAP.P005b.Defs in scratch/Nonvacuity.lean. Further exact rational checks are in scratch/audit_checks.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T16",
+    "theorem": "SAP.P005b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=3,m=1,a=b=c=(1,1,-2). All three sums vanish; the design has three allocations and E[(mean_S a)^3]=-2. The zero-sum condition and nonzero moment compile in scratch/Nonvacuity.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T17",
+    "theorem": "SAP.P005b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The finite Gram/contraction and residual-moment hypotheses hold for the six-unit example (take any delta, for example yT-yC, and K=9). The sequence conjunct is instantiated by: For n>=3 use d_n=1, m_n=floor(n/2), x_i=sqrt(12/(n^2-1))*(i-(n-1)/2), yT_i=x_i^2, yC_i=0; arbitrary initial prefix. The sequence is standardized, has K=9 and allocation bounds lo=1/4,hi=3/4. Covariates are distinct, so both arm matrices and the common matrix are nonsingular on every assignment for n>=4. kappa_n=3(n-1)/(n*(n+1))->0 and d_n/n->0. See audit-evidence.md for the mathematical construction; the infinite sequence was not Lean-compiled.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T18",
+    "theorem": "SAP.P005b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=6,d=1,m=2; x=(-11,-5,-1,1,5,11)/7, yT=x^2, yC=0. Mean x=0, Gram=1; all 15 assignments have nonsingular arm matrices (minimum variances 1/49 and 13/49) and common matrix (minimum 17/49). Compiled directly against SAP.P005b.Defs in scratch/Nonvacuity.lean. Further exact rational checks are in scratch/audit_checks.py. For the first conjunct take eT,eC to be the common residuals; their weighted slope is zero. The second conjunct uses these residuals directly.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T19",
+    "theorem": "SAP.P005b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The declared refutation has a genuine witness: n=19,m=18,treated arm, a=(1,1,2,4,...,4) with sixteen 4s, b_i=1/a_i. All ab=1; Var(sampleCov)=2483/2807136, printed bound=1703/1994544, gap=2327/75792672>0. All 19 allocations are ordinary nonempty-arm assignments. The expectation formula still holds. Exact rational computation: scratch/audit_checks.py; derivation: audit-evidence.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T20",
+    "theorem": "SAP.P005b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=6,d=1,m=2; x=(-11,-5,-1,1,5,11)/7, yT=x^2, yC=0. Mean x=0, Gram=1; all 15 assignments have nonsingular arm matrices (minimum variances 1/49 and 13/49) and common matrix (minimum 17/49). Compiled directly against SAP.P005b.Defs in scratch/Nonvacuity.lean. Further exact rational checks are in scratch/audit_checks.py. The actual third-component expectation is 192/1715, whereas the printed right side is -192/1715. The actual expectation and regularity are Lean-checked. For the separately negated expansion, audit-evidence.md constructs a standardized distinct-covariate d=1 sequence with K=1, eventual all-assignment arm regularity, log(d)=0, and remainder at least n-2 with probability at least 1/2; the proposed scale is at most n^(-1/2).",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P005-T21",
+    "theorem": "SAP.P005b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=6,d=1,m=2; x=(-11,-5,-1,1,5,11)/7, yT=x^2, yC=0. Mean x=0, Gram=1; all 15 assignments have nonsingular arm matrices (minimum variances 1/49 and 13/49) and common matrix (minimum 17/49). Compiled directly against SAP.P005b.Defs in scratch/Nonvacuity.lean. Further exact rational checks are in scratch/audit_checks.py. The two-arm-size>=2 guard applies exactly to the proof-step clauses listed in the record and docstring. Exact rational enumeration with m=1 and m=5 also checks the unrestricted main unbiasedness conclusions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T22",
+    "theorem": "SAP.P005b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=6,d=1,m=2; x=(-11,-5,-1,1,5,11)/7, yT=x^2, yC=0. Mean x=0, Gram=1; all 15 assignments have nonsingular arm matrices (minimum variances 1/49 and 13/49) and common matrix (minimum 17/49). Compiled directly against SAP.P005b.Defs in scratch/Nonvacuity.lean. Further exact rational checks are in scratch/audit_checks.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T23",
+    "theorem": "SAP.P005b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=6,d=1,m=2; x=(-11,-5,-1,1,5,11)/7, yT=x^2, yC=0. Mean x=0, Gram=1; all 15 assignments have nonsingular arm matrices (minimum variances 1/49 and 13/49) and common matrix (minimum 17/49). Compiled directly against SAP.P005b.Defs in scratch/Nonvacuity.lean. Further exact rational checks are in scratch/audit_checks.py. The same covariates with m=3 give the balanced-design implication; a constant treatment-effect population supplies the other implication. Neither restriction applies to the main decomposition.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T24",
+    "theorem": "SAP.P005b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=6,d=1,m=2; x=(-11,-5,-1,1,5,11)/7, yT=x^2, yC=0. Mean x=0, Gram=1; all 15 assignments have nonsingular arm matrices (minimum variances 1/49 and 13/49) and common matrix (minimum 17/49). Compiled directly against SAP.P005b.Defs in scratch/Nonvacuity.lean. Further exact rational checks are in scratch/audit_checks.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T25",
+    "theorem": "SAP.P005b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n>=3 use d_n=1, m_n=floor(n/2), x_i=sqrt(12/(n^2-1))*(i-(n-1)/2), yT_i=x_i^2, yC_i=0; arbitrary initial prefix. The sequence is standardized, has K=9 and allocation bounds lo=1/4,hi=3/4. Covariates are distinct, so both arm matrices and the common matrix are nonsingular on every assignment for n>=4. kappa_n=3(n-1)/(n*(n+1))->0 and d_n/n->0. See audit-evidence.md for the mathematical construction; the infinite sequence was not Lean-compiled. The revised source retains these exact hypotheses and quantities; the docstring and decision corrections introduce no new mathematical assumptions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T26",
+    "theorem": "SAP.P005b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n>=3 use d_n=1, m_n=floor(n/2), x_i=sqrt(12/(n^2-1))*(i-(n-1)/2), yT_i=x_i^2, yC_i=0; arbitrary initial prefix. The sequence is standardized, has K=9 and allocation bounds lo=1/4,hi=3/4. Covariates are distinct, so both arm matrices and the common matrix are nonsingular on every assignment for n>=4. kappa_n=3(n-1)/(n*(n+1))->0 and d_n/n->0. See audit-evidence.md for the mathematical construction; the infinite sequence was not Lean-compiled. The revised source retains these exact hypotheses and quantities; the docstring and decision corrections introduce no new mathematical assumptions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P005-T27",
+    "theorem": "SAP.P005b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n>=3 use d_n=1, m_n=floor(n/2), x_i=sqrt(12/(n^2-1))*(i-(n-1)/2), yT_i=x_i^2, yC_i=0; arbitrary initial prefix. The sequence is standardized, has K=9 and allocation bounds lo=1/4,hi=3/4. Covariates are distinct, so both arm matrices and the common matrix are nonsingular on every assignment for n>=4. kappa_n=3(n-1)/(n*(n+1))->0 and d_n/n->0. See audit-evidence.md for the mathematical construction; the infinite sequence was not Lean-compiled. The revised source retains these exact hypotheses and quantities; the docstring and decision corrections introduce no new mathematical assumptions.",
+    "confidence": 0.99
+  }
+]

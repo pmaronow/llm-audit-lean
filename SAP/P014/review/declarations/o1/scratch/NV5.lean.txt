@@ -1,0 +1,19 @@
+import SAP.P014.Challenge
+open SAP.P014 MeasureTheory
+open scoped ENNReal
+
+-- T8: hypothesis S.Nonempty satisfiable
+example : windowContrast ({0} : Finset (Fin 1)) (fun _ b => if b then (2:ℝ) else 1) =
+    ((∑ i ∈ ({0} : Finset (Fin 1)), (fun (_ : Fin 1) (b : Bool) => if b then (2:ℝ) else 1) i true) -
+      ∑ i ∈ ({0} : Finset (Fin 1)), (fun (_ : Fin 1) (b : Bool) => if b then (2:ℝ) else 1) i false) /
+      ({0} : Finset (Fin 1)).card :=
+  SAP.P014.T8 _ _ (by simp)
+
+-- T7 general part: only a probability measure is needed; instantiate with a Dirac mass
+example : ¬ (∀ i ∈ ({0, 1} : Finset (Fin 2)), ∀ j ∈ ({0, 1} : Finset (Fin 2)),
+    eventProbability (Measure.dirac ()) (fun _ : Unit => (![0, 1] : Fin 2 → ℝ) i = ![0, 1] j) = 0) :=
+  ((SAP.P014.T7.{0}).1 (Measure.dirac ()) (fun _ => ![0, 1]) {0, 1}).2.2.2 1 (by norm_num) (by decide) |>.2.2
+
+-- T4 / T7 finite designs: inspect a couple of computed objects
+#check (SAP.P014.T4 : T4Statement)
+example : localThree = ({0,1,2} : Finset (Fin 4)) := rfl

@@ -167,7 +167,7 @@ private lemma t31B5_cantor_volume : volume fatCantor = 1/2 := by
       ⟨0, by rw [t31B5_stage_zero, Real.volume_Icc]; norm_num⟩)
   exact tendsto_nhds_unique hcontinuity hlim'
 
-/-- A real interval in a stage lies in a single component. Separate one component
+/-- A real interval in a stage lies in a single component.  We separate one component
 from the finite closed union of the others, and use preconnectedness of the interval. -/
 private lemma t31B5_interval_in_component (n : ℕ) (a b : ℝ) (hab : a ≤ b)
     (hs : Set.Icc a b ⊆ fatStage n) :
@@ -257,7 +257,7 @@ private lemma t31B5_subtype_pdf (C : Set ℝ) (hC : MeasurableSet C)
       by_cases hx : x ∈ C <;> simp [hx, Set.indicator]
     rw [hd, withDensity_indicator hC, withDensity_const]
 
-/-- The fat Cantor construction, with its literal subtype range and normalized law. -/
+/-- The frozen fat Cantor construction, with its literal subtype range and normalized law. -/
 theorem fat_cantor_continuous_range_counterexample_proof : IsClosed fatCantor ∧ volume fatCantor=1/2 ∧ IsProbabilityMeasure fatSampleMeasure ∧
    HasPDF (fatSampleMeasure.map (fun x : fatCantor => x.val)) fatPDF ∧
    Set.range (fun x : fatCantor => x.val)=fatCantor ∧
@@ -266,6 +266,8 @@ theorem fat_cantor_continuous_range_counterexample_proof : IsClosed fatCantor �
     t31B5_subtype_probability fatCantor t31B5_cantor_closed.measurableSet t31B5_cantor_volume,
     t31B5_subtype_pdf fatCantor t31B5_cantor_closed.measurableSet t31B5_cantor_volume,
     Subtype.range_coe, t31B5_cantor_no_interval⟩
+
+example : type_of% @AronowAudit.P001.fat_cantor_continuous_range_counterexample := fat_cantor_continuous_range_counterexample_proof
 
 end
 end AronowAudit.P001.Wave1

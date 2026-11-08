@@ -1,0 +1,156 @@
+[
+  {
+    "target_id": "P037-T1",
+    "theorem": "SAP.P037a.T1",
+    "verdict": "not_faithful",
+    "severity": "minor",
+    "issues": [
+      "Documentation only: SAP/P037a/Challenge/Part1.lean:6-8 gives the causal/regression coefficient discrepancy and accurately discloses omission of clause (v), but does not identify which interpretation of the publication is refuted. The canonical statement expressly concerns identification from randomization, an eligible-composition main effect and marginal average linearity alone, and says that the witness violates the preferred qualified response restriction. The task explicitly requires the docstring of an interpretation-specific counterexample to identify that reading. The current docstring omits this required scope qualification. The architect's restricted label and finite mathematical statement are otherwise correct."
+    ],
+    "fix": "Append to the existing T1 docstring: 'This counterexample refutes identification from randomization, an eligible-composition main-effect control, and linearity of the marginal average causal curve alone. The witness violates the preferred qualified response restriction; it does not refute the qualified response-model interpretation.' Keep the existing restriction paragraph and theorem statement.",
+    "nonvacuity": "Independent exact rational enumeration in scratch/exact_checks.py yields 454 positive-mass states totaling one, with example mass 1/1536 for treatment pair (0,1) and both seed-referent counts zero. It reproduces G, h, det(G)=31/60000 and all asserted regression comparisons; the mixture formula is checked on all 32 zero/one parameter combinations. Every stratum law has positive variance for q=1/10 or 3/10. The extra typed states have zero mass and do not affect the design.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T2",
+    "theorem": "SAP.P037a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles nonempty size-one subset samples for a stratum of size two and for the singleton edge case. It also constructs a fair two-state design with D identically treated, mu=1/2, and R equal to +/-1/4 at one school and zero at the other three. CompositionRandomized holds, C=mu+R stays in [0,1], and E[R'MR]=3/64>0. Choosing zero controls, a=t=0 and Y=bC gives an actual solution of the centered normal equations with slope b. The fixed witness's centered and augmented expected Grams have determinants 1/4000 and 1/600000, respectively; exact enumeration checks every regression comparison.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T3",
+    "theorem": "SAP.P037a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The critical-value interval contains c=2. Both bin witnesses (-57/1000,7/250) and (-57/1000,17/500) are verified by the compiled scratch file. Their positive standard errors give 57/34<19/10<=2<57/28. The attainable-ratio interval is nonempty, for example z=2 with a=3/50 and se=3/100. No Gaussian quantile or Gaussian tail hypothesis is assumed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T4",
+    "theorem": "SAP.P037a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The minimum case has two weights and a nonempty one-dimensional open simplex. Its constant density is 1, and p0/(p0+p1)=p0 gives event mass 1/4; independent uniforms give the triangle integral integral_0^1(v/3)dv=1/6. Both measures are finite probability measures by their definitions and the usual simplex-volume calculation, although their full normalization theorem is outside the retained statement. All scalar ratio hypotheses hold at u=1,v=2,total=3. WLS has a nonempty full-rank instance X=(1,1)' with one column, w=(1,2), y=(0,1), c=2. The compiled scratch file verifies normalization of (1,2) to (1/3,2/3). Decaying-exponential integrands are genuinely integrable.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T5",
+    "theorem": "SAP.P037a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "uniformDraw has mass one on (0,1), where -log is finite and positive; for t>=0 its transformed survival probability is Pr(U<exp(-t))=exp(-t), the Exp(1) law. The gamma integrals are integrable for every natural m and have value m! by integration by parts, starting at integral exp(-t)=1. The n=2 simplex and full-rank WLS examples for T4 apply to the other conjuncts. No empty-dimensional simplex or singular coefficient calculation supplies the unequal-law conclusion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T6",
+    "theorem": "SAP.P037a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A=2695 and B=2012 satisfy the rounded-total assumptions; e=3/50 and m=1/5 satisfy the mixed-basis assumptions. Every denominator is strictly positive on these entire intervals. The compiled scratch file verifies totalsReduction, and independent rational checks verify the rounded-total endpoints. No physical or statistical premise is needed for these conditional arithmetic assertions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T7",
+    "theorem": "SAP.P037a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both (school,seed,peers,referentPeers)=(1,0,0,0) and (1,1,0,0) are compiled feasible instances. They are realizable by placing the school's 20 seeds outside the focal student's peer set, with the student excluded from or included in the seeds, respectively. A zero-peer student suffices. Thus both overlaps concern actual feasible configurations, rather than incompatible seed and school indicators.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T8",
+    "theorem": "SAP.P037a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Each corrected case has a feasible instance: control (0,0,0,0), school (1,0,0,0), nonreferent (1,0,1,0), referent (1,0,1,1), and direct (1,1,0,0). The first two coordinates are binary by the natural inequalities, and the seed<=school premise is exactly the canonical design condition. Partition follows by splitting school, seed, peers=0 and referentPeers=0.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T9",
+    "theorem": "SAP.P037a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled fair coin design and event {0}, giving pi=1/2 and Var(X)=1/4. Its J-fold sample space has 2^J assignments; J=2 gives a genuinely nonconstant frequency and variance 1/8. Positive-J and positive-epsilon conditions protect all inferential divisions. The explicit draws (0,1) produce frequency 1/2 and the two different outer-indicator values 1 and 0.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T10",
+    "theorem": "SAP.P037a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "blockDesign explicitly supplies six assignments of positive weight 1/6 and satisfies the general fixed-count lemma's binary, count-two and half-marginal premises. doubleBlockDesign supplies 36 assignments of positive weight 1/36. Distinct schools exist in Fin 4. The covariance and variance identities follow by exact enumeration or expansion; no independence premise is assumed inside a block.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T11",
+    "theorem": "SAP.P037a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles a sequence with B+1 independent fair two-state blocks, two retained students per block, opposite exposure indicators, pi=1/2, y=(0,1), g=(1/2,1/2). BlockBounds holds with m=c=2, eta=1/2, K=1, and every block total has variance 1, so total variance is B+1 and a positive linear lower bound exists. Nonempty one-dimensional constant covariates have population Gram Q=(1), RHS v=(1/2), betaStar=1/2 and positive definite Q. Taking pHat=pi gives strictly positive estimates and zero simulation error; g=x betaStar exactly. Complementary second exposures with zero outcomes/predictions give a contrast with the same positive variance. Thus the CLT and fitted-estimator hypotheses coexist with growing nonempty populations and positive variance, rather than relying on q=0 or empty students. The bounded independent-array Lindeberg and Slutsky arguments are consistent with the stated conclusions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T12",
+    "theorem": "SAP.P037a.T12",
+    "verdict": "not_faithful",
+    "severity": "minor",
+    "issues": [
+      "Documentation only: SAP/P037a/Challenge/Part1.lean:55-56 describes the corrected interpolation rule, but does not identify the reading of the parenthesis that its examples refute. The literal printed assertion is an upper bound, 'no more than 64' for schools below 550; e(100)=40, e(200)=40 and e(375)=52 satisfy that bound. They refute the interpretation that every school below 550 has exactly 64 eligibles. The audit explicitly requires interpretation-specific refutations to identify their reading in the docstring. The whole mathematical statement and the architect's whole label are otherwise correct; this finding does not call the literal upper bound false."
+    ],
+    "fix": "Append to the existing T12 docstring: 'The listed examples refute the reading that the upper-cap parenthesis assigns exactly 64 seed-eligible students to every school with fewer than 550 students. The literal upper bound of no more than 64 for those schools remains true under this rule.' Keep the theorem statement.",
+    "nonvacuity": "The compiled scratch file checks e(520)=60, e(521)=64 and e(550)=64. Independent exact arithmetic checks bounds, divisibility, monotonicity and the cap criterion through n=1000, including the entire finite interpolation range; outside that range the rule is constant. The no-tie equation is impossible for every integer n,k because 350k is even whereas 3500+6(n-200)-175 is odd. All listed share denominators are positive school sizes.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T13",
+    "theorem": "SAP.P037a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled scratch file verifies the simultaneous interval assumptions at t=0.04, b=-0.85, m=89/400=0.2225. This gives Delta=-0.13, fitted treatment level 0.0925 and relative reduction 52/89. Exact endpoint arithmetic reproduces [-0.136,-0.124] and [124/223,68/111]. The figure-derived interval is an explicit conditional hypothesis; no claim that Lean verifies the figure, a precise 0.095 prediction, or exclusion of 60% is added.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T14",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to an omitted empirical/interpretive passage. Its assertion is expressly qualified by validity of a causal linear approximation, whose required response condition is not specified by the publication. T1 supplies a counterexample only to weaker design-alone identification, and T2 gives sufficient conditional identification results. Neither establishes or refutes the qualified empirical application, so no separate universal theorem is warranted on the supplied evidence.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P037-T15",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to an omitted empirical report. No unrounded main-effect test or P value is supplied that decides which individual significance report is correct. If both reports concern the same test, their conjunction is impossible; this exact formal content is already the significanceContradiction conjunct of T3. A separate theorem asserting that either particular empirical report is false would exceed the evidence.",
+    "confidence": "high"
+  }
+]

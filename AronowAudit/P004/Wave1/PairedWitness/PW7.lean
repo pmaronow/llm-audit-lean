@@ -17,7 +17,7 @@ theorem pair_expect_bit {N : ℕ} (j : Fin N) :
     (fun _ => (1 : ℝ)) j 1 (by omega) hp
   simpa only [pow_one, mul_one, expect_const] using h
 
-/-- Both arm means, used by PW7 and PW8. -/
+/-- Both arm means, used by PW7 and PW8 (and available to the variance writer). -/
 theorem pair_marginal {N : ℕ} (hE : Even N) (i : Fin N) (a : Bool) :
     marginal (fun _ => 1 / 2) (pairedTable N) i a = bit a - 1 / 2 := by
   have hp : ∀ k : Fin N, 0 < (1 / 2 : ℝ) ∧ (1 / 2 : ℝ) < 1 := by

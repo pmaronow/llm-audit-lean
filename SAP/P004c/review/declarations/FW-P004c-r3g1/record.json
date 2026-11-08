@@ -1,0 +1,136 @@
+[
+ {
+  "target_id": "P004-T32",
+  "decision": "whole",
+  "theorem": "SAP.P004c.T32",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.ht_variance_bound",
+   "AronowAudit.P004.ht_variance_components",
+   "AronowAudit.P004.ht_variance_order"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P004c.T32Statement",
+  "supporting_declarations": [
+   "AronowAudit.P004.augmented_variance"
+  ]
+ },
+ {
+  "target_id": "P004-T33",
+  "decision": "whole",
+  "theorem": "SAP.P004c.T33",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.hajek_homophily_identity",
+   "AronowAudit.P004.hajek_variance_identity",
+   "AronowAudit.P004.ht_standardized_summands"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P004c.T33Statement",
+  "supporting_declarations": [
+   "AronowAudit.P004.barMu_difference"
+  ]
+ },
+ {
+  "target_id": "P004-T34",
+  "decision": "restricted",
+  "theorem": "SAP.P004c.T34",
+  "restriction": "Retains the exact absolute-value identities, finite kernel cross-sum bound, Bernoulli denominator O_p(N^(-1/2)) rate, and scalar witness arithmetic. Drops the composed bandwidth conclusion O_p(N^(-1/2)*b_N^2)=o_p(1) and the certified realization of the N=8 assignment, arm-centred residuals, all-pairs kernel and S=-1/4. Requires positive sample size and bandwidth in the finite kernel bound. The denominator error is evaluated only on nonempty treated arms and extended by zero on empty arms.",
+  "rows_used": [
+   "AronowAudit.P004.Wave1.bernoulli_denominator_rate_proof",
+   "AronowAudit.P004.denominator_absolute_identity",
+   "AronowAudit.P004.kernel_cross_sum_bound",
+   "AronowAudit.P004.missing_absolute_witness"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P004c.T34Statement",
+  "supporting_declarations": [
+   "AronowAudit.P004.Wave1.T34_prob_mono"
+  ]
+ },
+ {
+  "target_id": "P004-T39",
+  "decision": "whole",
+  "theorem": "SAP.P004c.T39",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.ht_unbiased",
+   "AronowAudit.P004.marginal_is_marginalization"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.bernoulli_pair_positive_powers",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.bernoulli_positive_power",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.bernoulli_selection",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.design_normalized",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.expect_add",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.expect_const",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.expect_div",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.expect_mul",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.expect_split",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.expect_sub",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.expect_sum",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.join_design_weight",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   }
+  ],
+  "statement_definition": "SAP.P004c.T39Statement"
+ },
+ {
+  "target_id": "P004-T40",
+  "decision": "whole",
+  "theorem": "SAP.P004c.T40",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.additive_spatial_design_invariance"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.additive_design_invariance",
+    "reason": "Final status wrong_credit: the finite-outcome version omits the canonical general spatial-integral cases; the credited integral theorem is used instead."
+   },
+   {
+    "lean_name": "AronowAudit.P004.additive_potential_shift",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   },
+   {
+    "lean_name": "AronowAudit.P004.marginal_law_shift",
+    "reason": "Auxiliary component already subsumed by the used main declaration; no separate helper assertion is added to the Challenge."
+   }
+  ],
+  "statement_definition": "SAP.P004c.T40Statement"
+ }
+]

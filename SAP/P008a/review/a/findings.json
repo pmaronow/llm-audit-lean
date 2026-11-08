@@ -1,0 +1,144 @@
+[
+  {
+    "target_id": "P008-T1",
+    "theorem": "SAP.P008a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit observation is {0,...,4} union {10,...,64}; both supports contain it. Replacing 10 by 5 preserves its size 60, remains in the unrestricted support and exits the blocked support. Both support cardinalities are positive. The four-node observation 1010 belongs to both explicitly enumerated nonempty supports. Exact cardinality arithmetic, contrasts and all four tail values pass scratch/check_finite.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T2",
+    "theorem": "SAP.P008a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: N=2, distinct nodes (0,0),(2,0), field R^2, measure Dirac at (1,0), Y identically 1, D={1}, Q uniform on all four assignments, and A={z:z_0 differs from z_1}. Every evaluated circle has mass 1, all assignment outcomes are integrable, the sharp null holds, Q(A)>0 and every assignment in A has one treated and one control. Q is common Bernoulli(1/2). Generic calibration also admits a nonconstant statistic under a uniform two-point law, with delta=1/20.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T3",
+    "theorem": "SAP.P008a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual rectangle, four distinct nodes, finite 24-atom measure and five strictly positive radii form an explicit witness. Each evaluated circle contains exactly one measure atom, hence has mass 1. The design has six equiprobable assignments with both arms nonempty. Exact checks produce the ordered statistics (-2,-1,0,0,1,2), quantiles +/-15/8, cumulative quantiles +/-75/8 and rejection probability 1/3. This is a genuine sharp-null example.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T4",
+    "theorem": "SAP.P008a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use J=1, weight 1 and node means (0,1,2,3); its six contrasts are nonconstant and have complementary signs. A singleton rejection set has probability 1/6. For the IID clause take Omega=Bool, Q uniform, B=1 and R uniform on Bool-valued pairs; the required product-mass equality compiles in scratch/Check.lean. Delta=1/20 is allowed and B+1 is never zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T5",
+    "theorem": "SAP.P008a.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The counting field {-1,0,1,2,3} contains the distinct intervention nodes 0 and 2. Both radius-one circles have two points. The uniform four-assignment law is the independent Bernoulli(1/2) law, including the all-treated and all-control assignments only for the well-defined linearization score. For every positive replication count the field and law are nonempty; direct exact enumeration for one, two and three pairs verifies the stated full and diagonal-only variances. No empty-arm ratio or asymptotic claim is needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T6",
+    "theorem": "SAP.P008a.T6",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "An additional restriction on the matrix representation is not disclosed. In SAP/P008a/Defs/Part6.lean:94-102, hsep (for every i != j, c < D_ij) is a premise of the entire first conjunct, including the weighted contrast, OLS weights/residuals and sandwich-to-score-HAC identity. Canonical T6(a) states that representation for a general cutoff, then imposes separation only for its HC0 specialization. The Challenge docstring at Part1.lean:59-64 and record.json both say 'Retains the general distance-array matrix/HC0 identities' without disclosing that the representation is only asserted in the diagonal-kernel regime. The retained proposition appears true; the restricted decision is appropriate, but its declared restriction is incomplete."
+    ],
+    "fix": "Replace the T6 restriction paragraph, and the corresponding record restriction, with: 'Restricted: The Hajek weighted-contrast, OLS weight/residual and sandwich-to-score-HAC identities are asserted only in the HC0 regime: c >= 0, both arm counts at least one, D_ii = 0 and D_ij > c for every i != j. The general sandwich representation for cutoffs including off-diagonal pairs is omitted. Retains the HC0 identities for general distance arrays within that regime, the reconstructed toy-node cutoff and interval equalities, the additive-score covariance formula, the diagonal/off-diagonal variance decomposition and the exact cutoff condition. The geometric sufficient bound is restricted to the Euclidean plane, a measurable field and coefficient integrands vanishing beyond the effect range on the whole plane, with positive finite circle masses. Omits the numerical smallest-distance approximation 1.4295... and reproduction of the ten printed interval pairs to three decimals.'",
+    "nonvacuity": "For the first clause take N=4, z=0011, M=(0,2,4,6), D_ij=|2i-2j| and c=2/5. Both arm counts are two, all off-diagonal distances exceed c, the residuals are nonzero and HAC is 1. Additive models with nonzero cross-coefficients are checked exactly in scratch/check_finite.py. The geometric assumptions have the compiled two-node radius-one model in scratch/Check.lean with d=1,r=0,c=1 and g identically zero; excluded node pairs really exist. The missing general regime is nonempty too: the same four-node data with c=12/5 include adjacent pairs and give HAC=1/2, while the general OLS/sandwich representation remains meaningful.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P008-T7",
+    "theorem": "SAP.P008a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Each of the 16 labelled samples has 40000 cells. The untreated thresholds are 400 or 1000 and treated thresholds 79 or 679, so natural subtraction never truncates and all indicator means have a positive denominator. The Bernoulli(1/2) design gives observation 1100 probability 1/16. Exact checks give baseline risk 7/400, treated risk 379/40000, observed radius effect -321/40000 and summed effect -321/10000. The companion has actual binary outcomes and four effects -1. The docstring expressly excludes the planar realization, so these labelled samples are not treated as a certified planar field.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T8",
+    "theorem": "SAP.P008a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two-node, radius-one Dirac model in scratch/Check.lean has N>0, measurable field, circle masses 1, binary outcomes 1, and integrability of every positive-weight override. Its fixed-radius risk hypotheses compile. For mixtures use J=4 and weights (1/10,2/10,3/10,4/10), or equal weights 1/4; normalization itself excludes J=0. Sorted sample (-2,-1,0,0,1,2), q=1/40 and m=4 give a nontrivial interpolated-quantile instance; positive rescaling calculations pass exact checks. The -4 example's labelled counting scope is disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T9",
+    "theorem": "SAP.P008a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit four-node field and 16-atom measure give every evaluated positive-radius circle mass 1 and means (0,2,4,6). Observation 0011 has two nodes per arm, nonzero residuals and scores (1/2,-1/2,-1/2,1/2). Exact checks give archived variances 1 and 1/2 at the two positions. Every exact squared distance between the toy nodes is at most 32, less than (32/5)^2; the sixth-position kernel therefore includes all pairs and its zero width differs from the strictly positive printed width 869/250.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T10",
+    "theorem": "SAP.P008a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=4, z=0011, M=(0,2,4,6), D_ij=|2i-2j|, c=2/5 and positions 1,2. Both arms have two nodes and physical variance is 1 at both positions. With cutoff c=6 the same distance array includes all pairs and the zero-sum score gives variance 0. The fixed rational toy coordinates satisfy all distinct-pair separations needed for the HC0 identities. No general nonnegativity of arbitrary-kernel HAC is assumed or asserted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T11",
+    "theorem": "SAP.P008a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take a,b,c,e,f equal to the five displayed values; all rounding-error bounds hold with error zero. Their sum is 7.996. The entire permitted interval [7.9935,7.9985] lies above 7.975 and more than 0.005 away from 12.38. The eight-term displayed sum is exactly 12.376, within 0.005 of 12.38. These facts were checked with exact rational arithmetic; they do not assert that every permitted five-term sum rounds to 8.00, a limitation already explicit in the canonical note.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T12",
+    "theorem": "SAP.P008a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The grid index type has five elements and the sample index type Fin(n+1) is always nonempty. A concrete array can have one sample and all five entries equal to 1, with q=1/2. The selected sum is nevertheless zero because the specified numerical grid genuinely has no radius in [1/111,5/222]; this emptiness is the target's counterexample. Exact arithmetic confirms the exclusion and the nonzero reported values.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T13",
+    "theorem": "SAP.P008a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are 41 actual indices and the selected indices are the four distinct elements 2,3,4,5. For f identically 1 the selected sum is 4. Exact rational checks verify the endpoint, spacing and conversion of those four radii to 1,1.5,2,2.5 kilometres. No floating-point endpoint behavior is claimed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T14",
+    "theorem": "SAP.P008a.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, mu_1=(3,7), mu_0=(0,2), tau=(3,5) satisfy the node-effect definition and give AMR 4, whose literal product value is 16. Thus the effect-definition premise does not force the exceptional values 0 or 1. The zero/one alternatives in the independent real polynomial identity are both inhabited.",
+    "confidence": 0.99
+  }
+]

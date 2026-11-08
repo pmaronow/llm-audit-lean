@@ -11,8 +11,10 @@ open AronowAudit.P004.Wave1.DesignLimits
 open scoped BigOperators
 
 /-!
-Finite product algebra for covariance and variance bounds. Covariance bilinearity avoids
-requiring centered `X i`. The conditional projection retains the pointwise bound `M`.
+The shared FC proof files are not present in the drafter's checkout. The private lemmas
+below prove just the FC1/FC5/FC7 consequences needed here, from the existing finite product
+algebra. In particular, covariance bilinearity avoids requiring centered `X i` or FC3.
+FC6 is unnecessary because the conditional projection retains the pointwise bound `M`.
 -/
 
 private theorem covsum_condition_depends {N : ℕ} (p : Fin N → ℝ)

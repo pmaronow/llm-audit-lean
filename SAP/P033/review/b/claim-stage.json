@@ -1,0 +1,92 @@
+[
+  {
+    "theorem": "SAP.P033.T1",
+    "target_id": "P033-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The fixed-score Gaussian law, WLS coefficients, unbiasedness, both full-estimator variances and standardized laws, coverage, variance ratio and realized loss of significance match the canonical construction. Canonical (iv) additionally asserts the one-side probabilistic identities Var(sum a_i Y_i)=83/50, Var(sum d_i Y_i)=243/50, Cov(sum a_i Y_i,sum d_i Y_i)=-21/25 and Var(sum b_i Y_i)=41/5; these are absent as probability statements. The deterministic coefficient identities do not themselves assert those four identities. This is the omission stated in the challenge docstring. Conditioning on the eight fixed scores is expressly canonical. The Gaussian law is a probability measure with nonzero variances, and the displayed realization is in its full support. The witness concerns the reading that loss of significance implies pointwise miscalibration."
+  },
+  {
+    "theorem": "SAP.P033.T2",
+    "target_id": "P033-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The normal-law coverage identity, equality of eight-coordinate and arbitrary-statistic laws, M2 bias and coverage bounds, N-study nonidentification and the L2 variance/covariance formula match canonical (a)-(f). The conditional mean is defined by precisely the canonical quartic, with its expansion, zeros and continuity asserted, but no explicit higher-differentiability assertion is included for canonical (b)'s smoothness clause. This is a small disclosed omission, rather than an extra restriction on the model: the defined functions are actually polynomials. N>=1 prevents an empty-study identification argument; the common normal product laws are genuine probability measures. No assertion refutes the empirical diagnosis as a universal printed theorem."
+  },
+  {
+    "theorem": "SAP.P033.T3",
+    "target_id": "P033-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical pure-sign and noisy clustered witnesses, residual cancellation, positive true variances, covariance/positive-definiteness statements, Gram/WLS certificates and zero-width coverage counts are represented. Uniform finite means give independent fair bits on nonempty spaces of sizes 2^10 and 2^60; exhaustive enumeration independently gives the asserted 112 and 56 covering outcomes in the pure model. Zero estimated variance comes from actual residual cancellation, including when individual noise makes covariance positive definite. The abstract score variance is exactly the formula supplied in definitions_needed."
+  },
+  {
+    "theorem": "SAP.P033.T4",
+    "target_id": "P033-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "The residual identity for m>=2, cancellation for cells of at least four records nested in clusters, every finite-n moment/coefficient/variance identity, n V_n -> 48/5, the independent equal-mean/equal-variance L2 plug-in identity, its four concrete expectations and table arithmetic match (i)-(v). The shrinking construction uses only its n positive-weight coordinates, normalized to u_j=(j+1)/(n+1); these are x_j/h_n with physical x_j=(j+1)/(n(n+1)) and h_n=1/n. The omitted exterior records have zero kernel weight, so this reparametrization does not change the stated statistics. L2 is the finite-second-moment requirement implicit in common finite variance, not a new substantive hypothesis. The auxiliary arbitrary-finite-space clause excludes an empty space by its premise E residual^2=9/10, while actual nonempty sign models are also asserted unconditionally."
+  },
+  {
+    "theorem": "SAP.P033.T5",
+    "target_id": "P033-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Every clause of the concrete binary potential-outcome/count witness, its Wald effect, individual variance, sample count variances and doubled-count calculation is present and independently checks. The general scale clause adds dE!=dI and sd>0 beyond the stated scale>0 premise. These are disclosed, ordinary denominator restrictions; they are satisfiable at the displayed counts (50 versus 0), sd=sqrt(800), scale=2. The sample-SD scale identity uses n>=2. The witness establishes a mismatch with individual-outcome standardization, not an arithmetic contradiction of the paper's general definition of Cohen's d."
+  },
+  {
+    "theorem": "SAP.P033.T6",
+    "target_id": "P033-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "The population and sample binary-variance bounds, bounded difference of probabilities, exact stored SE, normal-power derivative/monotonicity, population power enclosure, three root enclosures, N>=31731 sample correction, two table subtractions and standardized t-ratio identity match (i)-(v). The constant 1229/500 is the printed rounded effect 2.458. The power bound is conditional on the stored SE as required, rather than a recomputed variance claim. Bernoulli populations and nonconstant binary samples satisfy the hypotheses; 90-digit independent evaluations fall inside all declared enclosures."
+  },
+  {
+    "theorem": "SAP.P033.T7",
+    "target_id": "P033-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "The linear-density masses/windows, exact binomial tails, actual threshold k>=14 and conditional rejection probability, smooth polynomial family and fixed-width limit, and folded-normal witnesses/coverage/enclosures match (i)-(v). The sampling law is the unselected iid product of the specified normalized density. Conditional probability is an explicit ratio with a positive denominator hypothesis, and positive conditioning mass is asserted at M=19 (its value is (48020/250000)^19); the same event has positive probability for every M>=19. Endpoint overlap has zero probability under a density. This tests the equal-mass reading of the finite-window benchmark, not the printed approximate shrinking-window assertion or the empirical Table 1 counts."
+  },
+  {
+    "theorem": "SAP.P033.T8",
+    "target_id": "P033-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "The hypotheses specify a nonnegative integrable unit-mass density supported on nonnegative reals, iid observations, 0<h<c and positive window mass. Conditional point masses and tails are restricted to positive-probability count events. The additional K<=N conclusion supplies the support of the binomial law. The mass equivalence, symmetry implication, monotone-density and tail comparisons, Lipschitz bound, continuous/differentiable small-window conclusions and exact printed tails match (i)-(vi). A uniform density 1/4 on [0,4], h=1/10, is a concrete jointly satisfiable instance, with A=B=1/40 and positive window mass 1/20. Integrability and finite probability prevent totalized-integral or infinite-measure artifacts."
+  },
+  {
+    "theorem": "SAP.P033.T9",
+    "target_id": "P033-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The standardized Gaussian rejection probability, power derivative and strict monotonicity/injectivity, nonempty finite-set cluster ratio and overlap identities, strictly larger power at the reduced SE, four concrete ratios/overlaps, and all six table subtractions match (i)-(v). The reported powers, threshold crossings, study weights and fitted-SE interpretation are explicitly external premises in the canonical claim; their arithmetic is not asserted to establish covariance validity. Nonempty L,R and s>0,0<rho<1 protect all denominators; for example L={0,1}, R={1,2}, tau=s=1 gives rho=3/4 and a nontrivial power comparison."
+  },
+  {
+    "theorem": "SAP.P033.T10",
+    "target_id": "P033-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The in-range point x=y=1/2, its t=1, its position to the right of the printed slope-1.96 line and above the reciprocal-slope line, and the variance-versus-SD coordinates at control data (0,2,4) are the canonical numerical witnesses. The extra final product gives the height on the reciprocal-slope line. All denominators are positive concrete constants. The second witness compares two interpretations of standardization and does not by itself contradict the wording that the sample variance is used."
+  },
+  {
+    "theorem": "SAP.P033.T11",
+    "target_id": "P033-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "All nonzero/positive-denominator ratio and significance-side equivalences, reciprocal critical constants, sqrt(v)=v characterization for nonnegative v, universal binary sample variance formula and the 568/82 exact variance and squared SD enclosure are present. The added 1/z enclosure renders the unrounded reciprocal claimed in (iv). The n>=2 sample-size condition and k<=n for the real-count formula avoid division/underflow artifacts; n=568,k=82 is a nonconstant binary instance."
+  },
+  {
+    "theorem": "SAP.P033.T12",
+    "target_id": "P033-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "The B=1 unique positive honest half-length, uniform coverage over all theta and |b|<=1 with exact worst cases, positive critical quantile enclosures, transformed rejection set and probability, and B=b=1/2 unique root and rejection enclosure match (i)-(v). Canonical (v) does not additionally demand an all-b uniform-coverage clause for B=1/2. Both explicit failures of ValidBiasP follow from alpha=1/5. The sInf sets are nonempty and bounded below, since coverage is continuous strictly increasing in H from 0 to 1. Independent high-precision evaluation verifies both half-lengths and overrejection probabilities."
+  },
+  {
+    "theorem": "SAP.P033.T13",
+    "target_id": "P033-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "The strict and non-strict 5% decision equivalences, all-B>=0 Gaussian size statement and worst-case equality, B=0 exact uniform p-value, B=1 overrejection at 1/5, and continuous strictly decreasing worst-case bias-aware tail with validity at every level and the same 5% decision match (i)-(v). All H_B are positive finite roots of a nonempty bounded-below infimum set. ValidBiasP quantifies over all null biases and every alpha in (0,1); continuity of the supplied biasAwareP separately ensures measurability. B=0 and B=1 give concrete nonempty null families."
+  },
+  {
+    "theorem": "SAP.P033.T14",
+    "target_id": "P033-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "For both recorded rows the hypotheses, imputed SE formulas, their 8/7 ratio, printed-critical-value statistics, midpoint mismatch and adjacent-bin inequalities match (i)-(ii). All generalized formulas require q>0, and the given intervals have L<U and beta<U, so their SE and ratio denominators are nonzero. The factual provenance of the inputs and the binning rule is a canonical premise, not a theorem about unstaged metadata."
+  },
+  {
+    "theorem": "SAP.P033.T15",
+    "target_id": "P033-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All width/t/p reconstruction formulas, 90%/95% quantile choices, midpoint and inequality characterizations, centered-normal-interval recovery and recorded-row values match (i)-(iv). The first clause assumes L<U and a positive chosen normal quantile, exactly the mathematical q>0 condition; it does not assume the reconstruction conclusion. At the intended nominal levels alpha=1/10 and 1/20 the infimum is the ordinary finite positive quantile. The fully general midpoint and centered-interval clauses admit beta=0,q=s=1,L=-1,U=1."
+  }
+]

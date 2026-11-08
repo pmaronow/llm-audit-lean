@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.Probability.Moments.SubGaussian
 import Mathlib.Probability.Distributions.Gaussian.Real
 
@@ -21,7 +17,7 @@ sub-Gaussian proxy variance is sharp and equal to the true variance.
 This supplies the Gaussian-to-sub-Gaussian connection for the Brownian-bridge
 chaining argument: the increments of the isonormal process are
 Gaussian, and via this lemma they feed the generic sub-Gaussian maximal inequality
-and the concentration bound
+`expectation_iSup_abs_le_of_subgaussian` and the concentration bound
 `HasSubgaussianMGF.measure_ge_le`.
 
 Bricks used:

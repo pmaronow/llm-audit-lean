@@ -1,0 +1,97 @@
+import SAP.P007.Defs
+
+set_option autoImplicit false
+open scoped BigOperators
+namespace AuditCounts
+open SAP.P007
+
+theorem sum_below (n a : ℕ) (ha : a ≤ n) :
+    (∑ i : Fin n, if i.val < a then 1 else 0) = a := by
+  classical
+  rw [← Finset.card_filter, ← Fintype.card_subtype]
+  exact Fintype.card_fin_lt_of_le ha
+
+-- Every retained column has an observed cell: it has either 5689 or 5690
+-- missing cells among 8580. Exactly the 19 removed columns are wholly missing.
+def retainedMask (i : Fin 8580) (j : Fin 1205) : Bool :=
+  decide (i.val < (5689 + if j.val < 1122 then 1 else 0))
+
+def addMissing {n K d : ℕ} (m : Fin n → Fin K → Bool)
+    (i : Fin n) : (Fin K ⊕ Fin d) → Bool
+  | Sum.inl j => m i j
+  | Sum.inr _ => true
+
+def fullMask : Fin 8580 → (Fin 1205 ⊕ Fin 19) → Bool := addMissing retainedMask
+
+theorem count_thresholds (n K a b : ℕ) (ha : a + 1 ≤ n) (hb : b ≤ K) :
+    missingCount (fun (i : Fin n) (j : Fin K) =>
+      decide (i.val < (a + if j.val < b then 1 else 0))) = K*a + b := by
+  unfold missingCount
+  simp only [Bool.decide_iff]
+  have hs (j : Fin K) :
+      (∑ i : Fin n, if i.val < (a + if j.val < b then 1 else 0)
+        then 1 else 0) = a + if j.val < b then 1 else 0 := by
+    apply sum_below
+    split_ifs <;> omega
+  simp_rw [hs]
+  rw [Finset.sum_add_distrib, sum_below K b hb]
+  simp
+
+theorem retained_count : missingCount retainedMask = 6856367 := by
+  unfold retainedMask
+  rw [count_thresholds 8580 1205 5689 1122 (by omega) (by omega)]
+
+theorem count_add_missing {n K d : ℕ} (m : Fin n → Fin K → Bool) :
+    missingCount (addMissing (d := d) m) = missingCount m + n*d := by
+  unfold missingCount
+  rw [Fintype.sum_sum_type]
+  change missingCount m + (∑ _ : Fin d, ∑ _ : Fin n, (1 : ℕ)) =
+    missingCount m + n*d
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+    nsmul_eq_mul, mul_one]
+  simp [Nat.mul_comm]
+
+theorem full_count : missingCount fullMask = 7019387 := by
+  unfold fullMask
+  rw [count_add_missing, retained_count]
+
+theorem removed_missing : ∀ (i : Fin 8580) (j : Fin 19), fullMask i (Sum.inr j) = true := by
+  intros
+  rfl
+
+theorem retained_not_wholly_missing : ∀ j : Fin 1205,
+    ∃ i : Fin 8580, fullMask i (Sum.inl j) = false := by
+  intro j
+  refine ⟨⟨8579, by omega⟩, ?_⟩
+  simp only [fullMask, addMissing, retainedMask, decide_eq_false_iff_not]
+  split_ifs <;> norm_num
+
+theorem average_count {n : ℕ} {J : Type*} [Fintype J]
+    (m : Fin n → J → Bool) :
+    missingAverage m = (missingCount m : ℝ) / ((n : ℝ) * Fintype.card J) := by
+  classical
+  unfold missingAverage missingCount
+  simp only [Nat.cast_sum, Nat.cast_ite, Nat.cast_one, Nat.cast_zero]
+  rw [← Finset.sum_div, div_div]
+
+theorem full_average : missingAverage fullMask = (7019387 : ℝ)/10501920 := by
+  rw [average_count, full_count]
+  norm_num
+
+theorem retained_average : missingAverage retainedMask = (6856367 : ℝ)/10338900 := by
+  rw [average_count, retained_count]
+  norm_num
+
+-- T12's rounded-before and exact-count antecedents both hold on this one mask.
+example : (∀ i j, fullMask i (Sum.inr j) = true) ∧
+    (0.6675 : ℝ) ≤ missingAverage fullMask ∧ missingAverage fullMask < 0.6685 ∧
+    missingCount fullMask = 7019387 := by
+  refine ⟨removed_missing, ?_, ?_, full_count⟩ <;> rw [full_average] <;> norm_num
+
+-- A small nonempty instance of the general identity's antecedents as well.
+example : ∃ m : Fin 2 → (Fin 1 ⊕ Fin 1) → Bool,
+    0 < (2 : ℕ) ∧ 0 < (1 : ℕ) ∧ (∀ i j, m i (Sum.inr j) = true) := by
+  exact ⟨(fun _ j => match j with | Sum.inl _ => false | Sum.inr _ => true),
+    by omega, by omega, by intros; rfl⟩
+
+end AuditCounts

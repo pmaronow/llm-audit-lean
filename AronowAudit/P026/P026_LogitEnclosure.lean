@@ -185,6 +185,11 @@ lemma maximizer_in_box (L:(ℝ×ℝ)→ℝ) (hL:ConcaveOn ℝ Set.univ L)
     nlinarith
   exact (not_lt_of_ge hcl) (hboundary γ hγ)
 
+#print axioms softplus_quadratic_lower
+#print axioms training_gram_lower
+#print axioms likelihood_quadratic_upper
+#print axioms center_score_bounds
+#print axioms maximizer_in_box
 lemma predictor_near_center (k:Bool) (β:ℝ×ℝ)
     (h1:|β.1-(LogitCertificates.center k).1|≤(1/1000:ℝ))
     (h2:|β.2-(LogitCertificates.center k).2|≤(1/1000:ℝ)) (i:Fin 16):
@@ -267,6 +272,9 @@ lemma logit_quoted_coefficient_bounds:
   · have h:=abs_sub_le (logitCoefficients false).2 (228025945308092530/1000000000000000000:ℝ) (2280259/10000000)
     norm_num at h
     linarith
+
+#print axioms logit_coefficient_enclosure
+#print axioms logit_quoted_coefficient_bounds
 
 end
 end AronowAudit.P026.LogitCompletion

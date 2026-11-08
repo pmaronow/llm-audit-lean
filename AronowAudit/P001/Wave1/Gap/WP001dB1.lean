@@ -176,8 +176,7 @@ private theorem pooled_mle_cells {Ω : Type*} [MeasurableSpace Ω]
   simp [Measure.add_apply,Measure.smul_apply]
 
 
-/-- The pooled clipped MLE converges in probability to the marginal mean `1/4+q/2`.
-For `0 < q < 1`, this limit differs from both conditional cell means. -/
+/-- The pooled clipped MLE targets the marginal mean rather than either conditional cell mean. -/
 theorem pooled_mle_covariate_marginal_bridge {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
   (X Y : ℕ → Ω → ℝ) (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
   (q : ℝ) (hq : q ∈ Set.Icc (0 : ℝ) 1)

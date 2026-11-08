@@ -32,6 +32,9 @@ theorem printed_marginal_sufficiency_refuted :
     MarginalSufficiency.n1_proof
     MarginalSufficiency.n2_proof
 
+example : AronowAudit.P029.Wave1.MarginalSufficiency.Target :=
+  printed_marginal_sufficiency_refuted
+
 end
 
 end AronowAudit.P029.Wave1

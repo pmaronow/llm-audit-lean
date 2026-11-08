@@ -4,9 +4,10 @@ import AronowAudit.P013.Wave1.CorrectedCoverage.N6
 import AronowAudit.P013.Wave1.CorrectedCoverage.N7
 
 /-!
-P013-T1: paired asymptotic counterexample and finite identities.
-Expression (11) is reduced to its four-atom pair score before any
-moment or limit calculation.
+Exact proofs of P013-T1's paired asymptotic counterexample and finite identities.
+The original expression (11) is reduced to its four-atom pair score before any
+moment or limit calculation. Shared finite helpers precede record 0; the two
+final theorems and their frozen-type checks appear in the requested order.
 -/
 
 namespace AronowAudit.P013.Wave1
@@ -255,7 +256,7 @@ lemma pfi_one_sub_pow (t : ℝ) (h0 : 0 ≤ t) (h1 : t ≤ 1) (r : ℕ) :
     have hn := mul_nonneg (Nat.cast_nonneg r : (0:ℝ) ≤ r) (sq_nonneg (1-t))
     nlinarith
 
-/-- Finite identities for the paired design. -/
+/-- The complete finite contract, used as a prerequisite of record 0. -/
 lemma pfi_identities (r : ℕ) (hr : 2 ≤ r) :
     let F := pairedPopulation r hr
     let P := pairedDesign r hr
@@ -384,8 +385,7 @@ lemma pfi_identities (r : ℕ) (hr : 2 ≤ r) :
     <;> ring
 
 
-/-!
-Asymptotic limits of the paired finite designs. -/
+/-! Record 0: asymptotic limits of the same finite designs. -/
 
 def pas_P (n : ℕ) := pairedDesign (n+2) (by omega)
 def pas_F (n : ℕ) := pairedPopulation (n+2) (by omega)
@@ -827,6 +827,8 @@ theorem paired_asymptotic_counterexample_proof :
       pas_var_diverges, pas_scaled_normal, fun α hα hα1 =>
         ⟨pas_coverage_limit α hα hα1, pas_strict_undercoverage α hα hα1⟩⟩
 
+example : type_of% @AronowAudit.P013.paired_asymptotic_counterexample := paired_asymptotic_counterexample_proof
+
 theorem paired_finite_identities_proof (r : ℕ) (hr : 2 ≤ r) :
     let F := pairedPopulation r hr
     let P := pairedDesign r hr
@@ -844,6 +846,8 @@ theorem paired_finite_identities_proof (r : ℕ) (hr : 2 ≤ r) :
     variance P (fun z => (N : ℝ)*effectVariance F 1 0 z) =
       4*((N : ℝ)-2)^4*((N : ℝ)+2)^4 / ((N : ℝ)^5*((N : ℝ)^2-2)) := by
   exact pfi_identities r hr
+
+example : type_of% @AronowAudit.P013.paired_finite_identities := paired_finite_identities_proof
 
 end
 end AronowAudit.P013.Wave1

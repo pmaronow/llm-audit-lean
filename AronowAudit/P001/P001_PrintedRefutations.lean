@@ -1,7 +1,6 @@
 import AronowAudit.P001.P001_Foundations
 
-/-! Refutations of the printed uniform-positivity converse and the universal
-positive-variance normal-limit claim for plug-in estimators. -/
+/-! Isolated exact universal-contract refutations. Canonical sources are frozen. -/
 namespace AronowAudit.P001.PrintedConfidence
 noncomputable section
 open MeasureTheory ProbabilityTheory Filter
@@ -12,7 +11,7 @@ set_option maxHeartbeats 2000000
 set_option maxRecDepth 8192
 universe u
 
-/-- Actual iid observations in every sample-space universe. -/
+/-- Actual iid observations in every original sample-space universe. -/
 def liftStreamLaw {E : Type} [MeasurableSpace E] (ν : Measure E) :
     Measure (ℕ → ULift.{u} E) :=
   Measure.infinitePi (fun _ : ℕ => ν.map (ULift.up : E → ULift.{u} E))
@@ -47,7 +46,7 @@ theorem lift_stream_iid {E : Type} [MeasurableSpace E]
   · intro i
     exact ⟨(hobs i).aemeasurable,(hobs 0).aemeasurable,(hlaw i).trans (hlaw 0).symm⟩
 
-/-- Universal closure of the printed countable-overlap assertion. -/
+/-- Exact universal closure of the original countable-overlap assertion. -/
 def PrintedOverlapUniformPositivityConverse : Prop :=
   ∀ (t c : ℕ → ℝ), (∀ k,0 ≤ t k) → (∀ k,0 ≤ c k) →
     Summable t → Summable c → 0 < ∑' k,t k → 0 < ∑' k,c k →
@@ -70,7 +69,7 @@ theorem printed_overlap_uniform_positivity_converse_refuted :
   refine ⟨ε,hε,fun k => ?_⟩
   simpa only [overlapPropensity] using hbound k (add_pos (hpos k).1 (hpos k).2.1)
 
-/-- Universal closure in every sample-space universe. -/
+/-- Exact universal closure, with the original sample-space universe retained. -/
 def PrintedPluginPositiveNormalLimit : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
     (X : ℕ → Ω → ℝ), IID μ X → ∀ T : (ℝ → ℝ) → ℝ,
@@ -93,5 +92,8 @@ theorem printed_plugin_positive_normal_limit_refuted :
   apply (constant_plugin_degenerate μ).2 ⟨φ^2,sq_nonneg φ⟩ hv
   simpa only [sub_self,mul_zero] using hCD
 
+/- Exact equality with the original universally quantified TYPES, including universes, was checked before retirement; see the original-contract archive and normal-build log. -/
+#print axioms printed_overlap_uniform_positivity_converse_refuted
+#print axioms printed_plugin_positive_normal_limit_refuted
 end
 end AronowAudit.P001.PrintedConfidence

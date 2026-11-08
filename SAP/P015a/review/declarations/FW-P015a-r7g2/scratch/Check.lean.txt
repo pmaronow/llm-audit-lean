@@ -1,0 +1,200 @@
+import SAP.P015a.Defs
+import SAP.P015a.Defs.WholeW1
+
+open Matrix Finset MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology
+open SAP.P015a
+set_option maxRecDepth 4000
+set_option maxHeartbeats 1200000
+
+-- T8: nonempty Bernoulli calculus premises with a genuine varying inverse link.
+example :
+    let W : Matrix (Fin 2) (Fin 2) ℝ := !![1,0;1,1]
+    let Y : Fin 2 → ℝ := ![0,1]
+    (∀ i, Y i = 0 ∨ Y i = 1) ∧ (∀ i, W i 0 = 1) ∧
+    IsOpen (Set.univ : Set ℝ) ∧ DifferentiableOn ℝ inverseLogit Set.univ ∧
+    (∀ η ∈ (Set.univ : Set ℝ), 0 < inverseLogit η ∧ inverseLogit η < 1) ∧
+    (0 : Fin 2 → ℝ) ∈ admissibleParameters W Set.univ ∧
+    inverseLogit 0 = 1/2 ∧
+    DifferentiableAt ℝ (deriv inverseLogit) 0 := by
+  dsimp
+  refine ⟨?_, ?_, isOpen_univ, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i; fin_cases i <;> simp
+  · intro i; fin_cases i <;> rfl
+  · intro η _; exact (Real.hasDerivAt_sigmoid η).differentiableAt.differentiableWithinAt
+  · intro η _; exact ⟨Real.sigmoid_pos η, Real.sigmoid_lt_one η⟩
+  · simp [admissibleParameters]
+  · norm_num [inverseLogit, Real.sigmoid_def]
+  · change DifferentiableAt ℝ (deriv Real.sigmoid) 0
+    rw [Real.deriv_sigmoid]
+    exact (Real.hasDerivAt_sigmoid 0).differentiableAt.mul
+      (differentiableAt_const 1 |>.sub (Real.hasDerivAt_sigmoid 0).differentiableAt)
+
+-- T8: the full canonical-family premises are jointly satisfiable on a nonempty I.
+example : ValidCanonicalFamily (Measure.dirac (0 : ℝ)) (fun _ => 0) 1
+    (fun _ => 0) Set.univ {0} ∧
+    DifferentiableOn ℝ (fun _ : ℝ => (0 : ℝ)) Set.univ := by
+  constructor
+  · refine ⟨by norm_num, isOpen_univ, measurableSet_singleton 0, ?_, ?_⟩
+    · simp
+    · intro η _
+      constructor
+      · exact integrable_dirac (by simp)
+      · simp [canonicalContribution]
+  · exact differentiableOn_const _
+
+-- The nested maximum premise is satisfiable too; it is not an empty condition.
+example :
+    let W : Matrix (Fin 2) (Fin 2) ℝ := !![1,0;1,1]
+    let Y : Fin 2 → ℝ := ![0,1]
+    ∀ t ∈ admissibleParameters W Set.univ,
+      logLikelihood W (fun _ => 1) Y (fun _ => 1/2) t ≤
+        logLikelihood W (fun _ => 1) Y (fun _ => 1/2) 0 := by
+  intro W Y t _
+  simp only [logLikelihood, bernoulliLogLikelihood]
+  exact le_rfl
+
+example : likelihoodMultiplier inverseLogit 0 ≠ 0 := by
+  unfold likelihoodMultiplier inverseLogit
+  rw [Real.deriv_sigmoid]
+  norm_num [Real.sigmoid_def]
+
+-- A nonempty risk set, with its event actually in it, for the Cox clause.
+example :
+    let Z : Matrix (Fin 2) (Fin 2) ℝ := !![1,0;1,1]
+    let event : Fin 1 → Fin 2 := fun _ => 0
+    (∀ k, event k ∈ ({0,1} : Finset (Fin 2))) ∧
+      finiteCoxScore Z event (fun _ => {0,1}) 0 1 = -1/2 := by
+  norm_num [finiteCoxScore, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+
+-- T5: the six cells expand to exactly 72 binary observations with the stated counts.
+example : Fintype.card (Fin 2 × Fin 3 × Fin 12) = 72 := by decide
+example : ∀ x : Fin 3,
+    ((Finset.univ : Finset (Fin 12)).filter
+      (fun r => r.val < (![7,6,10] : Fin 3 → ℕ) x)).card =
+      (![7,6,10] : Fin 3 → ℕ) x := by decide
+
+example :
+    (∀ i, 0 < oddsDesign.mulVec ![1,0,1] i) ∧
+    (∀ i, 0 < oddsCounts i ∧ oddsCounts i < 12) ∧
+    (∀ i, 0 < oddsInverseLink (oddsDesign.mulVec ![1,0,1] i) ∧
+      oddsInverseLink (oddsDesign.mulVec ![1,0,1] i) < 1) ∧
+    residualEquation oddsDesign (fun _ => 12) oddsCounts oddsInverseLink ![1,0,1] = 0 ∧
+    (oddsDesign.transpose * oddsDesign).det = 36 := by
+  norm_num [oddsDesign, oddsCounts, oddsInverseLink, residualEquation,
+    Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.det_fin_three,
+    Fin.sum_univ_succ, Fintype.sum_prod_type, funext_iff, Fin.forall_fin_succ]
+
+-- T6: the six cells expand to 48 observations, every cell with both outcomes.
+example : Fintype.card (Fin 2 × Fin 3 × Fin 8) = 48 := by decide
+example : ∀ x : Fin 3,
+    0 < (![3,2,7] : Fin 3 → ℕ) x ∧ (![3,2,7] : Fin 3 → ℕ) x < 8 ∧
+    ((Finset.univ : Finset (Fin 8)).filter
+      (fun r => r.val < (![3,2,7] : Fin 3 → ℕ) x)).card =
+      (![3,2,7] : Fin 3 → ℕ) x := by decide
+example : ((8 : ℝ) • (probitDesign.transpose * probitDesign)).det = 18432 := by
+  norm_num [probitDesign, Matrix.mul_apply, Matrix.det_fin_three,
+    Fin.sum_univ_succ, Fintype.sum_prod_type]
+
+-- Independent protection against the real-sInf default for the normal quantile.
+example : Set.Nonempty {a : ℝ | 3/4 ≤ standardNormalCDF a} ∧
+    BddBelow {a : ℝ | 3/4 ≤ standardNormalCDF a} := by
+  have ht : ∀ᶠ a in atTop, (3/4 : ℝ) < standardNormalCDF a :=
+    (tendsto_cdf_atTop (gaussianReal 0 1)).eventually
+      (eventually_gt_nhds (by norm_num : (3/4 : ℝ) < 1))
+  have hb : ∀ᶠ a in atBot, standardNormalCDF a < (3/4 : ℝ) :=
+    (tendsto_cdf_atBot (gaussianReal 0 1)).eventually
+      (eventually_lt_nhds (by norm_num : (0 : ℝ) < 3/4))
+  constructor
+  · obtain ⟨a, ha⟩ := ht.exists
+    exact ⟨a, ha.le⟩
+  · obtain ⟨b, hb⟩ := hb.exists
+    refine ⟨b, ?_⟩
+    intro a ha
+    by_contra h
+    have hab : a < b := lt_of_not_ge h
+    have hm := monotone_cdf (gaussianReal 0 1) hab.le
+    change standardNormalCDF a ≤ standardNormalCDF b at hm
+    change (3/4 : ℝ) ≤ standardNormalCDF a at ha
+    linarith
+
+-- T7: a real probability vector, nonsingular moment matrix, valid true probabilities,
+-- and a nonempty square-link parameter domain at the branch center.
+example : IsProbabilityVector squareLinkProbability := by
+  norm_num [IsProbabilityVector, squareLinkProbability, Fin.sum_univ_succ,
+    funext_iff, Fin.forall_fin_succ]
+example :
+    (fun j k => mean squareLinkProbability
+      (fun i => squareLinkDesign i j * squareLinkDesign i k)) =
+      (!![1,0,0;0,5/24,0;0,0,2/3] : Matrix (Fin 3) (Fin 3) ℝ) ∧
+    (!![1,0,0;0,5/24,0;0,0,2/3] : Matrix (Fin 3) (Fin 3) ℝ).det ≠ 0 := by
+  constructor
+  · ext j k
+    fin_cases j <;> fin_cases k <;>
+      norm_num [mean, squareLinkProbability, squareLinkDesign, squareLinkTreatment,
+        squareLinkCovariate, squareLinkPropensity, Fin.sum_univ_succ]
+  · norm_num [Matrix.det_fin_three]
+example : SquareLinkAdmissible ![1/2,0,0] := by
+  norm_num [SquareLinkAdmissible, squareLinkDesign, Matrix.mulVec,
+    dotProduct, Fin.sum_univ_succ]
+example : ∀ (a ε : ℝ), (a = 0 ∨ a = 1/16) → |ε| ≤ 1/16 →
+    ∀ i, 0 < squareLinkResponseProbability a ε i ∧
+      squareLinkResponseProbability a ε i < 1 := by
+  intro a ε ha he i
+  have he' := abs_le.mp he
+  rcases ha with rfl | rfl <;> fin_cases i <;>
+    norm_num [squareLinkResponseProbability, squareLinkBaseline,
+      squareLinkCovariate, squareLinkTreatment, squareLinkPropensity] <;>
+      constructor <;> linarith [he'.1, he'.2]
+
+-- Recheck the earlier issue against current definitions: the nonconstant baseline
+-- cannot be correctly specified by ANY admissible square-link predictor.
+example : ¬ ∃ θ : Fin 3 → ℝ, SquareLinkAdmissible θ ∧
+    ∀ i, squareInverseLink (squareLinkDesign.mulVec θ i) =
+      squareLinkResponseProbability (1/16) 0 i := by
+  rintro ⟨θ, hθ, hfit⟩
+  have h01 : squareLinkDesign.mulVec θ 0 = squareLinkDesign.mulVec θ 1 := by
+    apply (sq_eq_sq₀ (hθ 0).1.le (hθ 1).1.le).mp
+    change squareInverseLink _ = squareInverseLink _
+    rw [hfit 0, hfit 1]
+    norm_num [squareLinkResponseProbability, squareLinkBaseline, squareLinkCovariate]
+  have h04 : squareLinkDesign.mulVec θ 0 = squareLinkDesign.mulVec θ 4 := by
+    apply (sq_eq_sq₀ (hθ 0).1.le (hθ 4).1.le).mp
+    change squareInverseLink _ = squareInverseLink _
+    rw [hfit 0, hfit 4]
+    norm_num [squareLinkResponseProbability, squareLinkBaseline, squareLinkCovariate]
+  norm_num [squareLinkDesign, squareLinkTreatment, squareLinkCovariate,
+    squareLinkPropensity, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h01 h04
+  have hD : θ 1 = 0 := by linarith
+  have hX : θ 2 = 0 := by linarith
+  have hf0 := hfit 0
+  have hf2 := hfit 2
+  norm_num [squareInverseLink, squareLinkDesign, squareLinkTreatment,
+    squareLinkCovariate, squareLinkPropensity, Matrix.mulVec, dotProduct,
+    Fin.sum_univ_succ, squareLinkResponseProbability, squareLinkBaseline,
+    hD, hX] at hf0 hf2
+  linarith
+
+-- T16: the same actual four-row OLS design is nonsingular and all log inputs valid.
+example :
+    let W : Matrix (Fin 4) (Fin 2) ℝ := !![1,0;1,0;1,1;1,1]
+    let S : Fin 4 → ℝ := ![1,1,0,3]
+    (W.transpose * W).det = 4 ∧ (∀ i, 0 < (1 + S i)/2) ∧
+      (S 0 + S 1)/2 = 1 ∧ (S 2 + S 3)/2 = 3/2 := by
+  norm_num [Matrix.mul_apply, Matrix.det_fin_two, Fin.sum_univ_succ,
+    funext_iff, Fin.forall_fin_succ]
+
+-- Compute the OLS coefficient from the real logarithms, without a theorem stub.
+example :
+    let W : Matrix (Fin 4) (Fin 2) ℝ := !![1,0;1,0;1,1;1,1]
+    let S : Fin 4 → ℝ := ![1,1,0,3]
+    let Y := fun i => Real.log ((1 + S i)/2)
+    leastSquares W Y 1 = 0 := by
+  intro W S Y
+  have hy : W.transpose.mulVec Y = 0 := by
+    ext j
+    fin_cases j <;>
+      norm_num [W, S, Y, Matrix.mulVec, dotProduct, Fin.sum_univ_succ, Real.log_div]
+  unfold leastSquares
+  rw [hy]
+  simp

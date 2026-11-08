@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P027-T1",
+    "theorem": "SAP.P027a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed, explicit eight-unit witness: four atoms have weights (1/12,5/12,1/12,5/12) and samples {0,4},{1,5},{2,6},{3,7}; z=(-1,1,-1,1,-1,1,-1,1). Validity, positivity and total variance 576/5 were independently compiled in scratch/Nonvacuity.lean. Exact rational enumeration checks all displayed moments. The universal family has r=2,m=2 as this nonempty, positive-variance instance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T2",
+    "theorem": "SAP.P027a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take r=m=1, two units with sizes (2,10), and the one-group draw law with probabilities (1/6,5/6). The four-atom uniform outcome law in scratch/Nonvacuity.lean gives two independent +/-1 noises, verifies NoiseMoments with sigma2=1, and makes every outcome integrand integrable; beta=1 gives L=33/2>0. The separate calibration antecedents have rho=1, beta=sqrt(225/8), zero noise and a Dirac outcome law at N=2, also compiled. Thus the moment, integrability, calibration and positive-ratio branches are jointly satisfiable in their respective quantified blocks.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T3",
+    "theorem": "SAP.P027a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both closed witnesses use two atoms of weight 1/2, selecting {0,1} or {2}; the grouped samples select the first or second group. The vectors are (1,1,1) and (1,1,-1/4), with grouped totals (2,1) and (2,-1/4). Validity and positivity of both laws compiled independently. Exact rational enumeration gives variances 1 and 81/16 and the stated bias increases.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T4",
+    "theorem": "SAP.P027a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use G=Fin 2, atoms Fin 2, and cluster2, with weights 1/2 and exactly one group selected. Let n_0=2,n_1=1 and lift the design to the three units. Within-group disagreement is identically zero, all groups and unit inclusions are positive, and the two groups have zero joint inclusion. Constant outcome v=1 satisfies the strict branch and gives bias(original)-bias(grouped)=-1. Base validity/positivity and the unequal-size zero-edge premise compiled; exact arithmetic checked the grouping and degree formulas on these and additional nonconstant instances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T5",
+    "theorem": "SAP.P027a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Each table premise is satisfied by taking V and G equal to its displayed exact decimal centers. The explicit population has 120 units, four positive-probability phase atoms, y_(a,b,j)=(-4 if b=0 else 4)+2j-29 and group totals (-120,120,-120,120). Exact rational enumeration gives total variance 414720>0 and expectations 357120,3766320,529920, with the stated mean-scale and relative-bias values.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T6",
+    "theorem": "SAP.P027a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For deterministic positive-variance branches, take r=2,m=2 and centered alternating outcomes. The separate grouped ratio example has probabilities (1/12,5/12,1/12,5/12), totals (1,0,-1,0), V=24 and grouped expectation 28, independently enumerated. For the outcome block take r=m=1, beta=1 and the compiled four-atom independent-sign noise model with sigma2=1; then L=33/2>0 and every required integrand is integrable. Exact rational checks also cover samplewise correction differences for nonconstant within-group outcomes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T9",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to an omitted theorem. The canonical text combines printed numerical observations and qualitative guidance with a particular interpretation of which implementation produced the column. The mathematical bounds can exclude a grouped-expectation interpretation under their premises, but cannot identify the implementation that actually produced the table. T5 and T6 retain disclosed mathematical subsets and explicitly avoid that provenance conclusion. Nothing visible requires treating a printed qualitative sentence as false.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P027-T10",
+    "theorem": "SAP.P027a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed eight-unit witness with sizes (1,3,1,3,1,3,1,3), outcomes (1,-1,1,-1,1,-1,1,-1), four atoms of weights (1/8,3/8,1/8,3/8), and samples {0,4},{1,5},{2,6},{3,7}. Validity/positivity compiled and all displayed moments were enumerated exactly. The neighborhood is nonempty because its center is the displayed outcome vector; all 256 vertices of its closed box have A<=-49/4, so the claimed weaker A<=-13/4 on the open box holds. Revision 2 changes only the disclosure of the omitted continuous uniform-start identification; no hypothesis or finite law changed. The nonvacuity scratch was recompiled successfully against the refreshed Defs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T11",
+    "theorem": "SAP.P027a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take a two-unit fixed design selecting one unit with probabilities (1/6,5/6), sizes (2,10), beta=1, and the compiled uniform four-atom law with two independent mean-zero signs. NoiseMoments with variance 1 implies the required UncorrelatedNoise conditions, and all integrands are integrable. Here A(x)=40>0, so the averaged-bias conclusion has a nonzero instance. The separate random8 coefficient A(x)=176 was checked exactly.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T12",
+    "theorem": "SAP.P027a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed witness, not a theorem with an impossible data-model antecedent. The rising-factorial masses with r=18/5 and p=3/8 are strictly positive; their binomial generating series normalizes to one and gives finite moments mean 6 and variance 16. Hence the defined product-form atomic probability measure gives positive mass to (29,0,...,0), and to each of the six finite count vectors. All six (N,m,L,printed pi>1) calculations were checked in exact arithmetic. The impossibility conclusion concerns matching those marginals; validity by itself has many explicit finite-design instances.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P027-T13",
+    "theorem": "SAP.P027a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general construction take N=2,m=1,x=(1,1), c=1/2 and pi=(1/2,1/2). Positivity, sum and the systematic-indicator integrability premise compiled in scratch/Nonvacuity.lean. For the repaired witness, the seven equally likely samples {0,j}, j=1,...,7, form a valid positive law of sample size 2 with the stated marginals and joints; exact arithmetic verifies both capped sums. All substantive divisions have positive denominators.",
+    "confidence": 0.99
+  }
+]

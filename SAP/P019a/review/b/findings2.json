@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P019-T1",
+    "theorem": "SAP.P019a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional assertion about an explicit five-point probability vector [81,216,216,96,16]/625. Independent exact arithmetic verifies its mean 8/5, variance 24/25 and both mixture contrasts. The mixture is not passed off as a constructed joint observable law; that limitation is disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T2",
+    "theorem": "SAP.P019a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "rho=1/5 satisfies 0<=rho<=1 and exercises the strict-positive-rho conclusion. Exact arithmetic verifies the constant and linear coefficients of both contrast formulas and the pointwise response increments. Joint-population identification and approximate power are expressly omitted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T3",
+    "theorem": "SAP.P019a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed 16-atom finiteSampleWitness is unchanged: independent fair X,C,W,Z, Y=XC and V=W+XZ. The standing-instance proof was recompiled successfully against the revised Defs. A new Defs-only Lean check in scratch/DeltaT3.lean directly proves P(Z=1,Y=0)>0 and listMean(true,false)=5/6. This retained population mean is now correctly acknowledged in the revised restriction. The earlier independent exact enumeration still applies to the unchanged four-observation law: P(occupied)=1431/2048 and the product-variance discrepancy is -1157/44944. No mathematical hypothesis, completion or conclusion changed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T4",
+    "theorem": "SAP.P019a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "finiteSampleWitness satisfies standing by a compiled Defs-only Lean proof. At n=2, P(occupied)=2*(3/8)^2=9/32>0; at every n>=2 a positive-mass sample can include both negative-response cells. Positive-mass pattern fibres and attainable A values exist. Counts conditional on K=0 also have a defined, positive-probability conditioning event for this population. The n+2 covariance indexing avoids impossible occupied events. Here mu*truthRate=1/4 and s1/gamma+s0/(1-gamma)=13/9, giving the stated general coefficient -13/18 in this instance.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P019-T5",
+    "theorem": "SAP.P019a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "distributionWitness is the uniform eight-atom model with independent fair X,W,Z, Y=X and V=W+XZ. A Defs-only Lean proof establishes standing and positive affirmative-cell probabilities. Every cell has probability 1/4 and variance 1/4. Exact enumeration gives the retained control, treated-plus-one and treated-minus-one point probabilities 1/2,0,1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T6",
+    "theorem": "SAP.P019a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "distributionWitness satisfies Assumptions 1-3 and P(Z=z,Y=1)=1/4 for each z; these premises compile in scratch/Nonvacuity.lean. Its control V and treated V-1 both equal a fair W conditionally. In general, monotonicity makes X=1 on Y=1, the design gives the real shift, and whole-triple treatment independence balances the conditional W law. Finite support makes equality at all real points equality of distributions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T7",
+    "theorem": "SAP.P019a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed diagnosisWitness has 16 equal-mass atoms, independent fair B,C,X,Z, W=B+C, Y=X*1{C=Z}, V=W+XZ. Independent exact enumeration verifies Assumptions 1,2,4, all positive cells/variances, delta=0, beta=2 and failure of whole-triple treatment independence. It has neither a false confession nor a list-design violation, so it refutes the printed exhaustive diagnosis. The second witness and ancillary details are expressly omitted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T8",
+    "theorem": "SAP.P019a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "distributionWitness (Lean-checked) satisfies both positive affirmative cells and all three null assumptions. diagnosisWitness has positive affirmative cells, Assumptions 1,2 and beta=2, so the final failure-diagnosis implication also has a true antecedent. The baseline decomposition follows from V=W+Z on Y=1; independence then gives beta=1 and the stated contrapositives without assuming their conclusions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T9",
+    "theorem": "SAP.P019a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The unconditional theorem fixes the uniform 128-atom sequential population. Independent rational enumeration verifies standing and beta=1 for each of its five lists, all 32 assignment probabilities 1/32, every pointwise influence identity, zero means and the full moment matrix with diagonal (4,4,4,4,2) and off-diagonal 2. Every influence variance is positive. The explicit correlated normal limit has proper Gaussian marginals; its Fisher transform has finite first and second moments. Conditioning on the shared normal coordinate produces strictly positive cross-covariances, so its variance exceeds 20. No nonexistent independent-statistic premise is assumed.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P019-T10",
+    "theorem": "SAP.P019a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take 128 equiprobable atoms with seven independent fair bits X,W,Z0,...,Z4. For every list let Xj=Yj=X, Wj=W and Vj=W+XZj. All lists share one law, each cell has probability and V variance 1/4, and the five assignment bits are jointly independent of the full shared latent vector. Independent exact tables verify standing and jointAssignmentStable, with four latent states and 32 assignment patterns. Thus the strong canonical sufficient premise is satisfiable even with outcomes shared across lists; the inference does not require independent list outcomes.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T11",
+    "theorem": "SAP.P019a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled finiteSampleWitness.standing proof supplies every population premise of the four blocks. At alpha=1/2 the quantile set {x:3/4<=Phi(x)} is nonempty (for example x=2 by the standard-normal second-moment tail bound) and bounded below by 0 (Phi(x)<=1/2 for x<=0). All conditional denominators have positive event probabilities. Positive negative-cell variances give a positive asymptotic variance, so asymptotic Wald coverage is substantive; the zero completions concern events of vanishing probability.",
+    "confidence": 0.98
+  }
+]

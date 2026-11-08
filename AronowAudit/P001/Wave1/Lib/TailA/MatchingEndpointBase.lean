@@ -62,6 +62,17 @@ instance instProbabilityMatchingCanonicalLaw : IsProbabilityMeasure matchingCano
   unfold matchingCanonicalLaw
   infer_instance
 
+theorem matching_endpoint_canonical_iid :
+    IID matchingCanonicalLaw (fun n ω => ω n) := by
+  refine ⟨fun n => measurable_pi_apply n,?_,?_⟩
+  · exact iIndepFun_infinitePi (X := fun _ x => x) (fun _ => measurable_id)
+  · intro n
+    exact ⟨(measurable_pi_apply n).aemeasurable,(measurable_pi_apply 0).aemeasurable,
+      by simp only [matchingCanonicalLaw,Measure.infinitePi_map_eval]⟩
+
+theorem matching_endpoint_canonical_law :
+    matchingCanonicalLaw.map (fun ω => ω 0) = matchingUnitLaw :=
+  Measure.infinitePi_map_eval _ _
 
 theorem matching_endpoint_constants_positive : 0 < matchA ∧ 0 < matchB ∧ 0 < matchVB := by
   obtain ⟨hs,hs1,_,_,_⟩ := hot_deck_bootstrap_constant_inequalities

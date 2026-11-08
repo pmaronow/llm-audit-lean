@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P001g.T115",
+    "target_id": "P001-T115",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Correct population random-assignment identification and final ATT-plus-selection-bias identity, with measurable integrable outcomes and positive arms. The canonical claim additionally contains the sample difference-in-means plug-in formula and two intermediate equalities, which are absent. The binary fair-treatment/constant-potential-outcome instance in nonvacuity.md satisfies all premises."
+  },
+  {
+    "theorem": "SAP.P001g.T116",
+    "target_id": "P001-T116",
+    "my_reading_vs_claim": "whole",
+    "reason": "Includes the countable-covariate ATE sum, general-covariate conditional ATE, balance conditional on the propensity score, potential-outcome independence conditional on the score, and positivity given the score. The score result is quantified independently without outcome moments. CEF and conditional independence are standard integral/indicator formulations; overlap and integrability make the displayed sums and expectations legitimate. Versions on null sets are read as authorized in the standing assumptions. A singleton covariate and fair treatment with constant outcomes give a joint instance."
+  },
+  {
+    "theorem": "SAP.P001g.T117",
+    "target_id": "P001-T117",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both the IPW formula and the two double-robustness alternatives are correct. The separately imposed integrability of each nuisance regression excludes cases where only the combined augmented score is integrable. For fair treatment, zero outcomes, p=q=1/2 and m1=N,m0=-N with nonintegrable positive N independent of treatment, the combined score is identically zero. This is a genuine narrowing, beyond requiring the displayed expectation to exist. Overlap otherwise controls denominators and all expectations in the stated domain are integrable. Concrete instances of both alternatives are in nonvacuity.md."
+  },
+  {
+    "theorem": "SAP.P001g.T118",
+    "target_id": "P001-T118",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem asserts the negation of each of the two printed universal assertions. Both are valid refutations of their printed readings: the constant functional has zero derivative and identically zero plug-in fluctuations, so no positive-variance Gaussian limit; finite-second-moment remote contamination approaches a baseline CDF at order t^2 but changes its mean by one, contradicting sup-norm Hadamard differentiability along direction zero. The latter works even at a nondegenerate Bernoulli baseline. The bounded-function space and CDF domain match the stated Kolmogorov topology; no unbounded supremum or nonintegrable mean is involved."
+  },
+  {
+    "theorem": "SAP.P001g.T120",
+    "target_id": "P001-T120",
+    "my_reading_vs_claim": "different",
+    "reason": "Negates the fixed-covariate consistency reading rather than asserting the printed positive result. This refutation is legitimate: with equally probable binary X, true success probabilities 1/4 and 3/4, and a covariate-independent Bernoulli model t in [1/4,3/4], the fixed x=0 conditional KL has unique minimizer 1/4 but the actual-product MLE tends to 1/2. The fixed covariate has probability 1/2, all observed probabilities are positive and all logs/KL integrands finite. Thus the negation does not exploit a null conditioning event or an undefined likelihood."
+  },
+  {
+    "theorem": "SAP.P001g.T121",
+    "target_id": "P001-T121",
+    "my_reading_vs_claim": "different",
+    "reason": "States a concrete negation of full-vector MLE consistency in a legitimate two-component mixture. With p=1, the second component's parameter b does not affect the data law. The count-based product maximizer can choose b=1/4 whenever the inactive cells are absent, including almost surely under true b0=3/4, so the vector cannot converge to the claimed true vector. The maximizer can be defined on every sample, and the parameter constraints are nonempty. Failure of consistency refutes the printed consistency-and-efficiency conjunction without needing an efficiency assertion."
+  },
+  {
+    "theorem": "SAP.P001g.T124",
+    "target_id": "P001-T124",
+    "my_reading_vs_claim": "different",
+    "reason": "Asserts an existential counterexample to the printed size claim, at alpha=1/2. A finite-cell IID law with X uniform on {-1,0,1}, independent fair Z, D conditionally Bernoulli(1/4+X^2/2), and W=X^2+Z/2 has W independent of D given X. Its restricted/full Gram determinants are 2/3 and 17/54, full risk 59/272, and F_n/n tends to 64/531>0. Actual F(1,n-3) medians stay bounded. The guarded rejection probability therefore tends to one, while the good-design event holds eventually almost surely. Rejections cannot rely on a singular inverse, zero residual risk, zero degrees of freedom or a fabricated critical value. See nonvacuity.md and scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P001g.T125",
+    "target_id": "P001-T125",
+    "my_reading_vs_claim": "whole",
+    "reason": "The finite-second-moment IID WLLN is the finite-variance claim under the standing finite-expectation convention, including the printed zero-variance footnote. The sample mean and convergence-in-probability definitions agree with the printed ones, up to the harmless initial n=0 term. IID standard Gaussians and a deterministic constant sequence exhibit positive- and zero-variance instances."
+  },
+  {
+    "theorem": "SAP.P001g.T126",
+    "target_id": "P001-T126",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both printed CLT forms and the finite standardization identity and standardized moments are present. MemLp 2 and positive real variance give exactly finite positive variance with legitimate expectations. The finite identities are restricted to positive sample sizes, avoiding a zero standardization denominator. IID standard Gaussians satisfy all premises."
+  },
+  {
+    "theorem": "SAP.P001g.T127",
+    "target_id": "P001-T127",
+    "my_reading_vs_claim": "whole",
+    "reason": "The displayed rectangle kernel and 1/(n h_n) normalization are exact. Positive deterministic bandwidths, h_n tending to zero, n h_n tending to infinity and a globally continuous PDF reproduce the canonical statement read with the preceding sentence. The conclusion is for each fixed x, as printed. Closed endpoints carry zero mass under a PDF, and finite local kernel variances suffice without moments of X. Standard Gaussian data with h_n=1/sqrt(n+1) give an instance."
+  },
+  {
+    "theorem": "SAP.P001g.T128",
+    "target_id": "P001-T128",
+    "my_reading_vs_claim": "whole",
+    "reason": "Asserts existence of the actual open-interval coverage limit and the printed bound at least 1-alpha, using exactly n-scaled variance consistency and positive asymptotic Gaussian variance. Nonnegative variance estimates make the printed real square root meaningful. It does not replace a limit by an unrestricted limsup or assume coverage as a hypothesis. A normal location estimator theta+phi Z/sqrt(n+1) with variance estimate phi^2/(n+1) satisfies every premise and has coverage 1-alpha."
+  },
+  {
+    "theorem": "SAP.P001g.T129",
+    "target_id": "P001-T129",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Correct actual-product MLE consistency under explicit compactness, expected-log separation and a finite uniform error envelope converging in probability, together with a separately quantified correct true-model expected-log maximum/equality lemma. The envelope is an additional uniform convergence assumption and is required at every sample size, sample point and parameter; it is not derived from the informal printed regularities. The separate product-log identity, unique sample maximizer and pointwise WLLN conclusion are absent. A Bernoulli family on [1/4,3/4] with an explicit envelope log(3)|sample success fraction-1/2| (and a finite initial value) gives a nontrivial joint instance, so the consistency premise is not the conclusion in disguise."
+  },
+  {
+    "theorem": "SAP.P001g.T130",
+    "target_id": "P001-T130",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both displayed completed-outcome estimators are unbiased at every positive n and consistent for exactly the displayed lower/upper endpoints. Only observable pairs must be IID, as printed. Bounds and almost-sure binary response ensure integrability; positive response-arm probabilities make the conditional mean ratio legitimate. The target is endpoint estimation, not a separate sharpness or population-bound theorem. Constant Y=1/2 with fair IID response and [a,b]=[0,1] yields endpoints 1/4 and 3/4 and satisfies every premise."
+  }
+]

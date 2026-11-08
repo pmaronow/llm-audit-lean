@@ -1,0 +1,137 @@
+[
+ {
+  "target_id": "P013-T27",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T27",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.section10_wearing_unbiased"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P013b.T27Statement"
+ },
+ {
+  "target_id": "P013-T26",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T26",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.school_B_embeds_C",
+   "AronowAudit.P013.school_B_joint",
+   "AronowAudit.P013.school_B_marginal",
+   "AronowAudit.P013.school_B_pair_distribution",
+   "AronowAudit.P013.school_C_joint",
+   "AronowAudit.P013.school_C_marginal",
+   "AronowAudit.P013.school_C_pair_distribution",
+   "AronowAudit.P013.school_assignment_counts",
+   "AronowAudit.P013.school_exposure_probabilities_unchanged",
+   "AronowAudit.P013.school_hosted_no_exposure",
+   "AronowAudit.P013.school_joint_differences",
+   "AronowAudit.P013.school_no_exposure_probabilities"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.block_school_hosts_injective",
+    "reason": "A structural helper; strict support inclusion is stated using the existing explicit support counterexample."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_block_choice_count",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_filter_one_block",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_filter_two_blocks",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_local_joint_count",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_local_marginal_count",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_local_mean",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_product_one",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_product_two",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.school_supports_nonempty",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.uniform_school_mean_add",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.uniform_school_mean_const",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.uniform_school_mean_mul",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.uniform_school_mean_sub",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.uniform_school_pair_law",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.uniform_school_probability_mean",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P013.school_support_counterexample"
+  ],
+  "statement_definition": "SAP.P013b.T26Statement"
+ },
+ {
+  "target_id": "P013-T25",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T25",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.school_correct_joint_unbiased",
+   "AronowAudit.P013.school_example_potential_hypotheses",
+   "AronowAudit.P013.school_support_counterexample",
+   "AronowAudit.P013.school_two_HT_reduction",
+   "AronowAudit.P013.school_two_moments",
+   "AronowAudit.P013.school_two_variance_reduction",
+   "AronowAudit.P013.school_wrong_joint_biases",
+   "AronowAudit.P013.school_wrong_joint_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.school_sum_two",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P013.school_B_marginal",
+   "AronowAudit.P013.school_C_marginal",
+   "AronowAudit.P013.school_B_joint",
+   "AronowAudit.P013.school_C_joint",
+   "AronowAudit.P013.school_assignment_counts",
+   "AronowAudit.P013.school_supports_nonempty",
+   "AronowAudit.P013.school_local_mean",
+   "AronowAudit.P013.uniform_school_probability_mean"
+  ],
+  "statement_definition": "SAP.P013b.T25Statement",
+  "statement_summary": "The specified school designs differ in support and give the stated moment formulas, wrong-joint variance biases and correct-joint equality for a 56-school population in which exactly two schools have nonzero hosted potential outcomes."
+ }
+]

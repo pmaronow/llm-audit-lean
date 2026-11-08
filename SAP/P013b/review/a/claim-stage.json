@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P013b.T15",
+    "target_id": "P013-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All four propositions are present with the correct inequality directions and their own hypotheses. Off-diagonal positive cross joints condition only the first two propositions; zero joints remain allowed for the adjusted covariance and effect variance. The sums, ordered-pair corrections, same-unit exclusions and N-squared normalization agree with expressions (7), (8), (10), (11). Finite positive design weights make joint probability zero imply the corresponding event is impossible, so field division at zero does not invent an observable term. Independent fair assignment of two units supplies strictly positive marginals and off-diagonal cross joints (compiled in scratch/Check.lean). Exact arithmetic checks cover 243 signed-outcome examples, including zero joints. No extra hypothesis, circular premise or inconsistency found."
+  },
+  {
+    "theorem": "SAP.P013b.T16",
+    "target_id": "P013-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches exactly the statements selected by the canonical claim's 'Statements to formalize': fixed numerical predictions, unbiased difference total, pointwise observed-residual form, unbiased inverse-probability count and the Hajek bias bound. The zero count convention is explicitly canonical and safe: the HT numerator is also zero, so (count/N)*ratio=HT total/N still holds. The covariance identity gives the stated bound by Cauchy-Schwarz. The paper's contextual asymptotic remark is expressly not part of the target. The two-unit independent fair law has positive marginals and also includes empty exposure samples, so this is neither vacuous nor restricted to nonempty exposure samples."
+  },
+  {
+    "theorem": "SAP.P013b.T17",
+    "target_id": "P013-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The randomization-potential-outcome total and contrast have exactly the two canonical expectations. The weight is p(z)/pi_i(D_i(z)), so it has the required different denominator in the second exposure sum. Misspecified is the exact existential Condition 7, and r is separate from the unused auxiliary exposure-potential array in Population; there is no Condition 1 restriction on r. A compiled witness uses two independent fair treatment bits, unit 0's exposure equal to its first bit and its randomization outcome equal to the second bit."
+  },
+  {
+    "theorem": "SAP.P013b.T18",
+    "target_id": "P013-T18",
+    "my_reading_vs_claim": "different",
+    "reason": "Logical polarity differs: the theorem negates, rather than asserts, the printed universal coverage claim. As a refutation, its inner proposition is the complete canonical natural reading: nested populations, standing positivity, uniform Condition 3, the literal printed Condition 5, Condition 6, every 0<alpha<1, the usual Gaussian critical value and limiting lower coverage. The real liminf is safe because probabilities are in [0,1]. Negative estimated variances yield no defined interval. This is a faithful whole refutation, not a restricted positive theorem. It is plausibly true without relying on any empty domain: for N units use a common fair exposure bit, y_i(1)=sqrt(i+1)-sqrt(i), y_i(0)=0. Fixed potentials telescope to sqrt(N), N Var(HT contrast)=1, marginals are 1/2, and a diagonal h satisfies the literal printed dependency predicate with row bound 1 (the latter fact compiled for arbitrary laws). At the all-control assignment the variance estimate is zero and the positive target is missed, so all coverage probabilities are at most 1/2, contradicting the claimed bound at alpha=1/4."
+  },
+  {
+    "theorem": "SAP.P013b.T19",
+    "target_id": "P013-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches Proposition 6.1 with nested fixed potentials, uniform boundedness, standing positivity, the o(N^2) count of possible pair dependencies, and probability of absolute estimation error exceeding every positive epsilon tending to zero. Pair independence is factorization for every pair of finite exposure values, equivalent to independence here. Diagonal g entries are counted. The usual variance bound and Chebyshev justify truth. A nonvacuous sequence takes independent fair binary exposures on N units, fixed zero potentials, and g equal to the diagonal: Condition 3 has constants 0 and 2, and the dependency count divided by N^2 is 1/N."
+  },
+  {
+    "theorem": "SAP.P013b.T21",
+    "target_id": "P013-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The fixed three-assignment example includes all canonical baseline and shifted values, positive marginals, no-effects potentials and fixed predictions, residuals, translation errors, expectation/variance values and the repair by shifting predictions too. Its changes occur on every positive-probability assignment, so it refutes the stated fixed-numerical-prediction reading of location equivariance/invariance. It does not purport to refute translation rules that also recode predictions. The nonempty law has weights 1/4,1/4,1/2 and all reported rational values were independently enumerated."
+  },
+  {
+    "theorem": "SAP.P013b.T22",
+    "target_id": "P013-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "All parts (a)-(f) of the corrected formal statement are included: exact pointwise changes, shifted-prediction equivariance and contrast invariance, necessary and sufficient error-sum conditions, fixed-prediction formulas and characterizations, zero expected translation error, the zero-prediction HT case and count calibration. The fair one-treated two-unit example supplies a nontrivial case where predictions need not shift, demonstrating nonnecessity of the sufficient rule. All lower marginal-positivity and N>0 requirements are as expected; the clauses that do not require N>0 remain valid at N=0. The count-calibration hypotheses have a compiled m=1,N=2 witness."
+  },
+  {
+    "theorem": "SAP.P013b.T23",
+    "target_id": "P013-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the specified two-unit three-world example, with the full estimator, effect, loss and bias tables and the respondent comparison. The nonidentification assertion permits the identifying function to inspect the entire assignment-indexed recorded-data function, so it genuinely rules out identification from the printed records as well. The record is identical in all worlds while effects are 1/2,1,0. The docstring correctly limits the refutation to wearing interpretation combined with the added zero-scoring rule. It does not refute consistency/unbiasedness for fully observed wearing. All four assignments have probability 1/4; records and rational moments were independently checked."
+  },
+  {
+    "theorem": "SAP.P013b.T24",
+    "target_id": "P013-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The formal expectation/loss decomposition, necessary and sufficient equal-loss condition, nonnegative zero-loss characterization, sufficient condition, exclusion identities, Hajek factors and numeric fractions match. However actual reconstruction sample facts are replaced by hypotheses on abstract sets of sizes 2050,1708,1899 and a common score G; no released orange-indicator provenance or empirical verification is present. Strictness of the sufficient versus necessary condition is not asserted. In addition, the scaling clause assumes item subset S and survey subset S but does not assume or assert item subset survey, which is equivalent to the canonical fact that the 151 survey nonrespondents are among the 342 item nonrespondents. Challenge's wording that 'their containment' is a hypothesis therefore needs care. The missing nesting is not implied by the other hypotheses: S={0,...,2049}, item={0,...,1707}, survey={1,...,1898} union {2049}, weights 1 and G nonzero only at 1 satisfy every set/score hypothesis but item is not a subset of survey. The restriction preserves valid identities and has many nonzero-score instances; it is not vacuous."
+  },
+  {
+    "theorem": "SAP.P013b.T25",
+    "target_id": "P013-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "The exact 56-school supports, exceptional host set and probability, two-active-school binary potential population, HT and expression-(7) formulas, correct-joint equality and both wrong-joint bias signs are all present. The school coding is only a relabeling. The generic moment clauses do not explicitly require nonempty S, but the marginal-equals-1/2 hypotheses force it. Named supports contain explicit assignments. The full-size combinatorial counts and every numeric fraction were independently checked. This distinguishes the specified laws and refutes wrong-joint conservativeness; it does not refute the paper's correct block-randomization sentence or assert a Table 2 error."
+  },
+  {
+    "theorem": "SAP.P013b.T26",
+    "target_id": "P013-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "All mathematical formal-content clauses (a)-(h) appear: full-size counts, strict support inclusion, school marginals and all pair laws/differences, arbitrary common independent student-law exposure preservation, and nonhosting exposure changes. A finite four-valued student code represents the hosted own/peer exposure combination; the canonical five-exposure mapping is a specialization. The product sum correctly encodes independence from the school lottery without imposing independence among student assignments. Q>=0 and sum Q=1 rule out an empty student-law sample type; both school supports are nonempty. Exact fractions and integer counts were checked. No empirical Table 2 replacement is asserted."
+  },
+  {
+    "theorem": "SAP.P013b.T27",
+    "target_id": "P013-T27",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches the canonical formal reading, which expressly assumes binary wearing potentials and consistent observation for every analyzed unit and selects only HT unbiasedness, not the empirical table entries or other estimators. Labels 0,1,2,3,4 correctly represent d000,d001,d011,d101,d111, and the peer predicate is existence of an assigned neighbor, equivalent to a positive count. The injection lets exposure depend on peers outside the analysis set. The additional-looking within-school symmetric graph premises describe the paper's actual network: Section 10 explicitly constructs an undirected adjacency graph from within-school nominations (paper arXiv:1305.6156v4, PDF p.25). The arbitrary design generalizes the stated lottery without dropping its cases. A compiled one-analyzed-student/two-peer-universe three-bit design realizes all five exposures with positive probabilities (1/2,1/8,1/8,1/8,1/8), so the hypotheses are jointly satisfiable."
+  }
+]

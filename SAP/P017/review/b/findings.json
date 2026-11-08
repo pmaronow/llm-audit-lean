@@ -1,0 +1,162 @@
+[
+  {
+    "target_id": "P017-T1",
+    "theorem": "SAP.P017.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified IPW population is a product of Uniform(0,1), fair {-1,1}, and fair {0,1}, each of total mass one. Its effect A is bounded and integrable, mu=1/2, radius=1/2; the bounded summand has variance 53/12>0. For every n>=1 the two disjoint bad events each have probability 4^(-n)>0. No antecedent is assumed in this concrete conjunction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T2",
+    "theorem": "SAP.P017.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take G=(delta_{-1}+delta_1)/2 on R and tau(x)=x. It is measurable and integrable, mu=0, support={-1,1}, radius=1. The constant weight 1 represents 0; weights 2*1_{tau=1} and 2*1_{tau=-1} represent the atoms. The two-point population facts are independently compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T3",
+    "theorem": "SAP.P017.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take G=(delta_{-1}+delta_1)/2, tau=id, P=N(0,1), and hat_n(z)=z/sqrt(n) (zero at n=0). Then mu=0, radius=1>0, every estimator is measurable, and root-n asymptotic normality has variance 1. These joint hypotheses are independently compiled in scratch/Check.lean. An atomless alternative is Uniform(0,1) with hat_n(z)=1/2+z/sqrt(n), where the original clipping endpoints are unattainable.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P017-T4",
+    "theorem": "SAP.P017.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independently compiled two-point population G=(delta_{-1}+delta_1)/2, tau=id has mu=0 and radius=1. Choose d=1/2. Every t in [-1/2,1/2] is represented by w(1)=1+t and w(-1)=1-t, with mean weight one. The larger radius c=1 and deterministic estimator x=3/4 satisfy the c support condition but are changed by clipping at d.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T5",
+    "theorem": "SAP.P017.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit law is the probability product N(0,1) times a fair sign, with IID units. Effect sign has finite mean zero and radius one. Normal sample means have law N(0,1/n); the deterministic shift 1/n gives the stated normal decomposition. For n=25 the central event has probability at least 21/25>0. Its pointwise intermediate error -1/25 and zero actual clipping error are independently checked in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T6",
+    "theorem": "SAP.P017.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same explicit IID Gaussian/sign population has radius one. Its remainder epsilon_n=1/sqrt(n) has second moment 1/n and sqrt(n) times that moment tends to zero. At n=25 the central event has probability >=21/25, intermediate squared error 1/625, and the certified rational lower and upper comparisons are 21/15625 and 15/15625, with gap 6/15625>0. All required Gaussian moments are finite.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T7",
+    "theorem": "SAP.P017.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The finite-radius two-point population together with P=N(0,1), hat_n(z)=z/sqrt(n), Z_n=z and epsilon_n=0 satisfies the combined measurable, radius-positive and root-n-normal hypotheses, as independently compiled in scratch/Check.lean. For an infinite-radius case use tau=id under G=N(0,1), whose closed support is R.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T8",
+    "theorem": "SAP.P017.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use P=N(0,1), mu=0, c=1, v=1, hat_n(z)=z/sqrt(n), Z_n(z)=z and epsilon_n(z)=0. Every function is measurable; the decomposition is exact for n>=1, every required moment is finite, and SmallRemainderMS holds. RootNNormal and NormalRemainder for these functions are independently compiled in scratch/Check.lean. The infinite-radius component has identically zero actual error for any measure P.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T9",
+    "theorem": "SAP.P017.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the genuine IID IPW example of T1: Xi is the observed-pair function 2dy-2(1-d)y, hat_n is its empirical mean, data is the identity on the IID sample space, and H_n(F) is the integral of that observed-pair function against F. Thus the estimator factors through the empirical observed measure, is root-n normal with variance 53/12, and the population radius is 1/2. On the event of all untreated B=-1 units, of probability 4^(-n)>0, its clipped value is 1, which no admissible population weight attains. This refutes the printed reading even if IID sampling is additionally required.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P017-T10",
+    "theorem": "SAP.P017.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the main implication use the independently compiled fair-sign effect population, mu=0 and radius=1, and the measurable constant estimator 0: its law support is {0}, so the support condition holds. For the full-support part use tau=id under N(0,1). For the nonnegative-support part use tau(z)=|z| under N(0,1), with support [0,infinity) and finite positive mean, and the constant estimator -1, so negative-estimate probability is one. The subsidiary probability-zero premise under the main support condition is impossible, but the main theorem hypotheses are satisfiable and the probability-one conclusion directly rules out the printed zero.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P017-T11",
+    "theorem": "SAP.P017.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The parameter domain is nonempty: n=1, c=1, sigma=1. The nonnegative Lebesgue integrand has a finite Gaussian second moment, and the closed form is sqrt(2/pi)*exp(-1/2)+2*Phi(-1). Positivity of n,c,sigma excludes zero denominators in the identity. Limits concern only positive sizes eventually.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T12",
+    "theorem": "SAP.P017.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the specified IID slowPopulation and p_n=slowP(n). The effect law has total mass 1/4+1/4+(1/4)*2=1, bounded integrable effect, endpoint atoms, mean zero and radius one. The uniform fractional part has exactly uniform law for n>=1 and is independent of the normal sample mean. The failure probability is positive and vanishes. The exact values slowP(1000)=1/10 and slowP(10^12)=1/40 are independently compiled in scratch/Check.lean. For arbitrary p, bounded flags and clipped means plus the normal mean give finite second moments; no nonintegrable-integral convention is used.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P017-T13",
+    "theorem": "SAP.P017.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the first component use the independently compiled radius-one fair-sign population and normal estimator z/sqrt(n). For the second use the actual IID slowPopulation with p=slowP, a positive vanishing sequence. For the finite normal bound use P=N(0,1), tilde(z)=z/sqrt(n), u=0, mu=0, c=sigma=1 and any n>=1. These are concrete probability models with finite or bounded relevant quantities.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T14",
+    "theorem": "SAP.P017.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independently compiled joint instance in scratch/Check.lean uses G=(delta_{-1}+delta_1)/2, tau=id, mu=0 and radius=1, P=N(0,1), and measurable hat_n(z)=z/sqrt(n). The root-n limit is N(0,1), of positive variance. Thus the heterogeneity and asymptotic-normality assumptions are jointly satisfiable.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T15",
+    "theorem": "SAP.P017.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independently compiled joint instance in scratch/Check.lean has the fair-sign population with radius one, P=N(0,1), hat_n(z)=z/sqrt(n), Z_n=z, epsilon_n=0 and variance one. It satisfies exact measurability, NormalRemainder, and SmallRemainderMS. Gaussian second moments imply integrability of the actual finite-radius squared error for n>=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T16",
+    "theorem": "SAP.P017.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independently compiled fair-sign population and normal estimator satisfy the hypotheses with radius one. The permitted zero-radius case is G=delta_0, tau=0, with the same normal estimator about mean zero; the target is then identically zero. The permitted infinite-radius case is G=N(0,1), tau=id with the same estimator; the target then equals the estimator.",
+    "confidence": 0.99
+  }
+]

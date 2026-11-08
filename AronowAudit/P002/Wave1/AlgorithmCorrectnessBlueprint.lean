@@ -1,14 +1,18 @@
 import AronowAudit.P002.Wave1.AlgorithmSupportBlueprint
 
 /-!
-# Theorem 3 for Algorithms 1/3 and 2/4 (P002-T28)
+# Blueprint: P002-T28, Theorem 3 (main p. 17) for Algorithms 1/3 and 2/4
 
-Main p. 17, Theorem 3. The conclusions cover existence of the complete finite
-crossing list, an Algorithm 1 run for every complete list, correctness of Algorithm 1,
-an Algorithm 2 run for every nonempty list, correctness for every admissible
-Algorithm 2 run, and the no-intersection immediate return with an arbitrary sample
-point. Both data branches (Assumption 6 unadjusted, Assumption 7 adjusted) are
-expressed by `DataGeneratedCoefficients` and `ARRegular`.
+Record P002-T28 (`AronowAudit.P002.algorithm_correctness`, resolution `bridge` with new
+Lean). The bridge packages the coefficient-domain results: existence of the complete
+finite crossing list, existence of an Algorithm 1 run for every complete list, Algorithm 1
+correctness, existence of an Algorithm 2 run for every nonempty list, Algorithm 2
+correctness for every admissible run, and the no-intersection immediate return with an
+arbitrary sample point. Both data branches (Assumption 6 unadjusted, Assumption 7
+adjusted) are carried by `DataGeneratedCoefficients` and `ARRegular`. The frozen generic
+draft is admitted and is not used.
+
+Nodes: all fourteen shared `AlgorithmSupport` nodes.
 -/
 
 namespace AronowAudit.P002.Wave1.AlgorithmCorrectness
@@ -17,7 +21,7 @@ open scoped BigOperators ENNReal Matrix Topology
 open Filter MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-
+/-- Frozen final statement of `AronowAudit.P002.Wave1.algorithm_correctness_paper`. -/
 def Target : Prop :=
   ∀ (M : ℕ) (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR) (α : ℝ),
     0 < M → (0 < α ∧ α < 1) → DataGeneratedCoefficients Qf Qg →

@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P005-T25",
+    "theorem": "SAP.P005b.T25",
+    "fingerprint": "e483ff1be7612032bca3869dc077e03ebec67fb86e8160f10cbfd9f4dd465840",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Complete sequence argument in REPORT.md: d_n=1, m_n=floor(n/2), x_{n,i}=(2i-n+1)*sqrt(3/(n^2-1)) for n>=3, yT=x^2, yC=x; arrays zero earlier. These covariates are centered, have second moment 1, are all distinct, and have squared magnitude <3. K=9, lo=1/4, hi=3/4 work. For n>=4 every arm covariance is positive, and Lhat is their positive weighted sum for every assignment. d_n/n=1/n tends to zero. Compiled scratch/Nonvacuity.lean checks standardized n=4,d=1,m=2 rational data, the uniform moment/fraction bounds at that size, and invertibility under all six assignments. The full sequence normalization and limits are established by the written mathematical argument, not by this finite check.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T26",
+    "theorem": "SAP.P005b.T26",
+    "fingerprint": "53052156b6bdcbd36feac2e7af3688910d16bc4b641b340227f64a083d3e7258",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Complete sequence argument in REPORT.md: d_n=1, m_n=floor(n/2), x_{n,i}=(2i-n+1)*sqrt(3/(n^2-1)) for n>=3, yT=x^2, yC=x; arrays zero earlier. Standardization is exact, K=9 and lo=1/4, hi=3/4 work, and every common Lhat is positive for n>=4. kappa_n=3(n-1)/(n(n+1)) tends to zero, so both asymptotic conjuncts have genuine data. Compiled scratch/Nonvacuity.lean separately proves all finite hypotheses of the exact-identity conjunct using n=4,d=1,m=2, x=(-7/5,-1/5,1/5,7/5), yT_i=i^2,yC_i=i; common regularity holds under all six assignments. The entire sequence argument is written, not claimed to be a compiled asymptotic construction.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T27",
+    "theorem": "SAP.P005b.T27",
+    "fingerprint": "637a5afea8e611c1f71da57cdb400eca42c574a48733d0e75c3ee3b361c06ca8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Complete sequence argument in REPORT.md: d_n=1, m_n=floor(n/2), x_{n,i}=(2i-n+1)*sqrt(3/(n^2-1)) for n>=3, yT=x^2, yC=x; arrays zero earlier. K=9 and lo=1/4, hi=3/4 work. At every n>=4, both arms of every assignment contain at least two distinct covariate values, so both scalar covariance determinants are strictly positive. kappa_n=3(n-1)/(n(n+1)) tends to zero. Thus all standing, regularity and leverage-decay hypotheses are jointly satisfiable. Compiled scratch/Nonvacuity.lean checks standardized n=4,d=1,m=2 rational data and both-arm regularity for every one of the six assignments. The full variable-size sequence is justified mathematically in REPORT.md, not solely by the finite check.",
+    "confidence": "high"
+  }
+]

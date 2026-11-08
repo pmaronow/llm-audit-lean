@@ -478,5 +478,7 @@ theorem T3_corrected_ATT_regret_proof {Ω C : Type*} [MeasurableSpace Ω]
     rw [T6_actual_welfare E hS (hPiSet π hπ)]
     simp only [Experiment.meanWelfare, Experiment.A, mul_comm]
 
+example : type_of% @AronowAudit.P006.T3_corrected_ATT_regret := T3_corrected_ATT_regret_proof
+
 end
 end AronowAudit.P006.Wave1

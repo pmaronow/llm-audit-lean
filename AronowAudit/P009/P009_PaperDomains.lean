@@ -28,5 +28,6 @@ theorem common_assignment_mixing (S : Study) (p : ℝ) (hp : 0 < p ∧ p < 1)
   exact ⟨h.1,fun θ => (CommonCompletion.common_assignment_mixing_completed
     (S.positive t) (S.experiment t) p θ hp (hNo t) (hCommon t)).2.1,h.2.2⟩
 
+#print axioms common_assignment_mixing
 end
 end AronowAudit.P009.PaperDomains

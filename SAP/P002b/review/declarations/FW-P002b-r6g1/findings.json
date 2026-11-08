@@ -1,0 +1,64 @@
+[
+  {
+    "target_id": "P002-T16",
+    "theorem": "SAP.P002b.T16",
+    "fingerprint": "868f4479d734d4f51b6aa2111f829dd2b4202943f2c67992d59069530d9ae575",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:14: a direct proof of T16Statement from the definitions, without a Challenge theorem. The four rows are (1,0), (-1,0), (0,1), (0,-1); all centering, fourth-moment, second-moment and maximum equalities are checked. A compatible standing-assumption population is all-complier, n1=2, with both potential outcome vectors (1,1,-1,-1); residual variances are 4/3 and Xi holds for delta=0, e=A=1/2, B=1, r=1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T17",
+    "theorem": "SAP.P002b.T17",
+    "fingerprint": "a5c5ca06fb57f8f8c8b81d621015a1aa1dae818abc245dd6e321a8132f788951",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:21 and :28: n=4, k=2, A=1/2 with coordinateExample satisfies all finite hypotheses. The nonzero infinite sequence ones j : Fin (j+1) -> Fin 2 -> R, identically 1, satisfies every fourth-moment bound for fixed A=1 and has positive sample size for every j.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T18",
+    "theorem": "SAP.P002b.T18",
+    "fingerprint": "5c5eb02dcabb88217ae04b154fc31858e474d2faf72f06ab97639f71ac29b2f9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:35 onward: n=4, k=1, n1=2, x=(-1,0,0,1), both potential outcome vectors (0,1,0,0), d_i(a)=a, beta=0, and treated set {0,1}. ValidDesign and assignment membership hold; both arm Gram determinants are 1/4. Population coefficient is (1/4,0), treated fit (1,1), control fit (0,0). The feasible-minus-oracle contrast is the nonzero value 1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T19",
+    "theorem": "SAP.P002b.T19",
+    "fingerprint": "35ca32bd3ba0a47779485823490ccd952a214d30291e7058450156711c62fbd8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:35 onward: the same explicit all-complier n=4, k=1 population and treated set satisfy every hypothesis for both Boolean arms, each with determinant 1/4. The actual treated residual cross term is -5/8; it is computed from the fitted coefficients and population residuals, including the intercept error.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T20",
+    "theorem": "SAP.P002b.T20",
+    "fingerprint": "b623d44c65625921889c4ac698606c9bee7624b365483f8b45423b0d5e31fa0e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:161 onward: the finite example satisfies validity, monotonicity, nonempty compliers, covariate centering and population Gram determinant 1/2. An explicit sequence has sizes(j)=2(j+1), k=1, n1=j+1, balanced covariates +1 and -1, all-complier receipt, and zero potential outcomes. StrictMono sizes, all scalar hypotheses for delta=0, e=A=B=1 and r=1/2, and Xi at every j are proved. The population Gram determinant is 1. A separate compiled example establishes Xi for the nonzero-residual finite population with delta=0, e=1/2, A=1, B=2 and r=1/2.",
+    "confidence": 0.98,
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P002b/Defs/Part3.lean:34-35: The controlRemainder docstring says that T20 explicitly requires positive oracle design variance and invertible control Grams on the design support. The reviewed theorem uses T20WholeStatement, whose asymptotic hypotheses at SAP/P002b/Defs/WholeW1.lean:51-56 require neither. Its statement and Challenge docstring instead allow and disclose the totalized inverse and zero-division convention. This is a stale description of the older T20Statement, not an actual restriction or a mathematical failure of the reviewed target.",
+        "status": "fixed",
+        "reason": "SAP/P002b/Defs/Part3.lean:34-37 now explicitly documents the totalized matrix inverse and real division, agreement with E.29 at invertible control Gram and positive oracle variance, and that T20WholeStatement imposes neither extra premise. This matches the actual hypotheses at SAP/P002b/Defs/WholeW1.lean:51-56 and the Challenge docstring at SAP/P002b/Challenge/Part1.lean:24-31. The earlier guarded T20Statement is not the reviewed proposition."
+      }
+    ]
+  }
+]

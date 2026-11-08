@@ -1,0 +1,162 @@
+[
+  {
+    "target_id": "P045-T1",
+    "theorem": "SAP.P045a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The 512 explicit outcomes all have positive mass (1/2)B_(1/2)(z_H)B_(1/4)(z_L), summing to 1. Direct-domain probabilities are 7/8 and 87/128; indirect and total domains each have probability 3825/4096; all-four-arms domain has probability 609/1024. Exact enumeration confirms every retained conditional value. For the quantified marginal identities take p=1/2.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T2",
+    "theorem": "SAP.P045a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=4, p=1/2 and Y_i(z)=sum_(j!=i)z_j; fixed-count clauses use k=2, with 6 positive-mass assignments and two nonempty arms. First-stage clauses can use G=2,C=1,n_g=4,k_g=2 and independent local laws, giving a genuine normalized law on nonempty group sets. Arbitrary-design clauses admit the full-support uniform design compiled in scratch/Check.lean. Additional nonconstant interference schedules were checked exactly.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T3",
+    "theorem": "SAP.P045a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each m=1,2, every selected group has 3 equiprobable CR assignments; the 20 group triples and the 3^3 selected local outcomes all have positive probability. Every observed arm has positive size. The deliberately dropped singleton variance is excluded by an explicit size test, and is not used as an ordinary sample variance. Unselected local draws integrate to 1 and give the same selected statistics as the canonical complementary-regime design. All retained moments were recomputed with exact fractions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T4",
+    "theorem": "SAP.P045a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The regular domain admits G=C=2, n_0=n_1=4, m_0=m_1=2 and arbitrary fixed a,b; these size conditions, the full selected set and a fixed-count assignment were checked in scratch/Check.lean. The singleton domain admits G=2,C=2,n_g=3,m=1 or 2. For the strict-negativity antecedent choose x_g=(1,2,3), which is nonconstant (also compiled). The toy undefined-variance clause admits H={0,1,2} and any CR(3,m) assignment in each selected group. Heterogeneous regular-domain and singleton-bias instances pass exact enumeration.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T5",
+    "theorem": "SAP.P045a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The single-edge graph on two vertices and four equiprobable assignments is a genuine full-support design. Both correct extreme probabilities are 1/4, and the defective complement probability is 3/4. The linear and threshold schedules have the required outcomes and every retained value was checked exactly.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T6",
+    "theorem": "SAP.P045a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=2, the single-edge Network and uniform mass 1/4 on each assignment. Both extreme probabilities are 1/4. The linear schedule Y_i=1+z_0+z_1 satisfies the two extreme-event consistency hypotheses; the threshold schedule Y_i=1+2*1_(z_0=z_1=1) also satisfies the stronger complement-event hypothesis. For the general event identity take Omega=Bool with uniform mass and E={true}, whose probability is 1/2. The finite Design and Network constructions compile in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T7",
+    "theorem": "SAP.P045a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit symmetric single-edge four-vertex graph realizes both exposure changes; all copy lookups in these claims are within the valid triangular lists. The six-bit upper inputs give 64 concrete cases, exactly 32 asymmetric outputs by independent enumeration. The probability clause admits q=0 and q=1/2; the defective matrix is nonzero, so equality to it is precisely the no-deletion event.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T8",
+    "theorem": "SAP.P045a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There are 1,20,190 deletion masks and respectively 10,200,1900 measured-network/treated-unit outcomes, all with positive uniform mass. Exact enumeration of all 2110 outcomes confirms degrees 1 through 6, nonempty numerator cells, positive reciprocal-weight sums, the exact beta_0 value, all rational bounds and strict absolute-bias comparisons. Thus no Hajek value depends on a zero denominator.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T9",
+    "theorem": "SAP.P045a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the matrix clauses use n=2, the single-edge binary matrix and its unchanged strict upper entries (or delete the edge). For the probability clause use n=3, the complete graph as true network, the path 0-2-1 as measured network, uniform mass 1/8 on assignments and increasing positive exposure outcomes. All measured d00/d01 probabilities are positive; contamination weights are (1/2,1/2,0), and the mixture/bias identities check exactly. The fixed Hajek witness is nonvacuous as in T8.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T10",
+    "theorem": "SAP.P045a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The path on four vertices gives the stated coded and repaired terminal laws, both normalized. The only unbounded terminating trace family starts at center 0, repeats 0 r times and finishes at 1,2 or 3; each final center contributes sum_(r>=0)4^(-(r+2))=1/12. Other paths are finite, so every relevant real tsum is absolutely convergent. Exact absorption of self-loops and nearest-center labeling confirms all center/treatment probabilities and coded support.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T11",
+    "theorem": "SAP.P045a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n=2 and the empty SimpleGraph, the concrete run [0,1] is admissible and covers both vertices; distinct-vertex distance is infinity. This example compiles in scratch/Check.lean and verifies the disconnected-graph convention is meaningful. A nonempty complete graph also admits a one-center completed run. At every admissible extension the new center marks itself, so the progress antecedent is satisfiable and strict progress is substantive.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T12",
+    "theorem": "SAP.P045a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The ten-cycle and all 45 equally likely distinct treatment pairs give the stated four positive exposure probabilities (2/45,7/45,1/3,7/15), with own-treatment probability 1/5. Exact enumeration confirms 10 adjacent pairs, both values on every pair, all three expectations and the numerical bias. All divisions used by the asserted estimators have positive denominators.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T13",
+    "theorem": "SAP.P045a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The single-edge two-vertex Network with uniform mass 1/4 per assignment has own probabilities 1/2 and d11/d10 probabilities 1/4 at both units. This satisfies the main and stronger HT antecedents. Ordered outcomes (d11,d10)=(2,1) at both units give a strict-negative-bias instance; reversing them gives the reverse sign. The heterogeneous cancellation schedule gives exactly 0,2,1,3 and expectation 3/2 by exact enumeration. A genuine full-support Design and the Network compile in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T14",
+    "theorem": "SAP.P045a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use H={0,1,2}, and in group g treat its first 50 units if g<3 and first 25 otherwise. Every arm is nonempty and every group assignment has CR mass 1/binom(75,50) or 1/binom(75,25), both strictly positive. This gives the actual 450-unit outcome and the displayed arm values. All 20 first-stage triples were enumerated, with 8 empty same-regime subclasses and 12 of size 2; Option.none explicitly represents the printed empty-subclass ratio.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T15",
+    "theorem": "SAP.P045a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same H and assignment as T14 have positive two-stage mass (1/20) times six positive reciprocal binomial coefficients. The full local CR laws and their product normalize to 1. Under the all-psi law, conditioning on treated/control has probabilities 2/3 and 1/3, with constant outcomes 9/4 and 11/8 on these events. All 20 first-stage mixture values were checked with exact fractions, giving expectation 4/5 and bias -3/40. For abstract pooling choose a=2,b=1,A=9/2,B=2; the boundary example is a=0,b=3,A=0.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P045-T16",
+    "theorem": "SAP.P045a.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The printed graph and all 45 uniformly sampled distinct pairs form a nonempty design. Every unit has positive exposure probabilities for all four cells. Exact enumeration confirms pair (5,8) has an empty d11 cell but all HT weights are defined; it gives d00 total 15/2 and contrast -3/4. It also confirms supports of sizes 20 and 19 and every unconditional and restricted-support mean. No realized empty cell is assigned a fictitious ratio.",
+    "confidence": "high"
+  }
+]

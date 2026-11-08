@@ -4,8 +4,9 @@ import Mathlib.Analysis.Convex.Topology
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
 /-!
-Thin-rectangle counterexamples, diameter-based interference cutoffs,
-and polygon counting bounds.
+Drafts for the three declarations assigned to dd-GP0041B2.
+No Lean process was run. The checks below are obligations for the Beam writer.
+The held declarations occur only in `type_of%` checks, never in proof terms.
 -/
 
 namespace AronowAudit.P004.Wave1
@@ -179,6 +180,9 @@ theorem polygon_spacing_counterexample_proof :
     push_cast
     linarith
 
+example : type_of% @AronowAudit.P004.polygon_spacing_counterexample :=
+  polygon_spacing_counterexample_proof
+
 /-! ## P004-T17(a): finite source range plus a diameter bound -/
 
 lemma diameter_separation_le {N : ℕ} {A : Type*} [MetricSpace A] [MeasurableSpace A]
@@ -273,6 +277,9 @@ theorem diameter_interference_cutoff_proof {N : ℕ} {A : Type*} [MetricSpace A]
       have hyb : dist y b ≤ d := by simpa only [dist_comm] using hby
       exact (diameter_separation_le P hanode hbnode).trans
         (diameter_chain a x u v y b d dbar D hax hxu huv hvy hyb)
+
+example : type_of% @AronowAudit.P004.diameter_interference_cutoff :=
+  diameter_interference_cutoff_proof
 
 /-! ## P004-T17(c): count disjoint polygon interiors by area -/
 
@@ -389,6 +396,9 @@ theorem polygon_count_bound_proof {N : ℕ} (P : SpatialPopulation N (EuclideanS
   change (J.card : ℝ) ≤ Real.pi*(r+2*D)^2/a
   apply (le_div_iff₀ ha).mpr
   exact hnum
+
+example : type_of% @AronowAudit.P004.polygon_count_bound :=
+  polygon_count_bound_proof
 
 end
 end AronowAudit.P004.Wave1

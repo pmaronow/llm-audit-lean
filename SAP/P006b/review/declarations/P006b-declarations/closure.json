@@ -1,0 +1,2100 @@
+{
+  "declarations": [
+    {
+      "theorem": "SAP.P006b.T16",
+      "target_id": "P006-T16",
+      "fingerprint": "2dca8e8f2102fda9bc2ecf1213ae904e48742efdc2639d7658fa53bd99ff7846",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 7,
+      "closure": [
+        {
+          "line": 15,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.Admissible"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment"
+        },
+        {
+          "line": 21,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.PX"
+        },
+        {
+          "line": 35,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.T"
+        },
+        {
+          "line": 48,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.V"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.X"
+        },
+        {
+          "line": 31,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y0"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y1"
+        },
+        {
+          "line": 68,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.covariateSigma"
+        },
+        {
+          "line": 65,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedTT"
+        },
+        {
+          "line": 61,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedWeightedTT"
+        },
+        {
+          "line": 19,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.hn"
+        },
+        {
+          "line": 27,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.law"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.mk"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.observed"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ0"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ1"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μhat"
+        },
+        {
+          "line": 127,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.FullInformationStatement"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing.mk"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16MainStatement"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16MainStatement._proof_1"
+        },
+        {
+          "line": 50,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16PositivityStatement"
+        },
+        {
+          "line": 133,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16Statement"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bestValue"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.maximumDeviation"
+        },
+        {
+          "line": 115,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.normalizedTT"
+        },
+        {
+          "line": 42,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.regret"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.selectedBaseline"
+        },
+        {
+          "line": 20,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.untreatedConditionalLaw"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.untreatedProbability"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wWeightedTT"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T17",
+      "target_id": "P006-T17",
+      "fingerprint": "af0afd5d1f18c276022f55ae06d28fc3a3af1bd8d518484460685f8ea37f7331",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 11,
+      "closure": [
+        {
+          "line": 15,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.Admissible"
+        },
+        {
+          "line": 53,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.BinaryPolicy"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment"
+        },
+        {
+          "line": 21,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.PX"
+        },
+        {
+          "line": 35,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.T"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.X"
+        },
+        {
+          "line": 31,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y0"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y1"
+        },
+        {
+          "line": 68,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.covariateSigma"
+        },
+        {
+          "line": 19,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.hn"
+        },
+        {
+          "line": 27,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.law"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.mk"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.observed"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ0"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ1"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μhat"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.OutcomeStanding"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing.mk"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16MainStatement._proof_1"
+        },
+        {
+          "line": 136,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17AssumptionImplicationStatement"
+        },
+        {
+          "line": 86,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadFamily"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadFamily._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadFamily._proof_2"
+        },
+        {
+          "line": 84,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadPolicies"
+        },
+        {
+          "line": 80,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadProbability"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadProbability._proof_1"
+        },
+        {
+          "line": 81,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadY0"
+        },
+        {
+          "line": 83,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadY1"
+        },
+        {
+          "line": 124,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17ComparisonStatement"
+        },
+        {
+          "line": 112,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17ConditionalMeanStatement"
+        },
+        {
+          "line": 69,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T17ExampleStatement"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T17ExampleStatement._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T17ExampleStatement._proof_2"
+        },
+        {
+          "line": 172,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17KernelAssumptionImplicationStatement"
+        },
+        {
+          "line": 156,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17KernelComparisonStatement"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17KernelComparisonStatement._proof_1"
+        },
+        {
+          "line": 58,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T17SelectionStatement"
+        },
+        {
+          "line": 182,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17WholeStatement"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bestValue"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryActualWelfare"
+        },
+        {
+          "line": 68,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryEndogenousTT"
+        },
+        {
+          "line": 57,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryFeasible"
+        },
+        {
+          "line": 76,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryMarginalHeterogeneity"
+        },
+        {
+          "line": 59,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryObserved"
+        },
+        {
+          "line": 52,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryPopulationLaw"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryPopulationLaw._proof_1"
+        },
+        {
+          "line": 55,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryRule"
+        },
+        {
+          "line": 65,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binarySelectedBaseline"
+        },
+        {
+          "line": 62,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryUntreatedMass"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 62,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.coinMass"
+        },
+        {
+          "line": 84,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.eventMean"
+        },
+        {
+          "line": 90,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.finiteA"
+        },
+        {
+          "line": 41,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.finiteConditionalLaw"
+        },
+        {
+          "line": 48,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.finiteMarginalDeviation"
+        },
+        {
+          "line": 88,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.finiteMass"
+        },
+        {
+          "line": 32,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.finiteSelectedBaseline"
+        },
+        {
+          "line": 145,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.kernelMarginalBaseline"
+        },
+        {
+          "line": 152,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.kernelMarginalDeviation"
+        },
+        {
+          "line": 35,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.leaveOnlyType"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.maximumDeviation"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.outcomeExperiment"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.publicFiniteMean"
+        },
+        {
+          "line": 42,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.regret"
+        },
+        {
+          "line": 38,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.treatOnlyType"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T18",
+      "target_id": "P006-T18",
+      "fingerprint": "7e35bfa1ed2d3cb2a5a339e6bc0cdd2d28b34c93cb9dbd429df03660a98b0294",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 23,
+      "closure": [
+        {
+          "line": 53,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.BinaryPolicy"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16MainStatement._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadFamily._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadFamily._proof_2"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadProbability._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T17ExampleStatement._proof_1"
+        },
+        {
+          "line": 75,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T18Statement"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T18Statement._proof_1"
+        },
+        {
+          "line": 200,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T18WholeStatement"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bestValue"
+        },
+        {
+          "line": 57,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryFeasible"
+        },
+        {
+          "line": 60,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryPolicies"
+        },
+        {
+          "line": 55,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryRule"
+        },
+        {
+          "line": 75,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryWelfare"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 62,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.coinMass"
+        },
+        {
+          "line": 80,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.effectP1"
+        },
+        {
+          "line": 78,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.outcomeP1"
+        },
+        {
+          "line": 42,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.regret"
+        },
+        {
+          "line": 82,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.rewardP1"
+        },
+        {
+          "line": 20,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.treatedCount"
+        },
+        {
+          "line": 64,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.twoATO"
+        },
+        {
+          "line": 22,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wATO"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T19",
+      "target_id": "P006-T19",
+      "fingerprint": "edead3e92b844aada7c5d96a932bbf346dcf5b0793d49ff7adb93b7522e82831",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 32,
+      "closure": [
+        {
+          "line": 53,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.BinaryPolicy"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16MainStatement._proof_1"
+        },
+        {
+          "line": 82,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T19CoreStatement"
+        },
+        {
+          "line": 138,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T19Statement"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bestValue"
+        },
+        {
+          "line": 57,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryFeasible"
+        },
+        {
+          "line": 60,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryPolicies"
+        },
+        {
+          "line": 75,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryWelfare"
+        },
+        {
+          "line": 80,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.effectP1"
+        },
+        {
+          "line": 42,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.regret"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T20",
+      "target_id": "P006-T20",
+      "fingerprint": "50f362997fdf58b1dbc5ac03f922b6cb660a363ea22bc54c35960e2007fe3d72",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 36,
+      "closure": [
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16MainStatement._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T17ExampleStatement._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T18Statement._proof_1"
+        },
+        {
+          "line": 90,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T20CoreStatement"
+        },
+        {
+          "line": 154,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T20Statement"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 62,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.coinMass"
+        },
+        {
+          "line": 47,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.logistic"
+        },
+        {
+          "line": 63,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.logisticWitnessMass"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.logisticWitnessMass._proof_1"
+        },
+        {
+          "line": 58,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.signedOutcome"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.twoTTConstant._proof_1"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T21",
+      "target_id": "P006-T21",
+      "fingerprint": "53f7f7d0f47c71b18bf558e7bf754755700fa2f20b390ff866366c59647099b0",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 40,
+      "closure": [
+        {
+          "line": 49,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.LogisticFit"
+        },
+        {
+          "line": 49,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.LogisticFit.mk"
+        },
+        {
+          "line": 50,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.LogisticFit.β0"
+        },
+        {
+          "line": 51,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.LogisticFit.β1"
+        },
+        {
+          "line": 52,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.LogisticFit.β2"
+        },
+        {
+          "line": 53,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.LogisticFit.β3"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16MainStatement._proof_1"
+        },
+        {
+          "line": 105,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T21CoreStatement"
+        },
+        {
+          "line": 160,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T21Statement"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 62,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.coinMass"
+        },
+        {
+          "line": 55,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.linearPredictor"
+        },
+        {
+          "line": 47,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.logistic"
+        },
+        {
+          "line": 60,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.signedBernoulliMean"
+        },
+        {
+          "line": 58,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.signedOutcome"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T22",
+      "target_id": "P006-T22",
+      "fingerprint": "1aca2b99abfed014cfe9703c4a748f07f67587341014510a53df90d58b4f5e8b",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 44,
+      "closure": [
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T16MainStatement._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T17ExampleStatement._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T18Statement._proof_1"
+        },
+        {
+          "line": 114,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T22CoreStatement"
+        },
+        {
+          "line": 123,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T22ExampleStatement"
+        },
+        {
+          "line": 165,
+          "module": "SAP.P006b.Defs.Part5",
+          "name": "SAP.P006b.T22Statement"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.empiricalGamma"
+        },
+        {
+          "line": 66,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.empiricalGroup"
+        },
+        {
+          "line": 69,
+          "module": "SAP.P006b.Defs.Part3",
+          "name": "SAP.P006b.empiricalMean"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T23",
+      "target_id": "P006-T23",
+      "fingerprint": "68f52af7e13a80bd4e3382e52abf29aad71f5b898abbe13c49febc644998ca28",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 48,
+      "closure": [
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T23CoreStatement"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T23CoreStatement._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T23CoreStatement._proof_2"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T23CoreStatement._proof_3"
+        },
+        {
+          "line": 30,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T23Statement"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T23Statement._proof_1"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 62,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.coinMass"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingObservationProbability"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingObservedMass"
+        },
+        {
+          "line": 26,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingRecord"
+        },
+        {
+          "line": 36,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingUntreatedObservedMean"
+        },
+        {
+          "line": 21,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingWorldMass"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingWorldMean"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingWorldPrevalence"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingWorldPrevalence._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingWorldPrevalence._proof_2"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingWorldPrevalence._proof_3"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T24",
+      "target_id": "P006-T24",
+      "fingerprint": "0bc17ad1ae7482d5baba0a68a896ff3ebb5d28f8bd0cbff48d1e4290f5f7e03b",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 52,
+      "closure": [
+        {
+          "line": 41,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T24Statement"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T24Statement._proof_1"
+        },
+        {
+          "line": 84,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.eventMean"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T25",
+      "target_id": "P006-T25",
+      "fingerprint": "8d91b3a6610cb3c7315c1bf5ce4263e9ca07ae88666541a4806c4675d1d2ae86",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 56,
+      "closure": [
+        {
+          "line": 15,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.Admissible"
+        },
+        {
+          "line": 53,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.BinaryPolicy"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment"
+        },
+        {
+          "line": 21,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.PX"
+        },
+        {
+          "line": 35,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.T"
+        },
+        {
+          "line": 48,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.V"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.X"
+        },
+        {
+          "line": 31,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y0"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y1"
+        },
+        {
+          "line": 68,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.covariateSigma"
+        },
+        {
+          "line": 65,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedTT"
+        },
+        {
+          "line": 61,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedWeightedTT"
+        },
+        {
+          "line": 19,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.hn"
+        },
+        {
+          "line": 27,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.law"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.mk"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.observed"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ0"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ1"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μhat"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.OutcomeStanding"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing.mk"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadProbability._proof_1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T23CoreStatement._proof_1"
+        },
+        {
+          "line": 77,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T25ExistenceStatement"
+        },
+        {
+          "line": 244,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T25FamilyConclusion"
+        },
+        {
+          "line": 64,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T25FamilyStatement"
+        },
+        {
+          "line": 270,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T25GeneralStatement"
+        },
+        {
+          "line": 236,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T25Model"
+        },
+        {
+          "line": 95,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T25Statement"
+        },
+        {
+          "line": 84,
+          "module": "SAP.P006b.Defs.Part6",
+          "name": "SAP.P006b.T25UniqueStatement"
+        },
+        {
+          "line": 276,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T25WholeStatement"
+        },
+        {
+          "line": 26,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.TreatedMoment"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bestValue"
+        },
+        {
+          "line": 57,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryFeasible"
+        },
+        {
+          "line": 60,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryPolicies"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryPopulationLaw._proof_1"
+        },
+        {
+          "line": 55,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryRule"
+        },
+        {
+          "line": 75,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryWelfare"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 62,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.coinMass"
+        },
+        {
+          "line": 225,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.fairPrivateLaw"
+        },
+        {
+          "line": 58,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.finiteIIDTT"
+        },
+        {
+          "line": 50,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.lowerBoundGamma"
+        },
+        {
+          "line": 44,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.lowerBoundReward"
+        },
+        {
+          "line": 47,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.lowerBoundWelfare"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.lowerBoundY0"
+        },
+        {
+          "line": 42,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.lowerBoundY1"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.missingWorldPrevalence._proof_3"
+        },
+        {
+          "line": 70,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.oneTT"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.oneTT._proof_1"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.outcomeExperiment"
+        },
+        {
+          "line": 229,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.policyCoordinates"
+        },
+        {
+          "line": 233,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.privateBadRule"
+        },
+        {
+          "line": 234,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.privateGoodRule"
+        },
+        {
+          "line": 42,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.regret"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wTT"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wWeightedTT"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T26",
+      "target_id": "P006-T26",
+      "fingerprint": "852fe267fe961f8e6a5f8ef8deae258af4b0a28e32202363758c63574b2ea4b5",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 68,
+      "closure": [
+        {
+          "line": 15,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.Admissible"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment"
+        },
+        {
+          "line": 21,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.PX"
+        },
+        {
+          "line": 35,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.T"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.X"
+        },
+        {
+          "line": 31,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y0"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y1"
+        },
+        {
+          "line": 68,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.covariateSigma"
+        },
+        {
+          "line": 54,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedATO"
+        },
+        {
+          "line": 57,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedATT"
+        },
+        {
+          "line": 27,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.law"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.mk"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.observed"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ0"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ1"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μhat"
+        },
+        {
+          "line": 43,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.τ"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 110,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.PointwiseUnbiased"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing.mk"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part7",
+          "name": "SAP.P006b.T26Statement"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 13,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.instDecidable_sAP"
+        },
+        {
+          "line": 48,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.printedAverageRule"
+        },
+        {
+          "line": 20,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.treatedCount"
+        },
+        {
+          "line": 22,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wATO"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wATT"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T27",
+      "target_id": "P006-T27",
+      "fingerprint": "e50ee7bb886a2a315136b3b10fd90d7dcc59cf744ddae6e28980a5658d34accb",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 77,
+      "closure": [
+        {
+          "line": 15,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.Admissible"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment"
+        },
+        {
+          "line": 21,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.PX"
+        },
+        {
+          "line": 35,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.T"
+        },
+        {
+          "line": 48,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.V"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.X"
+        },
+        {
+          "line": 31,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y0"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y1"
+        },
+        {
+          "line": 68,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.covariateSigma"
+        },
+        {
+          "line": 65,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedTT"
+        },
+        {
+          "line": 61,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedWeightedTT"
+        },
+        {
+          "line": 19,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.hn"
+        },
+        {
+          "line": 27,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.law"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.mk"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.observed"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ0"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ1"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μhat"
+        },
+        {
+          "line": 43,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.τ"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 110,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.PointwiseUnbiased"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing.mk"
+        },
+        {
+          "line": 24,
+          "module": "SAP.P006b.Defs.Part7",
+          "name": "SAP.P006b.T27Statement"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bestValue"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.positiveRule"
+        },
+        {
+          "line": 42,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.regret"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wWeightedTT"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T29",
+      "target_id": "P006-T29",
+      "fingerprint": "e4901928c66804db4b0d798dc2710b5d6d3932e06029c03fd36a860ca226793b",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 81,
+      "closure": [
+        {
+          "line": 15,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.Admissible"
+        },
+        {
+          "line": 53,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.BinaryPolicy"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment"
+        },
+        {
+          "line": 21,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.PX"
+        },
+        {
+          "line": 35,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.T"
+        },
+        {
+          "line": 48,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.V"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.X"
+        },
+        {
+          "line": 31,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y0"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y1"
+        },
+        {
+          "line": 68,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.covariateSigma"
+        },
+        {
+          "line": 54,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedATO"
+        },
+        {
+          "line": 19,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.hn"
+        },
+        {
+          "line": 27,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.law"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.mk"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.observed"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ0"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ1"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μhat"
+        },
+        {
+          "line": 43,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.τ"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.OutcomeStanding"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing.mk"
+        },
+        {
+          "line": 34,
+          "module": "SAP.P006b.Defs.Part7",
+          "name": "SAP.P006b.T29ExistenceStatement"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.Part7",
+          "name": "SAP.P006b.T29ExistenceStatement._proof_1"
+        },
+        {
+          "line": 316,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T29FamilyConclusion"
+        },
+        {
+          "line": 43,
+          "module": "SAP.P006b.Defs.Part7",
+          "name": "SAP.P006b.T29FamilyStatement"
+        },
+        {
+          "line": 311,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T29Model"
+        },
+        {
+          "line": 60,
+          "module": "SAP.P006b.Defs.Part7",
+          "name": "SAP.P006b.T29Statement"
+        },
+        {
+          "line": 332,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T29WholeStatement"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bestValue"
+        },
+        {
+          "line": 57,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryFeasible"
+        },
+        {
+          "line": 60,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryPolicies"
+        },
+        {
+          "line": 55,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryRule"
+        },
+        {
+          "line": 75,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.binaryWelfare"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 62,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.coinMass"
+        },
+        {
+          "line": 51,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.emptyFactor"
+        },
+        {
+          "line": 53,
+          "module": "SAP.P006b.Defs.Part4",
+          "name": "SAP.P006b.finiteIIDAverage"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.outcomeExperiment"
+        },
+        {
+          "line": 78,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.outcomeP1"
+        },
+        {
+          "line": 42,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.regret"
+        },
+        {
+          "line": 82,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.rewardP1"
+        },
+        {
+          "line": 20,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.treatedCount"
+        },
+        {
+          "line": 64,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.twoATO"
+        },
+        {
+          "line": 22,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wATO"
+        }
+      ]
+    },
+    {
+      "theorem": "SAP.P006b.T30",
+      "target_id": "P006-T30",
+      "fingerprint": "427b24d715c845c8539c5f261c6dcc73b526446f995d9566262dcf563bfa9e7c",
+      "module": "SAP.P006b.Challenge.Part1",
+      "line": 90,
+      "closure": [
+        {
+          "line": 15,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.Admissible"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment"
+        },
+        {
+          "line": 21,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.PX"
+        },
+        {
+          "line": 35,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.T"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.X"
+        },
+        {
+          "line": 31,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y0"
+        },
+        {
+          "line": 33,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.Y1"
+        },
+        {
+          "line": 68,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.covariateSigma"
+        },
+        {
+          "line": 65,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedTT"
+        },
+        {
+          "line": 61,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.expectedWeightedTT"
+        },
+        {
+          "line": 19,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.hn"
+        },
+        {
+          "line": 27,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.law"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.mk"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.observed"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ0"
+        },
+        {
+          "line": 25,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μ1"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.μhat"
+        },
+        {
+          "line": 43,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Experiment.τ"
+        },
+        {
+          "line": 37,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.IsBest"
+        },
+        {
+          "line": 23,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.OutcomeStanding"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing"
+        },
+        {
+          "line": 73,
+          "module": "SAP.P006b.Defs.Part2",
+          "name": "SAP.P006b.Standing.mk"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T17BadProbability._proof_1"
+        },
+        {
+          "line": 385,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T30ExistenceStatement"
+        },
+        {
+          "line": 360,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T30MaximumStatement"
+        },
+        {
+          "line": 366,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T30PairStatement"
+        },
+        {
+          "line": 398,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.T30WholeStatement"
+        },
+        {
+          "line": 26,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.TreatedMoment"
+        },
+        {
+          "line": 40,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bestValue"
+        },
+        {
+          "line": 0,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.binaryPopulationLaw._proof_1"
+        },
+        {
+          "line": 18,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.bit"
+        },
+        {
+          "line": 225,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.fairPrivateLaw"
+        },
+        {
+          "line": 16,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.outcomeExperiment"
+        },
+        {
+          "line": 350,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.positiveEffectMean"
+        },
+        {
+          "line": 45,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.positiveRule"
+        },
+        {
+          "line": 356,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.relativeRankingPair"
+        },
+        {
+          "line": 353,
+          "module": "SAP.P006b.Defs.WholeW1",
+          "name": "SAP.P006b.uniformRankingPair"
+        },
+        {
+          "line": 29,
+          "module": "SAP.P006b.Defs.Part1",
+          "name": "SAP.P006b.wWeightedTT"
+        }
+      ]
+    }
+  ]
+}

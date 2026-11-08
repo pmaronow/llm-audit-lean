@@ -8,7 +8,7 @@ open scoped BigOperators
 
 noncomputable section
 
--- The assignment enumeration is definitionally the same in P045.
+-- Record 15: the assignment enumeration is definitionally the same in P045.
 private theorem clique_retained_injective_assignment : Function.Injective cliqueAssignments := by
   exact AronowAudit.P045.ExposureVariance.clique_assignment_injective
 
@@ -20,7 +20,9 @@ theorem clique_retained_injective_proof (t : Fin 66) :
   · intro r he
     exact Fin.succAbove_ne t r (clique_retained_injective_assignment he)
 
--- Transport the full counts across the exposure labels.
+example : type_of% @AronowAudit.P044.clique_retained_injective := clique_retained_injective_proof
+
+-- Record 16: transport the checked full counts across the exposure labels.
 private def clique_retained_weights_to45 : Exposure → AronowAudit.P045.ExposureVariance.Exposure
   | .d11 => .d11 | .d10 => .d10 | .d01 => .d01 | .d00 => .d00
 
@@ -142,7 +144,9 @@ theorem clique_retained_weights_proof :
     by_cases he : a = b <;> by_cases hij : i = j <;> simp [he, hij, Nat.cast_add] <;> norm_num
 
 
--- Transport the graph and profile identities.
+example : type_of% @AronowAudit.P044.clique_retained_weights := clique_retained_weights_proof
+
+-- Record 17: transport the checked graph and profile certificates.
 theorem clique_structure_proof :
     Function.Injective cliqueAssignments ∧
     (∀ r, (Finset.univ.filter (fun i => cliqueAssignments r i)).card = 2) ∧
@@ -169,7 +173,9 @@ theorem clique_structure_proof :
   · intro r
     simpa only [hl, hp] using h.2.2.2.2.2.1 r
 
--- Scalar transport preserves every event, coefficient and estimator.
+example : type_of% @AronowAudit.P044.clique_structure := clique_structure_proof
+
+-- Record 18: scalar transport preserves every event, coefficient and estimator.
 private theorem clique_variance_counterexample_weights (t : Fin 66) (i : Fin 12)
     (a : Exposure) :
     AronowAudit.P045.ExposureVariance.cliqueWeights t i (clique_retained_weights_to45 a) = cliqueWeights t i a := by
@@ -274,52 +280,21 @@ private theorem clique_variance_counterexample_mass :
     AronowAudit.P045.ExposureVariance.cliqueJointMass = cliqueJointMass := by
   rfl
 
-/-- T1(iii)–(v): exact rational computation on all 4356 independent or 4290
-included (omitted,realized) pairs. Inputs are the omission formulas, whose
-bridge to the enumerated assignment bank is `clique_retained_weights_proof`. -/
-private theorem clique_variance_counterexample_joint_moments : (expect (cliqueJointMass false) (fun x => cliqueT x.1 x.2) = -67/53592 ∧
-    designVariance (cliqueJointMass false) (fun x => cliqueT x.1 x.2) = 113448938731/232640299584 ∧
-    expect (cliqueJointMass false) (fun x => cliqueV x.1 x.2) = 1040129476423/2326402995840 ∧
-    expect (cliqueJointMass true) (fun x => cliqueT x.1 x.2) = -67/52780 ∧
-    designVariance (cliqueJointMass true) (fun x => cliqueT x.1 x.2) = 11375808887/23342482800 ∧
-    expect (cliqueJointMass true) (fun x => cliqueV x.1 x.2) = 4673362763/10414338480 ∧
-    (∀ included,
-      expect (cliqueJointMass included) (fun x => cliqueV x.1 x.2) <
-        designVariance (cliqueJointMass included) (fun x => cliqueT x.1 x.2) ∧
-      expect (cliqueJointMass included) (fun x => cliqueV x.1 x.2) < 6050/11907)) := by
+private theorem clique_variance_counterexample_joint_moments : type_of% @AronowAudit.P044.clique_joint_moments := by
   simpa only [clique_variance_counterexample_expect,
     clique_variance_counterexample_designVariance, clique_variance_counterexample_mass,
     clique_variance_counterexample_T_function, clique_variance_counterexample_V_function]
     using AronowAudit.P045.ExposureVariance.clique_joint_moments
 
 
-/-- T1(vi): the two representative fixed banks, omitting (0,1) or (0,4),
-have precisely the stated variances and expected variance estimates, and
-both strictly underestimate the design variance. These are exact finite
-counterexamples conditional on a table, using the same `varianceEstimate` functional. -/
-private theorem clique_variance_counterexample_fixed_moments : (designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 0) = 2810528137/5767941312 ∧
-    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 0) = 267260522663/634473544320 ∧
-    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 0) <
-      designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 0) ∧
-    designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 3) = 937589375/1922647104 ∧
-    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 3) = 4830430961/10574559072 ∧
-    expect (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueV 3) <
-      designVariance (fun _ : Fin 66 => (1/66 : ℚ)) (cliqueT 3)) := by
+private theorem clique_variance_counterexample_fixed_moments : type_of% @AronowAudit.P044.clique_fixed_table_counterexamples := by
   simpa only [clique_variance_counterexample_expect,
     clique_variance_counterexample_designVariance,
     clique_variance_counterexample_T_function, clique_variance_counterexample_V_function]
     using AronowAudit.P045.ExposureVariance.clique_fixed_table_counterexamples
 
 
-/-- T1(ii): the exact design probabilities give zero HT mean, design
-variance 6050/11907, and expected variance estimate equal to that variance.
-This bridges the kernel arithmetic to actual finite randomization moments. -/
-private theorem clique_variance_counterexample_exact_moments : (let p := fun _ : Fin 66 => (1/66 : ℚ)
-    let m := marginal p cliqueF
-    let J := joint p cliqueF
-    let T := htContrast cliqueF cliqueY m .d01 .d00
-    expect p T = 0 ∧ designVariance p T = 6050/11907 ∧
-      expect p (varianceEstimate cliqueF cliqueY m J .d01 .d00) = 6050/11907) := by
+private theorem clique_variance_counterexample_exact_moments : type_of% @AronowAudit.P044.clique_exact_moments := by
   simpa only [AronowAudit.P045.ExposureVariance.designVariance, designVariance, AronowAudit.P045.ExposureVariance.expect, expect,
     clique_variance_counterexample_exactT, clique_variance_counterexample_exactV]
     using AronowAudit.P045.ExposureVariance.clique_exact_moments
@@ -395,6 +370,8 @@ theorem clique_variance_counterexample_proof :
   · rw [hj.2.2.2.2.2.1, hj.2.2.2.2.1]
     norm_num
 
+
+example : type_of% @AronowAudit.P044.clique_variance_counterexample := clique_variance_counterexample_proof
 
 end
 end AronowAudit.P044.Wave1

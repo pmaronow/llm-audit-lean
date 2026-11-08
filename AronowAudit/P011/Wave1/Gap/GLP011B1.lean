@@ -17,7 +17,7 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 4000
 set_option backward.isDefEq.respectTransparency false
 
-/- Transport between block coordinates and finite vertex indices. -/
+/- Block transport adapted from the proved P011 Wave1 Gap GP011B1 T6 helpers. -/
 lemma cycleCE_blockIndex (m : ℕ) (b : Fin m) (r : Fin 4) :
     blockIndex (by decide) (StarCompletion.blockEquiv 4 m (b,r)) = b := by
   apply Fin.ext
@@ -468,7 +468,7 @@ lemma cycleCE_nested (a : ℝ) : Nested (cycleFamily a) := by
         fun i j hij => Fin.ext (congrArg (fun x : Fin (4*(k+1+1)) => x.val) hij)⟩
     exact ⟨e,fun _ _ => rfl⟩
 
-/- A fill-and-restrict argument gives independence for functions of disjoint coordinate sets. -/
+/- The fill-and-restrict argument is adapted from the proved PropositionOne/N1. -/
 lemma cycleCE_separated_functions {I β γ : Type} [Fintype I] [DecidableEq I]
     [MeasurableSpace β] [MeasurableSpace γ]
     (A B : Finset I) (hAB : Disjoint A B) (f : (I → Bool) → β) (g : (I → Bool) → γ)
@@ -983,6 +983,8 @@ theorem cycle_counterexample_proof :
   · intro k
     exact ⟨cycleCE_homoskedastic _ _,cycleCE_beta_zero _ _,cycleCE_scaled_true _ _⟩
   · convert cycleCE_probability_limit 3 using 1 <;> norm_num
+
+example : type_of% @AronowAudit.P011.cycle_counterexample := cycle_counterexample_proof
 
 end
 end AronowAudit.P011.Wave1

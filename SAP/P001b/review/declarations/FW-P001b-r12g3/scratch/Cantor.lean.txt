@@ -1,0 +1,63 @@
+import SAP.P001b.Defs
+
+open MeasureTheory Set
+open scoped ENNReal
+open SAP.P001b
+
+noncomputable section
+
+namespace AuditCantor
+
+-- Verify the precise gap convention, including the order of list recursion.
+example : cantorInterval [] = ((0 : ℝ), 1) := rfl
+example : cantorInterval [false] = ((0 : ℝ), 3/8) := by
+  norm_num [cantorInterval]
+example : cantorInterval [true] = ((5/8 : ℝ), 1) := by
+  norm_num [cantorInterval]
+example : cantorInterval [false, false] = ((0 : ℝ), 5/32) := by
+  norm_num [cantorInterval]
+
+lemma component_length (w : List Bool) :
+    (cantorInterval w).2 - (cantorInterval w).1 =
+      ((1/2 : ℝ)^w.length + (1/4 : ℝ)^w.length) / 2 := by
+  induction w with
+  | nil => norm_num [cantorInterval]
+  | cons b w ih =>
+    cases b <;> simp only [cantorInterval, Bool.false_eq_true, ite_false, ite_true,
+      List.length_cons, pow_succ]
+    all_goals nlinarith [ih]
+
+lemma component_positive (w : List Bool) :
+    (cantorInterval w).1 < (cantorInterval w).2 := by
+  have h := component_length w
+  have h1 : 0 < (1/2 : ℝ)^w.length := pow_pos (by norm_num) _
+  have h2 : 0 < (1/4 : ℝ)^w.length := pow_pos (by norm_num) _
+  linarith
+
+lemma false_left (n : ℕ) : (cantorInterval (List.replicate n false)).1 = 0 := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simpa [List.replicate_succ, cantorInterval] using ih
+
+lemma true_right (n : ℕ) : (cantorInterval (List.replicate n true)).2 = 1 := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simpa [List.replicate_succ, cantorInterval] using ih
+
+-- The actual subtype used in T31 is nonempty, independently of the Challenge.
+example : (0 : ℝ) ∈ fatCantorSet ∧ (1 : ℝ) ∈ fatCantorSet := by
+  constructor
+  · simp only [fatCantorSet, mem_iInter]
+    intro n
+    refine ⟨List.replicate n false, List.length_replicate, ?_⟩
+    have h := component_positive (List.replicate n false)
+    rw [false_left] at h ⊢
+    exact ⟨le_rfl, h.le⟩
+  · simp only [fatCantorSet, mem_iInter]
+    intro n
+    refine ⟨List.replicate n true, List.length_replicate, ?_⟩
+    have h := component_positive (List.replicate n true)
+    rw [true_right] at h ⊢
+    exact ⟨h.le, le_rfl⟩
+
+end AuditCantor

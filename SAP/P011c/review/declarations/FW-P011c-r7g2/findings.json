@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P011-T34",
+    "theorem": "SAP.P011c.T34",
+    "fingerprint": "4f42e30f766e1406a73cf6a12775b660ee4fdf137bc88ad2993c549a38ef8126",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean independently constructs n_k=k+1 independent fair signs with unit weights, empty true and known graphs, and zero degree caps. It checks WholeScaling(1,1,1,2), Valid, Nested, homoskedasticity, zero target, and scaled true variance one, and proves that its product law is exactly wholeFairSignLaw. Its final T34 data example includes every witness-data clause, without invoking a Challenge theorem. Analytically, n*printedAuxiliary=1-betaHat^2 on the support, and E[betaHat^2]=1/n, so Markov's inequality gives the claimed less-than-epsilon probability limit one for every epsilon>0 and every coefficient array; it cannot also tend to zero. Exact finite support identities are additionally checked by scratch/Counterexamples.py.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T35",
+    "theorem": "SAP.P011c.T35",
+    "fingerprint": "321d8836e3e6a24fca9050abd45d325f8188dc1a65326b73e3359160fe82342d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "An independent analytic witness has n=3(k+1), repeated paths on triples, R=G, and d=degree(G), forcing the unique feasible/maximizing graph G. Set theta_i=1 and D_i=(1,delta_i), with delta=(1,-2,1) in each triple; the true coefficient is (0,1), D^T D=diag(n,2n), and the first scaled OLS row is identically one. Let Y_i=delta_i+U_i independently, with probabilities 31/90 at each of +/-1 and 7/45 at each of +/-2 for U_i. Then beta=0, Var(U_i)=29/15, |Y_i|<=4<=6, true degrees<=2, |theta_i|<2, and n Var(betaHat)=29/15; the full and observed path graphs nest. Independent bounded block averages give n V1(G,Y) ->p 19/15, so the underestimation probability for epsilon=1/3 tends to one. scratch/Nonvacuity.lean compiles the exact three-row Gram, invertibility, mean-model matrix identity, OLS-weight, and negative mean-quadratic identities. scratch/Counterexamples.py checks exact noise/block moments and enumerates the first two full rows. The entire asymptotic existential is justified here analytically, not re-proved by the scratch Lean file.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T36",
+    "theorem": "SAP.P011c.T36",
+    "fingerprint": "2b0ddc47d859e6f93e9bd3a962b4f3989c95e1aa1b45f5d185aacfab1fffc50c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles an independent-sign family satisfying every hypothesis of the universal part, including WholeW2Scaling(1,1,1,2) and rowwise homoskedasticity, without invoking Challenge theorems. For the existential nonconsistency clause, take n=2(k+1), empty graphs, unit weights, and independent Y_i=delta_i+U_i with balanced alternating delta_i=+/-1 and independent fair U_i=+/-1. The target is zero, |Y_i|<=2, every variance is one, and n Var(betaHat)=1, giving exactly the required constants (2,1,1,2) and Nested. The sample variance converges in probability to two, hence n V2 converges to two while scaledTrue is one. The alternating-mean finite identity compiles in the same Lean file; exact finite moments are checked by scratch/Counterexamples.py. The asymptotic failure is justified analytically by the bounded independent averages.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T37",
+    "theorem": "SAP.P011c.T37",
+    "fingerprint": "71e0005afc175b4df8c2f3aed09dc9ada9406292978e8d84f207355c302d1369",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles an explicit n_k=k+1 independent fair-sign family with unit weights, empty true and known graphs, and zero degree caps, satisfying WholeW2Scaling(1,1,1,2), rowwise homoskedasticity, and Valid. It proves that every compatible graph is the empty graph and constructs the outcome-independent empty-graph selector, checking its pointwise Maximizes hypothesis for every row and every outcome. Thus every universal hypothesis, including the optimizing selector, is simultaneously satisfied; no Challenge theorem is invoked.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T38",
+    "theorem": "SAP.P011c.T38",
+    "fingerprint": "fd02a502ba5b380c868ef244c443a5dd191a83d571fe71253232790d95cd2def",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean independently constructs the n_k=k+1 product fair-sign family with unit weights and empty dependency graphs and compiles WholeScaling(1,1,1,2). It proves the full disjoint-set random-vector dependency condition, the a.e. coordinate bound, positive growing sizes, zero target, variance n/n^2, and scaled variance exactly one. Consequently every hypothesis is satisfied and the standardized variable is an ordinary finite-variance normalized sum. No Challenge theorem is invoked.",
+    "confidence": "high"
+  }
+]

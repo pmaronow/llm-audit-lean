@@ -1,6 +1,6 @@
 import AronowAudit.P002.Wave1.Theorem2.Observed
 
-/-! Moments of the response and its pooled projection. -/
+/-! AC.3--AC.4: moments of the frozen response and its pooled projection. -/
 
 namespace AronowAudit.P002.Wave1
 noncomputable section
@@ -76,7 +76,7 @@ lemma T2C_fraction_bounds {n} (P : Population n) (hP : ValidDesign P) :
   · exact div_nonneg (Nat.cast_nonneg _) hn.le
   · exact (div_le_one hn).mpr (by exact_mod_cast hP.2.2.le)
 
-/-- A centered response mean is a centered sample mean times the treatment fraction. -/
+/-- A scalar frozen mean is a centered sample mean times the treatment fraction. -/
 theorem T2C_frozen_mse {n} (P : Population n) (hP : ValidDesign P)
     (hm : 2 ≤ P.n1) (hc : 2 ≤ n-P.n1) (r M : ℝ) (hr : 0 < r)
     (hl : r*n ≤ (P.n1 : ℝ)) (hu : (P.n1 : ℝ) ≤ (1-r)*n)
@@ -115,7 +115,7 @@ lemma T2C_frozen_square {n} (R : Bool → Fin n → ℝ) (S : Finset (Fin n)) :
   funext i
   by_cases hi : i ∈ S <;> simp [T2C_frozen, hi]
 
-/-- Concentration of the raw pooled second moment. -/
+/-- AC.3: concentration of the raw pooled second moment. -/
 theorem T2C_frozen_second_mse {n k} (P : CovPopulation n k) (r L K : ℝ)
     (hP : ValidDesign P.pop) (hm : 2 ≤ P.pop.n1) (hc : 2 ≤ n-P.pop.n1)
     (hr : 0 < r) (hK : 0 ≤ K)
@@ -142,7 +142,7 @@ lemma T2C_frozen_fourth {n} (R : Bool → Fin n → ℝ) (L K : ℝ)
     _ = mean (fun i => R true i^4)+mean (fun i => R false i^4) := T2C_mean_add _ _
     _ ≤ _ := by linarith [hR true, hR false]
 
-/-- The pooled score has zero population mean and sampling-size variance. -/
+/-- AC.3: the pooled score has zero population mean and sampling-size variance. -/
 theorem T2C_frozen_score_mse {n k} (P : CovPopulation n k) (e A r L K : ℝ)
     (hP : ValidDesign P.pop) (hm : 2 ≤ P.pop.n1) (hc : 2 ≤ n-P.pop.n1)
     (hr : 0 < r) (hL : 0 < L) (hK : 0 ≤ K)
@@ -242,7 +242,7 @@ lemma T2C_pooledH_identity {n k} (x : Fin n → Fin k → ℝ) (q : Fin n → �
 def T2C_pooledK (k : ℕ) (e A K : ℝ) : ℝ :=
   32*(2*K+((k : ℝ)+1)^2*max 1 A/(min 1 e)^4)
 
-/-- Bounded pooled score and a positive second moment imply fixed kurtosis. -/
+/-- AC.4: bounded pooled score and a positive second moment imply fixed kurtosis. -/
 theorem T2C_pooled_fourth_bound {n k} (x : Fin n → Fin k → ℝ) (e A L K : ℝ)
     (hn : 0 < n) (he : 0 < e) (hL : 0 < L) (hK : 0 ≤ K)
     (hx : T2C_covariates x e A) (q : Fin n → ℝ)
@@ -326,7 +326,7 @@ lemma T2C_projection_error_bound {n} (P : Population n)
       (div_le_div_of_nonneg_right hMY (by positivity))
   exact hinc.trans ((T2C_probability_union _ _ _).trans (add_le_add hE hF))
 
-/-- Pooled projection removes a negligible part of the raw energy. -/
+/-- AC.3--AC.4: pooled projection removes a negligible part of the raw energy. -/
 theorem T2C_frozen_pooled_ratio_bound {n k} (P : CovPopulation n k) (e A r L K η : ℝ)
     (hP : ValidDesign P.pop) (hm : 2 ≤ P.pop.n1) (hc : 2 ≤ n-P.pop.n1)
     (he : 0 < e) (hr : 0 < r) (hL : 0 < L) (hK : 0 ≤ K) (hη : 0 < η)

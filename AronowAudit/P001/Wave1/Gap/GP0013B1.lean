@@ -2,7 +2,13 @@ import AronowAudit.P001.P001_Foundations
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.RingTheory.Polynomial.ShiftedLegendre
 
-/-! General Gram-matrix rate stability. -/
+/-!
+Draft by dd-GP0013B1; no Lean executable was run.
+
+Record order: 6, 7, 8, 10, 13, 14.  The report distinguishes the completed
+proof text from records blocked on shared proof modules.  No held probabilistic
+declaration is used as proof credit.
+-/
 
 namespace AronowAudit.P001.Wave1
 
@@ -14,12 +20,25 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 3000
 set_option autoImplicit false
 
+/-! ## Record 6: functional_delta_nondegenerate_correction
 
+The exact duplicate wrapper requires the new empirical-CDF delta proof, which
+is not present in this worktree.  The held declaration and its supporting
+declaration cannot provide that proof.  See REPORT.md; no replacement premise
+for the missing Donsker/bridge machinery is introduced here.
+-/
 
+/-! ## Record 7: kolmogorov_embedding_preserves_cdf
 
+The same dependency blocks this exact duplicate wrapper.  Despite its name,
+the target includes the full empirical-process and scalar Gaussian limits.
+-/
 
-/-! For this rate result it is enough to prove the finite-sample estimate
-E ||G-I||_F² ≤ zeta2*K/n. A measurable Frobenius event suffices:
+/-! ## Record 8: general_gram_rate_stability
+
+For this rate result it is enough to prove the weaker finite-sample estimate
+E ||G-I||_F² ≤ zeta2*K/n.  This avoids a dependency on the separate sharp
+finite-sample Gram-deviation theorem.  A measurable Frobenius event suffices:
 monotonicity of outer measure does not require measurability of the larger
 all-vector good event.
 -/
@@ -228,6 +247,83 @@ private lemma general_gram_frob_moment {Ω : Type*} [MeasurableSpace Ω]
     _ ≤ (ζ * (K : ℝ)-K)/(n : ℝ) :=
       div_le_div_of_nonneg_right (sub_le_sub_right hESsq _) (Nat.cast_nonneg n)
 
+private lemma general_gram_deviation_le_half {K : ℕ} (hK : 0 < K)
+    (G : Matrix (Fin K) (Fin K) ℝ) (hG : general_gram_frob G ≤ 1/4) :
+    gramDeviation G ≤ 1/2 := by
+  classical
+  let H : Matrix (Fin K) (Fin K) ℝ :=
+    fun j k => 2 * (if j = k then 1 else 0) - G j k
+  have hHF : general_gram_frob H = general_gram_frob G := by
+    unfold general_gram_frob
+    apply Finset.sum_congr rfl
+    intro j _
+    apply Finset.sum_congr rfl
+    intro k _
+    dsimp [H]
+    split_ifs <;> ring
+  have hunit (v : Fin K → ℝ) (hv : (∑ k, (v k)^2) = 1) :
+      |(∑ j, ∑ k, v j * G j k * v k) - 1| ≤ 1/2 := by
+    have hlo := general_gram_frob_controls_quadratic G hG v
+    have hhi := general_gram_frob_controls_quadratic H (by rw [hHF]; exact hG) v
+    have hHq : (∑ j, ∑ k, v j * H j k * v k) =
+        2 - (∑ j, ∑ k, v j * G j k * v k) := by
+      have he (j k : Fin K) : v j * H j k * v k =
+          (if j = k then 2 * (v j * v k) else 0) - v j * G j k * v k := by
+        dsimp [H]
+        split_ifs <;> ring
+      simp_rw [he, Finset.sum_sub_distrib]
+      simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      rw [← Finset.mul_sum]
+      have hv' : (∑ k, v k * v k) = 1 := by simpa only [pow_two] using hv
+      rw [hv', mul_one]
+    rw [hv] at hlo hhi
+    rw [hHq] at hhi
+    exact abs_le.mpr ⟨by linarith, by linarith⟩
+  unfold gramDeviation
+  apply csSup_le
+  · let e : Fin K → ℝ := fun k => if k = ⟨0, hK⟩ then 1 else 0
+    refine ⟨|(∑ j, ∑ k, e j * G j k * e k) - 1|, e, ?_, rfl⟩
+    simp [e]
+  · rintro r ⟨v, hv, rfl⟩
+    exact hunit v hv
+
+/-- The sharp fixed-n estimate is proved here from the same elementary moment
+calculation.  This is a helper for record 14, not an application of its held
+general-polynomial counterpart. -/
+lemma general_gram_finite_probability_bound {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] {K : ℕ} (hK : 0 < K)
+    (X : ℕ → Ω → ℝ) (hiid : IID μ X) (p : Fin K → Polynomial ℝ)
+    (horth : ∀ j k, mean μ (fun ω =>
+      (p j).eval (X 0 ω) * (p k).eval (X 0 ω)) = if j = k then 1 else 0)
+    (ζ : ℝ) (hrow : ∀ᵐ ω ∂μ, (∑ k, ((p k).eval (X 0 ω))^2) ≤ ζ)
+    (n : ℕ) (hn : 0 < n) :
+    prob μ {ω | 1/2 < gramDeviation (sampleGram p X n ω)} ≤
+      4 * (ζ * (K : ℝ)-K)/(n : ℝ) := by
+  let F : Ω → ℝ := fun ω => general_gram_frob (sampleGram p X n ω)
+  have hmom := general_gram_frob_moment μ X hiid p horth ζ hrow n hn
+  have hmarkov := mul_meas_ge_le_integral_of_nonneg
+    (Filter.Eventually.of_forall (fun ω => general_gram_frob_nonneg (sampleGram p X n ω)))
+    hmom.1 (1/4 : ℝ)
+  have hbad : prob μ {ω | (1/4 : ℝ) ≤ F ω} ≤
+      4 * (ζ * (K : ℝ)-K)/(n : ℝ) := by
+    change (1/4 : ℝ) * prob μ {ω | (1/4 : ℝ) ≤ F ω} ≤ ∫ ω, F ω ∂μ at hmarkov
+    calc
+      prob μ {ω | (1/4 : ℝ) ≤ F ω} ≤ 4 * ((ζ * (K : ℝ)-K)/(n : ℝ)) := by
+        linarith [hmom.2]
+      _ = 4 * (ζ * (K : ℝ)-K)/(n : ℝ) := by ring
+  have hsub : {ω | 1/2 < gramDeviation (sampleGram p X n ω)} ⊆
+      {ω | (1/4 : ℝ) ≤ F ω} := by
+    intro ω hω
+    by_contra hnot
+    have hsmall : general_gram_frob (sampleGram p X n ω) ≤ 1/4 :=
+      (lt_of_not_ge hnot).le
+    exact (not_lt_of_ge (general_gram_deviation_le_half hK _ hsmall)) hω
+  have hm : prob μ {ω | 1/2 < gramDeviation (sampleGram p X n ω)} ≤
+      prob μ {ω | (1/4 : ℝ) ≤ F ω} := measureReal_mono hsub
+  exact hm.trans hbad
+
+example : type_of% @AronowAudit.P001.general_polynomial_gram_probability_bound :=
+  general_gram_finite_probability_bound
 
 private lemma general_gram_good_probability_lower {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] {K : ℕ}
@@ -303,13 +399,152 @@ theorem general_gram_rate_stability_proof {Ω : Type*} [MeasurableSpace Ω] (μ 
       (fun k : Fin (J n+1) => p k) horth' (zeta2 n) (hrow n) n hn
   · exact Filter.Eventually.of_forall (fun n => measureReal_le_one)
 
+example : type_of% @AronowAudit.P001.general_gram_rate_stability :=
+  general_gram_rate_stability_proof
 
+/-! ## Record 10: sieve_consistency_full_interval_support
 
+Blocked on the new stable-Gram consistency proof, absent here.  The existing
+wrapper inherits an unproved supporting declaration and is not used.
+-/
 
+/-! ## Record 13: uniform_cubic_gram_rate_stability
 
+The preceding general rate proof is available.  The remaining dependency is
+the uniform-interval row bound for an arbitrary successive-degree orthonormal
+family, including affine transport and sign uniqueness.  Analytic facts about
+the explicit shifted Legendre polynomials alone are not that row-bound theorem.
+-/
 
+/-- The explicitly specified real shifted Legendre polynomial, with the sign
+convention of the pinned Mathlib integer polynomial. -/
+private def uniform_cubic_shifted (k : ℕ) : Polynomial ℝ :=
+  (Polynomial.shiftedLegendre k).map (Int.castRingHom ℝ)
 
+/-- H-SHIFTED-LEGENDRE, as a plain proposition about the specified polynomials.
+This definition asserts no theorem and contains no Gram conclusion. -/
+private def uniform_cubic_legendre_input : Prop :=
+  (∀ j k : ℕ,
+    (∫ t in Set.Icc (0 : ℝ) 1,
+      (uniform_cubic_shifted j).eval t * (uniform_cubic_shifted k).eval t) =
+        if j = k then 1/(2*(k : ℝ)+1) else 0) ∧
+  (∀ k : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) 1, |(uniform_cubic_shifted k).eval t| ≤ 1)
 
+private def uniform_cubic_normalized (k : ℕ) : Polynomial ℝ :=
+  Polynomial.C (Real.sqrt (2*(k : ℝ)+1)) * uniform_cubic_shifted k
+
+private lemma uniform_cubic_normalized_degree (k : ℕ) :
+    (uniform_cubic_normalized k).degree = k := by
+  have hpos : 0 < 2*(k : ℝ)+1 := by positivity
+  have hu : IsUnit (Real.sqrt (2*(k : ℝ)+1)) :=
+    isUnit_iff_ne_zero.mpr (Real.sqrt_pos.mpr hpos).ne'
+  rw [uniform_cubic_normalized, Polynomial.degree_C_mul_of_isUnit hu,
+    uniform_cubic_shifted,
+    Polynomial.degree_map_eq_of_injective (show Function.Injective (Int.castRingHom ℝ) from
+      Int.cast_injective), Polynomial.degree_shiftedLegendre]
+
+private lemma uniform_cubic_normalized_orthogonal
+    (hLegendre : uniform_cubic_legendre_input) (j k : ℕ) :
+    (∫ t in Set.Icc (0 : ℝ) 1,
+      (uniform_cubic_normalized j).eval t * (uniform_cubic_normalized k).eval t) =
+        if j = k then 1 else 0 := by
+  have he : (fun t : ℝ =>
+      (uniform_cubic_normalized j).eval t * (uniform_cubic_normalized k).eval t) =
+      (fun t : ℝ => (Real.sqrt (2*(j : ℝ)+1) * Real.sqrt (2*(k : ℝ)+1)) *
+        ((uniform_cubic_shifted j).eval t * (uniform_cubic_shifted k).eval t)) := by
+    funext t
+    simp only [uniform_cubic_normalized, Polynomial.eval_mul, Polynomial.eval_C]
+    ring
+  rw [he, integral_const_mul, hLegendre.1 j k]
+  by_cases hjk : j = k
+  · subst j
+    rw [if_pos rfl, if_pos rfl]
+    have hpos : 0 < 2*(k : ℝ)+1 := by positivity
+    rw [← pow_two, Real.sq_sqrt hpos.le]
+    field_simp [hpos.ne']
+  · simp only [if_neg hjk, mul_zero]
+
+private lemma uniform_cubic_normalized_sq_le
+    (hLegendre : uniform_cubic_legendre_input) (k : ℕ)
+    (x : ℝ) (hx : x ∈ Set.Icc (0 : ℝ) 1) :
+    ((uniform_cubic_normalized k).eval x)^2 ≤ 2*(k : ℝ)+1 := by
+  have hbound := hLegendre.2 k x hx
+  have hsq : ((uniform_cubic_shifted k).eval x)^2 ≤ 1 := by
+    have h := (sq_le_sq₀ (abs_nonneg ((uniform_cubic_shifted k).eval x))
+      (by norm_num : (0 : ℝ) ≤ 1)).mpr hbound
+    simpa only [sq_abs, one_pow] using h
+  have hpos : 0 ≤ 2*(k : ℝ)+1 := by positivity
+  simp only [uniform_cubic_normalized, Polynomial.eval_mul, Polynomial.eval_C,
+    mul_pow, Real.sq_sqrt hpos]
+  simpa only [mul_one] using mul_le_mul_of_nonneg_left hsq hpos
+
+private lemma uniform_cubic_odd_sum (K : ℕ) :
+    (∑ k : Fin K, (2*(k.val : ℝ)+1)) = (K : ℝ)^2 := by
+  induction K with
+  | zero => simp
+  | succ K ih =>
+    rw [Fin.sum_univ_castSucc]
+    simp only [Fin.val_castSucc, Fin.val_last, ih, Nat.cast_add, Nat.cast_one]
+    ring
+
+/-- This proves the K² bound for the canonical normalized family.  Applying it
+to the arbitrary family in the frozen targets still requires the polynomial
+sign-uniqueness argument; that dependency is not assumed here. -/
+private lemma uniform_cubic_canonical_row_bound
+    (hLegendre : uniform_cubic_legendre_input) (K : ℕ)
+    (x : ℝ) (hx : x ∈ Set.Icc (0 : ℝ) 1) :
+    (∑ k : Fin K, ((uniform_cubic_normalized k).eval x)^2) ≤ (K : ℝ)^2 := by
+  calc
+    (∑ k : Fin K, ((uniform_cubic_normalized k).eval x)^2) ≤
+        ∑ k : Fin K, (2*(k.val : ℝ)+1) :=
+      Finset.sum_le_sum (fun k _ => uniform_cubic_normalized_sq_le hLegendre k x hx)
+    _ = (K : ℝ)^2 := uniform_cubic_odd_sum K
+
+/-! ## Record 14: uniform_polynomial_gram_bound
+
+The sharp fixed-n Gram-deviation estimate is supplied by
+general_gram_finite_probability_bound above.  The arbitrary-family polynomial
+sign-uniqueness dependency still prevents the final target from being stated
+as a proved theorem.
+-/
+
+private lemma uniform_polynomial_unit_support {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (X : Ω → ℝ) (hX : Measurable X)
+    (hx : μ.map X = uniformLaw 0 1) : ∀ᵐ ω ∂μ, X ω ∈ Set.Icc (0 : ℝ) 1 := by
+  have hs : ∀ᵐ x ∂uniformLaw 0 1, x ∈ Set.Icc (0 : ℝ) 1 := by
+    rw [uniformLaw_zero_one_eq_restrict]
+    exact ae_restrict_mem measurableSet_Icc
+  apply ae_of_ae_map hX.aemeasurable
+  rw [hx]
+  exact hs
+
+/-- Conditional canonical-family case, retained as a proved helper rather than
+silently replacing the arbitrary p in the frozen target with Legendre p. -/
+private lemma uniform_polynomial_canonical_probability_bound {Ω : Type*}
+    [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (hLegendre : uniform_cubic_legendre_input)
+    (X : ℕ → Ω → ℝ) (hiid : IID μ X) (hx : μ.map (X 0) = uniformLaw 0 1)
+    (K n : ℕ) (hK : 0 < K) (hn : 0 < n) :
+    prob μ {ω | 1/2 < gramDeviation
+      (sampleGram (fun k : Fin K => uniform_cubic_normalized k) X n ω)} ≤
+        4*((K : ℝ)^3-K)/n := by
+  let p : Fin K → Polynomial ℝ := fun k => uniform_cubic_normalized k
+  have horth (j k : Fin K) : mean μ (fun ω =>
+      (p j).eval (X 0 ω) * (p k).eval (X 0 ω)) = if j = k then 1 else 0 := by
+    let f : ℝ → ℝ := fun x => (p j).eval x * (p k).eval x
+    have hf : StronglyMeasurable f :=
+      ((p j).continuous.mul (p k).continuous).stronglyMeasurable
+    have hi := integral_map_of_stronglyMeasurable (μ := μ) (hiid.1 0) hf
+    change (∫ ω, f (X 0 ω) ∂μ) = _
+    rw [← hi, hx, uniformLaw_zero_one_eq_restrict]
+    simpa only [f, p, Fin.ext_iff] using uniform_cubic_normalized_orthogonal hLegendre j k
+  have hrow : ∀ᵐ ω ∂μ, (∑ k, ((p k).eval (X 0 ω))^2) ≤ (K : ℝ)^2 := by
+    filter_upwards [uniform_polynomial_unit_support μ (X 0) (hiid.1 0) hx] with ω hω
+    exact uniform_cubic_canonical_row_bound hLegendre K (X 0 ω) hω
+  have hb := general_gram_finite_probability_bound μ hK X hiid p horth
+    ((K : ℝ)^2) hrow n hn
+  have halg : 4*((K : ℝ)^2*(K : ℝ)-K)/(n : ℝ) = 4*((K : ℝ)^3-K)/n := by ring
+  simpa only [halg, p] using hb
 
 end
 

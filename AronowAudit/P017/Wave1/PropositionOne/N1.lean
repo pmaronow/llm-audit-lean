@@ -11,7 +11,7 @@ open scoped BigOperators Topology ENNReal NNReal
 
 noncomputable section
 
-
+-- These elementary marginal facts are also used by the other node drafts.
 theorem effect_eq_fst : ipwEffect = (Prod.fst : ℝ × (ℝ × ℝ) → ℝ) := by
   funext ω
   simp [ipwEffect, ipwY1, ipwY0]

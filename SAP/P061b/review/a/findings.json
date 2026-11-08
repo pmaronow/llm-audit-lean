@@ -1,0 +1,102 @@
+[
+  {
+    "target_id": "P061-T12",
+    "theorem": "SAP.P061b.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, Omega=Fin 2 x Fin 2, D=independentHousehold, g=y=housemateAssignment, h_i(t)=t, d=1, e=0. All four assignment masses are 1/4 and both exposure margins are 1/2. Global stability and factorization hold. For design comparison take D'=bothOrNeither, which also has both margins 1/2. These are nonempty instances of every conditional part, and the two additional household assertions concern explicitly normalized designs.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T13",
+    "theorem": "SAP.P061b.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use oneTreated on the four-element Household, g=ownAssignment, y=housemateAssignment. Both relevant margins are 1/2, support stability holds and global stability fails, as independently proved in scratch/FiniteChecks.lean through T14Statement. The schedule y'_i(z)=1-ownAssignment i z is a concrete globally stable extension agreeing with y at both supported assignments. Thus the extension and observed-law assertions have a strict, nonempty example.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T14",
+    "theorem": "SAP.P061b.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed finite assertion on all four binary household assignments. The three designs have respectively two, two and four positive atoms, total mass one, and own-exposure margins 1/2. The complete T14Statement was independently proved by unfolding Defs in scratch/FiniteChecks.lean, without importing any Challenge theorem. The explicit global-stability counterexample uses a retained zero-mass assignment.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T15",
+    "theorem": "SAP.P061b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed finite assertions on the full four-element binary and nine-element ternary assignment sets. Every design has two atoms of mass 1/2; all relevant exposure margins equal 1/2. The complete T15Statement, including the stability failures and the own-version no-interference assertion, was independently proved from Defs in scratch/FiniteChecks.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T16",
+    "theorem": "SAP.P061b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This verdict accepts the recorded refutation of the canonical positivity-only assertion, rather than affirming that assertion. Independently compiled scratch/T16Counterexample.lean proves its exact logical negation: N=1, Omega=Nat, p(n)=2^(-n-1), g=0, y(n)=(-1)^n/p(n), d=e=0. The atomic design is normalized and both exposure probabilities are one. HT(n)=y(n), so p(n)|HT(n)|=1 for all n and no first moment exists. The weighted signed terms are (-1)^n, so both signs have infinite total mass. The failure concerns the claimed existence of an ordinary expectation, not unequal finite means or Mathlib's default value for divergent sums. The canonical statement and standing assumptions impose no moment precondition here, so the record's refuted decision and the docstring are accurate.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T17",
+    "theorem": "SAP.P061b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean constructs a normalized design on Fin 2 -> Fin 2, with mass 1/2 at each one-treated assignment, and proves UniformFixedCount with n=1. Thus N=2, n=1 supplies both equal margins and the experiment premises with positive denominators. A non-NURVA example also exists: N=3, n=1, uniformly choose the treated unit and let each outcome equal the next unit's assignment cyclically. The treatment sample mean is zero, control sample mean is 1/2, and both the difference in means and AEED equal -1/2, while the control-exposure outcomes vary on support. The record and docstring accurately omit all general survey unbiasedness (including the census) and restrict the experiment to the binary cube.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T18",
+    "theorem": "SAP.P061b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, D=independentHousehold, g=y=ownAssignment, d=1, e=0. Both margins equal 1/2 and global, hence support, stability holds. The HT mean at 1 is the treated count and has variance 1/2; that variance was independently computed in scratch/FiniteChecks.lean. For the general statements support stability makes every relevant exposure-cell outcome constant and finite; finitely many such values give finite first and second moments on support even for an infinite assignment set. The extra positive e margin in the combined statement loses no d-only assertion, since one may set e=d.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T19",
+    "theorem": "SAP.P061b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independent household design with N=2, g=y=ownAssignment, d=1 has marginal probabilities 1/2, diagonal joint probabilities 1/2 and off-diagonal joint probabilities 1/4. Its HT variance and expected HT variance estimate both equal 1/2. For a genuine zero-joint case use oneTreated with the same schedules: the off-diagonal joint probability is zero, HT variance is zero, and the conservative estimate has expectation one. All these computations were independently proved in scratch/FiniteChecks.lean. The record and docstring completely disclose the sole omission: the quoted impossibility assertion about arbitrary unbiased estimators of a missing product. No refutation of that sentence is asserted.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T20",
+    "theorem": "SAP.P061b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=2, D=independentHousehold, g=ownAssignment, y=housemateAssignment, d=1, and F_i(z)=3. All required moments exist on this four-atom design, margins equal 1/2, and each constant prediction is independent and mean independent of its indicator. scratch/FiniteChecks.lean independently proves event independence and failure of support stability for these outcome/exposure schedules. Thus the theorem genuinely applies without NURVA. The explicit moments implement the canonical definitions_needed clause that expectations exist; the exposed-prediction moment is already implied by the first moment of F, so there is no additional restriction.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T21",
+    "theorem": "SAP.P061b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean proves all eight premises simultaneously for every size N using the one-point design, g_i=0, y_i=1, d=0, b_N=0 and c_N=1; every population in the limit has N+1>0 units. A nondegenerate alternative uses independent fair binary assignments on the full N-dimensional cube, g_i=z_i, y_i=1, d=1: pi_i=1/2, b_N=N/4 and c_N=2. The two required ratios are 1/(4N) and 1/N, and the HT mean has variance 1/N for N>0. The N=0 auxiliary population can be appended with b_0=0 and has no effect on the positive-size limit. All three printed conditions and support stability are retained.",
+    "confidence": "high"
+  }
+]

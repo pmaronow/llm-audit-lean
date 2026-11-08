@@ -1,0 +1,115 @@
+[
+ {
+  "target_id": "P002-T6",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.feasible_variance_counterexample_proof",
+   "SAP.P002a.WH.W3.T6_whole",
+   "SAP.P002a.WH.W3.T6_assembly",
+   "SAP.P002a.WH.W3.T6_L1_proof",
+   "SAP.P002a.WH.W3.T6_L2_proof",
+   "SAP.P002a.WH.W3.T6_L3_proof",
+   "SAP.P002a.WH.W3.T6_L4_proof",
+   "SAP.P002a.WH.W3.T6_L5_proof",
+   "AronowAudit.P002.ols_minimizer_fullrank",
+   "AronowAudit.P002.groupMean_congr"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P002a.T6WholeStatement"
+ },
+ {
+  "target_id": "P002-T7",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_lemma20_proof",
+   "SAP.P002a.WH.W4.T7_whole",
+   "SAP.P002a.WH.W4.T7_assembly"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.Wave1.oracle_variances_proof",
+    "reason": "Finite (D.5)-(D.6) oracle-variance identities; already internal to the four-limit row, so no separate invocation is needed and it supplies no target limit."
+   },
+   {
+    "lean_name": "AronowAudit.P002.ols_minimizer_exists",
+    "reason": "Finite least-squares existence helper; already internal to the four-limit row, so no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.ols_minimizer_fullrank",
+    "reason": "Finite full-rank least-squares helper; already internal to the four-limit row, so no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T7WholeStatement_W4",
+  "row_use_note": "corrected_lemma20_proof has final_status wrong_credit: it does not establish the unqualified T7 component it was credited for. It is used only for exactly what its own Lean statement says (the four limits under its added residual-positivity premise), like a narrower row, so T7 is restricted and the dropped models are disclosed."
+ },
+ {
+  "target_id": "P002-T8",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.intercept_eigenvalue_counterexample",
+   "SAP.P002a.WH.W1.T8_whole",
+   "SAP.P002a.WH.W1.T8_assembly",
+   "SAP.P002a.WH.W1.alternating_moments",
+   "SAP.P002a.WH.W1.mean_const",
+   "SAP.P002a.WH.W1.scalar_leastRayleigh"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P002a.T8WholeStatement"
+ },
+ {
+  "target_id": "P002-T9",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.Wave1.corrected_E61_eigenvalue_paper",
+   "AronowAudit.P002.corrected_augmented_gram",
+   "AronowAudit.P002.corrected_min_eigenvalue",
+   "SAP.P002a.WH.W1.T9_whole",
+   "SAP.P002a.WH.W1.T9_assembly",
+   "SAP.P002a.WH.W1.gram_quadratic",
+   "AronowAudit.P002.leastRayleigh_lower",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n1_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n2_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n3_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n4_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n5_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n6_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n7_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n8_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n9_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n10_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n11_proof",
+   "AronowAudit.P002.Wave1.E61Eigenvalue.n12_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P002.corrected_gram_perturbation",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P002.leastRayleigh_lower",
+    "reason": "Supporting or repeated component already contained in the exported declarations used; no separate invocation is needed."
+   }
+  ],
+  "statement_definition": "SAP.P002a.T9WholeStatement"
+ },
+ {
+  "target_id": "P002-T10",
+  "decision": "whole",
+  "theorem": "SAP.P002a.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P002.centring_assignments",
+   "AronowAudit.P002.centring_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P002a.T10Statement"
+ }
+]

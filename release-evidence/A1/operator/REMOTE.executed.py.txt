@@ -1,0 +1,115 @@
+"""One inherited final-command native capture. Pending template never launches."""
+BINDINGS = {'phase': 'a1', 'argv': ['/usr/bin/python3.12', '-I', '-S', '-B', '/home/ubuntu/sap/assure/a3-work-continuation-v1-reviewed/a1/reconcile.py', '--config', '/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-a1-config-001/CONFIG.json', '--expected-config-sha256', '8d4c2c06eb364b391c707daf73c7626f97ae88d880fae8443b8c7dde8b836a86', '--expected-producer-sha256', '1fd7a893d409efa87cae64e7727eb8a63a7e67860c8f8f1e7fc2da694458517b', '--output', '/home/ubuntu/sap/assure/a1-2026-11-05/continuation-final-reconciliation-001'], 'source_sha256': '1fd7a893d409efa87cae64e7727eb8a63a7e67860c8f8f1e7fc2da694458517b', 'operation_root': '/home/ubuntu/sap/assure/a3-2026-11-05/a3-continuation-final-a1-native-001', 'primary_input_role': 'config', 'summary_path': '/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/replay/replay-summary.json', 'pending_summary_path': '/home/ubuntu/sap/assure/sap-release-storage-20261105/a3-generations/final-v5-works-v8-controls-diagnostic-001/replay/replay-summary.pending.json', 'expected_summary_sha256': '58b93d9a3f77703bd3b89c1706ef1068d6dd1f318af7da8721866543a81f2c2a', 'a1_output': '/home/ubuntu/sap/assure/a1-2026-11-05/continuation-final-reconciliation-001'}
+PREFLIGHT_ONLY = False
+
+from pathlib import Path
+import datetime
+import hashlib
+import json
+import os
+import stat
+import subprocess
+import sys
+import time
+import traceback
+
+
+def raw_file(value):
+    path = Path(value)
+    assert path.is_absolute() and path.resolve(strict=True) == path
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        before = os.fstat(fd)
+        assert stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and before.st_size <= 128 * 1024**2
+        chunks, count = [], 0
+        while True:
+            chunk = os.read(fd, 1024**2)
+            if not chunk: break
+            count += len(chunk)
+            assert count <= 128 * 1024**2
+            chunks.append(chunk)
+        after = os.fstat(fd)
+        stamp = lambda s: (s.st_dev,s.st_ino,s.st_mode,s.st_nlink,s.st_size,s.st_mtime_ns,s.st_ctime_ns)
+        assert stamp(before) == stamp(after) and count == before.st_size
+        return b''.join(chunks)
+    finally:
+        os.close(fd)
+
+
+def h(path): return hashlib.sha256(raw_file(path)).hexdigest()
+def status(rc): return rc if rc >= 0 else 128 - rc
+
+
+def main():
+    assert sys.flags.isolated and sys.flags.no_site and sys.flags.dont_write_bytecode
+    assert type(BINDINGS) is dict and BINDINGS['phase'] in ('all','a1')
+    b = BINDINGS; argv = b['argv']; r = Path(b['operation_root'])
+    assert type(argv) is list and all(type(v) is str and v for v in argv)
+    assert r.parent.resolve(strict=True) == r.parent and not os.path.lexists(r)
+    assert h(argv[4]) == b['source_sha256'] and h(argv[6]) == argv[8]
+    canonical, pending = Path(b['summary_path']), Path(b['pending_summary_path'])
+    assert not os.path.lexists(pending), 'Summary pending marker already exists; preserve it'
+    if b['phase'] == 'all':
+        assert not os.path.lexists(canonical), 'Canonical summary already exists; do not repeat all'
+        selection = argv[argv.index('--dispatch-selection')+1]
+        assert h(selection) == argv[argv.index('--expected-dispatch-selection-sha256')+1]
+        facts = {'canonical_summary_absent':True,'pending_summary_absent':True}
+    else:
+        assert h(canonical) == b['expected_summary_sha256']
+        cfg = json.loads(raw_file(argv[6]))
+        assert cfg['a3']['summary_sha256'] == b['expected_summary_sha256']
+        output = Path(argv[argv.index('--output')+1])
+        assert output.parent.resolve(strict=True) == output.parent and not os.path.lexists(output)
+        facts = {'canonical_summary_sha256':b['expected_summary_sha256'],
+                 'pending_summary_absent':True,'A1_output_absent':True}
+    if PREFLIGHT_ONLY:
+        print(json.dumps({'read_only':True,'operation_root':str(r),'source_sha256':b['source_sha256'],
+                          'input_binding_sha256':argv[8],'phase':b['phase'],'facts':facts,
+                          'native_launch_or_acceptance':False},sort_keys=True))
+        return 0
+    r.mkdir(mode=0o700)
+    env = {'PATH':'/usr/bin:/bin','LANG':'C.UTF-8','LC_ALL':'C.UTF-8','PYTHONDONTWRITEBYTECODE':'1'}
+    def save(name,value):
+        with (r/name).open('x') as f:
+            json.dump(value,f,indent=2,sort_keys=True);f.write('\n');f.flush();os.fsync(f.fileno())
+    rc = None; child = None; phase = 'intent'; metadata_error = None; metadata_phase = None
+    try:
+        save('INTENT.json',{'argv':argv,'cwd':str(r),'env':env,
+             'at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+             'source_sha256':b['source_sha256'],'input_binding':{'path':argv[6],'sha256':argv[8],
+             'role':b['primary_input_role']},'phase':b['phase'],'preflight':facts,'retry':False})
+        phase = 'spawn'
+        with (r/'stdout.log').open('xb') as out,(r/'stderr.log').open('xb') as err:
+            child = subprocess.Popen(argv,cwd=r,env=env,stdin=subprocess.DEVNULL,
+                                     stdout=out,stderr=err,start_new_session=True)
+            try:
+                phase = 'launch_metadata'
+                try: proc_stat = Path('/proc/'+str(child.pid)+'/stat').read_text()
+                except FileNotFoundError: proc_stat = None
+                save('LAUNCH.json',{'pid':child.pid,'proc_stat':proc_stat,
+                     'boot_id':Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+                     'uid':os.getuid(),'argv':argv,'started_unix_ns':time.time_ns()})
+            except BaseException as error:
+                metadata_error, metadata_phase = error, phase
+                raise
+            finally:
+                phase = 'wait'
+                rc = child.wait()  # Sole wait; even a postspawn metadata failure must reach it.
+                with (r/'exit').open('x') as f:
+                    f.write(str(rc)+'\n');f.flush();os.fsync(f.fileno())
+        phase = 'completion'
+        save('COMPLETION.json',{'pid':child.pid,'exit_code':rc,'ended_unix_ns':time.time_ns(),
+             'stdout_sha256':h(r/'stdout.log'),'stderr_sha256':h(r/'stderr.log')})
+        print(json.dumps({'operation_root':str(r),'pid':child.pid,'exit_code':rc,
+              'stdout_sha256':h(r/'stdout.log'),'stderr_sha256':h(r/'stderr.log')},sort_keys=True),flush=True)
+    except BaseException as error:
+        try: traceback.print_exc()
+        except BaseException: pass
+        try: save('RECORDER-ERROR.json',{'phase':metadata_phase if error is metadata_error else phase,'error':repr(error),'native_exit_code':rc,
+                                       'pid':child.pid if child else None,'capture_complete':False})
+        except BaseException: pass
+        return status(rc) if type(rc) is int and rc != 0 else 1
+    return status(rc)
+
+
+if __name__ == '__main__': raise SystemExit(main())

@@ -1,0 +1,171 @@
+[
+ {
+  "target_id": "P027-T6",
+  "decision": "restricted",
+  "theorem": "SAP.P027a.T6",
+  "restriction": "states the finite phase law, without a continuous uniform-start identification. Adds integrability of the model variance, grouped expected estimator and every squared group total. Omits separate assertions for the expectation of the unit-level correction and A-star, the expectation of the grouped correction, E_y(S)=qL and V's expression in terms of E_y(S), explicit mean-scale identities, separate grouped HT total/uncorrected-estimator and variance-preservation identities, and the original eight-unit representation of the realized-ratio example (its grouped totals are retained). No assertion about which implementation produced the table or figure is made.",
+  "rows_used": [
+   "AronowAudit.P027.periodic_finite_correction",
+   "AronowAudit.P027.periodic_model_moments",
+   "AronowAudit.P027.phase_inclusions",
+   "AronowAudit.P027.realized_ratio_example"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P027.group_deviation_identity",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P027.periodic_ht_expectations",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P027.periodic_negative_square",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P027.phase_grouped_zero_degree",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P027.phaseOriginal_positive"
+  ]
+ },
+ {
+  "target_id": "P027-T10",
+  "decision": "whole",
+  "theorem": "SAP.P027a.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.negative_bias_neighborhood",
+   "AronowAudit.P027.random8_counterexample",
+   "AronowAudit.P027.random8_mean_counterexample",
+   "AronowAudit.P027.random8_positive",
+   "AronowAudit.P027.random8_sample_values",
+   "AronowAudit.P027.random8_systematic",
+   "AronowAudit.P027.Wave1.UniformStart.n5_proof",
+   "AronowAudit.P027.Wave1.all_pps_nbMass_pos",
+   "AronowAudit.P027.Wave1.all_pps_product_probability",
+   "AronowAudit.P027.Wave1.all_pps_product_singleton_real",
+   "AronowAudit.P027.cumulativeLeft",
+   "AronowAudit.P027.fourLeft",
+   "AronowAudit.P027.fourPhase",
+   "AronowAudit.P027.fourPhase_joint",
+   "AronowAudit.P027.fourPhase_pi",
+   "AronowAudit.P027.four_phase_zero_pair_count",
+   "AronowAudit.P027.random8",
+   "AronowAudit.P027.randomSize8",
+   "AronowAudit.P027.systematicSelected",
+   "SAP.P027a.Bridge.valid_fromAudit",
+   "SAP.P027a.WH.W1.T10_L1_proof",
+   "SAP.P027a.WH.W1.T10_assembly",
+   "SAP.P027a.WH.W1.T10_whole",
+   "SAP.P027a.WH.W1.random8_core",
+   "SAP.P027a.WH.W1.random8_details",
+   "SAP.P027a.WH.W1.random_size_support"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P027.biasA_pair_sum",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P027.witness_product_perturbation",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P027a.T10WholeStatement",
+  "refutation_scope": "This witness refutes the inference from x_k >= 1 and the noisy model y_k = beta*x_k + epsilon_k to conservativity for every realized finite population. It does not refute the literal assertion for outcomes proportional to the positive size vector."
+ },
+ {
+  "target_id": "P027-T11",
+  "decision": "whole",
+  "theorem": "SAP.P027a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.outcome_averaged_conservativity",
+   "AronowAudit.P027.random8_outcome_coefficient",
+   "AronowAudit.P027.biasA_same_sign",
+   "AronowAudit.P027.mean_bias_identity",
+   "AronowAudit.P027.random8",
+   "AronowAudit.P027.random8_counterexample",
+   "AronowAudit.P027.random8_positive",
+   "AronowAudit.P027.raw_model_cross_moment",
+   "SAP.P027a.Bridge.toAudit",
+   "SAP.P027a.Bridge.valid_fromAudit",
+   "SAP.P027a.WH.W2.T11_assembly",
+   "SAP.P027a.WH.W2.T11_whole"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P027.expect_div_const",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P027.mean_bias_identity",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P027.noiseMoments_uncorrelated",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P027.variance_div_const",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P027a.T11WholeStatement"
+ },
+ {
+  "target_id": "P027-T12",
+  "decision": "whole",
+  "theorem": "SAP.P027a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.Wave1.all_pps_configurations_invalid_proof",
+   "AronowAudit.P027.Wave1.nb_generated_witness_proof",
+   "AronowAudit.P027.invalid_pps_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P027.nb_witness_positive",
+    "reason": "This auxiliary component is already supplied by an invoked aggregate result and is not separately invoked."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P027.pi_le_one",
+   "AronowAudit.P027.Wave1.nb_generated_coordinate_integral",
+   "AronowAudit.P027.Wave1.nb_generated_first_sum",
+   "AronowAudit.P027.Wave1.nb_generated_centered_sum"
+  ]
+ },
+ {
+  "target_id": "P027-T13",
+  "decision": "whole",
+  "theorem": "SAP.P027a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.Wave1.systematic_probability_construction_proof",
+   "AronowAudit.P027.capped_pps_exists",
+   "AronowAudit.P027.certainty8_probabilities",
+   "AronowAudit.P027.pps_feasibility_necessary",
+   "AronowAudit.P027.redistributed_witness",
+   "AronowAudit.P027.Wave1.UniformStart.n5_proof",
+   "AronowAudit.P027.Wave1.all_pps_nbMass_pos",
+   "AronowAudit.P027.Wave1.all_pps_product_probability",
+   "AronowAudit.P027.Wave1.all_pps_product_singleton_real",
+   "AronowAudit.P027.Wave1.systematic_selection_measurable",
+   "AronowAudit.P027.certainty8",
+   "AronowAudit.P027.nbProductLawN",
+   "SAP.P027a.Bridge.toAudit",
+   "SAP.P027a.Bridge.valid_fromAudit",
+   "SAP.P027a.WH.W2.T13_L1_proof",
+   "SAP.P027a.WH.W2.T13_L2_proof",
+   "SAP.P027a.WH.W2.T13_assembly",
+   "SAP.P027a.WH.W2.T13_whole"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P027a.T13WholeStatement"
+ }
+]

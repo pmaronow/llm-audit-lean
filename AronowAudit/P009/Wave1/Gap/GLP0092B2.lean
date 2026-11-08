@@ -833,6 +833,22 @@ theorem t46A_hajek_op (S : Study) (k : ℝ) (q s : MomentIndex)
         (probability_union_bound _ _ _ _ (fun z hz => hz))
     _ ≤ ε := by linarith only [hA true, hA false, hD true, hD false]
 
+/-- Proposition 6 for arbitrary designs, with the frozen extended-moment statement. -/
+theorem arbitrary_ADSE_consistency_proof (S : Study) (k : ℝ) (q s : MomentIndex)
+    (hReg : RegularMix S k q s) (hMax : MaximalMoments S q s)
+    (hRestricted : Restricted S)
+    (hExt : LittleO (fun t => alphaExt (S.experiment t) (extExponent q)) (size S)) :
+    EstimatorClaims S (fun t => adse (S.experiment t)) (fun t =>
+      bernoulliRate S t + Real.sqrt (alphaExt (S.experiment t) (extExponent q))/Real.sqrt (size S t)) := by
+  have hHT : Op S (fun t z => ht (S.experiment t) z-adse (S.experiment t)) (t46A_rate S q) :=
+    op_of_second_moment S _ (t46A_rate S q) (4*(40*k^4+k^2)) (by have hk := hReg.1; positivity)
+      (t46A_rate_pos S q) (t46A_ht_mse S k q s hReg)
+  have hHJ := t46A_hajek_op S k q s hReg hRestricted hExt
+  have hzero := t46A_rate_zero S q hRestricted hExt
+  exact ⟨probability_of_op_zero S _ _ hzero hHT,
+    probability_of_op_zero S _ _ hzero hHJ, hHT, hHJ⟩
+
+example : type_of% @AronowAudit.P009.arbitrary_ADSE_consistency := arbitrary_ADSE_consistency_proof
 
 /-- The finite arbitrary-design identities and the corrected absolute-covariance bounds. -/
 theorem arbitrary_finite_lemmas_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
@@ -849,6 +865,8 @@ theorem arbitrary_finite_lemmas_proof {n : ℕ} (hn : 0 < n) (E : Experiment n)
     expected_arm_count E b (fun i => (hp i b).1), ?_⟩
   apply t46A_finite_variances hn E k q hReg.1 hReg.2.1 hp
   simpa only [Real.rpow_eq_pow] using hReg.2.2.2.2.1
+
+example : type_of% @AronowAudit.P009.arbitrary_finite_lemmas := arbitrary_finite_lemmas_proof
 
 end
 end AronowAudit.P009.Wave1

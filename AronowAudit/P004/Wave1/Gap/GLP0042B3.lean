@@ -10,7 +10,8 @@ import AronowAudit.P004.Wave1.FiniteConditioning.FC7
 
 /-! P004-T3: the actual fitted-IPW variance and the printed SAH counterexample.
 
-A fourth-moment estimate upgrades
+The clipped-MLE construction, population guards, and printed-SAH limit are reused
+from the proved observational-coverage modules. A fourth-moment estimate upgrades
 the fitted-IPW approximation to mean square; this proves convergence of its actual
 design variance, including assignments on which clipping is active.
 -/
@@ -455,7 +456,7 @@ theorem T3_overlap : Overlap (fun N => propensities (activeO N) activeTheta) := 
   dsimp only
   split_ifs <;> norm_num
 
-/-- P004-T3: the printed SAH counterexample with the constrained MLE and the
+/-- The frozen P004-T3 contract, with the actual constrained MLE and the actual
 fitted-IPW design variance. -/
 theorem observational_sah_counterexample_proof :
     ∃ θhat : ∀ N, Assignment N → Fin 2 → ℝ,
@@ -480,6 +481,8 @@ theorem observational_sah_counterexample_proof :
     exact T3_singleton_homophily _ _ _
   · intro N _
     exact LinePopulation.n4_proof (activeTable N) 0 le_rfl
+
+example : type_of% @AronowAudit.P004.observational_sah_counterexample := observational_sah_counterexample_proof
 
 end
 end AronowAudit.P004.Wave1

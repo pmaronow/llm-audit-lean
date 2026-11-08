@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P026-T18",
+    "theorem": "SAP.P026b.T18",
+    "fingerprint": "6c62be62831bcf18d2645aebaea1ecf57253f6689cbfe175f41eb8f86c7586e2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/T18Check.lean (exit 0): independently proves the full concrete T18Statement, including normalized positive-marginal real XOR design, both test-function independence identities, and nonzero fit covariance. A separate example computes the covariance exactly as 1/4. It imports definitions, not Challenge theorems.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T19",
+    "theorem": "SAP.P026b.T19",
+    "fingerprint": "51681c017d7c1d83d965f455349571d95dffb0069f5f77082b070d154509abbf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed assertion, so there is no possibly inconsistent antecedent. scratch/NumericalCheck.py enumerates all 90 distinct equiprobable assignments using exact rational arithmetic; every FE denominator is positive (minimum 2710/993), and the FE mean is strictly between -0.014 and -0.0139, excluding rounding to -0.012. The OLS cross-block residual vector is checked exactly. scratch/InstanceChecks.lean:42 compiles the absence of any nonzero logistic separating direction in each stratum; the varying covariates give strict concavity, and the absence of separation gives coercivity and hence a unique finite maximizer. Full FE numerical re-evaluation in Lean was not completed; the exact recomputation is the Python artifact, supplementing the already-certified theorem.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T20",
+    "theorem": "SAP.P026b.T20",
+    "fingerprint": "9534bc5925d87bb861d236852f43a877b245e6bfb399b459caba3a262bdb6dd3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/InstanceChecks.lean (exit 0): twoUnitExperiment at line 63 is a UnitExperiment on Fin 2, with weight 1/2 on each of (true,false) and (false,true), zero elsewhere. Every structure field is constructed; both unit treatment/control marginals equal 1/2. Fin 2 is nonempty, and potential outcomes may be any fixed real functions. The probability-design property is also checked at line 217.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T21",
+    "theorem": "SAP.P026b.T21",
+    "fingerprint": "2cdbbb95519354e25575be348bed89483ae9854a3203aae11d6c433bb70cb57d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/InstanceChecks.lean (exit 0): twoUnitExperiment supplies part (a), N=2 and n=1, including probability normalization, equal marginals, and supported treated count. clusterWitness at line 136 supplies parts (b)/(c), U=Fin 4, M=3, m=1, surjective partition (0,1,2,2), and exactly the specified one-hot law. Compiled checks establish cluster/unit marginals 1/3 and 2/3, distinct-cluster disagreement 2/3, both unit arms nonempty on support, expected actual difference in means 1/9, expected HT 0, and ATE 0 for the real sharp-null vector (1,1,0,0).",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P026-T22",
+    "theorem": "SAP.P026b.T22",
+    "fingerprint": "6afb19d43ce05a890a7f6bf2b674f65d1a65bcff78762c18ad1f63093b4067de",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/InstanceChecks.lean (exit 0): twoUnitExperiment constructs every required probability and positive-marginal field on the nonempty population Fin 2. The example at line 99 proves the zero-covariance premise at every unit for the nonzero fixed prediction f(w,i)=3; arbitrary fixed real potential outcomes meet all remaining requirements. This also instantiates the fixed-prediction subcase and leaves the unconditional adjustment identity meaningful.",
+    "confidence": "high"
+  }
+]

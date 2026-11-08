@@ -1,0 +1,220 @@
+import SAP.P002a.Defs
+import SAP.P002a.Defs.WholeW2
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxHeartbeats 2000000
+
+open scoped BigOperators Matrix Classical ENNReal
+open SAP.P002a
+
+namespace Audit
+noncomputable section
+
+abbrev P : CovPopulation 12 1 := negativeDeltaModel 1
+
+lemma w_eq (a : Bool) : w P.pop a 0 = fun i => P.pop.y i false := by
+  funext i
+  simp [w, P, negativeDeltaModel]
+
+lemma centered : mean (fun i => P.pop.y i false) = 0 := by
+  norm_num [mean, P, negativeDeltaModel, Fin.sum_univ_succ]
+
+lemma variance : popVar (fun i => P.pop.y i false) = 12/11 := by
+  unfold popVar
+  rw [centered]
+  norm_num [P, negativeDeltaModel, Fin.sum_univ_succ]
+
+lemma fourth : fourthNorm (fun i => P.pop.y i false) = 1 := by
+  norm_num [fourthNorm, mean, P, negativeDeltaModel, Fin.sum_univ_succ]
+
+lemma all_compliers : compliers P.pop = Finset.univ := by
+  ext i
+  simp [compliers, P, negativeDeltaModel]
+
+lemma covariance_guard : (12/11 : ℝ) ≥ -(-1/2 : ℝ) * Real.sqrt (12/11) * Real.sqrt (12/11) := by
+  have hs := Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 12/11)
+  nlinarith
+
+lemma fourth_guard : (1:ℝ) ≤ 2 * Real.sqrt (12/11) := by
+  have hs := Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 12/11)
+  have hp := Real.sqrt_nonneg (12/11 : ℝ)
+  nlinarith
+
+lemma late_zero : late P.pop = 0 := by
+  simp [late, groupMean, P, negativeDeltaModel]
+
+lemma cov_diag {n : ℕ} (q : Fin n → ℝ) : popCov q q = popVar q := by
+  simp [popCov, popVar, pow_two]
+
+lemma group_diag (q : Fin 12 → ℝ) : groupCov Finset.univ q q = popVar q := by
+  simp [groupCov, groupMean, popVar, mean, pow_two]
+
+lemma theta_witness : Theta P.pop (-1/2) (1/6) 2 := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [ValidDesign, P, negativeDeltaModel]
+  · intro i hi
+    simpa [P, negativeDeltaModel] using hi
+  · rw [all_compliers]
+    exact Finset.univ_nonempty
+  · norm_num [P, negativeDeltaModel]
+  · norm_num [P, negativeDeltaModel]
+  · rw [late_zero, all_compliers, w_eq, w_eq]
+    unfold groupVar
+    rw [group_diag, variance]
+    exact covariance_guard
+  · intro a
+    rw [late_zero, w_eq]
+    have hv : v P.pop a 0 = fun i => P.pop.y i false := by
+      funext i
+      simp [v, w_eq, centered]
+    rw [hv, fourth, variance]
+    exact fourth_guard
+
+lemma gram_identity : gram P.x Finset.univ = 1 := by
+  ext s t
+  cases s with
+  | none =>
+    cases t with
+    | none => norm_num [gram, groupMean, augmented, P, negativeDeltaModel, Fin.sum_univ_succ]
+    | some t =>
+      fin_cases t
+      norm_num [gram, groupMean, augmented, P, negativeDeltaModel, Fin.sum_univ_succ]
+  | some s =>
+    fin_cases s
+    cases t with
+    | none => norm_num [gram, groupMean, augmented, P, negativeDeltaModel, Fin.sum_univ_succ]
+    | some t =>
+      fin_cases t
+      norm_num [gram, groupMean, augmented, P, negativeDeltaModel, Fin.sum_univ_succ]
+
+lemma score_zero (a : Bool) : score P.x Finset.univ (w P.pop a 0) = 0 := by
+  rw [w_eq]
+  ext s
+  cases s with
+  | none => norm_num [score, groupMean, augmented, P, negativeDeltaModel, Fin.sum_univ_succ]
+  | some s =>
+    fin_cases s
+    norm_num [score, groupMean, augmented, P, negativeDeltaModel, Fin.sum_univ_succ]
+
+lemma population_fit (a : Bool) : psi P a 0 = 0 := by
+  unfold psi ols
+  rw [gram_identity]
+  simpa using score_zero a
+
+lemma residual_eq (a : Bool) : residual P a 0 = fun i => P.pop.y i false := by
+  funext i
+  simp [SAP.P002a.residual, population_fit, w_eq]
+
+lemma xi_witness : Xi P (-1/2) (1/2) 2 2 (1/6) := by
+  refine ⟨theta_witness.1, theta_witness.2.1, theta_witness.2.2.1,
+    theta_witness.2.2.2.1, theta_witness.2.2.2.2.1, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [late_zero, residual_eq, residual_eq]
+    rw [cov_diag, variance]
+    exact covariance_guard
+  · intro a
+    rw [late_zero, residual_eq, fourth, variance]
+    exact fourth_guard
+  · intro s
+    fin_cases s
+    norm_num [P, negativeDeltaModel, Fin.sum_univ_succ]
+  · intro s
+    fin_cases s
+    norm_num [P, negativeDeltaModel, mean, Fin.sum_univ_succ]
+  · intro b
+    norm_num [P, negativeDeltaModel, mean, normSq, dotProduct, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (b 0)]
+
+-- Independent witness for both universals refuted by T3 and both universals
+-- corrected in T2. Neither proof above imports or invokes a Challenge theorem.
+example : ∃ P : CovPopulation 12 1,
+    Theta P.pop (-1/2) (1/6) 2 ∧ Xi P (-1/2) (1/2) 2 2 (1/6) ∧
+    (∀ a, 0 < popVar (w P.pop a (late P.pop))) ∧
+    (∀ a, 0 < popVar (residual P a (late P.pop))) := by
+  refine ⟨P, theta_witness, xi_witness, ?_, ?_⟩
+  · intro a
+    rw [late_zero, w_eq, variance]
+    norm_num
+  · intro a
+    rw [late_zero, residual_eq, variance]
+    norm_num
+
+-- The zero-variance classes used in T4 and repeated in T5 really have members.
+lemma degenerate_theta : Theta (degenerateModel 2 0) 0 (1/4) (1/2) := by
+  norm_num [Theta, ValidDesign, MonotoneReceipt, compliers, degenerateModel,
+    w, v, mean, late, groupMean, groupCov, groupVar, popVar, fourthNorm,
+    Fin.sum_univ_succ]
+
+abbrev Q : CovPopulation 2 1 := degenerateCovModel 2 0
+
+lemma grid_gram : gram Q.x Finset.univ =
+    Matrix.diagonal (fun o : Option (Fin 1) => if o = none then (1:ℝ) else 1/4) := by
+  ext s t
+  cases s with
+  | none =>
+    cases t with
+    | none => norm_num [gram, groupMean, augmented, Q, degenerateCovModel,
+        gridX, Matrix.diagonal, Fin.sum_univ_succ]
+    | some t =>
+      fin_cases t
+      norm_num [gram, groupMean, augmented, Q, degenerateCovModel,
+        gridX, Matrix.diagonal, Fin.sum_univ_succ]
+  | some s =>
+    fin_cases s
+    cases t with
+    | none => norm_num [gram, groupMean, augmented, Q, degenerateCovModel,
+        gridX, Matrix.diagonal, Fin.sum_univ_succ]
+    | some t =>
+      fin_cases t
+      norm_num [gram, groupMean, augmented, Q, degenerateCovModel,
+        gridX, Matrix.diagonal, Fin.sum_univ_succ]
+
+lemma q_late : late Q.pop = 0 := by
+  simp [late, Q, degenerateCovModel, degenerateModel, groupMean]
+
+lemma q_residual (a : Bool) : SAP.P002a.residual Q a 0 = 0 := by
+  have hq : w Q.pop a 0 = 0 := by
+    funext i
+    simp [w, Q, degenerateCovModel, degenerateModel]
+  have hf : psi Q a 0 = 0 := by
+    have hd : (gram Q.x Finset.univ).det ≠ 0 := by
+      rw [grid_gram]
+      norm_num [Matrix.det_diagonal, Fintype.prod_option, Fin.prod_univ_succ]
+    have hs : score Q.x Finset.univ (0 : Fin 2 → ℝ) = 0 := by
+      ext s
+      simp [score, groupMean]
+    unfold psi ols
+    rw [if_pos hd, hq, hs]
+    simp
+  funext i
+  simp [SAP.P002a.residual, hq, hf]
+
+lemma degenerate_xi : Xi Q 0 (1/4) 4 (1/2) (1/4) := by
+  refine ⟨degenerate_theta.1, degenerate_theta.2.1, degenerate_theta.2.2.1,
+    degenerate_theta.2.2.2.1, degenerate_theta.2.2.2.2.1, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [q_late, q_residual, q_residual]
+    norm_num [popCov, popVar, mean, Fin.sum_univ_succ]
+  · intro a
+    rw [q_late, q_residual]
+    norm_num [fourthNorm, popVar, mean, Fin.sum_univ_succ]
+  · intro s
+    fin_cases s
+    norm_num [Q, degenerateCovModel, gridX, Fin.sum_univ_succ]
+  · intro s
+    fin_cases s
+    norm_num [Q, degenerateCovModel, gridX, mean, Fin.sum_univ_succ]
+  · intro b
+    norm_num [Q, degenerateCovModel, gridX, mean, normSq, dotProduct, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (b 0)]
+
+example : ∃ P : Population 2, Theta P 0 (1/4) (1/2) :=
+  ⟨degenerateModel 2 0, degenerate_theta⟩
+
+example : ∃ P : CovPopulation 2 1, Xi P 0 (1/4) 4 (1/2) (1/4) :=
+  ⟨Q, degenerate_xi⟩
+
+-- The bottom-filter convention identified in the blind reading is exact.
+example (f : ℕ → ℝ≥0∞) : Filter.liminf f ⊥ = ⊤ := Filter.liminf_bot f
+
+end
+end Audit

@@ -1,4 +1,4 @@
-/- Exact arbitrary-size one-source spillover formulas, finite update identities, interference graph counts and weighted means. -/
+/- Exact arbitrary-size one-source spillover formulas. Direct finite update identities, actual interference graph/counts and weighted means; no new assumptions or external copied code. -/
 import AronowAudit.P009.P009_NormalCompletion
 namespace AronowAudit.P009.OneSourceCompletion
 open scoped BigOperators
@@ -201,6 +201,12 @@ theorem corrected_one_source_spillover_completed {n : ℕ} (hn : 0 < n) (b : ℕ
     simp_rw [hrow]
     rw [←Finset.mul_sum,source_count_affected hn b hb,source_davg hn b hb c]
 
+#print axioms source_xi
+#print axioms source_interferes
+#print axioms source_dependent
+#print axioms source_davg
+#print axioms source_ybreve
+#print axioms corrected_one_source_spillover_completed
 end
 end AronowAudit.P009.OneSourceCompletion
 
@@ -219,5 +225,6 @@ theorem corrected_one_source_spillover {n : ℕ} (hn : 0 < n) (b : ℕ)
     B1 E = (2+4*c ⟨0,hn⟩)*((b:ℝ)-1)/((n:ℝ)+(b:ℝ)*((b:ℝ)-1)) := by
   exact OneSourceCompletion.corrected_one_source_spillover_completed hn b hb c
 
+#print axioms corrected_one_source_spillover
 end
 end AronowAudit.P009

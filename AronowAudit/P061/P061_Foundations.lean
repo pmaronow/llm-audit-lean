@@ -43,7 +43,7 @@ abbrev OutcomeSchedule (Ω : Type) (N : ℕ) := Fin N → Ω → ℝ
 Eq. (2): "D = (g_1(Z), ... , g_N(Z))". -/
 abbrev ExposureMapping (Ω : Type) (N : ℕ) := Fin N → Ω → ℝ
 
-/-- Positive-probability assignment support. -/
+/-- Positive-probability assignment support, as read in standing assumption S10(a). -/
 def Support {Ω : Type} (D : Design Ω) (z : Ω) : Prop := 0 < D.p z
 
 /-- Section 3, p. 3: probability of any event is the sum of its atom weights.
@@ -51,13 +51,13 @@ Classical decidability supplies indicators for arbitrary subsets. -/
 noncomputable def probability {Ω : Type} (D : Design Ω) (A : Ω → Prop) : ℝ :=
   ∑' z, if A z then D.p z else 0
 
-/-- Expectations over the design distribution; usable as a signed mean
+/-- Expectations over the design distribution (S10(f)); usable as a signed mean
 only together with `Integrable D f`. -/
 noncomputable def expectation {Ω : Type} (D : Design Ω) (f : Ω → ℝ) : ℝ :=
   ∑' z, D.p z * f z
 
 /-- Finite ordinary expectation: absolute summability of the weighted outcomes.
-P061-T8's first-moment correction. -/
+P061-T8's correction, validator P061-CAND-001, steps 11–14. -/
 def Integrable {Ω : Type} (D : Design Ω) (f : Ω → ℝ) : Prop :=
   Summable (fun z => D.p z * |f z|)
 
@@ -123,7 +123,7 @@ def NURVA {Ω : Type} {N : ℕ} (D : Design Ω)
   ∀ i z z', Support D z → Support D z' → g i z = g i z' → y i z = y i z'
 
 /-- Condition 5.2, p. 8: the same stability restriction over all feasible Z.
-Its printed EPO equality is read only where the EPO is defined. -/
+Its printed EPO equality is read only where the EPO is defined (S10(d)). -/
 def SUTVA {Ω : Type} {N : ℕ} (g : ExposureMapping Ω N)
     (y : OutcomeSchedule Ω N) : Prop :=
   ∀ i z z', g i z = g i z' → y i z = y i z'
@@ -225,7 +225,7 @@ theorem expectation_div (f : Ω → ℝ) (a : ℝ) (_hf : Integrable D f) (_ha :
 
 /-- Eq. (5), p. 6, expanded using conditional atom probabilities.
 Its statistical interpretation requires the positivity and moment hypotheses
-retained here; the algebra itself does not require the denominator to be nonzero. -/
+retained here; the algebra itself does not divide by a nonzero value. -/
 theorem epo_conditional (g : ExposureMapping Ω N) (y : OutcomeSchedule Ω N)
     (i : Fin N) (d : ℝ) (_hpos : 0 < pi D g i d)
     (_hm : Integrable D (fun z => if g i z = d then y i z else 0)) :
@@ -286,10 +286,22 @@ theorem ht_contrast_unbiased (g : ExposureMapping Ω N) (y : OutcomeSchedule Ω 
   rw [expectation_sub D hht hht', ht_unbiased D g y d hm,
     ht_unbiased D g y d' hm']
 
+/-- P061-T16: the printed unbiasedness claim on a finite assignment set;
+all raw potential outcome schedules are allowed. -/
+theorem finite_ht_unbiased [Fintype Ω] (g : ExposureMapping Ω N)
+    (y : OutcomeSchedule Ω N) (d d' : ℝ) (_hN : 0 < N)
+    (_hp : IndividualPositivity D g d) (_hp' : IndividualPositivity D g d') :
+    expectation D (ht D g y d) = aepo D g y d ∧
+    expectation D (htContrast D g y d d') = aeed D g y d d' := by
+  constructor
+  · exact ht_unbiased D g y d (finite_type_targeted_moment D g y d)
+  · exact ht_contrast_unbiased D g y d d'
+      (finite_type_targeted_moment D g y d) (finite_type_targeted_moment D g y d')
+      (Summable.of_finite) (Summable.of_finite)
 
-/-- Corrected T6(i)–(ii): on a finite feasible assignment type with positive
-target probabilities, EPO equals the conditional expected exposure outcome,
-and AEED equals the average of the conditional exposure contrasts. -/
+/-- T6(i)–(ii), corrected attribution: EPO equals the earlier conditional
+expected exposure outcome and AEED equals its average effect on their common
+finite domain. It asserts equality of functionals, not historical priority. -/
 theorem corrected_attribution [Fintype Ω] (g : ExposureMapping Ω N)
     (y : OutcomeSchedule Ω N) (a b : ℝ) (_hN : 0 < N)
     (ha : ∀ i, 0 < pi D g i a) (hb : ∀ i, 0 < pi D g i b) :
@@ -309,9 +321,7 @@ theorem corrected_attribution [Fintype Ω] (g : ExposureMapping Ω N)
       epo_conditional D g y i b (hb i) (Summable.of_finite)]
 
 /-- Supplement Eq. (2), p. 1: equal exposure probabilities n/N reduce
-the HT estimator to the exposed-outcome sum divided by the fixed number n,
-without outcome stability. This is the exposed-units sample mean when
-exactly n units have exposure d. -/
+the HT estimator to the exposed-units' sample mean, without outcome stability. -/
 theorem ht_sample_mean (g : ExposureMapping Ω N) (y : OutcomeSchedule Ω N)
     (d : ℝ) (n : ℕ) (hN : 0 < N) (hn : 0 < n)
     (hp : ∀ i, pi D g i d = (n : ℝ) / N) (z : Ω) :
@@ -551,7 +561,7 @@ end Linear
 /-! Explicit finite designs and the domain counterexample. -/
 
 /-- Uniform finite randomization, used in the paper's finite examples and
-in the T1 and T2 constructions. -/
+in the validator's T1 and T2 constructions. -/
 noncomputable def uniformDesign (Ω : Type) [Fintype Ω] [Nonempty Ω] : Design Ω where
   p := fun _ => (Fintype.card Ω : ℝ)⁻¹
   nonneg := fun _ => inv_nonneg.mpr (Nat.cast_nonneg _)
@@ -637,7 +647,7 @@ def networkExposure (i : Fin 2) (z : BinaryPair) : ℝ :=
 def networkVector (z : BinaryPair) : ℝ × ℝ :=
   (networkExposure 0 z, networkExposure 1 z)
 
-/-- Membership in the network exposure image, T2(c): a hybrid
+/-- Membership in the network exposure image, validator T2(c): a hybrid
 exposure argument has a value only on this image. -/
 def InNetworkImage (r : ℝ × ℝ) : Prop := ∃ z : BinaryPair, networkVector z = r
 
@@ -646,7 +656,8 @@ used for the literal raw-coordinate reading in T2(d). -/
 def InBinaryDomain (r : ℝ × ℝ) : Prop :=
   (r.1 = 0 ∨ r.1 = 1) ∧ (r.2 = 0 ∨ r.2 = 1)
 
-/-- T2(a): the exposure image consists of exactly four vectors, using the paper's Eq. (3). -/
+/-- T2(a): the exposure image consists of exactly the four vectors stated
+by the validator, using the paper's Eq. (3). -/
 theorem network_image (r : ℝ × ℝ) :
     InNetworkImage r ↔ r = (0,0) ∨ r = (2,1) ∨ r = (1,2) ∨ r = (3,3) := by
   constructor
@@ -743,7 +754,7 @@ theorem household_sutva (D : Design BinaryPair)
 /-! The missing-first-moment counterexample on the full real assignment space. -/
 
 /-- Embed a normalized discrete design into a larger feasible assignment set,
-giving added assignments probability zero (Section 3.1, p. 3). -/
+giving added assignments probability zero (Section 3.1, p. 3, and S10(b)). -/
 noncomputable def extendDesign {A B : Type} (f : A → B) (hf : Function.Injective f)
     (D : Design A) : Design B where
   p := Function.extend f D.p (fun _ => 0)
@@ -807,7 +818,7 @@ theorem extended_probability {A B : Type} (f : A → B) (hf : Function.Injective
   simp only [extendDesign, Function.Injective.extend_apply hf]
 
 /-- T7(a): the support atom k has weight 2^{−k−1}, including weight 1/2
-at k=0. -/
+at k=0. These are the exact weights of validator P061-CAND-001. -/
 noncomputable def geometricWeight (k : ℕ) : ℝ := (1/2 : ℝ)^(k+1)
 
 /-- T7's probability law on its countable support, before adding the remaining
@@ -1015,17 +1026,30 @@ noncomputable def averageDirectEffect {N : ℕ} (S : Set (Fin N → ℝ))
     (D : Design S) (y : OutcomeSchedule S N) (d d' : ℝ) : ℝ :=
   (N : ℝ)⁻¹ * ∑ i, expectation D (fun z => hybridOutcome S y i d z - hybridOutcome S y i d' z)
 
-/- The false printed assertion of general well-definedness is represented as a
-closed proposition in P061_PrintedClaims and refuted in P061_Refutations using
-the positive geometric design. -/
+/- Historical false assertion `printed_well_defined_claim` is retained only as a closed
+proposition in P061_PrintedClaims. Its universal contract is refuted in
+P061_Refutations using the actual positive geometric design. -/
 
+/-- T11's finite-support case: the printed Eq. (4)–(8) definitions require
+no SUTVA or NURVA. On finite assignments all targeted signed means exist. -/
+theorem finite_well_defined_targets {Ω : Type} [Fintype Ω] {N : ℕ} (D : Design Ω)
+    (g : ExposureMapping Ω N) (y : OutcomeSchedule Ω N) (d d' : ℝ) (_hN : 0 < N)
+    (hp : ∀ i, 0 < pi D g i d) (hp' : ∀ i, 0 < pi D g i d') :
+    TargetedMoment D g y d ∧ TargetedMoment D g y d' ∧
+    (∀ i, epo D g y i d = conditionalMean D g y i d ∧
+      epo D g y i d' = conditionalMean D g y i d') ∧
+    aeed D g y d d' = (N : ℝ)⁻¹ * ∑ i, eed D g y i d d' := by
+  exact ⟨finite_type_targeted_moment D g y d, finite_type_targeted_moment D g y d',
+    fun i => ⟨epo_conditional D g y i d (hp i) Summable.of_finite,
+      epo_conditional D g y i d' (hp' i) Summable.of_finite⟩,
+    aeed_average_eed_algebra D g y d d'⟩
 
-/- The false printed assertion of general HT unbiasedness is represented as a
-closed proposition in P061_PrintedClaims and refuted in P061_Refutations using
-the positive geometric design. -/
+/- Historical false assertion `printed_general_ht_unbiased` is retained only as a closed
+proposition in P061_PrintedClaims. Its universal contract is refuted in
+P061_Refutations using the actual positive geometric design. -/
 
-/-- T6(iii): with binary individualistic exposures,
-AEED equals ADSE, the average of conditional own-assignment contrasts.
+/-- T6(iii), corrected attribution: with binary individualistic exposures,
+AEED is the earlier ADSE, the average of conditional own-assignment contrasts.
 All design probabilities and raw schedules on the common domain are allowed. -/
 theorem binary_adse_identity {N : ℕ} (D : Design (Fin N → Fin 2))
     (y : OutcomeSchedule (Fin N → Fin 2) N) (hN : 0 < N)
@@ -1036,16 +1060,15 @@ theorem binary_adse_identity {N : ℕ} (D : Design (Fin N → Fin 2))
         conditionalMean D (fun i z => (z i).val) y i 0) :=
   (corrected_attribution D _ y 1 0 hN hp hp').2
 
-/-- Exposed-outcome sum divided by the fixed number n, supplement Eq. (2),
-p. 1. It is the sample mean when the realized exposure count equals n. -/
+/-- Sample mean, supplement Eq. (2), p. 1; the denominator is the fixed
+sample/exposure count n, not a random observed count. -/
 noncomputable def sampleMean {Ω : Type} {N : ℕ} (g : ExposureMapping Ω N)
     (y : OutcomeSchedule Ω N) (d : ℝ) (n : ℕ) (z : Ω) : ℝ :=
   (n : ℝ)⁻¹ * ∑ i, if g i z = d then y i z else 0
 
 /-- T17(a)–(b), supplement Eq. (2) and the p. 2 take-away: equal marginal
-probabilities n/N make the exposed-outcome sum divided by the fixed number n
-unbiased for the AEPO, for arbitrary raw schedules on a finite design.
-For a design with exactly n exposed units, this is the actual sample mean. -/
+probabilities n/N give an unbiased exposed-units sample mean, for arbitrary
+raw schedules on a finite design. Standard SRS designs satisfy these margins. -/
 theorem sample_mean_unbiased {Ω : Type} [Fintype Ω] {N : ℕ} (D : Design Ω)
     (g : ExposureMapping Ω N) (y : OutcomeSchedule Ω N) (d : ℝ) (n : ℕ)
     (hN : 0 < N) (hn : 0 < n) (hp : ∀ i, pi D g i d = (n : ℝ)/N) :
@@ -1112,6 +1135,43 @@ noncomputable def regressionEstimator {Ω : Type} {N : ℕ} (D : Design Ω)
   (N : ℝ)⁻¹ * ∑ i, (if g i z = d then y i z - F i z else 0) / pi D g i d +
   (N : ℝ)⁻¹ * ∑ i, F i z
 
+/-- T20, supplement Eq. (10), p. 7: the displayed prediction moment
+condition gives finite-sample unbiased adjustment without NURVA, on finite
+assignment sets (all expectations here automatically exist). -/
+theorem finite_covariate_adjustment {Ω : Type} [Fintype Ω] {N : ℕ} (D : Design Ω)
+    (g : ExposureMapping Ω N) (y F : OutcomeSchedule Ω N) (d : ℝ) (_hN : 0 < N)
+    (_hp : ∀ i, 0 < pi D g i d)
+    (hc : ∀ i, expectation D (fun z => (if g i z = d then F i z else 0)/pi D g i d) =
+      expectation D (F i)) :
+    expectation D (regressionEstimator D g y F d) = aepo D g y d := by
+  have he : regressionEstimator D g y F d = fun z =>
+      ht D g y d z - ht D g F d z + (N : ℝ)⁻¹ * ∑ i, F i z := by
+    funext z
+    simp only [regressionEstimator, ht, ← mul_sub, ← Finset.sum_sub_distrib, ← sub_div]
+    congr 2
+    apply Finset.sum_congr rfl
+    intro i hi
+    split_ifs <;> simp
+  rw [he]
+  have hadd : expectation D (fun z => ht D g y d z - ht D g F d z +
+      (N : ℝ)⁻¹ * ∑ i, F i z) =
+      expectation D (ht D g y d) - expectation D (ht D g F d) +
+        (N : ℝ)⁻¹ * ∑ i, expectation D (F i) := by
+    unfold expectation
+    simp_rw [mul_add, mul_sub, ← mul_assoc]
+    rw [Summable.tsum_add Summable.of_finite Summable.of_finite,
+      Summable.tsum_sub Summable.of_finite Summable.of_finite]
+    congr 1
+    simpa only [expectation, mul_assoc] using
+      (expectation_mul_algebra D (N : ℝ)⁻¹ (fun z => ∑ i, F i z)).trans
+        (congrArg ((N : ℝ)⁻¹ * ·) (expectation_sum D F (fun _ => Summable.of_finite)))
+  rw [hadd, ht_unbiased D g y d (finite_type_targeted_moment D g y d)]
+  have hpred : expectation D (ht D g F d) = (N : ℝ)⁻¹ * ∑ i, expectation D (F i) := by
+    unfold ht
+    rw [expectation_mul_algebra, expectation_sum D _ (fun _ => Summable.of_finite)]
+    simp_rw [hc]
+  rw [hpred]
+  ring
 
 /-- T20, supplement Eq. (10), with the existence of its expectations
 made explicit on general discrete support: targeted outcome/prediction moments
@@ -1169,7 +1229,7 @@ def ConvergesInProbability {Ω : ℕ → Type} (D : ∀ N, Design (Ω N))
     (fun N => probability (D N) (fun z => |X N z - a| > ε)) atTop (𝓝 0)
 
 /-- T10's corrected o(N^{1/4}) maximum-degree rate. Only a predicate on
-population-indexed degree sequences is asserted here, not a CLT. -/
+population-indexed degree sequences is asserted, not a CLT from unstaged works. -/
 def MaxDegreeQuarterRate (dmax : ℕ → ℝ) : Prop :=
   Tendsto (fun N => dmax N / Real.rpow (N : ℝ) (1/4 : ℝ)) atTop (𝓝 0)
 
@@ -1364,7 +1424,7 @@ theorem coarsened_version_counterexample (N : ℕ) (hN : 0 < N) :
 
 
 /-- T1(f): no exposure-vector schedule H_1 exists for N=2: (1,0) and
-(2,0) induce the same exposure vector but different outcomes for unit 0. -/
+(2,0) induce the same exposure vector but different first-person outcomes. -/
 theorem coarsened_no_exposure_schedule :
     ¬∃ H : (Fin 2 → ℝ) → ℝ, ∀ z : Fin 2 → Fin 3,
       ternaryOutcome 0 z = H (fun i => ternaryExposure i z) := by
@@ -1651,7 +1711,7 @@ noncomputable def localDesign (m : ℕ) : Design (Fin (m^8) → BinaryPair) :=
   productDesign (m^8) (fun _ => correlatedPairDesign (localParameter m) (local_parameter_bounds m))
 
 /-- T4's raw schedule on every feasible assignment: y_i(z)=1+a z_partner.
-For m≥2 it is not stable within cells of the individualistic exposure mapping. -/
+It is individualistic in exposure, but not stable within that exposure. -/
 noncomputable def localOutcome (m : ℕ) : OutcomeSchedule (Fin (m^8) → BinaryPair) (m^8*2) :=
   fun i z => 1 + localParameter m * pairedPartnerAssignment (m^8) i z
 
@@ -1670,13 +1730,13 @@ noncomputable def localDirectEffect (m : ℕ) : ℝ :=
   (m^8*2 : ℝ)⁻¹ * ∑ i, expectation (localDesign m) (fun z =>
     localOutcome m i (pairedHybrid (m^8) i 1 z) - localOutcome m i (pairedHybrid (m^8) i 0 z))
 
-/-- T4: pair contribution
+/-- L2 in the validator's derivation for T4: pair contribution
 B=2{(2x−1)(1+ay)+(2y−1)(1+ax)} to the actual HT contrast's numerator. -/
 noncomputable def pairContribution (a : ℝ) (z : BinaryPair) : ℝ :=
   2 * ((2*pairAssignment 0 z-1)*(1+a*pairAssignment 1 z) +
     (2*pairAssignment 1 z-1)*(1+a*pairAssignment 0 z))
 
-/-- T4's exact variance polynomial V_m. -/
+/-- T4's exact V_m polynomial, validator L3, no order notation substituted. -/
 noncomputable def localV (m : ℕ) : ℝ :=
   8 + 16/(m : ℝ) + 14/(m : ℝ)^2 + 2/(m : ℝ)^3 - 4/(m : ℝ)^4
 
@@ -1689,7 +1749,7 @@ noncomputable def localEstimator (m : ℕ) :=
 noncomputable def localStandardError (m : ℕ) : ℝ :=
   Real.sqrt (variance (localDesign m) (localEstimator m))
 
-/-- T4: mean, second moment and variance of the four explicitly
+/-- T4, finite L3: mean, second moment and variance of the four explicitly
 enumerated pair contributions, for arbitrary a and admissible ρ. -/
 theorem correlated_pair_moments (a ρ : ℝ) (hρ : 0 ≤ ρ ∧ ρ ≤ 1) :
     expectation (correlatedPairDesign ρ hρ) (pairContribution a) = 2*a*ρ ∧
@@ -1727,7 +1787,7 @@ by the inferential scale tends to c≠0. -/
 noncomputable def shiftedLaw (L : MeasureTheory.Measure ℝ) (c : ℝ) : MeasureTheory.Measure ℝ :=
   MeasureTheory.Measure.map (fun x : ℝ => x+c) L
 
-/-- T5: two standardized estimators differ exactly by the target
+/-- T5, finite L1: two standardized estimators differ exactly by the target
 gap in standard-error units. The scale is strictly positive, as required by the inference correction. -/
 theorem centering_identity (estimate T A s : ℝ) (_hs : 0 < s) :
     (estimate-A)/s - (estimate-T)/s = (T-A)/s := by ring
@@ -1746,15 +1806,16 @@ theorem rate_bound_suffices (T A L s : ℕ → ℝ) (hs : ∀ N, 0 < s N)
     (fun N => (abs_le.mp (hN N)).1) (fun N => (abs_le.mp (hN N)).2)
 
 /-!
-Inference-transfer arguments
+### Completion of the inference-transfer arguments
 
 The varying-base Slutsky proof below is adapted from the Apache-2.0 licensed
-StatLean/Stat-Lean project,
-module `StatLean.AsymptoticStatistics.ForMathlib.Slutsky`.
-See NOTICE at the repository root.
-The results below relate atomic laws to weak convergence, recentering,
-studentization, and interval probabilities. `MeasureTheory.Integrable` is
-qualified to distinguish it from the atomic integrability predicate.
+StatLean/Stat-Lean project, commit e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2,
+`StatLean/AsymptoticStatistics/ForMathlib/Slutsky.lean`.
+https://github.com/StatLean/Stat-Lean/blob/e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2/StatLean/AsymptoticStatistics/ForMathlib/Slutsky.lean
+The local adaptation renames its bounded-test-law predicate, qualifies
+`MeasureTheory.Integrable` to avoid the paper's atomic predicate, and proves
+all atomic-law, recentering, studentization, and interval bridges locally.
+There are no extra analytic hypotheses, axioms, or imported upstream modules.
 -/
 
 section InferenceCompletion
@@ -1775,9 +1836,7 @@ Varying-base version (each `P n` lives on its own space `Ω n`). Adapted from
 `MeasureTheory.tendstoInDistribution_of_tendstoInMeasure_sub`, which is stated for a
 single base `μ''` on a normed additive group. The three-piece estimate
 `|∫F Y − ∫F ν| ≤ L·(ε/2) + 2·‖F‖∞ · P{dist ≥ ε/2} + |∫F X − ∫F ν|` carries over
-without change, using `dist` in place of `‖·-·‖`.
-The underlying Mathlib proof is Apache-2.0; see NOTICE at the repository root.
--/
+without change; we use `dist` in place of `‖·-·‖`. -/
 theorem weakConvergesLaw_slutsky_dist
     {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
     {E : Type*} [MeasurableSpace E] [PseudoMetricSpace E] [Nonempty E]
@@ -1795,7 +1854,7 @@ theorem weakConvergesLaw_slutsky_dist
     (by infer_instance)
   have h_prob_Y : ∀ n, IsProbabilityMeasure ((P n).map (Y n)) := fun n =>
     (by infer_instance)
-  -- Package the pushforwards as `ProbabilityMeasure` to apply the Lipschitz
+  -- Package the pushforwards as `ProbabilityMeasure` so we can apply the Lipschitz
   -- characterisation of weak convergence. Use local `let`-bindings to keep the
   -- subtype folded under `rw [tendsto_iff_forall_lipschitz_integral_tendsto]`.
   let pX : ℕ → ProbabilityMeasure E := fun n => ⟨(P n).map (X n), h_prob_X n⟩
@@ -1903,7 +1962,7 @@ theorem weakConvergesLaw_slutsky_dist
           rw [mul_assoc]
           gcongr
           grw [measureReal_le_one, mul_one]
-  -- Step C: the RHS tends to `L * (ε / 2) + 0 + 0`; the conclusion follows from `L * (ε / 2) < L * ε`.
+  -- Step C: the RHS tends to `L * (ε / 2) + 0 + 0`; we win because `L * (ε / 2) < L * ε`.
   have h_tendsto : Tendsto (fun n =>
       L * (ε / 2) + M * (P n).real {ω | ε / 2 ≤ dist (X n ω) (Y n ω)}
         + |∫ ω, F ω ∂((P n).map (X n)) - ∫ ω, F ω ∂ν|)
@@ -2083,7 +2142,7 @@ theorem atomicWeakConverges_slutsky_dist {Ω : ℕ → Type} {E : Type}
       measurableSet_le measurable_const (measurable_fst.dist measurable_snd)
     simpa only [Measure.real, P, designLaw_apply _ _ _ hB, Set.mem_ofPred_eq] using hDist ε hε
 
-/-- Event probability is monotone under event inclusion for atomic designs. -/
+/-- Atomic event monotonicity used before the later finite-design section. -/
 theorem completion_probability_mono {Ω : Type} (D : Design Ω) (A B : Ω → Prop)
     (hAB : ∀ z, A z → B z) : probability D A ≤ probability D B := by
   apply Summable.tsum_le_tsum _ (event_summable D A) (event_summable D B)
@@ -2341,7 +2400,7 @@ The probability normalization is supplied in the theorems that use it. -/
 noncomputable def totalVariation {A : Type} [Fintype A] (Q P : A → ℝ) : ℝ :=
   (1/2 : ℝ) * ∑ x, |Q x-P x|
 
-/-- T5: the difference between two finite-law expectations of a
+/-- T5, finite L2: the difference between two finite-law expectations of a
 function in [a,b] is bounded by (b−a) times total variation. The target's
 max-minus-min range is the sharpest instance of this bound. -/
 theorem expectation_total_variation {A : Type} [Fintype A]
@@ -2377,6 +2436,10 @@ theorem expectation_total_variation {A : Type} [Fintype A]
 condition. Finset membership retains exactly the selected coordinates. -/
 abbrev NeighborConfig {N : ℕ} (H : Finset (Fin N)) := H → Fin 2
 
+/-- Unconditional neighborhood law Q_i under a finite binary design, T5. -/
+noncomputable def neighborLaw {N : ℕ} (D : Design (Fin N → Fin 2))
+    (H : Finset (Fin N)) (x : NeighborConfig H) : ℝ :=
+  probability D (fun z => ∀ j : H, z j.val = x j)
 
 /-- Conditional neighborhood law Q_{i,e}, T5; own exposure is assignment
 e and the conditioning probability is the paper's π_i(e). -/
@@ -2401,7 +2464,7 @@ theorem event_atom_le {Ω : Type} (D : Design Ω) (A : Ω → Prop) (z : Ω) (hz
     (fun w hw => by split_ifs <;> simp [D.nonneg])
   simpa only [hz, ite_true, probability] using hh
 
-/-- T18 Eq. (4), and T21: NURVA turns the actually revealed raw
+/-- T18 Eq. (4), and T21 finite F2: NURVA turns the actually revealed raw
 outcome into its EPO at every supported assignment. It does not make outcomes
 independent of Z across different exposure cells. -/
 theorem nurva_revealed_outcome {Ω : Type} {N : ℕ} (D : Design Ω)
@@ -2413,7 +2476,7 @@ theorem nurva_revealed_outcome {Ω : Type} {N : ℕ} (D : Design Ω)
   · simp only [hg, ite_true, nurva_epo D g y hn i d (hp i) z hz hg]
   · simp only [hg, ite_false]
 
-/-- T21: the probability-zero bound in Condition 1.1 and NURVA
+/-- T21 finite F4: the probability-zero bound in Condition 1.1 and NURVA
 imply |EPO_i(d)|/π_i(d)≤c for every unit, even on countable support. -/
 theorem nurva_reweighted_bound {Ω : Type} {N : ℕ} (D : Design Ω)
     (g : ExposureMapping Ω N) (y : OutcomeSchedule Ω N) (d c : ℝ)
@@ -2432,7 +2495,7 @@ theorem nurva_reweighted_bound {Ω : Type} {N : ℕ} (D : Design Ω)
   rw [hcap] at ha
   exact not_le_of_gt hz ha
 
-/-- Chebyshev's exact design inequality, T1(g), T4(f), and T21.
+/-- Chebyshev's exact design inequality, T1(g), T4(f), and T21 finite F6.
 The second centered moment is explicitly integrable; no finite-design
 restriction and no unnamed limit theorem is hidden in this proof. -/
 theorem design_chebyshev {Ω : Type} (D : Design Ω) (X : Ω → ℝ) (ε : ℝ)
@@ -2570,7 +2633,7 @@ theorem finite_expectation_add {Ω : Type} [Fintype Ω] (D : Design Ω) (f h : �
   simp only [expectation, mul_add]
   exact Summable.tsum_add Summable.of_finite Summable.of_finite
 
-/-- Constants have their ordinary means under the normalized design. -/
+/-- Constants have their ordinary means under the normalized design, S10(f). -/
 theorem expectation_const {Ω : Type} (D : Design Ω) (a : ℝ) :
     expectation D (fun _ => a) = a := by
   have hh := expectation_mul_algebra D a (fun _ => 1)
@@ -2638,7 +2701,8 @@ theorem ternary_sum_moments (N : ℕ) :
     ring
 
 /-- T1(g): the actual supplement HT contrast has the displayed sum, mean,
-variance and concentration bound for every population size. This concentration bound is separate from the estimand counterexample. -/
+variance and concentration bound for every population size. This is separate
+from the estimand counterexample so that proof status remains per statement. -/
 theorem coarsened_ht_moments (N : ℕ) (hN : 0 < N) :
     (∀ z : Fin N → Fin 3, htContrast (ternaryDesign N) ternaryExposure ternaryOutcome 1 0 z =
       (3 / (2 * N : ℝ)) * ∑ i, ((z i).val : ℝ)) ∧
@@ -2680,6 +2744,7 @@ theorem coarsened_ht_moments (N : ℕ) (hN : 0 < N) :
     (htContrast (ternaryDesign N) ternaryExposure ternaryOutcome 1 0) ε hε Summable.of_finite
   rw [hm, hv] at hh
   convert hh using 1 <;> field_simp <;> ring
+
 
 
 /-- Reindex the N=2K units by disjoint pairs without changing the population;
@@ -2724,7 +2789,7 @@ theorem local_assignment_marginals (m : ℕ) (i : Fin (m^8*2)) :
     norm_num [probability, correlatedPairDesign, pairAssignment, tsum_fintype,
       Fintype.sum_prod_type, Fin.sum_univ_two] <;> ring
 
-/-- T4: grouping the supplement's actual HT contrast by pairs
+/-- T4, finite L2: grouping the supplement's actual HT contrast by pairs
 gives the stated sum of B contributions with its actual N denominator. -/
 theorem local_estimator_pair_sum (m : ℕ) (z : Fin (m^8) → BinaryPair) :
     localEstimator m z = ((m^8*2 : ℕ) : ℝ)⁻¹ * ∑ k, pairContribution (localParameter m) (z k) := by
@@ -2742,7 +2807,7 @@ theorem local_estimator_pair_sum (m : ℕ) (z : Fin (m^8) → BinaryPair) :
   fin_cases x <;> fin_cases y <;>
     norm_num [pairAssignment, votingOutcome, pairContribution] <;> ring
 
-/-- T4: a sum of K independent, identically distributed finite
+/-- T4 finite L3: a sum of K independent, identically distributed finite
 pair contributions has mean K times the pair mean and variance K times the
 pair variance. The law is the actual product design, not a variance axiom. -/
 theorem product_sum_moments {A : Type} [Fintype A] (K : ℕ)
@@ -2790,7 +2855,7 @@ theorem product_sum_moments {A : Type} [Fintype A] (K : ℕ)
   change (K : ℝ)*((K : ℝ)*μ^2+t-μ^2)-((K : ℝ)*μ)^2 = (K : ℝ)*(t-μ^2)
   ring
 
-/-- T4(b)–(c): the actual AEED and mean HT contrast are 1/m²,
+/-- T4(b)–(c), finite L2–L3: the actual AEED and mean HT contrast are 1/m²,
 the raw ADE is zero, and the actual HT variance is V_m/(4m^8), for every
 m≥2. Limit and coverage claims remain separate statements. -/
 theorem local_finite_moments (m : ℕ) (hm : 2 ≤ m) :
@@ -2925,7 +2990,7 @@ theorem independent_coordinate_hybrid_support {N : ℕ} (S : Set (Fin N → ℝ)
   · simp only [fromOthers, dif_neg hji]
     exact congrFun hzw ⟨j,hji⟩
 
-/-- T4: its exact variance polynomial lies in [8,20) for m≥2.
+/-- T4, finite L4: its exact variance polynomial lies in [8,20) for m≥2.
 The proof uses the small certificate 0<1/m≤1/2 and explicit power bounds. -/
 theorem local_variance_polynomial_bounds (m : ℕ) (hm : 2 ≤ m) :
     8 ≤ localV m ∧ localV m < 20 := by
@@ -2946,7 +3011,7 @@ theorem local_variance_polynomial_bounds (m : ℕ) (hm : 2 ≤ m) :
   · nlinarith [pow_nonneg hx 2, pow_nonneg hx 3]
   · nlinarith [pow_nonneg hx 4]
 
-/-- T4(d): the gap divided by the actual standard error has
+/-- T4(d), finite L4: the gap divided by the actual standard error has
 squared size 4m^4/V_m, at least m^4/5. This connects the finite exact target
 and variance identities to the eventual inference-scale failure. -/
 theorem local_standardized_gap (m : ℕ) (hm : 2 ≤ m) :
@@ -3053,9 +3118,10 @@ theorem local_interval_bounds (m : ℕ) (hm : 2 ≤ m) :
     refine ⟨hcover, he, ?_⟩
     exact div_le_div_of_nonneg_right hb.2.le (pow_nonneg hmp.le 4)
 
-/-- Corrected T6(i)–(ii), on a finite feasible assignment type: under the stated
-positivity and moment hypotheses, EPO equals the conditional expected exposure
-outcome, and AEED equals the average of the conditional exposure contrasts. -/
+/-- Corrected T6(i)–(ii), on general discrete support: once the signed
+means exist, EPO is exactly the conditional expected exposure outcome, and
+AEED is exactly the average of the prior conditional exposure contrasts.
+This is a mathematical identity; historical priority is outside Lean. -/
 theorem corrected_attribution_general {Ω : Type} [Fintype Ω] {N : ℕ} (D : Design Ω)
     (g : ExposureMapping Ω N) (y : OutcomeSchedule Ω N) (d d' : ℝ) (_hN : 0 < N)
     (hp : ∀ i, 0 < pi D g i d) (hp' : ∀ i, 0 < pi D g i d')
@@ -3636,7 +3702,7 @@ theorem ht_consistency {Ω : ℕ → Type} (D : ∀ N, Design (Ω N))
     (Filter.Eventually.of_forall (fun N => probability_nonneg (D N) _)) hupper
 
 /-- T5's finite neighborhood configurations for an arbitrary finite assignment
-alphabet. -/
+alphabet. This replaces the earlier binary-only specialization. -/
 abbrev GeneralNeighborConfig {N : ℕ} (A : Type) (H : Finset (Fin N)) := H → A
 
 /-- Unconditional neighborhood law in corrected T5, for general finite
@@ -4171,7 +4237,7 @@ theorem complete_randomization_marginals {N : ℕ} (D : Design (Fin N → Fin 2)
   rw [hcomp,ht,Nat.cast_sub hn'.le]
   field_simp
 
-/-- T5: two pushforward laws of the same nonnegative finite
+/-- T5 finite L5: two pushforward laws of the same nonnegative finite
 coupling have total variation at most its mass where the two values differ.
 The weights need not sum to one for this finite inequality. -/
 theorem coupling_total_variation {B A : Type} [Fintype B] [Fintype A]
@@ -4226,9 +4292,8 @@ theorem complete_randomization_swap_mass {N : ℕ} (D : Design (Fin N → Fin 2)
   change (if (Finset.univ.filter (fun k => z (Equiv.swap i j k)=1)).card=n then _ else _) = _
   rw [hc]
 
-/-- In T5's fixed-count law, the treated and untreated coordinate counts,
-weighted by the assignment's atom mass, equal that mass times n and N−n,
-respectively. The identities also hold for zero-weight assignments. -/
+/-- In T5's fixed-count law, the mass-weighted number of treated and
+untreated coordinates is exactly n and N−n, including zero-weight vectors. -/
 theorem complete_randomization_weighted_counts {N : ℕ} (D : Design (Fin N → Fin 2))
     (n : ℕ) (hn : n ≤ N) (hd : CompleteRandomization D n) (z : Fin N → Fin 2) :
     (∑ j, if z j=1 then D.p z else 0)=D.p z*n ∧
@@ -4285,8 +4350,9 @@ theorem complete_randomization_pair_sum {N : ℕ} (D : Design (Fin N → Fin 2))
       · simp [hi]
     _ = _ := by rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intro z hz; split_ifs <;> ring
 
-/-- Exchangeability gives the joint probability that unit i is untreated and a
-specified other unit j is treated: n π_i(0)/(N−1). -/
+/-- Exchangeability of other units gives the exact treated-other pair mass
+n π_i(0)/(N−1). This is the probability that a specified other unit is chosen
+by T5's uniform treated-unit swap. -/
 theorem complete_randomization_pair_mass {N : ℕ} (D : Design (Fin N → Fin 2))
     (n : ℕ) (hn : 0 < n) (hn' : n < N) (hd : CompleteRandomization D n)
     (i j : Fin N) (hji : j≠i) :
@@ -4442,7 +4508,7 @@ theorem complete_randomization_coupling_marginals {N : ℕ} (D : Design (Fin N �
         · simp [hz']
 
 
-/-- T5: complete randomization bounds the TV distance of the
+/-- T5, finite L5: complete randomization bounds the TV distance of the
 two neighborhood laws by the number of other units in H_i divided by N−1. -/
 theorem complete_randomization_neighbor_tv {N : ℕ} (D : Design (Fin N → Fin 2))
     (n : ℕ) (hn : 0 < n) (hn' : n < N) (hdesign : CompleteRandomization D n)
@@ -4563,7 +4629,7 @@ theorem binary_neighbor_laws_agree {N : ℕ} (D : Design (Fin N → Fin 2))
   unfold conditionalGeneralNeighborLaw conditionalNeighborLaw
   rw [binary_pi_probability]
 
-/-- T5: the unconditional neighborhood distribution is the
+/-- T5 finite L5: the unconditional neighborhood distribution is the
 mixture of the two positive own-assignment conditional distributions. -/
 theorem binary_neighbor_mixture {N : ℕ} (D : Design (Fin N → Fin 2))
     (i : Fin N) (H : Finset (Fin N))
@@ -4585,7 +4651,7 @@ theorem binary_neighbor_mixture {N : ℕ} (D : Design (Fin N → Fin 2))
 
 /-- The two conditional-to-unconditional TV distances of a binary
 mixture sum to the conditional-to-conditional TV distance. This is the
-weighted-mixture calculation used in T5. -/
+weighted-mixture calculation used in validator T5 finite L5. -/
 theorem tv_binary_mixture {A : Type} [Fintype A] (Q1 Q0 : A → ℝ)
     (p1 p0 : ℝ) (hp1 : 0≤p1) (hp0 : 0≤p0) (htotal : p1+p0=1) :
     totalVariation Q1 (fun x => p1*Q1 x+p0*Q0 x)+
@@ -4602,7 +4668,7 @@ theorem tv_binary_mixture {A : Type} [Fintype A] (Q1 Q0 : A → ℝ)
   rw [show p0=1-p1 by linarith]
   ring
 
-/-- T5: in uniform complete randomization, if all local
+/-- T5 finite L5: in uniform complete randomization, if all local
 response ranges are at most R and each other-unit neighborhood has at most
 k units, the actual AEED/raw-hybrid ADE bias is at most R k/(N−1).
 No stability assumption on outcomes is imposed. -/
@@ -4699,7 +4765,7 @@ theorem complete_randomization_local_bias_bound {N : ℕ} (D : Design (Fin N →
   exact ⟨hBound,hb.trans hBound⟩
 
 
-/-- T5's pair example for T4: for y_i=1+a Z_partner,
+/-- T5 finite L6, the pair building block of T4: for y_i=1+a Z_partner,
 the response range is a, each conditional/unconditional neighbor-law TV
 distance is ρ/2, and their range-weighted sum aρ equals the actual AEED.
 Both own-assignment hybrid direct effects are exactly zero. Independent
@@ -4779,8 +4845,7 @@ theorem correlated_pair_neighbor_bound_attained (a ρ : ℝ) (ha : 0≤a)
 
 /-- T17's standard-design specialization, retaining the actual uniform
 fixed-count law and deriving its marginal probabilities rather than assuming
-them. The first component gives the margins, the second the survey conclusion,
-and the third the experiment conclusion. -/
+them. The survey conclusion is the first component, the experiment the second. -/
 theorem complete_randomization_unbiased {N : ℕ} (D : Design (Fin N → Fin 2))
     (y : OutcomeSchedule (Fin N → Fin 2) N) (n : ℕ) (hn : 0 < n) (hn' : n < N)
     (hdesign : CompleteRandomization D n) :
@@ -4983,3 +5048,171 @@ theorem network_domain_all_even (K : ℕ) (_hK : 0 < K) :
 
 end AronowAudit.P061
 
+#print axioms AronowAudit.P061.event_summable
+#print axioms AronowAudit.P061.probability_nonneg
+#print axioms AronowAudit.P061.probability_le_one
+#print axioms AronowAudit.P061.integrable_summable
+#print axioms AronowAudit.P061.integrable_of_summable
+#print axioms AronowAudit.P061.integrable_sub
+#print axioms AronowAudit.P061.expectation_sub
+#print axioms AronowAudit.P061.expectation_mul_algebra
+#print axioms AronowAudit.P061.expectation_div_algebra
+#print axioms AronowAudit.P061.expectation_mul
+#print axioms AronowAudit.P061.expectation_div
+#print axioms AronowAudit.P061.epo_conditional
+#print axioms AronowAudit.P061.aeed_average_eed_algebra
+#print axioms AronowAudit.P061.aeed_average_eed
+#print axioms AronowAudit.P061.finite_type_targeted_moment
+#print axioms AronowAudit.P061.ht_unbiased
+#print axioms AronowAudit.P061.ht_contrast_unbiased
+#print axioms AronowAudit.P061.finite_ht_unbiased
+#print axioms AronowAudit.P061.corrected_attribution
+#print axioms AronowAudit.P061.ht_sample_mean
+#print axioms AronowAudit.P061.sutva_implies_nurva
+#print axioms AronowAudit.P061.integrable_mul
+#print axioms AronowAudit.P061.integrable_div
+#print axioms AronowAudit.P061.integrable_sum
+#print axioms AronowAudit.P061.expectation_sum
+#print axioms AronowAudit.P061.ht_integrable
+#print axioms AronowAudit.P061.corrected_first_moment
+#print axioms AronowAudit.P061.constant_cell
+#print axioms AronowAudit.P061.positive_cell_has_assignment
+#print axioms AronowAudit.P061.global_nurva_targeted_moment
+#print axioms AronowAudit.P061.nurva_targeted_moment
+#print axioms AronowAudit.P061.sutva_design_free
+#print axioms AronowAudit.P061.nurva_epo
+#print axioms AronowAudit.P061.observed_law_support
+#print axioms AronowAudit.P061.nurva_sutva_observational_equivalence
+#print axioms AronowAudit.P061.expectation_one
+#print axioms AronowAudit.P061.product_expectation
+#print axioms AronowAudit.P061.coordinate_expectation
+#print axioms AronowAudit.P061.network_image
+#print axioms AronowAudit.P061.network_domain_counterexample
+#print axioms AronowAudit.P061.household_tables
+#print axioms AronowAudit.P061.household_sutva
+#print axioms AronowAudit.P061.extended_expectation_algebra
+#print axioms AronowAudit.P061.extended_expectation
+#print axioms AronowAudit.P061.extended_probability
+#print axioms AronowAudit.P061.divergent_weighted_term
+#print axioms AronowAudit.P061.divergent_partial_sums
+#print axioms AronowAudit.P061.alternating_not_summable
+#print axioms AronowAudit.P061.missing_moment_counterexample
+#print axioms AronowAudit.P061.finite_well_defined_targets
+#print axioms AronowAudit.P061.binary_adse_identity
+#print axioms AronowAudit.P061.sample_mean_unbiased
+#print axioms AronowAudit.P061.difference_in_means_unbiased
+#print axioms AronowAudit.P061.finite_covariate_adjustment
+#print axioms AronowAudit.P061.covariate_adjustment
+#print axioms AronowAudit.P061.corrected_degree_rates
+#print axioms AronowAudit.P061.product_events
+#print axioms AronowAudit.P061.coordinate_probability
+#print axioms AronowAudit.P061.ternary_marginals
+#print axioms AronowAudit.P061.coarsened_version_counterexample
+#print axioms AronowAudit.P061.coarsened_no_exposure_schedule
+#print axioms AronowAudit.P061.equilibrium_tables
+#print axioms AronowAudit.P061.hidden_version_tables
+#print axioms AronowAudit.P061.sum_vector_succ
+#print axioms AronowAudit.P061.sampling_treatment_properties
+#print axioms AronowAudit.P061.sampling_treatment_designs_differ
+#print axioms AronowAudit.P061.local_parameter_bounds
+#print axioms AronowAudit.P061.correlated_pair_moments
+#print axioms AronowAudit.P061.centering_identity
+#print axioms AronowAudit.P061.rate_bound_suffices
+#print axioms AronowAudit.P061.corrected_inference_transfer
+#print axioms AronowAudit.P061.nonzero_drift_limit
+#print axioms AronowAudit.P061.expectation_total_variation
+#print axioms AronowAudit.P061.event_atom_le
+#print axioms AronowAudit.P061.nurva_revealed_outcome
+#print axioms AronowAudit.P061.nurva_reweighted_bound
+#print axioms AronowAudit.P061.design_chebyshev
+#print axioms AronowAudit.P061.young_missing_pair
+#print axioms AronowAudit.P061.missing_pair_slack
+#print axioms AronowAudit.P061.geometric_real_support
+#print axioms AronowAudit.P061.divergent_ht_formula
+#print axioms AronowAudit.P061.divergent_parts_not_summable
+#print axioms AronowAudit.P061.coarsened_two_direct_averages
+#print axioms AronowAudit.P061.coarsened_nonvanishing_gap
+#print axioms AronowAudit.P061.two_coordinate_expectation
+#print axioms AronowAudit.P061.finite_expectation_add
+#print axioms AronowAudit.P061.expectation_const
+#print axioms AronowAudit.P061.finite_variance_moment
+#print axioms AronowAudit.P061.variance_mul
+#print axioms AronowAudit.P061.ternary_sum_moments
+#print axioms AronowAudit.P061.coarsened_ht_moments
+#print axioms AronowAudit.P061.sum_units_to_pairs
+#print axioms AronowAudit.P061.partner_update_invariant
+#print axioms AronowAudit.P061.local_ade_zero
+#print axioms AronowAudit.P061.local_assignment_marginals
+#print axioms AronowAudit.P061.local_estimator_pair_sum
+#print axioms AronowAudit.P061.product_sum_moments
+#print axioms AronowAudit.P061.local_finite_moments
+#print axioms AronowAudit.P061.finite_support_integrable
+#print axioms AronowAudit.P061.finite_support_targeted_moment
+#print axioms AronowAudit.P061.finite_targeted_moment
+#print axioms AronowAudit.P061.sutva_epo_global
+#print axioms AronowAudit.P061.sutva_design_invariance
+#print axioms AronowAudit.P061.positive_event_has_atom
+#print axioms AronowAudit.P061.independent_coordinate_hybrid_support
+#print axioms AronowAudit.P061.local_variance_polynomial_bounds
+#print axioms AronowAudit.P061.local_standardized_gap
+#print axioms AronowAudit.P061.probability_mono
+#print axioms AronowAudit.P061.probability_complement
+#print axioms AronowAudit.P061.local_interval_bounds
+#print axioms AronowAudit.P061.corrected_attribution_general
+#print axioms AronowAudit.P061.expectation_support_congr
+#print axioms AronowAudit.P061.integrable_support_congr
+#print axioms AronowAudit.P061.integrable_add
+#print axioms AronowAudit.P061.expectation_add
+#print axioms AronowAudit.P061.integrable_const
+#print axioms AronowAudit.P061.integrable_event
+#print axioms AronowAudit.P061.expectation_event
+#print axioms AronowAudit.P061.centered_cross_integrable
+#print axioms AronowAudit.P061.centered_cross_expectation
+#print axioms AronowAudit.P061.centered_ht_on_support
+#print axioms AronowAudit.P061.centered_ht_product
+#print axioms AronowAudit.P061.nurva_second_moment
+#print axioms AronowAudit.P061.nurva_covariance_formula
+#print axioms AronowAudit.P061.variance_eq_covariance
+#print axioms AronowAudit.P061.variance_difference
+#print axioms AronowAudit.P061.nurva_exact_variances
+#print axioms AronowAudit.P061.fiber_weighted_sum
+#print axioms AronowAudit.P061.integrable_fiber_iff
+#print axioms AronowAudit.P061.expectation_fibers
+#print axioms AronowAudit.P061.independent_event_expectation
+#print axioms AronowAudit.P061.fromOthers_reconstruct
+#print axioms AronowAudit.P061.corrected_coordinate_comparison
+#print axioms AronowAudit.P061.corrected_exposure_schedule_comparison
+#print axioms AronowAudit.P061.nurva_variance_bound
+#print axioms AronowAudit.P061.nurva_chebyshev_bound
+#print axioms AronowAudit.P061.ht_consistency
+#print axioms AronowAudit.P061.local_total_variation_bias_bound
+#print axioms AronowAudit.P061.nurva_variance_estimators
+#print axioms AronowAudit.P061.product_coordinate_independent
+#print axioms AronowAudit.P061.local_support_and_bounds
+#print axioms AronowAudit.P061.local_unit_epos_and_covariance
+#print axioms AronowAudit.P061.local_inference_counterexample
+#print axioms AronowAudit.P061.local_inference_limits
+#print axioms AronowAudit.P061.permuted_treated_count
+#print axioms AronowAudit.P061.complete_randomization_marginals
+#print axioms AronowAudit.P061.coupling_total_variation
+#print axioms AronowAudit.P061.complete_randomization_swap_mass
+#print axioms AronowAudit.P061.complete_randomization_weighted_counts
+#print axioms AronowAudit.P061.binary_pi_probability
+#print axioms AronowAudit.P061.complete_randomization_pair_sum
+#print axioms AronowAudit.P061.complete_randomization_pair_mass
+#print axioms AronowAudit.P061.complete_randomization_coupling_marginals
+#print axioms AronowAudit.P061.complete_randomization_neighbor_tv
+#print axioms AronowAudit.P061.functionRange_nonneg
+#print axioms AronowAudit.P061.binary_neighbor_laws_agree
+#print axioms AronowAudit.P061.binary_neighbor_mixture
+#print axioms AronowAudit.P061.tv_binary_mixture
+#print axioms AronowAudit.P061.complete_randomization_local_bias_bound
+#print axioms AronowAudit.P061.correlated_pair_neighbor_bound_attained
+#print axioms AronowAudit.P061.complete_randomization_unbiased
+#print axioms AronowAudit.P061.paired_network_coordinate
+#print axioms AronowAudit.P061.paired_network_image_projection
+#print axioms AronowAudit.P061.binary_hybrid_domain
+#print axioms AronowAudit.P061.network_pair_binary
+#print axioms AronowAudit.P061.network_partner_binary
+#print axioms AronowAudit.P061.paired_raw_domain_event
+#print axioms AronowAudit.P061.network_domain_all_even

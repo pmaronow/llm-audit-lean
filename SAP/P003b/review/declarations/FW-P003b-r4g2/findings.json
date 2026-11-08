@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P003-T26",
+    "theorem": "SAP.P003b.T26",
+    "fingerprint": "e578669b7fd93b999ca125c65e8e5034523da7743cd86035cc176c896388d7c6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:27, :31, :44 and :160 with sap-lean: n=20, m=3, v=(11,0,3,6), alpha=109/500, tau=-3/20; every mask is legal and both real accepted sets are nonempty for every random state. The direct rational endpoint calculation gives 891/1140=297/380 < 1-alpha. Independently, scratch/finite_audit.py enumerates all 1140 equally likely labeled assignments of the fixed table and realizes J by hiding label 0 exactly when Z={11,12,13}; all definitions and printed conditions are met. The exact coverage deficit is 1/2375.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T27",
+    "theorem": "SAP.P003b.T27",
+    "fingerprint": "ef56e5a9050ad390b1517d0b29c3b63c0340f3e960462e86d0418523edb1e25a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:54, :61, :65 and :75: k1=1,k2=2,r=2,f identically false meets every printed input hypothesis. Every positive fuel returns some(1,2), not r=2; zero fuel returns none. Also checked that the legal constant-true function with r=0 never returns at any fuel. These respectively refute correctness and termination within the asserted budget on the actual printed domain.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T30",
+    "theorem": "SAP.P003b.T30",
+    "fingerprint": "8f507f145ad22cb22f8241784b748323d5867caf8b6c9c3749c7b2cdbbf2ab10",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:84, :88, :92, :95, :99 and :106: o=(0,1,0,1), alpha=1/2 has positive equal arms; v=(0,1,1,0) is possible, is the displayed balanced vector, has p-value one and tau(v)=estimate(o)=0. For the labeled conjunct, m=1, Y identically false on Fin 2, and z={0} construct an Assignment 2 1; the explicit complement-imputation table agrees with Y and has exactly the required counts. No Challenge theorem is used by these checks.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T31",
+    "theorem": "SAP.P003b.T31",
+    "fingerprint": "8de8b2caaa71646f9fb0e199f02a4a151c42e85604dc72d652287b75bb373f63",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:111 and :114: unbalanced observation o=(1,0,0,2), alpha=1/4. Both arms are positive, alpha is in (0,1), and v=o is possible with p-value 1/3. A direct accepted-set membership proof constructs tau(v) in accepted(1/4,o), so the nonemptiness premise and every other hypothesis hold jointly, independently of the reviewed theorem.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T33",
+    "theorem": "SAP.P003b.T33",
+    "fingerprint": "6ec3d77b46179c800211d1b43926b9667569a51867db999004d9723f7b7c4a2c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:131: o=(0,3,0,3), v=(0,1,3,2), v-prime=(1,0,2,3). Both arms have size 3, totals equal 6, min(v.b,v.c)=1 and max=3. The exact rational p-values are 2/5 and 7/10, giving a strict increase. The original vector is possible; the updated vector need not be possible, exactly as allowed by the canonical claim.",
+    "confidence": "high"
+  }
+]

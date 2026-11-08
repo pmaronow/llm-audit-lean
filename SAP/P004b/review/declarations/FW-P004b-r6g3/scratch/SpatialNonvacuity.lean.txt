@@ -1,0 +1,226 @@
+import SAP.P004b.Challenge
+
+open SAP.P004b MeasureTheory Filter
+open scoped BigOperators Classical Topology
+noncomputable section
+
+namespace Audit
+
+structure Point (N : ℕ) where
+  val : Fin N
+  deriving DecidableEq, Fintype
+
+instance (N : ℕ) : MetricSpace (Point N) where
+  dist x y := if x = y then 0 else (N : ℝ)
+  dist_self _ := by simp
+  dist_comm x y := by simp [eq_comm]
+  dist_triangle x y z := by
+    by_cases hxy : x = y
+    · subst y; simp
+    by_cases hyz : y = z
+    · subst z; simp
+    simp only [hxy, hyz, ite_false]
+    split_ifs <;> nlinarith [Nat.cast_nonneg (α := ℝ) N]
+  eq_of_dist_eq_zero {x y} h := by
+    by_contra hne
+    have hN : (0 : ℝ) < N := by exact_mod_cast Nat.zero_lt_of_lt x.val.isLt
+    simp [hne, ne_of_gt hN] at h
+
+instance (N : ℕ) : MeasurableSpace (Point N) := ⊤
+
+instance (N : ℕ) : MeasurableSingletonClass (Point N) where
+  measurableSet_singleton _ := trivial
+
+def P (N : ℕ) : SpatialPopulation N (Point N) where
+  node i := {⟨i⟩}
+  node_nonempty _ := Set.singleton_nonempty _
+  zeta := Measure.count
+  outcome _ _ := 0
+  bands _ := {0}
+
+lemma sep (N : ℕ) (i j : Fin N) :
+    nodeSeparation (P N) i j = dist (Point.mk i) (Point.mk j) := by
+  unfold nodeSeparation
+  have hs : {r : ℝ | ∃ x ∈ (P N).node i, ∃ y ∈ (P N).node j, dist x y = r} =
+      {dist (Point.mk i) (Point.mk j)} := by
+    ext r
+    simp [P, eq_comm]
+  rw [hs, csInf_singleton]
+
+lemma reg (N : ℕ) : WellDefined (P N) 0 := by
+  intro i
+  have hr : region (P N) i 0 = {Point.mk i} := by
+    ext x
+    simp [region, nodeDistance, P]
+  rw [hr]
+  exact ⟨measurableSet_singleton _, by simp [P], by simp [P], by simp [P]⟩
+
+lemma metric : MetricNodeDistances P := by
+  intro N
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro i j; rw [sep]; exact dist_nonneg
+  · intro i j; rw [sep, dist_eq_zero]; simp only [Point.mk.injEq]
+  · intro i j; simp only [sep, dist_comm]
+  · intro i j k; simp only [sep]; exact dist_triangle _ _ _
+
+lemma spacing : QuadraticSpacing P := by
+  refine ⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro N i s hs
+  by_cases hNs : (N : ℝ) ≤ s
+  · calc
+      ((ball (nodeSeparation (P N)) i s).card : ℝ) ≤ N := by
+        exact_mod_cast (show (ball (nodeSeparation (P N)) i s).card ≤ N from
+          by simpa only [Fintype.card_fin] using Finset.card_le_univ (ball (nodeSeparation (P N)) i s))
+      _ ≤ 1 * (1+s^2) := by nlinarith [sq_nonneg (s-1/2)]
+  · have hb : ball (nodeSeparation (P N)) i s = {i} := by
+      ext j
+      simp only [ball, Finset.mem_filter, Finset.mem_univ, true_and,
+        Finset.mem_singleton]
+      rw [sep]
+      change (if Point.mk i = Point.mk j then 0 else (N : ℝ)) ≤ s ↔ j = i
+      simp only [Point.mk.injEq]
+      by_cases hij : i = j
+      · subst j; simp [hs]
+      · simp [hij, Ne.symm hij, hNs]
+    rw [hb]
+    norm_num
+    positivity
+
+lemma bounded : BoundedOutcomes P := by
+  exact ⟨1, by norm_num, Filter.Eventually.of_forall (by intro N x z; norm_num [P])⟩
+
+lemma circle_zero (N : ℕ) (i : Fin N) (z : Assignment N) : circleAverage (P N) 0 i z = 0 := by
+  simp [circleAverage, P]
+
+lemma ned : NEDConditions P (1/2) 0 := by
+  refine ⟨fun _ => 0, fun _ _ => 1, 1, ?_, ?_, tendsto_const_nhds, ?_, ?_, ?_⟩
+  · intro s hs; exact le_rfl
+  · intro a ha b hb hab; exact le_rfl
+  · refine ⟨5, by norm_num, 0, 1, by norm_num, ?_⟩
+    intro s hs; simp
+  · intro N i; norm_num
+  · intro N i s hs
+    simp [l2Norm, circle_zero, conditionOn, expect]
+
+lemma hom (K : ℝ → ℝ) (b : ℕ → ℝ) :
+    LiminfAtLeast (kernelHomophily P (1/2) 0 K b) 0 := by
+  intro e he
+  apply Filter.Eventually.of_forall
+  intro N
+  simp [kernelHomophily, nodeEffect, ame, marginal, circle_zero, expect, le_of_lt he]
+
+-- All spatial regularity hypotheses common to T26, T28, and T29 coexist.
+example :
+    BoundedOutcomes P ∧ MetricNodeDistances P ∧ QuadraticSpacing P ∧
+    (∀ N, WellDefined (P N) 0) ∧ NEDConditions P (1/2) 0 ∧
+    LiminfAtLeast (kernelHomophily P (1/2) 0 uniformKernel (fun N => N+1)) 0 :=
+  ⟨bounded, metric, spacing, reg, ned, hom _ _⟩
+
+def b (N : ℕ) : ℝ := if N = 0 then 1 else (N : ℝ)^(1/12 : ℝ)
+
+lemma bpos : ∀ N, 0 < b N := by
+  intro N
+  by_cases hN : N = 0
+  · simp [b, hN]
+  · simp only [b, hN, ite_false]
+    exact Real.rpow_pos_of_pos (by exact_mod_cast Nat.pos_of_ne_zero hN) _
+
+lemma bdiv : Tendsto b atTop atTop := by
+  have hh := (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1/12)).comp
+    (tendsto_natCast_atTop_atTop (R := ℝ))
+  apply hh.congr'
+  filter_upwards [eventually_ge_atTop 1] with N hN
+  simp [b, show N ≠ 0 by omega]
+
+lemma brate : Asymptotics.IsLittleO atTop b (fun N => (N : ℝ)^(1/6 : ℝ)) := by
+  apply (Asymptotics.isLittleO_iff_tendsto' ?_).mpr
+  · have hh := (tendsto_rpow_neg_atTop (by norm_num : (0 : ℝ) < 1/12)).comp
+      (tendsto_natCast_atTop_atTop (R := ℝ))
+    apply hh.congr'
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    have hNp : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+    simp only [b, show N ≠ 0 by omega, ite_false]
+    rw [← Real.rpow_sub hNp]
+    norm_num
+  · filter_upwards [eventually_ge_atTop 1] with N hN
+    have hNp : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+    exact fun h => False.elim ((ne_of_gt (Real.rpow_pos_of_pos hNp (1/6 : ℝ))) h)
+
+lemma kernel_good : KernelConditions uniformKernel := by
+  refine ⟨by norm_num [uniformKernel], ?_, ⟨2, ?_⟩, ?_⟩
+  · intro t ht; simp [uniformKernel, not_le.mpr ht]
+  · intro t ht
+    by_cases hh : t ≤ 1 <;> simp [uniformKernel, ht, hh]
+  · refine ⟨1/2, 1, by norm_num, by norm_num, by norm_num, ?_⟩
+    intro t ht hlt
+    have ht1 : t ≤ 1 := by linarith
+    simp [uniformKernel, ht, ht1]
+
+-- Complete collection of T28 outer hypotheses, including an actual bandwidth rate.
+example :
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧ (0 : ℝ) ≤ 0 ∧
+    BoundedOutcomes P ∧ (∀ N, WellDefined (P N) 0) ∧ NEDConditions P (1/2) 0 ∧
+    MetricNodeDistances P ∧ QuadraticSpacing P ∧ KernelConditions uniformKernel ∧
+    (∀ N, 0 < b N) ∧ Tendsto b atTop atTop ∧
+    Asymptotics.IsLittleO atTop b (fun N => (N : ℝ)^(1/6 : ℝ)) ∧
+    LiminfAtLeast (kernelHomophily P (1/2) 0 uniformKernel b) 0 :=
+  ⟨by norm_num, le_rfl, bounded, reg, ned, metric, spacing, kernel_good, bpos, bdiv, brate, hom _ _⟩
+
+lemma forced_zero (N : ℕ) (p : ℝ) (i : Fin N) :
+    forcedCentered (fun _ => p) (circleAverage (P N) 0) i = 0 := by
+  simp [forcedCentered, forcedEffect, forcedMarginal, forcedAME, circle_zero, expect]
+
+lemma row_zero (N : ℕ) : rowMaximum (fun _ : Fin N => (0 : ℝ)) = 0 := by
+  by_cases hN : 0 < N
+  · letI : Nonempty (Fin N) := ⟨⟨0,hN⟩⟩
+    simp [rowMaximum, hN]
+  · simp [rowMaximum, hN]
+
+-- All T26 hypotheses, including both envelope alternatives, at endpoint p=0.
+example :
+    (0 ≤ (0 : ℝ) ∧ (0 : ℝ) ≤ 1) ∧ (0 : ℝ) ≤ 0 ∧
+    BoundedOutcomes P ∧ (∀ᶠ N in atTop, WellDefined (P N) 0) ∧
+    MetricNodeDistances P ∧ QuadraticSpacing P ∧ KernelConditions uniformKernel ∧
+    Tendsto b atTop atTop ∧
+    (∀ s : ℝ, 0 ≤ s → 0 ≤ (fun _ : ℝ => (0 : ℝ)) s) ∧
+    (∀ᶠ N in atTop, ∀ i j,
+      |forcedCentered (fun _ => 0) (circleAverage (P N) 0) i| *
+        |forcedCentered (fun _ => 0) (circleAverage (P N) 0) j| ≤ 0) ∧
+    (∀ r : ℕ → ℝ, Tendsto r atTop atTop →
+      Tendsto (exteriorEnvelope (fun N => nodeSeparation (P N)) (fun _ => 0) r)
+        atTop (nhds 0)) ∧
+    Tendsto (interiorEnvelope (fun N => nodeSeparation (P N)) (fun _ => 0) b)
+      atTop (nhds 0) := by
+  refine ⟨by norm_num, le_rfl, bounded, Filter.Eventually.of_forall reg,
+    metric, spacing, kernel_good, bdiv, by simp, ?_, ?_, ?_⟩
+  · apply Filter.Eventually.of_forall
+    intro N i j
+    simp [forced_zero]
+  · intro r hr
+    change Tendsto (fun N => exteriorEnvelope (fun N => nodeSeparation (P N)) (fun _ => 0) r N)
+      atTop (nhds 0)
+    simpa only [exteriorEnvelope, Finset.sum_const_zero, row_zero] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
+  · change Tendsto (fun N => interiorEnvelope (fun N => nodeSeparation (P N)) (fun _ => 0) b N)
+      atTop (nhds 0)
+    simpa only [interiorEnvelope, Finset.sum_const_zero, row_zero] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
+
+-- All the T29 far-pair hypotheses; distances between distinct nodes are N,
+-- so far pairs actually occur for every N>3 at bandwidth 1.
+example :
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) ∧ BoundedOutcomes P ∧
+    MetricNodeDistances P ∧ QuadraticSpacing P ∧ KernelConditions uniformKernel ∧
+    (∀ s : ℝ, 0 ≤ s → 0 ≤ (fun _ : ℝ => (0 : ℝ)) s) ∧
+    AntitoneOn (fun _ : ℝ => (0 : ℝ)) (Set.Ici 0) ∧
+    (∃ G : ℝ, ∀ N i s, 0 ≤ s → l2Norm (fun _ => 1/2)
+      (fun z => circleAverage (P N) 0 i z-conditionOn (fun _ => 1/2)
+        (ball (nodeSeparation (P N)) i s) (circleAverage (P N) 0 i) z) ≤ G*0) ∧
+    (∀ N, WellDefined (P N) 0) ∧ (∀ N : ℕ, 1 ≤ (fun _ : ℕ => (1 : ℝ)) N) := by
+  refine ⟨by norm_num, bounded, metric, spacing, kernel_good, by simp, ?_, ?_, reg, by simp⟩
+  · intro x hx y hy hxy; exact le_rfl
+  · refine ⟨1, ?_⟩
+    intro N i s hs
+    simp [l2Norm, circle_zero, conditionOn, expect]
+
+end Audit

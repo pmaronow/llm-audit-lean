@@ -1,0 +1,201 @@
+import SAP.P045a.Challenge
+
+open scoped BigOperators
+open Finset SAP.P045a
+
+namespace ReviewP045a
+noncomputable section
+
+-- Normalization is checked from the finite-product definition, independently of T1--T5.
+lemma bernoulli_total (n : ℕ) (p : ℝ) :
+    (∑ z : Assignment n, SAP.P045a.bernoulli p z) = 1 := by
+  unfold SAP.P045a.bernoulli
+  rw [← Fintype.prod_sum (fun (_ : Fin n) (b : Bool) => if b then p else 1-p)]
+  simp
+
+lemma bernoulli_nonnegative (n : ℕ) (p : ℝ) (hp : 0 ≤ p) (hp1 : p ≤ 1) :
+    ∀ z : Assignment n, 0 ≤ SAP.P045a.bernoulli p z := by
+  intro z
+  apply Finset.prod_nonneg
+  intro i _
+  split_ifs <;> linarith
+
+-- T1: a genuine probability law and an outcome on all four positive-arm domains.
+example : (∑ w, bernoulliWitnessMass w) = 1 := by
+  simp [bernoulliWitnessMass, witnessHigh, witnessLow, Fintype.sum_prod_type,
+    ← Finset.mul_sum, ← Finset.sum_mul, bernoulli_total]
+  <;> norm_num
+
+example : ∀ w, 0 ≤ bernoulliWitnessMass w := by
+  intro w
+  unfold bernoulliWitnessMass
+  exact mul_nonneg (mul_nonneg (by norm_num)
+    (bernoulli_nonnegative 4 (1/2) (by norm_num) (by norm_num) _))
+    (bernoulli_nonnegative 4 (1/4) (by norm_num) (by norm_num) _)
+
+def t1Outcome : BernoulliWitnessOutcome :=
+  (true, ![true,false,false,false], ![true,false,false,false])
+
+example : ∀ b h, witnessDomain b h t1Outcome := by
+  simp only [witnessDomain, armExists]
+  decide
+
+example : 0 < bernoulliWitnessMass t1Outcome := by
+  norm_num [bernoulliWitnessMass, witnessHigh, witnessLow, t1Outcome,
+    SAP.P045a.bernoulli, Fin.prod_univ_succ]
+
+-- T2: a normalized Q with both conditional Bernoulli coordinate marginals.
+def twoGroupFair : Design (GroupAssignments (fun _ : Fin 2 => 2)) where
+  mass := fun _ => 1/16
+  nonneg := by intro u; norm_num
+  total := by norm_num [GroupAssignments, Assignment, Fintype.card_pi]
+
+lemma coordinate_count : ∀ (g : Fin 2) (z : Assignment 2),
+    (univ.filter (fun u : GroupAssignments (fun _ : Fin 2 => 2) => u g = z)).card = 4 := by
+  decide
+
+example : ∀ h : Bool,
+    w1CoordinateLaw 1 h (fun _ => twoGroupFair) (fun _ => SAP.P045a.bernoulli (1/2)) := by
+  intro h H hH g hg z
+  unfold prob SAP.P045a.expect
+  simp_rw [twoGroupFair, mul_ite, mul_one, mul_zero]
+  rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const,
+    coordinate_count]
+  norm_num [SAP.P045a.bernoulli, Fin.prod_univ_succ]
+
+example : 0 < (1 : ℕ) ∧ 1 < (2 : ℕ) ∧
+    (∀ _g : Fin 2, 0 < (2 : ℕ)) ∧
+    (∀ _h : Bool, 0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) := by
+  norm_num
+
+-- Fixed-count conditional marginals, including a genuine joint Q, are also inhabited.
+def twoGroupCR : Design (GroupAssignments (fun _ : Fin 2 => 2)) where
+  mass := fun u => if ∀ g, treatedCount (u g) = 1 then 1/4 else 0
+  nonneg := by intro u; split_ifs <;> norm_num
+  total := by
+    have hc : (univ.filter (fun u : GroupAssignments (fun _ : Fin 2 => 2) =>
+        ∀ g, treatedCount (u g) = 1)).card = 4 := by decide
+    rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, hc]
+    norm_num
+
+lemma cr_coordinate_count : ∀ (g : Fin 2) (z : Assignment 2),
+    (univ.filter (fun u : GroupAssignments (fun _ : Fin 2 => 2) =>
+      (∀ g, treatedCount (u g) = 1) ∧ u g = z)).card =
+      if z ∈ fixedAssignments 2 1 then 2 else 0 := by decide
+
+example : ∀ h : Bool,
+    w1CoordinateLaw 1 h (fun _ => twoGroupCR) (fun _ => crMass 2 1) := by
+  intro h H hH g hg z
+  have hc : (fixedAssignments 2 1).card = 2 := by decide
+  unfold prob SAP.P045a.expect
+  calc
+    _ = ∑ u : GroupAssignments (fun _ : Fin 2 => 2),
+        if (∀ g, treatedCount (u g) = 1) ∧ u g = z then (1/4 : ℝ) else 0 := by
+      apply Finset.sum_congr rfl
+      intro u _
+      by_cases hv : ∀ g, treatedCount (u g) = 1 <;>
+        by_cases he : u g = z <;> simp [twoGroupCR, hv, he] <;> simp_all
+    _ = _ := by
+      rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const,
+        cr_coordinate_count]
+      simp only [crMass, hc]
+      split_ifs <;> norm_num
+
+example : ∀ (_h : Bool) (_g : Fin 2), 0 < (1 : ℕ) ∧ 1 < (2 : ℕ) := by decide
+
+-- The overall-result hypotheses admit arbitrary genuine local probability laws.
+def localFair : Design (Assignment 2) where
+  mass := SAP.P045a.bernoulli (1/2)
+  nonneg := bernoulli_nonnegative 2 (1/2) (by norm_num) (by norm_num)
+  total := bernoulli_total 2 (1/2)
+
+-- T3: an actual supported outcome of the mixed two-regime six-group design.
+def toyH : Finset (Fin 6) := {0,1,2}
+def toyZ : Fin 6 → Assignment 3 := fun g =>
+  if g ∈ toyH then ![true,true,false] else ![true,false,false]
+def toyOutcome : W1ToyOutcome := (toyH, toyZ)
+
+example : toyH ∈ firstStageSets 6 3 := by decide
+
+example : toyOutcome ∈ w1ToySupport := by
+  simp only [w1ToySupport, Finset.mem_filter, Finset.mem_univ, true_and]
+  decide
+
+example : 0 < w1ToyMass toyOutcome := by
+  have hH : toyH ∈ firstStageSets 6 3 := by decide
+  have hC : (firstStageSets 6 3).card = 20 := by decide
+  have hc1 : (fixedAssignments 3 1).card = 3 := by decide
+  have hc2 : (fixedAssignments 3 2).card = 3 := by decide
+  have hz : ∀ g, toyZ g ∈ fixedAssignments 3 (if g ∈ toyH then 2 else 1) := by decide
+  change 0 < (if toyH ∈ firstStageSets 6 3 then
+    (∏ g, crMass 3 (if g ∈ toyH then 2 else 1) (toyZ g)) /
+      ((firstStageSets 6 3).card : ℝ) else 0)
+  rw [if_pos hH, hC]
+  apply div_pos
+  · apply Finset.prod_pos
+    intro g _
+    rw [crMass, if_pos (hz g)]
+    by_cases hg : g ∈ toyH <;> simp [hg, hc1, hc2]
+  · norm_num
+
+-- T4(a)--(c): all size hypotheses hold with positive correction and nonconstant effects.
+def regularN : Fin 3 → ℕ := fun _ => 4
+def regularM : Fin 3 → ℕ := fun _ => 2
+def regularA (g : Fin 3) (i : Fin 4) : ℝ := 2*(i.val+1)+g.val
+def regularB (_g : Fin 3) (i : Fin 4) : ℝ := i.val+1
+def regularH : Finset (Fin 3) := {0,1}
+def regularZ : GroupAssignments regularN := fun _ => ![true,true,false,false]
+
+example : 2 ≤ (2 : ℕ) ∧ 2 ≤ (3 : ℕ) ∧
+    (∀ g, 2 ≤ regularM g ∧ regularM g+2 ≤ regularN g) := by decide
+
+example : regularA 0 0 - regularB 0 0 ≠ regularA 0 1 - regularB 0 1 := by
+  norm_num [regularA, regularB]
+
+example : 0 < selectedLaw regularN 2 (fun g => crMass (regularN g) (regularM g))
+    (regularH, regularZ) := by
+  have hH : regularH ∈ firstStageSets 3 2 := by decide
+  have hC : (firstStageSets 3 2).card = 3 := by decide
+  have hc : (fixedAssignments 4 2).card = 6 := by decide
+  have hz : (![true,true,false,false] : Assignment 4) ∈ fixedAssignments 4 2 := by decide
+  change 0 < (if regularH ∈ firstStageSets 3 2 then
+    (1 / ((firstStageSets 3 2).card : ℝ)) *
+      ∏ _g : Fin 3, crMass 4 2 ![true,true,false,false] else 0)
+  rw [if_pos hH]
+  norm_num [hC, crMass, hz, hc]
+
+-- T4(d): the hypotheses about singletons and nonconstant dilated baselines are inhabited.
+example : 2 ≤ (3 : ℕ) ∧ 3 ≤ (6 : ℕ) ∧
+    (∃ (g : Fin 6) (i j : Fin 3), w1ToyBaseline i ≠ w1ToyBaseline j) := by
+  refine ⟨by decide, by decide, 0, 0, 1, ?_⟩
+  norm_num [w1ToyBaseline]
+
+example : (2 : ℕ) ∈ ({1,2} : Finset ℕ) ∧ toyH ∈ firstStageSets 6 3 ∧
+    (∀ g ∈ toyH, toyZ g ∈ fixedAssignments 3 2) := by decide
+
+example (a b : Fin 6 → Fin 3 → ℝ) :
+    requiredDirectVariance (n := fun _ => 3) 3 a b toyOutcome = none := by
+  have hbad : ¬ (2 ≤ (3 : ℕ) ∧ toyH.card = 3 ∧ ∀ g ∈ toyH,
+      2 ≤ (treatedSet (toyZ g)).card ∧ 2 ≤ (univ \ treatedSet (toyZ g)).card) := by decide
+  exact if_neg hbad
+
+-- T5: the witness graph satisfies every graph assumption, with no exposure zero probability.
+def edgeNetwork : Network 2 where
+  adj := edge2
+  symmetric := by decide
+  loopless := by decide
+
+example : ∀ i : Fin 2, neighborhoodCount edgeNetwork.adj ![true,false] i = 1 ∧
+    badAllControl edgeNetwork.adj ![true,false] i ∧
+    ¬ allControl edgeNetwork.adj ![true,false] i := by
+  simp only [badAllControl, allControl]
+  decide
+
+example : (∑ z : Assignment 2, SAP.P045a.bernoulli (1/2) z) = 1 ∧
+    (∀ z : Assignment 2, 0 < SAP.P045a.bernoulli (1/2) z) := by
+  refine ⟨bernoulli_total 2 (1/2), ?_⟩
+  intro z
+  norm_num [SAP.P045a.bernoulli, Fin.prod_univ_succ]
+
+end
+end ReviewP045a

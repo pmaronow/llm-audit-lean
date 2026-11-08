@@ -1,0 +1,207 @@
+import SAP.P001e.Challenge
+
+set_option autoImplicit false
+set_option maxHeartbeats 800000
+
+open MeasureTheory ProbabilityTheory Set
+open scoped BigOperators ENNReal NNReal Classical
+open SAP.P001e
+
+noncomputable section
+namespace Audit
+
+-- T77: a normalized PMF with a genuinely two-dimensional parameter domain.
+def theta77 : Set (Fin 2 → ℝ) := Set.univ
+def g77 (y : ℝ) (_x : Fin 1 → ℝ) (_t : Fin 2 → ℝ) : ℝ :=
+  ((PMF.pure (0 : ℝ)) y).toReal
+
+example : theta77.Nonempty ∧
+    (∀ y x t, t ∈ theta77 → 0 ≤ g77 y x t) := by
+  exact ⟨⟨0, Set.mem_univ _⟩, fun _ _ _ _ => ENNReal.toReal_nonneg⟩
+
+example : ∃ L : Unit → theta77 → ℝ≥0,
+    ∀ (ω : Unit) (t : theta77),
+      (L ω t : ℝ) = g77 0 (fun _ => 0) t.val := by
+  exact ⟨fun _ t => ⟨g77 0 (fun _ => 0) t.val, ENNReal.toReal_nonneg⟩,
+    fun _ _ => rfl⟩
+
+-- The normal-density comparison has a positive scale strictly below its threshold.
+example : 0 < 1 / (2 * Real.sqrt (2 * Real.pi)) ∧
+    1 / (2 * Real.sqrt (2 * Real.pi)) < 1 / Real.sqrt (2 * Real.pi) := by
+  have hp : 0 < Real.sqrt (2 * Real.pi) := Real.sqrt_pos.2 (by positivity)
+  constructor
+  · positivity
+  · apply one_div_lt_one_div_of_lt hp
+    linarith
+
+-- T78: intercept-only regression, observations 0 and 2, fitted intercept 1, Q=2.
+def X78 : Matrix (Fin 2) (Fin 1) ℝ := fun _ _ => 1
+def Y78 : Fin 2 → ℝ := ![0, 2]
+def b78 : Fin 1 → ℝ := fun _ => 1
+
+example : 0 < (2 : ℕ) ∧ (∀ i, X78 i 0 = 1) ∧
+    (∀ c : Fin 1 → ℝ, residualSS X78 Y78 b78 ≤ residualSS X78 Y78 c) ∧
+    0 < residualSS X78 Y78 b78 ∧ residualSS X78 Y78 b78 = 2 := by
+  refine ⟨by norm_num, fun _ => rfl, ?_, ?_, ?_⟩
+  · intro c
+    simp [residualSS, X78, Y78, b78, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (c 0 - 1)]
+  · norm_num [residualSS, X78, Y78, b78, Matrix.mulVec, dotProduct,
+      Fin.sum_univ_succ]
+  · norm_num [residualSS, X78, Y78, b78, Matrix.mulVec, dotProduct,
+      Fin.sum_univ_succ]
+
+-- T79: a nonempty sample, normalized conditional PMF family and attained MLE.
+def theta79 : Set (Fin 1 → ℝ) := Set.univ
+def p79 (_x : Fin 1 → ℝ) (_t : Fin 1 → ℝ) : PMF ℝ := PMF.pure 0
+def X79 : Fin 2 → Fin 1 → ℝ := fun i _ => i.val
+def Y79 : Fin 2 → ℝ := fun _ => 0
+
+example : 0 < (2 : ℕ) ∧
+    (∀ x t, IsProbabilityMeasure (p79 x t).toMeasure) ∧
+    W1IsMLE theta79 (fun y x s => (p79 x s y).toReal) Y79 X79 0 := by
+  refine ⟨by norm_num, fun _ _ => inferInstance, ?_⟩
+  exact ⟨Set.mem_univ _, fun _ _ => le_rfl⟩
+
+-- T79: the PDF hypotheses hold for a positive-variance normal family.
+def g79 (y : ℝ) (_x : Fin 1 → ℝ) (_t : Fin 1 → ℝ) : ℝ :=
+  gaussianPDFReal 0 1 y
+def nu79 (_x : Fin 1 → ℝ) (_t : Fin 1 → ℝ) : Measure ℝ := gaussianReal 0 1
+
+theorem gaussianHasPDF : W1HasPDF (gaussianReal 0 1) (gaussianPDFReal 0 1) := by
+  refine ⟨(measurable_gaussianPDFReal 0 1).aemeasurable,
+    gaussianPDFReal_nonneg 0 1, integrable_gaussianPDFReal 0 1, ?_⟩
+  exact gaussianReal_of_var_ne_zero 0 (by norm_num)
+
+example : 0 < (2 : ℕ) ∧
+    (∀ x t, t ∈ theta79 → IsProbabilityMeasure (nu79 x t)) ∧
+    (∀ x t, t ∈ theta79 → W1HasPDF (nu79 x t) (fun y => g79 y x t)) ∧
+    W1IsMLE theta79 g79 Y79 X79 0 := by
+  refine ⟨by norm_num, fun _ _ _ => by dsimp [nu79]; infer_instance,
+    fun _ _ _ => gaussianHasPDF, ?_⟩
+  exact ⟨Set.mem_univ _, fun _ _ => le_rfl⟩
+
+-- T79: population probability space and measurable outcome and covariate.
+def mu79 : Measure ℝ := gaussianReal 0 1
+def x79 (_y : ℝ) : Fin 1 → ℝ := 0
+
+instance : IsProbabilityMeasure mu79 := by
+  dsimp [mu79]
+  infer_instance
+
+example : IsProbabilityMeasure mu79 ∧ Measurable (id : ℝ → ℝ) ∧
+    Measurable x79 := by
+  exact ⟨inferInstance, measurable_id, measurable_const⟩
+
+theorem conditionalGaussian79 :
+    condDistrib (id : ℝ → ℝ) x79 mu79 =ᵐ[mu79.map x79]
+      Kernel.const (Fin 1 → ℝ) mu79 := by
+  apply condDistrib_ae_eq_of_measure_eq_compProd_of_measurable
+    measurable_const measurable_id
+  simp only [Measure.map_const, measure_univ, one_smul,
+    Measure.compProd_const]
+  exact (Measure.dirac_prod _).symm
+
+example : ∀ᵐ x ∂(mu79.map x79),
+    W1HasPDF (condDistrib (id : ℝ → ℝ) x79 mu79 x) (fun y => g79 y x 0) := by
+  filter_upwards [conditionalGaussian79] with x hx
+  rw [hx]
+  exact gaussianHasPDF
+
+-- The fitted Gaussian law really has mass one and gives an inhabitant of the CDF type.
+example : ∃ F : W1JointCDF 1,
+    F.val = W1jointCDF (fittedJointLaw X79 (fun _ => gaussianReal 0 1)) := by
+  have hM : IsProbabilityMeasure (fittedJointLaw X79 (fun _ => gaussianReal 0 1)) := by
+    constructor
+    norm_num [fittedJointLaw, Measure.sum_apply, Fin.sum_univ_succ]
+    rw [← two_mul, ENNReal.mul_inv_cancel (by norm_num) (by norm_num)]
+  exact ⟨⟨_, ⟨_, hM, rfl⟩⟩, rfl⟩
+
+-- T80: both response values have probability 1/2, on a nondegenerate space.
+def mu80 : Measure (Fin 2) := (PMF.uniformOfFintype (Fin 2)).toMeasure
+
+instance : IsProbabilityMeasure mu80 := by
+  dsimp [mu80]
+  infer_instance
+
+def Y80 (i : Fin 2) : ℝ := i.val
+def R80 (i : Fin 2) : ℝ := i.val
+
+theorem responseZero80 : probability mu80 {i | R80 i = 0} = 1 / 2 := by
+  norm_num [probability, mu80, PMF.toMeasure_apply_fintype,
+    PMF.uniformOfFintype_apply, Fin.sum_univ_succ, R80]
+
+theorem responseOne80 : probability mu80 {i | R80 i = 1} = 1 / 2 := by
+  norm_num [probability, mu80, PMF.toMeasure_apply_fintype,
+    PMF.uniformOfFintype_apply, Fin.sum_univ_succ, R80]
+
+-- The population PMF-version premise is satisfied on this two-atom space.
+example : ∀ᵐ x ∂(mu80.map X79),
+    condDistrib Y79 X79 mu80 x = (p79 x 0).toMeasure := by
+  change ∀ᵐ x ∂(mu80.map X79),
+    condDistrib (fun _ : Fin 2 => (0 : ℝ)) X79 mu80 x = (p79 x 0).toMeasure
+  have h := condDistrib_const (μ := mu80)
+    (measurable_of_countable X79).aemeasurable (0 : ℝ)
+  filter_upwards [h] with x hx
+  simpa [p79, Kernel.deterministic_apply, PMF.toMeasure_pure] using hx
+
+example : IsProbabilityMeasure mu80 ∧ Measurable Y80 ∧ Measurable R80 ∧
+    (0 : ℝ) ≤ 1 ∧ (∀ᵐ i ∂mu80, Y80 i ∈ Icc 0 1) ∧
+    (∀ᵐ i ∂mu80, R80 i = 0 ∨ R80 i = 1) ∧
+    0 < probability mu80 {i | R80 i = 0} ∧
+    0 < probability mu80 {i | R80 i = 1} := by
+  refine ⟨inferInstance, measurable_of_countable _, measurable_of_countable _,
+    by norm_num, Filter.Eventually.of_forall ?_, Filter.Eventually.of_forall ?_, ?_, ?_⟩
+  · intro i
+    fin_cases i <;> norm_num [Y80]
+  · intro i
+    fin_cases i <;> norm_num [R80]
+  · rw [responseZero80]
+    norm_num
+  · rw [responseOne80]
+    norm_num
+
+theorem mean80 (f : Fin 2 → ℝ) : expectation mu80 f = (f 0 + f 1) / 2 := by
+  rw [expectation, integral_fintype (Integrable.of_finite : Integrable f mu80)]
+  norm_num [measureReal_def, mu80, PMF.toMeasure_apply_fintype,
+    PMF.uniformOfFintype_apply, Fin.sum_univ_succ]
+  ring
+
+-- All intermediate means in the nondegenerate compatible interval are genuine.
+example (c : ℝ) (hc : c ∈ Icc (1/2 : ℝ) 1) :
+    ∃ Y' : Fin 2 → ℝ, Measurable Y' ∧
+      (∀ᵐ i ∂mu80, Y' i ∈ Icc 0 1) ∧ Integrable Y' mu80 ∧
+      expectation mu80 Y' = c ∧
+      (fun i => recordedOutcome (Y' i) (R80 i)) =
+        (fun i => recordedOutcome (Y80 i) (R80 i)) ∧
+      mu80.map (fun i => (recordedOutcome (Y' i) (R80 i), R80 i)) =
+        mu80.map (fun i => (recordedOutcome (Y80 i) (R80 i), R80 i)) := by
+  let Y' : Fin 2 → ℝ := ![2*c-1, 1]
+  have hrec : (fun i => recordedOutcome (Y' i) (R80 i)) =
+      (fun i => recordedOutcome (Y80 i) (R80 i)) := by
+    funext i
+    fin_cases i <;> simp [Y', Y80, R80, recordedOutcome]
+  refine ⟨Y', measurable_of_countable _, Filter.Eventually.of_forall ?_,
+    Integrable.of_finite, ?_, hrec, ?_⟩
+  · intro i
+    fin_cases i <;> simp [Y']
+    constructor <;> linarith [hc.1, hc.2]
+  · rw [mean80]
+    simp [Y']
+  · have hp : (fun i => (recordedOutcome (Y' i) (R80 i), R80 i)) =
+        (fun i => (recordedOutcome (Y80 i) (R80 i), R80 i)) := by
+      funext i
+      exact congrArg (fun z => (z, R80 i)) (congrFun hrec i)
+    rw [hp]
+
+-- T80 and T81 are also checked as genuine finite calculations, without the target theorems.
+example : W1BoundsExample := by
+  norm_num [W1BoundsExample, BoundsExample, boundsRecorded, boundsResponse,
+    completeMissing, funext_iff, Fin.forall_fin_succ, Fin.sum_univ_succ]
+
+example : T81Statement := by
+  norm_num [T81Statement, DonorDistances, HotDeckDonors, UniqueNearest,
+    exampleScores, respondents, hotDeckCompleted, hotDeckDonor, hotDeckData,
+    funext_iff, Fin.forall_fin_succ, Fin.sum_univ_succ]
+
+end Audit

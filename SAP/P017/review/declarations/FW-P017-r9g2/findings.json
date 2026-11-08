@@ -1,0 +1,83 @@
+[
+  {
+    "target_id": "P017-T6",
+    "theorem": "SAP.P017.T6",
+    "fingerprint": "674239c4e47d3e2c1ead19a996285f0a2a8087dcd047228e508c4c1413e58152",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed conjunction, with no hypotheses that could make it vacuous. scratch/Nonvacuity.lean compiles the concrete central sample s_i=(0,1), normalMean_25=0, shiftedNormalMean_25=1/25, its unchanged clip, and shiftedDifference_25 squared = 1/625. The full IID Gaussian/fair-sign model, exact normal decomposition, square-integrable remainder 1/sqrt(n), positive central-event probability at least 21/25, and strict rational tail-bound gap are independently checked mathematically in scratch/CounterexampleAudit.md. All relevant Gaussian moments exist.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T7",
+    "theorem": "SAP.P017.T7",
+    "fingerprint": "5c266d791790da546cb5e44b8fbccec85c78f8878cdaef7457288b2829e33b7c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles a model satisfying all common premises and the additional RootNNormal premise: population G=(delta_-1+delta_1)/2, effect tau(x)=x, measurable and integrable with mean 0, support {-1,1}, radius 1; sampling P=N(0,1); hat_n(z)=z/sqrt(n). The estimator is measurable and has positive-variance normal root-n limit (variance 1), proved in the scratch file using almost-sure convergence of its root-n scaling. It is also consistent: Gaussian tails at b*sqrt(n) tend to zero for every b>0. The separate consistency-only premise is satisfiable even without root-n normality, for example by the measurable constant estimator zero. For infinite radius one may take the integrable identity effect under N(0,1), whose closed support is all of R; this case is argued analytically.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P017-T8",
+    "theorem": "SAP.P017.T8",
+    "fingerprint": "c328b4eae32daf4ee3ce5f17642d070c49d199de00495eefa5f34d0b90d436f4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles measurable hat_n(z)=z/sqrt(n) under P=N(0,1), Z_n(z)=z, epsilon_n=0, mu=0, including the full NormalRemainder condition and SmallRemainderMS. Choose c=1, v=1 and any positive sample size, so every finite and asymptotic premise is jointly satisfiable. The fair-sign population constructed in the same file has exactly mu=0 and population radius c=1. The infinite-radius branch has no premises; its integrand is identically zero even for an arbitrary sampling measure.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P017/Challenge/Part1.lean:66: The docstring omits the required disclosure that the usual measure-theoretic conditions are assumed. T8Statement explicitly requires measurable estimators and measurable, square-integrable remainders at SAP/P017/Defs/Part5.lean:20 via NormalRemainder (SAP/P017/Defs/Part1.lean:78). These are permissible usual conditions, so the whole decision is correct; the requested disclosure is still absent. The statement-definition docstring at SAP/P017/Defs/Part5.lean:15 also omits it.",
+        "status": "fixed",
+        "reason": "Fixed: SAP/P017/Challenge/Part1.lean:69 and SAP/P017/Defs/Part5.lean:16 now both state that the usual measure-theoretic conditions are assumed. The underlying hypotheses remain permissible presuppositions and the whole decision is correct."
+      }
+    ]
+  },
+  {
+    "target_id": "P017-T9",
+    "theorem": "SAP.P017.T9",
+    "fingerprint": "8ce1aa00899f4d82578a7312d39d37624de324c915217015c4e81f9acc4c2882",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/T9Functional.lean compiles the IPW integral functional H as measurable on measures, its exact factorization through empiricalObserved for every positive n and every sample, the IID joint-law identity for data=id, and an admissible n=1 sample with estimate 2 and clipped target 1. scratch/CounterexampleAudit.md lists every printed condition and checks the full witness G=Uniform(0,1) x Fair{-1,1} x Fair{0,1}, tau=U, Y0=B, Y1=B+U, mu=c=1/2, observed (D,Y), and the IPW sample mean. The summands are bounded IID with mean 1/2 and variance 53/12, so the usual IID CLT supplies the required nondegenerate normal limit. The all-control/B=-1 event has probability 4^(-n)>0 and selects target 1, which no admissible weight can attain since 0<U<1 almost surely. The population, CLT, event-probability and endpoint-obstruction facts are mathematical checks rather than a complete Lean reproof of the existential witness. No Challenge theorem is used in these scratch proofs.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P017/Defs/Part5.lean:128: Inside the negated universal, H : Nat -> Measure D -> Real has no measurability premise. The requirement at line 129 makes hat n measurable on Xi; the factorization at lines 130-131 is only a pointwise equality and does not require a measurable function of the observed empirical distribution. Measurability of a composite does not imply measurability of its factor, nor the existence of a measurable factor agreeing on every realization on the arbitrary measurable spaces quantified here. The user explicitly presupposes a Borel/measurable function when an estimator is a function of F_n. Consequently this negation still allows counterexamples outside that canonical reading, despite correctly requiring IID sampling from G.",
+        "status": "fixed",
+        "reason": "Fixed: SAP/P017/Defs/Part5.lean:131 explicitly requires Measurable (H n) for every n>=1 inside the negated universal. This is in addition to the IID-law premise at line 129, measurable estimators at line 132, and pointwise factorization at lines 133-134. The measurable IPW H and its exact factorization compile independently in scratch/T9Functional.lean, so the strengthened witness class is nonempty."
+      },
+      {
+        "earlier_issue": "SAP/P017/Challenge/Part1.lean:71: The docstring calls the printed assertion false, but the audited negation does not require the measurable empirical functional that the printed reading presupposes. The same overstatement occurs in the T9SamplingStatement docstring at SAP/P017/Defs/Part5.lean:114. The existence of a genuine measurable IID witness outside the statement does not strengthen this weaker negation.",
+        "status": "fixed",
+        "reason": "Fixed: SAP/P017/Challenge/Part1.lean:72-79 and SAP/P017/Defs/Part5.lean:116-121 now describe a measurable functional of the empirical law, matching the strengthened negation. The explicit IID IPW witness in scratch/CounterexampleAudit.md meets all printed conditions and contradicts the canonical assertion itself. Calling the printed claim false and recording refuted are now justified."
+      }
+    ]
+  },
+  {
+    "target_id": "P017-T10",
+    "theorem": "SAP.P017.T10",
+    "fingerprint": "580a88a7a31d75cd00fc598533b676af885f3e095702498868f0af68eab83f2a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles the support-contained premises with G=P=(delta_-1+delta_1)/2 and tau=hat=id: both functions are measurable, the effect is integrable with mean 0 and radius 1, and the maximum estimator-support distance is exactly 1. For the full-support branch, G=N(0,1), tau=id has finite mean and support R. For the half-line branch, take the mean-one exponential effect law, tau=id (closed support [0,infinity)), and a constant estimator -1 under a point-mass sampling probability; P(hat<0)=1, so all those premises hold. These latter two branches are checked analytically. The printed-zero implication alone has an impossible antecedent under support containment, as the canonical conditional deduction does; the substantive branches are nonvacuous.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P017/Challenge/Part1.lean:80: The docstring omits the required disclosure that the usual measure-theoretic conditions are assumed. T10Statement explicitly requires measurable population effects and estimators at SAP/P017/Defs/Part5.lean:75 and SAP/P017/Defs/Part5.lean:76 (and in its other branches). These are permissible usual conditions and do not justify a restriction, but the requested disclosure is absent. The T10Statement docstring at SAP/P017/Defs/Part5.lean:71 omits it as well.",
+        "status": "fixed",
+        "reason": "Fixed: SAP/P017/Challenge/Part1.lean:86 and SAP/P017/Defs/Part5.lean:73 now both disclose that the usual measure-theoretic conditions are assumed. The mathematical statement and its correct whole classification are preserved."
+      }
+    ]
+  }
+]

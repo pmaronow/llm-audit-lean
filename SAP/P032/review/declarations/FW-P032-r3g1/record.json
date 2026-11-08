@@ -1,0 +1,158 @@
+[
+ {
+  "target_id": "P032-T4",
+  "decision": "whole",
+  "theorem": "SAP.P032.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P032.corrected_decomposition",
+   "AronowAudit.P032.decomposition_coefficient",
+   "AronowAudit.P032.dyad_intersection_cases",
+   "AronowAudit.P032.id_cross_products",
+   "AronowAudit.P032.id_substitution_cross_discrepancy",
+   "AronowAudit.P032.id_substitution_discrepancy",
+   "AronowAudit.P032.singleton_id_covariance"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   {
+    "lean_name": "AronowAudit.P032.cox_substitution_counterexample",
+    "reason": "The T3 witness explicitly referenced by canonical clause (iii) shows that subject-id subtraction need not agree."
+   }
+  ]
+ },
+ {
+  "target_id": "P032-T2",
+  "decision": "whole",
+  "theorem": "SAP.P032.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P032.all_contrasts_lower_bound_iff",
+   "AronowAudit.P032.ols_contrast_error",
+   "AronowAudit.P032.ols_contrast_variance",
+   "AronowAudit.P032.omitted_sandwich_psd_iff",
+   "AronowAudit.P032.omitted_sign_not_determined",
+   "AronowAudit.P032.variance_difference",
+   "AronowAudit.P032.variance_sign_conditions"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P032.bread_symmetric",
+    "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.centered_linear_variance",
+    "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.dyadic_restriction_symmetric",
+    "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.finite_ols_variance",
+    "reason": "Finite discrete-support auxiliary only; the arbitrary-probability-space ols_contrast_variance row supplies the general variance identity instead."
+   },
+   {
+    "lean_name": "AronowAudit.P032.quadratic_eq_dot",
+    "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.quadratic_sub",
+    "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.sandwich_hermitian",
+    "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.sandwich_quadratic",
+    "reason": "Auxiliary algebra or variance identity already incorporated in the selected general OLS and ordering declarations; not separately invoked."
+   }
+  ],
+  "supporting_declarations": [
+   {
+    "lean_name": "AronowAudit.P032.pair_error_moments",
+    "reason": "T1 pair-model support for the explicit sign witnesses in canonical clause (v)."
+   },
+   {
+    "lean_name": "AronowAudit.P032.bounded_pair_sampling_models",
+    "reason": "T1 pair-model support for the explicit sign witnesses in canonical clause (v)."
+   },
+   {
+    "lean_name": "AronowAudit.P032.intercept_counterexample",
+    "reason": "T1 pair-model support for the explicit sign witnesses in canonical clause (v)."
+   },
+   {
+    "lean_name": "AronowAudit.P032.slope_and_sign_control",
+    "reason": "T1 pair-model support for the explicit sign witnesses in canonical clause (v)."
+   }
+  ]
+ },
+ {
+  "target_id": "P032-T11",
+  "decision": "restricted",
+  "theorem": "SAP.P032.T11",
+  "restriction": "Retains the unadjusted OLS residual matrix decomposition with full column rank, all occurring members, common residuals and the stated outsider-singleton masks. Does not separately state the equivalent pointwise coefficient identity, conventional multiway-cluster equivalence, software computability, the square-root standard-error rule, or the eigenvalue-clipping assertion.",
+  "rows_used": [
+   "AronowAudit.P032.headline_decomposition"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P032-T7",
+  "decision": "whole",
+  "theorem": "SAP.P032.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P032.gated_psd_iff",
+   "AronowAudit.P032.positive_part_fixed_iff",
+   "AronowAudit.P032.positive_part_psd",
+   "AronowAudit.P032.psd_two_by_two_iff",
+   "AronowAudit.P032.spectral_clip_fixed_iff",
+   "AronowAudit.P032.spectral_clip_psd",
+   "AronowAudit.P032.spectral_clip_quadratic",
+   "AronowAudit.P032.ten_eigenvalues_identified",
+   "AronowAudit.P032.ten_positive_part_rank_one"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P032.positive_part_one_positive",
+    "reason": "Its spectral/sign component is already incorporated in ten_positive_part_rank_one; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.spectral_clip_one_positive",
+    "reason": "Its spectral/sign component is already incorporated in ten_positive_part_rank_one; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P032.ten_eigenvalue_signs",
+    "reason": "Its spectral/sign component is already incorporated in ten_positive_part_rank_one; not separately invoked."
+   }
+  ],
+  "supporting_declarations": [
+   {
+    "lean_name": "AronowAudit.P032.positive_diagonal_counterexample",
+    "reason": "T6 defines and certifies the concrete ten-dyad matrix used in canonical clauses (iii) and (iv)."
+   },
+   {
+    "lean_name": "AronowAudit.P032.ten_variance_certificate",
+    "reason": "T6 defines and certifies the concrete ten-dyad matrix used in canonical clauses (iii) and (iv)."
+   },
+   {
+    "lean_name": "AronowAudit.P032.ten_variance_hermitian",
+    "reason": "T6 defines and certifies the concrete ten-dyad matrix used in canonical clauses (iii) and (iv)."
+   }
+  ]
+ },
+ {
+  "target_id": "P032-T12",
+  "decision": "whole",
+  "theorem": "SAP.P032.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P032.toy_shared_country_covariance",
+   "AronowAudit.P032.toy_sign_cases",
+   "AronowAudit.P032.toy_variance_identity"
+  ],
+  "rows_not_used": []
+ }
+]

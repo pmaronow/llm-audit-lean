@@ -4,7 +4,7 @@ import Mathlib.Probability.CDF
 import Mathlib.Probability.Distributions.Gaussian.Real
 import Mathlib.Topology.Order.DenselyOrdered
 
-/-! Portmanteau for the closed half-line, whose boundary has zero
+/-! Node 7: Portmanteau for the closed half-line, whose boundary has zero
 mass under the nondegenerate standard Gaussian. -/
 
 namespace AronowAudit.P031.Wave1.LargeSampleRefutation

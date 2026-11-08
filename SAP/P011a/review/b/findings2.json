@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P011-T1",
+    "theorem": "SAP.P011a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "cycleFamily(3/2): n=4(k+1), iid fair edge signs, theta=1, true/mandatory disjoint four-cycles, caps=2. Scaling constants (7/2,2,4,2); covariance 2I+A, beta=0, n Var(betaHat)=4. The a=3 variant has constants (5,2,4,2). Independent enumeration checks moments at n=4,8,12; scratch/Check.lean verifies the negative value -9/4. See scratch/nonvacuity.md. Delta check: Nested(cycleFamily(a)) is compiled for every real a. A separate conditional entailment check in scratch/RefutationChecks.lean derives the negation of printed universal oracle consistency from T1Statement. The omitted decimal evaluation is now disclosed; the earlier finding is fixed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T2",
+    "theorem": "SAP.P011a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For t=1 and t=2, n=3(k+1), independent sign pairs per path block, theta=1, known paths with caps (1,2,1). Scaling constants (6,2,29/15,2); each block covariance is the stated positive-semidefinite matrix and n Var(betaHat)=29/15. The design Gram matrix is diag(3K,6Kt^2), hence nonsingular for K>=1. Exact block and multiblock expectations checked independently. See scratch/nonvacuity.md. Delta check: Nested(pathFamily(t)) is compiled for every real t. A separate conditional entailment check in scratch/RefutationChecks.lean derives the negation of printed universal oracle consistency from T2Statement. Existing exclusions remain exactly disclosed under the new refuted label.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T3",
+    "theorem": "SAP.P011a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily: n=k+1, iid fair signs, theta=1, empty graph. Scaling(1,1,1,2) holds because beta=0, Cov=I and n Var(betaHat)=1. Equal means and the clique condition both hold. In general Scaling makes all weighted moments finite and bounds |meanBias| by (1+c2)c1^2, so neither integral defaults nor an unbounded real liminf are used. See scratch/nonvacuity.md. Delta check: the observed induced-nesting premise remains satisfiable: prefix injections give Nested(signFamily), compiled independently in scratch/DeltaCheck.lean. The revised record and docstring accurately disclose this extra premise relative to canonical S2/S5.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T4",
+    "theorem": "SAP.P011a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily with deterministic M_k=I and K=1: Scaling(1,1,1,2), PSD M and PSD(M-(I+G))=PSD 0 all hold. The separate data-dependent matrix YY^T/n is evaluated on a genuine nondegenerate iid-sign law. There is no assumption of the asserted expansion in the hypotheses. See scratch/nonvacuity.md. Delta check: the observed induced-nesting premise remains satisfiable: prefix injections give Nested(signFamily), compiled independently in scratch/DeltaCheck.lean. The revised record and docstring accurately disclose this extra premise relative to canonical S2/S5.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T5",
+    "theorem": "SAP.P011a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily with empty mandatory graph and zero caps; Valid holds and the unique compatible graph is empty for every sample. The supplied maximizer hypotheses are therefore satisfiable and all four estimators reduce to s^2(Y)/n. More generally scratch/Check.lean proves existence of a maximizing graph for any compatible true graph and any real objective, so the supplied-maximizer premise adds no statistical assumption. See scratch/nonvacuity.md. Delta check: the observed induced-nesting premise remains satisfiable: prefix injections give Nested(signFamily), compiled independently in scratch/DeltaCheck.lean. The revised record and docstring accurately disclose this extra premise relative to canonical S2/S5.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T6",
+    "theorem": "SAP.P011a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily with known empty true graph: Scaling(1,1,1,2), oracle matrix I and positive part I. For the finite non-least-majorant witness, exact rational checks show all principal minors of the displayed difference D and I+A_cycle+D are nonnegative and its quadratic value is 3/5. All spectral inputs are symmetric, so the nonsymmetric fallback is unused. See scratch/nonvacuity.md. Delta check: the observed induced-nesting premise remains satisfiable: prefix injections give Nested(signFamily), compiled independently in scratch/DeltaCheck.lean. The revised record and docstring accurately disclose this extra premise relative to canonical S2/S5.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T7",
+    "theorem": "SAP.P011a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily for degree-only conservativeness. For genuinely unbounded supplied caps, keep its iid-sign law, theta and empty true/mandatory graphs but take d_i=k on n=k+1 vertices; Scaling remains (1,1,1,2), Valid holds and maxima exist. The residual-sign clique construction is an actual maximizer, even though its characterization is not asserted. Exact finite comparisons and sign formulas checked for all homogeneous caps and sign vectors through n=5. See scratch/nonvacuity.md. Delta check: the observed induced-nesting premise remains satisfiable: prefix injections give Nested(signFamily), compiled independently in scratch/DeltaCheck.lean. The revised record and docstring accurately disclose this extra premise relative to canonical S2/S5.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T8",
+    "theorem": "SAP.P011a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily with Valid zero caps and V=VYoung: CorrectedClass holds and Scaling constants are (1,1,1,2). Spectral, degree-only and equal-mean branches are also inhabited on that law. Counterexample branches are the actual independent block laws in T1/T2, with positive limiting scaled variance. A maximum objective is a finite maximum of measurable functions even without measurable tie-breaking. See scratch/nonvacuity.md. Delta check: the observed induced-nesting premise remains satisfiable: prefix injections give Nested(signFamily), compiled independently in scratch/DeltaCheck.lean. The revised record and docstring accurately disclose this extra premise relative to canonical S2/S5.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T9",
+    "theorem": "SAP.P011a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily with p=1, D_i=1, gamma=0 and measurable fitted gammaHat=0. The raw mean model holds, design rows are bounded, root-n coefficient error and weighted prediction error are identically zero; z=r=Y is bounded and graph maxima exist. The misspecified branch can use gammaStar=gammaHat=1, giving bounded zStar=Y-1 and zero prediction error. The independent-sign unstable family has Scaling(2,1,2,3) and Gram matrix diag(n,n/2); its n=4,8 moments were checked exactly. See scratch/nonvacuity.md. Delta check: the observed induced-nesting premise remains satisfiable: prefix injections give Nested(signFamily), compiled independently in scratch/DeltaCheck.lean. The revised record and docstring accurately disclose this extra premise relative to canonical S2/S5.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T10",
+    "theorem": "SAP.P011a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take a=b=1. Every deterministic infinite sign sequence gives an independent fixed-mean model with |X-beta_n|<=3 and n Var(betaHat)=1; the independent mixture has |X|<=2 and n Var(betaHat)=2. Empty graphs are nested and theta=1<2, so the displayed positive Scaling constants are jointly satisfiable. The quantifiers compare the same measurable statistic across all fixed patterns and the mixture. See scratch/nonvacuity.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T11",
+    "theorem": "SAP.P011a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The displayed alternating family itself: independent raw signs, t_n=n/(2 ceil(n/2)) in [1/2,1], beta=1, |X_i-1|<=2, common variance t_n^2>0, n Var(betaHat)=t_n^2->1 and empty graphs/caps. Thus Scaling(2,1,1,2) and Valid hold. Exact moments and both finite tail events checked at n=1,2,3,4,8. The zero-denominator rho branch does not operate. See scratch/nonvacuity.md. Delta check: Nested(alternatingFamily) is compiled independently. From T11Statement, scratch/RefutationChecks.lean derives the negation of the literal printed auxiliary claim using epsilon=3/2 and its intended consistency reading using epsilon=1/2. These use the true V2star=V2 identity on the nondegenerate empty-graph model.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T12",
+    "theorem": "SAP.P011a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily: independent bounded signs, beta=0, common variance 1, empty dependency graph and Scaling(1,1,1,2). This simultaneously satisfies the Scaling and homoskedastic premises with positive limiting variance. No conclusion or vanishing variance is built into the hypotheses. See scratch/nonvacuity.md. Delta check: the observed induced-nesting premise remains satisfiable: prefix injections give Nested(signFamily), compiled independently in scratch/DeltaCheck.lean. The revised record and docstring accurately disclose this extra premise relative to canonical S2/S5.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T13",
+    "theorem": "SAP.P011a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both explicit n=4 problems are feasible. Exact enumeration gives remaining caps (1,1,0,2) and (0,1,0,1), optima 3/4 and -3/4 and maximum matching weights 166 and 200, with attained matchings. scratch/Check.lean verifies the two remaining-cap vectors and an additional nonempty feasible degree problem. Feasibility is tested before natural subtraction; all rational denominators and the optional-weight lcm are positive. See scratch/nonvacuity.md and finite-results.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T14",
+    "theorem": "SAP.P011a.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On six vertices the compatible graph {(0,1),(3,4)} has objective 2 and V1=5/18; the same-sign half-edge solution has relaxed objective 3 and gives 1/3. On three vertices constant half edges are feasible with objective 3/2, versus integer optimum 1. Exact enumeration verifies both integer optima. Certification is satisfiable with U=3 in the six-unit example (or w=0,U=0 generally); relaxed total edge weight is at most half the total capacity. See scratch/nonvacuity.md and finite-results.json.",
+    "confidence": 0.99
+  }
+]

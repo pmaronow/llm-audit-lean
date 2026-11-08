@@ -1,0 +1,687 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.efficiency_all_replications_counterexample",
+      "AronowAudit.P020.efficiency_error_probability",
+      "AronowAudit.P020.efficiency_exact_values",
+      "AronowAudit.P020.efficiency_inconsistent",
+      "AronowAudit.P020.efficiency_individual_realization",
+      "AronowAudit.P020.efficiency_mse_counterexample",
+      "AronowAudit.P020.efficiency_optimal_coefficient",
+      "AronowAudit.P020.efficiency_raj_mse",
+      "AronowAudit.P020.efficiency_sample_size_grows"
+    ],
+    "statement_definition": "SAP.P020.T1Statement",
+    "supporting_declarations": [
+      "AronowAudit.P020.within_replication_invariant"
+    ],
+    "target_id": "P020-T1",
+    "theorem": "SAP.P020.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.eventual_mse_inferiority",
+      "AronowAudit.P020.mse_bias_variance",
+      "AronowAudit.P020.mse_markov_bound",
+      "AronowAudit.P020.squared_bias_le_mse",
+      "AronowAudit.P020.vanishing_mse_consistent"
+    ],
+    "statement_definition": "SAP.P020.T2Statement",
+    "supporting_declarations": [
+      "AronowAudit.P020.efficiency_all_replications_counterexample",
+      "AronowAudit.P020.efficiency_sample_size_grows"
+    ],
+    "target_id": "P020-T2",
+    "theorem": "SAP.P020.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P020.logistic_concrete_counterexample",
+        "reason": "The scalar illustration does not supply an admissible N=1 randomized cluster population under the standing arm-count assumptions."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P020.logistic_strictMono",
+      "AronowAudit.P020.printed_contrast_bound",
+      "AronowAudit.P020.printed_model_unit_negative",
+      "AronowAudit.P020.printed_model_average_negative",
+      "AronowAudit.P020.printed_model_average_ne_reported",
+      "SAP.P020.WH.W2.T3_whole",
+      "SAP.P020.WH.W2.T3_assembly",
+      "AronowAudit.P020.logistic_concrete_counterexample"
+    ],
+    "statement_definition": "SAP.P020.T3WholeStatement_W2",
+    "target_id": "P020-T3",
+    "theorem": "SAP.P020.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.repaired_average_sign",
+      "AronowAudit.P020.repaired_integer_sign",
+      "AronowAudit.P020.repaired_probability_sign",
+      "AronowAudit.P020.repaired_real_sign",
+      "AronowAudit.P020.repaired_scale_equivalence"
+    ],
+    "statement_definition": "SAP.P020.T4Statement",
+    "target_id": "P020-T4",
+    "theorem": "SAP.P020.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P020.estimated_raj_total_mean",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P020.estimated_coefficient_bias",
+      "SAP.P020.WH.W1.T5_whole",
+      "SAP.P020.WH.W1.T5_assembly",
+      "AronowAudit.P020.assignment_arm_counts",
+      "AronowAudit.P020.estimated_raj_total_mean",
+      "AronowAudit.P020.expected_arm_mean_size",
+      "AronowAudit.P020.expected_arm_sum",
+      "SAP.P020.WH.W1.T5_L1_proof"
+    ],
+    "statement_definition": "SAP.P020.T5WholeStatement",
+    "target_id": "P020-T5",
+    "theorem": "SAP.P020.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.estimated_slope_counterexample"
+    ],
+    "statement_definition": "SAP.P020.T6Statement",
+    "supporting_declarations": [
+      "AronowAudit.P020.univ_three"
+    ],
+    "target_id": "P020-T6",
+    "theorem": "SAP.P020.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.raj_potential_affine",
+      "AronowAudit.P020.des_raj_affine_invariant",
+      "AronowAudit.P020.corrected_affine_chain"
+    ],
+    "statement_definition": "SAP.P020.T7Statement",
+    "supporting_declarations": [
+      "AronowAudit.P020.affine_cluster_total"
+    ],
+    "target_id": "P020-T7",
+    "theorem": "SAP.P020.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.differenced_mean",
+      "AronowAudit.P020.differenced_variance",
+      "AronowAudit.P020.differenced_covariance",
+      "AronowAudit.P020.clusterCovariance_product"
+    ],
+    "statement_definition": "SAP.P020.T8Statement",
+    "supporting_declarations": [
+      "AronowAudit.P020.centered_mean_zero",
+      "AronowAudit.P020.clusterMean_add",
+      "AronowAudit.P020.clusterMean_sub"
+    ],
+    "target_id": "P020-T8",
+    "theorem": "SAP.P020.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.bracket_admissible_counterexample",
+      "AronowAudit.P020.control_subscript_counterexample",
+      "AronowAudit.P020.expectation_bracket_counterexample"
+    ],
+    "statement_definition": "SAP.P020.T9Statement",
+    "supporting_declarations": [
+      "AronowAudit.P020.des_raj_affine_invariant"
+    ],
+    "target_id": "P020-T9",
+    "theorem": "SAP.P020.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P020.individual_sharp_null_total",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.sharp_null_formula_algebra",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.sharp_null_moment_facts",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P020.individual_sharp_null_facts",
+      "AronowAudit.P020.sharp_null_exact_variance"
+    ],
+    "statement_definition": "SAP.P020.T10Statement",
+    "target_id": "P020-T10",
+    "theorem": "SAP.P020.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Equation (7), canonical clause (a), is stated only for finite-support probability laws with nonnegative real weights summing to one and denominator positive on the support; its general probability-law assertion, including infinite-support or continuous laws with the required expectations and covariance, is omitted. The complete-cluster-randomization expectation and bias formulas in clause (b), equation (8), are retained in full.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.ratio_expectation_identity",
+      "AronowAudit.P020.difference_in_means_bias"
+    ],
+    "statement_definition": "SAP.P020.T11Statement",
+    "target_id": "P020-T11",
+    "theorem": "SAP.P020.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.affine_cluster_total",
+      "AronowAudit.P020.ht_affine_identity",
+      "AronowAudit.P020.ht_not_location_invariant",
+      "AronowAudit.P020.ht_unbiased"
+    ],
+    "statement_definition": "SAP.P020.T12Statement",
+    "supporting_declarations": [
+      "AronowAudit.P020.control_subscript_counterexample"
+    ],
+    "target_id": "P020-T12",
+    "theorem": "SAP.P020.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P020.des_raj_covariates_unbiased",
+      "AronowAudit.P020.des_raj_unbiased",
+      "SAP.P020.WH.W3.T13_whole",
+      "SAP.P020.WH.W3.T13_assembly",
+      "AronowAudit.P020.expectation_sub",
+      "AronowAudit.P020.expectation_const",
+      "AronowAudit.P020.expectation_mul_const",
+      "AronowAudit.P020.expectation_const_mul",
+      "AronowAudit.P020.expectation_add",
+      "AronowAudit.P020.expected_arm_mean_size",
+      "AronowAudit.P020.expected_arm_sum",
+      "AronowAudit.P020.raj_total_unbiased",
+      "AronowAudit.P020.ht_total_unbiased",
+      "AronowAudit.P020.raj_covariate_total_unbiased"
+    ],
+    "statement_definition": "SAP.P020.T13WholeStatement_W3",
+    "target_id": "P020-T13",
+    "theorem": "SAP.P020.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P020.equal_size_raj_eq_ht",
+        "reason": "The equal-size boundary is outside the retained positive-size-variance coefficient result."
+      },
+      {
+        "lean_name": "AronowAudit.P020.raj_moment_quadratic_identity",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.raj_variance_curvature_pos",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P020.arm_variance_completed_square",
+      "AronowAudit.P020.arm_coefficient_optimal",
+      "AronowAudit.P020.raj_design_variance_moment",
+      "AronowAudit.P020.raj_design_variance_completed_square",
+      "AronowAudit.P020.raj_design_variance_gap",
+      "AronowAudit.P020.optimal_raj_variance",
+      "AronowAudit.P020.coefficient_improvement_intervals",
+      "SAP.P020.WH.W1.T14_whole",
+      "SAP.P020.WH.W1.T14_assembly",
+      "AronowAudit.P020.clusterCovariance_comm",
+      "AronowAudit.P020.clusterVariance_nonneg",
+      "AronowAudit.P020.differenced_covariance",
+      "AronowAudit.P020.differenced_mean",
+      "AronowAudit.P020.differenced_variance",
+      "AronowAudit.P020.equal_size_raj_eq_ht",
+      "AronowAudit.P020.mean_size",
+      "AronowAudit.P020.populationSize_pos",
+      "SAP.P020.WH.W1.T14_L1_proof",
+      "SAP.P020.WH.W1.T14_L2_proof",
+      "SAP.P020.WH.W1.T14_L3_proof"
+    ],
+    "statement_definition": "SAP.P020.T14WholeStatement",
+    "target_id": "P020-T14",
+    "theorem": "SAP.P020.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P020.arm_sample_ssd_expectation",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.arm_sample_ssd_identity",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.arm_sum_covariance",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.arm_sum_second_moment",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.assignment_subtype_expectation",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.assignment_subtype_variance",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.ate_variance_linear_identity",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.combined_estimator_expectation",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.control_sum_complement",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.designCovariance_const_sub_both",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.designCovariance_const_sub_left",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.designCovariance_scale",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.designCovariance_self",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.designCovariance_sum_sum",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.designVariance_const_mul",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.expectation_congr_support",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.expectation_fintype_sum",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.full_uniform_expectation",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.ht_design_variance_formula",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.ht_total_design_covariance",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.ht_total_design_variance",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.treatment_indicator_mean",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.treatment_pair_mean",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.treatment_sum_covariance",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.treatment_sum_product",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.uniform_coordinate_expectation",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.uniform_coordinate_product",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.uniform_product_moment",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.uniform_sum_variance",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.variance_formula_le_approximate",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P020.ht_variance_components",
+      "AronowAudit.P020.ht_variance_identity_bound",
+      "AronowAudit.P020.covariance_remainder_nonpos",
+      "AronowAudit.P020.combined_variance_conservative",
+      "AronowAudit.P020.raj_variance_conservative",
+      "AronowAudit.P020.independent_blocks_unbiased_variance",
+      "AronowAudit.P020.independent_blocks_variance_estimator_conservative"
+    ],
+    "statement_definition": "SAP.P020.T15Statement",
+    "target_id": "P020-T15",
+    "theorem": "SAP.P020.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P020.clusterVariance_add_const",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.clusterVariance_product",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.designVariance_add_const",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.designVariance_product",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.observed_cluster_mean_identity",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.observed_variance_expectation",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.pooled_variance_excess",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P020.sharp_null_variance_conservative"
+    ],
+    "statement_definition": "SAP.P020.T16Statement",
+    "target_id": "P020-T16",
+    "theorem": "SAP.P020.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P020.arm_size_ge_count",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.arm_sum_bounded",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.constant_div_nat_tendsto",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.copied_arm_ratio_mse_bound",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.copied_difference_mse_bound",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.copied_ratio_identity",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.copy_average_consistent",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.copy_average_moments",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.copy_average_mse",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.copy_size_ge_count",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.difference_mse_bound",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.expectation_mono_support",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.expected_arm_sum",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.meanSquaredError_nonneg",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.mse_rate_consistent",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P020.ratio_mse_bound",
+        "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P020.growing_clusters_consistent",
+      "AronowAudit.P020.limit_ratio_identity",
+      "AronowAudit.P020.replicated_size",
+      "AronowAudit.P020.within_replication_invariant",
+      "AronowAudit.P020.fixed_clusters_persistent_bias",
+      "SAP.P020.WH.W1.T17_whole",
+      "SAP.P020.WH.W1.T17_assembly",
+      "AronowAudit.P020.arm_size_pos",
+      "AronowAudit.P020.assignment_arm_counts",
+      "AronowAudit.P020.assignment_subtype_expectation",
+      "AronowAudit.P020.efficiency_all_replications_counterexample",
+      "AronowAudit.P020.efficiency_inconsistent",
+      "AronowAudit.P020.efficiency_sample_size_grows",
+      "AronowAudit.P020.populationSize_pos",
+      "AronowAudit.P020.replicated_arm_size",
+      "SAP.P020.WH.W1.T17_L1_proof",
+      "SAP.P020.WH.W1.T17_L2_proof",
+      "SAP.P020.WH.W1.T17_L3_proof",
+      "SAP.P020.WH.W1.T17_L4_proof",
+      "AsymptoticStatistics.pi_const_eq_infinitePi_map"
+    ],
+    "statement_definition": "SAP.P020.T17WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P020.efficiency_inconsistent",
+      "AronowAudit.P020.efficiency_sample_size_grows",
+      "AronowAudit.P020.efficiency_all_replications_counterexample"
+    ],
+    "target_id": "P020-T17",
+    "theorem": "SAP.P020.T17"
+  }
+]

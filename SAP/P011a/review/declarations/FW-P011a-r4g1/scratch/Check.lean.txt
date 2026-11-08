@@ -1,0 +1,121 @@
+import SAP.P011a.Challenge
+
+open SAP.P011a MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology Classical Matrix NNReal ENNReal
+set_option maxHeartbeats 3000000
+set_option linter.unusedVariables false
+
+noncomputable section
+
+-- These finite checks use only the definitions, not T1--T5.
+example : cycleBlock 3 (fun _ => 1) = (![5,-1,5,-1] : Fin 4 → ℝ) := by
+  ext i
+  fin_cases i <;> norm_num [cycleBlock]
+
+example : average (![5,-1,5,-1] : Fin 4 → ℝ) = 2 ∧
+    V1 cycleGraph (![5,-1,5,-1] : Fin 4 → ℝ) = -9/4 := by
+  norm_num [V1, centered, SAP.P011a.average, quadratic, adjacency, cycleGraph, Fin.sum_univ_succ]
+
+example : cycleMean (fun u => quadratic (oracleMatrix cycleGraph) (cycleBlock (3/2) u)) = 7 := by
+  norm_num [cycleMean, cycleSigns, cycleBlock, quadratic, oracleMatrix, adjacency,
+    cycleGraph, Matrix.one_apply, Fin.sum_univ_succ]
+
+example : cycleMean (fun u =>
+    (quadratic (oracleMatrix cycleGraph) (cycleBlock (3/2) u) - 7)^2) = 176 := by
+  norm_num [cycleMean, cycleSigns, cycleBlock, quadratic, oracleMatrix, adjacency,
+    cycleGraph, Matrix.one_apply, Fin.sum_univ_succ]
+
+example (t : ℝ) (ht : t = 1 ∨ t = 2) :
+    pathMean (fun u v => (∑ i, pathBlock t u v i)^2) = 29/5 ∧
+    pathMean (fun u v => quadratic (oracleMatrix pathGraph) (pathBlock t u v)) =
+      29/5-2*t^2 ∧
+    pathMean (fun u v =>
+      (quadratic (oracleMatrix pathGraph) (pathBlock t u v) - (29/5-2*t^2))^2) =
+      8*t^2+8836/625 := by
+  rcases ht with rfl | rfl <;>
+    norm_num [pathMean, pathBlock, quadratic, oracleMatrix, adjacency, pathGraph,
+      Matrix.one_apply, Fin.sum_univ_succ]
+
+example (t : ℝ) (ht : t = 1 ∨ t = 2) :
+    let D : Matrix (Fin 3) (Fin 2) ℝ :=
+      fun i j => if j = 0 then 1 else (![t,-2*t,t] : Fin 3 → ℝ) i
+    Matrix.det (Dᵀ * D) ≠ 0 := by
+  intro D
+  have hD : Dᵀ * D = (!![3,0;0,6*t^2] : Matrix (Fin 2) (Fin 2) ℝ) := by
+    ext i j
+    change (∑ r : Fin 3, D r i * D r j) = _
+    fin_cases i <;> fin_cases j <;>
+      simp [D, Fin.sum_univ_succ] <;> ring
+  rw [hD, Matrix.det_fin_two]
+  rcases ht with rfl | rfl <;> norm_num
+
+example : Matrix.trace (dataMatrix (![1,-1] : Fin 2 → ℝ)) = 1 ∧
+    (2 : ℝ) * varianceForm (dataMatrix (![1,-1] : Fin 2 → ℝ))
+      (![1,-1] : Fin 2 → ℝ) = 1 := by
+  norm_num [Matrix.trace, Matrix.diag, dataMatrix, varianceForm, centered, SAP.P011a.average,
+    quadratic, Fin.sum_univ_succ]
+
+example : Compatible (emptyGraph 2) (fun _ => 0) (emptyGraph 2) ∧
+    (∀ i : Fin 2, degreeCorrection (fun _ => 0) i = 0) ∧
+    V1plus (fun _ => 0) (emptyGraph 2) (![1,-1] : Fin 2 → ℝ) = 1/2 ∧
+    VYoung (fun _ => 0) (![1,-1] : Fin 2 → ℝ) = 1/2 := by
+  norm_num [Compatible, emptyGraph, degree, degreeCorrection, truncatedDegree,
+    V1plus, VYoung, V1, centered, SAP.P011a.average, quadratic, adjacency, Fin.sum_univ_succ]
+
+-- Asymptotic premise instances: use the certified concrete counterexample,
+-- not any assumed scaling or the conclusion of the result being instantiated.
+theorem cycleScaling : Scaling (cycleFamily (3/2)) (7/2) 2 4 2 :=
+  T1.1.1.1
+
+theorem cycleValid : Valid (cycleFamily (3/2)) :=
+  T1.1.1.2.1
+
+theorem cycleRow : RowScaling (cycleFamily (3/2)) (7/2) 2 4 2 := by
+  exact cycleScaling.2
+
+theorem cycleWhole : WholeScaling_W3 (cycleFamily (3/2)) (7/2) 2 4 2 := by
+  exact cycleScaling.2
+
+example : ∃ F : Family, RowScaling F (7/2) 2 4 2 :=
+  ⟨cycleFamily (3/2), cycleRow⟩
+
+example : ∃ (F : Family)
+    (M : ∀ k, Matrix (Fin (F.size k)) (Fin (F.size k)) ℝ),
+    WholeScaling_W3 F (7/2) 2 4 2 ∧
+    (∀ k i j, M k i j = M k j i) ∧
+    (∀ k, operatorNorm (M k) ≤ 0) := by
+  refine ⟨cycleFamily (3/2), fun _ => 0, cycleWhole, ?_, ?_⟩
+  · simp
+  · intro k
+    simp [operatorNorm]
+
+example : ∃ (F : Family)
+    (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k)),
+    WholeScaling_W3 F (7/2) 2 4 2 ∧ Valid F ∧
+    (∀ k y, Maximizes (F.model k).R (F.model k).d
+      (fun B => V1plus (F.model k).d B (weighted (F.model k) y)) (A k y)) := by
+  refine ⟨cycleFamily (3/2), fun k _ => ((cycleFamily (3/2)).model k).G,
+    cycleWhole, cycleValid, ?_⟩
+  intro k y
+  refine ⟨cycleValid k, ?_⟩
+  intro B hB
+  have hs := (T1.1.1.2.2.2.1 k).2.2.2.1 B
+  have heq := hs.mp hB
+  subst B
+  exact le_rfl
+
+-- Check both conditional parameter branches and the actual negative atom
+-- against the certified proposition. This is not an independent re-proof
+-- of their asymptotic probability limits.
+example : Scaling (pathFamily 1) 6 2 (29/15) 2 ∧ Valid (pathFamily 1) := by
+  have h := T2.1.1 1 (Or.inl rfl)
+  exact ⟨h.1, h.2.1⟩
+
+example : Scaling (pathFamily 2) 6 2 (29/15) 2 ∧ Valid (pathFamily 2) := by
+  have h := T2.1.1 2 (Or.inr rfl)
+  exact ⟨h.1, h.2.1⟩
+
+example : probability (cycleModel 3 1) {y | y=(![5,-1,5,-1] : Fin 4 → ℝ)}=1/16 := by
+  have hc : CycleCounterexample := T1.1.1
+  rcases hc with ⟨_, _, _, _, _, _, _, _, _, _, _, _, hatom, _⟩
+  exact hatom

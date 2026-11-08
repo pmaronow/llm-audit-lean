@@ -1,0 +1,27 @@
+import SAP.P009c.Defs
+
+set_option pp.universes false
+#print SAP.P009c.Paired._proof_1
+#print SAP.P009c.T40WholeStatement
+#check Filter.eventually_atTop
+#check Filter.frequently_atTop
+#check Real.sqrt_pos.2
+#check Real.zero_rpow
+#check Fintype.card_pos_iff
+#check Fintype.card_finset_len
+#check Fintype.card_congr
+#check Finset.sum_filter
+#check Fintype.card_subtype
+#check Fintype.sum_subtype_add_sum_subtype
+#check Real.tendsto_sqrt_atTop
+#check Filter.Tendsto.const_mul_atTop
+#check Equiv.piCongrLeft
+#check finProdFinEquiv
+#check Equiv.sum_comp
+#check Finset.sum_ite_irrel
+#check @Fintype.card_congr
+#check Fintype.card_eq
+#check Fintype.card_of_subtype
+#print Real.rpow_two
+example (x : ℝ) : Real.rpow x 2 = x^2 := by
+  exact Real.rpow_two x

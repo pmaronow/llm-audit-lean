@@ -2,9 +2,9 @@ import AronowAudit.External.StatLean.MultipleTesting.ForMathlib.ChiSquared
 import Mathlib.Tactic
 
 /- The density reduction below is adapted from the private helper in
-StatLean/Stat-Lean, StatLean/MultipleTesting/ForMathlib/GammaMoments.lean
-(Apache-2.0; see NOTICE at the repository root).
-The file also contains the inverse-moment calculation and sum-of-squares bridge. -/
+StatLean/Stat-Lean e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2,
+StatLean/MultipleTesting/ForMathlib/GammaMoments.lean (Apache-2.0).
+The inverse-moment calculation and sum-of-squares bridge are new local proofs. -/
 namespace AronowAudit.GaussianCompletion
 open MeasureTheory ProbabilityTheory Real Set
 open scoped ENNReal BigOperators
@@ -64,6 +64,39 @@ set_option maxHeartbeats 1000000
   field_simp [(Real.Gamma_pos_of_pos ha1).ne',(Real.rpow_pos_of_pos hr (a-1)).ne',ha1.ne']
   <;> ring
 
+ theorem integrable_inv_gammaMeasure {a r : ℝ} (ha : 1 < a) (hr : 0 < r) :
+    Integrable (fun x:ℝ=>x⁻¹) (gammaMeasure a r) := by
+  have ha0 : 0<a := lt_trans zero_lt_one ha
+  have ha1 : 0<a-1 := sub_pos.mpr ha
+  have hpdf : Measurable (gammaPDF a r) := (measurable_gammaPDFReal a r).ennreal_ofReal
+  rw [gammaMeasure,integrable_withDensity_iff hpdf
+    (ae_of_all _ (fun _=>ENNReal.ofReal_lt_top))]
+  have he : (fun x:ℝ=>x⁻¹*(gammaPDF a r x).toReal)=fun x:ℝ=>gammaPDFReal a r x*x⁻¹ := by
+    funext x
+    rw [show gammaPDF a r x=ENNReal.ofReal (gammaPDFReal a r x) from rfl,
+      ENNReal.toReal_ofReal (gammaPDFReal_nonneg ha0 hr x)]
+    ring
+  rw [he]
+  have hm : IntegrableOn (fun x:ℝ=>x^(a-2)*Real.exp (-(r*x))) (Ioi 0) volume := by
+    have hh := integrableOn_rpow_mul_exp_neg_mul_rpow (p:=1) (s:=a-2) (b:=r)
+      (by linarith) (by norm_num) hr
+    refine hh.congr_fun (fun x hx=>?_) measurableSet_Ioi
+    simp only [Real.rpow_one,neg_mul]
+  have hm' : IntegrableOn (fun x:ℝ=>gammaPDFReal a r x*x⁻¹) (Ioi 0) volume := by
+    have hmc : IntegrableOn (fun x:ℝ=>r^a/Real.Gamma a*(x^(a-2)*Real.exp (-(r*x)))) (Ioi 0) volume := hm.const_mul _
+    refine hmc.congr_fun (fun x hx=>?_) measurableSet_Ioi
+    exact (gamma_inverse_integrand x hx).symm
+  have hz : (fun x:ℝ=>gammaPDFReal a r x*x⁻¹)=(Ioi (0:ℝ)).indicator (fun x=>gammaPDFReal a r x*x⁻¹) := by
+    funext x
+    by_cases hx : 0<x
+    · simp only [Set.indicator_apply,mem_Ioi,hx,if_true]
+    · simp only [Set.indicator_apply,mem_Ioi,hx,if_false]
+      rcases lt_or_eq_of_le (le_of_not_gt hx) with h|h
+      · simp only [gammaPDFReal,ite_eq_right (not_le.mpr h),zero_mul]
+      · subst x
+        simp
+  rw [hz]
+  exact (integrable_indicator_iff measurableSet_Ioi).mpr hm'
 
  theorem gaussian_squares_eq_gamma {ν : ℕ} (hν : 0<ν) :
     (Measure.pi (fun _:Fin ν=>gaussianReal 0 1)).map (fun z=>∑ i,(z i)^2)=
@@ -90,6 +123,32 @@ set_option maxHeartbeats 1000000
       field_simp [ne_of_gt (sub_pos.mpr hn),ne_of_gt (sub_pos.mpr hshape)]
       <;> ring
 
+theorem integrable_inv_gaussian_squares {ν : ℕ} (hν : 2<ν) :
+    Integrable (fun z : Fin ν→ℝ=>(∑ i,(z i)^2)⁻¹) (Measure.pi (fun _:Fin ν=>gaussianReal 0 1)) := by
+  have hshape : 1<(ν:ℝ)/2 := by
+    have hn : (2:ℝ)<ν := by exact_mod_cast hν
+    linarith
+  have hm : Integrable (fun x:ℝ=>x⁻¹)
+      ((Measure.pi (fun _:Fin ν=>gaussianReal 0 1)).map (fun z=>∑ i,(z i)^2)) := by
+    rw [gaussian_squares_eq_gamma (by omega : 0<ν)]
+    exact integrable_inv_gammaMeasure hshape (by norm_num)
+  have hmeas : Measurable (fun z : Fin ν→ℝ=>∑ i,(z i)^2) := by fun_prop
+  exact hm.comp_aemeasurable hmeas.aemeasurable
 
+theorem integral_inv_gaussian_squares_three :
+    (∫ z : Fin 3→ℝ,(∑ i,(z i)^2)⁻¹ ∂(Measure.pi (fun _:Fin 3=>gaussianReal 0 1)))=1 := by
+  convert integral_inv_gaussian_squares (ν:=3) (by omega) using 1 <;> norm_num
+
+theorem integral_inv_gaussian_squares_four :
+    (∫ z : Fin 4→ℝ,(∑ i,(z i)^2)⁻¹ ∂(Measure.pi (fun _:Fin 4=>gaussianReal 0 1)))=1/2 := by
+  convert integral_inv_gaussian_squares (ν:=4) (by omega) using 1 <;> norm_num
+
+#print axioms integral_inv_gammaMeasure
+#print axioms integrable_inv_gammaMeasure
+#print axioms gaussian_squares_eq_gamma
+#print axioms integral_inv_gaussian_squares
+#print axioms integrable_inv_gaussian_squares
+#print axioms integral_inv_gaussian_squares_three
+#print axioms integral_inv_gaussian_squares_four
 end
 end AronowAudit.GaussianCompletion

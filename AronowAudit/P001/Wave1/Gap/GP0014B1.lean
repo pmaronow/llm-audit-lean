@@ -11,7 +11,7 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 3000
 set_option autoImplicit false
 
-/-! Local identity, finite bootstrap bound, heavy-law cell bounds,
+/-! Record 1: local identity, finite bootstrap bound, heavy-law cell bounds,
 and transfer of the ordinary sign-indicator CLT. -/
 
 lemma regular_local_branch (G : ℝ → ℝ) (h : |G 0-1/2| < 1/4) :
@@ -29,7 +29,8 @@ lemma regular_local_subtraction (F G : ℝ → ℝ) (hF : F 0 = 1/2)
   rw [regular_local_branch G hG0, regular_local_branch F hF0]
   ring
 
-/-- A finite variance lower bound from just two distinct atoms. -/
+/-- A finite variance lower bound from just two distinct atoms. This is
+stronger than the pairwise-variance bound proposed by the mapper. -/
 lemma regular_two_atom_variance {ι : Type*} [Fintype ι] [DecidableEq ι]
     (z : ι → ℝ) (m : ℝ) (a b : ι) (hab : a ≠ b) :
     (z a-z b)^2 ≤ 2 * ∑ i, (z i-m)^2 := by
@@ -553,7 +554,10 @@ theorem regular_functional_bootstrap_variance_counterexample_proof {Ω : Type*} 
   filter_upwards [eventually_ge_atTop (2 : ℕ)] with k hk
   exact hbad (2*k+1) ⟨k,by omega⟩ (by omega)
 
-/-! Finite-density KL and a.e. separated argmax identities. -/
+example : type_of% @AronowAudit.P001.regular_functional_bootstrap_variance_counterexample :=
+  regular_functional_bootstrap_variance_counterexample_proof
+
+/-! Record 6: finite-density KL and a.e. separated argmax adapters. -/
 
 /-- Positivity only at one fixed comparator is needed. No intersection over
 the parameter space occurs here. -/
@@ -727,8 +731,9 @@ lemma averaged_kl_density_identity {A : Type*} [MeasurableSpace A]
   rw [hL] at hnonneg hkl
   simpa only [probReal_univ, add_sub_cancel_right] using And.intro hkl hnonneg
 
-/-- The finite-entropy identity for maximum-likelihood consistency.
-No entropy assumption is used in the averaged-KL consistency argument. -/
+/-- The finite-entropy adapter needed by both ML nodes. All its inputs are
+already assumptions of the target declarations. In particular no entropy
+assumption is used in the consistency argument for record 6. -/
 lemma averaged_kl_entropy_adapter {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] {K τ : ℕ}
     (X : Ω → Fin K → ℝ) (Y : Ω → ℝ) (hXY : Measurable (fun ω => (X ω,Y ω)))
@@ -890,8 +895,11 @@ theorem averaged_kl_ml_consistency_proof {Ω : Type*} [MeasurableSpace Ω]
   rw [hstar.2.1, hother.2.1]
   linarith
 
-/-! Translate the unique real averaged-KL minimum using the finite-entropy
-identity, then apply product-MLE consistency. -/
+example : type_of% @AronowAudit.P001.averaged_kl_ml_consistency :=
+  averaged_kl_ml_consistency_proof
+
+/-! Record 7: translate the unique real averaged-KL minimum using the same
+finite-entropy adapter, then apply the already proved product-MLE core. -/
 
 theorem product_averaged_kl_ml_consistency_proof {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
    {K τ : ℕ} (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
@@ -944,6 +952,9 @@ theorem product_averaged_kl_ml_consistency_proof {Ω : Type*} [MeasurableSpace �
     hfmeas (hgmeas tstar ht) hfpos htrue (hdom tstar ht)
   exact product_mle_consistency_core μ X Y g Θ hcompact tstar ht hM hu that hthat hp
     (fun n ω => hmax n ω tstar ht) Δ hbound hlim
+
+example : type_of% @AronowAudit.P001.product_averaged_kl_ml_consistency :=
+  product_averaged_kl_ml_consistency_proof
 
 end
 end AronowAudit.P001.Wave1

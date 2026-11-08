@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P030.T6",
+    "target_id": "P030-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "All four formal clauses are present: no interference implies the fixed-outcome null; that null makes the fixed outcome vectors and each imputed/actual statistic agree; their entire uniform conditional CDFs agree; and the genuine no-effects ten-unit schedule has varying actual statistics. The p-value clause is the CDF equality specialized to the observed statistic, using the count-ratio definition of Equation (2). Uniform probabilities explicitly represent the equal-probability conditional law, rather than asserting anything about a nonuniform design. obs in Omega ensures the conditional support is nonempty. The definitions agree with the claim and add no substantive hypothesis. scratch/Check.lean and scratch/Witnesses.lean compile from Defs without using the audited stubs: they check all null hypotheses, membership of the observed and two conditional assignments, and the actual two squared statistics 1/90 and 25/36, hence inequality. Exact independent arithmetic in scratch/numerics.py also checks all ten-unit data."
+  },
+  {
+    "theorem": "SAP.P030.T7",
+    "target_id": "P030-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "The corrected same-unit/same-treatment quantification, conditional assignment definition, fixed-treatment invariance, no-interference implication, its outcome-variation contrapositive, the arbitrary direct-effect schedules, and the no-effects implication all match clauses (a)-(d). Potential outcomes outside the finite assignment support are irrelevant extensions of the canonical data. No added hypothesis or conclusion is hidden in the definitions. scratch/Check.lean constructs a two-unit, two-assignment conditional support with a fixed unit and a variant unit, verifies a direct-effect-only schedule with nonzero coefficient, and separately constructs genuine fixed-outcome variation under an interfering schedule; the separate implication branches are nonvacuous."
+  },
+  {
+    "theorem": "SAP.P030.T8",
+    "target_id": "P030-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical assertion is the three-part counterexample, including every displayed computation, not a universal assertion that the printed formula is correct. T8WholeStatement includes all observed midranks, centered ranks, cross and square sums, both covariance/variance conventions, the two wrong values and their rational square comparisons, all six printed/correct values and roundings, the rank-order reversal and its midranks/squares, and the nonconstant weakly monotone example with its ranks, products, squares, and 0.866 approximation. The positive-divisor identity is a valid strengthening of the two conventional-divisor comparison. All formulas use genuine midranks and positive denominators. scratch/Check.lean and scratch/Witnesses.lean independently compile the observed ranks/moments, printed values -4/5 and -3/5, correct squared correlation 9/10, and the weak example's nonconstant/weak-order hypotheses and squared correlation 3/4, excluding both +/-1. scratch/numerics.py checks the six-row arrays and ordering reversal exactly."
+  },
+  {
+    "theorem": "SAP.P030.T9",
+    "target_id": "P030-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The hypotheses n >= 2 and both vectors nonconstant match the canonical hypotheses. All seven formal clauses are covered, including the average-rank means, positivity of both centered square sums, covariance/variance divisor identity, correlation bounds, exact nonzero proportionality criterion and both signs, the two tie-preserving strict-order conditions, the defined weak-order counterexample, and the six exact table values with rounding tolerances. The identity for every positive real divisor includes n and n-1 and is an honest strengthening, not an extra premise. scratch/Check.lean constructs simultaneous nonconstancy and positive-divisor hypotheses and checks the weak example. scratch/Witnesses.lean checks genuine positive and negative proportionality/order-preservation branches and that the weak example is not an equality case. Neither zero rank variance nor an empty type is used."
+  },
+  {
+    "theorem": "SAP.P030.T10",
+    "target_id": "P030-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "All four formal clauses occur: the ordinary partial self quotient is none with zero numerator and denominator; the corrected sums omit self and have nonzero off-diagonal denominators; the inverse-square formula, quarter ratio, and three values hold; no exponential representation exists; and the explicit positive-side divergence bound contrasts with the finite exponential limit. Allowing any positive off-diagonal matrix proves the Euclidean distinct-position case as well. partialRealQuotient is an ordinary generic guarded quotient, so the self observation is not based on Mathlib's totalized 0/0. Mean normalization is expressly outside the formal content in canonical definitions_needed, independently of the audit-history note. scratch/Check.lean compiles a two-point Euclidean instance with a zero diagonal, strictly positive off-diagonal distances, and both actual off-diagonal sums 4/9; it also instantiates B=1, d=1/3 in the divergence hypothesis. All numerical denominators are nonzero in their asserted domains."
+  }
+]

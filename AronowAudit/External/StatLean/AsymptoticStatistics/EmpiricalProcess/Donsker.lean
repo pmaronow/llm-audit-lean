@@ -1,5 +1,3 @@
-
-
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.FunctionClass
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.EmpiricalProcess
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.AbstractDonsker.Carrier
@@ -12,24 +10,23 @@ import Mathlib.Probability.IdentDistrib
 import Mathlib.Probability.Moments.Variance
 
 /-!
-# Marginal CLTs and empirical-process equicontinuity
+# Donsker classes via the Theorem 18.14 characterization
 
-`IsMarginalCLT F P` records square integrability and joint Gaussian limits for
-finite tuples from `F` under iid sampling. `IsAsymptoticallyEquicontinuous F P`
-uses an outer-probability bound on the oscillation over all L²-close pairs.
-`IsPDonsker F P` is the working conjunction of these two predicates.
+Defines `IsPDonsker F P` for a class of measurable functions. Following
+vdV §19.2, `F` is `P`-Donsker iff the empirical process `G_n f` converges in
+distribution to a tight Gaussian limit in `ℓ^∞(F)`. vdV Theorem 18.14 gives an
+equivalent characterization: `F` is Donsker iff (a) finite marginals
+jointly satisfy the multivariate CLT, and (b) the empirical process is
+asymptotically equicontinuous in the `L²(P)`-semimetric. Here `IsPDonsker` is
+the conjunction of these two properties, `IsMarginalCLT` and
+`IsAsymptoticallyEquicontinuous`.
 
-Identifying this conjunction with convergence to a tight ℓ∞-valued Gaussian law
-requires total boundedness of the indexing semimetric and the relevant path-space
-conditions. The separate theorem `donskerWithBridge_of_finite_bracketing_entropy`
-proves the stronger `IsPDonskerWithBridge` conclusion under finite bracketing
-entropy in the separate abstract-Donsker development.
+The random-pair form of asymptotic equicontinuity is the standard
+formulation in Vaart–Wellner, *Weak Convergence and Empirical Processes*, §2.1.
 
-The retained API also supplies marginal-CLT proofs, projections from these
-predicates, outer-measure monotonicity and a limsup addition bound.
-
-Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), §19.2 and
-Theorem 18.14.
+Reference: van der Vaart, *Asymptotic Statistics* (Cambridge, 1998), §19.2
+(definitions) + Theorem 18.14 (characterization). Principal declarations:
+`IsPDonsker`, `IsPDonsker.union`.
 -/
 
 namespace AsymptoticStatistics.EmpiricalProcess
@@ -371,19 +368,37 @@ lemma isMarginalCLT_of_memLp {F : Set (Ω → ℝ)} {P : Measure Ω}
   exact marginalCLT_fdd_of_iid (F := F) μ X hX_meas hX_iindep hX_id hX_law f
     (fun i => hmem (f i) (hf_in i))
 
-/-- **Asymptotic equicontinuity in outer probability.**
+/-- **Asymptotic equicontinuity** — van der Vaart Theorem 18.14(ii), the
+**outer-probability modulus-of-continuity** form.
 
-For every iid sample with law `P` and every `ε, η > 0`, there is an L²-radius
-`δ > 0` such that the limiting upper outer probability of an empirical-process
-oscillation greater than `ε` across some pair in `F` at distance less than `δ`
-is at most `η`.
+For every iid sample `X : ℕ → Ξ → Ω` on a probability space `(Ξ, μ)` with law
+`P` and every pair of levels `ε, η > 0` there is a `distL2`-radius `δ > 0` such
+that the `limsup` (over `n`) of the **outer** probability that the empirical
+process `G_n` oscillates by more than `ε` across some `distL2`-close pair
+`(s, t)` (`distL2 P s t < δ`) is at most `ENNReal.ofReal η`:
 
-The parameters have distinct roles: `ε` bounds the oscillation, `η` bounds its
-outer probability, and `δ` bounds the L²-distance between indices. The quantified
-sampling space `Ξ` is restricted to `Type 0` in this definition.
+`∀ ε η > 0, ∃ δ > 0, limsupₙ μ* {ξ | ∃ s t : ↥F, distL2 P s t < δ ∧
+    ε < |G_n(s)(ξ) − G_n(t)(ξ)|} ≤ ofReal η`.
 
-Reference: van der Vaart, *Asymptotic Statistics*, Theorem 18.14(ii).
--/
+This is exactly the conclusion of `outerMeasure_modulusComplement_le` in
+`NecessityTightness.lean` and the hypothesis used by the sufficiency
+discretization. The
+**three parameters are distinct**: `ε` is the oscillation threshold, `η` the
+outer-mass bound, `δ` the `distL2`-radius (vdV p.261).
+
+The corresponding **per-pair form** — "for any measurable random pair
+`(fhat, ghat)` in `F` with `∫ ‖fhat − ghat‖²_{L²(P)} dμ → 0`,
+`μ {ξ | ε < |G_n(fhat) − G_n(ghat)|} → 0`" — is recovered for any concrete
+pair through the bridge lemma `osc_modulus_to_random_pair`
+(`NecessityTightness.lean`, the Markov-tail + bulk split).
+
+**Universe of `Ξ`.** Fixed at `Type 0` (`Type`). All standard
+measure-theoretic sample spaces live at universe 0; applications
+requiring a higher universe introduce an isomorphism to a `Type 0`
+representative.
+
+vdV Theorem 18.14(ii) (book p.261), §19.2, Vaart–Wellner §2.1: the tightness
+side of weak convergence in `ℓ^∞(F)`. -/
 def IsAsymptoticallyEquicontinuous (F : Set (Ω → ℝ)) (P : Measure Ω) : Prop :=
   ∀ {Ξ : Type} [_inst : MeasurableSpace Ξ] (μ : Measure Ξ)
     [_inst2 : IsProbabilityMeasure μ] (X : ℕ → Ξ → Ω),
@@ -398,12 +413,16 @@ def IsAsymptoticallyEquicontinuous (F : Set (Ω → ℝ)) (P : Measure Ω) : Pro
                 - empiricalProcess P n (fun i : Fin n => X i.val ξ) (t : Ω → ℝ)|}) atTop
         ≤ ENNReal.ofReal η
 
-/-- Working Donsker predicate: marginal CLTs and L² asymptotic equicontinuity.
+/-- **P-Donsker class**.
 
-This conjunction does not include total boundedness or a tight ℓ∞-valued limit
-law. The stronger path-space conclusion is recorded by `IsPDonskerWithBridge`
-in the abstract-Donsker development.
--/
+Following vdV §19.2 + Theorem 18.14: `F` is `P`-Donsker iff the empirical
+process `G_n` converges weakly in `ℓ^∞(F)` to a tight Gaussian limit.
+The Theorem-18.14 characterization gives:
+`IsPDonsker F P ↔ IsMarginalCLT F P ∧ IsAsymptoticallyEquicontinuous F P`.
+
+We adopt the right-hand side as the working definition.
+
+vdV §19.2 + Theorem 18.14: `F` is `P`-Donsker. -/
 def IsPDonsker (F : Set (Ω → ℝ)) (P : Measure Ω) : Prop :=
   IsMarginalCLT F P ∧ IsAsymptoticallyEquicontinuous F P
 
@@ -423,11 +442,15 @@ lemma asymptoticallyEquicontinuous (h : IsPDonsker F P) :
 
 end IsPDonsker
 
-/-! ### Outer-measure monotonicity and addition of a vanishing remainder
+/-! ### Outer-measure bounds and the per-pair bridge
 
-These helpers bound outer probabilities and control the limsup of a sum when
-one nonnegative extended-real sequence tends to zero.
--/
+The `IsAsymptoticallyEquicontinuous` predicate is the vdV 18.14(ii) outer-sup
+modulus. The corresponding **per-pair** consequence
+("`μ {ξ | ε < |G_n(fhat) − G_n(ghat)|} → 0` for a concrete measurable pair")
+follows from `osc_modulus_to_random_pair` below (the Markov-tail + bulk split). The
+small outer-measure and `distL2`-tail bricks it needs are `distL2`-only /
+`outerMeasureStar`-only (no `gaussianPBridge` machinery), so they live here at the
+predicate layer and are reused in `NecessityTightness.lean`. -/
 
 /-- **Monotonicity of the outer measure `P*`.** `A ⊆ B ⟹ P*(A) ≤ P*(B)`
 (the indicators satisfy `1_A ≤ 1_B`, and `E*` is monotone). -/
@@ -439,6 +462,129 @@ theorem outerMeasureStar_mono {Ξ : Type*} [MeasurableSpace Ξ] (μ : Measure Ξ
   · simp only [Set.indicator_of_mem hω, Set.indicator_of_mem (hAB hω), le_refl]
   · simp only [Set.indicator_of_notMem hω, zero_le]
 
+/-- **`μ`-measure is dominated by the outer measure `P*`.** `μ A ≤ P*(A)`: every
+measurable majorant `U ≥ 1_A` has `μ A = ∫⁻ 1_A ≤ ∫⁻ U`, so `μ A` is below the
+infimum defining `outerExpectation μ (1_A) = P*(A)`. -/
+theorem measure_le_outerMeasureStar {Ξ : Type*} [MeasurableSpace Ξ] (μ : Measure Ξ)
+    (A : Set Ξ) : μ A ≤ μ.outerMeasureStar A := by
+  rw [Measure.outerMeasureStar, outerExpectation]
+  refine le_iInf fun U => ?_
+  -- `μ A = ∫⁻_{A} 1 ≤ ∫⁻_{A} U ≤ ∫⁻ U` (on `A`, `U ≥ 1_A = 1`).
+  calc μ A = ∫⁻ _ω in A, (1 : ℝ≥0∞) ∂μ := by rw [setLIntegral_one]
+      _ ≤ ∫⁻ ω in A, (U : Ξ → ℝ≥0∞) ω ∂μ := by
+          refine setLIntegral_mono U.2.1 (fun ω hω => ?_)
+          have := U.2.2 ω
+          simpa [Set.indicator_of_mem hω] using this
+      _ ≤ ∫⁻ ω, (U : Ξ → ℝ≥0∞) ω ∂μ := setLIntegral_le_lintegral A _
+
+/-- **`distL2`-tail to integral-tail.** If `distL2 P f g` has positive value
+`δ`-or-more, then `f − g` is `2`-`MemLp` (else `distL2 = 0 < δ`), so
+`δ² ≤ distL2² = ∫ (f − g)² ∂P`. Used to feed Markov on the integral. -/
+theorem distL2_ge_imp_integral_ge {P : Measure Ω} [IsProbabilityMeasure P]
+    {f g : Ω → ℝ} (hf : AEStronglyMeasurable f P) (hg : AEStronglyMeasurable g P)
+    {δ : ℝ} (hδ : 0 < δ) (hge : δ ≤ distL2 P f g) :
+    δ ^ 2 ≤ ∫ x, (f x - g x) ^ 2 ∂P := by
+  -- `distL2 P f g = (eLpNorm (f - g) 2 P).toReal`; positivity forces `eLpNorm < ⊤`.
+  have hpos : 0 < distL2 P f g := lt_of_lt_of_le hδ hge
+  have hne_top : eLpNorm (f - g) 2 P ≠ ⊤ := by
+    intro htop
+    rw [distL2_eq_eLpNorm (hf.sub hg), htop, ENNReal.toReal_top] at hpos
+    exact lt_irrefl 0 hpos
+  have hmeas : AEStronglyMeasurable (f - g) P := hf.sub hg
+  have hmemLp : MemLp (f - g) 2 P := lt_of_le_of_ne le_top hne_top
+  -- `distL2² = ((∫ ‖(f-g)‖²)^(2⁻¹))² = ∫ ‖(f-g) x‖² = ∫ (f x - g x)²`.
+  have hint_nonneg : (0 : ℝ) ≤ ∫ x, ‖(f - g) x‖ ^ (2 : ℝ≥0∞).toReal ∂P :=
+    integral_nonneg (fun x => by positivity)
+  have hsq : distL2 P f g ^ 2 = ∫ x, (f x - g x) ^ 2 ∂P := by
+    rw [distL2_eq_eLpNorm hmeas, hmemLp.eLpNorm_eq_integral_rpow_norm (by norm_num) (by norm_num),
+      ENNReal.toReal_ofReal (Real.rpow_nonneg hint_nonneg _)]
+    rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hint_nonneg]
+    simp only [ENNReal.toReal_ofNat, Nat.cast_ofNat]
+    rw [inv_mul_cancel₀ (by norm_num : (2 : ℝ) ≠ 0), Real.rpow_one]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    change ‖(f - g) x‖ ^ (2 : ℝ) = (f x - g x) ^ 2
+    rw [Pi.sub_apply, Real.norm_eq_abs,
+      show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+    exact sq_abs (f x - g x)
+  calc δ ^ 2 ≤ distL2 P f g ^ 2 := by
+        apply pow_le_pow_left₀ (le_of_lt hδ) hge
+    _ = ∫ x, (f x - g x) ^ 2 ∂P := hsq
+
+/-- **Markov vanishing of the `distL2`-tail.** Under the L²-consistency
+hypotheses (joint measurability of `fhat`/`ghat`, integrability and `μ`-integral
+vanishing of the squared `L²`-distance), the `μ`-mass of the complement event
+`{ξ | δ ≤ distL2 P (fhat n ξ) (ghat n ξ)}` tends to `0`. Proof:
+`distL2_ge_imp_integral_ge` lands the tail event inside
+`{ξ | δ² ≤ ∫ (fhat − ghat)²}`, Markov bounds its real mass by
+`(∫ξ ∫x (fhat − ghat)²)/δ²`, which `→ 0`. -/
+theorem markov_distL2_tail {F : Set (Ω → ℝ)} {P : Measure Ω} [IsProbabilityMeasure P]
+    {Ξ : Type} [MeasurableSpace Ξ] (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (fhat ghat : ℕ → Ξ → (Ω → ℝ))
+    (hfm : ∀ n, Measurable (Function.uncurry (fhat n)))
+    (hgm : ∀ n, Measurable (Function.uncurry (ghat n)))
+    (hint : ∀ n, MeasureTheory.Integrable
+      (fun ξ => ∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) μ)
+    (htend : Tendsto (fun n => ∫ ξ, (∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) ∂μ)
+      atTop (𝓝 0))
+    {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto (fun n => μ {ξ | δ ≤ distL2 P (fhat n ξ) (ghat n ξ)}) atTop (𝓝 0) := by
+  -- Per-section measurability of `fhat n ξ` / `ghat n ξ` from the joint measurability.
+  have hf_sec : ∀ n ξ, Measurable (fhat n ξ) := fun n ξ =>
+    (hfm n).comp measurable_prodMk_left
+  have hg_sec : ∀ n ξ, Measurable (ghat n ξ) := fun n ξ =>
+    (hgm n).comp measurable_prodMk_left
+  -- `I n = ∫ξ ∫x (fhat − ghat)²`; nonneg, integrable per `hint`.
+  set I : ℕ → ℝ := fun n => ∫ ξ, (∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) ∂μ with hI
+  -- Real-valued tail mass bound `μ.real {δ ≤ distL2} ≤ I n / δ²`.
+  have hbound : ∀ n, μ.real {ξ | δ ≤ distL2 P (fhat n ξ) (ghat n ξ)} ≤ I n / δ ^ 2 := by
+    intro n
+    -- subset into the integral-tail event.
+    have hsub : {ξ | δ ≤ distL2 P (fhat n ξ) (ghat n ξ)}
+        ⊆ {ξ | δ ^ 2 ≤ ∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P} := by
+      intro ξ hξ
+      exact distL2_ge_imp_integral_ge (hf_sec n ξ).aestronglyMeasurable
+        (hg_sec n ξ).aestronglyMeasurable hδ hξ
+    -- Markov on the nonneg integrable `ξ ↦ ∫ (fhat − ghat)²`.
+    have hmark := mul_meas_ge_le_integral_of_nonneg
+      (μ := μ) (f := fun ξ => ∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P)
+      (Eventually.of_forall fun ξ => integral_nonneg fun x => by positivity)
+      (hint n) (δ ^ 2)
+    -- transport the Markov bound across the subset and divide by `δ²`.
+    have hmono : μ.real {ξ | δ ≤ distL2 P (fhat n ξ) (ghat n ξ)}
+        ≤ μ.real {ξ | δ ^ 2 ≤ ∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P} :=
+      ENNReal.toReal_mono (measure_ne_top _ _) (measure_mono hsub)
+    have hδ2 : (0 : ℝ) < δ ^ 2 := by positivity
+    rw [le_div_iff₀ hδ2, mul_comm]
+    exact le_trans (by nlinarith [hmono, hδ2]) hmark
+  -- `I n / δ² → 0`, squeeze the nonneg real tail mass.
+  have htendReal : Tendsto (fun n => I n / δ ^ 2) atTop (𝓝 0) := by
+    have : Tendsto (fun n => I n) atTop (𝓝 0) := htend
+    simpa using this.div_const (δ ^ 2)
+  -- real tail mass `→ 0`.
+  have htailReal : Tendsto (fun n => μ.real {ξ | δ ≤ distL2 P (fhat n ξ) (ghat n ξ)})
+      atTop (𝓝 0) := by
+    refine squeeze_zero (fun n => ENNReal.toReal_nonneg) hbound htendReal
+  -- lift to `ℝ≥0∞` via `ofReal` of the real mass (finite measure).
+  have : Tendsto (fun n => ENNReal.ofReal
+      (μ.real {ξ | δ ≤ distL2 P (fhat n ξ) (ghat n ξ)})) atTop (𝓝 0) := by
+    rw [show (0 : ℝ≥0∞) = ENNReal.ofReal 0 by simp]
+    exact (ENNReal.continuous_ofReal.tendsto 0).comp htailReal
+  refine this.congr (fun n => ?_)
+  rw [Measure.real, ENNReal.ofReal_toReal (measure_ne_top _ _)]
+
+/-- **Bulk inclusion (pointwise).** If the random pair `(fhat, ghat)` at a point
+is a close pair (`distL2 < δ`) with oscillation `η < |G_n fhat − G_n ghat|`, then
+the existential close-pair predicate of the modulus holds at that point (take
+`f := ⟨fhat, _⟩`, `g := ⟨ghat, _⟩`). -/
+theorem bulk_osc_mem {F : Set (Ω → ℝ)} {P : Measure Ω} {n : ℕ}
+    {fhat ghat : Ω → ℝ} (hf : fhat ∈ F) (hg : ghat ∈ F)
+    {X : Fin n → Ω} {δ η : ℝ}
+    (hclose : distL2 P fhat ghat < δ)
+    (hosc : η < |empiricalProcess P n X fhat - empiricalProcess P n X ghat|) :
+    ∃ f g : ↥F, distL2 P (f : Ω → ℝ) (g : Ω → ℝ) < δ ∧
+      η < |empiricalProcess P n X (f : Ω → ℝ)
+            - empiricalProcess P n X (g : Ω → ℝ)| :=
+  ⟨⟨fhat, hf⟩, ⟨ghat, hg⟩, hclose, hosc⟩
 
 /-- **`limsup (Uf + Vf) ≤ a` when `limsup Uf ≤ a` and `Vf → 0`** (over `atTop`,
 `ℝ≥0∞`). For every `b > a` the `limsup`-characterization needs `Uf n + Vf n < b`
@@ -457,5 +603,344 @@ theorem limsup_add_tendsto_zero_le (Uf Vf : ℕ → ℝ≥0∞) (a : ℝ≥0∞)
   calc Uf n + Vf n < c + (b - c) := ENNReal.add_lt_add hUn hVn
     _ = b := add_tsub_cancel_of_le (le_of_lt hcb)
 
+/-- **`limsup (Uf + Vf) ≤ a + b` from `limsup Uf ≤ a`, `limsup Vf ≤ b`** (over
+`atTop`, `ℝ≥0∞`, both bounds `≠ ⊤`). The `CountableInterFilter`-free analogue of
+`ENNReal.limsup_add_le` for the non-countably-complete filter `atTop`. For every
+`d > a + b` pick the slack `c := d − (a + b) > 0`; since `a, b ≠ ⊤` we have
+`a < a + c/2` and `b < b + c/2`, so eventually `Uf n < a + c/2`, `Vf n < b + c/2`,
+whence `Uf n + Vf n < (a + c/2) + (b + c/2) = a + b + c = d`. -/
+theorem limsup_add_le_of_le (Uf Vf : ℕ → ℝ≥0∞) (a b : ℝ≥0∞)
+    (ha : a ≠ ⊤) (hb : b ≠ ⊤) (hU : limsup Uf atTop ≤ a) (hV : limsup Vf atTop ≤ b) :
+    limsup (fun n => Uf n + Vf n) atTop ≤ a + b := by
+  rw [limsup_le_iff isCobounded_le_of_bot (isBoundedUnder_of ⟨⊤, fun _ => le_top⟩)]
+  intro d hd
+  -- Slack `c := d − (a + b) > 0`; the two half-slack thresholds beat `a`, `b`.
+  set c : ℝ≥0∞ := d - (a + b) with hc
+  have hc_pos : 0 < c := tsub_pos_of_lt hd
+  have hc2_pos : 0 < c / 2 := ENNReal.div_pos (ne_of_gt hc_pos) (by norm_num)
+  have ha' : a < a + c / 2 := ENNReal.lt_add_right ha (ne_of_gt hc2_pos)
+  have hb' : b < b + c / 2 := ENNReal.lt_add_right hb (ne_of_gt hc2_pos)
+  have hUev : ∀ᶠ n in atTop, Uf n < a + c / 2 :=
+    eventually_lt_of_limsup_lt (lt_of_le_of_lt hU ha')
+  have hVev : ∀ᶠ n in atTop, Vf n < b + c / 2 :=
+    eventually_lt_of_limsup_lt (lt_of_le_of_lt hV hb')
+  -- `(a + c/2) + (b + c/2) = a + b + c = d`.
+  have hsum : (a + c / 2) + (b + c / 2) = d := by
+    rw [show (a + c / 2) + (b + c / 2) = (a + b) + (c / 2 + c / 2) by ring,
+      ENNReal.add_halves, hc, add_tsub_cancel_of_le (le_of_lt hd)]
+  filter_upwards [hUev, hVev] with n hUn hVn
+  calc Uf n + Vf n < (a + c / 2) + (b + c / 2) := ENNReal.add_lt_add hUn hVn
+    _ = d := hsum
+
+/-- **Outer-sup modulus implies per-pair consistency.** From the
+`IsAsymptoticallyEquicontinuous` predicate (the vdV 18.14(ii) outer-sup modulus)
+and a concrete jointly-measurable random pair `(fhat, ghat)` valued in `F` whose
+mean squared `L²(P)`-distance tends to `0`, conclude that for every `ε > 0` the
+`μ`-probability of an `ε`-oscillation `μ {ξ | ε < |G_n(fhat) − G_n(ghat)|}` tends
+to `0`, which is the per-pair form.
+
+Fix `ε`; for the `limsup ≤ ofReal ε'` reduction take `η' := min ε ε'` and apply
+the modulus at oscillation `η'`, mass `η'`. Split `Ξ` on `{distL2 < δ}`: the bulk
+lands in the modulus event (`bulk_osc_mem`), the `distL2`-tail mass vanishes by
+Markov (`markov_distL2_tail`); the two `limsup`s combine via
+`limsup_add_tendsto_zero_le`.
+
+vdV p.261 (⟹): the modified-random-function trick (split by `{‖fhat − ghat‖ < δ}`
+and apply textbook equicontinuity to the modified pair on the small-mass
+complement). -/
+theorem osc_modulus_to_random_pair {F : Set (Ω → ℝ)} {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    (h_eq : IsAsymptoticallyEquicontinuous F P)
+    {Ξ : Type} [MeasurableSpace Ξ] (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω) (hX_meas : ∀ i, Measurable (X i))
+    (hX_indep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P)
+    (fhat ghat : ℕ → Ξ → (Ω → ℝ))
+    (hfm : ∀ n, Measurable (Function.uncurry (fhat n)))
+    (hgm : ∀ n, Measurable (Function.uncurry (ghat n)))
+    (hf_in : ∀ n ξ, fhat n ξ ∈ F) (hg_in : ∀ n ξ, ghat n ξ ∈ F)
+    (hint : ∀ n, MeasureTheory.Integrable
+      (fun ξ => ∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) μ)
+    (htend : Tendsto (fun n => ∫ ξ, (∫ x, (fhat n ξ x - ghat n ξ x) ^ 2 ∂P) ∂μ)
+      atTop (𝓝 0))
+    (η : ℝ) (hη : 0 < η) :
+    Tendsto (fun n =>
+      μ {ξ | η < |empiricalProcess P n (fun i : Fin n => X i.val ξ) (fhat n ξ)
+                   - empiricalProcess P n (fun i : Fin n => X i.val ξ) (ghat n ξ)|})
+      atTop (𝓝 0) := by
+  -- Abbreviate the oscillation deviation event.
+  set osc : ℕ → Ξ → ℝ := fun n ξ =>
+    |empiricalProcess P n (fun i : Fin n => X i.val ξ) (fhat n ξ)
+      - empiricalProcess P n (fun i : Fin n => X i.val ξ) (ghat n ξ)| with hosc
+  set u : ℕ → ℝ≥0∞ := fun n => μ {ξ | η < osc n ξ} with hu
+  -- Reduce `Tendsto u → 0` to `∀ ε > 0, limsup u ≤ ofReal ε`.
+  suffices hlimsup : ∀ ε : ℝ, 0 < ε → limsup u atTop ≤ ENNReal.ofReal ε by
+    have hsup0 : limsup u atTop ≤ 0 := by
+      refine ENNReal.le_of_forall_pos_le_add fun ε hεpos _ => ?_
+      rw [zero_add]
+      have := hlimsup (ε : ℝ) (by exact_mod_cast hεpos)
+      rwa [ENNReal.ofReal_coe_nnreal] at this
+    have hsup0' : limsup u atTop = 0 := le_antisymm hsup0 bot_le
+    refine tendsto_of_le_liminf_of_limsup_le bot_le hsup0'.le ?_ ?_
+    · exact isBoundedUnder_of ⟨⊤, fun _ => le_top⟩
+    · exact isBoundedUnder_of ⟨0, fun _ => bot_le⟩
+  -- Fix `ε > 0`; let `η' := min η ε` (the threshold/mass for the modulus).
+  intro ε hε
+  set η' : ℝ := min η ε with hη'
+  have hη'pos : 0 < η' := lt_min hη hε
+  have hη'_le_η : η' ≤ η := min_le_left _ _
+  have hη'_le_ε : η' ≤ ε := min_le_right _ _
+  -- The modulus at oscillation `η'`, mass `η'`: the close-pair radius `δ` and bound.
+  obtain ⟨δ, hδpos, hBlimsup⟩ :=
+    h_eq μ X hX_meas hX_indep hX_id hX_law η' η' hη'pos hη'pos
+  -- The `distL2`-tail event mass vanishes (Markov).
+  have htail := markov_distL2_tail (F := F) μ fhat ghat hfm hgm
+    hint htend hδpos
+  -- Abbreviate the modulus existential close-pair event and the `distL2`-tail event.
+  set Bev : ℕ → Set Ξ := fun n =>
+    {ξ | ∃ f g : ↥F, distL2 P (f : Ω → ℝ) (g : Ω → ℝ) < δ ∧
+      η' < |empiricalProcess P n (fun i : Fin n => X i.val ξ) (f : Ω → ℝ)
+            - empiricalProcess P n (fun i : Fin n => X i.val ξ) (g : Ω → ℝ)|} with hBev
+  set Tev : ℕ → Set Ξ := fun n => {ξ | δ ≤ distL2 P (fhat n ξ) (ghat n ξ)} with hTev
+  -- Make the giant empirical-process payload opaque so the `limsup` machinery
+  -- below does not `whnf`-explode on it; unfold via `hBev`/`hTev` where needed.
+  clear_value Bev Tev
+  -- Set-level decomposition: `{η < osc} ⊆ Bev n ∪ Tev n`.
+  have hsplit : ∀ n, {ξ | η < osc n ξ} ⊆ Bev n ∪ Tev n := by
+    intro n ξ hξ
+    rw [hBev, hTev]
+    by_cases hcl : distL2 P (fhat n ξ) (ghat n ξ) < δ
+    · exact Or.inl (bulk_osc_mem (hf_in n ξ) (hg_in n ξ) hcl (lt_of_le_of_lt hη'_le_η hξ))
+    · exact Or.inr (le_of_not_gt hcl)
+  -- Opaque envelopes `Uf = μ* ∘ Bev`, `Vf = μ ∘ Tev`; fold `hBlimsup`/`htail`/`u`.
+  set Uf : ℕ → ℝ≥0∞ := fun n => μ.outerMeasureStar (Bev n) with hUf
+  set Vf : ℕ → ℝ≥0∞ := fun n => μ (Tev n) with hVf
+  -- `u n ≤ Uf n + Vf n`.
+  have hbound : ∀ n, u n ≤ Uf n + Vf n := by
+    intro n
+    rw [hUf, hVf]
+    calc u n ≤ μ (Bev n ∪ Tev n) := measure_mono (hsplit n)
+      _ ≤ μ (Bev n) + μ (Tev n) := measure_union_le _ _
+      _ ≤ μ.outerMeasureStar (Bev n) + μ (Tev n) := by
+          gcongr
+          exact measure_le_outerMeasureStar μ (Bev n)
+  -- `Vf → 0`, `limsup Uf ≤ ofReal η'`.
+  have htail' : Tendsto Vf atTop (𝓝 0) := by
+    rw [hVf]; simpa only [hTev] using htail
+  have hBlimsup' : limsup Uf atTop ≤ ENNReal.ofReal η' := by
+    rw [hUf]; simp only [hBev]; exact hBlimsup
+  -- Everything below treats `u`, `Uf`, `Vf` as opaque (no `whnf` on the payload).
+  clear_value u osc Uf Vf
+  -- `limsup u ≤ limsup (Uf + Vf) ≤ ofReal η' ≤ ofReal ε`.
+  have hstep1 : limsup u atTop ≤ limsup (fun n => Uf n + Vf n) atTop :=
+    limsup_le_limsup (Eventually.of_forall hbound)
+      isCobounded_le_of_bot (isBoundedUnder_of ⟨⊤, fun _ => le_top⟩)
+  calc limsup u atTop
+      ≤ limsup (fun n => Uf n + Vf n) atTop := hstep1
+    _ ≤ ENNReal.ofReal η' := limsup_add_tendsto_zero_le Uf Vf _ hBlimsup' htail'
+    _ ≤ ENNReal.ofReal ε := ENNReal.ofReal_le_ofReal hη'_le_ε
+
+/-- **Binary subadditivity of the outer measure `P*`.**
+`P*(A ∪ B) ≤ P*(A) + P*(B)`. Pointwise `1_{A∪B} ≤ 1_A + 1_B`, then monotonicity of
+`E*` (`outerExpectation_mono`) and binary subadditivity (`outerExpectation_add_le`)
+of outer expectation close it. -/
+theorem outerMeasureStar_union_le {Ξ : Type*} [MeasurableSpace Ξ] (μ : Measure Ξ)
+    (A B : Set Ξ) :
+    μ.outerMeasureStar (A ∪ B) ≤ μ.outerMeasureStar A + μ.outerMeasureStar B := by
+  refine le_trans (outerExpectation_mono (μ := μ) (X := (A ∪ B).indicator 1)
+    (Y := A.indicator 1 + B.indicator 1) (fun ω => ?_)) (outerExpectation_add_le _ _)
+  refine Set.indicator_apply_le (fun hω => ?_)
+  rw [Pi.add_apply, Pi.one_apply]
+  rcases hω with hA | hB
+  · rw [Set.indicator_of_mem hA, Pi.one_apply]
+    exact le_self_add
+  · rw [Set.indicator_of_mem hB, Pi.one_apply]
+    exact le_add_self
+
+/-- **Integral-squared lower bound ⟹ `distL2` lower bound** (no measurability /
+finiteness hypotheses). If `c² ≤ ∫ (f − g)² ∂P`, then `c ≤ distL2 P f g`. This is
+the converse direction of `distL2_ge_imp_integral_ge`, used in the union closure
+to make separated cross-pairs `distL2`-far apart. The proof routes through the
+universally-true inequality `∫ (f − g)² ≤ (∫⁻ ‖(f − g)·‖ₑ² ∂P).toReal` (Jensen /
+`norm_integral_le_lintegral_norm`) together with the identity
+`distL2² = (∫⁻ ‖(f − g)·‖ₑ² ∂P).toReal` — valid even when the lintegral is `⊤`
+(both sides are then `0`), so neither `MemLp` nor measurability is needed. -/
+theorem le_distL2_of_integral_sq_ge {P : Measure Ω} {f g : Ω → ℝ}
+    {c : ℝ} (hge : c ^ 2 ≤ ∫ x, (f x - g x) ^ 2 ∂P) :
+    c ≤ distL2 P f g := by
+  -- `L = ∫⁻ ‖(f − g) x‖ₑ² ∂P` (Nat power); the squared distance equals `L.toReal`.
+  set L : ℝ≥0∞ := ∫⁻ x, ‖(f - g) x‖ₑ ^ 2 ∂P with hL
+  -- Pointwise: `‖(f − g) x‖ₑ ^ (2:ℝ) = ‖(f − g) x‖ₑ ^ (2:ℕ)`.
+  have hpow : ∀ x, ‖(f - g) x‖ₑ ^ (2 : ℝ≥0∞).toReal = ‖(f - g) x‖ₑ ^ 2 := by
+    intro x; rw [ENNReal.toReal_ofNat, ← ENNReal.rpow_natCast _ 2, Nat.cast_ofNat]
+  -- `distL2² = L.toReal`.
+  have hdist_sq : distL2 P f g ^ 2 = L.toReal := by
+    rw [distL2, eLpNorm'_eq_lintegral_enorm]
+    rw [← ENNReal.toReal_rpow, ← Real.rpow_natCast _ 2, ← Real.rpow_mul ENNReal.toReal_nonneg]
+    rw [show ((1 : ℝ) / 2) * ((2 : ℕ) : ℝ) = 1 by norm_num, Real.rpow_one]
+    rw [hL]; congr 1; exact lintegral_congr hpow
+  -- `∫ (f − g)² ≤ L.toReal` (Jensen, no measurability needed).
+  have hbound : ∫ x, (f x - g x) ^ 2 ∂P ≤ L.toReal := by
+    have hnn : (0 : ℝ) ≤ ∫ x, (f x - g x) ^ 2 ∂P :=
+      integral_nonneg (fun x => by positivity)
+    calc ∫ x, (f x - g x) ^ 2 ∂P
+        = ‖∫ x, (f x - g x) ^ 2 ∂P‖ := (Real.norm_of_nonneg hnn).symm
+      _ ≤ (∫⁻ x, ENNReal.ofReal ‖(f x - g x) ^ 2‖ ∂P).toReal :=
+          norm_integral_le_lintegral_norm _
+      _ = L.toReal := by
+          rw [hL]
+          congr 1
+          refine lintegral_congr (fun x => ?_)
+          rw [Pi.sub_apply, Real.norm_of_nonneg (by positivity),
+            Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _), sq_abs]
+  -- Chain: `c² ≤ ∫ (f − g)² ≤ L.toReal = distL2²`, then take roots.
+  have hsq : c ^ 2 ≤ distL2 P f g ^ 2 := by rw [hdist_sq]; exact hge.trans hbound
+  have hd_nonneg : 0 ≤ distL2 P f g := ENNReal.toReal_nonneg
+  nlinarith [hsq, hd_nonneg, sq_nonneg (c - distL2 P f g), sq_nonneg (c + distL2 P f g)]
+
+/-- **Union closure of asymptotic equicontinuity**.
+
+vdV §19.4 (used inside the proof of Theorem 19.23): "The union of two Donsker
+classes is Donsker." For the marginal-CLT half this is trivial; the
+equicontinuity half is this lemma.
+
+**Proof.** For the vdV 18.14(ii) outer-sup modulus, apply `hF` and `hG` at the
+same iid sample with the halved mass `η/2`, yielding radii `δ_F`, `δ_G`; pick the
+union radius `δ := min (min δ_F δ_G) c` where `c` is the `L²`-separation constant.
+The `L²`-separation `hFG_sep` forces every cross-pair (`s ∈ F`, `t ∈ G`, or vice
+versa) to satisfy `c ≤ distL2 P s t` (`le_distL2_of_integral_sq_ge`), so a
+`distL2`-close pair (`distL2 < δ ≤ c`) is never a cross-pair: both lie in `F` or
+both in `G`. Hence the `F ∪ G` close-pair event is contained in the union of the
+`F`-event and the `G`-event, and `μ*`-subadditivity (`outerMeasureStar_union_le`)
+plus monotonicity (`outerMeasureStar_mono`, since `δ ≤ δ_F, δ_G`) bound its limsup
+by `ofReal (η/2) + ofReal (η/2) = ofReal η`. The selection/nonempty admissibility
+properties are not needed by the outer-sup formulation.
+-/
+lemma isAsymptoticallyEquicontinuous_union {F G : Set (Ω → ℝ)} {P : Measure Ω}
+    (hF : IsAsymptoticallyEquicontinuous F P)
+    (hG : IsAsymptoticallyEquicontinuous G P)
+    -- admissibility hypotheses for F and G
+    -- (Vaart–Wellner Thm 2.10.1 / vdV §19.4).
+    -- Selection and nonempty admissibility as in Vaart–Wellner §2.10.1.
+    -- These hypotheses are not needed by the outer-sup formulation.
+    (_hF_sel : ForMathlib.MeasurableSelection.MeasurablySelectsRandomFunctions F)
+    (_hG_sel : ForMathlib.MeasurableSelection.MeasurablySelectsRandomFunctions G)
+    (_hF_nonempty : ∃ f₀ ∈ F, Measurable f₀)
+    (_hG_nonempty : ∃ g₀ ∈ G, Measurable g₀)
+    -- (Vaart–Wellner §2.10.1, §2.3).
+    (hFG_sep : ∃ c > 0, ∀ f ∈ F ∪ G, ∀ g ∈ F ∪ G,
+      ¬ (f ∈ F ∧ g ∈ F) → ¬ (f ∈ G ∧ g ∈ G) →
+      c ^ 2 ≤ ∫ x, (f x - g x) ^ 2 ∂P) :
+    IsAsymptoticallyEquicontinuous (F ∪ G) P := by
+  -- Unfold the outer-sup modulus for `F ∪ G`; introduce the iid sample + levels.
+  intro Ξ _inst μ _inst2 X hX_meas hX_indep hX_id hX_law ε η hε hη
+  -- Apply `hF`/`hG` at the SAME sample with halved mass `η/2`.
+  have hη2 : (0 : ℝ) < η / 2 := by positivity
+  obtain ⟨δF, hδF, hFlim⟩ := hF μ X hX_meas hX_indep hX_id hX_law ε (η / 2) hε hη2
+  obtain ⟨δG, hδG, hGlim⟩ := hG μ X hX_meas hX_indep hX_id hX_law ε (η / 2) hε hη2
+  -- The `L²`-separation constant `c`.
+  obtain ⟨c, hc_pos, hsep⟩ := hFG_sep
+  -- Union radius: small enough to beat both modulus radii and the separation.
+  refine ⟨min (min δF δG) c, lt_min (lt_min hδF hδG) hc_pos, ?_⟩
+  set δ : ℝ := min (min δF δG) c with hδ
+  have hδ_le_F : δ ≤ δF := le_trans (min_le_left _ _) (min_le_left _ _)
+  have hδ_le_G : δ ≤ δG := le_trans (min_le_left _ _) (min_le_right _ _)
+  have hδ_le_c : δ ≤ c := min_le_right _ _
+  -- The three close-pair events (`F∪G` at `δ`, `F` at `δF`, `G` at `δG`), `n`-indexed.
+  set Aev : ℕ → Set Ξ := fun n => {ξ | ∃ s t : ↥(F ∪ G),
+      distL2 P (s : Ω → ℝ) (t : Ω → ℝ) < δ ∧
+      ε < |empiricalProcess P n (fun i : Fin n => X i.val ξ) (s : Ω → ℝ)
+            - empiricalProcess P n (fun i : Fin n => X i.val ξ) (t : Ω → ℝ)|} with hAev
+  set AF : ℕ → Set Ξ := fun n => {ξ | ∃ s t : ↥F,
+      distL2 P (s : Ω → ℝ) (t : Ω → ℝ) < δF ∧
+      ε < |empiricalProcess P n (fun i : Fin n => X i.val ξ) (s : Ω → ℝ)
+            - empiricalProcess P n (fun i : Fin n => X i.val ξ) (t : Ω → ℝ)|} with hAF
+  set AG : ℕ → Set Ξ := fun n => {ξ | ∃ s t : ↥G,
+      distL2 P (s : Ω → ℝ) (t : Ω → ℝ) < δG ∧
+      ε < |empiricalProcess P n (fun i : Fin n => X i.val ξ) (s : Ω → ℝ)
+            - empiricalProcess P n (fun i : Fin n => X i.val ξ) (t : Ω → ℝ)|} with hAG
+  -- Fold goal + `hF`/`hG` outputs into the abbreviations (definitional, `Aev`/`AF`/`AG`
+  -- are still transparent here so the `change`/coercion goes through by defeq).
+  change limsup (fun n => μ.outerMeasureStar (Aev n)) atTop ≤ ENNReal.ofReal η
+  replace hFlim : limsup (fun n => μ.outerMeasureStar (AF n)) atTop
+      ≤ ENNReal.ofReal (η / 2) := hFlim
+  replace hGlim : limsup (fun n => μ.outerMeasureStar (AG n)) atTop
+      ≤ ENNReal.ofReal (η / 2) := hGlim
+  -- **Separation kills cross-pairs.** A `distL2`-close pair (`< δ ≤ c`) is never a
+  -- cross-pair, so `Aev n ⊆ AF n ∪ AG n`.
+  have hsubset : ∀ n, Aev n ⊆ AF n ∪ AG n := by
+    intro n ξ hξ
+    simp only [hAev, Set.mem_ofPred_eq] at hξ
+    obtain ⟨s, t, hst_close, hst_osc⟩ := hξ
+    -- `s`, `t` lie in `F ∪ G`.
+    have hs : (s : Ω → ℝ) ∈ F ∪ G := s.2
+    have ht : (t : Ω → ℝ) ∈ F ∪ G := t.2
+    -- Rule out the cross-pair case: else `c ≤ distL2`, contradicting `distL2 < δ ≤ c`.
+    have hnot_cross : ((s : Ω → ℝ) ∈ F ∧ (t : Ω → ℝ) ∈ F) ∨
+        ((s : Ω → ℝ) ∈ G ∧ (t : Ω → ℝ) ∈ G) := by
+      by_contra hcross
+      rw [not_or] at hcross
+      have hsep' := hsep _ hs _ ht hcross.1 hcross.2
+      have hc_le : c ≤ distL2 P (s : Ω → ℝ) (t : Ω → ℝ) :=
+        le_distL2_of_integral_sq_ge hsep'
+      exact absurd (lt_of_lt_of_le hst_close hδ_le_c) (not_lt.mpr hc_le)
+    -- Lift the close pair into the appropriate single-class event.
+    rcases hnot_cross with ⟨hsF, htF⟩ | ⟨hsG, htG⟩
+    · refine Or.inl ?_
+      simp only [hAF, Set.mem_ofPred_eq]
+      exact ⟨⟨(s : Ω → ℝ), hsF⟩, ⟨(t : Ω → ℝ), htF⟩,
+        lt_of_lt_of_le hst_close hδ_le_F, hst_osc⟩
+    · refine Or.inr ?_
+      simp only [hAG, Set.mem_ofPred_eq]
+      exact ⟨⟨(s : Ω → ℝ), hsG⟩, ⟨(t : Ω → ℝ), htG⟩,
+        lt_of_lt_of_le hst_close hδ_le_G, hst_osc⟩
+  -- Make the giant empirical-process payload opaque for the `limsup` arithmetic.
+  clear_value Aev AF AG
+  -- Per-`n` outer-measure bound: `μ*(Aev n) ≤ μ*(AF n) + μ*(AG n)`.
+  have hμbound : ∀ n, μ.outerMeasureStar (Aev n)
+      ≤ μ.outerMeasureStar (AF n) + μ.outerMeasureStar (AG n) := fun n =>
+    le_trans (outerMeasureStar_mono μ (hsubset n)) (outerMeasureStar_union_le μ _ _)
+  -- Chain the `limsup`s: `limsup μ*(Aev) ≤ limsup(μ*(AF)+μ*(AG)) ≤ ofReal η/2 + ofReal η/2`.
+  calc limsup (fun n => μ.outerMeasureStar (Aev n)) atTop
+      ≤ limsup (fun n => μ.outerMeasureStar (AF n)
+          + μ.outerMeasureStar (AG n)) atTop :=
+        limsup_le_limsup (Eventually.of_forall hμbound)
+          isCobounded_le_of_bot (isBoundedUnder_of ⟨⊤, fun _ => le_top⟩)
+    _ ≤ ENNReal.ofReal (η / 2) + ENNReal.ofReal (η / 2) :=
+        limsup_add_le_of_le _ _ _ _ ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top
+          hFlim hGlim
+    _ = ENNReal.ofReal η := by
+        rw [← ENNReal.ofReal_add hη2.le hη2.le]; congr 1; ring
+
+/-- Closure under finite union: the union of two Donsker classes is
+Donsker.
+
+vdV §19.4 (used inside the proof of Theorem 19.23): "The union
+of two Donsker classes is Donsker, in general."
+
+The marginal-CLT half is the trivial fact that L²(P)-integrability is
+closed under finite union. The equicontinuity half goes through
+`isAsymptoticallyEquicontinuous_union`. -/
+lemma IsPDonsker.union {F G : Set (Ω → ℝ)} {P : Measure Ω}
+    (hF : IsPDonsker F P) (hG : IsPDonsker G P)
+    -- admissibility + L²-separation
+    -- (Vaart–Wellner Thm 2.10.1, §2.3 / vdV §19.4).
+    (hF_sel : ForMathlib.MeasurableSelection.MeasurablySelectsRandomFunctions F)
+    (hG_sel : ForMathlib.MeasurableSelection.MeasurablySelectsRandomFunctions G)
+    (hF_nonempty : ∃ f₀ ∈ F, Measurable f₀)
+    (hG_nonempty : ∃ g₀ ∈ G, Measurable g₀)
+    (hFG_sep : ∃ c > 0, ∀ f ∈ F ∪ G, ∀ g ∈ F ∪ G,
+      ¬ (f ∈ F ∧ g ∈ F) → ¬ (f ∈ G ∧ g ∈ G) →
+      c ^ 2 ≤ ∫ x, (f x - g x) ^ 2 ∂P) :
+    IsPDonsker (F ∪ G) P := by
+  refine ⟨?_, ?_⟩
+  · refine isMarginalCLT_of_memLp ?_
+    intro f hf
+    cases hf with
+    | inl h => exact hF.marginalCLT.memLp f h
+    | inr h => exact hG.marginalCLT.memLp f h
+  · exact isAsymptoticallyEquicontinuous_union hF.asymptoticallyEquicontinuous
+      hG.asymptoticallyEquicontinuous hF_sel hG_sel hF_nonempty hG_nonempty hFG_sep
 
 end AsymptoticStatistics.EmpiricalProcess

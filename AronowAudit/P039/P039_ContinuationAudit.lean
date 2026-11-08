@@ -1,0 +1,6 @@
+import AronowAudit.P039.P039_PaperInstances
+
+#print axioms AronowAudit.P039.corrected_residual_covariance_and_law
+#print axioms AronowAudit.P039.PaperDomains.corrected_residual_covariance_assessment
+#print axioms AronowAudit.P039.PaperDomains.zero_noise_refutes_literal_covariance
+#print axioms AronowAudit.P039.PaperDomains.nested_standard_error_bound

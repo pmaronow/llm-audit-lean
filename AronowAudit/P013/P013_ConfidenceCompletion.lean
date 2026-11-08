@@ -10,8 +10,8 @@ set_option maxHeartbeats 2000000
 namespace AronowAudit.P013.ConfidenceFollowup02
 universe u
 
-/-- Lift the four-atom assignment design to an arbitrary
-assignment-space universe. -/
+/-- Lift the same actual four-atom assignment design without narrowing the
+original arbitrary assignment-space universe. -/
 def signedLiftDesign : Design (ULift.{u} (Fin 4)) where
   weight := fun z => signedReplicationDesign.weight z.down
   positive := fun z => signedReplicationDesign.positive z.down
@@ -55,7 +55,7 @@ theorem signedLift_expectation :
   rw [signed_replication_counterexample.2.1,signed_replication_counterexample.2.2.1]
   norm_num [signedLiftPopulation,signedReplicationPopulation]
 
-/-- Negation of the printed power bound, retaining an arbitrary
+/-- Full original printed power-bound negation, retaining its arbitrary
 finite assignment-space type and universe. -/
 theorem simulated_bias_as_printed_refuted :
     ¬ (∀ {Ω : Type u} [Fintype Ω] {N K : ℕ} {P : Design Ω} (F : Population P N K),
@@ -69,8 +69,8 @@ theorem simulated_bias_as_printed_refuted :
   rw [signedLift_expectation,signedLift_total] at hh
   norm_num at hh
 
-/-- Negation of the printed logarithmic rule on the signed-outcome
-population: a replicate count satisfying the rule does not reach its bias target. -/
+/-- Full original logarithmic-rule negation on the same genuine signed
+population; the accepted numerical rule does not reach its bias target. -/
 theorem simulated_rule_as_printed_refuted :
     ¬ (∀ {Ω : Type u} [Fintype Ω] {N K : ℕ} {P : Design Ω} (F : Population P N K),
       0 < N → ∀ (d : Fin K), Positivity F d → ∀ (R : ℕ) (p0 : ℝ),
@@ -87,3 +87,5 @@ theorem simulated_rule_as_printed_refuted :
 
 end AronowAudit.P013.ConfidenceFollowup02
 
+#print axioms AronowAudit.P013.ConfidenceFollowup02.simulated_bias_as_printed_refuted
+#print axioms AronowAudit.P013.ConfidenceFollowup02.simulated_rule_as_printed_refuted

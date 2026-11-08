@@ -1,0 +1,136 @@
+[
+  {
+    "target_id": "P013-T15",
+    "theorem": "SAP.P013b.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair one-treated two-unit calibration design, shifted to give potential outcome 1 at both exposures for both units, has all marginals 1/2, all distinct-unit cross joints 1/2 and no effects. These hypotheses were compiled in scratch/Check.lean. Independent exact signed-outcome checks include both positive and zero joints.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T16",
+    "theorem": "SAP.P013b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "One unit with fair binary exposure, y(1)=1, y(0)=0 and any fixed prediction satisfies the hypotheses and has C_1=0 on an assignment of probability 1/2. The zero convention is the one explicitly selected by the canonical target. The identity (H_1/C_1)(C_1/N)=H_1/N holds there too, and gives the bias bound by covariance Cauchy-Schwarz. Rational checks included 176 empty-exposure cases.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T17",
+    "theorem": "SAP.P013b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For two independent fair unit assignments and own-assignment exposure, let r_i(z) be the second unit's assignment. For the first unit, (0,0) and (0,1) induce the same exposure and different r, while every exposure marginal is 1/2. Compiled in scratch/Check.lean. The unused exposure-specific outcome array imposes no constraint on r.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T18",
+    "theorem": "SAP.P013b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Accepted as the record's explicitly declared full refutation, not an affirmation of Proposition 6.2. At size N let a common fair Z determine every unit's binary exposure; use the nested potentials y_i(1)=sqrt(i+1)-sqrt(i), y_i(0)=0 for i=0,...,N-1. The outcomes are in [0,1], all marginals are 1/2, treated totals telescope to sqrt(N), and N times the HT-effect variance is exactly 1. Diagonal-only h satisfies the printed dependency predicate and has row bound 1; the predicate fact is compiled in scratch/Check.lean. On Z=0 the estimated variance is zero while the estimation error is nonzero, so every coverage probability is at most 1/2. Alpha=1/4 violates the required liminf bound 3/4. Coverage is bounded in [0,1], so no unbounded-liminf or undefined-interval convention supplies the refutation. The claim-stage relation 'different' remains unchanged: the theorem's polarity is the negation of the printed universal claim, as its docstring and the refuted decision disclose.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T19",
+    "theorem": "SAP.P013b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "At every size N independently assign each unit a fair binary exposure and give every unit potential outcome 1 at either exposure, consistently across the nested populations. Condition 3 holds with c1=1,c2=2. Set g_ij=true exactly on the diagonal; off-diagonal exposure pairs are independent and the flagged count divided by N^2 is 1/N tending to zero. The finite variance bound and Chebyshev imply the stated convergence with these nonempty hypotheses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T20",
+    "theorem": null,
+    "verdict": "omission_questionable",
+    "severity": "major",
+    "issues": [
+      "record.json:159,176,196 excludes both strong-law rows on the ground that mutual independence of the infinite replicate sequence is absent from the canonical sampling hypotheses. This contradicts claims.json:102, which explicitly instructs: 'Formalize with an infinite sequence of independent replicates, each distributed as the design'. Its final clarification also states that the mathematical results use independent whole-design replicate draws. The stated reason for omitting the entire Proposition 3.1 target is therefore unsupported by the supplied canonical claim. Finite expectation identities alone would indeed be insufficient, but that does not justify excluding the listed strong-law rows for this reason. Their actual signatures and proofs are unavailable within the permitted files, so their suitability beyond this independence issue is not certified here."
+    ],
+    "fix": "Reassess replicate_joint_strong_law and simulation_matrices_almost_sure against the canonical independent-replicate reading. Add a Challenge statement for iid design draws Z_r on an ambient probability space: simultaneously for every i,j, (sum_{r<R} 1{D_i(Z_r)=d_k}1{D_j(Z_r)=d_k}+1{i=j})/(R+1) converges almost surely to pi_ij(d_k,d_k), and (sum_{r<R} 1{D_i(Z_r)=d_k}1{D_j(Z_r)=d_l})/R converges almost surely to pi_ij(d_k,d_l). Finite N makes entrywise almost-sure convergence simultaneous. If another obstruction prevents reuse, record that precise obstruction instead of claiming independence is absent.",
+    "nonvacuity": "Take one unit with a fair binary exposure design and draw its assignments independently on the infinite fair-coin product probability space. Each replicate indicator is integrable Bernoulli(1/2), and the smoothed same-exposure average tends to 1/2 almost surely; the distinct-exposure same-unit product is identically zero. Mathlib/Probability/StrongLaw.lean:597 already supplies strong_law_ae_real for identically distributed pairwise-independent integrable variables, so the permitted Mathlib is not missing the basic limit theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T22",
+    "theorem": "SAP.P013b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fair one-treated two-unit calibration design has m=1, pi=1/2 and C_d=N=2 on every assignment. With c=1 and zero prediction increments it satisfies total equivariance despite the increments differing from c, demonstrating that joint translation is sufficient and not necessary. The positive marginals are compiled in scratch/Check.lean. General shift identities were independently checked in exact rational arithmetic.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T21",
+    "theorem": "SAP.P013b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The three explicit assignments have probabilities 1/4,1/4,1/2, giving treated marginals (1/4,1/4,1/2) and control marginals (3/4,3/4,1/2). With outcomes and fixed predictions (2,3,5), the shift changes the fitted contrast to 2/9,2/9,-2/9 while the target remains zero. The entire assignment/moment table agrees with the canonical fixed-numerical-prediction counterexample and was independently recomputed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T24",
+    "theorem": "SAP.P013b.T24",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "SAP/P013b/Challenge/Part1.lean:49-51 says the 342 item and 151 survey nonrespondents 'and their containment' are hypotheses of the scaling clause; record.json:253 repeats this. The canonical containment is that survey nonrespondents are a subset of item nonrespondents, equivalently that the retained item respondents are a subset of the retained survey respondents. SAP/P013b/Defs/Part8.lean:116-122 assumes only item subset S, survey subset S, their cardinalities, positive weights and retention of every nonzero outcome in both sets. It contains no item subset survey hypothesis or conclusion. Thus the mathematics is a valid restricted result, but this part of the declared restriction is inaccurate: the canonical inter-set containment is omitted altogether, not moved to the hypotheses."
+    ],
+    "fix": "Replace the restriction text with: 'Restricted: the numerical scaling clause assumes item and survey are subsets of S, with |S|=2050, |item|=1708 and |survey|=1899, positive weights, and zero outcomes outside either retained set. It does not assume or establish item subset survey, equivalently containment of survey nonrespondents within item nonrespondents. The reconstruction data facts, the link to the released orange-wristband indicator, and reproduction of the twelve rounded Table 2 estimates are not verified. Strictness of the comparison between the sufficient and necessary loss conditions is not separately asserted.' Alternatively add an explicit item subset survey hypothesis if that is the intended restricted statement. The estimator, loss and scaling formulas need no correction.",
+    "nonvacuity": "For the numerical clause take S={0,...,2049}, item={0,...,1707}, survey={1,...,1899}, weights 2, D_i=i mod 2 and G_i=1 exactly at i=1, zero elsewhere. Both retained sets have the required sizes and contain every nonzero score, but 0 is an item respondent and a survey nonrespondent, so the canonical containment fails. This exact finite witness is checked in scratch/audit_checks.py. For the loss identities, the explicit two-unit reporting populations supply nonnegative, positive-marginal examples, including nonzero losses. No theorem hypothesis assumes the estimator conclusion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T23",
+    "theorem": "SAP.P013b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All four binary assignments have weight 1/4 and all marginals are 1/2. The three explicit worlds have identical recorded data and wearing effects 1/2,1,0; recorded HT is z_A with expectation 1/2 and variance 1/4. The record correctly treats this as the complete canonical counterexample to the additional zero-scoring interpretation, not to consistently observed wearing outcomes. All world/assignment values were independently checked as exact fractions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T27",
+    "theorem": "SAP.P013b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Two analysed students in one school, each other's sole neighbor, with a fair host indicator and independent fair own assignments have eight positive-weight worlds. Both units have exposure probabilities 1/2,1/8,1/8,1/8,1/8. Binary potentials equal to 1 at exposure 4 and 0 elsewhere give a nonzero target; injectivity, binary potentials, network requirements and strict exposure positivity were compiled in scratch/Check.lean (same-school membership is constant). The undirected within-school network matches the paper's construction; the canonical formal reading expressly excludes empirical Table 2 values and assumes consistent wearing/report observation.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P013-T26",
+    "theorem": "SAP.P013b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The blocked support has 6^14=78364164096 elements and the complete support choose(56,28)=7648690600760440 elements; both are positive. The all-schools-in-the-first-seven-blocks assignment witnesses strict inclusion. A singleton finite student law with weight 1 satisfies all product-law assumptions. Exact school counts and joint fractions were independently checked. Arbitrary four-valued codes include the Section 10 own/peer cases, so they impose no extra restriction on the stated exposure preservation result.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P013-T25",
+    "theorem": "SAP.P013b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both named school supports are nonempty, and the 56-school binary population has two active hosting potentials and zero nonhosting potentials. For the same-block pair p=1/6 the wrong q=27/110 gives bias 52/81; for the different-block pair p=1/4 it gives bias -1/27. These exact fractions and the positive-probability C-only support witness were independently checked. The conditional uniform-law lemmas cannot exploit empty S, since an empty S has zero rather than 1/2 marginal probability. The theorem refutes precisely the specified lottery identification and wrong-joint guarantee, as the canonical target requests.",
+    "confidence": 0.99
+  }
+]

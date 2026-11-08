@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P018-T15",
+    "theorem": "SAP.P018b.T15",
+    "fingerprint": "f789badce10af11df7b9754204c0266647c02f5cfe426d5867ece8fe8508292c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:8 for the six two-element dyads and injective assignment; :11 and :17 prove the positive-count scalar score example has individual meat 91 and satisfies card V >= 3 and nonzero sandwich with P=I. All exact mismatch totals independently passed scratch/exact_checks.py. The canonical reading permits arbitrary residual arrays.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T16",
+    "theorem": "SAP.P018b.T16",
+    "fingerprint": "25763672bac3b814e5a3189d46a50173afcf23b7f2afd5c450988be15f512fce",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:8 supplies both structural hypotheses on all six dyads of four units. Choose k=1, all T_d=1, q=orderedWitness and P=I, with nonzero meat certified at :11. There are no further hypotheses. Arbitrary scores include every e_dt X_dt specialization, including fitted residuals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T17",
+    "theorem": "SAP.P018b.T17",
+    "fingerprint": "096bf70ec80e94f958ff3ec8036aff68c7d2d8681eb91d63b099018df6f7ae17",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:27, :30 and :36 independently prove det G=20, beta_hat=(3,2/5), and all fitted residuals. Rational checks in scratch/exact_checks.py verify both negative diagonals and the full matrix, the intercept and padded fits, Q/beta/Gamma/V of the uniform eight-point iid population, its labelled data and event probability, and the N=20 Gaussian point. Its full-rank strict-negative event contains an open neighbourhood, hence has positive probability under the specified product Gaussian law.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T18",
+    "theorem": "SAP.P018b.T18",
+    "fingerprint": "904280d84de601e3c7a046d8554000960f8a20cbb36d5f16885e3e18f1fafeb7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The full-rank fitted example was independently checked in scratch/Nonvacuity.lean:27--40 and by exact rational matrix computation. The example at :43 compiles the substantive convergence premises with the one-point probability law, v_N=1/N, V_N=1 and lower bound c=1. Finite structural hypotheses admit the six dyads, arbitrary scores and symmetric P=I. The labelled finite population supplies genuine negative fitted diagonals and zero truncated intervals on an event of probability 1/4096.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T19",
+    "theorem": "SAP.P018b.T19",
+    "fingerprint": "f557faf576622d94823de343a322e0cbd5df1cc994b6b0799ca7f8af8291a981",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/RareLaw.lean:58 constructs U=Sigma_m(Fin(m+1) x Bool x Bool) with its discrete measurable space and proves the entire wholeRareLaw predicate from a geometric PMF followed by conditional uniform draws; no Challenge theorem is invoked. The prescribed measurable symmetric two-record kernels have the printed bounds; independent signs give conditional mean zero, and their Gram determinant 4 D S is positive for N>=2 because every scale is positive. REPORT.md gives the witness checks. Infinite moments and limits are conclusions, not antecedents or assumptions of this construction.",
+    "confidence": 0.99
+  }
+]

@@ -4,13 +4,8 @@ namespace AronowAudit.P022.Wave1.TailA
 
 set_option autoImplicit false
 
-/-- Corrected Lemma 2 with the explicit universal partition. -/
-theorem lemma2_corrected_final : (∀ (S : ExperimentSequence)
-      (H : JointLaw)
-      (θ ρ : ℝ)
-      (h : Conditions123 S H θ ρ)
-      (hleft : AtomLeftConvergence S H),
-      Lemma2Conclusions S H θ ρ) := by
+/-- Corrected Lemma 2 with the exact held type and the explicit universal partition. -/
+theorem lemma2_corrected_final : type_of% @AronowAudit.P022.lemma2_corrected := by
   intro S H θ ρ h hleft
   obtain ⟨hpos, hanti, huniform, htail⟩ :=
     lemma2_corrected_explicit_final S H θ ρ h hleft
@@ -24,5 +19,7 @@ theorem lemma2_corrected_final : (∀ (S : ExperimentSequence)
     exact (htail η hη).1
   · intro η hη
     exact (htail η hη).2
+
+example : type_of% @AronowAudit.P022.lemma2_corrected := AronowAudit.P022.Wave1.TailA.lemma2_corrected_final
 
 end AronowAudit.P022.Wave1.TailA

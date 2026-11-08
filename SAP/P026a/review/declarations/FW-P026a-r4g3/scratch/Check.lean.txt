@@ -1,0 +1,128 @@
+import SAP.P026a.Defs
+
+open Finset
+open scoped BigOperators
+open SAP.P026a
+
+namespace Review
+
+lemma allAssignments :
+    (univ : Finset (Fin 2 → Bool)) =
+      {![false, false], ![false, true], ![true, false], ![true, true]} := by
+  decide
+
+noncomputable def asymmetricLaw : UnitLaw (Fin 2) where
+  weight w := if w 0 = true ∧ w 1 = false then 0 else 1 / 3
+  nonnegative := by
+    intro w
+    split_ifs <;> norm_num
+  normalized := by
+    norm_num [allAssignments]
+  positive := by
+    intro i
+    fin_cases i <;> norm_num [allAssignments]
+
+noncomputable def complementaryLaw : UnitLaw (Fin 2) where
+  weight w := if w 0 ≠ w 1 then 1 / 2 else 0
+  nonnegative := by
+    intro w
+    split_ifs <;> norm_num
+  normalized := by
+    norm_num [allAssignments]
+  positive := by
+    intro i
+    fin_cases i <;> norm_num [allAssignments]
+
+noncomputable def clustered (law : UnitLaw (Fin 2)) : ClusterLaw (Fin 3) (Fin 2) where
+  cluster := ![0, 0, 1]
+  covers := by
+    intro c
+    fin_cases c
+    · exact ⟨0, rfl⟩
+    · exact ⟨2, rfl⟩
+  assignment := law
+
+-- Nontrivial clusters, with signed unit outcomes and arbitrary cluster totals.
+def treatedOutcomes : Fin 3 → ℝ := ![1, -3, 4]
+def controlOutcomes : Fin 3 → ℝ := ![2, 1, -1]
+
+lemma asymmetric_separated (i j : Fin 2) (h : i ≠ j) :
+    0 < disagreementProbability (clustered asymmetricLaw).clusterAssignmentDesign i j := by
+  fin_cases i <;> fin_cases j <;>
+    norm_num [disagreementProbability, mean, ClusterLaw.clusterAssignmentDesign,
+      clustered, UnitLaw.assignmentDesign, asymmetricLaw, allAssignments] at *
+
+lemma asymmetric_same_arm_support (a : Bool) (i j : Fin 2) (h : i ≠ j) :
+    0 < jointInclusion (clustered asymmetricLaw).clusterAssignmentDesign a a i j := by
+  cases a <;> fin_cases i <;> fin_cases j <;>
+    norm_num [jointInclusion, armIndicator, mean, ClusterLaw.clusterAssignmentDesign,
+      clustered, UnitLaw.assignmentDesign, asymmetricLaw, allAssignments] at *
+
+-- All T11 hypotheses, including the additional premise of its final clause,
+-- hold jointly, for either arm and for a partition with unequal cluster sizes.
+example : ∃ E : ClusterLaw (Fin 3) (Fin 2),
+    (∀ i j, i ≠ j → 0 < disagreementProbability E.clusterAssignmentDesign i j) ∧
+    (∀ (a : Bool) i j, i ≠ j → 0 < jointInclusion E.clusterAssignmentDesign a a i j) := by
+  exact ⟨clustered asymmetricLaw, asymmetric_separated, asymmetric_same_arm_support⟩
+
+lemma complementary_separated (i j : Fin 2) (h : i ≠ j) :
+    0 < disagreementProbability (clustered complementaryLaw).clusterAssignmentDesign i j := by
+  fin_cases i <;> fin_cases j <;>
+    norm_num [disagreementProbability, mean, ClusterLaw.clusterAssignmentDesign,
+      clustered, UnitLaw.assignmentDesign, complementaryLaw, allAssignments] at *
+
+-- T11's bound clauses also admit genuinely unavailable same-arm pairs.
+example (a : Bool) :
+    jointInclusion (clustered complementaryLaw).clusterAssignmentDesign a a 0 1 = 0 := by
+  cases a <;>
+    norm_num [jointInclusion, armIndicator, mean, ClusterLaw.clusterAssignmentDesign,
+      clustered, UnitLaw.assignmentDesign, complementaryLaw, allAssignments]
+
+example :
+    (clustered complementaryLaw).totals treatedOutcomes 0 = -2 ∧
+    (clustered complementaryLaw).totals treatedOutcomes 1 = 4 ∧
+    (clustered complementaryLaw).totals controlOutcomes 0 = 3 ∧
+    (clustered complementaryLaw).totals controlOutcomes 1 = -1 := by
+  simp only [ClusterLaw.totals, Finset.sum_filter]
+  norm_num [clustered, treatedOutcomes, controlOutcomes, Fin.sum_univ_succ]
+
+-- A strict gap in the zero-joint-support case; these checks use Defs only.
+example :
+    designVariance (clustered complementaryLaw).clusterAssignmentDesign
+      (htSum (clustered complementaryLaw).clusterAssignmentDesign true
+        ((clustered complementaryLaw).totals treatedOutcomes)) = 36 ∧
+    mean (clustered complementaryLaw).clusterAssignmentDesign
+      (armVarianceEstimate (clustered complementaryLaw).clusterAssignmentDesign true
+        ((clustered complementaryLaw).totals treatedOutcomes)
+        ((clustered complementaryLaw).totals controlOutcomes)) = 40 := by
+  norm_num [designVariance, designCovariance, htSum, mean, armVarianceEstimate,
+    armIndicator, inclusion, jointInclusion, orderedOffDiagonalSum, unavailablePairSum,
+    response, estimatedPairTerm, zeroAdjustment, ClusterLaw.clusterAssignmentDesign,
+    UnitLaw.assignmentDesign, clustered, complementaryLaw, allAssignments,
+    ClusterLaw.totals, treatedOutcomes, controlOutcomes, Finset.sum_filter,
+    Fin.sum_univ_succ]
+
+-- Every T12 hypothesis is supplied by an actual nondegenerate UnitLaw.
+example : Nonempty (UnitLaw (Fin 2)) := ⟨asymmetricLaw⟩
+
+-- A directed off-diagonal pair is unavailable although both same-arm joints
+-- are positive. T12 must retain this pair as well as its diagonal terms.
+example : jointInclusion asymmetricLaw.assignmentDesign true false 0 1 = 0 ∧
+    jointInclusion asymmetricLaw.assignmentDesign true true 0 1 = 1 / 3 ∧
+    jointInclusion asymmetricLaw.assignmentDesign false false 0 1 = 1 / 3 := by
+  norm_num [jointInclusion, armIndicator, mean, UnitLaw.assignmentDesign,
+    asymmetricLaw, allAssignments]
+
+example :
+    designCovariance asymmetricLaw.assignmentDesign
+      (htSum asymmetricLaw.assignmentDesign true ![1, 3])
+      (htSum asymmetricLaw.assignmentDesign false ![2, -1]) = 1 / 2 ∧
+    splitPopulationCovariance asymmetricLaw.assignmentDesign ![1, 3] ![2, -1] = 1 / 2 ∧
+    designVariance asymmetricLaw.assignmentDesign
+      (htContrast asymmetricLaw.assignmentDesign (Fintype.card (Fin 2))
+        ![1, 3] ![2, -1]) = 21 / 8 := by
+  norm_num [designVariance, designCovariance, htContrast, htSum,
+    splitPopulationCovariance, mean, armIndicator, inclusion, jointInclusion,
+    UnitLaw.assignmentDesign, asymmetricLaw, allAssignments, Fin.sum_univ_succ]
+
+end Review

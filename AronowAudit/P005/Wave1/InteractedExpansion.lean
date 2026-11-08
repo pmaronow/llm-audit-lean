@@ -31,5 +31,7 @@ theorem printed_interacted_expansion_refuted :
     InteractedExpansion.n7_proof InteractedExpansion.n8_proof InteractedExpansion.n9_proof
     InteractedExpansion.n10_proof InteractedExpansion.n11_proof
 
+example : AronowAudit.P005.Wave1.InteractedExpansion.Target := printed_interacted_expansion_refuted
+
 end
 end AronowAudit.P005.Wave1

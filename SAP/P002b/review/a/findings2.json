@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P002-T16",
+    "theorem": "SAP.P002b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The displayed four-row array itself is the witness: centered columns, second moments (1/2)I, fourth moments 1/2, maxima 2 and 3. It can be embedded in Xi with n1=2, all units compliers, zero outcomes, delta=0,e=1/2,A=1/2,B=1,r=1/4; singular arm regressions are not a hypothesis of the covariate claim.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T17",
+    "theorem": "SAP.P002b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The T16 array satisfies the finite hypotheses with n=4,k=2,A=1/2. For the sequence part choose k=2,A=1 and zero covariates on j+1 units for every j; the augmented squared-norm maximum is 1 and is bounded by sqrt(j+1). Thus neither part depends on empty unit or covariate types.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T18",
+    "theorem": "SAP.P002b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact rational instance in scratch/arithmetic-evidence.json: n=4, k=1, n1=2, x=(-3,-1,1,3), y_i(0)=y_i(1)=x_i^3, d_i(a)=a, S={0,1}. Both arm Grams have determinant 1 and the population Gram has determinant 5. At beta=0 the feasible contrast is 24, the oracle contrast is 24/5, and their difference is 96/5.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T19",
+    "theorem": "SAP.P002b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact rational instance in scratch/arithmetic-evidence.json: n=4, k=1, n1=2, x=(-3,-1,1,3), y_i(0)=y_i(1)=x_i^3, d_i(a)=a, S={0,1}. Both arm Grams have determinant 1 and the population Gram has determinant 5. At beta=0 the feasible contrast is 24, the oracle contrast is 24/5, and their difference is 96/5. For the treated arm the population-minus-fitted vector is (-12,-24/5), and the cross term is -288/5, so this is also a nonzero sign check.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T20",
+    "theorem": "SAP.P002b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact rational instance in scratch/arithmetic-evidence.json: n=4, k=1, n1=2, x=(-3,-1,1,3), y_i(0)=y_i(1)=x_i^3, d_i(a)=a, S={0,1}. Both arm Grams have determinant 1 and the population Gram has determinant 5. At beta=0 the feasible contrast is 24, the oracle contrast is 24/5, and their difference is 96/5. For the sequence assertion take n=j+4, k=1, n1=floor(n/2), x_i=(2*i-n+1)/n, y_i(0)=y_i(1)=x_i^2, d_i(a)=a, delta=0,e=1/4,A=1,B=4,r=1/4. The population residual is x_i^2-mean(x^2); its variance is positive and its fourth norm is at most 1 while its standard deviation is at least 1/4. Every control arm has at least two distinct covariate values and hence an invertible Gram. The oracle design variance is positive. All stated restrictions therefore hold along a genuine infinite sequence.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P002-T21",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There is no exported theorem. The Xi model class is nonempty, for example for the n=j+4 one-covariate sequence specified under T20. The omission concerns existence of the ordinary inner limit, not inconsistent hypotheses.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P002-T22",
+    "theorem": "SAP.P002b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles an actual common observed dataset with n=8, n1=4, all units compliers, y_i(0)=y_i(1)=(0,1,2,3,4,2,5,-3)_i, O={0,1,2,3}, T0={0,1,2,4}, T1={0,1,4,5}. It proves DataGeneratedCoefficients, all three ARRegular conditions and IntersectionList g [0], without sorry. Take M=2 and alpha=1/4. The two-piece run has intervals [-infinity,0] and [0,+infinity] and index 0 in the raw case. Exact rational checks also give an adjusted example with x=(-7,-5,-3,-1,1,3,5,7), the same single crossing, index 1, and nonsingular arms on all 70 assignments; see scratch/arithmetic-evidence.json. These unchanged witnesses are rechecked against the revised Defs inside scratch/DeltaCheck.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T23",
+    "theorem": "SAP.P002b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles an actual common observed dataset with n=8, n1=4, all units compliers, y_i(0)=y_i(1)=(0,1,2,3,4,2,5,-3)_i, O={0,1,2,3}, T0={0,1,2,4}, T1={0,1,4,5}. It proves DataGeneratedCoefficients, all three ARRegular conditions and IntersectionList g [0], without sorry. Take M=2 and alpha=1/4. The two-piece run has intervals [-infinity,0] and [0,+infinity] and index 0 in the raw case. Exact rational checks also give an adjusted example with x=(-7,-5,-3,-1,1,3,5,7), the same single crossing, index 1, and nonsingular arms on all 70 assignments; see scratch/arithmetic-evidence.json. These unchanged witnesses are rechecked against the revised Defs inside scratch/DeltaCheck.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T24",
+    "theorem": "SAP.P002b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact rational instance in scratch/arithmetic-evidence.json: n=4, k=1, n1=2, x=(-3,-1,1,3), y_i(0)=y_i(1)=x_i^3, d_i(a)=a, S={0,1}. Both arm Grams have determinant 1 and the population Gram has determinant 5. At beta=0 the feasible contrast is 24, the oracle contrast is 24/5, and their difference is 96/5. With D=1_S, the adjusted receipt contrast is 1, and the Wald value is 24; both the affine identity and the nonzero-denominator conclusion have applicable instances.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T25",
+    "theorem": "SAP.P002b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact rational instance in scratch/arithmetic-evidence.json: n=4, k=1, n1=2, x=(-3,-1,1,3), y_i(0)=y_i(1)=x_i^3, d_i(a)=a, S={0,1}. Both arm Grams have determinant 1 and the population Gram has determinant 5. At beta=0 the feasible contrast is 24, the oracle contrast is 24/5, and their difference is 96/5. The constant effect is beta=0, the baseline array is nonconstant, and all four units are compliers. The hypotheses impose no rank condition: the fixed least-squares choice in Defs/Part2.lean supplies the deterministic convention permitted by the canonical note.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T26",
+    "theorem": "SAP.P002b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact rational instance in scratch/arithmetic-evidence.json: n=4, k=1, n1=2, x=(-3,-1,1,3), y_i(0)=y_i(1)=x_i^3, d_i(a)=a, S={0,1}. Both arm Grams have determinant 1 and the population Gram has determinant 5. At beta=0 the feasible contrast is 24, the oracle contrast is 24/5, and their difference is 96/5. Set Y=x^3 and D=1_S. The adjusted receipt contrast is 1, the Wald estimate is 24, and both the IV cross matrix and instrument Gram have determinant 1/16. Thus all three algebraic branches apply. The unchanged algebraic statement now has the correct whole label and no declared restriction in record2.json; the revised docstring describes all clauses (a)-(c).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T27",
+    "theorem": "SAP.P002b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles an actual common observed dataset with n=8, n1=4, all units compliers, y_i(0)=y_i(1)=(0,1,2,3,4,2,5,-3)_i, O={0,1,2,3}, T0={0,1,2,4}, T1={0,1,4,5}. It proves DataGeneratedCoefficients, all three ARRegular conditions and IntersectionList g [0], without sorry. Take M=2 and alpha=1/4. The two-piece run has intervals [-infinity,0] and [0,+infinity] and index 0 in the raw case. Exact rational checks also give an adjusted example with x=(-7,-5,-3,-1,1,3,5,7), the same single crossing, index 1, and nonsingular arms on all 70 assignments; see scratch/arithmetic-evidence.json. For example, each of (-infinity,0) and (0,+infinity) has no crossing. In the raw example the critical index set is {0} off zero and {0,1} at zero, so the infinite-endpoint and finite-endpoint persistence conclusions are nonvacuous. These unchanged witnesses are rechecked against the revised Defs inside scratch/DeltaCheck.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T28",
+    "theorem": "SAP.P002b.T28",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The common eight-unit data have n1=4, all units compliers, y_i(0)=y_i(1)=(0,1,2,3,4,2,5,-3)_i, observed O={0,1,2,3}, and reference assignments T0={0,1,2,4}, T1={0,1,4,5}. The retained independent Lean checks establish DataGeneratedCoefficients, everywhere-positive denominators, nonnegative numerators and the complete crossing list [0]. At M=2 and alpha=1/4 the two closed pieces [-infinity,0] and [0,+infinity] both use index 0 in the raw branch. For the newly covered empty-crossing branch, repeat T0 twice: the two actual data-generated curves are identical, so IntersectionList g [] holds although the simulation index type is nonempty. Independently checked in scratch/DeltaCheck.lean: DataGeneratedCoefficients for this repeated family, mcCritical=sqrt(g_0), mcIndices=Finset.univ at every real sample point, an Algorithm1Run on the whole real line, equality for either selected index, and equality of the returned set. No Challenge theorem is used in those checks. The adjusted branch is also nonempty with the same observed data and centered covariates (-7,-5,-3,-1,1,3,5,7); scratch/check_arithmetic.py checks its exact coefficient vectors, positive denominators and nonsingular arms on all 70 assignments. Repeating its T0 likewise gives an empty crossing list with two quantile-attaining indices. The statement includes crossing-list and run existence as conclusions; it does not obtain correctness solely from an uninhabited completed-run predicate.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T29",
+    "theorem": "SAP.P002b.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A substantive refutation uses delta=0,r=1/4,A=1/2 and any fixed 0<alpha<1. For every n>=2 and every beta there are all-complier constant-additive-effect populations with n1=floor(n/2), so all inner LATE classes are nonempty. The fourth-moment inequality forces both centered W arrays to vanish, their means agree at LATE, and every assignment has statistic and critical value zero. Thus every admitted model has coverage 1 and the nested infimum is 1, not 1-alpha. scratch/Check.lean also compiles an explicit Theta instance at n=4 with these constants. No empty-infimum or r=1/2 parity artifact is needed. The record2.json refuted label is accurate: the unchanged proposition negates the printed universal limit, and the substantive nonempty counterexample classes still apply.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T30",
+    "theorem": "SAP.P002b.T30",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use k=1,delta=0,e=1/4,A=4,B=1/2,r=1/4 and any fixed 0<alpha<1. For every n>=4 and every beta, take n1=floor(n/2), centered distinct covariates x_i=(2*i-n+1)/n, all compliers, y_i(0)=0,y_i(1)=beta. Then mean(x^2)=(n^2-1)/(3*n^2)>=1/4 and mean(x^4)<=1<=4, so Xi is nonempty, with both residual arrays zero. In every Xi model with B=1/2, the residual fourth-moment bound forces both residual arrays to be zero. On full-rank assignments the adjusted statistic at LATE is zero. The centered second-moment lower bound, fourth-moment upper bound and arm balance give a uniform O(1/n) bound on the probability of either singular arm, by Chebyshev applied to the arm means of x and x^2. Hence every admitted coverage is at least 1-O(1/n), the nested infimum tends to 1, and the printed universal nominal equality fails for nonempty classes. This argument accommodates the chosen deterministic rule on singular arms. The record2.json refuted label is accurate: the unchanged proposition negates the printed universal limit, and the substantive nonempty counterexample classes still apply.",
+    "confidence": 0.98
+  }
+]

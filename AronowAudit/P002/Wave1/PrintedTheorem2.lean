@@ -17,7 +17,7 @@ open scoped BigOperators ENNReal Matrix Topology
 open Filter MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-/-- The universal closure of printed Theorem 2 is false. -/
+/-- The universal closure of the exact frozen printed Theorem 2 is false. -/
 theorem printed_theorem2_refuted :
     ¬ (∀ (k : ℕ) (δ e A B r α : ℝ),
       0 < k → δ < 1 → 0 < e → 0 < A → 0 < B →
@@ -29,6 +29,8 @@ theorem printed_theorem2_refuted :
     PrintedTheorem2.n4_proof PrintedTheorem2.n5_proof PrintedTheorem2.n6_proof
     PrintedTheorem2.n7_proof PrintedTheorem2.n8_proof PrintedTheorem2.n9_proof
     PrintedTheorem2.n10_proof PrintedTheorem2.n11_proof
+
+example : AronowAudit.P002.Wave1.PrintedTheorem2.Target := printed_theorem2_refuted
 
 end
 end AronowAudit.P002.Wave1

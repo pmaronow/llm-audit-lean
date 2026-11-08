@@ -1,0 +1,79 @@
+import SAP.P001d.Challenge
+
+open SAP.P001d
+open scoped BigOperators Matrix
+noncomputable section
+namespace ReviewOLS
+
+def X : Matrix (Fin 3) (Fin 2) ℝ := !![1, -1; 1, 0; 1, 1]
+def Y : Fin 3 → ℝ := ![1, -2, 1]
+
+lemma intercept : ∀ i, X i 0 = 1 := by
+  intro i
+  fin_cases i <;> rfl
+
+lemma gram : X.transpose * X = !![3, 0; 0, 2] := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [X, Matrix.mul_apply, Fin.sum_univ_succ]
+
+lemma fullRank : IsUnit (X.transpose * X).det := by
+  rw [gram]
+  norm_num [Matrix.det_fin_two]
+
+-- The complete premises of both T65 and T66, with a nonzero residual.
+example : (0 < (3 : ℕ)) ∧ (2 ≤ (3 : ℕ)) ∧
+    (∀ i, X i 0 = 1) ∧ IsUnit (X.transpose * X).det :=
+  ⟨by norm_num, by norm_num, intercept, fullRank⟩
+
+lemma beta : olsCoef X Y = 0 := by
+  ext i
+  fin_cases i <;>
+    norm_num [olsCoef, gram, Matrix.inv_def, Matrix.det_fin_two,
+      Matrix.adjugate_fin_two, Matrix.mulVec, dotProduct, X, Y, Fin.sum_univ_succ]
+
+lemma residual : Y - X.mulVec (olsCoef X Y) = Y := by rw [beta]; simp
+
+lemma meat : X.transpose * Matrix.diagonal (fun i => (Y i)^2) * X = !![6, 0; 0, 2] := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul_apply, X, Y, Fin.sum_univ_succ]
+
+example : wholeEmpiricalVariance (Y - X.mulVec (olsCoef X Y)) = 3 := by
+  rw [residual]
+  norm_num [wholeEmpiricalVariance, Y, Fin.sum_univ_succ]
+
+example : robustCov X (Y - X.mulVec (olsCoef X Y)) = !![(2/3:ℝ), 0; 0, 1/2] := by
+  rw [residual]
+  unfold robustCov
+  rw [gram, meat]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.inv_def, Matrix.det_fin_two,
+      Matrix.adjugate_fin_two, Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_succ]
+
+example : classicalCov X (wholeEmpiricalVariance Y) = !![(1:ℝ), 0; 0, 3/2] := by
+  unfold classicalCov
+  rw [gram]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [wholeEmpiricalVariance, Matrix.inv_def,
+      Matrix.det_fin_two, Matrix.adjugate_fin_two, X, Y, Fin.sum_univ_succ]
+
+-- T65 also covers a singular intercept design. Check a genuine minimizer
+-- without using T65: duplicated intercepts, Y=(1,-1), and b=(0,0).
+def singularX : Matrix (Fin 2) (Fin 2) ℝ := !![1, 1; 1, 1]
+def singularY : Fin 2 → ℝ := ![1, -1]
+
+example : (0 < (2 : ℕ)) ∧ (∀ i, singularX i 0 = 1) ∧
+    (singularX.transpose * singularX).det = 0 ∧
+    (∀ c, olsRSS singularX singularY (0 : Fin 2 → ℝ) ≤ olsRSS singularX singularY c) := by
+  refine ⟨by norm_num, ?_, ?_, ?_⟩
+  · intro i; fin_cases i <;> rfl
+  · norm_num [singularX, Matrix.mul_apply, Matrix.det_fin_two, Fin.sum_univ_succ]
+  · intro c
+    simp only [olsRSS, Fin.sum_univ_succ, Matrix.mulVec, dotProduct]
+    norm_num [singularX, singularY, Fin.sum_univ_succ]
+    nlinarith [sq_nonneg (c 0 + c 1)]
+
+end ReviewOLS

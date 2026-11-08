@@ -1,0 +1,47 @@
+[
+ {
+  "target_id": "P029-T11",
+  "decision": "whole",
+  "theorem": "SAP.P029a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.sem_defier_counterexample",
+   "AronowAudit.P029.sem_dependence_counterexample"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P029-T12",
+  "decision": "whole",
+  "theorem": "SAP.P029a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.heterogeneous_iv_counterexample",
+   "AronowAudit.P029.sem_defier_counterexample",
+   "AronowAudit.P029.sem_dependence_counterexample",
+   "AronowAudit.P029.sem_forces_constant_effect"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P029-T13",
+  "decision": "whole",
+  "theorem": "SAP.P029a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.five_per_arm_bias_counterexample",
+   "AronowAudit.P029.saturated_ml_bias_full_counterexample",
+   "AronowAudit.P029.saturated_unbiasedness_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.constant_score_counterexample_law",
+    "reason": "The selected saturated_ml_bias_full_counterexample already exports the population IV, latent-ignorability and overlap facts needed here."
+   },
+   {
+    "lean_name": "AronowAudit.P029.two_observation_ml_maxima",
+    "reason": "The selected saturated_ml_bias_full_counterexample already exports maximality for every two-receipt data set."
+   }
+  ]
+ }
+]

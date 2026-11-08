@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P002b.T20",
+  "target_id": "P002-T20",
+  "round": 5,
+  "verdict": "restriction_inaccurate",
+  "severity": "minor",
+  "issues": [
+   "SAP/P002b/Defs/Part3.lean:34-35: The controlRemainder docstring says that T20 explicitly requires positive oracle design variance and invertible control Grams on the design support. The reviewed theorem uses T20WholeStatement, whose asymptotic hypotheses at SAP/P002b/Defs/WholeW1.lean:51-56 require neither. Its statement and Challenge docstring instead allow and disclose the totalized inverse and zero-division convention. This is a stale description of the older T20Statement, not an actual restriction or a mathematical failure of the reviewed target."
+  ]
+ }
+]

@@ -1,0 +1,49 @@
+import SAP.P015a.Defs
+
+open SAP.P015a
+open scoped BigOperators
+
+-- These computations use Defs only, with no target theorem or sorry.
+example : IsProbabilityVector (rareProbability (1/1000000)) := by
+  constructor
+  · intro a; fin_cases a <;> norm_num [rareProbability]
+  · norm_num [rareProbability, Fin.sum_univ_succ]
+
+example : rareIPW (1/1000000) = ![0,1000000,-4,8] := by
+  ext a
+  fin_cases a <;>
+    norm_num [rareIPW, inverseProbabilityVariable, rarePotentialOutcome,
+      binaryCovariate, binaryTreatment]
+
+example :
+    mean (rareProbability (1/1000000)) (rareIPW (1/1000000)) = 3/2 ∧
+    variance (rareProbability (1/1000000)) (rareIPW (1/1000000)) = 2000071/4 := by
+  norm_num [mean, variance, rareProbability, rareIPW, inverseProbabilityVariable,
+    rarePotentialOutcome, binaryCovariate, binaryTreatment, Fin.sum_univ_succ]
+
+example : (∀ a, 0 < residualWeight uniformProbability binaryCovariate multivaluedTreatment a) ∧
+    conditionalProbability uniformProbability binaryCovariate multivaluedTreatment 1 1 = 0 ∧
+    conditionalProbability (effectiveLaw uniformProbability binaryCovariate multivaluedTreatment)
+      binaryCovariate multivaluedTreatment 1 1 = 0 := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro a; fin_cases a <;>
+      norm_num [residualWeight, conditionalMean, mean, eventMass, uniformProbability,
+        binaryCovariate, multivaluedTreatment, Fin.sum_univ_succ]
+  · norm_num [conditionalProbability, eventMass, uniformProbability,
+      binaryCovariate, multivaluedTreatment, Fin.sum_univ_succ]
+  · norm_num [conditionalProbability, eventMass, effectiveLaw, residualWeight,
+      conditionalMean, mean, uniformProbability, binaryCovariate,
+      multivaluedTreatment, Fin.sum_univ_succ]
+
+example : (∀ a, observedTriple outcomeWorldA a = observedTriple outcomeWorldB a) ∧
+    mean uniformProbability (effectContrast outcomeWorldA 0 1) = 1 ∧
+    mean uniformProbability (effectContrast outcomeWorldB 0 1) = 2 ∧
+    mean (effectiveLaw uniformProbability binaryCovariate multivaluedTreatment)
+      (effectContrast outcomeWorldB 0 1) = 13/5 := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro a; fin_cases a <;>
+      norm_num [observedTriple, outcomeWorldA, outcomeWorldB, binaryCovariate,
+        multivaluedTreatment]
+  all_goals norm_num [mean, effectContrast, outcomeWorldA, outcomeWorldB,
+    effectiveLaw, residualWeight, conditionalMean, eventMass, uniformProbability,
+    binaryCovariate, multivaluedTreatment, Fin.sum_univ_succ]

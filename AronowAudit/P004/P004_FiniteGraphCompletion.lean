@@ -234,5 +234,6 @@ theorem design_dependency_graph {N : ℕ} (p : Fin N → ℝ) (R : CircleTable N
       split_ifs <;> simp_all
     _ = _ := GraphCompletion.expect_mul_of_disjoint_depends p S _ _ hF hG
 
+#print axioms design_dependency_graph
 end
 end AronowAudit.P004

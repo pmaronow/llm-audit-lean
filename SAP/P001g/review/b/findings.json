@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P001-T115",
+    "theorem": "SAP.P001g.T115",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fair binary D, constant Y0=0 and Y1=1 on a two-point probability space satisfy measurability, integrability, both positive arms and random assignment. The ATE and the identified difference are one. The final decomposition also holds without independence. The record and docstring accurately disclose the omitted sample estimator and intermediate equalities; see nonvacuity.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T116",
+    "theorem": "SAP.P001g.T116",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fair binary D, singleton-valued X, Y0=0, Y1=1, p=1/2, epsilon=1/4, m0=0 and m1=1 satisfy all three independently quantified domains. They yield the ATE sum and conditional mean difference equal to one, and all propensity-score conclusions. The independent score domain imposes no outcome moments. Conditional independence and CEFs are ordinary indicator/integral formulations, with genuine finite conditional expectations.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T117",
+    "theorem": "SAP.P001g.T117",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use fair binary D, constant vector X, Y0=0, Y1=1 and p=1/2. Correct regressions m0=0,m1=1 with q=1/4 satisfy the first alternative; q=p with incorrect bounded m0=2,m1=-3 satisfies the second. All expectations are integrable. The separately nonintegrable nuisance cancellation example in nonvacuity.md shows the disclosed restriction is real; its algebra is checked in scratch/Check.lean. The record and docstring specify exactly this extra measurability and separate-integrability domain.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T118",
+    "theorem": "SAP.P001g.T118",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This correctly refutes both printed claims. For the first, X_i=0 and T=0 satisfy IID and Hadamard differentiability with derivative zero, but identically zero fluctuations cannot have any positive-variance Gaussian limit. The derivative hypothesis is checked in Lean for arbitrary F. For the second, start with the nondegenerate Bernoulli law (delta0+delta1)/2 and contaminate by mass t^2 at 1/2+1/t^2. Each law has finite second moment, the CDF perturbation divided by t tends uniformly to zero, and the mean changes by one, contradicting every continuous linear derivative. All suprema and integrals used in the refutation are legitimate; see nonvacuity.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T119",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem is asserted. The underlying setting is nonempty, for example uniform X on [0,1], Y=0, smooth CEF zero and degrees tending to infinity slower than n. The supplied record declines to identify an integrated squared-risk refutation with the undefined printed regional-consistency claim; no such identification can be verified in the supplied files.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P001-T120",
+    "theorem": "SAP.P001g.T120",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This correctly refutes the printed fixed-x reading. Let X be fair binary, with Y conditionally Bernoulli of success probability 1/4 at X=0 and 3/4 at X=1. Fit the covariate-independent Bernoulli family t in [1/4,3/4]. The fixed covariate x=0 has probability 1/2 and unique conditional-KL minimizer 1/4, while the measurable actual-product MLE, the clipped success fraction, tends to 1/2. Normalizations, support domination and finite KL integrands hold, and the maximizer exists on every sample. This is not a refutation of the alternative expected-KL target; see nonvacuity.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T121",
+    "theorem": "SAP.P001g.T121",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This correctly refutes full-vector consistency and hence the printed conjunction. Take b0=3/4, p=1 and a=1/3, giving the IID law (2/3,1/3,0,0). A count-based product maximizer, defined on every sample, can choose b_hat=1/4 whenever no inactive-component outcome occurs. This occurs almost surely under the true law, leaving the estimated b coordinate a fixed distance 1/2 from b0. Both component parameter domains are nonempty; the failure is genuine nonidentifiability, not an empty optimizer condition. See nonvacuity.md for the full estimator.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T124",
+    "theorem": "SAP.P001g.T124",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This correctly refutes the stated asymptotic size bound. Let X be uniform on {-1,0,1}, Z a fair sign independent of X, D conditionally Bernoulli(1/4+X^2/2) independent of Z given X, and W=X^2+Z/2. The twelve cell probabilities are 1/8 or 1/24. W and D are conditionally independent given X. Lean checks cell normalization, restricted/full Gram determinants 2/3 and 17/54, full coefficient (29/68,0,4/17), and positive full risk 59/272. The restricted risk is 35/144, so F_n/n tends almost surely to 64/531>0. Both regressions are eventually nonsingular, actual F(1,n-3) medians stay bounded, and guarded rejection probability tends to one. See scratch/Check.lean and nonvacuity.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T125",
+    "theorem": "SAP.P001g.T125",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "IID coordinate projections on the countable product of standard Gaussian laws have finite second moment and variance one. The generic IID product construction and standard Gaussian second-moment membership are checked in scratch/Check.lean. A constant sequence X_i=7 on a point probability space also satisfies the hypotheses and covers the printed zero-variance footnote.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T126",
+    "theorem": "SAP.P001g.T126",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "IID standard Gaussian coordinate projections have finite second moment and positive variance one, giving an instance of each separately quantified CLT and standardization domain. For every positive n the sample-mean variance is 1/n, so the finite normalization is legitimate and its standardized moments are zero and one. The scratch checks establish the generic IID product construction and Gaussian second-moment membership without importing Challenge.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T127",
+    "theorem": "SAP.P001g.T127",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use IID standard Gaussians with their continuous PDF and h_n=1/sqrt(n+1). Bandwidths are positive, tend to zero and satisfy n h_n tending to infinity. The kernel is bounded at each bandwidth; its expectation is the local density average and its variance is at most that average divided by 2 n h_n. No nonintegrable expectation or zero bandwidth is used. This is the pointwise consistency claim read with its printed continuous-density condition.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T128",
+    "theorem": "SAP.P001g.T128",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For standard normal Z take theta_hat_n=theta+phi Z/sqrt(n+1) and v_hat_n=phi^2/(n+1), with phi>0 and any 0<alpha<1. Measurability and nonnegative variance estimates hold, the normal limit and n-scale variance consistency hold, and the specified open intervals have exact coverage 1-alpha at every n. In general Slutsky and continuity at both Gaussian boundaries give the stated coverage limit, without a limsup convention or a coverage hypothesis.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T129",
+    "theorem": "SAP.P001g.T129",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take IID fair Bernoulli outcomes, constant X, reference delta0+delta1, parameter interval [1/4,3/4] and the usual Bernoulli family with true parameter 1/2. The clipped sample success fraction is an actual-product maximizer. M(t)=(log t+log(1-t))/2 is continuous with unique maximum 1/2; all observed logs are finite and observed model densities positive. For n>0, Delta_n=log(3)|sample success fraction-1/2| uniformly bounds every log-likelihood error, and Delta_0=2 handles the initial sample. The WLLN gives Delta_n tending to zero. Thus the envelope premise is nonvacuous and does not assume estimator convergence. The independently quantified maximum/equality lemma has the same true normalized model as an instance. The record and docstring accurately disclose the uniform premise, its pointwise quantifiers and the omitted auxiliary conclusions; see nonvacuity.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T130",
+    "theorem": "SAP.P001g.T130",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let Y_i=1/2, R_i be IID fair Bernoulli, a=0 and b=1. The observable pairs are IID, both response arms have positive probability, L_i=R_i/2 and U_i=1-R_i/2. The displayed endpoints are 1/4 and 3/4, and every positive-size sample average is unbiased and consistent for its endpoint. The conditional denominator is 1/2. More generally boundedness and binary response ensure integrability and remove the sentinel from completed outcomes almost surely.",
+    "confidence": 0.99
+  }
+]

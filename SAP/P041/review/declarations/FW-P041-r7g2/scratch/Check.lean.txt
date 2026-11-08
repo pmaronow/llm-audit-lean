@@ -1,0 +1,161 @@
+import SAP.P041.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 10000
+set_option maxHeartbeats 0
+
+open SAP.P041 Matrix MeasureTheory
+open scoped BigOperators
+
+-- T6: a nonempty design and a nonzero direct-effect function.
+def ownType (_ : Fin 2) (b : Bool) : ℝ := if b then 1 else 0
+
+example : (1 : ℕ) ≤ 1 ∧ ({0} : Finset (Fin 2)) ∈ balancedSequences 1 := by
+  norm_num [balancedSequences]
+
+example : balancedExpectation 1 (fun z => citationContrast 1 z
+    (fun r => ownType r (decide (r ∈ z)))) = 1 := by
+  have hz : balancedSequences 1 = {{0}, {1}} := by decide
+  norm_num [balancedExpectation, hz, citationContrast, ownType,
+    Finset.univ_fin2]
+
+example : ∀ s : Fin 2, s ≠ 0 →
+    (s ∈ ({0} : Finset (Fin 2)) ↔ s ∈ (∅ : Finset (Fin 2))) := by
+  intro s hs
+  simp [hs]
+
+-- T7: a concrete 200-row binary dataset with exactly the four given cells.
+def c200 (i : Fin 200) : Fin 4 := ⟨i.val / 50, by omega⟩
+def y200 (i : Fin 200) : Bool :=
+  decide (i.val % 50 < (![12,25,23,42] : Fin 4 → ℕ) (c200 i))
+
+example : CitationInputsW1 200 c200 y200 := by
+  refine ⟨rfl, ?_, ?_⟩
+  · intro c
+    fin_cases c <;> decide
+  · intro c
+    fin_cases c <;> decide
+
+-- T8: each closed printed rectangle has a genuine central member.
+example :
+    (printedInterval 0.670 0.670 ∧ printedInterval 0.095 0.095) ∧
+    (printedInterval 0.480 0.480 ∧ printedInterval 0.174 0.174) ∧
+    (printedInterval 0.274 0.274 ∧ printedInterval 0.162 0.162) ∧
+    (printedInterval 0.316 0.316 ∧ printedInterval 0.149 0.149) := by
+  norm_num [printedInterval]
+
+example :
+    (0.005 : ℝ) < 0.01 ∧
+    (0.01 < (0.02 : ℝ) ∧ (0.02 : ℝ) < 0.05) ∧
+    (0.01 < (0.02 : ℝ) ∧ (0.02 : ℝ) < 0.05) ∧
+    (0.01 < (0.02 : ℝ) ∧ (0.02 : ℝ) < 0.05) := by norm_num
+
+-- T9: a full-rank design with an actual intercept; no singular-inverse default.
+example :
+    IsUnit ((!![(1 : ℝ),0;1,1]).transpose * !![(1 : ℝ),0;1,1]).det ∧
+    (∀ i : Fin 2, (!![(1 : ℝ),0;1,1]) i 0 = 1) := by
+  constructor
+  · norm_num [Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
+  · intro i
+    fin_cases i <;> norm_num
+
+-- A design with positive HC1 degrees of freedom.
+def interceptX : Matrix (Fin 2) (Fin 1) ℝ := fun _ _ => 1
+example : IsUnit (interceptX.transpose * interceptX).det ∧ (1 : ℕ) < 2 := by
+  norm_num [interceptX, Matrix.det_fin_one, Matrix.mul_apply, Fin.sum_univ_two]
+
+-- The balanced layouts for all three concrete regression families.
+def pStudy (i : Fin 300) : Fin 3 := ⟨i.val / 100, by omega⟩
+def pTreat (i : Fin 300) : Bool := decide (50 ≤ i.val % 100)
+def cStudy (i : Fin 200) : Fin 2 := ⟨i.val / 100, by omega⟩
+def cTreat (i : Fin 200) : Bool := decide (50 ≤ i.val % 100)
+def fTreat (i : Fin 151) : Bool := decide (i.val < 75)
+
+example : BalancedCellsW1 pStudy pTreat := by
+  intro w b
+  fin_cases w <;> cases b <;> decide
+
+example : BalancedCellsW1 cStudy cTreat := by
+  intro w b
+  fin_cases w <;> cases b <;> decide
+
+example :
+    (Finset.univ.filter (fun i : Fin 151 => fTreat i = true)).card = 75 ∧
+    (Finset.univ.filter (fun i : Fin 151 => fTreat i = false)).card = 76 := by
+  decide
+
+-- Binary survivor patterns satisfying all twelve horizon hypotheses at once.
+-- In each cell, earlier indexed facts survive; the thresholds decrease in h.
+def pCut (h : Fin 4) (b : Bool) : Fin 3 → ℕ :=
+  (if b then ![![20,50,35],![18,48,32],![16,44,30],![12,34,22]]
+   else ![![17,41,30],![14,35,26],![12,32,24],![8,24,17]]) h
+def pAlive (h : Fin 4) (i : Fin 300) : Bool :=
+  decide (i.val % 50 < pCut h (pTreat i) (pStudy i))
+def cAlive (h : Fin 4) (i : Fin 200) : Bool :=
+  decide (i.val % 50 <
+    (![![12,25,23,42],![9,24,17,39],![7,23,12,35],![4,14,7,20]] :
+      Fin 4 → Fin 4 → ℕ) h (c200 i))
+def fAlive (h : Fin 4) (i : Fin 151) : Bool :=
+  decide ((if fTreat i then i.val else i.val - 75) <
+    (if fTreat i then (![72,72,72,68] : Fin 4 → ℕ) h
+     else (![75,75,75,73] : Fin 4 → ℕ) h))
+def realBinary {n : ℕ} (p : Fin n → Bool) : Fin n → ℝ :=
+  fun i => if p i then 1 else 0
+
+lemma armSum_count {n : ℕ} (t p : Fin n → Bool) (b : Bool) :
+    ArmTotalW1 t b (realBinary p) =
+      ((Finset.univ.filter (fun i => t i = b ∧ p i = true)).card : ℝ) := by
+  simp only [ArmTotalW1, realBinary, Finset.sum_boole, Finset.filter_filter]
+
+lemma studySum_count {n r : ℕ} (v : Fin n → Fin r) (p : Fin n → Bool) (w : Fin r) :
+    StudyTotalW1 v w (realBinary p) =
+      ((Finset.univ.filter (fun i => v i = w ∧ p i = true)).card : ℝ) := by
+  simp only [StudyTotalW1, realBinary, Finset.sum_boole, Finset.filter_filter]
+
+example (h : Fin 4) :
+    ArmTotalW1 pTreat true (realBinary (pAlive h)) = S11TreatedSurvivorsW1 0 h ∧
+    ArmTotalW1 pTreat false (realBinary (pAlive h)) = S11ControlSurvivorsW1 0 h := by
+  simp only [armSum_count]
+  fin_cases h <;> norm_cast
+
+example (h : Fin 4) :
+    ArmTotalW1 cTreat true (realBinary (cAlive h)) = S11TreatedSurvivorsW1 1 h ∧
+    ArmTotalW1 cTreat false (realBinary (cAlive h)) = S11ControlSurvivorsW1 1 h := by
+  simp only [armSum_count]
+  fin_cases h <;> norm_cast
+
+example (h : Fin 4) :
+    ArmTotalW1 fTreat true (realBinary (fAlive h)) = S11TreatedSurvivorsW1 2 h ∧
+    ArmTotalW1 fTreat false (realBinary (fAlive h)) = S11ControlSurvivorsW1 2 h := by
+  simp only [armSum_count]
+  fin_cases h <;> norm_cast
+
+example :
+    StudyTotalW1 pStudy 1 (realBinary (pAlive 0)) = 91 ∧
+    StudyTotalW1 pStudy 2 (realBinary (pAlive 0)) = 65 := by
+  simp only [studySum_count]
+  norm_cast
+
+-- T10: a genuine probability space satisfying every covariance hypothesis.
+example : IsProbabilityMeasure (Measure.dirac ()) := inferInstance
+
+example : ∀ i : Fin 3 ⊕ Fin 1,
+    MemLp (fun _ : Unit => (Sum.elim (![1,2,3] : Fin 3 → ℝ)
+      (fun _ : Fin 1 => (4 : ℝ))) i) 2 (Measure.dirac ()) := by
+  intro i
+  exact memLp_const _
+
+-- The SE clause has both a legitimate zero case and a positive case.
+example : (0 : ℝ) ≤ 0 ∧ (0 : ℝ) = Real.exp 0 * Real.sqrt 0 := by norm_num
+example : (0 : ℝ) < 1 ∧ (1 : ℝ) = Real.exp 0 * Real.sqrt 1 := by norm_num
+example : (1 : ℝ) ≠ 0 := by norm_num
+
+example :
+    (∀ r ∈ ({0.989,0.981,1.056,1.004} : Finset ℝ), printedInterval r r) ∧
+    (printedInterval 1.056 1.056 ∧ printedInterval 0.020 0.020) ∧
+    (printedInterval 1.056 1.056 ∧ printedInterval 0.019 0.019) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro r _
+    constructor <;> linarith
+  · norm_num [printedInterval]
+  · norm_num [printedInterval]

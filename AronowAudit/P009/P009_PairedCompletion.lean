@@ -1,11 +1,11 @@
 import AronowAudit.P009.P009_BernoulliCompletion
 
 /-!
-Paired-randomization finite identities and consistency under the P009
-assumptions. The paired mass factors over closed coordinate blocks;
+Paired-randomization finite identities and consistency from the unchanged P009
+assumptions. The actual paired mass factors over closed coordinate blocks;
 full-cube interference then gives covariance cancellation. Exact arm counts
 identify HT and Hájek on support. A finite second-moment bound supplies all
-three printed rate terms.
+three printed rate terms without new assumptions or external proof code.
 -/
 
 namespace AronowAudit.P009.PairedCompletion
@@ -576,6 +576,10 @@ theorem paired_consistency (S : Study) (ρ : (t : ℕ) → Pairing (S.N t)) (k q
   have ha := PairedCompletion.paired_rate_zero S ρ hRestricted hE hR
   exact ⟨BernoulliCompletion.probability_of_op_zero S _ _ ha hh.1,
     BernoulliCompletion.probability_of_op_zero S _ _ ha hh.2,hh.1,hh.2⟩
+
+#print axioms corrected_paired_bias_bound
+#print axioms paired_finite_lemmas
+#print axioms paired_consistency
 
 end
 end AronowAudit.P009

@@ -12,7 +12,9 @@ attribute [local instance 0] Classical.propDecidable
 set_option maxRecDepth 100000
 set_option maxHeartbeats 1200000
 
-/-! Finite-rank and canonical-table lemmas. -/
+/-! Finite-rank and canonical-table helpers adapted from the checked audit
+module P003/Wave1/Gap/GP0031B1.lean (read-only reference snapshot).
+All names are prefixed for this work unit. -/
 
 lemma glp0032b4_gmc_uniform_reindex {A B : Type*} [Fintype A] [Fintype B]
     (e : A ≃ B) (P : B → Prop) :
@@ -1035,8 +1037,10 @@ theorem general_monte_coverage_proof (v : Counts) (m K : ℕ) (α : ℝ)
   rw [hprob, hc] at hmono
   linarith
 
-/-! The four-block fibre count identifies the preceding update law
-with the exact finite design sums. -/
+example : type_of% @AronowAudit.P003.general_monte_coverage := general_monte_coverage_proof
+
+/-! Record 5: the four-block fibre count identifies the preceding update law
+with the exact finite design sums in the held statement. -/
 
 def glp0032b4_rpu_coord (q : Counts) (u : Bool × Bool) : ℕ :=
   if u.1 then (if u.2 then q.a else q.b) else (if u.2 then q.c else q.d)
@@ -1203,7 +1207,7 @@ lemma glp0032b4_rpu_list_single (xs : List Counts) (hxs : xs.Nodup) (q : Counts)
     · simp only [List.map_cons, List.sum_cons, if_neg ha, zero_add, ih hn.2]
       simp only [List.mem_cons, ne_comm.mp ha, false_or]
 
--- State-list uniqueness.
+-- State-list uniqueness adapted from audit GP0031B2.lean.
 lemma glp0032b4_rpu_flatMap_nodup
     {A B : Type*} (xs : List A) (f : A → List B) (g : B → A)
     (hx : xs.Nodup) (hf : ∀ a ∈ xs, (f a).Nodup)
@@ -1296,5 +1300,7 @@ theorem reuse_preserves_uniform_law_proof (v : Counts) (m : ℕ)
       (glp0032b4_gmc_uniform_avg_dec _).symm
     _ = _ := glp0032b4_rpu_assignment_law (reuseVector v 1)
       (glp0032b4_gmc_reuse_total v 1 (by omega) (by omega)) m q'
+
+example : type_of% @AronowAudit.P003.reuse_preserves_uniform_law := reuse_preserves_uniform_law_proof
 
 end AronowAudit.P003.Wave1

@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P045a.T11",
+    "target_id": "P045-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The statement covers deterministic parts (a)-(d) on every finite undirected graph with n>=1. Marked vertices are exactly the radius-two union by definition, admissible choices are exactly unmarked vertices, and the theorem proves distinctness, distance-three separation, strict progress, the n bound and existence of a completed covering run. It omits uniform sampling, the four-path centre and treatment probabilities in (e), and actual source replacement/recomputation. Those omissions are disclosed in Challenge/Part1.lean:116-119. There is no hidden connectivity or independence assumption, and disconnected graph distance is correctly infinity. scratch/Check.lean compiles a nonempty one-vertex graph with an admissible completed run."
+  },
+  {
+    "theorem": "SAP.P045a.T12",
+    "target_id": "P045-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "T12WholeStatement includes every canonical clause (i)-(iv), the correctly specified first-degree outcomes, own probability, all four exposure probabilities and positivity, the 10/35 split, all L/R/H values, the all-treated target, expectations and both bias formulas. The definitions give the uniform law on the 45 sorted distinct pairs without extra assumptions. Printed reading checked: in the finite first-degree correctly specified design, the own-treatment HT mean L equals the displayed sum R with exposure-specific denominators. Conditions checked against the witness: population size 10; symmetric loopless cycle with two neighbours per vertex; exactly two treated units drawn uniformly over 45 pairs; exposure is own treatment and presence of a treated neighbour; outcomes (2,1,1,0) with consistency; own and all exposure probabilities strictly positive; all-treated mean 2; all quantities finite and measurable. Every condition holds and L differs from R on all 45 assignments. This establishes the canonical counterexample rather than refuting it. scratch/Check.lean checks that the pair support is nonempty, has size 45 and every assignment treats exactly two; scratch/check_witnesses.py independently verifies every rational probability and value."
+  },
+  {
+    "theorem": "SAP.P045a.T13",
+    "target_id": "P045-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "T13WholeStatement and its T13Statement conjunct state (a)-(f): the indicator and probability partitions; the pointwise expansion with common own-treatment denominator; the nonnegative unitwise mixture with weights summing to one; the exact bias, both weak signs and the strict sign iff; both exposure-specific HT expectation conclusions under precisely the canonical additional positivity hypothesis; and the independent fair two-unit cancellation witness. The no-isolates implication explicitly identifies the all-treated mean with mu(d11), as required by definitions_needed, without imposing it on the general bias identity. A Design enforces nonnegative normalized probabilities, Network enforces the standing undirected loopless setting, and observed outcomes are exactly the stated exposure schedule. Positive population size is intrinsic to the claimed population mean. scratch/Check.lean constructs an actual normalized fair two-unit Design with positive own and both treated-exposure probabilities, no isolates, and the genuine expectation 3/2 for the nonconstant cancellation schedule."
+  },
+  {
+    "theorem": "SAP.P045a.T14",
+    "target_id": "P045-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The statement retains the actual 450-unit positive-support witness and its six group schedules, the treated and control means, all four pooled/printed values and direct contrasts, the 20 first-stage choices, eight empty first subclasses, possible subclass counts, explicit undefined printed ratio with defined pooled ratio, and the positive-count discrepancy identity. It does not separately assert the complementary count 12, positivity of the discrepancy for positive numerators, or equal-subclass-mean doubling; these omissions are accurately disclosed in Challenge/Part1.lean:155-159. Printed reading checked: the pooled selected-group mean (A+B)/(a+b) equals the sum of separately normalized subclass means A/a+B/b. Conditions checked against the witness: six equally sized 75-unit groups in three pairs; three psi groups chosen uniformly among six; psi/phi saturation counts 50/25; baselines one and the specified tract interference multipliers; m_g are actual nonempty-arm observed group means; both subclasses positive for the numerical discrepancy. The witness H={0,1,2} and its complete assignment satisfy all conditions, and its two sides disagree for both arms. Eight other admissible H have a=0,b=3, so the printed expression is genuinely undefined, represented by none rather than real division by zero. scratch/Check.lean proves the actual 75-unit counts and positive second-stage masses; exact independent enumeration checks the group arm values and all 20 first-stage selections."
+  },
+  {
+    "theorem": "SAP.P045a.T15",
+    "target_id": "P045-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "T15WholeStatement includes canonical (a)-(c): disjoint subclass union, counts and observed sums, identification of the selected-group mean with the pooled ratio, positive subclass shares summing to one, the weighted mixture and legitimate empty-first-subclass case; and the complete normalized two-stage 450-unit instance, with true conditional potential outcomes, psi-psi estimand 7/8, group differences 7/8 and 3/4, expected shares 2/5 and 3/5, expectation 4/5 and bias -3/40. The abstract finite-set result permits every finite H and arbitrary partner function, so includes every first-stage assignment and tract pairing; arbitrary m_g includes every observed arm mean for either treatment value. The instance uses independent uniform fixed-count group laws, has exactly the specified tract-stratified outcomes, and its all-psi reference law gives ordinary positive-probability conditional means. Empty-arm totalizations occur only at zero-mass assignments and cannot change the expectations. scratch/Check.lean constructs a complete positive-mass supported (H,w), while exact independent enumeration checks all 20 first-stage mixture values. Normalization and reference-event probabilities also have direct finite product-law justifications."
+  }
+]

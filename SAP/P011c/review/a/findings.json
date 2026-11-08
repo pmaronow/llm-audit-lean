@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P011-T29",
+    "theorem": "SAP.P011c.T29",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=p=1, D=[1], b=0, theta=1, and the uniform law on Y=-1,+1. The Gram determinant is 1, the raw coordinate is integrable and in L2, the mean model is correct, and the scalar estimator has variance 1. scratch/Check.lean additionally compiles the identity-design Dirac mean-model and L2 premises at positive size.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T30",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is retained. The source optimization domain is nonempty, for example n=2, R empty, d=(1,1). The omission is justified by the lack of a retained objective-preserving encoding or faithful NP-hardness/PTAS contract; an incidence-feasibility helper alone would not establish the canonical computational classification.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T31",
+    "theorem": "SAP.P011c.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A genuine refutation exists: n_k=4(k+1), G_k the disjoint union of k+1 four-cycles, theta_i=1, Y_i=s_i+epsilon_i with alternating cycle signs s_i=+1,-1,+1,-1 and independent uniform epsilon_i in {-1/4,+1/4}. Scaling holds with (2,2,1/16,2): beta=0, n*Var(betaHat)=1/16, degrees=2, and |Y_i|<=5/4. Every supported outcome has n*V1<=-5/16, so the absolute scaled error exceeds 1/4 with probability 1. The dependency-graph definition allows edges between independent outcomes.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T32",
+    "theorem": "SAP.P011c.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the C4 family described for T31, with R_k=G_k and every supplied degree cap equal to 2. Compatibility then forces A_k(y)=G_k for every y, so the maximizer premise is everywhere satisfiable. All weighted-coordinate variances equal 1/16. Since n*(Var(betaHat)-V1)>=3/8 on the full support, the underestimation probability at epsilon=1/4 is 1. This refutes the combined printed contract; the theorem and docstring do not separately credit a homoskedastic refutation.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T33",
+    "theorem": "SAP.P011c.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the same scaled C4 family with R=G and d=2, whose unique compatible graph is an everywhere maximizer. V1<0 on the entire support at every row, so the printed coverage is exactly 0 for every 0<alpha<1. The nonnegative-estimate event excludes these outcomes expressly, without relying on the totalized square root of a negative real.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T34",
+    "theorem": "SAP.P011c.T34",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let n_k=k+1, all coordinates be independent uniform +/-1, theta=1, and G=R empty with d=0. Then beta=0, n*Var(betaHat)=1, Scaling holds with (1,1,1,2), and the degree factor is identically 1. The retained P3 also applies to the nonempty C4 example, where the factor is 3. Omissions P1, P2, P4, P5 and the removal of unnecessary homoskedasticity are disclosed accurately.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T35",
+    "theorem": "SAP.P011c.T35",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the T31 C4 family with R=G,d=2 and the two-column design D_i=(1,s_i), fixed b=(0,1), and coefficient j=0 (the intercept). D^T D=n I_2 is invertible, E[Y_i]=s_i=(D b)_i, and the intercept olsTheta weights are exactly 1. All raw outcomes have finite support. The unique maximizing V1 has a scaled underestimation gap at least 3/8 and zero printed coverage, so the combined OLS contract is refuted with a nonempty coefficient type and correct finite means.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T36",
+    "theorem": "SAP.P011c.T36",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independent uniform +/-1 family with n_k=k+1, theta=1, empty graphs, and constants (1,1,1,2) is scaled and homoskedastic with n*Var(betaHat)=1. It satisfies the hypotheses with positive limiting variance. Only the full displayed conservativeness limit is credited; the omitted assertion that V2 need not be consistent is accurately disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T37",
+    "theorem": "SAP.P011c.T37",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "In the independent Rademacher family, take G=R empty and d=0. Compatibility forces the empty graph, so A_k(y) empty is an everywhere V2 maximizer; weighted variances equal 1 and Scaling holds with (1,1,1,2). Both retained variance estimators equal sampleVariance/n. In general the oracle is dominated pointwise by the maximum, which is dominated by the degree-only estimator, without bounding the supplied caps.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T38",
+    "theorem": "SAP.P011c.T38",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For n_k=k+1 independent uniform +/-1 coordinates with unit weights and empty graphs, beta=0, Var(betaHat)=1/n_k>0, and Scaling holds with (1,1,1,2). The conclusion is the ordinary normalized Rademacher-sum CLT. In the general statement the positive limiting scaled variance guarantees an eventually nonzero denominator.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T39",
+    "theorem": "SAP.P011c.T39",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the independent Rademacher family choose the constant Borel statistic V_k(y)=1/n_k, exactly the true variance. The scaled-consistency error is identically zero and every positive-epsilon underestimation event is empty, so both separate antecedents hold. The docstring and record accurately restrict the result to raw-space Borel statistics and explicitly exclude completion-only measurability and an a.e.-version transfer claim.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T40",
+    "theorem": "SAP.P011c.T40",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independent Rademacher family with G=R empty,d=0 is scaled, valid, and homoskedastic, with an everywhere unique maximizing selector and positive limiting scaled variance. Both interval estimates equal sampleVariance/n and are everywhere nonnegative. More generally the maximizing objective is a finite maximum of continuous functions over a fixed nonempty set, so no measurability hypothesis on the graph selector is missing.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T41",
+    "theorem": "SAP.P011c.T41",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=4, R=C4 and h_i=3. Every r_i=2, so h_i=2*r_i-1; the capacity matrix is 2I+A_C4, the signless Laplacian, and has nonnegative quadratic forms. For the maximizer equivalence take d=2, f arbitrary and any real constant c; the compatible set contains R (indeed it is a singleton). scratch/Check.lean compiles the capacity premise and this exact matrix instance. The missing decomposition and positive-n restriction for normalization are accurately disclosed.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P003-T24",
+    "theorem": "SAP.P003b.T24",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2,m=1,w(0)=(true,true),w(1)=(false,false). Both assignments exist, estimates are 1 and -1, and tau is zero. The weighted count law is the uniform assignment law; every denominator is positive.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T25",
+    "theorem": "SAP.P003b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,2,0,2), alpha=1/2 is positive and balanced. Lean checked accepted integer effects {-1,0,1}, rational endpoints (-1/4,1/4), and p((1,0,2,1),o)=2/3 despite that vector being impossible. The omitted canonical assertions and rational representation are accurately disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T8",
+    "theorem": "SAP.P003b.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "z=1.959963984540055 satisfies the strict rational enclosure, checked in Lean. A singleton run with k=12 satisfies the nonempty-list and covering-fraction premises. At m=25,50 the variance denominators and assignment counts are positive; every k in the stated range is realizable. Lean evaluated both exact coverage fractions and both median variances to the displayed values. The lack of quantile identification, wider z ranges, separate pointwise claims, labeled-assignment derivation, and uniqueness is disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T19",
+    "theorem": "SAP.P003b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N0=N1=2 gives two nonempty weak-composition sets and product cardinality 100, checked in Lean. The count model has exactly the intended nonnegative four-cell coordinates and fixed stratum totals. The omitted labeled-table correspondence, linear-independence assertion, 256 labeled tables and separately defined eight-coordinate set count are disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T20",
+    "theorem": "SAP.P003b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For distribution invariance take n=2,m=1 and the two label-swapped tables ((1,1),(0,0)) and ((0,0),(1,1)). For the update take v=(1,0,0,1). For the integer identities take n=4,u=(0,2,0,2),x=2,j=2,b=1 and n11=n10=n01=0; the total/effect premises hold. For parity take a=d=1. The restriction accurately identifies the unasserted feasibility and counterexample clauses.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T26",
+    "theorem": "SAP.P003b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This correctly certifies the record's refuted decision. Fix v=(11,0,3,6),m=3,alpha=109/500 and its ten possible treated-count states. The deterministic mask removes one control outcome equal to 1 only at q=(0,0,3,0), and removes none otherwise; a fixed labeling can select the first such unit, so it defines an allowed missingness vector. Independent exact enumeration verified nonempty accepted sets at both completions on every state and coverage 297/380 < 391/500. Thus no empty-endpoint convention is used by the refutation.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T27",
+    "theorem": "SAP.P003b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This correctly certifies the record's refuted decision. The input k1=1,k2=2,r=2,f identically false satisfies every printed input condition. Zero fuel returns none; any positive fuel takes midpoint 1 and the left-boundary branch and returns (1,2), so no fuel returns the required endpoint 2. Positive-fuel instances compiled. This is a legal positive, two-point domain and a literal failure of the printed correctness assertion.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T30",
+    "theorem": "SAP.P003b.T30",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,1,0,1),alpha=1/2. Lean checked that (0,0,0,2) is possible, has p-value one, and gives a nonempty accepted set. More generally the omitted specified vector (0,A+D,B+C,0) is possible and its effect is n times the balanced estimate, giving p=1 directly. The headline inequalities and memberships are retained, and omission of that specified witness is disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T31",
+    "theorem": "SAP.P003b.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,1,0,1),alpha=1/2 has both positive arms and a nonempty accepted set, compiled in scratch/Check.lean. An unbalanced instance is o=(0,1,0,2),alpha=1/2: v=(0,0,0,3) is possible with p=1. Positive arms force n>=2. The nonemptiness premise is exactly the canonical defined-endpoint qualification; it does not assume the length bound.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T33",
+    "theorem": "SAP.P003b.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(1,1,1,1),v=(0,2,1,1) satisfies balanced positive arms, equal total four, min(b,c)>=1 and max(b,c)>=2; all hypotheses compiled. The conclusion compares v with (1,1,0,2). Both subtractions are exact. No possibility or p-value inequality has been added as a hypothesis.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T7",
+    "theorem": "SAP.P003b.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the pathwise clause take o=(0,1,0,1) and any oracle. For the probability clauses take v=(1,0,0,1),m=1,K=1000,alpha=1/2,epsilon=1/8; both level conditions hold and the lower probability bound is positive. Nonempty MonteSpace and GeneralSpace instances at n=2,m=1,K=1 compiled. Generally positive arms ensure assignments exist, and the two endpoint D budgets fit within the 2D+1 batches, ensuring fresh draws despite the modulo indexing. All omitted intermediate bounds are disclosed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T32",
+    "theorem": "SAP.P003b.T32",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "o=(0,8,0,8),alpha=1/2 has n=16 and two arms of size eight. Independent exact enumeration gives endpoint numerators -2 and 2, and the two corrected searches use 28 tests in total, below 256=4n log2(n). Ten n=16 observed-table/level cases agree with exhaustive endpoints. The individual oracle and budget lemmas omitted from the canonical bundle are accurately identified.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T34",
+    "theorem": "SAP.P003b.T34",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "v=(0,0,0,16),m=8,alpha=1/2,epsilon=1/8,K=1+recommendedK(1/8,16). Both strict epsilon conditions hold, and the natural ceiling makes K positive and at least the part-1 threshold. Assignments and all finite pool types are nonempty. The part-2 lower bound is nontrivial at this budget. The extension to epsilon>=alpha/2 in part 1 is faithful to the canonical acceptance-rule interpretation.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T6",
+    "theorem": "SAP.P003b.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed data (2,13,1,14) occur with probability 45/116 under population (3,0,0,27) at m=15. Independent exact rational calculation reproduces the two exact intervals, all three positive-probability trace paths, both unequal pairs of probabilities, and the exact F lower bound 4693104776190294207/5012394999999664375. Every factor of each path probability is positive and independent fresh batches realize the paths. The omitted lists and individual p-values are disclosed; the refutation addresses intermediate proof assertions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T35",
+    "theorem": "SAP.P003b.T35",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "v=(1,0,0,1),m=1,K=1,alpha=1/2 with constant theta=0 and R=0 is admissible; its rank value is one. Both coverage and reuse sample spaces are nonempty (compiled). Reuse positivity a,d>0 is satisfied. Three independent exact transition-kernel calculations agree with fresh hypergeometric draws, and factorial seeds are uniform modulo each positive cell size because that size divides n!. The corrected full-j loop, correlated updates, and omitted rank/coverage-support lemmas are disclosed without assuming their conclusions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T36",
+    "theorem": "SAP.P003b.T36",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take c0=c1=c2=1 and o(n,K)=(0,floor(n/2),0,n-floor(n/2)); this has total n for every pair and positive arms for all n>=2. Thus the joint-filter assumptions hold on a nonempty cofinal quadrant. The finite clause permits, for example, n=2,K=1. The cost is the disclosed stipulated arithmetic model for the corrected full-j procedure, with enumeration execution excluded; no complexity conclusion is supplied as a premise.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P003-T18",
+    "theorem": "SAP.P003b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the upper implication take alpha=1/2,epsilon=1/8,c=1,tests(n)=n,operations(n)=n^2; its two eventual premises hold and the operation count is positive for n>0. For the positive-probability lower bound take r=4,n=16,K=1: five explicit feasible draws at the first query make all five vectors reject, costing 75 shuffle iterations. For the expected bound take r=6 and K=1+ceil_nat(32 log(32*64*log2(64))); all hypotheses hold. The nonnegative exponent domain and omitted envelope, unbalanced and draw-count clauses are disclosed.",
+    "confidence": "high"
+  }
+]

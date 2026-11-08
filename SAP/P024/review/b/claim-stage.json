@@ -1,0 +1,44 @@
+[
+  {
+    "theorem": "SAP.P024.T1",
+    "target_id": "P024-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "The zero-based Fin indices translate exactly to calendar periods 1..4 and onsets 2..4. The definitions give the stated current-exposure outcomes, actual propensities, two-period estimand, HT values and variance, and a separate baseline-only sharp-null statistic with tie-counting upper-tail p-values. Every numerical and calibration clause is present. All denominators used are positive. The concrete three-onset construction is nonvacuous and its exact rational arithmetic checks pass; it refutes the specified necessity reading, without purporting to decide the authors' intended meaning."
+  },
+  {
+    "theorem": "SAP.P024.T2",
+    "target_id": "P024-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three mathematical parts are present. Finite arbitrary indices faithfully represent periods; the exposure-specific branches use exactly the observed potential outcome, and overlap is defined by actual design probabilities. An arbitrary fixed D on a uniform finite nonempty assignment space includes every statistic of the fixed sharp-null path. The raw before-after null mean 10 and restored-effect mean 12, together with the pointwise +2 identity and both inequalities, are explicit. No temporal independence or no-trend assumption is inserted. Two units with exactly one selected uniformly give a nonempty overlap instance. The HT identity follows by linearity and the p-value claim by finite rank counting."
+  },
+  {
+    "theorem": "SAP.P024.T4",
+    "target_id": "P024-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "K=k+2 exhausts the canonical K>=2 sequence and K=2n+2 exhausts its even subsequence. Positive integer cluster sizes, individual outcomes, the individual-weighted estimand, and observed individual group means agree with the claim. The independent law is the full joint fair Bernoulli law, and both conditional and complete-half designs have their actual intended nonempty sample spaces. The statement includes every formula, conditional mean, variance, error probability, asymptotic limit, share, and six-cluster numerical assertion, including attainment of the minimum error. Every empty-arm extension is allowed in the independent inconsistency clause. Exact enumeration for K=2..10 agrees with the reading; the limits follow directly from the displayed real rational functions and the error-probability squeeze."
+  },
+  {
+    "theorem": "SAP.P024.T5",
+    "target_id": "P024-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The full consistency conclusion and squared-share equivalence are retained, with the canonical boundedness, actual independent-or-complete joint laws, interior probabilities, positive cluster sizes, changing populations/effects/probabilities, and arbitrary empty-arm values. The statement omits the unchanged finite-sample appreciable-bias remark and the target's cross-referenced failure without no dominance. The design branch can even vary with k, a sound strengthening of the retained result. No convergence conclusion is assumed: max-share convergence is a separate deterministic regularity condition. A satisfying sequence has K=k+2 clusters each of size 1, y0=0, y1=1, p=1/2, B=1, eta=1/4, giving max share 1/(k+2)->0. The consistency result follows from vanishing weighted-total variances and a ratio bound; arbitrary empty-arm values are confined to an event of probability tending to zero."
+  },
+  {
+    "theorem": "SAP.P024.T6",
+    "target_id": "P024-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "This proves the canonical fixed-count/common-actual-marginal branch, including complete randomization, but not its independent common-p assignment conditional on nonempty arms, whose treated count is random. Counts are required on every assignment, including zero-mass ones, rather than merely almost surely. Actual treatment and control denominators are positive under 0<m<|J|, and the estimator is the observed group difference, not merely a contrast with stipulated divisors. The claim is true by linearity. J=Omega=Fin 2, uniform omega and z(omega,j)=1 iff j=omega, m=1, satisfy all hypotheses with arbitrary potential outcomes."
+  },
+  {
+    "theorem": "SAP.P024.T7",
+    "target_id": "P024-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem retains the actual full independent common-p parent law, normalized conditioning on proper nonempty allocations, conditional unbiasedness for all positive equal cluster sizes and arbitrary individual outcomes, allocationwise cluster-mean identity, arbitrary empty-arm extensions, and the specified unequal-size two-cluster witness and its conditional probabilities. It omits only the general event-probability equality 1-p^K-(1-p)^K, asserting positivity instead. K=k+2 and 0<p<1 ensure a genuinely positive normalizer. Equal cluster size 1 with p=1/3 is a nonvacuity instance, and cluster means (0,0)/(0,1) with sizes (1,2) are realized by the canonical individual outcomes. Exact enumeration verifies both conditional conclusions on small instances. The canonical statement expressly excludes the printed consistency and blocking recommendations."
+  },
+  {
+    "theorem": "SAP.P024.T8",
+    "target_id": "P024-T8",
+    "my_reading_vs_claim": "broader",
+    "reason": "The theorem contains the complete mandatory fixed-count identity and both unbiasedness assertions of the canonical formal reading in claims.json, with the same block shares and actual observed block means. That reading already assumes 1<=m_b<=N_b-1 and uniform fixed-m_b allocation within blocks, hence actual common marginals m_b/N_b. The Lean statement weakens joint uniformity to those marginals and requires the fixed counts on every assignment; it does not discard a canonical variable-count or unequal-propensity branch, because no such branch is asserted in that formal reading. The optional pooled-bias witness is not mandatory. The additional generality is mathematically sound by linearity; between-block independence is unnecessary. Two blocks of two units with the same uniformly selected treated unit in both blocks satisfy all hypotheses, despite perfect dependence between blocks. A four-unit fixed-count law supported only on {0,1} and {2,3}, with mass 1/2 each, also meets the Lean assumptions and demonstrates the relaxation of within-block joint uniformity."
+  }
+]

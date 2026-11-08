@@ -1,0 +1,104 @@
+[
+ {
+  "target_id": "P020-T1",
+  "decision": "whole",
+  "theorem": "SAP.P020.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.efficiency_all_replications_counterexample",
+   "AronowAudit.P020.efficiency_error_probability",
+   "AronowAudit.P020.efficiency_exact_values",
+   "AronowAudit.P020.efficiency_inconsistent",
+   "AronowAudit.P020.efficiency_individual_realization",
+   "AronowAudit.P020.efficiency_mse_counterexample",
+   "AronowAudit.P020.efficiency_optimal_coefficient",
+   "AronowAudit.P020.efficiency_raj_mse",
+   "AronowAudit.P020.efficiency_sample_size_grows"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P020.T1Statement",
+  "supporting_declarations": [
+   "AronowAudit.P020.within_replication_invariant"
+  ]
+ },
+ {
+  "target_id": "P020-T2",
+  "decision": "whole",
+  "theorem": "SAP.P020.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.eventual_mse_inferiority",
+   "AronowAudit.P020.mse_bias_variance",
+   "AronowAudit.P020.mse_markov_bound",
+   "AronowAudit.P020.squared_bias_le_mse",
+   "AronowAudit.P020.vanishing_mse_consistent"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P020.T2Statement",
+  "supporting_declarations": [
+   "AronowAudit.P020.efficiency_all_replications_counterexample",
+   "AronowAudit.P020.efficiency_sample_size_grows"
+  ]
+ },
+ {
+  "target_id": "P020-T3",
+  "decision": "whole",
+  "theorem": "SAP.P020.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.logistic_strictMono",
+   "AronowAudit.P020.printed_contrast_bound",
+   "AronowAudit.P020.printed_model_unit_negative",
+   "AronowAudit.P020.printed_model_average_negative",
+   "AronowAudit.P020.printed_model_average_ne_reported",
+   "SAP.P020.WH.W2.T3_whole",
+   "SAP.P020.WH.W2.T3_assembly",
+   "AronowAudit.P020.logistic_concrete_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P020.logistic_concrete_counterexample",
+    "reason": "The scalar illustration does not supply an admissible N=1 randomized cluster population under the standing arm-count assumptions."
+   }
+  ],
+  "statement_definition": "SAP.P020.T3WholeStatement_W2"
+ },
+ {
+  "target_id": "P020-T4",
+  "decision": "whole",
+  "theorem": "SAP.P020.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.repaired_average_sign",
+   "AronowAudit.P020.repaired_integer_sign",
+   "AronowAudit.P020.repaired_probability_sign",
+   "AronowAudit.P020.repaired_real_sign",
+   "AronowAudit.P020.repaired_scale_equivalence"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P020.T4Statement"
+ },
+ {
+  "target_id": "P020-T5",
+  "decision": "whole",
+  "theorem": "SAP.P020.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.estimated_coefficient_bias",
+   "SAP.P020.WH.W1.T5_whole",
+   "SAP.P020.WH.W1.T5_assembly",
+   "AronowAudit.P020.assignment_arm_counts",
+   "AronowAudit.P020.estimated_raj_total_mean",
+   "AronowAudit.P020.expected_arm_mean_size",
+   "AronowAudit.P020.expected_arm_sum",
+   "SAP.P020.WH.W1.T5_L1_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P020.estimated_raj_total_mean",
+    "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+   }
+  ],
+  "statement_definition": "SAP.P020.T5WholeStatement"
+ }
+]

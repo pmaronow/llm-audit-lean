@@ -1,0 +1,91 @@
+import SAP.P019a.Challenge
+open SAP.P019a MeasureTheory
+open scoped BigOperators ENNReal
+noncomputable section
+open Classical
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+lemma checkStanding8 : distributionWitness.standing := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro ω _ hy
+    exact hy
+  · intro ω _
+    fin_cases ω <;> norm_num [distributionWitness, fairBit, bitVal]
+  · intro f z
+    cases z <;>
+      norm_num [Study.treatmentIndependent, distributionWitness, FiniteLaw.mean,
+        FiniteLaw.prob, uniformFin, fairBit, Fin.sum_univ_succ] <;> ring
+  · constructor
+    · intro z y
+      cases z <;> cases y <;>
+        norm_num [Study.cell, distributionWitness, FiniteLaw.cv, FiniteLaw.ce,
+          FiniteLaw.mean, FiniteLaw.prob, uniformFin, fairBit, Fin.sum_univ_succ]
+    · norm_num [FiniteLaw.variance, FiniteLaw.mean, distributionWitness,
+        uniformFin, fairBit, bitVal, Fin.sum_univ_succ]
+
+
+def auditMeasure : Measure (Fin 8) := (1/8 : ℝ≥0∞) • Measure.count
+
+def measureWitness : WholeMeasureStudy (Fin 8) where
+  law := ⟨auditMeasure⟩
+  W := distributionWitness.W
+  X := distributionWitness.X
+  Y := distributionWitness.Y
+  Z := distributionWitness.Z
+  V := distributionWitness.V
+
+instance auditProbability : IsProbabilityMeasure auditMeasure := by
+  constructor
+  simp [auditMeasure, Measure.smul_apply, ENNReal.inv_mul_cancel]
+
+lemma bridgeMean (f : Fin 8 → ℝ) :
+    measureWitness.law.mean f = distributionWitness.law.mean f := by
+  simp [WholeMeasureLaw.mean, measureWitness, auditMeasure, integral_smul_measure,
+    integral_count, FiniteLaw.mean, distributionWitness, uniformFin, Finset.mul_sum]
+
+lemma bridgeProb (D : Fin 8 → Prop) [DecidablePred D] :
+    measureWitness.law.prob D = distributionWitness.law.prob D := by
+  exact bridgeMean _
+
+lemma bridgeCE (f : Fin 8 → ℝ) (D : Fin 8 → Prop) [DecidablePred D] :
+    measureWitness.law.ce f D = distributionWitness.law.ce f D := by
+  simp only [WholeMeasureLaw.ce, FiniteLaw.ce, bridgeMean, bridgeProb]
+
+lemma bridgeCV (f : Fin 8 → ℝ) (D : Fin 8 → Prop) [DecidablePred D] :
+    measureWitness.law.cv f D = distributionWitness.law.cv f D := by
+  simp only [WholeMeasureLaw.cv, FiniteLaw.cv, bridgeCE]
+
+lemma bridgeVar (f : Fin 8 → ℝ) :
+    measureWitness.law.variance f = distributionWitness.law.variance f := by
+  simp only [WholeMeasureLaw.variance, FiniteLaw.variance, bridgeMean]
+
+-- T4: every hypothesis is realized by an actual probability measure.
+example : IsProbabilityMeasure measureWitness.law.measure ∧
+    measureWitness.measurableData ∧ measureWitness.boundedData ∧
+    measureWitness.standing := by
+  refine ⟨auditProbability, ?_, ?_, ?_⟩
+  · exact ⟨measurable_of_finite _, measurable_of_finite _, measurable_of_finite _,
+      measurable_of_finite _, measurable_of_finite _⟩
+  · refine ⟨2, ae_of_all _ ?_⟩
+    intro ω
+    fin_cases ω <;> norm_num [measureWitness, distributionWitness, fairBit]
+  · obtain ⟨h1,h2,h3,h4⟩ := checkStanding8
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · exact ae_of_all _ (fun ω => h1 ω (by norm_num [distributionWitness, uniformFin]))
+    · exact ae_of_all _ (fun ω => h2 ω (by norm_num [distributionWitness, uniformFin]))
+    · intro f z
+      simp only [bridgeMean, bridgeProb]
+      cases z <;>
+        norm_num [measureWitness, distributionWitness, FiniteLaw.mean,
+          FiniteLaw.prob, uniformFin, fairBit, Fin.sum_univ_succ] <;> ring
+    · dsimp only [WholeMeasureStudy.nondegenerate]
+      simp only [bridgeProb, bridgeCV, bridgeVar]
+      constructor
+      · intro z y
+        cases z <;> cases y <;>
+          norm_num [WholeMeasureStudy.cell, measureWitness, distributionWitness,
+            FiniteLaw.cv, FiniteLaw.ce, FiniteLaw.mean, FiniteLaw.prob,
+            uniformFin, fairBit, Fin.sum_univ_succ]
+      · norm_num [measureWitness, distributionWitness, FiniteLaw.variance,
+          FiniteLaw.mean, uniformFin, fairBit, bitVal, Fin.sum_univ_succ]

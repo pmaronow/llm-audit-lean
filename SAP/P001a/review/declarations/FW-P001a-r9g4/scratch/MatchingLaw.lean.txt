@@ -1,0 +1,70 @@
+import SAP.P001a.Challenge
+open MeasureTheory ProbabilityTheory Filter
+open scoped ENNReal NNReal BigOperators Topology Classical
+set_option maxRecDepth 5000
+set_option maxHeartbeats 500000
+noncomputable section
+open SAP.P001a
+
+lemma matching_probability : IsProbabilityMeasure matchingUnitLaw := by
+  constructor
+  unfold matchingUnitLaw
+  rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  have hm : Measurable (fun u : ℝ × Bool × Bool =>
+      ENNReal.ofReal (if u.1 ∈ Set.Icc (1/4 : ℝ) (3/4)
+        then (if u.2.1 then u.1 else 1-u.1) else 0)) := by
+    apply ENNReal.measurable_ofReal.comp
+    apply Measurable.ite (measurableSet_Icc.preimage measurable_fst)
+    · apply Measurable.ite ?_ measurable_fst (measurable_const.sub measurable_fst)
+      exact measurableSet_eq_fun (measurable_fst.comp measurable_snd) measurable_const
+    · exact measurable_const
+  rw [lintegral_prod _ hm.aemeasurable]
+  have hpair (b : Bool × Bool) : (Measure.count.prod Measure.count) {b} = 1 := by
+    rcases b with ⟨b,c⟩
+    rw [← Set.singleton_prod_singleton, Measure.prod_prod]
+    simp
+  have inner (p : ℝ) :
+      (∫⁻ b : Bool × Bool,
+        ENNReal.ofReal (if p ∈ Set.Icc (1/4 : ℝ) (3/4)
+          then (if b.1 then p else 1-p) else 0)
+        ∂(Measure.count.prod Measure.count)) =
+        if p ∈ Set.Icc (1/4 : ℝ) (3/4) then 2 else 0 := by
+    rw [lintegral_fintype]
+    simp only [hpair, mul_one, Fintype.sum_prod_type]
+    simp only [Fintype.univ_bool, Finset.sum_insert, Finset.mem_singleton,
+      Bool.true_eq_false, Bool.false_eq_true, not_false_eq_true,
+      ite_false, ite_true, Finset.sum_singleton]
+    split_ifs with hp
+    · have hp0 : 0 ≤ p := le_trans (by norm_num) hp.1
+      have hp1 : 0 ≤ 1-p := by linarith [hp.2]
+      calc
+        _ = 2*(ENNReal.ofReal p + ENNReal.ofReal (1-p)) := by ring
+        _ = 2 := by rw [← ENNReal.ofReal_add hp0 hp1]; norm_num
+    · simp
+  simp_rw [inner]
+  have hind : (fun p : ℝ => if p ∈ Set.Icc (1/4 : ℝ) (3/4) then (2 : ℝ≥0∞) else 0) =
+      (Set.Icc (1/4 : ℝ) (3/4)).indicator (fun _ => 2) := by
+    ext p
+    simp [Set.indicator_apply]
+  rw [hind]
+  rw [lintegral_indicator_const measurableSet_Icc]
+  rw [Real.volume_Icc]
+  have hhalf : ENNReal.ofReal ((3/4 : ℝ)-1/4) = (2 : ℝ≥0∞)⁻¹ := by
+    rw [show (3/4 : ℝ)-1/4 = 1/2 by norm_num,
+      ENNReal.ofReal_div_of_pos (by norm_num)]
+    simp
+  rw [hhalf]
+  exact ENNReal.mul_inv_cancel (by norm_num) (by norm_num)
+
+-- Independent probability/IID/law realization for both universal T16 conjuncts.
+example : ∃ μ : Measure (ℕ → ℝ × Bool × Bool), IsProbabilityMeasure μ ∧
+    IID μ (fun n ω => ω n) ∧ μ.map (fun ω => ω 0) = matchingUnitLaw := by
+  letI := matching_probability
+  let μ := Measure.infinitePi (fun _ : ℕ => matchingUnitLaw)
+  refine ⟨μ, inferInstance, ?_, Measure.infinitePi_map_eval _ _⟩
+  refine ⟨fun n => measurable_pi_apply n, ?_, ?_⟩
+  · exact iIndepFun_infinitePi (X := fun _ => id) (fun _ => measurable_id)
+  · intro n
+    refine ⟨(measurable_pi_apply n).aemeasurable,
+      (measurable_pi_apply 0).aemeasurable, ?_⟩
+    simp only [μ, Measure.infinitePi_map_eval]

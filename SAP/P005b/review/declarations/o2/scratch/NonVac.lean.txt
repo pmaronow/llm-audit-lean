@@ -1,0 +1,57 @@
+import SAP.P005b.Challenge
+open SAP.P005b Finset
+
+noncomputable section
+
+/-- d = 1, n = 4, covariate values 7/5, 1/5, -1/5, -7/5 (mean 0, mean square 1). -/
+def P4 : Population 4 1 where
+  x := fun i _ => ![(7/5 : ℝ), 1/5, -1/5, -7/5] i
+  yT := ![1, 0, 0, 0]
+  yC := ![0, 0, 2, 0]
+
+theorem P4_std : standardized P4 := by
+  constructor
+  · funext k; fin_cases k
+    simp [xMean, mean, P4, Fin.sum_univ_four]; norm_num
+  · ext k l; fin_cases k; fin_cases l
+    simp [gram, popMean, mean, P4, Fin.sum_univ_four]; norm_num
+
+theorem design42 : ∀ S ∈ design 4 2,
+    S ∈ ({{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}} : Finset (Finset (Fin 4))) := by
+  unfold design; decide
+
+theorem c01 : SAP.P005b.control ({0,1} : Finset (Fin 4)) = {2,3} := by decide
+theorem c02 : SAP.P005b.control ({0,2} : Finset (Fin 4)) = {1,3} := by decide
+theorem c03 : SAP.P005b.control ({0,3} : Finset (Fin 4)) = {1,2} := by decide
+theorem c12 : SAP.P005b.control ({1,2} : Finset (Fin 4)) = {0,3} := by decide
+theorem c13 : SAP.P005b.control ({1,3} : Finset (Fin 4)) = {0,2} := by decide
+theorem c23 : SAP.P005b.control ({2,3} : Finset (Fin 4)) = {0,1} := by decide
+
+theorem P4_ireg : interactedRegular P4 2 := by
+  intro S hS
+  have h := design42 S hS
+  simp only [Finset.mem_insert, Finset.mem_singleton] at h
+  rcases h with rfl|rfl|rfl|rfl|rfl|rfl <;>
+  · simp only [Matrix.det_unique, armL, xMean, mean, c01, c02, c03, c12, c13, c23]
+    simp [P4, Finset.sum_insert]
+    norm_num
+
+theorem P4_nreg : noninteractedRegular P4 2 := by
+  intro S hS
+  have h := design42 S hS
+  simp only [Finset.mem_insert, Finset.mem_singleton] at h
+  rcases h with rfl|rfl|rfl|rfl|rfl|rfl <;>
+  · simp only [Matrix.det_unique, Lhat, xMean, mean, c01, c02, c03, c12, c13, c23, pT, pC]
+    simp [P4, xMean, mean, Finset.sum_insert, Matrix.vecMulVec]
+    norm_num
+
+example : 2 ≤ 4 ∧ 0 < 2 ∧ 2 < 4 ∧ standardized P4 ∧ interactedRegular P4 2 :=
+  ⟨by norm_num, by norm_num, by norm_num, P4_std, P4_ireg⟩
+
+example : 3 ≤ 4 ∧ 0 < 2 ∧ 2 < 4 ∧ standardized P4 ∧ noninteractedRegular P4 2 ∧ 2 ≤ 2 ∧ 2 ≤ 4 - 2 :=
+  ⟨by norm_num, by norm_num, by norm_num, P4_std, P4_nreg, le_rfl, by norm_num⟩
+
+example : 3 ≤ 4 ∧ 2 ≤ 2 ∧ 2 < 4 ∧ 2 ≤ 4 - 2 ∧ xMean P4 univ = 0 :=
+  ⟨by norm_num, le_rfl, by norm_num, by norm_num, P4_std.1⟩
+
+end

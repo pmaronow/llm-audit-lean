@@ -1,0 +1,115 @@
+[
+ {
+  "target_id": "P009-T45",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T45",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.arbitrary_EATE_consistency_proof",
+   "AronowAudit.P009.probability_union_bound",
+   "AronowAudit.P009.BernoulliCompletion.second_moment_tail",
+   "AronowAudit.P009.probability_nonnegative",
+   "AronowAudit.P009.BernoulliCompletion.probability_of_op_zero",
+   "AronowAudit.P009.Wave1.t45_rate_zero",
+   "AronowAudit.P009.Wave1.t45_component_moments",
+   "AronowAudit.P009.Wave1.t45_ht_op",
+   "AronowAudit.P009.Wave1.t45_hajek_op",
+   "AronowAudit.P009.Wave1.t45_alphaInt_nonneg",
+   "AronowAudit.P009.Wave1.t45_rate_pos",
+   "AronowAudit.P009.Wave1.t45_internal_bias",
+   "AronowAudit.P009.BernoulliCompletion.op_change_rate",
+   "AronowAudit.P009.Wave1.t45_op_recenter"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.Wave1.arbitrary_bias_finite_proof",
+    "reason": "Supporting finite bias bound; the asymptotic row already exports the retained estimator conclusions."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T45WholeStatement"
+ },
+ {
+  "target_id": "P009-T46",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T46",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.arbitrary_ADSE_consistency_paper",
+   "AronowAudit.P009.probability_union_bound",
+   "AronowAudit.P009.BernoulliCompletion.second_moment_tail",
+   "AronowAudit.P009.probability_nonnegative",
+   "AronowAudit.P009.BernoulliCompletion.probability_of_op_zero",
+   "AronowAudit.P009.Wave1.t45_rate_zero",
+   "AronowAudit.P009.Wave1.t45_component_moments",
+   "AronowAudit.P009.Wave1.t45_ht_op",
+   "AronowAudit.P009.Wave1.t45_hajek_op"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.Wave1.arbitrary_finite_lemmas_proof",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.expected_arm_count",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.expected_arm_mean",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   },
+   {
+    "lean_name": "AronowAudit.P009.ht_unbiased_ADSE",
+    "reason": "Auxiliary expectation or finite-design identity already included in the primary result; not needed separately."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T46WholeStatement"
+ },
+ {
+  "target_id": "P009-T47",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T47",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.variance_bias_limit_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.Wave1.variance_bias_finite_proof",
+    "reason": "Supporting finite variance-bias formulas; the limit row already exports both claimed moving-center limits."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T47Statement"
+ },
+ {
+  "target_id": "P009-T48",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T48",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.average_inflation_conservative_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.Wave1.average_inflation_finite_proof",
+    "reason": "Supporting finite inequalities; the conservative row already exports the full proposition."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T48Statement"
+ },
+ {
+  "target_id": "P009-T49",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T49",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.maximum_inflation_conservative_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.Wave1.maximum_inflation_finite_proof",
+    "reason": "Supporting finite inequalities; the conservative row already exports both alternatives."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T49Statement"
+ }
+]

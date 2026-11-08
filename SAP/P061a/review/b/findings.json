@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P061-T1",
+    "theorem": "SAP.P061a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N use all 3^N ternary vectors, each with mass 3^(-N); the total mass is 1, and for N>0 each unit has target probabilities 2/3 and 1/3. Outcomes are the finite coordinates 0,1,2. N=0 is a singleton with mass 1. Independent exact-rational enumeration in scratch/audit_finite.py verifies every unit EPO and the HT mean and variance for N=1,2,3,4; the general identities follow from the independent-coordinate construction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T2",
+    "theorem": "SAP.P061a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The single-pair witness assigns mass 1/4 to each of the four binary pairs. For every K>0, independent products give 4^K assignments each of mass 4^(-K), so all target probabilities are 1/4 and all outcomes bounded. Exact enumeration in scratch/audit_finite.py verifies the image obstruction, raw-domain probability (1/2)(1/4)^(K-1), and EPOs for K=1,2,3. This is failure of the specified hybrid-domain readings, not a numerical contradiction to a printed equality.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T3",
+    "theorem": "SAP.P061a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both implications have a distinct-target witness: N=2, S={0,1}^2, uniform mass 1/4, d=1,d'=0, coordinate exposure and y_i(z)=z_i+2z_partner. For the second implication use H_i(v)=v_i+2v_partner. Every target probability is 1/2, all moments are finite, each coordinate is independent of the complete other-coordinate vector, and H agrees with y. Outcomes can vary within an exposure cell, so stability is not being smuggled into the hypotheses. The equivalent BitPair design, target probabilities, moments, coordinate independence and unit-0 EPOs 1 and 2 compile in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T4",
+    "theorem": "SAP.P061a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For m>=2 take independent products of the four pair masses (1+1/m)/4,(1-1/m)/4,(1-1/m)/4,(1+1/m)/4. Each is positive and their sum is 1; there are m^8>=256 pairs. The partner coefficient 1/m is nonzero, so the construction has genuine dependence and interference. At m=0,1 use the prescribed parameter 0, which gives valid product designs, including the singleton empty product at m=0. The four-point pair-score calculation gives expectation 1/m^2 and variance V_m/4 before averaging over m^8 pairs, hence the asserted variance. Exact rational checks for m=2,...,40 agree with the algebra; no large product-space enumeration is needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T5",
+    "theorem": "SAP.P061a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All transfer hypotheses are jointly satisfiable with distinct targets and a nondegenerate limit: for N>=1 use iid fair binary assignments on S_N={0,1}^N, y_i(z)=z_i, d=1,d'=0. Then T_N=A_N=1. Let estimate_N=2Z_0 and s_N=estimatedScale_N=1. The centered normalized estimator has exactly law (Dirac(-1)+Dirac(1))/2, with true variance 1, at every positive N; the scale ratio is exactly 1 and the standardized gap 0. All hybrids are feasible and separately integrable. Set the N=0 initial design to its singleton and estimate to 0. For the neighborhood implication, N=2 with H_i={partner}, f_i(e,x)=e+2x_partner and uniform independent binary assignments satisfies every hypothesis with nonempty finite extrema. The rate implication admits T=A=0, bound=0, s=1. The abstract drift implication admits the point design, estimate=T=0, A=-1, s=estimatedScale=1, L=Dirac(0), c=1. Point-design weak convergence and exact scale convergence compile in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P061-T6",
+    "theorem": "SAP.P061a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the uniform four-assignment binary-pair design, N=2, g_i=z_i, y_i=z_i+2z_partner, targets 1 and 0. The finite domain supplies all ordinary moments and each target probability is 1/2. Outcomes vary within an exposure cell, so neither NURVA nor SUTVA is required. The design, positive margins, moments and conditional means are checked in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T7",
+    "theorem": "SAP.P061a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The witness is the full real assignment space with p(k)=2^(-k-1) for natural k and p=0 elsewhere. The geometric series sums to 1; both target cells have probability 1/2. Every individual outcome is a finite real number, while at positive integer k the weighted target response is (-1)^(k+1). Its positive and negative parts each accumulate m over the first 2m positive integers, as do the scaled HT parts up to factor 2. This gives a genuine ordinary-mean failure without evaluating any divergent tsum as an expectation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T8",
+    "theorem": "SAP.P061a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The uniform binary-pair design with y_i=z_i+2z_partner satisfies the general moment hypotheses and the finite-support sufficiency antecedent; replacing y_i by z_i also satisfies the target-cell constancy antecedent. Their probabilities, moments and support-stability fixture compile in scratch/Check.lean. There is also an infinite-support example: on the normalized geometric real-assignment design, take bounded response y(k)=(-1)^(k+1) for positive integer k and 0 elsewhere, with positive-integer exposure 1. Then pi(1)=1/2, M_(1,1)=1/2, and the ordinary target-1 mean is 1/3. Thus generality beyond finite support is meaningful.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T9",
+    "theorem": "SAP.P061a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Each support contains exactly 12 ternary vectors: one coordinate equal to 2 and respectively one or two coordinates equal to 1. Uniform mass 1/12 normalizes both designs. Their positive target probabilities are (1/4,1/4) and (1/4,1/2); outcomes are n on the treated cell and 0 on the untreated cell, giving EPO contrasts 2 and 3 and support stability. Global stability fails, for example at unit 0 for assignments (2,0,0,0) and (2,1,0,0), which have the same exposure but outcomes 1 and 2. All these finite properties are independently enumerated in scratch/audit_finite.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P061-T10",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There is no retained theorem and hence no theorem antecedent to check. The conditions themselves are coherent: edgeless graphs on each positive population size have d_max=d_avg=0 and satisfy all three displayed rates. The canonical formal content transcribes the rate conditions and their indexing; it does not assert a universal graph-growth theorem or a relation between the three conditions. Omission of a merely definitional transcription is justified by the record's stated reason, without treating its audit-history note as part of the claim.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P061-T11",
+    "theorem": "SAP.P061a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The geometric real-assignment witness of T7 has N=1, both target probabilities 1/2 and normalized nonnegative masses. Its target-1 absolute weighted sum is sum_{k>=1}1, so targetMoment fails despite positivity; both signed parts also diverge. These are exactly admissible objects under the standing assumptions, which impose neither finite support nor integrability. This contradicts the canonical universal ordinary-mean existence assertion itself. The theorem is a correct refutation of that assertion, not an assertion that totalized mean identities fail.",
+    "confidence": 0.99
+  }
+]

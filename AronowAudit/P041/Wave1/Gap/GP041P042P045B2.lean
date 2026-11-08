@@ -128,6 +128,8 @@ theorem binomial_coverage_from_arms_proof (r : ℕ) :
       (exactChoose 200 t : ℚ)) 101]
   simp only [binomialCoverage, coverageCount, Nat.cast_sum, Nat.cast_mul]
 
+example : type_of% @AronowAudit.P042.binomial_coverage_from_arms := binomial_coverage_from_arms_proof
+
 end AronowAudit.P042.Wave1
 
 namespace AronowAudit.P045.Wave1
@@ -384,6 +386,8 @@ theorem singleton_drop_bias_proof {G C : ℕ} (hC : 2 ≤ C) (hCG : C ≤ G)
   · rw [singleton_selected_bias hC hCG (crMass 3 1) (cr_mass_probability (n := 3) (k := 1) (by norm_num)).2 a b]
     simp_rw [(singleton_local_bias _ _).2]
 
+example : type_of% @AronowAudit.P045.singleton_drop_bias := singleton_drop_bias_proof
+
 theorem singleton_drop_dilated_bias_proof {G C : ℕ} (hC : 2 ≤ C) (hCG : C ≤ G)
     (x : Fin G → Fin 3 → ℝ) :
     let n : Fin G → ℕ := fun _ => 3
@@ -437,5 +441,7 @@ theorem singleton_drop_dilated_bias_proof {G C : ℕ} (hC : 2 ≤ C) (hCG : C �
   rw [he1, he2]
   constructor <;> apply mul_neg_of_neg_of_pos _ hsum <;>
     apply neg_neg_of_pos <;> positivity
+
+example : type_of% @AronowAudit.P045.singleton_drop_dilated_bias := singleton_drop_dilated_bias_proof
 
 end AronowAudit.P045.Wave1

@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P044-T1",
+    "theorem": "SAP.P044.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional, explicit 12-unit three-clique instance with 66 distinct assignments, 65-assignment banks, and constant outcome one. scratch/RefereeCheck.lean proves that both joint mass functions and all conditional observation mass functions are nonnegative and normalized. Independent exact rational computation checks all 66 fixed banks and both joint laws; the minimum relevant smoothed marginal weight is 9/22. Both exposure groups are nonempty at every assignment. Count subtraction removes only indicators actually counted, so no natural-subtraction artifact occurs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T2",
+    "theorem": "SAP.P044.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general exact-input conjunct take N=4, a graph consisting of edges 01 and 23, the six complete-randomization assignments with two treated units and mass 1/6, a=d11, b=d00, and any real outcome schedule. Every unit has exposure probabilities (1/6,1/3,1/3,1/6). The graph properties, real finite probability design, and all positive marginals are proved in scratch/RefereeCheck.lean. The two strict-failure conjuncts are explicit T1 instances. The docstring accurately omits the R=10000-specific, broader seed-reuse, error-control, and Hajek commentary clauses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T3",
+    "theorem": "SAP.P044.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed nonisolated four-unit star and its six assignments give the two schedules in the claim: all observed outcomes are one, but the target effects are 0 and -1. The extra observed-term positivity hypothesis in the last conjunct is proved independently for every profile, unit and exposure in scratch/RefereeCheck.lean, so this conjunct is not vacuous. Exact rational recomputation gives HT means 1 and 3/4, contrast 1/4 and biases 1/4 and 5/4. The omitted exposure vectors and the conditional status of these calculations are accurately disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T4",
+    "theorem": "SAP.P044.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four-unit matching with complete randomization of two units witnesses full positive support and unbiasedness hypotheses; its real probabilities are checked in scratch/RefereeCheck.lean. The supplied star witnesses the zero-support nonidentification branch (j=0, a=d00, b=d11, any nonzero delta), and its three leaves form a nonempty common-support set for d11,d00. The matching also satisfies the complete-randomization all-exposure criterion with N=4, M=2, k=1. A 1000-vertex matching satisfies the specialized criterion. Independent enumeration checks the general formulas and support equivalence in all 240 degree/design cases with 2<=N<=9.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T5",
+    "theorem": "SAP.P044.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit triangle has degree=twoWalkDegree=2 and scale=8, checked in Lean; its displayed g,e values give the nonzero-population arithmetic witness. normalPair is a genuine product probability measure, checked by typeclass inference. Its two nondegenerate Gaussian factors give positive probability to each nonempty rectangle used in the statement, including the negative-baseline rectangle. L2 conclusions ensure ordinary finite means and variances. The external identification with the staged generator is explicitly a provenance premise in the canonical claim, not a missing mathematical hypothesis invented by this theorem.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P044-T6",
+    "theorem": "SAP.P044.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=3 and the loopless triangle for the generated-population and nonisolate branches. normalPopulation 3 is a probability measure, verified in scratch/RefereeCheck.lean. Take the explicitly displayed B=(-5/8,9,21/4) for the realized-effects branches. For the half-normal comparison take N=1, Omega=R, P=gaussianReal 0 1, and B(g)(0)=|g|; the required HasLaw is checked in Lean. The statement asserts integrability of both kinds of averages and square integrability of every baseline scale, so no nonintegrable integral is used as an expectation.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P044-T7",
+    "theorem": "SAP.P044.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed eight-cycle and eight distinct rotations are a concrete exhaustive design with positive exact probabilities (1/4,1/8,3/8,1/4) and positive smoothed weights (1/3,2/9,4/9,1/3). Every group is nonempty at each assignment. Independent exact enumeration checks all stated counts, constant means, contrasts, biases, and the joint row sum 17/72. It also confirms the omitted base vector and individual joint entries, but their omission is still accurately disclosed in the docstring and record.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T8",
+    "theorem": "SAP.P044.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The exhaustive eight-cycle design instantiates the first conjunct with R=N=8, D=Exposure and w=1 or the positive exact weights. More generally w=1 always discharges the unused fixed-weight hypothesis for the count and smoothing identities. For the random-bank conjunct, scratch/RefereeCheck.lean constructs p=1/2, R=2 and the product of Bernoulli(p) and Binomial(R,p), proves the two coordinate HasLaw premises and their independence, and proves 0<p<1. Independent rational sums check the expectation formula for 27 binomial examples, including R=0. All smoothed denominators are positive and the integrability conclusion is explicit.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T9",
+    "theorem": "SAP.P044.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For N=2, the own-treatment schedule y_i(z)=1_{z_i=true} satisfies NoInterference, whereas y_i(z)=1_{z_1=true} exhibits Interference at i=0; both facts are proved in scratch/RefereeCheck.lean. The two-unit edge is a loopless instance of the peer-count invariance statement. Thus the general equivalences are not supported solely by an empty population or an absence of interfering schedules. The omitted row-times-row syntax diagnosis is exactly the restriction named in the docstring and record.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T10",
+    "theorem": "SAP.P044.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=2, the simple graph with its one edge, and a single community label. Lean checks positive degree at both vertices and that every edge is within its community. Put a point-mass probability design on this graph and labeling to satisfy both finite-law sets of hypotheses: crossing-event masses are zero, every graph has no isolates, W=M=1, and both expected ratios are 1. The separate algebraic cross-community branch is instantiated by two distinct labels. The docstring explicitly states that the law properties are assumed rather than derived from the generator or rejection loop; no generator correctness is being certified by the restricted theorem.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P044-T11",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is asserted for this target. The printed approximation wording does not specify an exact universal expected-variance inequality, and failure of such a stronger statement on the T1 finite banks would not by itself contradict the chapter's particular R=10000 seed-reused workflow. T1 and the accurately restricted T2 retain the defensible exact witness and exact-probability theorem. The record's reason for declining to credit a direct refutation of the printed assertion is justified from the visible claim text, independently of the audit-history note.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P044-T12",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem is asserted for this target. S7 defines its inverse-probability estimator on positive marginal inputs, so the zero-support star does not directly refute that estimator on its domain. Dropping unobservable zero-support terms defines an extension, and the star refutes an unconditional unbiasedness reading for that extension. T3/T4 state the nonidentification and support-qualified mathematics; T7/T8 separately address smoothed inputs. None of these is a proof of the entire quoted Hajek/WLS consistency and efficiency language. The record correctly avoids treating the rejected extension-based row as a refutation of the canonical assertion itself.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P044-T13",
+    "theorem": "SAP.P044.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The loopless triangle with N=3 is an admissible nonempty instance; even the one-unit zero adjacency satisfies the theorem's explicit premises, as checked in Lean. Every degreeScale is nonnegative, and the specified baseline law has positive mass on negative values, while halfNormalLaw has none. Thus at any nonempty network the all-unit half-normal assertion fails. This is a faithful direct refutation of the printed baseline-law conjunct; its correct multipliers need not be negated. The canonical definitions expressly refer to the generator model, whose source-code identification remains external provenance. The step-2 'different' value records the theorem's negative polarity, and is not a revised fidelity verdict after reading the record.",
+    "confidence": 0.98
+  }
+]

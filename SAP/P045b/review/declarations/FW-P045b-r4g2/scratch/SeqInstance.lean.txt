@@ -1,0 +1,48 @@
+import SAP.P045b.Defs
+open scoped BigOperators
+open SAP.P045b
+
+namespace Review
+noncomputable def fair : Design Bool where
+  mass := fun _ => 1/2
+  nonneg := by intro b; norm_num
+  total := by norm_num [Fintype.sum_bool]
+
+noncomputable def seqT (n : ℕ) (b : Bool) : ℝ := sign b / ((n : ℝ)+1)
+noncomputable def seqV (n : ℕ) (_b : Bool) : ℝ := 1 / ((n : ℝ)+1)^2
+
+lemma seqVariance (n : ℕ) : variance fair.mass (seqT n) = 1/((n : ℝ)+1)^2 := by
+  simp [variance, SAP.P045b.expect, fair, seqT, sign, Fintype.sum_bool]
+  rw [← inv_pow]
+  ring
+
+-- T23: every premise of the general vanishing-variance implication holds simultaneously.
+example :
+    (∀ n, 0 < variance fair.mass (seqT n)) ∧
+    (∀ n b, 0 ≤ seqV n b) ∧
+    Filter.Tendsto (fun n => variance fair.mass (seqT n)) Filter.atTop (nhds 0) ∧
+    Filter.Tendsto (fun n => SAP.P045b.expect fair.mass (fun b => Real.sqrt (seqV n b)) -
+      Real.sqrt (variance fair.mass (seqT n))) Filter.atTop (nhds 0) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro n; rw [seqVariance]; positivity
+  · intro n b; unfold seqV; positivity
+  · simp_rw [seqVariance, ← one_div_pow]
+    simpa using (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).pow 2
+  · have hzero : (fun n => SAP.P045b.expect fair.mass (fun b => Real.sqrt (seqV n b)) -
+        Real.sqrt (variance fair.mass (seqT n))) = fun _ => 0 := by
+      funext n
+      rw [seqVariance]
+      simp [SAP.P045b.expect, fair, seqV]
+    rw [hzero]
+    exact tendsto_const_nhds
+
+-- T23: the nonvanishing counterexample is supported on both atoms.
+example : variance fair.mass sign = 1 ∧
+    SAP.P045b.expect fair.mass (fun b => Real.sqrt ((if b then (3/2 : ℝ) else 1/2)^2)) = 1 ∧
+    prob fair.mass (fun b => (1/2 : ℝ) < |(if b then (3/2 : ℝ) else 1/2)^2-1|) = 1 := by
+  norm_num [variance, SAP.P045b.expect, prob, fair, sign, Fintype.sum_bool, Real.sqrt_div]
+
+example : ∃ (M : ℕ) (s : Fin M → ℝ) (sd : ℝ),
+    0 < M ∧ (∀ i, 0 ≤ s i) ∧ 0 < sd := by
+  exact ⟨2, ![1,2], 1, by norm_num, by intro i; fin_cases i <;> norm_num, by norm_num⟩
+end Review

@@ -3,7 +3,9 @@ import AronowAudit.P017.Wave1.Gap.GP017B3
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
-/-! P017-T5 and P017-T8: exact probability counterexample and finite MSE bounds. -/
+/-! P017-T5 and P017-T8: exact probability counterexample and finite MSE bounds.
+Only proved companion results and proved pointwise facts are used.
+-/
 
 namespace AronowAudit.P017.Wave1
 
@@ -402,7 +404,11 @@ theorem normal_shift_probability_counterexample_proof :
     norm_num
 
 
-/-! Gaussian moment recurrence with the variance parametrization. -/
+example : type_of% @AronowAudit.P017.normal_shift_probability_counterexample := normal_shift_probability_counterexample_proof
+
+
+/-! The following Gaussian moment recurrence is adapted from the proved
+private helpers in `GP017B2.lean`, retaining the variance parametrization. -/
 private theorem t8b4_density_pow_integrable (v : ℝ≥0) (hv : 0 < v) (k : ℕ) :
     Integrable (fun x : ℝ => x ^ k * gaussianPDFReal 0 v x) := by
   have hvR : 0 < (v : ℝ) := hv
@@ -761,6 +767,8 @@ theorem corrected_proposition4_finite_proof {Ξ : Type*} [MeasurableSpace Ξ]
   · exact integral_mono hRint hTaili (fun ω => (residual_tail_fourth_bound μ c (T ω) hc).1)
   · exact t8b4_tail_density P (fun ω => T ω - μ) hXm n hn c hc v hv hXlaw
 
+
+example : type_of% @AronowAudit.P017.corrected_proposition4_finite := corrected_proposition4_finite_proof
 
 end
 end AronowAudit.P017.Wave1

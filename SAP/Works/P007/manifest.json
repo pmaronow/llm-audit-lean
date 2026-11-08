@@ -1,0 +1,418 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P007.concrete_four_variable_counterexample",
+        "reason": "Final status wrong_credit: a synthetic feasibility witness does not identify the named empirical array; the universal conditional bound supplies the refutation."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P007.denominatorValue",
+      "AronowAudit.P007.fourVariablesCannotLoseMoreThan99Percent",
+      "AronowAudit.P007.numeratorLowerBound",
+      "AronowAudit.P007.supportingLine",
+      "AronowAudit.P007.supportingLine_equality",
+      "AronowAudit.P007.uniform_retention_counting_identity"
+    ],
+    "supporting_declarations": [],
+    "target_id": "P007-T1",
+    "theorem": "SAP.P007.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "The simulation portion covers exactly the supplied archived estimates at k=4,5,6. The corrected sentence for every k>6 is omitted. All enumerated exact count, average and four-variable bounds are retained.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.archived_simulation_threshold",
+      "AronowAudit.P007.fourVariablesCannotLoseMoreThan99Percent",
+      "AronowAudit.P007.logged_mask_correction",
+      "AronowAudit.P007.logged_missing_count_unique",
+      "AronowAudit.P007.stateFailure_corrected_average"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P007.columnAverage_count_identity"
+    ],
+    "target_id": "P007-T2",
+    "theorem": "SAP.P007.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.fully_missing_all_bounds",
+      "AronowAudit.P007.zero_bound_counterexample"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P007.nullFirst_prefixes"
+    ],
+    "target_id": "P007-T3",
+    "theorem": "SAP.P007.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.later_null_counterexample",
+      "AronowAudit.P007.null_prefix_counterexample"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P007.zero_bound_counterexample"
+    ],
+    "target_id": "P007-T4",
+    "theorem": "SAP.P007.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.independent_rows_product",
+      "AronowAudit.P007.lemma3",
+      "AronowAudit.P007.prefix_step",
+      "AronowAudit.P007.prefix_survival_bound",
+      "AronowAudit.P007.repairedConditional_bounds",
+      "AronowAudit.P007.repaired_chain_product",
+      "AronowAudit.P007.zero_bound_all_deleted",
+      "AronowAudit.P007.zero_bound_first_missing"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P007.prefix_zero",
+      "AronowAudit.P007.probability_nonneg"
+    ],
+    "target_id": "P007-T5",
+    "theorem": "SAP.P007.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.bernoulli_sandwich",
+      "AronowAudit.P007.deletion_probability_sandwich",
+      "AronowAudit.P007.groups_are_not_variables",
+      "AronowAudit.P007.logarithm_decay_identity",
+      "AronowAudit.P007.zero_bound_all_deleted"
+    ],
+    "supporting_declarations": [],
+    "target_id": "P007-T6",
+    "theorem": "SAP.P007.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "declaration_review_round1": {
+      "finding": "label_wrong/minor: canonical T7(c3) explicitly compares the Bernoulli estimate itself with 99/100.",
+      "proof": "One closed numerical comparison by norm_num, already checked within AronowAudit.P007.printed_parameters_actual_deletion_high (P007_Probability.lean:1067).",
+      "resolution": "Added (99/100 : ℝ) < 1 - (30000 : ℝ)/4^33 as an explicit conjunct of T7Statement; the whole decision is retained.",
+      "scope": "Only the target-specific T7Statement and its Solution proof changed; all shared mathematical definitions and other target statements are unchanged."
+    },
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.figure4_printed_lower_bound_not_upper",
+      "AronowAudit.P007.figure4_printed_worked_counterexamples",
+      "AronowAudit.P007.floor_is_not_first_crossing",
+      "AronowAudit.P007.lower_bound_is_not_upper_guarantee",
+      "AronowAudit.P007.printed_parameters_actual_deletion_high"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P007.bestCase_attained",
+      "AronowAudit.P007.threshold_floor_ceiling",
+      "AronowAudit.P007.threshold_unique_solution",
+      "AronowAudit.P007.adjacent_bracket_rounding",
+      "AronowAudit.P007.figure4_corrected_worked_values",
+      "AronowAudit.P007.unequalProbability_assumptions",
+      "AronowAudit.P007.unequalProbability_all"
+    ],
+    "target_id": "P007-T7",
+    "theorem": "SAP.P007.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.bestCase_attained",
+      "AronowAudit.P007.bestCase_increasing",
+      "AronowAudit.P007.figure4_corrected_worked_values",
+      "AronowAudit.P007.threshold_floor_ceiling",
+      "AronowAudit.P007.threshold_integer_inversion",
+      "AronowAudit.P007.threshold_probability_guarantee",
+      "AronowAudit.P007.threshold_rounding_gap",
+      "AronowAudit.P007.threshold_unique_solution"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P007.lemma3",
+      "AronowAudit.P007.lower_bound_is_not_upper_guarantee",
+      "AronowAudit.P007.unequalProbability_assumptions",
+      "AronowAudit.P007.figure4_numeric_33",
+      "AronowAudit.P007.figure4_numeric_34",
+      "AronowAudit.P007.figure4_numeric_952",
+      "AronowAudit.P007.figure4_numeric_953"
+    ],
+    "target_id": "P007-T8",
+    "theorem": "SAP.P007.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.figure5_upper_bound_counterexample"
+    ],
+    "supporting_declarations": [
+      "AronowAudit.P007.figure5Witness_prefixes"
+    ],
+    "target_id": "P007-T9",
+    "theorem": "SAP.P007.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.bestCase_attained",
+      "AronowAudit.P007.equalProbabilityLaw",
+      "AronowAudit.P007.equalProbability_prefix",
+      "AronowAudit.P007.expected_deletion_bound_attained",
+      "AronowAudit.P007.expected_deletion_lower_bound",
+      "AronowAudit.P007.expected_removed_fraction",
+      "AronowAudit.P007.expected_removed_row",
+      "AronowAudit.P007.fraction_bound_vs_all_bound",
+      "AronowAudit.P007.independentProduct",
+      "AronowAudit.P007.independentProduct_events",
+      "AronowAudit.P007.independentProduct_marginal",
+      "AronowAudit.P007.observationBernoulli",
+      "AronowAudit.P007.observationBernoulli_false",
+      "AronowAudit.P007.probability_compl",
+      "AronowAudit.P007.probability_congr",
+      "AronowAudit.P007.zero_bound_first_missing",
+      "SAP.P007.Bridge.fromAudit",
+      "SAP.P007.Bridge.toAudit",
+      "SAP.P007.WH.W2.T10_assembly",
+      "SAP.P007.WH.W2.T10_whole",
+      "SAP.P007.WH.W2.equal_cells",
+      "SAP.P007.WH.W2.finite_law_realization",
+      "SAP.P007.WH.W2.independent_weights",
+      "SAP.P007.WH.W2.observation_transfer"
+    ],
+    "statement_definition": "SAP.P007.T10WholeStatement_W2",
+    "supporting_declarations": [
+      "AronowAudit.P007.bestCase_attained"
+    ],
+    "target_id": "P007-T10",
+    "theorem": "SAP.P007.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.independent_rows_product",
+      "AronowAudit.P007.mutually_independent_need_not_be_iid"
+    ],
+    "supporting_declarations": [],
+    "target_id": "P007-T11",
+    "theorem": "SAP.P007.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P007.columnAverage_count_identity",
+        "reason": "The removal theorem already exports the needed count-to-average identities."
+      },
+      {
+        "lean_name": "AronowAudit.P007.logged_mask_correction",
+        "reason": "Part (iii) uses the canonical missing-count premise A=7019387 directly; the stronger log-tolerance correction is packaged in T2."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P007.printed_average_cannot_be_retained",
+      "AronowAudit.P007.removing_fully_missing_columns",
+      "AronowAudit.P007.stateFailure_average_overstatement",
+      "AronowAudit.P007.stateFailure_corrected_average"
+    ],
+    "supporting_declarations": [],
+    "target_id": "P007-T12",
+    "theorem": "SAP.P007.T12"
+  },
+  {
+    "axioms": null,
+    "decision": "omitted",
+    "proof_plan": null,
+    "proof_status": null,
+    "reason": "work.json marks this target no_lean=true and supplies no credited rows; no formal declaration of the named empirical array establishes or refutes its positive printed assertions in this target.",
+    "restriction": "work.json marks this target no_lean=true and supplies no credited rows; no formal declaration of the named empirical array establishes or refutes its positive printed assertions in this target.",
+    "rows_not_used": [],
+    "rows_used": [],
+    "supporting_declarations": [],
+    "target_id": "P007-T13",
+    "theorem": null
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.lemma3"
+    ],
+    "supporting_declarations": [],
+    "target_id": "P007-T14",
+    "theorem": "SAP.P007.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.lemma8"
+    ],
+    "supporting_declarations": [],
+    "target_id": "P007-T15",
+    "theorem": "SAP.P007.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P007.uniform_decay",
+        "reason": "Auxiliary analytic decay is already used internally by the headline proposition; the Challenge states its probability limit."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P007.proposition5"
+    ],
+    "supporting_declarations": [],
+    "target_id": "P007-T16",
+    "theorem": "SAP.P007.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P007.proposition10"
+    ],
+    "supporting_declarations": [],
+    "target_id": "P007-T17",
+    "theorem": "SAP.P007.T17"
+  }
+]

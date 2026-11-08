@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P015a.T1",
+    "target_id": "P015-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "All clauses (a)-(e) of the explicit rare-overlap construction are present, including genuine finite-sample IPW moments, n>=1 Chebyshev bounds, pointwise-in-epsilon consistency, the positive effective-law normalizer, and the nonsingular population OLS coefficient. The four atoms all have positive mass; propensity denominators are strictly between zero and one. No conclusion is assumed."
+  },
+  {
+    "theorem": "SAP.P015a.T2",
+    "target_id": "P015-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The four-atom law, original and effective support failures, both potential-outcome worlds, their distinct nominal/effective effects, and impossibility of a common consistent data-only estimator are all represented. Observed triples agree pointwise. Infinite independent uniform sampling is realizable on (Fin 4)^N with product probability, so the estimator clause has nonempty hypotheses. The arbitrary-outcome section drops the affine-potential-outcome assumption as the canonical claim requires."
+  },
+  {
+    "theorem": "SAP.P015a.T3",
+    "target_id": "P015-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The independent fair binary population is represented by its uniform four-atom joint law. The ordered sample has product mass 1/256, both controls and full regression have nonsingular Gram matrices, and actual least-squares residuals, not a supplied arbitrary coefficient vector alone, yield the zero profile weights. The full finite counterexample is covered."
+  },
+  {
+    "theorem": "SAP.P015a.T13",
+    "target_id": "P015-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "All four formal components of the corrected derivative/Taylor claim appear. The correct denominator is (1+exp(c))^2, and the printed denominator (1+c)^2 is evaluated at c=0, where it is nonzero and gives 1 rather than 1/4. The universal 0<p<1 hypotheses are satisfiable, for example p=1/2."
+  },
+  {
+    "theorem": "SAP.P015a.T12",
+    "target_id": "P015-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains (i), the degree-N Taylor bounds and vanishing geometric bounds of (ii), and the exact complex radius, whose existence conjunct is guarded by circle-image nonemptiness and boundedness. Omits (iii), the outside-radius dataset with a unique finite ML estimate. Uses a real supremum instead of asserting attainment of the circle maximum. These omissions are disclosed in the challenge docstring. The radius inequalities guarantee a positive circle radius, a pole-free compact circle and 0<=r/rho<1, so this is not a zero-denominator or unbounded-supremum trick."
+  },
+  {
+    "theorem": "SAP.P015a.T8",
+    "target_id": "P015-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains Bernoulli directional score differentiation, logistic multiplier one, canonical score differentiation/cancellation with a normalized supported family and positive common dispersion, actual normalized integrable Bernoulli/Poisson mean examples, the probit score with nonconstant multiplier and H derivative zero at zero, and the full vector first-Taylor-polynomial identity. Omits the arbitrary-canonical-family response-mean identity, Appendix C/OLS reparameterization and derived linearized equations/division/cancellation conclusions, and standalone T6/T7 discrepancy assertions within this target. These restrictions, including extra canonical-family hypotheses, are disclosed. The exact polynomial is correctly distinguished from a quadratic remainder for the nonlinear score."
+  },
+  {
+    "theorem": "SAP.P015a.T5",
+    "target_id": "P015-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All specified six-cell odds-link numerical facts and genuine likelihood derivatives/nonmaximality are represented on the positive-predictor domain. However, as a counterexample to the printed necessary implication ML(theta) => residualEquation(theta)=0, the theorem only proves residualEquation(theta0)=0 and not ML(theta0). That proves failure of the converse, not the printed necessary implication. The docstring explicitly discloses that it supplies no ML maximizer with nonzero substituted residual, so the retained witness is a valid restricted statement."
+  },
+  {
+    "theorem": "SAP.P015a.T6",
+    "target_id": "P015-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The full stated six-cell probit witness, well-defined quantile, exact residual and score values, positive treatment-score lower bound, and nonmaximality are represented and appear true. But the witness has the same implication-direction limitation as T5: residualEquation(theta0)=0 with theta0 not ML refutes sufficiency of the substituted equation, not the printed assertion that ML estimates solve the substituted equation. No actual ML maximizer with nonzero substituted residual is asserted. Unlike T5, the T6 docstring does not disclose this limit to the claimed refutation."
+  },
+  {
+    "theorem": "SAP.P015a.T7",
+    "target_id": "P015-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "The explicit causal unit law and conditional independence/linearity/binary-outcome identities, all finite moment/Jacobian data, genuine unique maximizing branches with derivatives 120/119 and 1, the OLS coefficient epsilon, and the surjective treatment-preserving change of basis are represented. The maximizing branches are conclusions, not hypotheses. The admissible positive square-link branch and parameter bounds keep all likelihood means and logs inside (0,1); both causal laws have outcome mean 1/4."
+  },
+  {
+    "theorem": "SAP.P015a.T16",
+    "target_id": "P015-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "All formal clauses (i)-(iii) occur, with exact rational exponential enclosures, the unrestricted fitted exponential-contrast identity and the actual nonsingular four-observation OLS counterexample. Its transformed responses use (1+S_post)/2>0, so neither logarithms at zero nor a singular inverse explains the result."
+  },
+  {
+    "theorem": "SAP.P015a.T4",
+    "target_id": "P015-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "Covers the formal parts (i)-(iv): positive endpoint probabilities imply positive variance, zero variance is conditionally degenerate, binary variance/positivity equivalence, positive-integrable-residual effective-law normalization and cell-mass formula, binary effective-law reversal, and the three explicit counterexamples. Countable measurable-singleton covariates express discrete X; L2 treatment gives real finite cell moments. The extra explicit integrability antecedent in the effective-law clause is already implied in this setting, rather than assuming the conclusion. The broad prose is credited only to the formal content specified by the canonical claim."
+  },
+  {
+    "theorem": "SAP.P015a.T19",
+    "target_id": "P015-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "The squared residual uses genuine Mathlib conditional expectation for a measurable X and L2 treatment on a probability space. Conditional variance is defined by conditional expectation of that squared centered residual, so the first identity is legitimately definitional. The binary propensity identity is a substantive almost-everywhere conclusion. Neither the affine causal model nor discrete covariates are added."
+  }
+]

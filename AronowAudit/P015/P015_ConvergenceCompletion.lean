@@ -95,5 +95,9 @@ lemma inverse_smul_real {Q : Type*} [Fintype Q] [DecidableEq Q]
     have hca : ¬IsUnit (c • A).det:=by simp [ha0,isUnit_iff_ne_zero]
     rw [Matrix.nonsing_inv_apply_not_isUnit _ hca,Matrix.nonsing_inv_apply_not_isUnit _ ha,smul_zero]
 
+#print axioms finite_cmt
+#print axioms pair_cmt
+#print axioms div_limit
+#print axioms inverse_smul_real
 end
 end AronowAudit.P015.ConvergenceCompletion

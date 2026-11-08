@@ -2,10 +2,12 @@ import AronowAudit.P004.Wave1.DesignLimits.DL7
 import Mathlib.Analysis.Real.Sqrt
 
 /-!
-Coverage with a random radius converging in probability to a positive constant.
-Continuous mapping applies to the square-root radius, followed by a fixed-radius
-event sandwich. The argument requires neither joint convergence nor independence
-of the numerator and the radius.
+Coverage with a random positive limiting radius. First apply the separate DL9
+draft to the continuous square-root radius. The remaining argument is the
+paper's fixed-radius event sandwich. In particular it requires neither joint
+convergence nor independence of the numerator and the radius.
+
+This draft was written without running Lean.
 -/
 
 namespace AronowAudit.P004.Wave1.DesignLimits

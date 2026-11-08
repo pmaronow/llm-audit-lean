@@ -1,9 +1,10 @@
 import AronowAudit.P009.Wave1.Gap.GLP0092B4
 
 /-!
-P009-T51: existential asymptotic sharpness with unchanged assignment laws,
-bounded outcomes, degree bounds, restricted interference, and a centered
-three-point limit.
+P009-T51: the full existential asymptotic sharpness contract.
+The seeded Wave1 proof already supplies this exact statement, including the
+unchanged assignment laws, bounded outcomes, both degree bounds, restricted
+interference, and the centered three-point limit. Reuse that proved assembly.
 -/
 
 namespace AronowAudit.P009.Wave1

@@ -7,7 +7,7 @@ open scoped BigOperators
 noncomputable section
 
 /-- A number "displays as" a three-decimal value when it is within 1/2000,
-including both tie endpoints. Table 1, p. 857; P022-N003. -/
+including both tie endpoints. Table 1, p. 857; validator P022-N003, §2. -/
 def displaysThree (x p : ℝ) : Prop := p - 1 / 2000 ≤ x ∧ x ≤ p + 1 / 2000
 
 /-- The half-width of a printed confidence interval is (U-L)/2.
@@ -162,3 +162,12 @@ theorem fixed_multiplier_mean_lower (w v : ℝ)
 end
 end AronowAudit.P022
 
+#print axioms AronowAudit.P022.half_width_rounding
+#print axioms AronowAudit.P022.table1_ratio_lower_bound
+#print axioms AronowAudit.P022.table1_corrected_reduction
+#print axioms AronowAudit.P022.displayed_variance_reduction
+#print axioms AronowAudit.P022.finite_sqrt_mean_squared_le_mean
+#print axioms AronowAudit.P022.finite_wald_mean_width_squared_le
+#print axioms AronowAudit.P022.table1_multiplier_bound
+#print axioms AronowAudit.P022.reported_numbers_incompatible
+#print axioms AronowAudit.P022.fixed_multiplier_mean_lower

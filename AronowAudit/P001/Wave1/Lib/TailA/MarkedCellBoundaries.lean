@@ -55,6 +55,60 @@ theorem marked_coordinate_ne (μ : Measure ℝ) [IsFiniteMeasure μ]
   intro z x
   exact Function.update_of_ne hjk.symm _ _
 
+/-- Fixed-center distance ties have zero measure, including ties across the pin. -/
+theorem marked_fixed_distance_boundary (μ : Measure ℝ) [IsFiniteMeasure μ]
+    [NullSingletonClass μ] {n : ℕ} (p : ℝ) (j k : Fin n) (hjk : j ≠ k) :
+    ∀ᵐ z ∂Measure.pi (fun _ : Fin n => μ), |z j-p| ≠ |z k-p| := by
+  have hmirror : ∀ᵐ z ∂Measure.pi (fun _ : Fin n => μ), z j ≠ 2*p-z k := by
+    apply marked_coordinate_avoid μ j (fun z => 2*p-z k) (by fun_prop)
+    intro z x
+    simp only [Function.update_of_ne hjk.symm]
+  filter_upwards [marked_coordinate_ne μ j k hjk,hmirror] with z hz hm
+  intro h
+  rcases abs_eq_abs.mp h with h | h
+  · exact hz (by linarith)
+  · exact hm (by linarith)
+
+/-- A query location cannot lie on the midpoint between another site and the pin. -/
+theorem marked_pinned_midpoint_boundary (μ : Measure ℝ) [IsFiniteMeasure μ]
+    [NullSingletonClass μ] {n : ℕ} (p : ℝ) (i j : Fin n) (hij : i ≠ j) :
+    ∀ᵐ z ∂Measure.pi (fun _ : Fin n => μ), |p-z i| ≠ |z j-z i| := by
+  have hjp := marked_coordinate_avoid μ j (fun _ => p) measurable_const (fun _ _ => rfl)
+  have hmirror : ∀ᵐ z ∂Measure.pi (fun _ : Fin n => μ), z j ≠ 2*z i-p := by
+    apply marked_coordinate_avoid μ j (fun z => 2*z i-p) (by fun_prop)
+    intro z x
+    simp only [Function.update_of_ne hij]
+  filter_upwards [hjp,hmirror] with z hp hm
+  intro h
+  rcases abs_eq_abs.mp h with h | h
+  · exact hp (by linarith)
+  · exact hm (by linarith)
+
+/-- The same calculation for three distinct variable sites. -/
+theorem marked_variable_midpoint_boundary (μ : Measure ℝ) [IsFiniteMeasure μ]
+    [NullSingletonClass μ] {n : ℕ} (i j k : Fin n) (hjk : j ≠ k) :
+    ∀ᵐ z ∂Measure.pi (fun _ : Fin n => μ), |z j-z i| ≠ |z k-z i| := by
+  by_cases hji : j = i
+  · subst i
+    filter_upwards [marked_coordinate_ne μ j k hjk] with z hz
+    intro h
+    have he : z k-z j = 0 := abs_eq_zero.mp (by simpa [markedPinnedScores] using h.symm)
+    exact hz (by linarith)
+  by_cases hki : k = i
+  · subst i
+    filter_upwards [marked_coordinate_ne μ j k hjk] with z hz
+    intro h
+    have he : z j-z k = 0 := abs_eq_zero.mp (by simpa [markedPinnedScores] using h)
+    exact hz (by linarith)
+  have hmirror : ∀ᵐ z ∂Measure.pi (fun _ : Fin n => μ), z j ≠ 2*z i-z k := by
+    apply marked_coordinate_avoid μ j (fun z => 2*z i-z k) (by fun_prop)
+    intro z x
+    simp only [Function.update_of_ne (Ne.symm hji),Function.update_of_ne hjk.symm]
+  filter_upwards [marked_coordinate_ne μ j k hjk,hmirror] with z hz hm
+  intro h
+  rcases abs_eq_abs.mp h with h | h
+  · exact hz (by linarith)
+  · exact hm (by linarith)
 
 theorem marked_pinned_injective (μ : Measure ℝ) [IsFiniteMeasure μ]
     [NullSingletonClass μ] (n : ℕ) (p : ℝ) :
@@ -160,5 +214,72 @@ theorem marked_pinned_distances_unique (μ : Measure ℝ) [IsFiniteMeasure μ]
   · intro h
     exact marked_pinned_distance_ne_variable μ p i j k h
 
+/-- On a configuration outside the comparison boundaries, every comparison is locally
+constant. This is the finite-partition approximation step at a fixed configuration. -/
+theorem marked_comparisons_stable {n : ℕ} (p : Fin n → ℝ)
+    (hp : ∀ i j k, j ≠ k → |p j-p i| ≠ |p k-p i|) :
+    ∀ᶠ q : Fin n → ℝ in 𝓝 p, ∀ i j k,
+      (|q j-q i| ≤ |q k-q i| ↔ |p j-p i| ≤ |p k-p i|) := by
+  simp only [Filter.eventually_all]
+  intro i j k
+  by_cases hjk : j = k
+  · subst k
+    exact Filter.Eventually.of_forall (fun _ => ⟨fun _ => le_rfl,fun _ => le_rfl⟩)
+  have hc (l : Fin n) : ContinuousAt (fun q : Fin n → ℝ => |q l-q i|) p := by
+    fun_prop
+  rcases lt_or_gt_of_ne (hp i j k hjk) with h | h
+  · filter_upwards [(hc j).eventually_lt (hc k) h] with q hq
+    exact iff_of_true hq.le h.le
+  · filter_upwards [(hc k).eventually_lt (hc j) h] with q hq
+    exact iff_of_false (not_le_of_gt hq) (not_le_of_gt h)
+
+/-- The original classical selector itself is stable; no equivariant tie rule is assumed. -/
+theorem marked_nearest_stable {n : ℕ} (p : Fin n → ℝ) (r : Fin n → Bool)
+    (hp : ∀ i j k, j ≠ k → |p j-p i| ≠ |p k-p i|) :
+    ∀ᶠ q : Fin n → ℝ in 𝓝 p, ∀ i, nearestDonor q r i = nearestDonor p r i := by
+  filter_upwards [marked_comparisons_stable p hp] with q hq i
+  rw [← matching_donor_choice_eq q r i, ← matching_donor_choice_eq p r i]
+  congr 1
+  funext j k
+  exact congrArg (fun P : Prop => decide P) (propext (hq i j k))
+
+theorem marked_weights_stable {n : ℕ} (p : Fin n → ℝ) (r : Fin n → Bool)
+    (hp : ∀ i j k, j ≠ k → |p j-p i| ≠ |p k-p i|) :
+    ∀ᶠ q : Fin n → ℝ in 𝓝 p,
+      ∀ j, donorReuseWeight q r j = donorReuseWeight p r j := by
+  filter_upwards [marked_nearest_stable p r hp] with q hq j
+  simp only [donorReuseWeight,hq]
+
+theorem marked_weights_continuousAt {n : ℕ} (p : Fin n → ℝ) (r : Fin n → Bool)
+    (hp : ∀ i j k, j ≠ k → |p j-p i| ≠ |p k-p i|) (j : Fin n) :
+    ContinuousAt (fun q => donorReuseWeight q r j) p := by
+  have heq : (fun q => donorReuseWeight q r j) =ᶠ[𝓝 p]
+      (fun _ => donorReuseWeight p r j) :=
+    (marked_weights_stable p r hp).mono (fun _ h => h j)
+  exact continuousAt_const.congr_of_eventuallyEq heq
+
+/-- All copy-level comparisons are inherited from the original-site comparisons.
+Consequently repeated copies do not create discontinuities in the aggregated weight. -/
+theorem marked_bootstrap_weights_stable {n : ℕ} (p : Fin n → ℝ) (r : Fin n → Bool)
+    (hp : ∀ i j k, j ≠ k → |p j-p i| ≠ |p k-p i|) :
+    ∀ᶠ q : Fin n → ℝ in 𝓝 p, ∀ (a : Fin n → Fin n) (j : Fin n),
+      bootstrapOriginalReuse q r a j = bootstrapOriginalReuse p r a j := by
+  filter_upwards [marked_comparisons_stable p hp] with q hq a j
+  have hnear (i : Fin n) : nearestDonor (q ∘ a) (r ∘ a) i =
+      nearestDonor (p ∘ a) (r ∘ a) i := by
+    rw [← matching_donor_choice_eq (q ∘ a) (r ∘ a) i,
+      ← matching_donor_choice_eq (p ∘ a) (r ∘ a) i]
+    congr 1
+    funext l k
+    exact congrArg (fun P : Prop => decide P) (propext (hq (a i) (a l) (a k)))
+  simp only [bootstrapOriginalReuse,donorReuseWeight,hnear]
+
+theorem marked_bootstrap_weights_continuousAt {n : ℕ}
+    (p : Fin n → ℝ) (r : Fin n → Bool)
+    (hp : ∀ i j k, j ≠ k → |p j-p i| ≠ |p k-p i|)
+    (a : Fin n → Fin n) (j : Fin n) :
+    ContinuousAt (fun q => bootstrapOriginalReuse q r a j) p := by
+  exact continuousAt_const.congr_of_eventuallyEq
+    ((marked_bootstrap_weights_stable p r hp).mono (fun _ h => h a j))
 
 end AronowAudit.P001.TailA

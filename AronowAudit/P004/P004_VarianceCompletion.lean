@@ -207,5 +207,12 @@ theorem corrected_ipw_oracle {N k : ℕ} (p : Fin N → ℝ) (R : CircleTable N)
     exact hh.1.trans_eq hh.2
 
 
+#print axioms augmented_variance
+#print axioms hajek_homophily_identity
+#print axioms hajek_variance_identity
+#print axioms hajek_sah_bound
+#print axioms augmented_homophily_bound
+#print axioms ht_standardized_summands
+#print axioms corrected_ipw_oracle
 end
 end AronowAudit.P004

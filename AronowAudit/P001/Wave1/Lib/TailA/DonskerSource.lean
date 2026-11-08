@@ -3,7 +3,7 @@ import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Empir
 /-!
 # Half-line Donsker source
 
-The StatLean half-line Donsker theorem gives the full empirical-process limit
+The pinned StatLean closure proves the full half-line empirical-process limit
 for an arbitrary real probability measure, including measures with atoms.
 -/
 
@@ -16,5 +16,10 @@ theorem half_line_donsker_source (P : Measure ℝ) [IsProbabilityMeasure P] :
     AsymptoticStatistics.EmpiricalProcess.IsPDonskerWithBridge
       AsymptoticStatistics.EmpiricalProcess.halfLineIndicatorClass P :=
   AsymptoticStatistics.EmpiricalProcess.halfLine_isPDonskerWithBridge P
+
+example : ∀ (P : Measure ℝ) [IsProbabilityMeasure P],
+    AsymptoticStatistics.EmpiricalProcess.IsPDonskerWithBridge
+      AsymptoticStatistics.EmpiricalProcess.halfLineIndicatorClass P :=
+  @half_line_donsker_source
 
 end AronowAudit.P001.Wave1.TailA

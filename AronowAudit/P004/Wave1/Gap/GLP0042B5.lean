@@ -10,7 +10,7 @@ import Mathlib.Analysis.SpecialFunctions.Gamma.BohrMollerup
 import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 import Mathlib.Analysis.Convex.SpecificFunctions.Basic
 
-/-! The repeated-star adjusted-PD witness (P004-T7). -/
+/-! Proof development for the repeated-star adjusted-PD witness (P004-T7). -/
 
 namespace AronowAudit.P004.Wave1
 
@@ -1789,7 +1789,7 @@ lemma t7_student_cdf_monotone (ν : ℝ) (hν : 1 ≤ ν) : Monotone (studentCDF
     (ae_of_all _ fun x => t7_student_density_nonneg ν x (by linarith))
     (ae_of_all _ fun x hx => le_trans hx hab)
 
-/-- Student quantiles converge to normal quantiles as the real degrees of freedom tend to infinity. -/
+/-- The real-degree Student quantile input singled out in the mapper's report. -/
 lemma t7_student_quantile_normal (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) :
     Tendsto (fun ν : ℝ => studentQuantile ν a) atTop (nhds (normalQuantile a)) := by
   obtain ⟨_, hmono, _, _, hquant, _, _⟩ := DesignLimits.nf_proof
@@ -2045,6 +2045,8 @@ theorem adjusted_pd_asymptotic_counterexample_proof :
     t7_normal_strict_undercoverage⟩
   · simpa only [t7_Converges, Bool.false_eq_true, if_false] using t7_variance_limit false
   · simpa only [t7_Converges, if_true] using t7_variance_limit true
+
+example : type_of% @AronowAudit.P004.adjusted_pd_asymptotic_counterexample := adjusted_pd_asymptotic_counterexample_proof
 
 end
 end AronowAudit.P004.Wave1

@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P032-T4",
+    "theorem": "SAP.P032.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example R=Fin 4, M=Fin 4, P=Fin 1, G=Fin 3, dyads (01,01,02,23), scalar scores (1,2,-1,-2), and ids (0,0,1,2). Each dyad has two distinct members. Diagonal, distinct equal-dyad, one-shared-member and disjoint cases all occur; the subject-id off-diagonal score sum is nonzero. The canonical survival example independently supplies the claimed non-equality.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T2",
+    "theorem": "SAP.P032.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take R=Fin 2, M=Fin 4, P=Fin 1, Ω=Fin 4, d=pairDyads, X=pairIntercept, beta=0, c=1, and u=pairErrorValues under negativePairDistribution. scratch/Nonvacuity.lean compiles probability normalization, all L² and mean-zero hypotheses, and det(XᵀX)≠0. Exact arithmetic gives covariance [[1,-1/2],[-1/2,1]], true variance 1/4, dyadic value 1/2 and omitted sum -1/4. Thus this is a nonempty, nondegenerate model, not a vacuous implication.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T11",
+    "theorem": "SAP.P032.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use R=Fin 2, M=Fin 4, P=Fin 1, dyads (01,23), X=the two-row intercept, Y=(-1,1). Every member occurs, det(XᵀX)=2 and the residual vector is nonzero. The full-rank and member-coverage hypotheses compile in scratch/Nonvacuity.lean. The dyadic residual sandwich is 1/2, so the identity is instantiated with nonzero data.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T7",
+    "theorem": "SAP.P032.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the generic clause choose P=Fin 2, Q=identity, eigs=(-1,2), producing diag(0,2). The orthogonality hypotheses compile in scratch/Nonvacuity.lean. The fixed ten-dyad matrix is a separate actual symmetric input with negative determinant and positive trace, hence exactly one positive and one negative eigenvalue. Its clipped matrix is genuinely rank one.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T12",
+    "theorem": "SAP.P032.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the negative pair measure of Fin 4 take Z0 to be the first ±1 coordinate and Z1=Z2=Z3=Z4=0. scratch/Nonvacuity.lean compiles the probability instance, all five L² hypotheses, every required cross-covariance equality and Var(Z0)=1. Choices (a,c)=(1,1), (1,-1), and (0,1) realize respectively the positive, negative and zero shared-loading cases. Both strict-sign premises are satisfiable.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T1",
+    "theorem": "SAP.P032.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four-record law has weights 3/64 at each sign vector plus 1/8 at each of two opposite vectors, totaling 1. The six-record law is uniform on 8192 assignments of thirteen fair signs. For each law take Ω=S^ℕ, the countable product of the finite atomic measure, and coordinate blocks. scratch/Nonvacuity.lean compiles an IID realization for each exact law, with measurability, joint independence, probability normalization and all atom probabilities. The 41-check exact audit verifies the finite moments, spectra and replication expectations. For m≥1 the record counts 4m and 6m and the true sampling variances are strictly positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T5",
+    "theorem": "SAP.P032.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The bounded negative pair law, full-rank intercept design and contrast 1 give a positive-definite covariance with nonzero disjoint covariance, and population values 1/2>1/4, defeating both weak and strict bounds. For the four-record law with one block, E[Vhat]=7/32>3/16=Var(betaHat); its independent replications have ratio limit 5/3>1 and positive sampling variance. The exact laws, L² and centering conditions, and IID realization hypotheses have explicit instances; finite and IID nonvacuity checks compile in scratch/Nonvacuity.lean. Revision 2 changes the decision and docstring only; the four mathematical assertions and their domains still match the blind reading. The nonvacuity file was recompiled against the refreshed definitions with exit code 0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T3",
+    "theorem": "SAP.P032.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed ten-record dataset: nonempty risk sets of sizes 6 and 4, two events at each event time, positive risk-likelihood denominators for all beta, and information 12. Exact rational reconstruction independently reproduces the scores and all three positive covariance values. There are no external premises to make inconsistent.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T6",
+    "theorem": "SAP.P032.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed ten-dyad dataset on five members. XᵀX=[[10,2],[2,42]] has determinant 416; the given bread is its actual inverse. Exact arithmetic verifies both covariance diagonals are positive and the (1,6) contrast is strictly negative. No conditional hypothesis or totalized inverse makes the example empty.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T9",
+    "theorem": "SAP.P032.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A nontrivial instance uses k=4, J=Fin 4 ⊕ Fin 2, P=Fin 1, m=5, the DCR weights, Gi_i=13, GD=6, n=24, a=(12/13 for members,5/6 for dyad,23/24 for records), U_jt=[1], and b_t=t for t=0,...,4. All factors and denominators are nonzero and U is symmetric. The full Rubin term is 3 and c=49/52, so the gap is -9/52, not identically zero. Nonempty symmetric-matrix and count-denominator hypotheses also compile in scratch/Nonvacuity.lean.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P032-T8",
+    "theorem": "SAP.P032.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both fixed binary datasets have 24 records, each of the four members appears in 12 records, and the member partitions have one 12-record cluster and 12 singletons. Their success proportions 1/2 and 3/4 lie strictly between 0 and 1, and information 6 and 9/2 is nonzero. Five estimates include both 0 and log(3), so the between term is positive. Exact rational checks reproduce all components, factor 49/52 and both omitted direct-sum equalities.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P032-T10",
+    "theorem": "SAP.P032.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A closed 22-row table with every denominator n_i>0. Exact Fraction arithmetic enumerates every candidate 0≤k≤n_i, recovers the unique stated count in each row, and checks all threshold row sets and neighboring counts. The weak and strict threshold sets have four and three actual elements.",
+    "confidence": 0.99
+  }
+]

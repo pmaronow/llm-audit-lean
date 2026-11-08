@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P011-T15",
+    "theorem": "SAP.P011b.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The two explicitly defined star families are genuine nonconstant finite laws, with 3072 equally likely microstates per block and all 16 binary outcomes having positive mass. Independent rational enumeration verifies both mean vectors, positive scaled variances 27/128 and 47/192, mean biases -3/128 and 1/32, and the exact lower expectation. Independent bounded blocks give Scaling and the probability limits. Forced edges saturate caps, and both regression designs have nonsingular Gram matrices. See scratch/exact_results.json and scratch/nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T16",
+    "theorem": "SAP.P011b.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily, constants (1,1,1,2), p=1, j=0, the all-ones design column at every size, and b=0. Then all outcomes are integrable independent fair signs, E Y=D b, theta=olsTheta=1, D^T D=[n], and n Var(betaHat)=1. The conditional design/outcome premises hold with Bx=By=lambdaMin=1; the empty graph is a compatible residual maximizer. Generic rank and normalized-Gram checks compile in scratch/Nonvacuity.lean; the remaining family checks are detailed in scratch/nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T17",
+    "theorem": "SAP.P011b.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=4, constantWitness, and indices 0,1,2,3. Every real-valued integrand is integrable under its Dirac probability law; this is compiled in scratch/Nonvacuity.lean, so all five moment-domain antecedents are simultaneously satisfiable. Finite-support independent-sign laws also give nonconstant examples. Products over subsets of Fin 4 retain multiplicity when vertex indices repeat, and all displayed raw moments have their own existence assumptions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T18",
+    "theorem": "SAP.P011b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The declared Dirac law Y=(1,1,1,1), theta=(2,3,4,5), gives beta=7/2 and constant residual products 3/4, so actual covariance is zero. All moments exist. Direct rational evaluation gives the printed values 9/4 and 93009/16, bracket-only numerical value -70, and corrected value zero. This is a finite identity counterexample without any Scaling or positive-variance premise. See scratch/nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T19",
+    "theorem": "SAP.P011b.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use signFamily with constants (1,1,1,2). It satisfies Scaling and homoskedasticity with meanVariance=1>0 at every size, and meanSpread=0. Hence both global hypotheses and the consistency implication's antecedent hold jointly in a nonconstant probability model. The auxiliary error is the negative squared sample mean. See scratch/nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T20",
+    "theorem": "SAP.P011b.T20",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem specifies independent fair signs at every positive size, with theta=1, empty G=R and d=0. These give Scaling (1,1,1,2), Valid, homoskedasticity and positive scaled variance one. Exact binomial counts for the strict event give 1/2, 7/8 and 32631/32768 at sizes 2,4,16. Markov's inequality with E betaHat^2=1/n gives the asserted limit one. See scratch/exact_results.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T21",
+    "theorem": "SAP.P011b.T21",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use pathModel 0 1: X=(U,3U/5+4V/5,V) for independent fair signs U,V. This four-atom law is square integrable, has the path dependency graph, equal variances one, distinct adjacent correlations 3/5 and 4/5, and scaled variance 29/15. Rational enumeration verifies these values. The allowed zero-common-variance case also has Var(betaHat)=0, so the explicitly declared rho=0 convention creates no spurious identity. See scratch/exact_results.json and scratch/nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T22",
+    "theorem": "SAP.P011b.T22",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=3. The upper-edge type has three elements, and arbitrary Boolean edge choices yield genuine simple graphs; an Edge 3 element is constructed in scratch/Nonvacuity.lean. One may take R empty and caps all one for a four-element nonempty feasible set. The universal statement is not relying on the empty edge type at n=1.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T23",
+    "theorem": "SAP.P011b.T23",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the specified nonzero-product vector and degree-one caps, the four feasible graphs are the empty graph and each of the three single edges, with objectives 0,-1,-3,3/4. Exact enumeration verifies the unique maximizer edge23. For the forced-zero-product example, the single forced edge itself is feasible, while the printed rule excludes it. See scratch/exact_results.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T24",
+    "theorem": "SAP.P011b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=3 and R=G=pathGraph with caps d_i=degree(pathGraph,i). Compatibility is proved in scratch/Nonvacuity.lean. The true graph and feasible set are therefore nonempty, with genuine edges and vertices; allowing n=0 elsewhere does not do the work.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T25",
+    "theorem": "SAP.P011b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=3, R empty, d=0, and x=(0,1,2). Both n and n-1 are positive, S=2>0, and the bounded-data antecedent holds with beta=1,c=1. The compatible empty graph has V1=2/9 and V1R=1/3, as compiled in scratch/Nonvacuity.lean. The strict inequalities and bounded-discrepancy implication thus apply to actual data.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T26",
+    "theorem": "SAP.P011b.T26",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All three deterministic vectors are well-defined at n=3 with the stated compatible graphs and positive helper denominators. Independent uniform {0,1,2} outcomes, theta=1, empty G=R and caps zero give Scaling (1,1,2/3,2), homoskedasticity, beta=1 and scaled variance 2/3. The vector (0,1,2) has probability 1/27 by exact enumeration. The complete-graph V1=0 witness uses an arbitrary multiplier rather than division by zero. See scratch/exact_results.json and scratch/nonvacuity.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T27",
+    "theorem": "SAP.P011b.T27",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=3, R=G=pathGraph and d_i=degree(pathGraph,i), with any real data vector. Lean checks compatibility, providing an actual element of the finite feasible set. Every real objective on this nonempty finite set attains a maximum. The hypotheses assume feasibility of G, not the oracle domination conclusion. See scratch/Nonvacuity.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T28",
+    "theorem": "SAP.P011b.T28",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=3, R=G=A=completeGraph 3, caps all two, and x=(0,1,2). The only compatible graph is A, so the maximization premise holds, all truncated caps are attained, and sample variance is strictly positive. These premises, including maximization and positive sample variance, compile in scratch/Nonvacuity.lean.",
+    "confidence": "high"
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P033-T6",
+    "theorem": "SAP.P033.T6",
+    "fingerprint": "bc13f442d50336072d0d3c30fe4be5802c67ebc70ad2903690509aac8b1f01c0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:9-34 using /home/ubuntu/sap/tools/sap-lean scratch/Check.lean (exit 0). The uniform law on Fin 2 with Y(i) = i is a measurable nonconstant binary variable with P(Y=1)=1/2; the sample (0,1) satisfies N=2 and has sample variance 1/2. The stored SE is proved positive, tau=1/20 realizes the effect bound, N=31731 realizes the sample-size premise, and positive SE/standardizers exist. The three exact power roots exist by continuity and strict monotonicity from P(0)=0.05 to limit 1; independent bisection in scratch/NumericCheck.py reproduces 0.34302954376982364, 0.4342101763455223, 0.5587016744545097 inside the stated intervals. Floating calculations are diagnostic, not an interval proof.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T7",
+    "theorem": "SAP.P033.T7",
+    "fingerprint": "90e911330e82ca69a1113327b8dcdd1f2a00aea218161b421d56cc802451c2ed",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:37-128 (exit 0), independently of Challenge theorems. The explicit linear density is nonnegative, integrable and normalized. Its 20% window has marginal mass 2401/12500, and the product-law event N=19 for M=19 has strictly positive real probability; analytically this is (2401/12500)^19. The Gaussian identity experiment with law N(7/2,1) also satisfies its probability-law premise. The polynomial densities are nonnegative and normalize by the antiderivative x^(m+1)/4^(m+1), and every tested window lies in (0,4). Exact Fraction calculations reproduce all six binomial tails, the rejection cutoff and the m=9 side probability; the actual linear conditional rejection probability is 0.07771406798328942 > 0.05. Independent floating diagnostics reproduce the Gaussian enclosures. Independence is built into the product law and every draw is retained.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T8",
+    "theorem": "SAP.P033.T8",
+    "fingerprint": "780e9e9ed5cddd7406c54a0880de17991e9703979a094d43c898d9ef9a5ac7c9",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:130-230 (exit 0). Choose f = (1/4) times the indicator of [0,4], h=c/5, M=n=19, a=1/4 and L=0. The scratch proof checks nonnegativity, vanishing on negative reals, integrability, normalization, positive width less than c, positive total window mass and positive conditioning-event probability, both monotonicity directions, the positive local lower bound, Lipschitz bound, derivative zero, continuity and f(c)>0. Local symmetry also follows immediately from the proved constant value 1/4 throughout the caliper. Thus the conditional-law, symmetry, monotonicity, finite-bound and limit premises are all satisfiable. At n=19 the index choices j=k=14 are permitted. Empty products at M=n=0 also have the intended ordinary interpretation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T9",
+    "theorem": "SAP.P033.T9",
+    "fingerprint": "1541854278166f24dece249cc838256a5ead3c5d9075047ee048126b9810bc14",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:232-243 (exit 0). Set Omega=R, mu=N(1,1), T=id and tau=s=1; the Gaussian HasLaw and probability-measure premises hold, with nonzero effect and positive SE. Choose rho=1/2 for strict power improvement. The nonempty cluster-label sets L={0,1}, R={1,2} realize positive overlap and ratio 3/4. For the numerical data, scratch/NumericCheck.py explicitly constructs finite sets realizing each of the four (G,G_L,G_R) triples, so overlaps 12,14,150,59 are feasible. Its exact Fraction checks reproduce the cell-share arithmetic. The derivative and injectivity premises have instances at positive finite noncentrality since P is continuous, strictly increasing from 0.05, and below 1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T10",
+    "theorem": "SAP.P033.T10",
+    "fingerprint": "f9a8036e5c63725f6ffa282cdbfffc14425c0569a3a3ee0128d555601ec5e9ed",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:245-248 (exit 0), independently proving the entire T10Statement by unfolding the SAP definitions and normalizing the arithmetic. The geometric witness is realized with s0=1, beta=SE=1/2, giving x=y=1/2 inside the plotted ranges with t=1. The separate three-entry control sample (0,2,4) has mean 2, N-1 sample variance 4 and SD 2; beta=1, SE=1/2 gives distinct normalized points (1/2,1/4) and (1/4,1/8), each with ratio 2. Every denominator and square-root argument used is positive.",
+    "confidence": 0.99
+  }
+]

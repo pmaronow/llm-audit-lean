@@ -341,7 +341,7 @@ theorem TailB_quantileSquareError_nonneg {m k : ℕ} [NeZero m] [NeZero k]
     (a : Fin m → ℝ) (b : Fin k → ℝ) : 0 ≤ TailB_quantileSquareError a b :=
   integral_nonneg (fun _ => sq_nonneg _)
 
-/-- A permutation block has the population mean in expectation. -/
+/-- Every injected permutation block has the exact population mean. -/
 theorem TailB_block_mean (d : Design) {s : ℕ} [NeZero s]
     (e : Fin s → Fin d.N) (z : Fin d.N → ℝ) :
     designExpectation d (fun π => finiteMean (fun i => z (π (e i)))) = finiteMean z := by
@@ -533,7 +533,7 @@ theorem TailB_L2_moments_tendsto {α : Type*} [MeasurableSpace α]
     simpa only [mul_one] using hh
   · simpa only [pow_two] using TailB_L2_product_tendsto f f g g hf hf hg hg ht ht
 
-/-- Reflection of the uniform level preserves the L2 seminorm. -/
+/-- Reflection of the uniform level preserves every Lp seminorm. -/
 theorem TailB_reflected_eLpNorm (f : ℝ → ℝ)
     (hf : AEStronglyMeasurable f unifOI) :
     eLpNorm (fun u => f (1-u)) 2 unifOI = eLpNorm f 2 unifOI := by

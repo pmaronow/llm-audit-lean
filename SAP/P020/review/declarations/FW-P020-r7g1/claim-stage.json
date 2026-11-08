@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P020.T1",
+    "target_id": "P020-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical counterexample clauses are present: the individual potential-outcome realization; uniform three-singleton randomization; exact difference-in-means, HT and fixed-k Des Raj values and moments; optimal coefficient and minimum; strict MSE comparisons; positive within-cluster replication, its unbounded population size, persistent bias and probability-one error; and inconsistency. The universal order forall h>0, forall k also permits deterministic k depending on h. The replicated randomization law is definitionally unchanged because it depends only on M and mt, so the pointwise invariances imply all replicated moment identities. This establishes the canonical counterexample assertion rather than contradicting that assertion. Every relevant denominator is positive. Definition-only Lean examples construct the stated population and individual outcomes."
+  },
+  {
+    "theorem": "SAP.P020.T2",
+    "target_id": "P020-T2",
+    "my_reading_vs_claim": "broader",
+    "reason": "Every canonical clause is proved, with the same variance-plus-squared-bias identity, nonzero limiting bias and vanishing comparator MSE hypotheses, existential eventual-comparison cutoff, epsilon-positive Markov bound, and convergence-in-probability consequence. The theorem generalizes the setting to arbitrary normalized finite-support probability laws, varying sample spaces, real targets and statistics; it does not require these data to be supplied as growing cluster populations. The conclusion remains the explicit convergence-in-probability assertion, so this stronger domain includes all of the canonical growing finite-population setting without adding an assumption or dropping a conclusion. The final replicated-population example supplies the asserted failure without the comparator hypothesis. A definition-only Lean instance satisfies both limit hypotheses simultaneously, with bias one and comparator MSE zero, on strictly growing total and realized-arm counts."
+  },
+  {
+    "theorem": "SAP.P020.T3",
+    "target_id": "P020-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement contains every clause of the canonical universal impossibility proof: the exact printed logistic link; strict monotonicity; the raw-count shift bound for real n>=1; arbitrary control predictors; individual negativity; negativity of each finite nonempty population average; exclusion of 7/1000; and the exact scalar N=1,n=1,base=0 calculation. Arbitrary predictor and size vectors include all vectors induced by admissible cluster designs. The scalar clause is numerical, and the docstring expressly says it specifies no randomized cluster design, so it does not purport to exhibit a one-person two-arm experiment. A separate definition-only Lean instance constructs a valid two-person, two-cluster design and verifies the logistic link always lies strictly between zero and one. The theorem establishes the canonical refutation assertion; it does not refute that assertion."
+  },
+  {
+    "theorem": "SAP.P020.T4",
+    "target_id": "P020-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "The n/1000 substitution and equivalent raw-count slopes 7/5000 and -9/10000 are explicitly identified. The real cutoff 4000/9, natural cutoffs 444 and 445, both individual probability comparisons, and both nonempty-average sign implications match the canonical correction. The algebraic identities and natural cutoffs also hold outside positive cluster sizes; those harmless extensions do not omit or change any canonical clause. Valid designs with two clusters of size one and two clusters of size 445 demonstrate that both sign regimes are inhabited. The docstring correctly makes the unit replacement conditional and asserts no empirical agreement with 0.007. All denominators are positive and there is no rounding or natural subtraction in the contrast."
+  },
+  {
+    "theorem": "SAP.P020.T5",
+    "target_id": "P020-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem quantifies over every admissible complete cluster-randomization population and every real assignment-dependent fitted coefficient, shared between arms. It states both arm-total covariance identities, the corrected ATE expectation, and the bias identity with control covariance minus treatment covariance. The additional arm-Boolean chain contains all intermediate observed-total, finite-sum and arm-mean equalities in (29), also for the control arm, and the two mean identities supplied in definitions_needed. Potential totals are used only through quantities equal to the observed totals on the appropriate assigned arm, explicitly certified on the support. Finite support guarantees all needed moments without independence or a hidden fitted-slope assumption. A definition-only Lean instance uses fitted coefficient equal to treated mean size and verifies treatment covariance 14/9, control covariance -7/9, expected ATE estimate -9/7 and bias -1."
+  }
+]

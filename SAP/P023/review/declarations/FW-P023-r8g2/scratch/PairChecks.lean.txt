@@ -1,0 +1,36 @@
+import SAP.P023.Defs
+open MeasureTheory Set Filter
+open scoped BigOperators ENNReal Topology
+open SAP.P023
+namespace AuditPair
+noncomputable section
+
+def S : Finset (ℕ × ℕ) := {(0,0), (0,1), (1,0)}
+abbrev I := {p : ℕ × ℕ // p ∈ S}
+def x (p : I) : ℝ := if p.val.1 = 0 then -1/4 else 1/4
+def d (p : I) : ℝ := if p.val.1 = 0 then 0 else 1
+
+lemma data : TwoParty x d := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  all_goals intro p; by_cases hp : p.val.1=0 <;> norm_num [x,d,hp]
+
+lemma interior : Condition1 (1/2) x := by
+  constructor
+  · refine ⟨⟨(1,0), by simp [S]⟩, ?_⟩; norm_num [x]
+  · refine ⟨⟨(0,1), by simp [S]⟩, ?_⟩; norm_num [x]
+
+lemma coarsened_fit : CoarsenedOLS (1/2) x d d 1 := by
+  refine ⟨fun _ => 0, ?_, ?_⟩
+  · intro j; simp
+  · simp
+
+-- Three observed pairs, rather than a Cartesian product: every hypothesis
+-- of T9 has an instance, including a genuine OLS fit and both party types.
+example : TwoParty x d ∧ Condition1 (1/2) x ∧
+    CoarsenedOLS (1/2) x d d 1 ∧ (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) := by
+  exact ⟨data, interior, coarsened_fit, by norm_num⟩
+
+example : (1,1) ∉ S := by simp [S]
+
+end
+end AuditPair

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P018-T1",
+    "theorem": "SAP.P018a.T1",
+    "fingerprint": "d9f748ccb9660e73756046a7272d3c76e78696462d1a7d7f421a46f3f52385dd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional assertion about a fixed iid uniform-unit model, with no antecedent to make vacuous. scratch/Check.lean checks a genuine pair of its design rows has determinant -1. scratch/exact_checks.py independently integrates its score polynomials against the product uniform law and confirms H and Gamma. Boundedness, intercept, and nonsingular Q are explicit conclusions; a continuous uniform draw gives the asserted almost-sure rank.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T2",
+    "theorem": "SAP.P018a.T2",
+    "fingerprint": "a3fb3a40649a7485218cb2ea2d9b7f3a99229154a89a016ddea7ebb0be0598f8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs the Unit/Dirac kernel X=1,Y=0 and proves Standing, then at N=2 proves RepeatedAtSize for one record per dyad and nonsingularity of both repeated and unit-weight normalized population Grams. For the existential block-centering witness, use independent constant Unit characteristics, one record per dyad at N=4, X=1, Y_01=1, Y_23=-1 and other Y=0. The Gram is 6, normalized Gram is 1, population coefficient and total score are zero, while the ordered overlapping raw-score and block-mean sums both equal 2; scratch/exact_checks.py checks these finite sums. Such dyad-dependent responses are explicitly allowed by the canonical repeated prescription. The nonlinear fixed model of T1 supplies nonzero omitted conditional variance.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T3",
+    "theorem": "SAP.P018a.T3",
+    "fingerprint": "75e8756b3c6abd35dce49cd78becf447cf78ca8a06bdc8073dac954273aaa0d6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional fixed examples, not implications with unattainable premises. scratch/Check.lean independently proves Standing signKernel. scratch/exact_checks.py enumerates the genuine independent fair-sign product laws at N=6 and N=8, checking the fitted meat, its expectation and scaled variance, the positive disjoint-union fitted-product covariance and the negative covariance. The missing-N sequence is on a one-point probability space; each spike law for N>=1 is a finite mixture with finite moments. The inverse example uses the normalized Pareto density on [1,infinity), whose exp transform is bounded and nonconstant; its infinite inverse-norm expectation is explicitly an extended integral, not an undefined real expectation.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T4",
+    "theorem": "SAP.P018a.T4",
+    "fingerprint": "c7830f29e9222ba320a6f4161bdb631b4e0916cccfa925dacb8f6f8449fb7d58",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently constructs Standing checkKernel with Unit/Dirac units, X=1,Y=0,Q=1, and also proves Standing for the nontrivial iid fair-sign model. It constructs square-integrable constant-zero variables on a one-point probability space with both required moment limits, so the Chebyshev branches are jointly satisfiable. No finite inverse-Gram moments are assumed by the consistency branch.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T5",
+    "theorem": "SAP.P018a.T5",
+    "fingerprint": "e560881c94063bc00c0c3dd3f2ac80d49df479f578bbe26a79900977620e32d7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean checks the mismatching N=3 covariance entry for every real t1,t2,s. For the variance-bound antecedents it constructs N=1 on a standard Gaussian probability space, a_0(omega)=omega, D=1, yc=0 and estimate(y)=y_0; it proves independence, standard Gaussian law, translation equivariance, measurability and both MemLp-2 conditions. Thus the bound has nonempty hypotheses, with variance 4. scratch/exact_checks.py separately verifies the exact GLS matrix products and reported/actual variance ratio 284/379.",
+    "confidence": "high"
+  }
+]

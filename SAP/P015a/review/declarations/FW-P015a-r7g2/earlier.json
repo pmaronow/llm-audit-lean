@@ -1,0 +1,12 @@
+[
+ {
+  "theorem": "SAP.P015a.T7",
+  "target_id": "P015-T7",
+  "round": 6,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "Refutation recheck (weaker_reading): Appendix C displays an equality for the true conditional probability, so the extended displayed-model reading carries that specification condition (items.json:517; scratch/printed_context.txt:13). At epsilon=0 the proposed a=1/16 law is outside that family for every admissible coefficient vector, a fact checked directly in Lean (scratch/ConditionChecks.lean:12; /home/ubuntu/sap/repo2/AronowAudit/P015/P015_Regression.lean:542). Its valid 120/119 derivative is produced by the nonzero residual term in the expected-score Jacobian, and therefore compares misspecified population likelihood projections rather than the stated correctly specified GLM (/home/ubuntu/sap/repo2/AronowAudit/P015/P015_Regression.lean:3003; /home/ubuntu/sap/repo2/AronowAudit/P015/P015_Regression.lean:4118). The usual Bernoulli GLM scaling is plausible to first order along a correctly specified path near the constant predictor, where this residual term vanishes; a broader heuristic permitting misspecification is refuted, and the ambiguity of treating the model display as a working model makes the verdict medium confidence (items.json:523; items.json:525). Violated conditions: ['Correct conditional-mean specification of the displayed GLM: already at epsilon=0, a=1/16, no admissible square-link coefficient vector can reproduce the six true cell means.', 'Using a path through the displayed GLM at the expansion point: the nonconstant baseline residual q_0(X)-1/4 stays nonzero while epsilon tends to zero.']. Printed reading: For the conditional-probability GLM displayed in Appendix C, a regular first-order expansion about the inverse link of the outcome mean is claimed to make the treatment ML and OLS coefficients differ only by a scale depending on that mean."
+  ]
+ }
+]

@@ -97,6 +97,38 @@ theorem olsFitted_spec {I : Type*} [Fintype I]
         _ = 0 := hzero
     exact (sub_eq_zero.mp (sq_eq_zero_iff.mp (le_antisymm hi (sq_nonneg _)))).symm
 
+/-- The inverse-Gram coefficients satisfy the normal equations when the Gram matrix is nonsingular. -/
+private theorem T16_inverse_normal {I : Type*} [Fintype I] [DecidableEq I]
+    (K : ℕ) (V : Matrix I (Fin K) ℝ)
+    (hV : (V.transpose * V).det ≠ 0) (y : I → ℝ) :
+    V.transpose.mulVec
+      (y - V.mulVec ((V.transpose * V)⁻¹.mulVec (V.transpose.mulVec y))) = 0 := by
+  rw [Matrix.mulVec_sub, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec,
+    Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.mpr hV), Matrix.one_mulVec, sub_self]
+
+/-- Under full column rank the projection agrees with the usual inverse-Gram formula. -/
+theorem olsFitted_eq_inverse {I : Type*} [Fintype I] [DecidableEq I]
+    (K : ℕ) (V : Matrix I (Fin K) ℝ)
+    (hV : (V.transpose * V).det ≠ 0) (y : I → ℝ) :
+    olsFitted K V y =
+      V.mulVec ((V.transpose * V)⁻¹.mulVec (V.transpose.mulVec y)) := by
+  let β := (V.transpose * V)⁻¹.mulVec (V.transpose.mulVec y)
+  let C := olsColumnSpace K V
+  let u := (EuclideanSpace.equiv I ℝ).symm y
+  have hnormal : V.transpose.mulVec (y - V.mulVec β) = 0 :=
+    T16_inverse_normal K V hV y
+  have hp : C.starProjection u = olsDesignMap K V β := by
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+      (show olsDesignMap K V β ∈ C from ⟨β, rfl⟩)
+    intro w hw
+    obtain ⟨γ, rfl⟩ := hw
+    have hz : (y - V.mulVec β) ⬝ᵥ (V.mulVec γ) = 0 := by
+      rw [← Matrix.dotProduct_transpose_mulVec V γ (y - V.mulVec β), hnormal]
+      simp
+    simpa [PiLp.inner_apply, Real.inner_apply, olsDesignMap, u, dotProduct, mul_comm] using hz
+  change (EuclideanSpace.equiv I ℝ) (C.starProjection u) = _
+  rw [hp]
+  rfl
 
 /-- Convert the potential-outcome residual contrast to the observed-outcome residual contrast. -/
 private theorem T16_generalized_observed_residual
@@ -139,5 +171,42 @@ theorem all_unit_OLS_bias_T16_rank_unrestricted
   · exact generalized_bias_two_arm E.design E.probability E.marginals
       (Fintype.card I) Fintype.card_pos y1 y0 _
 
+/-- Simultaneous fixed Ypre and covariates: regress the centered response and add Ypre back. -/
+theorem all_unit_OLS_bias_T16_with_Ypre
+    {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
+    (E : UnitExperiment I) (K : ℕ) (X : Matrix I (Fin K) ℝ)
+    (y1 y0 g : I → ℝ) :
+    let V := designWithIntercept K X
+    let fit : (I → Bool) → I → ℝ := fun w =>
+      olsFitted (K + 1) V (fun i => observed E.design y1 y0 w i - g i)
+    let f : (I → Bool) → I → ℝ := fun w i => g i + fit w i
+    (∀ w, IsLeastSquaresFitted (K + 1) V
+      (fun i => observed E.design y1 y0 w i - g i) (fit w)) ∧
+    (∀ w,
+      generalized E.design (Fintype.card I) y1 y0 f w =
+        ((∑ i, indicator E.design true w i *
+            (observed E.design y1 y0 w i - g i - fit w i) / marginal E.design true i) -
+         (∑ i, indicator E.design false w i *
+            (observed E.design y1 y0 w i - g i - fit w i) / marginal E.design false i)) /
+          (Fintype.card I : ℝ)) ∧
+    expectation E.design (generalized E.design (Fintype.card I) y1 y0 f) -
+        ate (Fintype.card I) y1 y0 =
+      -(∑ i, covariance E.design
+          (fun w => indicator E.design true w i) (fun w => fit w i) *
+          (1 / marginal E.design true i + 1 / marginal E.design false i)) /
+        (Fintype.card I : ℝ) := by
+  dsimp only
+  refine ⟨fun w => (olsFitted_spec (K + 1) _ _).1, ?_, ?_⟩
+  · intro w
+    simpa only [sub_add_eq_sub_sub] using
+      T16_generalized_observed_residual E.design (Fintype.card I) y1 y0
+        (fun w i => g i + olsFitted (K + 1) (designWithIntercept K X)
+          (fun j => observed E.design y1 y0 w j - g j) i) w
+  · have hb := generalized_bias_two_arm E.design E.probability E.marginals
+      (Fintype.card I) Fintype.card_pos y1 y0
+      (fun w i => g i + olsFitted (K + 1) (designWithIntercept K X)
+        (fun j => observed E.design y1 y0 w j - g j) i)
+    simpa only [covariance_add_right, covariance_const_right E.design E.probability,
+      zero_add] using hb
 
 end AronowAudit.P026.Wave1

@@ -1,10 +1,10 @@
-/-
-Documentation corrected for llm-audit-lean.
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Bracketing
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.PointwiseDense
+
+-- self-audit-palomar repair (2026-11-03): this module relies on auto-bound implicit names, as compiled in the
+-- original audit workspace (Lean defaults). The published lakefile sets autoImplicit = false, under which it fails.
+set_option autoImplicit true
+set_option relaxedAutoImplicit true
 
 /-!
 # Nested bracketing partitions for the chaining argument
@@ -20,11 +20,12 @@ vdV p.286: *"There exists a nested sequence of partitions `F = ⋃ᵢ F_{qi}` of
 measurable functions `Δ_{qi} ≤ 2F` such that `sup_{f,g ∈ F_{qi}} |f − g| ≤
 Δ_{qi}` and `‖Δ_{qi}‖_{P,2} ≤ 2^{−q} a(δ) ⋯`."*
 
-The construction uses finite `L²(P)`-bracketing covers, disjointifies them,
-intersects across levels, and removes empty cells.
+The construction (`nestedBracketPartition_of_covers`) takes, for each level
+`p` in `[q₀, q]`, a finite `L²(P)`-bracketing cover of `F` at size `2^{−p}`
+(`HasFiniteBracketingCover`), and builds the partition by disjointifying,
+intersecting across levels, and removing empty cells.
 
-Principal declarations: `NestedBracketPartition`,
-`nestedBracketPartition_of_finiteEntropy_clamped`.
+Principal declarations: `NestedBracketPartition`, `nestedBracketPartition_of_covers`.
 -/
 
 namespace AsymptoticStatistics.EmpiricalProcess
@@ -53,8 +54,8 @@ structure NestedBracketPartition (F : Set (Ω → ℝ)) (P : Measure Ω)
     (q₀ : ℕ) (C : ℝ) where
   /-- The number of cells at level `q`. -/
   Nq : ℕ → ℕ
-  /-- The cardinality of the per-level `(1/2)^(p − q₀) · C`-bracketing cover
-  used at level `p` (the book's `N_p`); `Nq q` is bounded by the product of these. -/
+  /-- The cardinality of the per-level `2^{−p}`-bracketing cover used at level
+  `p` (the book's `N_p`); `Nq q` is bounded by the product of these. -/
   coverCard : ℕ → ℕ
   /-- The cells of the level-`q` partition. -/
   cell : (q : ℕ) → Fin (Nq q) → Set (Ω → ℝ)
@@ -100,7 +101,10 @@ structure NestedBracketPartition (F : Set (Ω → ℝ)) (P : Measure Ω)
   /-- **Oscillation nesting monotonicity** (Constitutive, vdV §19.6 p.287
   *"because the partitions are nested, `Δ_q B_q ≤ Δ_{q-1} B_q`"*). The level-`(q+1)`
   cell oscillation is pointwise dominated by the oscillation of its parent cell
-  `(refines hq i).choose` at level `q`. This monotonicity is stronger than the bare `diam`
+  `(refines hq i).choose` at level `q`. This is the parent map used by
+  `NestedBracketPartition.parent`, so
+  `B.Δ_succ_le_parent hq i x : B.Δ (q+1) i x ≤ B.Δ q (B.parent hq i) x` holds by
+  `rfl` on the parent index. This monotonicity is stronger than the bare `diam`
   bound and yields the truncation estimate `Δ_q ≤ √n·a_{q-1}`. -/
   Δ_succ_le_parent : ∀ {q : ℕ} (hq : q₀ ≤ q) (i : Fin (Nq (q + 1))) (x : Ω),
     Δ (q + 1) i x ≤ Δ q (refines hq i).choose x
@@ -125,16 +129,14 @@ structure NestedBracketPartition (F : Set (Ω → ℝ)) (P : Measure Ω)
 /-!
 ## Construction from per-level bracketing covers
 
-A `NestedBracketPartition` is built from a family of finite `L²(P)`-bracketing
-covers, one per level `p ≥ q₀`, of `F` at size `scale p`; the clamped constructor
-uses `scale p = (1/2)^(p − q₀) · δ`. Each cover is encoded
+We build a `NestedBracketPartition` from a family of finite `L²(P)`-bracketing
+covers, one per level `p ≥ q₀`, of `F` at size `2^{−p}`. Each cover is encoded
 by its data: a size `k p`, lower/upper bracket families `lb p, ub p : Fin (k p)
 → Ω → ℝ`, the `IsEpsBracket` witnesses, and the covering property.
 
 The cells are the joint fibers of a per-level *assignment* map: for each level
-`p`, `assignIdx` chooses an arbitrary bracket index containing each `f ∈ F`
-via `Classical.choose`; no least-index property is required. A level-`q` cell is
-the set of `f ∈ F` whose assignment tuple
+`p` we pick, for every `f ∈ F`, the first bracket index containing `f`
+(`assignIdx`). A level-`q` cell is the set of `f ∈ F` whose assignment tuple
 over `[q₀, q]` equals a fixed nonempty tuple. This realizes the book's
 *disjointify + intersect across levels + prune empty cells*: fibers of a
 single-valued assignment are automatically disjoint, their union is `F`, the
@@ -174,7 +176,7 @@ noncomputable def ofHasFiniteCover (h : HasFiniteBracketingCover F ε 2 P) :
 /-- A cover at scale `ε₁` is a cover at any larger scale `ε₂ ≥ ε₁`: each
 `ε₁`-bracket is an `ε₂`-bracket (`IsEpsBracket.mono_eps`), and the same brackets
 still cover `F`. Used to fill the `p < q₀` slots of the cover family in
-`clampedCoverFamily` (those slots are never read by any
+`nestedBracketPartition_of_finiteEntropy` (those slots are never read by any
 field proof, but the cover family must be a total function `ℕ → …`). -/
 def monoEps {ε₁ ε₂ : ℝ} (hε : ε₁ ≤ ε₂) (cov : BracketingCoverData F ε₁ P) :
     BracketingCoverData F ε₂ P :=
@@ -190,9 +192,8 @@ section Construction
 variable {q₀ : ℕ}
 
 /-- The chosen bracket index of `f` at level `p`, as a natural number: the
-value `i.1` of an arbitrary bracket `i` of `cov` containing `f`, selected by
-`Classical.choose` (junk `0` when no bracket contains `f`, e.g. outside `F`).
-Returning into `ℕ` avoids the
+canonical `i.1` for the first bracket `i` of `cov` containing `f` (junk `0`
+when no bracket contains `f`, e.g. outside `F`). Returning into `ℕ` avoids the
 `Fin (cov.k)`-emptiness obstruction; the bound `< cov.k` is recovered on `F`
 by `assignIdx_lt`. This single-valued *assignment* has the cells as its joint
 fibers. -/
@@ -228,7 +229,9 @@ lemma assignIdx_mem_bracket {ε : ℝ} (cov : BracketingCoverData F ε P)
   rw [this]; exact hbr x
 
 /- A per-level *scale* `scale p` indexing the bracketing-cover data at level
-`p`. The combinatorial construction below never uses the value of `scale p`; only
+`p`. Instantiated `scale p = (1/2)^p` by `nestedBracketPartition_of_covers` and
+`scale p = (1/2)^p · δ` by `nestedBracketPartition_of_finiteEntropy`. The
+combinatorial construction below never uses the value of `scale p`; only
 `buildΔ_L2_le` reads it back, via the bracket size bound `< ofReal (scale q)`. -/
 variable {scale : ℕ → ℝ}
 
@@ -395,6 +398,14 @@ lemma buildCell_in_bracket {q : ℕ}
   rw [hidx] at hbr
   exact hbr
 
+/-- An element of cell `i` lies inside the cell's top-level bracket: at level
+`q`, `f`'s chosen bracket is exactly `topIdx`. Special case of
+`buildCell_in_bracket` at `p = ⟨q, …⟩` (where `cellIdx … ⟨q, …⟩ = topIdx`). -/
+lemma buildCell_in_top_bracket {q : ℕ} (hq : q₀ ≤ q)
+    {i : Fin (buildNq cov (q₀ := q₀) q)} {f : Ω → ℝ}
+    (hf : f ∈ buildCell cov (q₀ := q₀) q i) (x : Ω) :
+    (cov q).lb (topIdx cov hq i) x ≤ f x ∧ f x ≤ (cov q).ub (topIdx cov hq i) x :=
+  buildCell_in_bracket cov hf ⟨q, Finset.mem_Icc.mpr ⟨hq, le_rfl⟩⟩ x
 
 /-- `Δ q i` dominates the oscillation of `F` over cell `i`: both `f` and `g` lie in
 *every* level's bracket, so `|f − g| ≤ width_p` for each `p ∈ [q₀, q]`, hence `≤`
@@ -420,7 +431,7 @@ lemma cellWidth_meas {q : ℕ} (i : Fin (buildNq cov (q₀ := q₀) q))
     ((cov p.1).bracket (cellIdx cov i p)).measurable_lower
 
 /-- `Δ q i` is measurable: a finite `inf'` of the measurable per-level widths.
-The proof moves `inf'` outside the pointwise evaluation (`Finset.inf'_apply`) and runs
+We move the `inf'` outside the pointwise evaluation (`Finset.inf'_apply`) and run
 `Finset.inf'_induction` with the `Measurable` predicate (closed under binary `⊓` by
 `Measurable.inf'`, and each leaf `cellWidth cov i p` is measurable). -/
 lemma buildΔ_meas {q : ℕ} (hq : q₀ ≤ q) (i : Fin (buildNq cov (q₀ := q₀) q)) :
@@ -438,8 +449,8 @@ lemma buildΔ_meas {q : ℕ} (hq : q₀ ≤ q) (i : Fin (buildNq cov (q₀ := q�
     (fun p _ => cellWidth_meas cov i p)
 
 /-- `Δ q i ∈ L²(P)`: the `inf'` is pointwise sandwiched `0 ≤ Δ q i ≤ width_q`
-(the top-level width), and the top-level width is in `L²(P)`. The proof bounds `|Δ q i|`
-pointwise by `width_q` and concludes via `MemLp.mono`. -/
+(the top-level width), and the top-level width is in `L²(P)`. We bound `|Δ q i|`
+pointwise by `width_q` and conclude via `MemLp.mono`. -/
 lemma buildΔ_memLp {q : ℕ} (hq : q₀ ≤ q) (i : Fin (buildNq cov (q₀ := q₀) q)) :
     MemLp (buildΔ cov hq i) 2 P := by
   set pq : ↥(Finset.Icc q₀ q) := ⟨q, Finset.mem_Icc.mpr ⟨hq, le_rfl⟩⟩ with hpq
@@ -607,6 +618,66 @@ lemma buildNq_card_le (q : ℕ) :
   -- convert product over subtype to product over the Finset
   rw [Finset.prod_coe_sort (Finset.Icc q₀ q) (fun p => (cov p).k)]
 
+/-- **Construction of a nested bracketing partition from per-level covers.**
+
+Given, for each level `p`, the bundled data of a finite `L²(P)`-bracketing
+cover of `F` at size `2^{−p}`, the joint-fiber construction above assembles a
+`NestedBracketPartition` with scale constant `C = 1`: cells are fibers of the
+single-valued per-level assignment, so they are disjoint and cover `F`; each
+cell sits inside its top-level bracket, giving the oscillation envelope
+`Δ = ub − lb` with `‖Δ‖_{P,2} ≤ 2^{−q}`; restriction of the assignment tuple
+makes the partitions successive refinements; and the achieved tuples number at
+most `∏_{p=q₀}^{q} N_p`.
+
+The hypothesis `hmin` records that the supplied per-level cover is *minimal*
+(size `≤ N_{[]}((1/2)^(p−q₀), F, L²(P))`, at the **offset** scale),
+which the `coverCard_le` structure field requires; arbitrary covers cannot
+satisfy it (the cover size only bounds the bracketing number from *above*). For
+the canonical construction from a finite-entropy hypothesis,
+`nestedBracketPartition_of_finiteEntropy` discharges `hmin` automatically by
+feeding minimal covers from `exists_minimal_bracketingCover`.
+
+The per-level cover is supplied at the **offset** scale `(1/2)^(p−q₀)`:
+level `q₀` sits at scale `1`, level `q₀ + k` at scale `(1/2)^k`, so the
+oscillation envelope `Δ = inf'_p (ub − lb)` has `‖Δ‖_{P,2} ≤ (1/2)^(q−q₀)`.
+
+vdV §19.6 p.286-287: the nested-partition paragraph in the proof of
+Lemma 19.34. -/
+noncomputable def nestedBracketPartition_of_covers (q₀ : ℕ)
+    (cov : (p : ℕ) → BracketingCoverData F ((1 / 2 : ℝ) ^ (p - q₀)) P)
+    (hmin : ∀ {p : ℕ}, q₀ ≤ p →
+      ((cov p).k : ℕ∞) ≤ bracketingNumber ((1 / 2 : ℝ) ^ (p - q₀)) F 2 P)
+    (hF_meas : ∀ f ∈ F, Measurable f) :
+    NestedBracketPartition F P q₀ 1 where
+  Nq q := buildNq cov (q₀ := q₀) q
+  coverCard p := (cov p).k
+  cell q i := buildCell cov (q₀ := q₀) q i
+  π q i := buildπ cov (q₀ := q₀) i
+  Δ q i := if hq : q₀ ≤ q then buildΔ cov hq i else 0
+  cover hq f hf := buildCell_cover cov hq hf
+  cell_subset _ i := buildCell_subset cov i
+  disjoint _ i j hij := buildCell_disjoint cov i j hij
+  cell_nonempty _ i := buildCell_nonempty cov i
+  refines hq i := buildCell_refines cov hq i
+  π_mem _ i := buildπ_mem cov i
+  π_meas _ i := buildπ_meas cov hF_meas i
+  diam hq i f hf g hg x := by
+    rw [dite_eq_left hq]; exact buildΔ_diam cov hq i hf hg x
+  Δ_meas hq i := by rw [dite_eq_left hq]; exact buildΔ_meas cov hq i
+  Δ_memLp hq i := by rw [dite_eq_left hq]; exact buildΔ_memLp cov hq i
+  Δ_L2_le hq i := by
+    rw [dite_eq_left hq]
+    -- `scale q = (1/2)^(q−q₀)`; the field wants `1·(1/2)^(q−q₀)`.
+    refine le_trans (buildΔ_L2_le (scale := fun p => (1 / 2 : ℝ) ^ (p - q₀)) cov hq i) ?_
+    apply ENNReal.ofReal_le_ofReal
+    rw [one_mul]
+  Δ_succ_le_parent hq i x := by
+    rw [dite_eq_left (Nat.le_succ_of_le hq), dite_eq_left hq]
+    exact buildΔ_succ_le_parent cov hq i (buildCell_refines cov hq i).choose_spec x
+  card_le hq := buildNq_card_le cov _
+  coverCard_le hp := by
+    -- scale constant `C = 1`, so `(1/2)^(p−q₀) * 1 = (1/2)^(p−q₀)`.
+    rw [mul_one]; exact hmin hp
 
 /-- A **minimal** finite `L²(P)`-bracketing cover of `F` at scale `ε`, packaged
 as `BracketingCoverData`, whose size equals `bracketingNumber ε F 2 P`. Built by
@@ -624,6 +695,78 @@ lemma minimalCoverData_k (ε : ℝ) (h : HasFiniteBracketingCover F ε 2 P) :
     ((minimalCoverData ε h).k : ℕ∞) = bracketingNumber ε F 2 P :=
   ((exists_minimal_bracketingCover h).choose_spec.choose_spec.choose_spec.2.2).symm
 
+/-- **Construction of a nested bracketing partition from a finite-entropy
+hypothesis.**
+
+Given `δ > 0` and, for every level `p ≥ q₀`, a finite `L²(P)`-bracketing cover of
+`F` at scale `(1/2)^p·δ`, this assembles a `NestedBracketPartition` with scale
+constant `C = δ` whose per-level cover cardinalities are *minimal* — equal to
+`bracketingNumber ((1/2)^p·δ, F, L²(P))`. It does so by feeding the minimal covers
+`minimalCoverData` (whose size is exactly the bracketing number) to the joint-fiber
+construction. The `coverCard_le` field then holds *with equality* on `p ≥ q₀`.
+
+The `p < q₀` slots of the cover family are never read by any field proof (every
+field is guarded by `q₀ ≤ q` / `q₀ ≤ p`); they are filled by weakening the
+level-`q₀` cover (at scale `(1/2)^0·δ = δ`) to the larger scale `(1/2)^(p−q₀)·δ`
+via `BracketingCoverData.monoEps` (a smaller-scale cover is a fortiori a
+larger-scale one; here `p < q₀ ⇒ q₀ − q₀ = 0 ≤ p − q₀ = 0`, so the scale is the
+same `δ` and the weakening is `le_rfl`), purely to make the family a total
+function `ℕ → BracketingCoverData F ((1/2)^(p−q₀)·δ) P`.
+
+The cover is supplied at the **offset** scale `(1/2)^(p−q₀)·δ`, so the
+`coverCard_le` field holds with equality at the offset bracketing number and
+`Δ_L2_le` carries the offset `(1/2)^(q−q₀)·δ` decay matching the dyadic series.
+
+vdV §19.6 p.286-287: the nested-partition paragraph, built from the book's
+*minimal* covers so that `√(log N_p)` is dominated by the entropy integrand. -/
+noncomputable def nestedBracketPartition_of_finiteEntropy (q₀ : ℕ) {δ : ℝ}
+    (_hδ : 0 < δ)
+    (hcov : ∀ p, q₀ ≤ p → HasFiniteBracketingCover F ((1 / 2 : ℝ) ^ (p - q₀) * δ) 2 P)
+    (hF_meas : ∀ f ∈ F, Measurable f) :
+    NestedBracketPartition F P q₀ δ :=
+  -- The per-level cover family, minimal on `p ≥ q₀`, junk-but-typed on `p < q₀`.
+  -- On `p < q₀` we have `p − q₀ = 0 = q₀ − q₀` (Nat truncated subtraction), so the
+  -- scale `(1/2)^(p−q₀)·δ = δ` equals the level-`q₀` scale; the weakening is `le_rfl`.
+  let cov : (p : ℕ) → BracketingCoverData F ((1 / 2 : ℝ) ^ (p - q₀) * δ) P := fun p =>
+    if hp : q₀ ≤ p then minimalCoverData _ (hcov p hp)
+    else (minimalCoverData _ (hcov q₀ le_rfl)).monoEps
+      (by
+        -- `q₀ − q₀ = 0` and `p − q₀ = 0` (since `p < q₀`), so both scales are `δ`.
+        have h1 : q₀ - q₀ = 0 := Nat.sub_self q₀
+        have h2 : p - q₀ = 0 := Nat.sub_eq_zero_of_le (le_of_lt (lt_of_not_ge hp))
+        rw [h1, h2])
+  { Nq := fun q => buildNq cov (q₀ := q₀) q
+    coverCard := fun p => (cov p).k
+    cell := fun q i => buildCell cov (q₀ := q₀) q i
+    π := fun q i => buildπ cov (q₀ := q₀) i
+    Δ := fun q i => if hq : q₀ ≤ q then buildΔ cov hq i else 0
+    cover := fun hq f hf => buildCell_cover cov hq hf
+    cell_subset := fun _ i => buildCell_subset cov i
+    disjoint := fun _ i j hij => buildCell_disjoint cov i j hij
+    cell_nonempty := fun _ i => buildCell_nonempty cov i
+    refines := fun hq i => buildCell_refines cov hq i
+    π_mem := fun _ i => buildπ_mem cov i
+    π_meas := fun _ i => buildπ_meas cov hF_meas i
+    diam := fun hq i f hf g hg x => by
+      rw [dite_eq_left hq]; exact buildΔ_diam cov hq i hf hg x
+    Δ_meas := fun hq i => by rw [dite_eq_left hq]; exact buildΔ_meas cov hq i
+    Δ_memLp := fun hq i => by rw [dite_eq_left hq]; exact buildΔ_memLp cov hq i
+    Δ_L2_le := fun hq i => by
+      rw [dite_eq_left hq]
+      refine le_trans
+        (buildΔ_L2_le (scale := fun p => (1 / 2 : ℝ) ^ (p - q₀) * δ) cov hq i) ?_
+      apply ENNReal.ofReal_le_ofReal
+      -- `buildΔ_L2_le` gives `scale q = (1/2)^(q−q₀)·δ`; the field wants `δ·(1/2)^(q−q₀)`.
+      rw [mul_comm]
+    Δ_succ_le_parent := fun hq i x => by
+      rw [dite_eq_left (Nat.le_succ_of_le hq), dite_eq_left hq]
+      exact buildΔ_succ_le_parent cov hq i (buildCell_refines cov hq i).choose_spec x
+    card_le := fun hq => buildNq_card_le cov _
+    coverCard_le := fun {p} hp => by
+      -- on `p ≥ q₀`, the cover is the minimal one, so its size = bracketingNumber.
+      show ((cov p).k : ℕ∞) ≤ bracketingNumber ((1 / 2 : ℝ) ^ (p - q₀) * δ) F 2 P
+      have hcovp : cov p = minimalCoverData _ (hcov p hp) := dite_eq_left hp
+      rw [hcovp, minimalCoverData_k] }
 
 /-!
 ## Clamped construction over the truncated class
@@ -671,6 +814,16 @@ lemma clampReal_width_le (M : ℝ) {a b : ℝ} (hab : a ≤ b) :
   rcases le_total a M with h1 | h1 <;> rcases le_total b M with h2 | h2 <;>
     simp only [max_def, min_def] <;> split_ifs <;> linarith
 
+/-- Projection onto `[-M, M]` is `1`-Lipschitz. -/
+lemma abs_clampReal_sub_clampReal_le (M a b : ℝ) :
+    |clampReal M a - clampReal M b| ≤ |a - b| := by
+  rcases le_total a b with hab | hba
+  · have hmono := clampReal_mono M hab
+    rw [abs_of_nonpos (sub_nonpos.mpr hmono), abs_of_nonpos (sub_nonpos.mpr hab)]
+    simpa only [neg_sub] using clampReal_width_le M hab
+  · have hmono := clampReal_mono M hba
+    rw [abs_of_nonneg (sub_nonneg.mpr hmono), abs_of_nonneg (sub_nonneg.mpr hba)]
+    exact clampReal_width_le M hba
 
 /-- The clamped width is at most `2M`: both clamped endpoints lie in `[−M, M]`. -/
 lemma clampReal_width_le_two (M : ℝ) (hM : 0 ≤ M) (a b : ℝ) :
@@ -747,6 +900,38 @@ lemma isEpsBracket_clamp {ε : ℝ} {l u : Ω → ℝ} (hM : 0 ≤ M)
   rw [abs_of_nonneg hnn]
   exact clampReal_width_le M hbr
 
+/-- `clampReal M` is continuous (it is `max (min · M) (−M)`, a composition of the
+continuous lattice operations). -/
+lemma continuous_clampReal (M : ℝ) : Continuous (clampReal M) := by
+  unfold clampReal
+  exact (continuous_id.min continuous_const).max continuous_const
+
+/-- **Pointwise-density is inherited by the truncated (clamped) class.**
+
+If `G` is `EmpProcPointwiseDense` and `0 ≤ M`, then so is `truncateClass G M`.
+The countable separant is the clamp-image `clampFn M '' G'` of `G`'s separant
+`G'`; pointwise density transports through the continuity of `clampReal M`
+(`φₘ x → g x` gives `clampReal M (φₘ x) → clampReal M (g x)`); and the original
+integrable envelope `Φ` still dominates, since the clamp is a contraction toward
+`0` (`|clampReal M t| ≤ |t|`). This transports the density input used by
+uniform-entropy maximal inequalities to their clamped classes. -/
+theorem EmpProcPointwiseDense_truncateClass {G : Set (Ω → ℝ)} {M : ℝ}
+    (hM : 0 ≤ M) (h : EmpProcPointwiseDense G P) :
+    EmpProcPointwiseDense (truncateClass G M) P := by
+  obtain ⟨G', hG'sub, hG'ct, hApprox, Φ, hΦint, hΦdom⟩ := h
+  -- countable separant: the clamp-image of `G'`
+  refine ⟨clampFn M '' G', ?_, hG'ct.image _, ?_, Φ, hΦint, ?_⟩
+  · -- `clampFn M '' G' ⊆ truncateClass G M`
+    rintro _ ⟨g', hg', rfl⟩
+    exact ⟨g', hG'sub hg', rfl⟩
+  · -- density: each clamped `g' ∈ truncateClass G M` is a pointwise limit
+    rintro _ ⟨g, hg, rfl⟩
+    obtain ⟨φ, hφmem, hφlim⟩ := hApprox g hg
+    refine ⟨fun m => clampFn M (φ m), fun m => ⟨φ m, hφmem m, rfl⟩, fun x => ?_⟩
+    exact ((continuous_clampReal M).tendsto (g x)).comp (hφlim x)
+  · -- envelope: the clamp contracts toward `0`, so `Φ` still dominates
+    rintro _ ⟨g, hg, rfl⟩ x
+    exact (abs_clampReal_le M hM (g x)).trans (hΦdom g hg x)
 
 end Clamp
 
@@ -825,8 +1010,7 @@ variable {q₀ : ℕ}
 
 /-- The per-level clamped cover family over the truncated class `truncateClass G M`:
 at level `p ≥ q₀`, the *minimal* `(1/2)^(p−q₀)·δ`-bracketing cover of the truncated
-class, chosen by `minimalCoverData` from the existence witness `hcov'`, then
-clamped at `±M` by `clampBrackets` so every bracket width is
+class (from clamping `G`'s cover), then clamped at `±M` so every bracket width is
 `≤ 2M`; at `p < q₀`, the level-`q₀` minimal cover weakened to the (equal) scale.
 Named (not a `let`) so the constructor and the `..._Δ_le` envelope lemma share the
 same `cov`. -/
@@ -856,16 +1040,15 @@ lemma clampedCoverFamily_of_le (q₀ : ℕ) {δ : ℝ} (M : ℝ) (hM : 0 ≤ M)
 Given `δ > 0`, a clamp level `M ≥ 0`, and, for every level `p ≥ q₀`, a finite
 `L²(P)`-bracketing cover of `G` at scale `(1/2)^(p−q₀)·δ`, this builds a
 `NestedBracketPartition` of the **truncated class** `truncateClass G M`. The
-original-class covers establish finite-cover existence for the truncated class
-via `hasFiniteBracketingCover_truncateClass`. At each level `p ≥ q₀`,
-`clampedCoverFamily` chooses a minimal cover of the truncated class itself using
-`minimalCoverData`, then applies `BracketingCoverData.clampBrackets` to its
-endpoints. This preserves its minimal cardinality (so `coverCard_le` holds with
-equality at `bracketingNumber (truncateClass G M)`) and bounds its bracket widths
-by `2M` (so the separate `..._Δ_le` lemma gives the uniform `Δ ≤ 2M` envelope bound).
+per-level cover is obtained by clamping `G`'s minimal cover at `±M` (via
+`BracketingCoverData.clamp`); this keeps the cardinality equal to the minimal
+truncated-class cover (so `coverCard_le` holds with equality at
+`bracketingNumber (truncateClass G M)`) and clamps all bracket widths to `≤ 2M`
+(so the separate `..._Δ_le` lemma gives the uniform `Δ ≤ 2M` envelope bound).
 
-The structure fields follow from the clamped covers, with projection
-truncation preserving bracket order, coverage, and the width bound.
+The construction is otherwise identical to `nestedBracketPartition_of_finiteEntropy`:
+all six structure fields transfer through the clamped covers, the projection
+truncation guaranteeing `IsBracket`, `covers`, and the width-shrink simultaneously.
 
 vdV §19.6 p.286: the envelope-truncated chaining regime. -/
 noncomputable def nestedBracketPartition_of_finiteEntropy_clamped (q₀ : ℕ) {δ : ℝ}
@@ -880,8 +1063,8 @@ noncomputable def nestedBracketPartition_of_finiteEntropy_clamped (q₀ : ℕ) {
   -- members of the truncated class are measurable (clamp of a measurable `g`).
   let hT_meas : ∀ g' ∈ truncateClass G M, Measurable g' := by
     rintro g' ⟨g, hgG, rfl⟩; exact clampFn_measurable (hG_meas g hgG)
-  -- Choose a minimal cover of the truncated class, then clamp its endpoints,
-  -- preserving cardinality = bracketingNumber (truncateClass) and width ≤ 2M.
+  -- the per-level cover family over the truncated class: clamp `G`'s minimal cover,
+  -- so cardinality = bracketingNumber (truncateClass) AND every bracket width ≤ 2M.
   let cov : (p : ℕ) →
       BracketingCoverData (truncateClass G M) ((1 / 2 : ℝ) ^ (p - q₀) * δ) P :=
     clampedCoverFamily q₀ M hM hcov'

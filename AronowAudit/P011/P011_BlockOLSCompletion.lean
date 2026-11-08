@@ -1,4 +1,4 @@
-/- P011 T2/T15: exact path/star block-law means and OLS intercept formulas. -/
+/- Exact path/star block-law means and OLS intercept formulas for the original P011 T2/T15 contract. -/
 import AronowAudit.P011.P011_StarCompletion
 import AronowAudit.P011.P011_PathFiniteCompletion
 import AronowAudit.P011.P011_ThreePointCompletion
@@ -234,6 +234,7 @@ lemma block_ols_representations_completed :
           local_sum (by decide : 0<4) (fun r=>w r^2)
         rw [hs]
         cases upper <;> norm_num [w,Fin.sum_univ_succ] <;> positivity
+#print axioms block_ols_representations_completed
 end
 end AronowAudit.P011.BlockOLSCompletion
 
@@ -256,3 +257,4 @@ theorem block_ols_representations :
 end
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.block_ols_representations

@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P004-T26",
+    "theorem": "SAP.P004b.T26",
+    "fingerprint": "cbaa50cd66a1f34eb129a8c3e369f4ca0bd2d4de4cbb7c23dc42c3992bfd3296",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/SpatialNonvacuity.lean constructs a population sequence and assembles all hypotheses at p=0, with zero envelope and both envelope alternatives. scratch/Nonvacuity.lean verifies non-junk endpoint forced effects for R_i(z)=z_i. nonvacuity.md also gives a nonhomogeneous planar exterior-tail example with amplitude 1/[4(1+N^3)] and phi(s)=1/(1+|s|)^2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T27",
+    "theorem": "SAP.P004b.T27",
+    "fingerprint": "a9615894936fa8cab42fa0b062e0bc8e93fde31a590e19ee081173303c5da6ff",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The statement is an explicit hypothesis-free witness assertion. nonvacuity.md writes the tested reading and checks C1-C6, every-distance NED, all measure conditions, bandwidth, and genuine interval validity against the witness. scratch/finite_checks.py independently enumerates all assignments at N=3,4,5,6,8,10 and verifies the conditional binomial law, moments, exceptional mass, estimator and HAC formulas, linearized variance, V1/V2 bounds, expectation and bias. Its output is scratch/finite-checks.json. The infinite-sample conditions and limits are justified mathematically in nonvacuity.md rather than reproduced as a second full Lean proof.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "Challenge docstring overclaimed a refutation of the literal printed assertion (earlier.json issue 1).",
+        "status": "fixed",
+        "reason": "SAP/P004b/Challenge/Part1.lean:108 explicitly specifies the uniform C_b(1+s^2) reading and calls the witness a counterexample to its coverage assertion. It no longer says the literal printed claim is false. This exactly matches the canonical counterexample target."
+      },
+      {
+        "earlier_issue": "The same overstatement was duplicated in the T27WholeStatement docstring (earlier.json issue 2).",
+        "status": "fixed",
+        "reason": "SAP/P004b/Defs/WholeW3.lean:141 now uses the same reading-specific wording. The fixed W1-W5 witness and the whole label remain appropriate."
+      }
+    ]
+  },
+  {
+    "target_id": "P004-T28",
+    "theorem": "SAP.P004b.T28",
+    "fingerprint": "80ac8c01c39c38435a4d1ab2f807390d363128ba12061c3755c71326d752fa12",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/SpatialNonvacuity.lean assembles every outer hypothesis, including a positive diverging bandwidth equal to N^(1/12) for N>0 and its little-o rate. For the separate nondegeneracy premise, nonvacuity.md constructs deterministic balanced +/-1 outcomes on planar counting-measure nodes, with N Var(L)=4 for even N and 4(1-1/N^2) for odd N, hence at least 3 for N>=2. The N=2 variance 2 is independently compiled in scratch/Nonvacuity.lean; the general variance calculation is a mathematical argument.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T29",
+    "theorem": "SAP.P004b.T29",
+    "fingerprint": "f48fd32185a3b9e367a53b8cbadba76eff05b7c80da32bc17e7173b1c3a2572a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/SpatialNonvacuity.lean assembles every far-pair hypothesis with bandwidth 1 and zero NED coefficient; distinct-node distances exceed 3 for N>3. scratch/Nonvacuity.lean constructs positive arm counts and HAC variance 1/2 for N=4, z=(1,1,0,0), R=(0,0,1,-1), Q=identity, and checks the uniform kernel. scratch/finite_checks.py checks the product identity in all four Boolean cases at p=1/4 with nonzero real sample-size parameter. The finite mean identity has ordinary finite expectations under strict propensities.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T30",
+    "theorem": "SAP.P004b.T30",
+    "fingerprint": "e81da74cb1ff9e6122ebfb071022725c019045aceb8245f6054f4ab2ebb24101",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles N=4,n1=2 support cardinalities 6,3,3,3 and disjoint remainder supports. Strict Bernoulli p=1/2 supplies positive conditioning probabilities. scratch/finite_checks.py independently checks an interacting N=3,p=1/3 schedule with Delta=2 and variance constant C=139/27, completing-square identities for four fit pairs, and the wrong-fit difference on every assignment. See nonvacuity.md.",
+    "confidence": 0.99
+  }
+]

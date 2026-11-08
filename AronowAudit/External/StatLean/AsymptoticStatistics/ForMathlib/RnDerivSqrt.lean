@@ -1,26 +1,17 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym
 import Mathlib.MeasureTheory.Measure.Decomposition.IntegralRNDeriv
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
-
-
 /-!
 Square-root density helpers for absolutely continuous measures.
 
-For a finite measure `ν ≪ μ` with `μ` σ-finite, the Radon–Nikodym derivative
-`p := ν.rnDeriv μ` is `μ`-a.e. finite. Its real square root
-`√(p.toReal)` belongs to `L²(μ)`, with squared norm `(ν univ).toReal`.
-Finiteness of `ν` is needed for this L² assertion.
-
-The retained helpers transport square-integrability and Bochner integrals
-between these measures using multiplication by the square-root density or
-the density. The a.e. strong-measurability equivalence is stated more generally
-for two σ-finite measures.
+When `ν ≪ μ` with `μ` σ-finite, the Radon–Nikodym derivative
+`p := ν.rnDeriv μ` is `μ`-a.e. finite, and `√p ∈ L²(μ)` with
+`‖√p‖²_{L²(μ)} = ν(univ)`. The bridge between `L²(μ)`-membership of
+`g · √p` and `L²(ν)`-membership of `g`, plus the integral identity
+`∫ g dν = ∫ g · p dμ`, is what `Core/QMDPath.score_in_L2ZeroMean` needs
+to lift its bare-function score to `↥(L2ZeroMean P)`.
 
 These theorem-agnostic lemmas belong to the `ForMathlib` layer.
 -/
@@ -61,6 +52,7 @@ theorem aestronglyMeasurable_sqrt_rnDeriv_mul_iff {ν ξ : Measure Ω} [SigmaFin
     · rw [hω hd]
 
 
+
 /-- Pointwise identity: `√(x.toReal)² = x.toReal` since `x.toReal ≥ 0`. -/
 private lemma sqrt_rnDeriv_sq_eq (ν μ : Measure Ω) :
     (fun ω => Real.sqrt ((ν.rnDeriv μ ω).toReal) ^ 2)
@@ -85,8 +77,8 @@ lemma integral_sqrt_rnDeriv_sq {ν μ : Measure Ω} [SigmaFinite μ] [IsFiniteMe
     ∫ ω, Real.sqrt (ν.rnDeriv μ ω).toReal ^ 2 ∂μ = (ν Set.univ).toReal := by
   rw [sqrt_rnDeriv_sq_eq, Measure.integral_toReal_rnDeriv h_ac, Measure.real_def]
 
-/-- For finite `P ≪ μ` with `μ` σ-finite and `g` a.e. strongly measurable
-under `P`, `g · √(dP/dμ) ∈ L²(μ)` implies `g ∈ L²(P)`. -/
+/-- Bridge: if `g · √(dP/dμ) ∈ L²(μ)` and `P ≪ μ` with `μ` σ-finite, then
+`g ∈ L²(P)`. -/
 lemma memLp_two_of_memLp_two_mul_sqrt_rnDeriv
     {P μ : Measure Ω} [IsFiniteMeasure P] [SigmaFinite μ] (h_ac : P ≪ μ)
     {g : Ω → ℝ} (hg_meas : AEStronglyMeasurable g P)
@@ -110,8 +102,8 @@ lemma memLp_two_of_memLp_two_mul_sqrt_rnDeriv
     rw [mul_pow, Real.sq_sqrt ENNReal.toReal_nonneg]
   rwa [h_eq] at h_sq
 
-/-- Integral identity: `∫ g dP = ∫ g · (dP/dμ) dμ` for finite `P ≪ μ`
-with `μ` σ-finite. The integrability of `g` under `P` is not needed for the
+/-- Integral identity: `∫ g dP = ∫ g · (dP/dμ) dμ` for `P ≪ μ` with `μ`
+σ-finite. The integrability of `g` under `P` is not needed for the
 equality (both sides are defined as Bochner integrals, which fall back to
 `0` when the integrand fails integrability). -/
 lemma integral_eq_integral_mul_rnDeriv_of_ac
@@ -122,5 +114,15 @@ lemma integral_eq_integral_mul_rnDeriv_of_ac
   refine integral_congr_ae (Filter.Eventually.of_forall (fun ω => ?_))
   simp [smul_eq_mul, mul_comm]
 
+/-- Set-form of `integral_eq_integral_mul_rnDeriv_of_ac`: `∫_G g dP = ∫_G g·(dP/dμ) dμ`
+for any measurable `G`. Obtained by applying the `univ`-form to `Set.indicator G g`. -/
+lemma setIntegral_eq_setIntegral_mul_rnDeriv_of_ac
+    {P μ : Measure Ω} [IsFiniteMeasure P] [SigmaFinite μ] (h_ac : P ≪ μ)
+    (g : Ω → ℝ) {G : Set Ω} (hG : MeasurableSet G) :
+    ∫ ω in G, g ω ∂P = ∫ ω in G, g ω * (P.rnDeriv μ ω).toReal ∂μ := by
+  rw [← integral_indicator hG,
+      integral_eq_integral_mul_rnDeriv_of_ac h_ac (G.indicator g),
+      ← integral_indicator hG]
+  simp only [Set.indicator_mul_left]
 
 end AsymptoticStatistics.ForMathlib.RnDerivSqrt

@@ -436,5 +436,7 @@ theorem exceptional_pair_counterexample_proof (r : ℕ) (hr : 1 ≤ r) :
   exact ⟨E, hCR, hy, t9_regular r hr E hy hCR, hd, havg, hlt, hC1, hinf,
     t9_mask_alpha r hr E hy hCR⟩
 
+example : type_of% @AronowAudit.P009.exceptional_pair_counterexample := exceptional_pair_counterexample_proof
+
 end
 end AronowAudit.P009.Wave1

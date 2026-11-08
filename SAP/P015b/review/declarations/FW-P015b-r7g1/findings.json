@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P015-T9",
+    "theorem": "SAP.P015b.T9",
+    "fingerprint": "b81871a5e32feb07b571f3cdb500f2e563fe801cb1ae471e9cf7a25c7536bd5e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean without using any Challenge theorem: both design Gram determinants are 2; explicit Gram inverses give OLS vectors (0,0) and (2,0); both precision definitions have genuine inverse certificates; the precision sum has the stated two-sided inverse; the resulting vector is (68/61,-10/61). The centered finite law on values (0,-2,2) with masses (3/4,1/8,1/8) has mean 0, second moment 1, and a positive atom at 0. Admissibility under the printed scalar-pooling reading: choose independent group intercepts uniformly in {0,2}, independent group slopes with that centered law, and independent unit errors with that centered law, all independent of independent fair binary treatments. Group coefficient vectors then have common mean (1,0), covariance I_2 and independence across groups; errors have mean 0 and variance 1; treatment is randomized. The event with group intercepts 0 and 2, both slopes 0, all six errors 0 and the specified six treatments has probability (3/8)^2*(3/4)^6/64 > 0 and gives exactly the displayed data. Thus the counterexample respects the model conditions and refutes only the scalar-coordinate reading in the canonical assertion, not matrix pooling or consistency.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P015-T10",
+    "theorem": "SAP.P015b.T10",
+    "fingerprint": "44fc4ba7cd485d6f8ea4a4243e107d803bdeac6b5c5e5c7f2fa2020ad0c4e5eb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: G=1, q=2, n_0=2, Z_0=[[1,0],[1,1]], S=0 and sigma_0^2=1 satisfy every finite-GLS hypothesis. The same file checks a bounded coefficient family and an identity-matrix sequence satisfying the approximation hypotheses. Compiled scratch/SamplingCheck.lean: on the infinite product of independent fair bits, take K=0, D_i=bit i, Y0_i=0, tau_i=1 and no controls, with omega=(1/2). Its final example proves every premise of WithinGroupExpression7W3 together: all four measurability families, joint independence, identical distributions, the defined conditional independence, the linear conditional treatment mean and RegressionRegularity. The moment limits are proved using Mathlib strong_law_ae_real rather than assuming the target conclusion. The population control Gram is [1] and squared population residual is 1/4 almost surely, so its expectation is strictly positive and all needed integrals exist. No Challenge theorem is used.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P015-T20",
+    "theorem": "SAP.P015b.T20",
+    "fingerprint": "e54f7dce9a884d0eea8b103142bb276be7526802a4838e7376ebe662114fa2e2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: leveragePopulation is a probability law, the profile-cell masses are 1/4 and 3/4, leverageMoment has determinant 7/200, and leverageMomentInverse is a two-sided inverse. The displayed four-atom law is the theorem data itself; its conditional treatment means are 4/5 and 4/15 and squared residual weights are (16/25,1/25,16/225,121/225). All conditioning events have positive mass, all numerical denominators are nonzero and all rounding resolutions are positive. The population leverage definition is the one required by definitions_needed, so no random finite-sample expectation or singular-matrix convention is being substituted.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P015-T14",
+    "theorem": "SAP.P015b.T14",
+    "fingerprint": "d73bc5dabe4736a86bd5bdc999e01e9569c69ca4d8a009f9752f18eb51a11e34",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ModelCheck.lean: an explicit probability measure assigning 1/2 to each element of Fin 2, binary success indicator, zero treatment and no controls satisfy CommonLogisticModel, with common alpha=beta=0 and the empty control vector. The proof calculates the conditional success expectation as 1/2, using genuine integrable indicators and a valid conditioning sub-sigma-algebra. This proves model membership is nonempty, beyond merely checking the definitional equivalence. Independent copies of this per-unit law on the fair-bit product give the same logistic model under the standing iid sampling convention; repeated draws are not needed for its validity. Separately, scratch/Check.lean verifies compatible nonzero-beta/distinct-treatment data beta=1, d=0, dprime=1 for the injectivity conjunct. No Challenge theorem is used.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P015-T21",
+    "theorem": "SAP.P015b.T21",
+    "fingerprint": "139c7955a7f8ce85ca769c2b76fb372a77552b897ff69105bb1eddd9f6507d7d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: N=2, K=0, W=[[1,0],[1,1]], Y=(0,1), b=1/2 and c=1/4 jointly satisfy binary outcomes, a unit intercept column, nonzero Gram determinant and nonzero scale. The explicit affine root theta=(-2,4) solves the stated residual equations and its affine transform is (0,1). This simultaneously supplies admissible data for the unrestricted derivative and affine identity conjuncts. Logistic probabilities at every finite real predictor lie strictly in (0,1), so the likelihood uses ordinary logarithms. The root is for the affine surrogate, as in the canonical exact assertion. No Challenge theorem is used.",
+    "confidence": "high"
+  }
+]

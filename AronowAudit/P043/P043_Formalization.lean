@@ -3,7 +3,7 @@ import Mathlib
 /-!
 P043: Green, Aronow, Bergan, Greene, Paris, and Weinberger (2011), pp. 471–475.
 The paper is an empirical report. The potential-outcome objects below are the
-definitions used here, not notation or theorems claimed by the publication.
+validators' definitions, not notation or theorems claimed by the publication.
 All expectations are exact finite weighted sums. Randomization is represented
 by the product of a population law and a nondegenerate Bernoulli assignment.
 -/
@@ -14,27 +14,27 @@ open Finset
 noncomputable section
 universe u v
 
-/-- A finite population law for the exact constructions in P043-N014 and P043-E002.
-Weights are nonnegative and sum to one. This is a finite version of the
-targets' population probability law. -/
+/-- A finite population law for the validators' exact constructions (N014
+derivation §§1–3; E002 derivation §§2–5). Weights are nonnegative and sum to one.
+This is a finite version of the targets' population probability law. -/
 structure Population (Ω : Type u) [Fintype Ω] where
   mass : Ω → ℝ
   nonneg : ∀ i, 0 ≤ mass i
   total : ∑ i, mass i = 1
 
-/-- Expectation over the population: `E[f]`. Every real-valued variable on
-this finite space is integrable. -/
+/-- Expectation over the population: `E[f]`, as used by both validator
+derivations. Every real-valued variable on this finite space is integrable. -/
 def mean {Ω : Type u} [Fintype Ω] (P : Population Ω) (f : Ω → ℝ) : ℝ :=
   ∑ i, P.mass i * f i
 
-/-- The indicator `1{A}` of a population event. -/
+/-- The indicator `1{A}` used in N014 §3 and E002 §§3–5. -/
 def indicator (A : Prop) : ℝ := @ite ℝ A (Classical.propDecidable A) 1 0
 
 /-- Probability of a population event, an expectation of its indicator. -/
 def eventProb {Ω : Type u} [Fintype Ω] (P : Population Ω) (A : Ω → Prop) : ℝ :=
   mean P (fun i => indicator (A i))
 
-/-- Conditional population mean: numerator divided by event
+/-- Conditional population mean in E002 §5: numerator divided by event
 probability. The value at a zero-probability event is unused in the theorem. -/
 def eventMean {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (A : Ω → Prop) (f : Ω → ℝ) : ℝ :=
@@ -72,8 +72,8 @@ def designMean {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (f : Bool → Ω → ℝ) : ℝ :=
   (1 - p) * mean P (f false) + p * mean P (f true)
 
-/-- Population covariance, not the GLS sampling covariance. Used to relate
-the binary-assignment Wald and regression coefficients. -/
+/-- Population covariance, not the GLS sampling covariance. Used in N014 §1
+and E002 §2 to relate the binary-assignment Wald and regression coefficients. -/
 def covariance {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (f g : Bool → Ω → ℝ) : ℝ :=
   designMean P p (fun t i => f t i * g t i) - designMean P p f * designMean P p g
@@ -83,7 +83,7 @@ def variance {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (f : Bool → Ω → ℝ) : ℝ := covariance P p f f
 
 /-- Population coefficient on assignment in a regression with an intercept,
-`Cov(T,f)/Var(T)`. This is not an estimated GLS coefficient. -/
+`Cov(T,f)/Var(T)` (N014 §1). This is not an estimated GLS coefficient. -/
 def assignmentSlope {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (f : Bool → Ω → ℝ) : ℝ :=
   covariance P p (fun t _ => assignment t) f /
@@ -104,12 +104,30 @@ theorem mean_const {Ω : Type u} [Fintype Ω] (P : Population Ω) (c : ℝ) :
     mean P (fun _ => c) = c := by
   simp only [mean, ← sum_mul, P.total, one_mul]
 
+/-- Scalar linearity of finite expectation, supporting randomization and T5. -/
+theorem mean_mul {Ω : Type u} [Fintype Ω] (P : Population Ω) (c : ℝ) (f : Ω → ℝ) :
+    mean P (fun i => c * f i) = c * mean P f := by
+  unfold mean
+  rw [mul_sum]
+  apply sum_congr rfl
+  intro i _
+  ring
 
 /-- Nonnegative variables have nonnegative expectations (T5 weights). -/
 theorem mean_nonneg {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (f : Ω → ℝ) (h : ∀ i, 0 ≤ f i) : 0 ≤ mean P f := by
   exact sum_nonneg (fun i _ => mul_nonneg (P.nonneg i) (h i))
 
+/-- Independent randomization yields a probability law on all joint states. -/
+theorem randomization_probability {Ω : Type u} [Fintype Ω] (P : Population Ω)
+    (p : ℝ) (hp : 0 < p ∧ p < 1) :
+    (∀ t i, 0 ≤ jointMass P p t i) ∧
+    (∑ t : Bool, ∑ i, jointMass P p t i) = 1 := by
+  constructor
+  · intro t i
+    apply mul_nonneg _ (P.nonneg i)
+    cases t <;> simp [armProb] <;> linarith [hp.1, hp.2]
+  · simp [jointMass, armProb, ← mul_sum, P.total]
 
 /-- Assignment is independent of EVERY population event, hence of the joint
 potential-outcome profile and both disturbances, as required on p. 472. -/
@@ -132,7 +150,7 @@ theorem armMean_eq {Ω : Type u} [Fintype Ω] (P : Population Ω)
   exact mul_div_cancel_left₀ _ hn
 
 /-- The randomized difference in conditional means equals the difference in
-population potential means. -/
+population potential means (N014 §2 and E002 §2). -/
 theorem contrast_eq {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (hp : 0 < p ∧ p < 1) (f : Bool → Ω → ℝ) :
     contrast P p f = mean P (f true) - mean P (f false) := by
@@ -153,7 +171,7 @@ theorem assignment_variance {Ω : Type u} [Fintype Ω] (P : Population Ω) (p : 
   simp [assignment, mean_const]
 
 /-- The population regression coefficient on randomized binary assignment
-equals the conditional-mean contrast. -/
+equals the conditional-mean contrast (N014 §1, single-stratum equation (1)). -/
 theorem assignmentSlope_eq {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (hp : 0 < p ∧ p < 1) (f : Bool → Ω → ℝ) :
     assignmentSlope P p f = contrast P p f := by
@@ -161,48 +179,124 @@ theorem assignmentSlope_eq {Ω : Type u} [Fintype Ω] (P : Population Ω)
   rw [assignmentSlope, assignment_covariance, assignment_variance, contrast_eq P p hp]
   exact mul_div_cancel_left₀ _ h
 
-/-- "potential knowledge K(t)" and "potential support
+/-- Validator N014 §2: "potential knowledge K(t)" and "potential support
 S(t,k)". The support intervention is acyclic and well-defined for every real
 knowledge value. Observed variables use consistency, K=K(T), S=S(T,K(T)). -/
 structure MediationModel (Ω : Type u) where
   knowledge : Bool → Ω → ℝ
   support : Bool → ℝ → Ω → ℝ
 
-/-- Consistent observed support in the mediation model. -/
+/-- Consistent observed support in the validator's mediation notation. -/
 def observedSupport {Ω : Type u} (m : MediationModel Ω) (t : Bool) (i : Ω) : ℝ :=
   m.support t (m.knowledge t i) i
 
-/-- `τ = E[S|T=1]-E[S|T=0]`, the reduced form on p. 473. -/
+/-- `τ = E[S|T=1]-E[S|T=0]`, the reduced form on p. 473 (N014 §2). -/
 def reducedForm {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (m : MediationModel Ω) : ℝ := contrast P p (observedSupport m)
 
-/-- "M=E[S(0,K(1))-S(0,K(0))]", mediation holding assignment at 0. -/
+/-- N014 §2: "M=E[S(0,K(1))-S(0,K(0))]", mediation holding assignment at 0. -/
 def mediated {Ω : Type u} [Fintype Ω] (P : Population Ω) (m : MediationModel Ω) : ℝ :=
   mean P (fun i => m.support false (m.knowledge true i) i -
     m.support false (m.knowledge false i) i)
 
-/-- "D=E[S(1,K(1))-S(0,K(1))]", NET nonknowledge contrast at
+/-- N014 §2: "D=E[S(1,K(1))-S(0,K(1))]", NET nonknowledge contrast at
 treated knowledge. This D is unrelated to equation (1)'s stratum dummies. -/
 def direct {Ω : Type u} [Fintype Ω] (P : Population Ω) (m : MediationModel Ω) : ℝ :=
   mean P (fun i => m.support true (m.knowledge true i) i -
     m.support false (m.knowledge true i) i)
 
 /-- T2(ii): each unit's total contrast is the direct contrast at treated
-knowledge plus the mediation contrast at control assignment. -/
+knowledge plus the mediation contrast at control assignment (N014 §2). -/
 theorem mediation_unit_identity {Ω : Type u} (m : MediationModel Ω) (i : Ω) :
     m.support true (m.knowledge true i) i - m.support false (m.knowledge false i) i =
       (m.support true (m.knowledge true i) i - m.support false (m.knowledge true i) i) +
       (m.support false (m.knowledge true i) i - m.support false (m.knowledge false i) i) := by
   ring
 
+/-- T2(ii): the exact population decomposition τ=M+D under consistency
+and random assignment, with the contextual sign condition explicit in N014 §2 (pp. 473–474). -/
+theorem mediation_decomposition {Ω : Type u} [Fintype Ω] (P : Population Ω)
+    (p : ℝ) (hp : 0 < p ∧ p < 1) (m : MediationModel Ω) :
+    reducedForm P p m = mediated P m + direct P m := by
+  rw [reducedForm, contrast_eq P p hp]
+  change mean P (fun i => m.support true (m.knowledge true i) i) -
+    mean P (fun i => m.support false (m.knowledge false i) i) = _
+  simp only [mediated, direct, mean_sub]
+  ring
 
-/-- Linear structural special case: K(t)=α+a t+u₁ and
+/-- T2(i)–(iv): Sol's corrected p. 474 direction and null inference. The
+reduced form bounds mediation exactly when NET nonknowledge effects are
+nonnegative; a nonpositive population total then bounds mediation by zero. -/
+def MediationComparisonClaims {Ω : Type u} [Fintype Ω] (P : Population Ω) (p : ℝ) (m : MediationModel Ω) : Prop :=
+    reducedForm P p m = mean P (fun i => m.support true (m.knowledge true i) i) -
+      mean P (fun i => m.support false (m.knowledge false i) i) ∧
+    reducedForm P p m = mediated P m + direct P m ∧
+    (reducedForm P p m ≥ mediated P m ↔ direct P m ≥ 0) ∧
+    (reducedForm P p m > mediated P m ↔ direct P m > 0) ∧
+    (direct P m ≥ 0 → reducedForm P p m ≥ mediated P m) ∧
+    (direct P m ≥ 0 → reducedForm P p m ≤ 0 → mediated P m ≤ 0) ∧
+    (direct P m ≥ 0 → reducedForm P p m = 0 → mediated P m ≤ 0)
+
+/-- T2(i)–(iv): the p. 473–474 mediation comparison with its contextual sign premise explicit, under the independent assignment design. -/
+theorem corrected_mediation {Ω : Type u} [Fintype Ω] (P : Population Ω)
+    (p : ℝ) (hp : 0 < p ∧ p < 1) (m : MediationModel Ω) : MediationComparisonClaims P p m := by
+  unfold MediationComparisonClaims
+  have h := mediation_decomposition P p hp m
+  refine ⟨contrast_eq P p hp (observedSupport m), h, ?_, ?_, ?_, ?_, ?_⟩
+  · constructor <;> intro h₁ <;> linarith
+  · constructor <;> intro h₁ <;> linarith
+  · intro h₁
+    linarith
+  · intro h₁ h₂
+    linarith
+  · intro h₁ h₂
+    linarith
+
+/-- N014 §2's linear structural special case: K(t)=α+a t+u₁ and
 S(t,k)=σ+b k+c t+u₂. Disturbances are arbitrary functions of population type,
 so they may be correlated with one another and are independent of assignment. -/
 def linearModel {Ω : Type u} (α a σ b c : ℝ) (u₁ u₂ : Ω → ℝ) : MediationModel Ω :=
   ⟨fun t i => α + a * assignment t + u₁ i,
    fun t k i => σ + b * k + c * assignment t + u₂ i⟩
 
+/-- T2(v): exact first stage, mediation, direct, and reduced-form contrasts
+in the linear special case, without assuming mean-zero disturbances. -/
+def LinearMediationClaims {Ω : Type u} [Fintype Ω] (P : Population Ω) (p : ℝ) (α a σ b c : ℝ) (u₁ u₂ : Ω → ℝ) : Prop :=
+    contrast P p (linearModel α a σ b c u₁ u₂).knowledge = a ∧
+    mediated P (linearModel α a σ b c u₁ u₂) = a * b ∧
+    direct P (linearModel α a σ b c u₁ u₂) = c ∧
+    reducedForm P p (linearModel α a σ b c u₁ u₂) = a * b + c ∧
+    (reducedForm P p (linearModel α a σ b c u₁ u₂) ≥
+      mediated P (linearModel α a σ b c u₁ u₂) ↔ c ≥ 0)
+
+/-- T2(v): the exact linear specialization of the p. 473–474 mediation repair, N014 §2. -/
+theorem linear_mediation_formula {Ω : Type u} [Fintype Ω] (P : Population Ω)
+    (p : ℝ) (hp : 0 < p ∧ p < 1) (α a σ b c : ℝ) (u₁ u₂ : Ω → ℝ) : LinearMediationClaims P p α a σ b c u₁ u₂ := by
+  unfold LinearMediationClaims
+  have hk : contrast P p (linearModel α a σ b c u₁ u₂).knowledge = a := by
+    rw [contrast_eq P p hp, ← mean_sub]
+    convert mean_const P a using 1
+    congr 1
+    funext i
+    simp [linearModel, assignment]
+  have hm : mediated P (linearModel α a σ b c u₁ u₂) = a * b := by
+    unfold mediated
+    convert mean_const P (a * b) using 1
+    congr 1
+    funext i
+    simp [linearModel, assignment]
+    ring
+  have hd : direct P (linearModel α a σ b c u₁ u₂) = c := by
+    unfold direct
+    convert mean_const P c using 1
+    congr 1
+    funext i
+    simp [linearModel, assignment]
+  have ht := mediation_decomposition P p hp (linearModel α a σ b c u₁ u₂)
+  rw [hm, hd] at ht
+  refine ⟨hk, hm, hd, ht, ?_⟩
+  rw [ht, hm]
+  constructor <;> intro h <;> linarith
 
 /-- T2(v): for a positive first stage, τ/a=b+c/a and it bounds the
 knowledge slope b exactly when the NET other-channel coefficient c is nonnegative. -/
@@ -231,7 +325,7 @@ theorem net_channels_not_necessary :
     norm_num at this
 
 /-- Uniform finite population, used for the exact latent-type laws in the
-witnesses. This is unrelated to the empirical sample frequencies. -/
+validators' witnesses. This is unrelated to the empirical sample frequencies. -/
 def uniformPopulation (Ω : Type u) [Fintype Ω] [Nonempty Ω] : Population Ω where
   mass := fun _ => 1 / (Fintype.card Ω : ℝ)
   nonneg := fun _ => by positivity
@@ -240,7 +334,7 @@ def uniformPopulation (Ω : Type u) [Fintype Ω] [Nonempty Ω] : Population Ω w
     have h : (Fintype.card Ω : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
     field_simp
 
-/-- Independent product of two exogenous population laws. -/
+/-- Independent product of two exogenous population laws, N014 §§1 and 3. -/
 def productPopulation {Ω Ξ : Type u} [Fintype Ω] [Fintype Ξ]
     (P : Population Ω) (Q : Population Ξ) : Population (Ω × Ξ) where
   mass := fun i => P.mass i.1 * Q.mass i.2
@@ -263,13 +357,13 @@ theorem fair_armMean {Ω : Type u} [Fintype Ω] (P : Population Ω)
 def linearPopulation : Population (Bool × Bool) :=
   productPopulation (uniformPopulation Bool) (uniformPopulation Bool)
 
-/-- The knowledge disturbance, with its two explicit values. -/
+/-- Validator N014 §1's knowledge disturbance, with its two explicit values. -/
 def linearU₁ (i : Bool × Bool) : ℝ := if i.1 then 1/5 else -1/5
 
-/-- The support disturbance, with its two explicit values. -/
+/-- Validator N014 §1's support disturbance, with its two explicit values. -/
 def linearU₂ (i : Bool × Bool) : ℝ := if i.2 then 1/10 else -1/10
 
-/-- T1(A): K(t)=8+(6/5)t+u₁;
+/-- T1(A), verbatim model from N014 §1: K(t)=8+(6/5)t+u₁;
 S(t,k)=23/10+(k-8)/20-(3/50)t+u₂. These are illustrative scores. -/
 def linearWitness : MediationModel (Bool × Bool) :=
   ⟨fun t i => 8 + (6/5) * assignment t + linearU₁ i,
@@ -338,7 +432,7 @@ def LinearWitnessClaims : Prop :=
     reducedForm linearPopulation (1/2) linearWitness < mediated linearPopulation linearWitness ∧
     0 < mediated linearPopulation linearWitness
 
-/-- T1(A): the complete linear-witness claims on the p. 474 attribution direction. -/
+/-- T1(A): the complete linear-witness claims on the p. 474 attribution direction, as specified in N014 §1. -/
 theorem linear_counterexample : LinearWitnessClaims := by
   unfold LinearWitnessClaims
   refine ⟨?_, ?_, ?_, ?_, ?_, linear_numbers, linear_support_law, ?_, ?_⟩
@@ -366,12 +460,12 @@ theorem linear_counterexample : LinearWitnessClaims := by
     rw [h.2.1]
     norm_num
 
-/-- T1(B)'s independent exogenous law: W=1,...,5 and V=1,...,100.
-Lean stores the zero-based values, and the model adds one to V. -/
+/-- T1(B)'s independent exogenous law: W=1,...,5 and V=1,...,100
+(N014 §3). Lean stores the zero-based values, and the model adds one to V. -/
 def integerPopulation : Population (Fin 5 × Fin 100) :=
   productPopulation (uniformPopulation (Fin 5)) (uniformPopulation (Fin 100))
 
-/-- T1(B): K(t)=8+t(1+1{W=5});
+/-- T1(B), N014 §3: K(t)=8+t(1+1{W=5});
 S(t,k)=2+1{V≤36+5(k-8)-6t}. The support intervention is defined for every
 real k, and observed scores are integers within the 2007 index ranges. -/
 def integerWitness : MediationModel (Fin 5 × Fin 100) :=
@@ -380,11 +474,11 @@ def integerWitness : MediationModel (Fin 5 × Fin 100) :=
      36 + 5 * (k-8) - 6 * assignment t)⟩
 
 /-- T1(B)'s general political knowledge score is identically 2 under both
-assignments, inside Table 3's 2007 range 0–5. -/
+assignments (N014 §3), inside Table 3's 2007 range 0–5. -/
 def integerGeneralKnowledge (_t : Bool) (_i : Fin 5 × Fin 100) : ℝ := 2
 
 /-- Counting initial segments gives the exact probability q/n without
-enumerating the witnesses' 1000 joint states (T1(B)). -/
+enumerating the witnesses' 1000 joint states (T1(B), N014 §3). -/
 theorem uniform_initial_segment (n : ℕ) [NeZero n] (q : ℕ) (hq : q ≤ n) :
     mean (uniformPopulation (Fin n))
       (fun v => indicator ((v.val : ℝ) + 1 ≤ (q : ℝ))) = (q : ℝ) / n := by
@@ -432,7 +526,7 @@ theorem integer_knowledge_mean (t : Bool) :
   cases t <;> norm_num [mean, uniformPopulation, indicator, assignment, Fin.sum_univ_succ]
 
 /-- T1(B3): all four nested intervention means; in particular the three
-specified means are 59/25, 121/50, and 59/25. -/
+specified means are 59/25, 121/50, and 59/25 (N014 §3). -/
 theorem integer_nested_support_mean (t z : Bool) :
     mean integerPopulation (fun i => integerWitness.support t (integerWitness.knowledge z i) i) =
       2 + (36 + 6*assignment z - 6*assignment t)/100 := by
@@ -485,7 +579,7 @@ theorem integer_unit_increment (t : Bool) (k : ℝ) (i : Fin 5 × Fin 100) :
       simp [integerWitness, indicator, h₀, h₁]
 
 /-- T1(B2): a one-unit increase at k=8 or k=9 has mean support effect 1/20,
-strictly positive, for either assignment. -/
+strictly positive, for either assignment (N014 §3). -/
 theorem integer_mean_increment (t : Bool) (k : ℝ) (hk : k=8 ∨ k=9) :
     mean integerPopulation (fun i => integerWitness.support t (k+1) i -
       integerWitness.support t k i) = 1/20 := by
@@ -581,7 +675,7 @@ def IntegerWitnessClaims : Prop :=
     reducedForm integerPopulation (1/2) integerWitness < mediated integerPopulation integerWitness ∧
     0 < mediated integerPopulation integerWitness
 
-/-- T1(B): the complete bounded integer-witness claims on the p. 474 attribution direction. -/
+/-- T1(B): the complete bounded integer-witness claims on the p. 474 attribution direction, N014 §3. -/
 theorem integer_counterexample : IntegerWitnessClaims := by
   unfold IntegerWitnessClaims
   refine ⟨?_, ?_, ?_, integer_numbers, integer_support_law, ?_, ?_⟩
@@ -620,7 +714,7 @@ theorem mediation_counterexamples : LinearWitnessClaims ∧ IntegerWitnessClaims
     fun A t => assignment_independent _ _ t A,
     fun A t => assignment_independent _ _ t A⟩
 
-/-- Integer potential knowledge K_i(z) and exclusion-restricted
+/-- E002 §§2–5: integer potential knowledge K_i(z) and exclusion-restricted
 support response Y_i(k). Using a response without an assignment argument
 enforces exclusion for every intervention. Potential support is its identical
 extension to both assignments; no monotonicity of knowledge is built in. -/
@@ -628,32 +722,40 @@ structure IVModel (Ω : Type u) where
   knowledge : Bool → Ω → ℕ
   response : ℕ → Ω → ℝ
 
+/-- E002 §2's potential support Y_i(z,k)=Y_i(k) under exclusion. -/
+def ivPotentialSupport {Ω : Type u} (m : IVModel Ω) (_z : Bool) (k : ℕ) (i : Ω) : ℝ :=
+  m.response k i
+
+/-- Exclusion holds at all doses and both assignments in the IV model,
+matching the conditional approach described on pp. 472–473 (T4,T5). -/
+theorem iv_exclusion {Ω : Type u} (m : IVModel Ω) (z : Bool) (k : ℕ) (i : Ω) :
+    ivPotentialSupport m z k i = m.response k i := rfl
 
 /-- Consistent observed knowledge K=K(Z), embedded in ℝ for expectations. -/
 def ivKnowledge {Ω : Type u} (m : IVModel Ω) (z : Bool) (i : Ω) : ℝ := m.knowledge z i
 
-/-- Consistent observed support Y=Y(K(Z)) under exclusion. -/
+/-- Consistent observed support Y=Y(K(Z)) under exclusion, E002 §2. -/
 def ivOutcome {Ω : Type u} (m : IVModel Ω) (z : Bool) (i : Ω) : ℝ :=
   m.response (m.knowledge z i) i
 
-/-- The first-stage contrast Δ_K. -/
+/-- The first-stage contrast Δ_K, renamed from the validator's D. -/
 def firstStage {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (m : IVModel Ω) : ℝ := contrast P p (ivKnowledge m)
 
-/-- The support reduced-form contrast Δ_Y. -/
+/-- The support reduced-form contrast Δ_Y, renamed from the validator's N. -/
 def ivReducedForm {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (m : IVModel Ω) : ℝ := contrast P p (ivOutcome m)
 
-/-- The population Wald/IV ratio β_IV=Δ_Y/Δ_K. -/
+/-- The population Wald/IV ratio β_IV=Δ_Y/Δ_K, E002 §2. -/
 def ivRatio {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (m : IVModel Ω) : ℝ := ivReducedForm P p m / firstStage P p m
 
-/-- "students whose knowledge ... is augmented" (pp. 474–475)
+/-- E002 §§3–4: "students whose knowledge ... is augmented" (pp. 474–475)
 are types with K(1)>K(0). This is a latent population event. -/
 def increaser {Ω : Type u} (m : IVModel Ω) (i : Ω) : Prop :=
   m.knowledge false i < m.knowledge true i
 
-/-- Mean total induced support effect among increasers. In T4's
+/-- Mean total induced support effect among increasers, E002 §4. In T4's
 witnesses every increase is exactly one unit, so this is also the mean per-unit effect. -/
 def increaserEffect {Ω : Type u} [Fintype Ω] (P : Population Ω) (m : IVModel Ω) : ℝ :=
   eventMean P (increaser m)
@@ -665,12 +767,12 @@ def conditionalObservableLaw {Ω : Type u} [Fintype Ω] (P : Population Ω)
   eventProb P (fun i => m.knowledge z i = k ∧ ivOutcome m z i = y)
 
 /-- Full joint law of (Z,K,Y); the object on which an identifying functional
-may depend. Independence multiplies the arm law by its probability. -/
+may depend (E002 §4). Independence multiplies the arm law by its probability. -/
 def observableLaw {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (m : IVModel Ω) (x : Bool × (ℕ × ℝ)) : ℝ :=
   armProb p x.1 * conditionalObservableLaw P m x.1 x.2.1 x.2.2
 
-/-- T4's threshold response H(k)=1{k≥9}. -/
+/-- T4's threshold response H(k)=1{k≥9}, E002 §§3–4. -/
 def knowledgeMargin (k : ℕ) : ℝ := indicator (9 ≤ k)
 
 /-- H is nondecreasing; this supplies the extra monotone-support property
@@ -688,7 +790,7 @@ def upDownPopulation : Population Bool where
   nonneg := fun i => by cases i <;> norm_num
   total := by norm_num
 
-/-- T4(a): up=(8,9,3+H), down=(9,8,2+2H).
+/-- T4(a), E002 §3: up=(8,9,3+H), down=(9,8,2+2H).
 Exclusion and consistency are part of `IVModel`'s representation. -/
 def upDownWitness : IVModel Bool :=
   ⟨fun z i => if i then (if z then 9 else 8) else (if z then 8 else 9),
@@ -733,7 +835,7 @@ def UpDownUnitClaims (i : Bool) : Prop :=
       0 ≤ upDownWitness.response k i ∧ upDownWitness.response k i ≤ 7) ∧
     Monotone (fun k => upDownWitness.response k i)
 
-/-- T4(a3,a5): type-level effects and the 2008 ranges for the T4(a) witness. -/
+/-- T4(a3,a5): type-level effects and the 2008 ranges for the E002 §3 witness. -/
 theorem upDown_unit_properties (i : Bool) : UpDownUnitClaims i := by
   unfold UpDownUnitClaims
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
@@ -747,14 +849,24 @@ theorem upDown_unit_properties (i : Bool) : UpDownUnitClaims i := by
     have hh := knowledgeMargin_monotone h
     cases i <;> simp only [upDownWitness, Bool.false_eq_true, ↓reduceIte] <;> linarith
 
+/-- T4(a3): EVERY normalized nonnegative weighted average restricted to
+increasers' crossed one-unit effects is 1, whereas the IV ratio is 0. -/
+theorem upDown_weighted_increasers {I : Type u} [Fintype I]
+    (i : I → Bool) (w : I → ℝ) (_hw : ∀ a, 0 ≤ w a)
+    (hi : ∀ a, increaser upDownWitness (i a)) (hs : ∑ a, w a = 1) :
+    (∑ a, w a * (upDownWitness.response 9 (i a) - upDownWitness.response 8 (i a))) = 1 := by
+  have he (a : I) : upDownWitness.response 9 (i a) - upDownWitness.response 8 (i a) = 1 :=
+    ((upDown_unit_properties (i a)).2.1 (hi a)).2.2
+  simp_rw [he, mul_one]
+  exact hs
 
-/-- T4(b), model A's five equally weighted types:
+/-- T4(b), model A's five equally weighted types from E002 §4:
 (8,9,3+H),(8,9,3+H),(9,8,2+2H),(8,8,2),(9,9,4). -/
 def modelA : IVModel (Fin 5) :=
   ⟨fun z i => if z then ![9,9,8,8,9] i else ![8,8,9,8,9] i,
    fun k i => ![3+knowledgeMargin k, 3+knowledgeMargin k, 2+2*knowledgeMargin k, 2, 4] i⟩
 
-/-- T4(b), model B's five equally weighted types:
+/-- T4(b), model B's five equally weighted types from E002 §4:
 (8,9,3+H),(8,9,3+H),(9,8,2+2H),(8,9,2+2H),(9,8,2+2H). -/
 def modelB : IVModel (Fin 5) :=
   ⟨fun z i => if z then ![9,9,8,9,8] i else ![8,8,9,8,9] i,
@@ -820,7 +932,7 @@ def FiveTypeUnitClaims (m : IVModel (Fin 5)) (i : Fin 5) : Prop :=
     Monotone (fun k => m.response k i) ∧
     (increaser m i → m.knowledge false i = 8 ∧ m.knowledge true i = 9)
 
-/-- T4(b): range, monotone-support and one-unit-increaser properties of either five-type model. -/
+/-- T4(b): range, monotone-support and one-unit-increaser properties of either E002 §4 model. -/
 theorem models_unit_properties (m : IVModel (Fin 5)) (hm : m=modelA ∨ m=modelB) (i : Fin 5) : FiveTypeUnitClaims m i := by
   unfold FiveTypeUnitClaims
   rcases hm with rfl | rfl
@@ -853,7 +965,7 @@ def IncreaserNonidentificationClaim : Prop :=
       F (observableLaw (uniformPopulation (Fin 5)) (1/2) modelB) =
         increaserEffect (uniformPopulation (Fin 5)) modelB
 
-/-- T4(b4): the exact full-observable-law nonidentification claim. -/
+/-- T4(b4): the exact full-observable-law nonidentification claim, E002 §4. -/
 theorem increaser_nonidentification : IncreaserNonidentificationClaim := by
   unfold IncreaserNonidentificationClaim
   rintro ⟨F, hA, hB⟩
@@ -881,19 +993,20 @@ theorem iv_counterexamples : UpDownNumericClaims ∧ (∀ i, UpDownUnitClaims i)
     models_observable_law (1/2), models_numbers.2.2.2.2.1, models_numbers.2.2.2.2.2,
     models_conditional_law, fun m i hm => models_unit_properties m hm i, increaser_nonidentification⟩
 
-/-- T5's marginal causal increment δ_i(j)=Y_i(j)-Y_i(j-1). -/
+/-- T5's marginal causal increment δ_i(j)=Y_i(j)-Y_i(j-1), E002 §5. -/
 def doseIncrement {Ω : Type u} (m : IVModel Ω) (j : ℕ) (i : Ω) : ℝ :=
   m.response j i - m.response (j-1) i
 
-/-- T5's crossing indicator C_i(j)=1{K_i(0)<j≤K_i(1)}. -/
+/-- T5's crossing indicator C_i(j)=1{K_i(0)<j≤K_i(1)}, E002 §5. -/
 def crossing {Ω : Type u} (m : IVModel Ω) (j : ℕ) (i : Ω) : ℝ :=
   indicator (m.knowledge false i < j ∧ j ≤ m.knowledge true i)
 
-/-- T5(v)'s signed crossing R_i(j)=1{K_i(1)≥j}-1{K_i(0)≥j}. -/
+/-- T5(v)'s signed crossing R_i(j)=1{K_i(1)≥j}-1{K_i(0)≥j};
+the validator calls this S_i(j), renamed here to avoid the support variable S. -/
 def signedCrossing {Ω : Type u} (m : IVModel Ω) (j : ℕ) (i : Ω) : ℝ :=
   indicator (j ≤ m.knowledge true i) - indicator (j ≤ m.knowledge false i)
 
-/-- T5(iv)'s weight numerator P(K_i(0)<j≤K_i(1)). -/
+/-- T5(iv)'s weight numerator P(K_i(0)<j≤K_i(1)), E002 §5. -/
 def marginProb {Ω : Type u} [Fintype Ω] (P : Population Ω) (m : IVModel Ω) (j : ℕ) : ℝ :=
   eventProb P (fun i => m.knowledge false i < j ∧ j ≤ m.knowledge true i)
 
@@ -929,15 +1042,14 @@ theorem zero_event_numerator {Ω : Type u} [Fintype Ω] (P : Population Ω)
   intro i _
   rw [← mul_assoc, hw, zero_mul]
 
-/-- T5(i): the population identities for the potential-knowledge and
-potential-support contrasts. Under exclusion, consistency and independent
-assignment, these hold when `0 < p ∧ p < 1`. -/
+/-- T5(i): exclusion, consistency and independent assignment identify the
+potential-knowledge and potential-support contrasts, for any assignment probability. -/
 def IVPopulationContrastClaims {Ω : Type u} [Fintype Ω] (P : Population Ω) (p : ℝ) (m : IVModel Ω) : Prop :=
     firstStage P p m = mean P (fun i => (m.knowledge true i : ℝ) - m.knowledge false i) ∧
     ivReducedForm P p m = mean P (fun i => m.response (m.knowledge true i) i -
       m.response (m.knowledge false i) i)
 
-/-- T5(i): independent assignment, exclusion and consistency identify both population contrasts. -/
+/-- T5(i): independent assignment, exclusion and consistency identify both population contrasts, E002 §2. -/
 theorem iv_population_contrasts {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (hp : 0 < p ∧ p < 1) (m : IVModel Ω) : IVPopulationContrastClaims P p m := by
   unfold IVPopulationContrastClaims
@@ -953,7 +1065,7 @@ def IVCovarianceClaims {Ω : Type u} [Fintype Ω] (P : Population Ω) (p : ℝ) 
       covariance P p (fun z _ => assignment z) (ivOutcome m) /
         covariance P p (fun z _ => assignment z) (ivKnowledge m) = ivRatio P p m)
 
-/-- T5(i): the covariance factor and IV-ratio identities under independent binary assignment. -/
+/-- T5(i): the covariance factor and IV-ratio identities under independent binary assignment, E002 §2. -/
 theorem iv_covariance_ratio {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (hp : 0 < p ∧ p < 1) (m : IVModel Ω) : IVCovarianceClaims P p m := by
   unfold IVCovarianceClaims
@@ -968,7 +1080,7 @@ theorem iv_covariance_ratio {Ω : Type u} [Fintype Ω] (P : Population Ω)
   exact mul_div_mul_left _ _ hf
 
 /-- Finite telescoping across a prefix of the bounded integer knowledge
-range. This is the fixed-population lemma behind T5(ii),(v). -/
+range. This is the fixed-population lemma behind T5(ii),(v), E002 §5. -/
 theorem prefix_increment_sum (J k : ℕ) (hk : k ≤ J) (f : ℕ → ℝ) :
     (∑ r ∈ range J, indicator (r < k) * (f (r+1) - f r)) = f k - f 0 := by
   have hs : (range J).filter (fun r => r < k) = range k := by
@@ -1019,7 +1131,7 @@ def IVSignedUnitClaims {Ω : Type u} (m : IVModel Ω) (J : ℕ) (i : Ω) : Prop 
     (m.knowledge true i : ℝ) - m.knowledge false i =
       ∑ r ∈ range J, signedCrossing m (r+1) i
 
-/-- T5(v): exact signed support and dose telescoping for every bounded unit. -/
+/-- T5(v): exact signed support and dose telescoping for every bounded unit, E002 §5. -/
 theorem iv_signed_unit_identities {Ω : Type u} (m : IVModel Ω) (J : ℕ) (i : Ω)
     (hb : m.knowledge false i ≤ J ∧ m.knowledge true i ≤ J) : IVSignedUnitClaims m J i := by
   unfold IVSignedUnitClaims
@@ -1037,7 +1149,7 @@ def IVMonotoneUnitClaims {Ω : Type u} (m : IVModel Ω) (J : ℕ) (i : Ω) : Pro
     (m.knowledge true i : ℝ) - m.knowledge false i =
       ∑ r ∈ range J, crossing m (r+1) i
 
-/-- T5(ii): support and dose telescope over upward-crossed margins under knowledge monotonicity. -/
+/-- T5(ii): support and dose telescope over upward-crossed margins under knowledge monotonicity, E002 §5. -/
 theorem iv_monotone_unit_identities {Ω : Type u} (m : IVModel Ω) (J : ℕ) (i : Ω)
     (hb : m.knowledge false i ≤ J ∧ m.knowledge true i ≤ J)
     (hm : m.knowledge false i ≤ m.knowledge true i) : IVMonotoneUnitClaims m J i := by
@@ -1067,7 +1179,7 @@ def IVMarginTotalClaims {Ω : Type u} [Fintype Ω] (P : Population Ω) (p : ℝ)
     ivReducedForm P p m = ∑ r ∈ range J, mean P (fun i => crossing m (r+1) i * doseIncrement m (r+1) i) ∧
     firstStage P p m = ∑ r ∈ range J, marginProb P m (r+1)
 
-/-- T5(iii): finite expectations of the crossed-margin telescoping identities. -/
+/-- T5(iii): finite expectations of the crossed-margin telescoping identities, E002 §5. -/
 theorem iv_margin_totals {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (hp : 0 < p ∧ p < 1) (m : IVModel Ω) (J : ℕ)
     (hb : ∀ i, m.knowledge false i ≤ J ∧ m.knowledge true i ≤ J)
@@ -1123,7 +1235,7 @@ def IVMarginAverageClaims {Ω : Type u} [Fintype Ω] (P : Population Ω) (p : �
     ivRatio P p m = ∑ r ∈ (range J).filter (fun r => 0 < marginProb P m (r+1)),
       marginWeight P p m (r+1) * marginEffect P m (r+1)
 
-/-- T5(iv): nonnegative normalized margin weights and the corrected multilevel IV formula. -/
+/-- T5(iv): nonnegative normalized margin weights and the corrected multilevel IV formula, E002 §5. -/
 theorem corrected_multilevel_iv {Ω : Type u} [Fintype Ω] (P : Population Ω)
     (p : ℝ) (hp : 0 < p ∧ p < 1) (m : IVModel Ω) (J : ℕ)
     (hb : ∀ i, m.knowledge false i ≤ J ∧ m.knowledge true i ≤ J)
@@ -1143,6 +1255,35 @@ theorem corrected_multilevel_iv {Ω : Type u} [Fintype Ω] (P : Population Ω)
     rw [← sum_div, ← ht.1]
     rfl
 
+/-- T5(v)'s explicit negative margin in T4(a): down crosses 9 downward.
+It shows why the signed representation can involve decreasers. -/
+theorem upDown_negative_margin : signedCrossing upDownWitness 9 false = -1 := by
+  norm_num [signedCrossing, upDownWitness, indicator]
+
+
+/-- T2, complete algebraic clarification of the contextual p. 473–474 comparison: the general
+comparison and null inference, unit-level decomposition, linear specialization,
+positive-first-stage IV direction, and net-other-channel condition. -/
+theorem mediation_repair {Ω : Type u} [Fintype Ω] (P : Population Ω)
+    (p : ℝ) (hp : 0 < p ∧ p < 1) (m : MediationModel Ω) :
+    MediationComparisonClaims P p m ∧
+    (∀ i, m.support true (m.knowledge true i) i - m.support false (m.knowledge false i) i =
+      (m.support true (m.knowledge true i) i - m.support false (m.knowledge true i) i) +
+      (m.support false (m.knowledge true i) i - m.support false (m.knowledge false i) i)) ∧
+    (∀ α a σ b c (u₁ u₂ : Ω → ℝ), LinearMediationClaims P p α a σ b c u₁ u₂ ∧
+      (0 < a → reducedForm P p (linearModel α a σ b c u₁ u₂) / a = b + c/a ∧
+        (reducedForm P p (linearModel α a σ b c u₁ u₂) / a ≥ b ↔ c ≥ 0))) ∧
+    (∀ n (c : Fin n → ℝ), (∀ j, 0 ≤ c j) → 0 ≤ ∑ j, c j) ∧
+    (∃ c : Fin 2 → ℝ, 0 ≤ ∑ j, c j ∧ ¬ (∀ j, 0 ≤ c j)) := by
+  refine ⟨corrected_mediation P p hp m, mediation_unit_identity m, ?_, ?_, net_channels_not_necessary⟩
+  · intro α a σ b c u₁ u₂
+    have h := linear_mediation_formula P p hp α a σ b c u₁ u₂
+    refine ⟨h, ?_⟩
+    intro ha
+    rw [h.2.2.2.1]
+    exact linear_iv_direction a b c ha
+  · intro n c
+    exact net_channels c
 
 /-- T5, complete corrected IV statement for bounded integer knowledge.
 The joint-law representation enforces assignment independence, exclusion and
@@ -1174,3 +1315,73 @@ theorem iv_repair {Ω : Type u} [Fintype Ω] (P : Population Ω)
 end
 end AronowAudit.P043
 
+#print axioms AronowAudit.P043.mean_add
+#print axioms AronowAudit.P043.mean_sub
+#print axioms AronowAudit.P043.mean_const
+#print axioms AronowAudit.P043.mean_mul
+#print axioms AronowAudit.P043.mean_nonneg
+#print axioms AronowAudit.P043.randomization_probability
+#print axioms AronowAudit.P043.assignment_independent
+#print axioms AronowAudit.P043.armMean_eq
+#print axioms AronowAudit.P043.contrast_eq
+#print axioms AronowAudit.P043.assignment_covariance
+#print axioms AronowAudit.P043.assignment_variance
+#print axioms AronowAudit.P043.assignmentSlope_eq
+#print axioms AronowAudit.P043.mediation_unit_identity
+#print axioms AronowAudit.P043.mediation_decomposition
+#print axioms AronowAudit.P043.corrected_mediation
+#print axioms AronowAudit.P043.linear_mediation_formula
+#print axioms AronowAudit.P043.linear_iv_direction
+#print axioms AronowAudit.P043.net_channels
+#print axioms AronowAudit.P043.net_channels_not_necessary
+#print axioms AronowAudit.P043.mean_product
+#print axioms AronowAudit.P043.fair_armMean
+#print axioms AronowAudit.P043.linear_observed_support
+#print axioms AronowAudit.P043.linear_numbers
+#print axioms AronowAudit.P043.linear_support_law
+#print axioms AronowAudit.P043.linear_counterexample
+#print axioms AronowAudit.P043.uniform_initial_segment
+#print axioms AronowAudit.P043.integer_threshold_mean
+#print axioms AronowAudit.P043.integer_fixed_support_mean
+#print axioms AronowAudit.P043.integer_knowledge_mean
+#print axioms AronowAudit.P043.integer_nested_support_mean
+#print axioms AronowAudit.P043.integer_fixed_population_mean
+#print axioms AronowAudit.P043.integer_ranges
+#print axioms AronowAudit.P043.integer_unit_increment
+#print axioms AronowAudit.P043.integer_mean_increment
+#print axioms AronowAudit.P043.integer_numbers
+#print axioms AronowAudit.P043.integer_support_three
+#print axioms AronowAudit.P043.integer_support_law
+#print axioms AronowAudit.P043.integer_counterexample
+#print axioms AronowAudit.P043.mediation_counterexamples
+#print axioms AronowAudit.P043.iv_exclusion
+#print axioms AronowAudit.P043.knowledgeMargin_monotone
+#print axioms AronowAudit.P043.upDown_numbers
+#print axioms AronowAudit.P043.upDown_unit_properties
+#print axioms AronowAudit.P043.upDown_weighted_increasers
+#print axioms AronowAudit.P043.models_conditional_law
+#print axioms AronowAudit.P043.models_observable_law
+#print axioms AronowAudit.P043.models_numbers
+#print axioms AronowAudit.P043.models_unit_properties
+#print axioms AronowAudit.P043.increaser_nonidentification
+#print axioms AronowAudit.P043.iv_counterexamples
+#print axioms AronowAudit.P043.indicator_nonneg
+#print axioms AronowAudit.P043.mean_sum
+#print axioms AronowAudit.P043.zero_event_numerator
+#print axioms AronowAudit.P043.iv_population_contrasts
+#print axioms AronowAudit.P043.iv_covariance_ratio
+#print axioms AronowAudit.P043.prefix_increment_sum
+#print axioms AronowAudit.P043.signed_dose_identity
+#print axioms AronowAudit.P043.signed_crossing_values
+#print axioms AronowAudit.P043.signed_crossing_monotone
+#print axioms AronowAudit.P043.iv_signed_unit_identities
+#print axioms AronowAudit.P043.iv_monotone_unit_identities
+#print axioms AronowAudit.P043.nonincreaser_crossing_zero
+#print axioms AronowAudit.P043.defier_signed_crossing
+#print axioms AronowAudit.P043.iv_margin_totals
+#print axioms AronowAudit.P043.marginProb_nonneg
+#print axioms AronowAudit.P043.margin_contribution
+#print axioms AronowAudit.P043.corrected_multilevel_iv
+#print axioms AronowAudit.P043.upDown_negative_margin
+#print axioms AronowAudit.P043.mediation_repair
+#print axioms AronowAudit.P043.iv_repair

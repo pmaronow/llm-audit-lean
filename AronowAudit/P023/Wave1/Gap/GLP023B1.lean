@@ -19,7 +19,8 @@ set_option linter.unreachableTactic false
 set_option linter.unnecessarySeqFocus false
 set_option linter.style.haveILetI false
 
-/-! Polynomial projection algebra under uniform margins. -/
+/-! The projection algebra below adapts the compiled GP023B2b helpers,
+with record-specific names so its intermediate results can be reused here. -/
 private theorem t3_poly_integrable (p : Polynomial ℝ) :
     Integrable (fun x => p.eval x) uniformMargins := by
   exact p.continuous.integrableOn_Icc.smul_measure (by norm_num)
@@ -363,6 +364,16 @@ private def t3_smooth (J : ℕ) (c : Fin (J+2) → ℝ) : Polynomial ℝ :=
   ∑ j, if j.val = 1 then 0 else Polynomial.C (c j) *
     Polynomial.X ^ (if j.val = 0 then 0 else j.val - 1)
 
+private theorem t3_smooth_degree (J : ℕ) (c : Fin (J+2) → ℝ) :
+    (t3_smooth J c).natDegree ≤ J := by
+  apply Polynomial.natDegree_sum_le_of_forall_le
+  intro j _
+  split_ifs with h1 h0
+  · simp
+  · apply (Polynomial.natDegree_C_mul_le _ _).trans
+    simpa using (show (0 : ℕ) ≤ J by omega)
+  · apply (Polynomial.natDegree_C_mul_le _ _).trans
+    simpa using (show j.val - 1 ≤ J by omega)
 
 private theorem t3_predict (J : ℕ) (c : Fin (J+2) → ℝ) (x : ℝ) :
     predict (polynomialDesign J (fun x : ℝ => x) party) c x =
@@ -413,6 +424,12 @@ private theorem t3_smooth_coeff (J : ℕ) (c : Fin (J+2) → ℝ)
       simp only [if_neg hi, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg (Ne.symm he), mul_zero]
   · simp
 
+private theorem t3_fit_integrable (J : ℕ) (c : Fin (J+2) → ℝ) :
+    Integrable (predict (polynomialDesign J (fun x : ℝ => x) party) c) uniformMargins := by
+  convert t3_piecewise_integrable (t3_smooth J c + Polynomial.C (c 1)) (t3_smooth J c) using 1
+  funext x
+  rw [t3_predict]
+  by_cases hx : 0 ≤ x <;> simp [party, hx]
 
 private theorem t3_fit_square_integrable (J : ℕ) (c : Fin (J+2) → ℝ) :
     Integrable (fun x => predict (polynomialDesign J (fun x : ℝ => x) party) c x ^ 2) uniformMargins := by
@@ -856,7 +873,10 @@ theorem uniform_common_target_distant_information_proof :
   · rw [t3_tails.1, t3_variances.1]; norm_num
   · rw [t3_tails.2, t3_variances.2]; norm_num
 
-/-! Population FWL, the supported witness, and sigmoid integration. -/
+example : type_of% @AronowAudit.P023.uniform_common_target_distant_information := uniform_common_target_distant_information_proof
+
+
+/-! Record 1: population FWL, the supported witness, and sigmoid integration. -/
 private def t4_span (J : ℕ) : Fin (J+2) → ℝ :=
   fun j => (if j = 1 then 1 else 0) -
     liftSmooth J (fun i => (projection uniformMargins J).coeff i) j
@@ -1323,6 +1343,8 @@ theorem sigmoid_counterexample_proof :
     exact sigmoid_rational_certificates.2.1
   · intro J a _ ha
     exact t4_family_limit J a ha
+
+example : type_of% @AronowAudit.P023.sigmoid_counterexample := sigmoid_counterexample_proof
 
 end
 end AronowAudit.P023.Wave1

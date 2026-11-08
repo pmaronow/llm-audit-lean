@@ -9,7 +9,7 @@ import Mathlib.Data.Nat.Log
 /-! P003: exact finite-population objects and target statements.
     All probabilities below are actual finite design sums, not abstract probability oracles.
     Unit labels are zero based; count coordinates are always (11,10,01,00).
-    Empty accepted sets have empty interval hulls. -/
+    Empty accepted sets have empty interval hulls, as required by targets.json. -/
 
 namespace AronowAudit.P003
 
@@ -158,7 +158,7 @@ noncomputable def exactInterval (α : ℝ) (o : Counts) : Set ℝ :=
 
 /-- Endpoints "Lα=min K, Uα=max K", Algorithm 2.3, p. 6.
     The paper leaves empty K undefined; endpoint-based assertions below carry
-    nonemptiness, except (6.2), where the convention is made explicit. -/
+    nonemptiness, except (6.2), where the reported convention is made explicit. -/
 noncomputable def lower (α : ℝ) (o : Counts) : ℝ := sInf (↑(accepted α o) : Set ℝ)
 /-- "Uα=max K", Algorithm 2.3, p. 6, whenever K is nonempty. -/
 noncomputable def upper (α : ℝ) (o : Counts) : ℝ := sSup (↑(accepted α o) : Set ℝ)
@@ -259,8 +259,9 @@ def missingIntervalQ (α : ℚ) (o r : Counts) : ℚ × ℚ :=
 /-- Explicit potential outcomes of target T1: 11 always-one, 3 (0,1), 6 always-zero. -/
 def badPopulation : Counts := ⟨11,0,3,6⟩
 
-/-- Target T1's missingness in count form: one control success is missing
-precisely when all three (0,1) units and no other units are treated. -/
+/-- Target T1's missingness: unit 1 is missing precisely when all three (0,1)
+    units are treated (and no other unit is treated). This type-count event
+    identifies exactly the labeled treated set {12,13,14}. -/
 def badMask (q : Counts) : Counts :=
   if q = ⟨0,0,3,0⟩ then ⟨0,0,1,0⟩ else ⟨0,0,0,0⟩
 
@@ -285,8 +286,8 @@ def badCoverage : ℚ :=
 /-! Small exact endpoint certificates for the missing-data counterexample.
 These skip interior permutation tails, verify bounds without quadratic
 list deduplication, and transfer integer extrema to the unchanged rational
-interval implementation. The eleven inversions are used in the
-printed and corrected coverage sums. -/
+interval implementation. The eleven proved inversions are reused in the
+original and repaired coverage sums. -/
 section MissingCounterexampleCompletion
 set_option maxHeartbeats 2000000
 
@@ -297,7 +298,7 @@ def endpointBoundsCheck (α : ℚ) (o : Counts) (lo hi : ℤ) : Bool :=
     decide (lo ≤ v.effect ∧ v.effect ≤ hi) || !(levelAccepted α v o)
 
 /-- The short-circuit Boolean certificate verifies bounds for every accepted
-effect of the exact randomization inversion. -/
+effect of the original exact randomization inversion. -/
 theorem endpointBoundsCheck_sound (α : ℚ) (o : Counts) (lo hi : ℤ)
     (hcheck : endpointBoundsCheck α o lo hi = true) :
     ∀ d ∈ acceptedEffectsQ α o, lo ≤ d ∧ d ≤ hi := by
@@ -308,7 +309,7 @@ theorem endpointBoundsCheck_sound (α : ℚ) (o : Counts) (lo hi : ℤ)
   simpa only [hacc, Bool.not_true, Bool.or_false, decide_eq_true_eq, he] using h
 
 /-- Accepted endpoint witnesses and the verified global bounds determine the
-fold-based rational interval without evaluating every accepted tail. -/
+original fold-based rational interval without evaluating every accepted tail. -/
 theorem intervalQ_eq_of_endpoint_certificate (α : ℚ) (o : Counts) (lo hi : ℤ)
     (hbounds : endpointBoundsCheck α o lo hi = true)
     (hlo : ∃ v, Possible o v ∧ α ≤ pValue v o ∧ v.effect = lo)
@@ -547,6 +548,24 @@ theorem missing_counterexample :
     norm_num
 
 
+/-- T2: balanced correction of Proposition 6.2, with any dependent missingness law. -/
+theorem balanced_missing_coverage (v : Counts) (m : ℕ) (α : ℝ)
+    (hm : 0 < m) (hn : v.total = 2*m) (hα : 0 < α ∧ α < 1)
+    (μ : Counts → Counts → ℝ) (hμ : IsMissingLaw v m μ) :
+    missingProb v m μ (fun q r => tau v ∈ missingInterval α (observed v q) r)
+      ≥ 1-α := by
+  sorry
+
+
+/-- T2 deterministic repaired (D.3): each completion's interval lies in (6.2),
+    in a balanced design. This is stronger than the coverage conclusion alone. -/
+theorem balanced_completion_inclusion (o r : Counts) (α : ℝ)
+    (hα : 0 < α ∧ α < 1) (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d)
+    (hr : r ∈ missingMasks o) : completionUnion α o r ⊆ missingInterval α o r := by
+  sorry
+
+
+
 /-- T3's pointwise union-to-hull inclusion, corrected (D.2). -/
 theorem completion_union_subset_hull (α : ℝ) (o r : Counts) :
     completionUnion α o r ⊆ completionHull α o r := by
@@ -679,7 +698,7 @@ theorem sentinel_search_invariants (fuel : ℕ) (f : ℤ → Bool) (a b : ℤ)
 
 
 /-- Correctness of the repaired B.1 search from its finite width invariant,
-for thresholds `a ≤ r < b`, including the lower unevaluated sentinel, target T5. -/
+    including thresholds equal to either unevaluated sentinel, target T5. -/
 theorem sentinel_threshold_return (fuel : ℕ) (f : ℤ → Bool) (a b r : ℤ)
     (hab : a < b) (hw : (b-a).toNat ≤ fuel+1) (hr : a ≤ r ∧ r < b)
     (hf : ∀ x, a < x → x < b → (f x = false ↔ x ≤ r)) :
@@ -1154,6 +1173,14 @@ theorem independent_convolution_sd (f : ℤ → ℝ) (hf : IsSD f) :
     mass at p+2k is repeated with half its size at p+2k and p+2k+1. -/
 noncomputable def paritySmooth (f : ℤ → ℝ) (p : ℤ) (i : ℤ) : ℝ := f ((i-p)/2)/2
 
+/-- T10's separate sublattice lemma: Y SD on 2ℤ+p, U independent fair {0,1}. -/
+theorem parity_convolution_sd (f : ℤ → ℝ) (hf : IsSD f) (p : ℤ)
+    (hp : p = 0 ∨ p = 1) :
+    IsSD (paritySmooth f p) ∧
+    ∀ k, paritySmooth f p (p+2*k) = f k/2 ∧
+      paritySmooth f p (p+2*k+1) = f k/2 := by
+  sorry
+
 
 /-- The erroneous unrestricted (A.3) is global nonincrease on all of ℤ. -/
 def PrintedDecrease (f : ℤ → ℝ) : Prop := ∀ i j, i < j → f j ≤ f i
@@ -1238,6 +1265,12 @@ theorem corrected_lattice_rescaling (k : ℕ) (hk : 0 < k) (g : ℤ → ℝ)
     The law is still the genuine weighted complete-randomization law (2.4). -/
 noncomputable def scaledEstimatorMass (v : Counts) (m : ℕ) (j : ℤ) : ℝ :=
   designProb v m (fun q => (m : ℚ)*estimateQ (observed v q) = (j : ℚ))
+
+/-- T15: Lemma B.12 with its full discordant-count hypothesis, unchanged by the
+    corrected induction; the pmf of mT is SD on ℤ, equivalently T on m⁻¹ℤ. -/
+theorem discordant_estimator_sd (v : Counts) (m : ℕ) (hm : 0 < m)
+    (hn : v.total = 2*m) (hd : 1 ≤ v.b+v.c) : IsSD (scaledEstimatorMass v m) := by
+  sorry
 
 
 /-- T15: the corrected induction covers d≥3 without requiring both discordant
@@ -1344,7 +1377,7 @@ theorem studentized_extension (C : ℝ) (o v : Counts)
     simp [studentized,ne_of_gt hz]
 
 
-/-- T17's zero-denominator experiment: all-zero observation with n=5,m=2. -/
+/-- T17's admitted zero-denominator experiment: all-zero observation with n=5,m=2. -/
 theorem studentized_zero_witness (C : ℝ) :
     varianceEstimate ⟨0,2,0,3⟩ = 0 ∧ standardError ⟨0,2,0,3⟩ = 0 ∧
     estimate ⟨0,2,0,3⟩ - tau ⟨0,0,1,4⟩ = 1/5 ∧
@@ -1373,9 +1406,12 @@ def candidateNumerators (o : Counts) : List ℤ :=
 def candidateLattice (o : Counts) : Set ℝ :=
   {t | ∃ d ∈ candidateNumerators o, t = (d : ℝ)/o.total}
 
+/-- Count vectors on the line (4.4)/(5.16), with nonnegativity required before
+    converting its integer coordinates to naturals. -/
+def lineVector (n : ℕ) (j b : ℕ) (x : ℤ) : Counts :=
+  ⟨j-b,b,((b : ℤ)-x).toNat,((n : ℤ)-j-b+x).toNat⟩
 
-/-- Possible tables with effect numerator `x` and `v₁₁ + v₁₀ = j`,
-used in the corrected loop of Algorithm 5.3. -/
+/-- Corrected loop of Algorithm 5.3: every j=0,…,n is visited for each x∈nC. -/
 def lineGroup (o : Counts) (x : ℤ) (j : ℕ) : List Counts :=
   (possibleTables o).filter fun v => v.effect = x ∧ v.a+v.b = j
 
@@ -1509,6 +1545,26 @@ theorem complement_estimator_identity {n : ℕ} (w : PotentialTable n)
   field_simp <;> ring
 
 
+/-- T24: Lemma A.2, p. 18: finite-design unbiasedness and symmetry about that mean. -/
+theorem balanced_mean_symmetry (v : Counts) (m : ℕ) (hm : 0 < m)
+    (hn : v.total = 2*m) :
+    designMean v m (fun q => estimate (observed v q)) = tau v ∧
+    ∀ t : ℝ, designProb v m (fun q => estimate (observed v q) = tau v-t) =
+      designProb v m (fun q => estimate (observed v q) = tau v+t) := by
+  sorry
+
+
+/-- T25: corrected (B.11)-(B.12): possibility is required, and equality is
+    with the lattice part of the real interval. Balance is part of the hypothesis. -/
+theorem corrected_lattice_interval (o : Counts) (α : ℝ)
+    (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) (hα : 0 < α ∧ α < 1) :
+    (↑(accepted α o) : Set ℝ) = exactInterval α o ∩ candidateLattice o ∧
+    (Set.Icc (estimate o) (((o.a : ℝ)-o.c+(o.a+o.b))/o.total) ∩
+      (↑(accepted α o) : Set ℝ)) =
+      Set.Icc (estimate o) (upper α o) ∩ candidateLattice o := by
+  sorry
+
+
 /-- T25's concrete distinction between possible tables, arbitrary tables,
     a lattice set and a real interval: n=4,m=2, all-zero observation, α=1/2. -/
 theorem lattice_interval_witness :
@@ -1544,7 +1600,7 @@ def waldVarianceQ (m k : ℕ) : ℚ :=
 def waldEstimateQ (m k : ℕ) : ℚ := (2*(k : ℚ)-m)/(m : ℚ)
 
 /-- The normal-quantile Wald interval, Table 2 caption, p. 15, with HC1 variance.
-    z is a real parameter. -/
+    z is a real parameter in the validator's certified enclosure. -/
 noncomputable def waldInterval (z : ℝ) (m k : ℕ) : Set ℝ :=
   Set.Icc ((waldEstimateQ m k : ℝ)-z*Real.sqrt (waldVarianceQ m k))
     ((waldEstimateQ m k : ℝ)+z*Real.sqrt (waldVarianceQ m k))
@@ -1558,15 +1614,35 @@ def waldCoverageQ (m : ℕ) (lo hi : ℕ) : ℚ :=
   ((List.range (m+1)).map fun k => if lo ≤ k ∧ k ≤ hi
     then (binomial m k : ℚ)^2 else 0).sum / binomial (2*m) m
 
-/-- Median convention for Table 2: middle value for odd sample size,
+/-- Median convention used for Table 2's runs: middle value for odd sample size,
     average of the two middle ordered lengths for even size. -/
 noncomputable def median (xs : List ℝ) : ℝ :=
   let ys := xs.mergeSort (fun x y => x ≤ y)
   if ys = [] then 0 else (ys[(ys.length-1)/2]! + ys[ys.length/2]!)/2
 
+/-- T8: the corrected finite-run incompatibility of the two Wald cells, and
+    the exact n=50 and n=100 design benchmarks. No simulation output is assumed. -/
+theorem corrected_wald_row (z : ℝ)
+    (hz : 1.95996398454005 < z ∧ z < 1.95996398454006) :
+    (∀ k ≤ 25, 0 ∈ waldInterval z 25 k ↔ 10 ≤ k ∧ k ≤ 15) ∧
+    (∀ k ≤ 25, 0 ∈ waldInterval z 25 k → 0.55 < waldWidth z 25 k) ∧
+    (∀ runs : List (Fin 26), runs ≠ [] →
+      ((runs.filter fun k => 0 ∈ waldInterval z 25 k.val).length : ℝ) /
+        runs.length ≥ 0.925 →
+      0.55 < median (runs.map fun k => waldWidth z 25 k.val)) ∧
+    waldCoverageQ 25 10 15 = 14399081696900/15801325804719 ∧
+    (waldWidth z 25 11 = 2*z*Real.sqrt (77/3750)) ∧
+    ((∑ k ∈ Finset.Icc 12 13, ((25 : ℕ).choose k : ℝ)^2) /
+      ((50 : ℕ).choose 25 : ℝ) < 1/2) ∧
+    (1/2 < (∑ k ∈ Finset.Icc 11 14, ((25 : ℕ).choose k : ℝ)^2) /
+      ((50 : ℕ).choose 25 : ℝ)) ∧
+    waldCoverageQ 50 21 29 = 3816125510529753382833452/4109292299835622081085553 ∧
+    waldWidth z 50 23 = 2*z*Real.sqrt (621/61250) := by
+  sorry
+
 
 /-- T8: exact arithmetic for the n=50 design probability and HC1 variance;
-    these are population quantities. -/
+    these are population quantities rather than recovered finite-run summaries. -/
 theorem wald_exact_arithmetic :
     waldCoverageQ 25 10 15 = 14399081696900/15801325804719 ∧
     waldVarianceQ 25 11 = 77/3750 ∧ waldVarianceQ 25 10 = 1/50 ∧
@@ -1582,6 +1658,17 @@ def allCounts (n : ℕ) : Finset Counts := (randomStates ⟨n,n,n,n⟩ n).toFins
     eight-cell vectors are pairs of four-cell vectors with those two totals. -/
 def stratifiedCounts (N₀ N₁ : ℕ) : Finset (Counts × Counts) :=
   (allCounts N₀).product (allCounts N₁)
+
+/-- T19: corrected two independent restrictions, stars-and-bars cardinality,
+    the degree-six bound, and the comparison with unconstrained eight-cell counts. -/
+theorem corrected_stratum_count (N₀ N₁ : ℕ) :
+    (∀ v ∈ stratifiedCounts N₀ N₁, v.1.total = N₀ ∧ v.2.total = N₁) ∧
+    (stratifiedCounts N₀ N₁).card = (N₀+3).choose 3 * (N₁+3).choose 3 ∧
+    ((stratifiedCounts N₀ N₁).card : ℝ) ≤ ((N₀+N₁+3 : ℕ) : ℝ)^6/36 ∧
+    (allCounts (N₀+N₁)).card = (N₀+N₁+3).choose 3 ∧
+    (∑ r ∈ Finset.range (N₀+N₁+1), (r+3).choose 3 * (N₀+N₁-r+3).choose 3) =
+      (N₀+N₁+7).choose 7 := by
+  sorry
 
 
 /-- T19's explicit n=4, N₀=N₁=2 discrepancy: 100 admissible counts, 330
@@ -1628,9 +1715,26 @@ theorem corrected_update (v : Counts) (ha : 1 ≤ v.a) (hd : 1 ≤ v.d) :
     Using a set of treated indices fixes the repeated Z₁ typo in (2.3). -/
 abbrev Assignment (n m : ℕ) := {z : Finset (Fin n) // z.card = m}
 
+/-- Corrected T20(e): the estimator's distribution depends only on the count
+    vector; its value at a fixed labeled assignment need not do so. -/
+theorem count_distribution_invariance {n : ℕ} (m : ℕ)
+    (hm : 0 < m ∧ m < n) (w w' : PotentialTable n)
+    (hc : tableCounts w = tableCounts w') :
+    ∀ t : ℝ,
+    ((Finset.univ.filter fun z : Assignment n m => tableEstimator w z.val = t).card : ℝ) /
+      Fintype.card (Assignment n m) =
+    ((Finset.univ.filter fun z : Assignment n m => tableEstimator w' z.val = t).card : ℝ) /
+      Fintype.card (Assignment n m) := by
+  sorry
 
 
-
+/- Proposition 6.2 as printed, T26. This is a false universal statement;
+    it is deliberately retained with a sorry, not used as an assumed axiom.
+    The only reading of the printed probability that includes arbitrary random J
+    is the joint finite law; endpoint-empty convention is as documented above. -/
+/- Historical false affirmative draft retired. The exact original declaration and its
+   adjacent prose are archived in confidence-followup/source-integration/retired-originals.json.
+   The full checked refutation is in P003_ConfidenceCompletion. -/
 
 
 /-- Printed B.1's execution with the actual number of f evaluations, including
@@ -1648,7 +1752,12 @@ def printedExecution (fuel : ℕ) (k₁ k₂ : ℤ) (f : ℤ → Bool)
       else none
     else (printedExecution t k₁ k₂ f s.1 s.2).map fun p => (p.1,p.2+1)
 
-
+/- Algorithm B.1 and Lemma B.2 as printed, T27. Returning after a finite
+    number of Step-2 iterations is encoded by printedSearch; the evaluation
+    count includes the final extra boundary query. This is false on two points. -/
+/- Historical false affirmative draft retired. The exact original declaration and its
+   adjacent prose are archived in confidence-followup/source-integration/retired-originals.json.
+   The full checked refutation is in P003_ConfidenceCompletion. -/
 
 
 
@@ -1665,6 +1774,38 @@ noncomputable def effectSampleVariance (v : Counts) : ℝ :=
 noncomputable def designVariance (v : Counts) (m : ℕ) : ℝ :=
   designMean v m (fun q =>
     (estimate (observed v q)-designMean v m (fun q' => estimate (observed v q')))^2)
+
+/-- Finite exact identities behind Proposition 3.3 (T31): unbiasedness, the
+    Neyman variance identity and the deliberately conservative variance bound. -/
+theorem neyman_finite_identity (v : Counts) (m : ℕ) (hm : 0 < m ∧ m < v.total) :
+    designMean v m (fun q => estimate (observed v q)) = tau v ∧
+    designVariance v m =
+      binarySampleVariance v.total (v.a+v.b)/m +
+      binarySampleVariance v.total (v.a+v.c)/(v.total-m : ℕ) -
+      effectSampleVariance v/v.total ∧
+    designVariance v m ≤ (v.total : ℝ)^2 /
+      ((v.total-1 : ℕ)*(m : ℝ)*(v.total-m : ℕ)) := by
+  sorry
+
+
+/-- Proposition 3.3 (T31), p. 7, the printed interval-length bound. Empty K
+    is excluded only here because the printed endpoint difference is then undefined. -/
+theorem interval_length_bound (o : Counts) (α : ℝ)
+    (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) (hα : 0 < α ∧ α < 1)
+    (hne : (accepted α o).Nonempty) :
+    upper α o-lower α o ≤ Real.sqrt
+      ((4/α)*(o.total : ℝ)/(o.total-1 : ℕ)*
+        ((o.total : ℝ)/((o.a+o.b : ℕ)*(o.c+o.d : ℕ)))) := by
+  sorry
+
+
+/-- Lemma 4.2, T33, p. 8: along (4.3), the p-value increases in a balanced
+    design; the tested population need not be possible given the observed data. -/
+theorem balanced_pvalue_monotonicity (o v : Counts)
+    (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) (hn : v.total = o.total)
+    (hmin : 1 ≤ min v.b v.c) (hmax : 2 ≤ max v.b v.c) :
+    pValue ⟨v.a+1,v.b-1,v.c-1,v.d+1⟩ o ≥ pValue v o := by
+  sorry
 
 
 /-- The canonical table "w̃_j=(1,1), …, (0,0)" of (4.5), p. 9;
@@ -1813,15 +1954,69 @@ noncomputable def monteInterval {n m K : ℕ} (corrected : Bool) (α ε : ℝ)
   | some lo, some hi => Set.Icc (-(lo : ℝ)/o.total) ((hi : ℝ)/o.total)
   | _, _ => ∅
 
+/-- T7: corrected Lemma B.15, both joint-probability inclusions with unchanged
+    constants; the second part has its necessary positive exact level. -/
+theorem corrected_monte_inclusions (v : Counts) (m K : ℕ) (α ε : ℝ)
+    (hm : 0 < m) (hn : v.total = 2*m) (hK : 0 < K)
+    (hα : 0 < α ∧ α < 1) (hε : 0 < ε ∧ ε < α) :
+    uniformProb (fun ω : MonteSpace v.total m K =>
+      exactInterval α (canonicalObserved v ω.1.val) ⊆
+        monteInterval true α ε (canonicalObserved v ω.1.val) ω.2) ≥
+          1-2*(testBudget v.total : ℝ)*Real.exp (-2*(K : ℝ)*ε^2) ∧
+    (0 < α-2*ε → uniformProb (fun ω : MonteSpace v.total m K =>
+      monteInterval true α ε (canonicalObserved v ω.1.val) ω.2 ⊆
+        exactInterval (α-2*ε) (canonicalObserved v ω.1.val)) ≥
+          1-2*(testBudget v.total : ℝ)*Real.exp (-2*(K : ℝ)*ε^2)) := by
+  sorry
 
 
+/-- T7's finite, pathwise test budget, valid for arbitrary noisy table decisions. -/
+theorem adaptive_test_budget (o : Counts) (reject : Counts → ℕ → Bool)
+    (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) :
+    (upperRun true o reject).value.isSome ∧
+    (upperRun true o reject).trace.length ≤ testBudget o.total := by
+  sorry
 
 
+/- T28: the literal printed search is asserted to return endpoints on every
+    outcome, along with the printed Lemma B.15 bounds. None is kept visible;
+    no total algorithm is silently substituted for B.1. -/
+/- Historical false affirmative draft retired. The exact original declaration and its
+   adjacent prose are archived in confidence-followup/source-integration/retired-originals.json.
+   The full checked refutation is in P003_ConfidenceCompletion. -/
 
-/-- Product of the K=1 reply probabilities along a fixed list of table decisions.
-For a valid chronological path in the T6 setting, where acceptance is exactly a
-successful tail indicator, fresh independent draws identify this product with the
-path probability conditional on the data. This definition does not check path validity. -/
+
+/-- T32: Theorem 4.1, corrected-search implementation: exact endpoints and
+    no more than 4n log₂ n exact permutation tests, for every balanced observed vector. -/
+theorem fast_exact_interval (o : Counts) (α : ℝ)
+    (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) (hn : 15 ≤ o.total)
+    (hα : 0 < α ∧ α < 1) :
+    (exactUpperRun α o).value.map (fun x => (x : ℝ)/o.total) = some (upper α o) ∧
+    (exactUpperRun α (complementObserved o)).value.map
+      (fun x => -(x : ℝ)/o.total) = some (lower α o) ∧
+    (((exactUpperRun α o).trace.length +
+      (exactUpperRun α (complementObserved o)).trace.length : ℕ) : ℝ) ≤
+        4*(o.total : ℝ)*logTwo o.total := by
+  sorry
+
+
+/-- T34: Proposition 4.6, both coverage and approximation statements, with
+    the prescribed joint law and actual Algorithm 4.5 at level α−ε. -/
+theorem balanced_monte_coverage (v : Counts) (m K : ℕ) (α ε : ℝ)
+    (hm : 0 < m) (hn : v.total = 2*m) (hsize : 15 ≤ v.total) (hK : 0 < K)
+    (hα : 0 < α ∧ α < 1) (hε : 0 < ε ∧ ε < α) :
+    ((K : ℝ) ≥ Real.log (4*(v.total : ℝ)*logTwo v.total/ε)/(2*ε^2) →
+      uniformProb (fun ω : MonteSpace v.total m K => tau v ∈
+        monteInterval true (α-ε) ε (canonicalObserved v ω.1.val) ω.2) ≥ 1-α) ∧
+    (ε < α/3 → uniformProb (fun ω : MonteSpace v.total m K =>
+      monteInterval true (α-ε) ε (canonicalObserved v ω.1.val) ω.2 ⊆
+        exactInterval (α-3*ε) (canonicalObserved v ω.1.val)) ≥
+          1-4*(v.total : ℝ)*logTwo v.total*Real.exp (-2*(K : ℝ)*ε^2)) := by
+  sorry
+
+
+/-- Exact probability of a specified K=1 adaptive test trace conditional on data;
+    fresh independence gives the product, even after the search paths diverge. -/
 def traceProbabilityQ (o : Counts) (trace : List (Counts × Bool)) : ℚ :=
   (trace.map fun t => if t.2 then 1-pValue t.1 o else pValue t.1 o).prod
 
@@ -1848,11 +2043,65 @@ theorem adaptive_data_valid :
 
 set_option maxHeartbeats 6000000
 
+/-- T6(A,B,D): finite trace computation for three positive-probability K=1
+    paths of the actual printed search. Exact inversion endpoints are additionally
+    required in the full counterexample below, pp. 27-28. -/
+theorem adaptive_trace_counterexample :
+    let a := upperRun false adaptiveData (exactRejectQ (1/20) adaptiveData)
+    let a' := upperRun false adaptiveData (exactRejectQ (1/25) adaptiveData)
+    let bA := upperRun false adaptiveData (fun _ i => decide (i ≠ 0))
+    let bB := upperRun false adaptiveData (fun _ i => decide (i = 0))
+    let bD := upperRun false adaptiveData (fun _ i => decide (i < 2))
+    a.value = some 10 ∧ a'.value = some 10 ∧ a.trace.length = 16 ∧
+    bA.value = some 9 ∧ bA.trace[0]!.2 = false ∧ a.trace[0]!.2 = true ∧
+    0 < traceProbabilityQ adaptiveData bA.trace ∧
+    bB.value = some 16 ∧ bB.trace[0]!.2 = true ∧ a'.trace[0]!.2 = false ∧
+    0 < traceProbabilityQ adaptiveData bB.trace ∧
+    bD.value = some 16 ∧ bD.trace[0]!.2 = a.trace[0]!.2 ∧
+    bD.trace[1]!.2 = true ∧ a.trace[1]!.2 = false ∧
+    0 < traceProbabilityQ adaptiveData bD.trace := by
+  sorry
+
 
 set_option maxHeartbeats 1200000
 
+/-- T6(A,B,D): the exact inversion endpoints and three positive-probability
+    paths refute the printed first-disagreement identities, pp. 27-28.
+    Both exact levels have the actual inversion interval [-1/5,1/3]. -/
+theorem adaptivity_counterexample :
+    intervalQ (1/20) adaptiveData = some (-1/5,1/3) ∧
+    intervalQ (1/25) adaptiveData = some (-1/5,1/3) ∧
+    (let a := upperRun false adaptiveData (exactRejectQ (1/20) adaptiveData)
+    let a' := upperRun false adaptiveData (exactRejectQ (1/25) adaptiveData)
+    let bA := upperRun false adaptiveData (fun _ i => decide (i ≠ 0))
+    let bB := upperRun false adaptiveData (fun _ i => decide (i = 0))
+    let bD := upperRun false adaptiveData (fun _ i => decide (i < 2))
+    a.value = some 10 ∧ a'.value = some 10 ∧ a.trace.length = 16 ∧
+    bA.value = some 9 ∧ bA.trace[0]!.2 = false ∧ a.trace[0]!.2 = true ∧
+    0 < traceProbabilityQ adaptiveData bA.trace ∧
+    bB.value = some 16 ∧ bB.trace[0]!.2 = true ∧ a'.trace[0]!.2 = false ∧
+    0 < traceProbabilityQ adaptiveData bB.trace ∧
+    bD.value = some 16 ∧ bD.trace[0]!.2 = a.trace[0]!.2 ∧
+    bD.trace[1]!.2 = true ∧ a.trace[1]!.2 = false ∧
+    0 < traceProbabilityQ adaptiveData bD.trace) := by
+  refine ⟨?_,?_,adaptive_trace_counterexample⟩
+  · sorry
+  · sorry
+
 
 set_option maxHeartbeats 1200000
+
+/-- T6(F): B.81's dropped-first-disagreement aggregate bound is actually false.
+    This uses the distribution of the executed second test, not a fixed-table
+    probability attached to the exact algorithm's second chronological index. -/
+theorem aggregate_bound_counterexample :
+    let E := fun pool : Fin (2*testBudget 30+1) → Fin 5000 → Assignment 30 15 =>
+      let b := upperRun false adaptiveData (approximateReject (1/20) (1/50) adaptiveData pool)
+      2 ≤ b.trace.length ∧ b.trace[1]!.2 = true
+    uniformProb E ≥ (4693104776190294207 : ℝ)/5012394999999664375 ∧
+    (4693104776190294207 : ℝ)/5012394999999664375 > 9/10 ∧
+    16*Real.exp (-4) < 48/103 ∧ (48/103 : ℝ) < 9/10 := by
+  sorry
 
 
 /-- A permutation vector (5.19), p. 12, can be represented by its treated
@@ -1915,6 +2164,38 @@ noncomputable def generalSet {n m K : ℕ} (α : ℝ)
       t = θ (reuseVector v k) ∧
       α < rankValue R o (reuseVector v k)
         (reusedSamples v (initial ij) (seeds ij) k)}
+
+/-- T35's draw-reuse fact: one application of the printed update has exactly
+    the complete-randomization type-count law for v+(-1,1,1,-1). -/
+theorem reuse_preserves_uniform_law (v : Counts) (m : ℕ)
+    (hm : 0 < m ∧ m < v.total) (ha : 0 < v.a) (hd : 0 < v.d) (q' : Counts) :
+    uniformProb (fun ω : Assignment v.total m ×
+        (Fin v.total.factorial × Fin v.total.factorial) =>
+      updateTreated v (treatedCounts v ω.1.val) ω.2.1.val ω.2.2.val = q') =
+    designProb (reuseVector v 1) m (fun q => q = q') := by
+  sorry
+
+
+/-- T35: Theorem 5.5 part 1, every positive K, every real-valued θ and R,
+    arbitrary complete allocation, with the corrected full j loop and actual
+    correlated draw-reuse updates, not independent replacement tests. -/
+theorem general_monte_coverage (v : Counts) (m K : ℕ) (α : ℝ)
+    (θ : Counts → ℝ) (R : Counts → Counts → ℝ)
+    (hm : 0 < m ∧ m < v.total) (hK : 0 < K) (hα : 0 < α ∧ α < 1) :
+    uniformProb (fun ω : GeneralSpace v.total m K => θ v ∈
+      generalSet α θ R (canonicalObserved v ω.1.val) ω.2.1 ω.2.2) ≥ 1-α := by
+  sorry
+
+
+/-- T17(iii), (5.4): the plus-one Monte Carlo rank is a valid p-value for any
+    real-valued R, including every fixed zero-variance extension studentized C. -/
+theorem monte_rank_valid (v : Counts) (m K : ℕ) (α : ℝ)
+    (R : Counts → Counts → ℝ) (hm : 0 < m ∧ m < v.total) (hK : 0 < K)
+    (hα : 0 ≤ α ∧ α ≤ 1) :
+    uniformProb (fun ω : Assignment v.total m × (Fin K → Assignment v.total m) =>
+      rankValue R (canonicalObserved v ω.1.val) v
+        (fun i => treatedCounts v (ω.2 i).val) ≤ α) ≤ α := by
+  sorry
 
 
 /-- T17(iv): changing the fixed extension can change the exact test;
@@ -2265,6 +2546,23 @@ theorem squared_log_dominates (n : ℕ) (hn : 15 ≤ n) :
   nlinarith
 
 
+/-- T18(ii)'s finite family: the all-zero data at n=2^r have n/4+1 candidate
+    tables at their first upper-search midpoint, and every one has a legal
+    assignment with estimator equal to τ=1/4, giving V=0 and positive path probability. -/
+theorem balanced_runtime_family (r : ℕ) (hr : 4 ≤ r) :
+    let n : ℕ := 2^r
+    let m : ℕ := n/2
+    let x : ℕ := n/4
+    let o : Counts := ⟨0,m,0,m⟩
+    (candidates o (x : ℤ)).length = x+1 ∧
+    ∀ j : ℕ, x ≤ j → j ≤ m →
+      let v : Counts := ⟨0,j,j-x,n-2*j+x⟩
+      let q : Counts := ⟨0,j-x/2,0,m-j+x/2⟩
+      q ∈ randomStates v m ∧ 0 < multiplicity v q ∧
+      estimateQ (observed v q) = 1/4 ∧ tauQ v = 1/4 := by
+  sorry
+
+
 /-- T1: the two tails in the final (D.7) inequality equal 83/380>109/500;
     the true table is possible only at the complete-data completion. -/
 theorem missing_critical_tail_counterexample :
@@ -2416,6 +2714,34 @@ def unitObserved {n : ℕ} (y : Fin n → Bool) (z : Finset (Fin n)) : Counts :=
    (Finset.univ.filter fun i => i ∉ z ∧ y i = true).card,
    (Finset.univ.filter fun i => i ∉ z ∧ y i = false).card⟩
 
+/-- T2: all six parts of the validator's balanced possibility-preserving
+    coupling, including its exact per-assignment change and p-value comparison.
+    This replaces the invalid D.5-D.7 argument in Appendix D, p. 29. -/
+theorem balanced_plus_coupling {n : ℕ} (m : ℕ) (hm : 0 < m) (hn : n = 2*m)
+    (y y' : Fin n → Bool) (z r : Finset (Fin n)) (hz : z.card = m)
+    (hy' : ∀ i, i ∉ r → y' i = y i) (w : PotentialTable n)
+    (hw : PossibleTable y' z w) (α : ℝ) (hα : 0 < α ∧ α < 1)
+    (hp : α ≤ unitPValue w y' z)
+    (ht : outcomeEstimator (unitPlus y z r) z < tableTau w) :
+    let yPlus := unitPlus y z r
+    let D := Finset.univ.filter (fun i => y' i ≠ yPlus i)
+    let d := D.card
+    let wPlus := coupledPlus w yPlus z
+    PossibleTable yPlus z wPlus ∧
+    tableTau wPlus = tableTau w + (d : ℝ)/n ∧
+    outcomeEstimator yPlus z = outcomeEstimator y' z + 2*(d : ℝ)/n ∧
+    (∀ q : Assignment n m,
+      let N := (D.filter fun i => (i ∈ q.val ↔ i ∈ z)).card
+      N ≤ d ∧ tableEstimator wPlus q.val = tableEstimator w q.val + 2*(N : ℝ)/n ∧
+      |(tableEstimator wPlus q.val-tableTau wPlus)-
+        (tableEstimator w q.val-tableTau w)| ≤ (d : ℝ)/n) ∧
+    |outcomeEstimator yPlus z-tableTau wPlus| =
+      |outcomeEstimator y' z-tableTau w|-(d : ℝ)/n ∧
+    unitPValue w y' z ≤ unitPValue wPlus yPlus z ∧ α ≤ unitPValue wPlus yPlus z ∧
+    upper α (unitObserved yPlus z) ≥ tableTau wPlus ∧ tableTau wPlus ≥ tableTau w := by
+  sorry
+
+
 
 /-- T8: design median of the discrete Wald length distribution in Table 2.
     Both tails have probability at least one half under choose(m,k)² weights. -/
@@ -2424,6 +2750,26 @@ noncomputable def IsWaldMedian (L : ℕ → ℝ) (m : ℕ) (d : ℝ) : Prop :=
     ((2*m).choose m : ℝ) ≥ 1/2) ∧
   ((∑ k ∈ Finset.range (m+1), if d ≤ L k then ((m.choose k : ℝ)^2) else 0) /
     ((2*m).choose m : ℝ) ≥ 1/2)
+
+/-- T8(c-f): full median implication for any finite list with more than half
+    its runs covering, literal HC0 comparison, and the two design medians.
+    The certified enclosure of z is an allowed parameterization of the normal quantile. -/
+theorem wald_median_and_hc0 (z : ℝ)
+    (hz : 1.95996398454005 < z ∧ z < 1.95996398454006) :
+    (∀ runs : List (Fin 26), runs ≠ [] →
+      runs.length < 2*(runs.filter fun k => 0 ∈ waldInterval z 25 k.val).length →
+      2*z*Real.sqrt (1/50) ≤ median (runs.map fun k => waldWidth z 25 k.val)) ∧
+    (∀ k : ℕ, k ≤ 25 →
+      let V₀ := 2*(k : ℝ)*(25-k)/15625
+      let T := (waldEstimateQ 25 k : ℝ)
+      (0 ∈ Set.Icc (T-z*Real.sqrt V₀) (T+z*Real.sqrt V₀) ↔ 10 ≤ k ∧ k ≤ 15) ∧
+      (10 ≤ k ∧ k ≤ 15 → 0.54 < 2*z*Real.sqrt V₀)) ∧
+    IsWaldMedian (waldWidth z 25) 25 (2*z*Real.sqrt (77/3750)) ∧
+    (∀ k : ℕ, k ≤ 50 → (0 ∈ waldInterval z 50 k ↔ 21 ≤ k ∧ k ≤ 29)) ∧
+    IsWaldMedian (waldWidth z 50) 50 (2*z*Real.sqrt (621/61250)) ∧
+    (0.56170 < 2*z*Real.sqrt (77/3750) ∧ 2*z*Real.sqrt (77/3750) < 0.56171) ∧
+    (0.39470 < 2*z*Real.sqrt (621/61250) ∧ 2*z*Real.sqrt (621/61250) < 0.39471) := by
+  sorry
 
 
 /-- T9's two equiprobable atoms have X₁=X₂=0 or X₁=X₂=1; this finite sum
@@ -2451,6 +2797,30 @@ noncomputable def expectedUpperShuffleCost (α ε : ℝ) (n K : ℕ) (o : Counts
     (upperShuffleCost α ε o pool : ℝ)) /
       Fintype.card (Fin (2*testBudget n+1) → Fin K → Assignment n (n/2))
 
+/-- T18(ii): the corrected runtime claim's positive-probability finite lower
+    bound and its expected lower bound for the analyzed shuffle implementation. -/
+theorem balanced_shuffle_lower_bounds (r K : ℕ) (hr : 4 ≤ r) (hK : 0 < K) :
+    let n : ℕ := 2^r
+    let o : Counts := ⟨0,n/2,0,n/2⟩
+    0 < uniformProb (fun pool : Fin (2*testBudget n+1) → Fin K → Assignment n (n/2) =>
+      (n/4+1)*K*(n-1) ≤ upperShuffleCost (1/2) (1/8) o pool) ∧
+    (6 ≤ r → (K : ℝ) ≥ 32*Real.log (32*(n : ℝ)*logTwo n) →
+      ((n/4+1 : ℕ) : ℝ)*K*((n-1 : ℕ) : ℝ)/2 ≤
+        expectedUpperShuffleCost (1/2) (1/8) n K o) := by
+  sorry
+
+
+/-- T18(ii): the expected analyzed runtime is not O(n(log n)^c) for any fixed
+    nonnegative c, on the family n=2^r and with the prescribed K at ε=1/8. -/
+theorem balanced_shuffle_not_linear_polylog (c : ℝ) (hc : 0 ≤ c) :
+    ¬ (fun r : ℕ =>
+      let n : ℕ := 2^r
+      expectedUpperShuffleCost (1/2) (1/8) n (recommendedK (1/8) n) ⟨0,n/2,0,n/2⟩)
+      =O[Filter.atTop] (fun r : ℕ =>
+        let n : ℕ := 2^r
+        (n : ℝ)*Real.rpow (Real.log n) c) := by
+  sorry
+
 
 /-- T6(E): first chronological table-decision mismatch, zero based; N denotes
     the no-mismatch sentinel corresponding to the paper's J=N+1, pp. 27-28. -/
@@ -2458,6 +2828,24 @@ def firstMismatch (a b : List (Counts × Bool)) : ℕ :=
   match (a.zip b).findIdx? (fun p => p.1.2 != p.2.2) with
   | some i => i
   | none => a.length
+
+/-- T6(E): the two scalar probability equalities are false as well as the
+    event identities. The probabilities are conditional on the actual data,
+    and include all independent K=1 Monte Carlo batches of the printed search. -/
+theorem adaptive_probability_inequalities :
+    let a := upperRun false adaptiveData (exactRejectQ (1/20) adaptiveData)
+    let a' := upperRun false adaptiveData (exactRejectQ (1/25) adaptiveData)
+    let b := fun pool : Fin (2*testBudget 30+1) → Fin 1 → Assignment 30 15 =>
+      upperRun false adaptiveData (approximateReject (1/20) (1/200) adaptiveData pool)
+    uniformProb (fun pool => ∃ x, (b pool).value = some x ∧ x < 10) ≠
+      uniformProb (fun pool =>
+        let J := firstMismatch a.trace (b pool).trace
+        J < a.trace.length ∧ (b pool).trace[J]!.2 = true) ∧
+    uniformProb (fun pool => ∃ x, (b pool).value = some x ∧ 10 < x) ≠
+      uniformProb (fun pool =>
+        let J := firstMismatch a'.trace (b pool).trace
+        J < a'.trace.length ∧ (b pool).trace[J]!.2 = false) := by
+  sorry
 
 
 /-- T3's rational interval hull of all nonempty completion inversions.
@@ -2793,6 +3181,7 @@ theorem completion_finite_facts (o r : Counts) (hr : r ∈ missingMasks o) :
     rw [hprod,List.length_range,List.length_range]
 
 
+
 /-- The true complete-data interval is included in the completion union,
     the first pointwise step of repaired Proposition 6.2, Appendix D, p. 29. -/
 theorem complete_interval_subset_union (α : ℝ) (o r : Counts)
@@ -2886,6 +3275,7 @@ theorem exact_coverage (v : Counts) (m : ℕ) (α : ℝ)
   linarith
 
 
+
 /-- T3: arbitrary allocation, corrected to the completion union and its interval hull. -/
 theorem completion_coverage (v : Counts) (m : ℕ) (α : ℝ)
     (hm : 0 < m ∧ m < v.total) (hα : 0 < α ∧ α < 1)
@@ -2907,6 +3297,7 @@ theorem completion_coverage (v : Counts) (m : ℕ) (α : ℝ)
     intro q hq r hr ht
     exact completion_union_subset_hull α (observed v q) r
       (complete_interval_subset_union α (observed v q) r hr ht)
+
 
 
 /-- Lemma 3.1, T30, p. 7: the balanced interval contains the observed estimate.
@@ -2964,5 +3355,121 @@ theorem balanced_estimate_in_interval (o : Counts) (α : ℝ)
   · exact le_csSup (accepted α o).finite_toSet.bddAbove hacc
 
 
+
 end AronowAudit.P003
 
+#print axioms AronowAudit.P003.binomial_eq_choose
+#print axioms AronowAudit.P003.level_accepted_spec
+#print axioms AronowAudit.P003.accepted_effects_spec
+#print axioms AronowAudit.P003.bad_mask_legal
+#print axioms AronowAudit.P003.missing_counterexample
+#print axioms AronowAudit.P003.balanced_missing_coverage
+#print axioms AronowAudit.P003.balanced_completion_inclusion
+#print axioms AronowAudit.P003.completion_union_subset_hull
+#print axioms AronowAudit.P003.printed_search_counterexample
+#print axioms AronowAudit.P003.sentinel_search_invariants
+#print axioms AronowAudit.P003.sentinel_threshold_return
+#print axioms AronowAudit.P003.corrected_search
+#print axioms AronowAudit.P003.noisy_search_budget
+#print axioms AronowAudit.P003.real_threshold_counterexample
+#print axioms AronowAudit.P003.finite_tail_repair
+#print axioms AronowAudit.P003.corrected_sate
+#print axioms AronowAudit.P003.printed_sate_witnesses
+#print axioms AronowAudit.P003.fair_mass_sd
+#print axioms AronowAudit.P003.dependent_convolution_counterexample
+#print axioms AronowAudit.P003.independent_convolution_shape
+#print axioms AronowAudit.P003.independent_convolution_sd
+#print axioms AronowAudit.P003.parity_convolution_sd
+#print axioms AronowAudit.P003.corrected_sd_definition
+#print axioms AronowAudit.P003.corrected_lattice_rescaling
+#print axioms AronowAudit.P003.discordant_estimator_sd
+#print axioms AronowAudit.P003.corrected_induction_counts
+#print axioms AronowAudit.P003.corrected_pair_laws
+#print axioms AronowAudit.P003.corrected_signed_sum
+#print axioms AronowAudit.P003.studentized_extension
+#print axioms AronowAudit.P003.studentized_zero_witness
+#print axioms AronowAudit.P003.unbalanced_footnote_corrected
+#print axioms AronowAudit.P003.corrected_general_loop
+#print axioms AronowAudit.P003.omitted_loop_witness
+#print axioms AronowAudit.P003.rejected_query_cuts_endpoint
+#print axioms AronowAudit.P003.complement_estimator_identity
+#print axioms AronowAudit.P003.balanced_mean_symmetry
+#print axioms AronowAudit.P003.corrected_lattice_interval
+#print axioms AronowAudit.P003.lattice_interval_witness
+#print axioms AronowAudit.P003.corrected_wald_row
+#print axioms AronowAudit.P003.wald_exact_arithmetic
+#print axioms AronowAudit.P003.corrected_stratum_count
+#print axioms AronowAudit.P003.stratum_count_witness
+#print axioms AronowAudit.P003.symbol_corrections
+#print axioms AronowAudit.P003.corrected_update
+#print axioms AronowAudit.P003.count_distribution_invariance
+#print axioms AronowAudit.P003.balanced_estimate_in_interval
+#print axioms AronowAudit.P003.neyman_finite_identity
+#print axioms AronowAudit.P003.interval_length_bound
+#print axioms AronowAudit.P003.balanced_pvalue_monotonicity
+#print axioms AronowAudit.P003.corrected_monte_inclusions
+#print axioms AronowAudit.P003.adaptive_test_budget
+#print axioms AronowAudit.P003.fast_exact_interval
+#print axioms AronowAudit.P003.balanced_monte_coverage
+#print axioms AronowAudit.P003.adaptive_data_valid
+#print axioms AronowAudit.P003.adaptivity_counterexample
+#print axioms AronowAudit.P003.aggregate_bound_counterexample
+#print axioms AronowAudit.P003.reuse_preserves_uniform_law
+#print axioms AronowAudit.P003.general_monte_coverage
+#print axioms AronowAudit.P003.monte_rank_valid
+#print axioms AronowAudit.P003.extension_changes_test
+#print axioms AronowAudit.P003.list_sum_bound
+#print axioms AronowAudit.P003.list_cost_bound
+#print axioms AronowAudit.P003.general_finite_counts
+#print axioms AronowAudit.P003.general_envelope_bound
+#print axioms AronowAudit.P003.general_complexity
+#print axioms AronowAudit.P003.balanced_cost_multiplication
+#print axioms AronowAudit.P003.balanced_complexity
+#print axioms AronowAudit.P003.squared_log_dominates
+#print axioms AronowAudit.P003.balanced_runtime_family
+#print axioms AronowAudit.P003.missing_critical_tail_counterexample
+#print axioms AronowAudit.P003.balanced_search_counterexample
+#print axioms AronowAudit.P003.zero_population_tail
+#print axioms AronowAudit.P003.range_sum_eq
+#print axioms AronowAudit.P003.bounded_vandermonde
+#print axioms AronowAudit.P003.filterMap_sum
+#print axioms AronowAudit.P003.flatMap_sum
+#print axioms AronowAudit.P003.design_weight_total
+#print axioms AronowAudit.P003.balanced_plus_coupling
+#print axioms AronowAudit.P003.completion_finite_facts
+#print axioms AronowAudit.P003.wald_median_and_hc0
+#print axioms AronowAudit.P003.dependent_joint_law
+#print axioms AronowAudit.P003.balanced_shuffle_lower_bounds
+#print axioms AronowAudit.P003.balanced_shuffle_not_linear_polylog
+#print axioms AronowAudit.P003.adaptive_probability_inequalities
+#print axioms AronowAudit.P003.repaired_hull_example
+#print axioms AronowAudit.P003.random_state_facts
+#print axioms AronowAudit.P003.observed_population_possible
+#print axioms AronowAudit.P003.possible_table_facts
+#print axioms AronowAudit.P003.accepted_of_possible
+#print axioms AronowAudit.P003.accepted_subset_interval
+#print axioms AronowAudit.P003.true_table_acceptance_covers
+#print axioms AronowAudit.P003.list_sum_as_fin
+#print axioms AronowAudit.P003.list_event_ratio
+#print axioms AronowAudit.P003.design_prob_as_fin
+#print axioms AronowAudit.P003.design_mass_total
+#print axioms AronowAudit.P003.design_tail_at_state
+#print axioms AronowAudit.P003.missing_mask_facts
+#print axioms AronowAudit.P003.true_observation_is_completion
+#print axioms AronowAudit.P003.complete_interval_subset_union
+#print axioms AronowAudit.P003.list_real_sum_le
+#print axioms AronowAudit.P003.missing_probability_of_pointwise
+#print axioms AronowAudit.P003.exact_coverage
+#print axioms AronowAudit.P003.completion_coverage
+
+#print axioms AronowAudit.P003.finite_tail_support_repair
+
+#print axioms AronowAudit.P003.adaptive_trace_counterexample
+#print axioms AronowAudit.P003.balanced_algorithm_complexity
+
+#print axioms AronowAudit.P003.minimum_b_spec
+#print axioms AronowAudit.P003.first_on_line_spec
+
+#print axioms AronowAudit.P003.sentinel_queries_le_pow
+
+#print axioms AronowAudit.P003.recommended_k_log_bound

@@ -1,19 +1,28 @@
 import AronowAudit.P001.Wave1.GapLawBlueprint
 
 /-!
-# Counterexample to PDA local-support invariance (P001-T102)
+# Blueprint: refutation of `AronowAudit.P001.printed_pda_local_support_invariance` (P001-T102)
 
-Differentiability of two CEF versions at every point of positive covariate density
-does not ensure that they have a common coordinate derivative at the covariate mean,
-even when the covariate coordinates and the outcome are integrable.
-`Target` negates this universal assertion for `Ω : Type` (universe 0).
+Record 2 of group P001a: P001-T102 / `AronowAudit.P001.printed_pda_local_support_invariance`;
+resolution `refute`. Frozen contract (P001_Foundations.lean:10000): on every probability
+space, for a covariate vector `X` with integrable coordinates and a vector PDF `f`, an
+integrable `Y`, two CEF versions `m, m'` whose `k`-th coordinate paths are differentiable at
+every point of positive density, there is one common derivative `a` of both paths at the
+covariate mean.
 
-The witness has `Ω = ℝ × ℝ`, `μ = gapJointLaw`, `K = 1`, `X = gapX`,
-`Y = Prod.snd`, `f x = gapPDF (x 0)`, `m = 0`, `m' = bumpVec`, and `k = 0`.
-Both CEF versions are globally `C¹`, including at the support endpoints.
-At the covariate mean `0`, their derivatives are `0` and `1`.
-A support-neighbourhood hypothesis is a different condition and is not refuted by
-this counterexample.
+`Target` is the negation of exactly that contract with `Ω : Type` (universe 0); the
+universe-polymorphic frozen theorem would in particular give its universe-0 instance, so
+this negation refutes it. The `example` checks by `Iff.rfl` that `Target` is the negation of
+the frozen type at universe 0.
+
+Witness (paper proof, record 2): `Ω = ℝ × ℝ`, `μ = gapJointLaw`, `K = 1`, `X = gapX`,
+`Y = Prod.snd`, `f x = gapPDF (x 0)`, `m = 0`, `m' = bumpVec`, `k = 0`. Both versions are
+globally `C¹`, so all local differentiability premises hold (including at the support
+endpoints); the mean is `0`, where the derivatives are `0` and `1`.
+
+Nodes: `GapLaw.N1`-`GapLaw.N5` (shared with record 1). No record-specific node; the
+assembly is fully proved. The separately corrected support-neighbourhood theorem is a
+different statement and is not refuted here.
 -/
 
 set_option autoImplicit false
@@ -25,7 +34,8 @@ open scoped BigOperators ENNReal
 
 noncomputable section
 
-/-- Negation of the universal assertion (universe 0). -/
+/-- The frozen statement to be resolved: the negation of the exact recorded contract
+`printed_pda_local_support_invariance` (universe 0). -/
 def Target : Prop :=
   ¬ ∀ {Ω : Type} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ] {K : ℕ}
     (X : Ω → Fin K → ℝ) (Y : Ω → ℝ), Measurable X →
@@ -41,13 +51,18 @@ def Target : Prop :=
       HasDerivAt (fun t => m' (Function.update (fun j => mean μ (fun ω => X ω j)) k
         (mean μ (fun ω => X ω k) + t))) a 0
 
-/-- Along the updated `0`-th coordinate path, `bumpVec` is the scalar bump shifted by `c`. -/
+/-- Fidelity check: `Target` is literally `¬` (type of the frozen declaration, universe 0).
+Only the frozen theorem's *type* is read; its `sorry` proof is never used. -/
+example : Target ↔
+    ¬ (type_of% @AronowAudit.P001.printed_pda_local_support_invariance.{0}) := Iff.rfl
+
+/-- Along the `0`-th coordinate path, `bumpVec` is the scalar bump shifted by `x 0`. -/
 theorem bumpVec_path (x : Fin 1 → ℝ) (c t : ℝ) :
     bumpVec (Function.update x 0 (c + t)) = pdaBump (c + t) := by
   simp [bumpVec]
 
-/-- For the gap witness, the asserted common derivative would equal both `0`
-for the constant CEF version and `1` for the bump version. -/
+/-- The nodes suffice: specialize the frozen contract to the gap witness; the common
+derivative would be both `0` (constant version) and `1` (bump version). -/
 theorem assemble (h1 : GapLaw.N1) (h2 : GapLaw.N2) (h3 : GapLaw.N3) (h4 : GapLaw.N4)
     (h5 : GapLaw.N5) : Target := by
   intro H
@@ -72,6 +87,25 @@ theorem assemble (h1 : GapLaw.N1) (h2 : GapLaw.N2) (h3 : GapLaw.N3) (h4 : GapLaw
   have e1 : a = 1 := ha1.unique h2.2.2
   rw [e0] at e1
   exact zero_ne_one e1
+
+/-- Nonvacuity record: given the shared nodes, the witness satisfies every hypothesis of the
+frozen contract, including both local differentiability premises on `{f > 0}`. -/
+example (h1 : GapLaw.N1) (h2 : GapLaw.N2) (h3 : GapLaw.N3) (h4 : GapLaw.N4)
+    (h5 : GapLaw.N5) :
+    IsProbabilityMeasure gapJointLaw ∧ Measurable gapX ∧
+    (∀ j, Integrable (fun ω => gapX ω j) gapJointLaw) ∧ Integrable Prod.snd gapJointLaw ∧
+    HasVectorPDF (gapJointLaw.map gapX) (fun x => gapPDF (x 0)) ∧
+    IsCEF gapJointLaw gapX Prod.snd (fun _ => 0) ∧ IsCEF gapJointLaw gapX Prod.snd bumpVec ∧
+    (∀ x : Fin 1 → ℝ, 0 < gapPDF (x 0) →
+      DifferentiableAt ℝ (fun t => bumpVec (Function.update x 0 (x 0 + t))) 0) := by
+  have hprob : IsProbabilityMeasure gapJointLaw := h1.1
+  have hY : Integrable Prod.snd gapJointLaw := h1.2.2.1
+  obtain ⟨hXm, -, -, hint, -, -, -⟩ := h4 h1 h2
+  obtain ⟨hpdf, hcef0, hcef1⟩ := h5 h1 h2 h3
+  refine ⟨hprob, hXm, hint, hY, hpdf, hcef0, hcef1, fun x _ => ?_⟩
+  simp only [bumpVec_path]
+  exact ((h2.1.differentiable (by norm_num)) _).comp _
+    ((differentiableAt_const _).add differentiableAt_id)
 
 end
 

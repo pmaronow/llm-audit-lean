@@ -2,9 +2,10 @@ import AronowAudit.P019.Wave1.Gap.GLP019B2
 import AronowAudit.P019.Wave1.Gap.GP019B1
 
 /-!
-Propositions 3 and 4 for the actual completed cell statistics. Positive cell
-probabilities make all exceptional completion branches disappear eventually
-almost surely on the common IID product.
+Propositions 3 and 4 for the actual completed cell statistics. The finite
+algebra starts from the GP019B3 draft; the IID law and convergence bridges
+reuse GLP019B2. Positive cell probabilities make all exceptional completion
+branches disappear eventually almost surely on the common IID product.
 -/
 
 namespace AronowAudit.P019.Wave1
@@ -393,6 +394,8 @@ theorem proposition_three_proof (S : Study Ω) (hs : S.standing) (c1 c0 cV : ℝ
     (fun _ s => S.betaVarianceHat s cV) 1 _ hpos hCLT hv
   exact ⟨hβ, t19_weakLimit _ _ _ hZ, GP019B3b_pvalue_limit _ _ _ _ hZ⟩
 
+example : type_of% @AronowAudit.P019.proposition_three := proposition_three_proof
+
 theorem proposition_four_proof (S : Study Ω) (h3 : S.treatmentIndependent)
     (h4 : S.nondegenerate) (c1 c0 cV : ℝ) :
     S.delta = 0 ∧
@@ -431,6 +434,8 @@ theorem proposition_four_proof (S : Study Ω) (h3 : S.treatmentIndependent)
   refine ⟨hδ, t19_weakLimit _ _ _ hZ, ?_⟩
   apply GP019B3b_pvalue_limit _ _ _ _
   simpa only [sub_zero] using hZ
+
+example : type_of% @AronowAudit.P019.proposition_four := proposition_four_proof
 
 end
 end AronowAudit.P019.Wave1

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P061-T17",
+    "theorem": "SAP.P061b.T17",
+    "fingerprint": "af498bc8099eaee0d15359c08bc667e38d7ac7ef42282a8e94fcf7495732af41",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: N=2, n=1, uniform raw assignments (a,b) in Fin 2 × Fin 2, g_i(a,b)=1 iff i=a, and y_i(a,b)=b.val+i.val+1 satisfy the equal-margin and SRS hypotheses and exposure moments; support stability explicitly fails. Compiled scratch/Experiment.lean: feasible set all of R^2, design mass 1/2 on each of (1,0),(0,1), n=1. This constructs an AtomicDesign, proves ContainsBinaryCubeW1 and UniformBinaryDesignW1, and satisfies every experiment hypothesis, with nonbinary feasible assignments off support.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T18",
+    "theorem": "SAP.P061b.T18",
+    "fingerprint": "c551727e2f85d9861c52d0f7badf00952a89586df3d748dc025d11b658c33690",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: N=2, independentHousehold (uniform on four binary assignments), g=ownAssignment, d=1, e=0, and y_i(z)=i.val+1 at exposure 1 and -i.val-2 otherwise. The example proves N>0, both strictly positive margins (each 1/2), and SupportStable for this nonzero outcome schedule. Thus all bundled hypotheses, including the cross-exposure case, hold simultaneously.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T19",
+    "theorem": "SAP.P061b.T19",
+    "fingerprint": "9764db4262c663ab39bec4335e28a47b0da429fca06b915537767fbac4e6d197",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with N=2, d=1, ownAssignment and the nonzero stableOutcome schedule. independentHousehold satisfies every base hypothesis and strictly positive joint exposure probability for every ordered pair. Separately, oneTreated satisfies every base hypothesis with both marginal probabilities 1/2 and jointExposureProbability(0,1,1,1)=0; the example also verifies that these cells are never simultaneously exposed on support. The impossibility assertion quantifies a single statistic before every support-stable schedule, so it is not an existential claim requiring a proposed statistic witness. Its nonzero mixed-product obstruction is explained in REPORT.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T20",
+    "theorem": "SAP.P061b.T20",
+    "fingerprint": "bd0f4c6b87c3de08717a9151d4d9c073e0c008f2b2f9faffa69eefb44dfe06ba",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: N=2, uniform raw assignments (a,b) in Fin 2 × Fin 2, g_i=1 iff i=a, y_i=b.val+i.val+1 and F_i=b.val+3. The file proves all required moments, positive margins, and PredictionCalibrated. It separately proves EventIndependent and MeanIndependent for each unit, so all three implication antecedents are inhabited. Both predictions and outcomes vary, and the same file proves that support stability of y fails.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T21",
+    "theorem": "SAP.P061b.T21",
+    "fingerprint": "84cc5a4519d0c7a8903a3d9a9aad6f6fd030ed92cdea664745c0f2d81e21dbec",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Asymptotic.lean: for each size n use a fair binary assignment, y_i=1, exposure of unit zero equal to the fair bit and every other unit always at d=1. Margins are 1/2 for unit zero and 1 otherwise; NURVA holds. Choose c_n=2, b_0=0 and b_n=1/4 for n>0. The final example proves every hypothesis jointly, including the exact double-sum identity, the probability-zero bound, and both limits. The first unit has genuinely random exposure in every positive population, yielding HT error ±1/n.",
+    "confidence": "high"
+  }
+]

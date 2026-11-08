@@ -1,0 +1,43 @@
+import SAP.P006a.Challenge
+open MeasureTheory ProbabilityTheory
+open scoped BigOperators ENNReal
+
+#check MeasurableSpace.comap_const
+#check condExp_bot
+#check iIndepFun.of_subsingleton
+#check indepFun_const_left
+#check Measure.map_const
+#check IdentDistrib.refl
+#check IdentDistrib.of_ae_eq
+#check Measure.map_dirac
+#check integral_bernoulliMeasure
+#check integrable_bernoulliMeasure
+#check integral_fintype
+#check MeasureTheory.integral_prod
+#check condExp_const
+#check integral_const
+#check Measure.map_const
+#check condExp_smul
+
+namespace Audit
+open SAP.P006a
+
+example : binaryFeasible (17/18,1) ∧ binaryFeasible (0,1) ∧
+    binaryFeasible (1,1) ∧ binaryFeasible (0,0) := by
+  norm_num [binaryFeasible]
+
+example : witnessReward (0,1) = 3/4 ∧ witnessReward (1,1) = 19/20 := by
+  simp only [witnessReward, coinMass, binaryRule, wATO, treatedCount, bit,
+    effectE001, Fin.sum_univ_two, Fintype.sum_bool, Matrix.cons_val_zero,
+    Matrix.cons_val_one, ite_false, ite_true]
+  norm_num
+
+example : ∀ x, fixedEstimatorMean estA x = 0 ∧ fixedEstimatorMean estB x = 0 := by
+  intro x
+  cases x <;> norm_num [fixedEstimatorMean, estA, estB, Fintype.sum_bool]
+
+example : ∀ x, (∑ xj : Bool, ∑ xk : Bool, (1/4 : ℝ)*sharedEst xj xk x) = 0 := by
+  intro x
+  cases x <;> norm_num [sharedEst, Fintype.sum_bool]
+
+end Audit

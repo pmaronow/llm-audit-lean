@@ -1,0 +1,64 @@
+[
+  {
+    "target_id": "P011-T29",
+    "theorem": "SAP.P011c.T29",
+    "fingerprint": "497be65cbdad1418c5c623c533f90f6d4ee5cc3c6d6bf844924c94066e2e2c0c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean compiled successfully. It constructs n=p=1, D=[1], b=[2], law Dirac([2]), unit weight and empty graphs, and proves positive sample size, nonzero Gram determinant, the integrable linear mean model and every raw coordinate's L2 membership. It also constructs, for arbitrary n,p,D,b, a Dirac(D b) model satisfying MeanModel. Thus the placement of the model-independent representation under MeanModel does not restrict the representation clause. Integrability and finite second moments are the usual measure-theoretic conditions, stated in the docstring; n>0 and invertibility exclude division and matrix-inverse defaults.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T30",
+    "theorem": "SAP.P011c.T30",
+    "fingerprint": "6863bf919f25e09283983f0e1e773d87b1797f21813b056e517b55dffdbc09a3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/FiniteChecks.lean compiled successfully. With n=2, mandatory edge {0,1} and caps (1,1), it proves both feasibility predicates and both maximizing predicates directly. It separately checks empirical profit -1 for data (-1,1), so mandatory negative-profit edges are included. The definitions correctly express unordered simple edges, incidence capacities and the positive affine normalization of V1. The restricted record and docstring accurately retain C1 only and omit C2, C3, running times and the decision-variable count. No algorithm or hardness transfer is claimed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T31",
+    "theorem": "SAP.P011c.T31",
+    "fingerprint": "17df7d6fa2f42193d5830b46bbec93c3dfb760f0b3d6dc10c43c686b84a076ea",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Witnesses.md states the printed reading and checks every condition against an independent witness: q=k+1 disjoint paths with outcomes (1,-2+Z_b,1), independent fair center signs, unit weights, R=G, and actual-degree caps. Sizes 3q grow and the observed/full graphs are induced nested. Constants (3,2,1/3,2) satisfy Scaling, beta=0, and n Var(betaHat)=1/3. On every support outcome, n V1=-7/33-(11/27)(sum_b Z_b/q-6/11)^2, so the epsilon=1/2 error probability is identically one. All moments and events are well-defined. scratch/WitnessChecks.lean compiles the genuine one-block law and positive variance, both negative V1 values, and the uniform polynomial bound and error gap. The full product-law family and its independence/moment arguments are supplied analytically, not as a compiled Scaling instance; a full n-indexed extension is also given. Stronger observed nesting is a property of this counterexample and does not weaken the refutation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T32",
+    "theorem": "SAP.P011c.T32",
+    "fingerprint": "646beb73e1e58fdbdd013b5e76deb3e8dcf7600c77f3a82d3ec4889943e94bc1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Witnesses.md separately states T32's printed combined contract and checks all its premises for the independent path family: valid fixed constraints R=G and d=degree G, all scaling conditions with (3,2,1/3,2), genuine dependency graphs, finite moments and nested full graphs. Saturated mandatory edges leave only G feasible, so A_k(y)=G maximizes for every outcome. The epsilon=1/2 underestimation probability is one because n Var(betaHat)-n V1 is at least 6/11. scratch/WitnessChecks.lean compiles the block law, its positive variance and negative estimates, the uniform gap, and a general uniqueness/maximization proof for saturated graph constraints. The full family is justified analytically, not by a compiled Scaling instance. Its variances are heterogeneous, which is permitted for the first conjunct. Negating C and (H implies C) refutes the combined canonical assertion without separately refuting the homoskedastic specialization, exactly as the current docstring says.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T33",
+    "theorem": "SAP.P011c.T33",
+    "fingerprint": "f15004fb5e8e0e203c6c1d5c4b62beee011b64e840ea0b86db84746a6cc27f42",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the explicitly retained extension, the same independent path family has valid constraints, a constant maximizing selector, all scaling and usual measure-theoretic conditions, and V1<0 on every support outcome. Hence printedCoverage is exactly zero at every row and every 0<alpha<1, contradicting the extension's universal lower bound; alpha=1/2 already suffices. scratch/WitnessChecks.lean compiles its genuine finite block and the uniform negative bound; scratch/Witnesses.md supplies and checks the entire asymptotic construction analytically. This family fails the real-square-root-domain condition of the canonical printed interval and is explicitly not offered as a counterexample on that domain. The current record labels the item restricted, and the Challenge docstring precisely identifies the added uncovered-on-undefined convention and the missing domain-valid refutation. This is accurate under the task's rule for declared interpretation-level results. No sqrt, quantile, probability-toReal or liminf junk value is used to obtain the extension's conclusion.",
+    "confidence": 0.97,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json: the negative-estimate witness refutes only an uncovered-on-undefined extension, rather than the printed real-interval guarantee on its domain.",
+        "status": "fixed",
+        "judgment": "Fixed in scope and attribution. SAP/P011c/Challenge/Part1.lean:34 identifies the convention, and lines 37-39 expressly disclaim a domain-valid or almost-surely-nonnegative-estimate refutation. record.json labels T33 restricted and describes exactly that extension. The mathematical statement at SAP/P011c/Defs/Part3.lean:42 still concerns the extension, as allowed by the task's interpretation rule; it is no longer labeled refuted or described as proving the printed claim false. No new domain-valid witness is supplied or claimed. The earlier mathematical distinction remains correct and is fully respected by the present disclosure."
+      }
+    ]
+  }
+]

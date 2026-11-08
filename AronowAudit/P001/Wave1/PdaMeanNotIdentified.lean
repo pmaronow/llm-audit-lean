@@ -43,5 +43,7 @@ theorem pda_at_mean_not_identified :
     PdaMeanNotIdentified.n6_proof PdaMeanNotIdentified.n7_proof PdaMeanNotIdentified.n8_proof
     PdaMeanNotIdentified.n9_proof
 
+example : PdaMeanNotIdentified.Target := pda_at_mean_not_identified
+
 end
 end AronowAudit.P001.Wave1

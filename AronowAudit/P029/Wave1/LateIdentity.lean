@@ -31,6 +31,9 @@ theorem late_identity_paper_scope {Ω : Type u} {X : Type v}
   exact LateIdentity.assemble LateIdentity.n1_proof LateIdentity.n2_proof
     LateIdentity.n3_proof LateIdentity.n4_proof LateIdentity.n5_proof μ U Z hiv
 
+example : AronowAudit.P029.Wave1.LateIdentity.Target.{u, v} :=
+  @late_identity_paper_scope.{u, v}
+
 end
 
 end AronowAudit.P029.Wave1

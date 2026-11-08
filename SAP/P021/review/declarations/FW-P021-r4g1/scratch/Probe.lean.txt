@@ -1,0 +1,25 @@
+import SAP.P021.Challenge
+
+open MeasureTheory Filter Topology
+open scoped BigOperators
+
+#print SAP.P021.T1
+#print SAP.P021.T2
+#check MeasureTheory.integral_finsetSum_measure
+#check MeasureTheory.integrable_finsetSum_measure
+#check MeasureTheory.Integrable.smul_measure
+#check MeasureTheory.Integrable.add_measure
+#check MeasureTheory.integrable_dirac
+#check MeasureTheory.integral_add_measure
+#check MeasureTheory.tendstoInMeasure_of_tendsto_ae
+#check Filter.Tendsto.congr'
+#check Continuous.measurable
+#check measurable_const
+
+set_option pp.all true in
+#print SAP.P021.sampleSet
+#print SAP.P021.vhEstimator
+
+example (j : Fin 8) (z : Fin 8 → SAP.P021.RDSState 2 3) :
+    j ∈ SAP.P021.sampleSet z ↔ (z j).2.2 = true := by
+  simp only [SAP.P021.sampleSet, Finset.mem_filter, Finset.mem_univ, true_and]

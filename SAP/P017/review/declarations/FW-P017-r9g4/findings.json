@@ -1,0 +1,13 @@
+[
+  {
+    "target_id": "P017-T16",
+    "theorem": "SAP.P017.T16",
+    "fingerprint": "afb06b9c0f6812e9e187a07eb135ccc766654208bb0fda4ba842576db845de0d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean successfully with /home/ubuntu/sap/tools/sap-lean. It proves, using Mathlib and SAP.P017.Defs without importing Challenge, that under P = gaussianReal 0 1 the measurable estimator h_n(z) = mu + z / sqrt(n) satisfies RootNNormal P h mu with variance witness 1: its scaled error equals z for every n >= 1. Three example declarations construct all T16 hypotheses, taking mu = populationMean G tau, for (G,tau) = (dirac 0, constant 0), the equal mixture of dirac(-1) and dirac(1) with identity effect, and (gaussianReal 0 1, identity effect). These populations have radii 0, 1, and infinity respectively; the radius evaluations follow directly from their means and supports and are not claimed as separate compiled lemmas. The examples establish probability-measure instances, measurability, integrability, and the exact normal limit hypothesis without assuming the conclusion.",
+    "confidence": 0.99
+  }
+]

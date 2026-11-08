@@ -4,18 +4,20 @@ import AronowAudit.P009.P009_MixingBasics
 import AronowAudit.P009.P009_CompleteSampling
 
 /-!
-# Complete-randomization block mixing
+# Actual complete-randomization block mixing
 
 The finite design is invariant under coordinate permutations. Averaging arbitrary bounded
 block tests over independent uniform coordinate labels is constant on injective label
-samples; on every supported assignment, recoloring iid labels yields a
+samples; on every supported assignment, recoloring iid labels yields an actual
 Bernoulli(m/n) product law. The collision probability therefore controls every joint
 and marginal event. Three event errors give the full alpha supremum bound.
 
 Incoming masks are embedded jointly by their disjoint union, and Function.extend
-reconstructs the original masked vectors. Full block independence holds
-under the reference law. The result with denominator n is stronger than
-the bound with denominator n-K+1.
+reconstructs the actual original masked vectors. Full block independence is proved
+under the reference law, not assumed. The result with denominator n is stronger than
+the original n-K+1 bound. No additional theorem hypothesis, axiom or donor code is used.
+The product-factorization helper reuses this audit's previously proved P004 finite law
+lemma; the independent-label comparison is in P009_CompleteSampling.
 -/
 
 namespace AronowAudit.P009.CompleteMixing
@@ -411,6 +413,14 @@ theorem complete_mask_mixing_finite_completed {n : ℕ} (E : Experiment n) (m : 
     _ ≤ 3*((k:ℝ)*((k:ℝ)-1)/(2*((n:ℝ)-k+1))) := mul_le_mul_of_nonneg_left hdiv (by norm_num)
     _ = _ := by dsimp only [k]; ring
 
+#print axioms product_recolor
+#print axioms recolor_iid
+#print axioms mean_labels_injective
+#print axioms masked_extend_pair_factor
+#print axioms complete_recolor_average
+#print axioms complete_sampling_event_bound
+#print axioms complete_mask_alpha_collision
+#print axioms complete_mask_mixing_finite_completed
 end
 end AronowAudit.P009.CompleteMixing
 
@@ -426,6 +436,8 @@ theorem complete_mask_mixing_finite {n : ℕ} (E : Experiment n) (m : ℕ)
     alpha E.design (masked E i) (masked E j) ≤
       3*(K:ℝ)*((K:ℝ)-1)/(2*((n:ℝ)-K+1)) := by
   exact CompleteMixing.complete_mask_mixing_finite_completed E m hCR i j hij hsmall
+
+#print axioms complete_mask_mixing_finite
 
 end
 end AronowAudit.P009

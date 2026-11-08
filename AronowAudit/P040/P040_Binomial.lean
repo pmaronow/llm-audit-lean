@@ -11,7 +11,7 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FunProp
 
 /-! P040, manipulation check.  The binomial sampling hypothesis is an additional
-assumption of the correction, not the randomized assignment of days.
+assumption of the validator's correction, not the randomized assignment of days.
 All probabilities below are actual finite binomial sums, not empirical proportions.
 -/
 
@@ -24,19 +24,19 @@ noncomputable section
 abbrev DetectionCount := Fin 16
 
 /-- Under the correction's independent common-probability sampling model,
-"P_p(X = k) = choose(15,k) p^k (1-p)^(15-k)" (T1/T2).
-The paper itself specifies no sampling model. -/
+"P_p(X = k) = choose(15,k) p^k (1-p)^(15-k)" (T1/T2; validator E001,
+derivation §§3–5). The paper itself specifies no sampling model. -/
 def binomialMass (p : ℝ) (k : DetectionCount) : ℝ :=
   (Nat.choose 15 k.val : ℝ) * p ^ k.val * (1 - p) ^ (15 - k.val)
 
 /-- "P_p(E) = sum ..." (targets S7). Probability of a count event under the
-binomial sampling assumption. -/
+binomial sampling assumption; E001 derivation §§3–5. -/
 def countProbability (p : ℝ) (E : DetectionCount → Prop) : ℝ := by
   classical
   exact ∑ k, if E k then binomialMass p k else 0
 
-/-- "coverage of a rule I at p, that is P_p(p ∈ I(X))" (T1 definitions).
-A rule can be any deterministic function of the count. -/
+/-- "coverage of a rule I at p, that is P_p(p ∈ I(X))" (T1 definitions;
+E001 derivation §3). A rule can be any deterministic function of the count. -/
 def intervalCoverage (p : ℝ) (I : DetectionCount → Set ℝ) : ℝ :=
   countProbability p (fun k => p ∈ I k)
 
@@ -44,15 +44,15 @@ def intervalCoverage (p : ℝ) (I : DetectionCount → Set ℝ) : ℝ :=
 Two-decimal rounding, including the lower boundary and excluding the upper one. -/
 def roundsTwo (x w : ℝ) : Prop := w - 1 / 200 ≤ x ∧ x < w + 1 / 200
 
-/-- "c_k = k/15" (T1 A3), the observed detection proportion. -/
+/-- "c_k = k/15" (T1 A3; E001 derivation §4), the observed detection proportion. -/
 def detectionProportion (k : DetectionCount) : ℝ := (k.val : ℝ) / 15
 
-/-- "r_k = z sqrt(c_k(1-c_k)/15)" (T1 A3–A4).
+/-- "r_k = z sqrt(c_k(1-c_k)/15)" (T1 A3–A4; E001 derivation §§2,4).
 This reconstructs the printed interval; the paper does not name its method. -/
 def waldRadius (z : ℝ) (k : DetectionCount) : ℝ :=
   z * Real.sqrt (detectionProportion k * (1 - detectionProportion k) / 15)
 
-/-- "I_W(k) = [c_k-r_k,c_k+r_k]" (T1 A3).
+/-- "I_W(k) = [c_k-r_k,c_k+r_k]" (T1 A3; E001 derivation §4).
 The multiplier is explicit to cover the robustness assertion A4. -/
 def waldInterval (z : ℝ) (k : DetectionCount) : Set ℝ :=
   Set.Icc (detectionProportion k - waldRadius z k)
@@ -140,7 +140,7 @@ theorem printed_endpoint_excludes_witness :
     unfold roundsTwo at hl
     linarith [hl.1]
 
-/-- Squaring the Wald radius removes the square root (T1 A3–A4). -/
+/-- The nonnegative Wald radius has its stated rational square (T1 A3–A4). -/
 theorem waldRadius_sq (z : ℝ) (k : DetectionCount) :
     waldRadius z k ^ 2 = z ^ 2 *
       (detectionProportion k * (1 - detectionProportion k) / 15) := by
@@ -254,26 +254,26 @@ theorem wald_coverage_counterexample (z : ℝ)
     norm_num [Fin.sum_univ_succ, binomialMass, Nat.choose]
   exact ⟨hi, by rw [hi]; norm_num, hl, by rw [hl]; norm_num⟩
 
-/-- "S_k(p) = P_p(X ≥ k)" (T2; exact-binomial repair). -/
+/-- "S_k(p) = P_p(X ≥ k)" (T2; exact-binomial repair, E001 derivation §5). -/
 def upperDetectionTail (p : ℝ) (k : DetectionCount) : ℝ :=
   countProbability p (fun j => k ≤ j)
 
-/-- "F_k(p) = P_p(X ≤ k)" (T2; exact-binomial repair). -/
+/-- "F_k(p) = P_p(X ≤ k)" (T2; exact-binomial repair, E001 derivation §5). -/
 def lowerDetectionTail (p : ℝ) (k : DetectionCount) : ℝ :=
   countProbability p (fun j => j ≤ k)
 
 /-- "C(k) = {p ∈ [0,1] : S_k(p) ≥ 1/40 and F_k(p) ≥ 1/40}"
-(T2). Equal-tailed exact 95% confidence set by test inversion. -/
+(T2; E001 derivation §5). Equal-tailed exact 95% confidence set by test inversion. -/
 def exactDetectionInterval (k : DetectionCount) : Set ℝ :=
   {p | p ∈ Set.Icc (0 : ℝ) 1 ∧
     (1 : ℝ) / 40 ≤ upperDetectionTail p k ∧ (1 : ℝ) / 40 ≤ lowerDetectionTail p k}
 
-/-- "C⁺(k) = {p ∈ [0,1] : S_k(p) ≥ 1/20}" (T2).
+/-- "C⁺(k) = {p ∈ [0,1] : S_k(p) ≥ 1/20}" (T2; E001 derivation §5).
 Exact one-sided 95% lower confidence set; no claim about unsampled patrons. -/
 def exactDetectionLowerSet (k : DetectionCount) : Set ℝ :=
   {p | p ∈ Set.Icc (0 : ℝ) 1 ∧ (1 : ℝ) / 20 ≤ upperDetectionTail p k}
 
-/-- "S_14(p) = p^14 (15-14p)" (T2(ii)). -/
+/-- "S_14(p) = p^14 (15-14p)" (T2(ii); E001 derivation §5). -/
 def observedUpperPolynomial (p : ℝ) : ℝ := p ^ 14 * (15 - 14 * p)
 
 /-- P040-T2(i)/T3(P1): fourteen of fifteen detections rounds to the printed .93. -/
@@ -605,7 +605,7 @@ theorem corrected_six_decimal_rounding {L U : ℝ}
     (hm.lt_iff_lt hU01 (by norm_num)).mp (by rw [hU]; norm_num)
   refine ⟨by linarith, by linarith, by linarith, by linarith⟩
 
-/-- P040-T1 auxiliary hypothetical exact-coverage proposition: the interval (.81,1.06)
+/-- P040-T1 auxiliary hypothetical exact-coverage proposition (historical name retained): the interval (.81,1.06)
 at count 14 is the value of a deterministic rule with at least 95% coverage for
 every p∈[0,1] under the added binomial model. This stronger finite-calibration proposition is FALSE, as the
 following refutation proves; it is not attributed to the paper's nominal Wald interpretation. Defining it does not constitute proving it. The paper
@@ -652,3 +652,37 @@ theorem wald_lower_failure_probability (z : ℝ)
 end
 end AronowAudit.P040
 
+#print axioms AronowAudit.P040.binomialMass_nonneg
+#print axioms AronowAudit.P040.binomialMass_total
+#print axioms AronowAudit.P040.observed_count_mass
+#print axioms AronowAudit.P040.exclude_observed_count_bound
+#print axioms AronowAudit.P040.method_free_counterexample
+#print axioms AronowAudit.P040.lower_bound_counterexample
+#print axioms AronowAudit.P040.printed_endpoint_excludes_witness
+#print axioms AronowAudit.P040.waldRadius_sq
+#print axioms AronowAudit.P040.wald_membership_sq
+#print axioms AronowAudit.P040.printed_wald_arithmetic
+#print axioms AronowAudit.P040.wald_witness_membership
+#print axioms AronowAudit.P040.wald_lower_membership
+#print axioms AronowAudit.P040.wald_coverage_counterexample
+#print axioms AronowAudit.P040.observed_proportion_rounds
+#print axioms AronowAudit.P040.observed_tail_identities
+#print axioms AronowAudit.P040.observedUpper_continuous
+#print axioms AronowAudit.P040.observedUpper_hasDerivAt
+#print axioms AronowAudit.P040.observedUpper_strictMono
+#print axioms AronowAudit.P040.observedLower_strictAnti
+#print axioms AronowAudit.P040.countProbability_mono
+#print axioms AronowAudit.P040.countProbability_complement
+#print axioms AronowAudit.P040.countProbability_union_le
+#print axioms AronowAudit.P040.upper_tail_rejection_le
+#print axioms AronowAudit.P040.lower_tail_rejection_le
+#print axioms AronowAudit.P040.exact_binomial_coverage
+#print axioms AronowAudit.P040.exact_endpoint_sign_certificates
+#print axioms AronowAudit.P040.exact_interval_contains_eighty_percent
+#print axioms AronowAudit.P040.unique_bracketed_root
+#print axioms AronowAudit.P040.corrected_binomial_endpoints
+#print axioms AronowAudit.P040.observed_upper_boundary_values
+#print axioms AronowAudit.P040.corrected_six_decimal_rounding
+#print axioms AronowAudit.P040.printedPatronConfidenceClaim
+#print axioms AronowAudit.P040.printed_patron_claim_refuted
+#print axioms AronowAudit.P040.wald_lower_failure_probability

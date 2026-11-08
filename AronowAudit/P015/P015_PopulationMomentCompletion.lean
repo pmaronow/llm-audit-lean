@@ -71,6 +71,17 @@ lemma integral_linear_product (P : Measure Ω) (V : Ω → Q → ℝ) (a : Q →
         funext s; ring]
       ring
 
+lemma residual_sq_integrable (P : Measure Ω) (V : Ω → Q → ℝ) (a : Q → ℝ)
+    (D Z : Ω → ℝ) (hd : Integrable (fun s => D s^2 * Z s) P)
+    (hv : ∀ j, Integrable (fun s => V s j * D s * Z s) P)
+    (hvv : ∀ j k, Integrable (fun s => V s j * V s k * Z s) P) :
+    Integrable (fun s => (D s - dotProduct (V s) a)^2 * Z s) P := by
+  have hm := linear_mul_integrable P V a (fun s => D s * Z s) (fun j =>
+    (hv j).congr (Eventually.of_forall (fun s => by ring)))
+  have hmm := linear_product_integrable P V a Z hvv
+  exact ((hd.sub (hm.const_mul 2)).add hmm).congr
+    (Eventually.of_forall (fun s => by simp only [Pi.add_apply, Pi.sub_apply]; ring))
+
 
 lemma integral_residual_sq (P : Measure Ω) (V : Ω → Q → ℝ) (a : Q → ℝ)
     (D Z : Ω → ℝ) (hd : Integrable (fun s => D s^2 * Z s) P)
@@ -114,5 +125,9 @@ lemma ols_reindex {N R : Type*} [Fintype N] [Fintype R] [DecidableEq Q] [Decidab
   simpa only [Function.comp_def, Equiv.apply_symm_apply] using
     Matrix.submatrix_mulVec_equiv ((W.transpose * W)⁻¹) (W.transpose.mulVec Y ∘ e) e e
 
+#print axioms ols_reindex
+#print axioms integral_residual_sq
+#print axioms integral_linear_product
+#print axioms residual_sq_integrable
 end
 end AronowAudit.P015.PopulationMomentCompletion

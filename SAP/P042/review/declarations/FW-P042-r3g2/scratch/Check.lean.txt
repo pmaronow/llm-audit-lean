@@ -1,0 +1,146 @@
+import SAP.P042.Defs.WholeW2
+
+open Finset MeasureTheory ProbabilityTheory
+open scoped BigOperators Classical
+
+namespace ReviewT6
+
+noncomputable section
+
+def Y (_ : Fin 2) (t : Bool) : ℝ := if t then 1 else 0
+def c (i : Fin 2) : Bool := decide (i = 0)
+def Y' (i : Fin 2) (t : Bool) : ℝ := if i = 1 then 0 else Y i t
+
+lemma complierCount_eq : SAP.P042.complierCount c = 1 := by decide
+lemma neverTakerCount_eq : SAP.P042.neverTakerCountW2 c = 1 := by decide
+
+-- Both treatment arms, a Complier, a Never-taker, and an admissible
+-- assignment with positive realized contact are present together.
+example : 2 ≤ (2 : ℕ) ∧ 1 ≤ (1 : ℕ) ∧ 1 ≤ (2 : ℕ) - 1 ∧
+    0 < SAP.P042.complierCount c ∧ SAP.P042.BinaryScheduleW2 Y ∧
+    c 1 = false ∧
+    ({0} : Finset (Fin 2)) ∈ SAP.P042.completeAssignments 2 1 ∧
+    0 < SAP.P042.assignedContactRate 1 {0} c := by
+  norm_num [complierCount_eq, SAP.P042.BinaryScheduleW2,
+    SAP.P042.completeAssignments, SAP.P042.assignedContactRate,
+    SAP.P042.assignedTreatmentMean, c, Y, Fin.sum_univ_succ]
+
+lemma twoAssignments : SAP.P042.completeAssignments 2 1 =
+    ({({0} : Finset (Fin 2)), {1}} : Finset (Finset (Fin 2))) := by
+  decide
+
+-- Expected contact is positive even though one admissible assignment
+-- has zero realized contact. The ratio of expectations is meaningful.
+example : SAP.P042.assignmentEffect Y c = (1 : ℝ) / 2 ∧
+    SAP.P042.complierShare c = (1 : ℝ) / 2 ∧
+    SAP.P042.complierEffect Y c = 1 ∧
+    SAP.P042.finiteExpectation (SAP.P042.completeAssignments 2 1)
+      (fun S => SAP.P042.assignedContactRate 1 S c) = (1 : ℝ) / 2 ∧
+    SAP.P042.contactEstimatorW2 1 {0} Y c = 1 ∧
+    SAP.P042.assignedContactRate 1 {1} c = 0 := by
+  rw [twoAssignments]
+  norm_num [SAP.P042.assignmentEffect, SAP.P042.populationMean,
+    SAP.P042.complierShare, SAP.P042.complierEffect, complierCount_eq,
+    SAP.P042.finiteExpectation, SAP.P042.assignedContactRate,
+    SAP.P042.assignedTreatmentMean, SAP.P042.assignedControlMean,
+    SAP.P042.contactEstimatorW2, SAP.P042.contactedOutcome,
+    c, Y, Fin.sum_univ_succ, Finset.filter_insert]
+
+-- A direct witness for the whole binary nonidentification conclusion;
+-- this check uses no Challenge theorem.
+example : SAP.P042.BinaryScheduleW2 Y' ∧
+    (∀ S : Finset (Fin 2),
+      SAP.P042.contactedOutcome S Y' c = SAP.P042.contactedOutcome S Y c) ∧
+    (∀ i t, (i ≠ (1 : Fin 2) ∨ t = false) → Y' i t = Y i t) ∧
+    Y' 1 true - Y' 1 false ≠ Y 1 true - Y 1 false ∧
+    0 < SAP.P042.neverTakerCountW2 c ∧
+    SAP.P042.neverTakerEffectW2 Y' c ≠ SAP.P042.neverTakerEffectW2 Y c := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i t
+    fin_cases i <;> cases t <;> norm_num [Y', Y]
+  · intro S
+    funext i
+    fin_cases i <;> simp [SAP.P042.contactedOutcome, Y', Y, c]
+  · intro i t h
+    fin_cases i <;> cases t <;> simp_all [Y', Y]
+  · norm_num [Y', Y]
+  · norm_num [neverTakerCount_eq]
+  · norm_num [SAP.P042.neverTakerEffectW2, neverTakerCount_eq,
+      c, Y', Y, Fin.sum_univ_succ]
+
+def coin : Measure Bool := uniformOn Set.univ
+instance : IsProbabilityMeasure coin := by
+  dsimp [coin]
+  infer_instance
+
+def world : Measure (Bool × Bool) := coin.prod coin
+instance : IsProbabilityMeasure world := by
+  dsimp [world]
+  infer_instance
+
+def Z (ω : Bool × Bool) : Bool := ω.1
+def compliance (ω : Bool × Bool) : Bool := ω.2
+def potential (_ : Bool × Bool) (t : Bool) : ℝ := if t then 1 else 0
+
+lemma armProbability (z : Bool) :
+    SAP.P042.eventProbabilityW2 world {ω | Z ω = z} = (1 : ℝ) / 2 := by
+  have hs : {ω : Bool × Bool | Z ω = z} = ({z} : Set Bool) ×ˢ Set.univ := by
+    ext ω
+    simp [Z]
+  rw [SAP.P042.eventProbabilityW2, hs, world, Measure.prod_prod,
+    measure_univ, mul_one]
+  unfold coin
+  rw [uniformOn_univ]
+  norm_num
+
+lemma complierProbability :
+    SAP.P042.eventProbabilityW2 world {ω | compliance ω = true} = (1 : ℝ) / 2 := by
+  have hs : {ω : Bool × Bool | compliance ω = true} =
+      Set.univ ×ˢ ({true} : Set Bool) := by
+    ext ω
+    simp [compliance]
+  rw [SAP.P042.eventProbabilityW2, hs, world, Measure.prod_prod,
+    measure_univ, one_mul]
+  unfold coin
+  rw [uniformOn_univ]
+  norm_num
+
+-- All population hypotheses, including joint independence with
+-- compliance, hold on four atoms. Assignment and compliance both vary.
+example : Measurable Z ∧ Measurable compliance ∧
+    (∀ z : Bool, 0 < SAP.P042.eventProbabilityW2 world {ω | Z ω = z}) ∧
+    0 < SAP.P042.eventProbabilityW2 world {ω | compliance ω = true} ∧
+    (∀ t, Measurable (fun ω => potential ω t)) ∧
+    (∀ t, Integrable (fun ω => potential ω t) world) ∧
+    IndepFun Z (fun ω => (potential ω false, potential ω true)) world ∧
+    IndepFun Z (fun ω => (compliance ω, (potential ω false, potential ω true))) world := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact measurable_fst
+  · exact measurable_snd
+  · intro z
+    rw [armProbability]
+    norm_num
+  · rw [complierProbability]
+    norm_num
+  · intro t
+    exact measurable_const
+  · intro t
+    exact integrable_const _
+  · exact indepFun_const_right Z ((0 : ℝ), (1 : ℝ))
+  · exact indepFun_prod (μ := coin) (ν := coin) (X := id)
+      (Y := fun b : Bool => (b, ((0 : ℝ), (1 : ℝ)))) measurable_id
+      (measurable_id.prodMk measurable_const)
+
+-- The sampled-attribute clause has nonconstant attributes and a
+-- nontrivial event, with probability 1/4 on either treatment state.
+example (b : Bool) :
+    SAP.P042.finiteExpectation (Finset.univ : Finset (Fin 2))
+      (fun i => SAP.P042.finiteExpectation (SAP.P042.completeAssignments 2 1)
+        (fun S => if decide (i ∈ S) = b ∧ i ∈ ({0} : Set (Fin 2)) then 1 else 0)) =
+      (1 : ℝ) / 4 := by
+  rw [twoAssignments]
+  cases b <;> norm_num [SAP.P042.finiteExpectation, Fin.sum_univ_succ,
+    Finset.filter_insert, Finset.filter_singleton]
+
+end
+end ReviewT6

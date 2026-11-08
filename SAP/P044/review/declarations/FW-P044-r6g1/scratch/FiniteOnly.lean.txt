@@ -1,0 +1,53 @@
+import SAP.P044.Challenge
+
+open SAP.P044 Finset MeasureTheory ProbabilityTheory
+open scoped BigOperators
+
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+namespace AuditFiniteP044
+noncomputable section
+-- T2: the smallest exhaustive matching bank has supported contrasted exposures
+-- and already gives a genuine finite-input variance shortfall.
+example : w1MatchingR 0 = 4 ∧ w1MatchingN 0 = 6 := by decide
+
+example : Function.Injective (w1MatchingAssignments 0) ∧
+    (∀ i, 0 < marginal w1Uniform (w1MatchingF 0) i .d11 ∧
+      0 < marginal w1Uniform (w1MatchingF 0) i .d00) := by native_decide
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "matching support\n"
+
+example :
+    let e : Equiv.Perm (Fin (w1MatchingR 0)) := Equiv.refl _
+    expect w1Uniform (w1MatchingT 0 e) = 0 ∧
+    designVariance w1Uniform (w1MatchingT 0 e) = 25/81 ∧
+    expect w1Uniform (w1MatchingV 0 e) = 85/324 ∧
+    expect w1Uniform (w1MatchingV 0 e) <
+      designVariance w1Uniform (w1MatchingT 0 e) := by native_decide
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "matching moments\n"
+
+-- T3: full witness support, equal observations, distinct targets, and protected
+-- divisions, without using any Challenge theorem.
+example :
+    (∀ i, ∃ j, starAdj i j = true) ∧
+    Function.Injective starAssignments ∧
+    (∀ z : Assignment 4, (Finset.univ.filter (fun i => z i)).card = 2 ↔
+      ∃ r : Fin 6, starAssignments r = z) ∧
+    (∀ r i, starA i (exposure starAdj (starAssignments r) i) =
+      starB i (exposure starAdj (starAssignments r) i)) ∧
+    (∀ r i a, exposure starAdj (starAssignments r) i = a →
+      0 < marginal (fun _ : Fin 6 => (1/6 : ℚ))
+        (fun r => exposure starAdj (starAssignments r)) i a) ∧
+    tau starA .d11 .d00 = 0 ∧ tau starB .d11 .d00 = -1 := by native_decide
+
+#eval IO.FS.writeFile "scratch/nonvacuity-progress.txt" "star\n"
+
+-- T4(d): a nontrivial graph satisfies every complete-randomization assumption.
+example : 0 < (4 : ℕ) ∧ 1 ≤ (2 : ℕ) ∧ (2 : ℕ) ≤ 4 - 1 ∧
+    (∀ i j, starAdj i j = starAdj j i) ∧
+    (∀ i, starAdj i i = false) ∧ (∀ i, 1 ≤ degree starAdj i) := by native_decide
+
+end
+end AuditFiniteP044

@@ -1,0 +1,63 @@
+[
+  {
+    "target_id": "P009-T40",
+    "theorem": "SAP.P009c.T40",
+    "fingerprint": "f32b92be80401b6f2c6bbc870a3e18dab5bbb0b02413b0ec6ff1ef8e73c716ba",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: denseStudy has n=t+2, independent fair assignment, interior marginals 1/2, and dAvg/n=1. The explicit replacement badStudy uses y_i(z)=1[z_0=true]*(1/2 if z_i=true, else -1/2); compiled identities give dAvg/n=1, RegularSequence 2 2 1, EATE=1/2, HT=1[z_0=true], and absolute error 1/2 at every assignment, hence failure of convergence in probability. Designs and sizes are unchanged. The extra Hajek support condition is realizable using paired fair assignment and the same full-cube dense outcomes, as explained in REPORT.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T41",
+    "theorem": "SAP.P009c.T41",
+    "fingerprint": "0e9314324aec2eebce659eb4adc809174286bb0ddc11d22a38474b9ba148520b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: fairStudy has n=t+2, uniform mass 2^(-n) on the binary cube, zero outcomes, RegularSequence 2 2 1, independent Bernoulli assignment, dAvg=1 and Restricted. The canonical zero extension satisfies HajekExtension, so the universal extension hypothesis is inhabited. The file also proves that EventuallySupportedArms fails for this study.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T42",
+    "theorem": "SAP.P009c.T42",
+    "fingerprint": "fe53013d880a0e12f4cd5a555d6da7ecd65d511c71f9e5ab2a509c01bf3343d7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: completeStudy has n=2*(t+1), treatment count t+1=floor((1/2)*n), uniform mass 1/binomial(n,t+1) on that treatment-count slice, and zero outcomes. The full hypotheses RegularSequence 2 2 1, CompleteSequence, Restricted and C1/sqrt(n)->0 are constructed. Marginals are 1/2 and dAvg=C1=1.",
+    "confidence": 0.99,
+    "resolved": [
+      "Fixed: the sole earlier issue was the inaccurate package-wide claim in the shared hajek docstring. SAP/P009c/Defs/Part1.lean:80 now describes the zero extension; lines 81-83 limit the support guarantee to positive complete/paired populations and allow arbitrary off-domain values in HajekExtension statements. It no longer claims that all Hajek results require supported nonempty arms. The Bernoulli nonvacuity instance independently verifies why that distinction matters."
+    ]
+  },
+  {
+    "target_id": "P009-T43",
+    "theorem": "SAP.P009c.T43",
+    "fingerprint": "629043d13d07f8c0112f00eab6390de9390ecb55f1060b39e17738ba20a35e37",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: fairStudy satisfies RegularSequence 2 2 1, the Bernoulli branch, dAvg=1=O(1), and has an explicit HajekExtension. The separately constructed completeStudy also gives the complete branch with zero outcomes and dAvg=1. A whole-sequence design disjunction is satisfiable on either branch.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T44",
+    "theorem": "SAP.P009c.T44",
+    "fingerprint": "3bcb3242d58cdb22fc4eba85417ba8ba7916382c10f22f3b4c9f79b1dc31f162",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: pairedStudy has n=2*(t+1), an explicit fixed-point-free involution, uniform mass 2^(-(t+1)) on assignments opposite within each pair, and zero outcomes. It constructs all hypotheses together: RegularSequence 2 2 1, paired laws, dAvg/n->0, eAvg/n->0 and rSum/n->0; here dAvg=eAvg=1 and rSum=0.",
+    "confidence": 0.99,
+    "resolved": [
+      "Fixed: the sole earlier issue was the inaccurate package-wide claim in the shared hajek docstring. SAP/P009c/Defs/Part1.lean:80 now describes the zero extension; lines 81-83 limit the support guarantee to positive complete/paired populations and allow arbitrary off-domain values in HajekExtension statements. It no longer claims that all Hajek results require supported nonempty arms. The Bernoulli nonvacuity instance independently verifies why that distinction matters."
+    ]
+  }
+]

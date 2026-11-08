@@ -1,0 +1,189 @@
+import SAP.P011b.Challenge
+
+open MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology Classical Matrix NNReal ENNReal
+noncomputable section
+namespace T16Review
+open SAP.P011b
+
+def rad : Measure ℝ := (1/2 : ℝ≥0∞) • (Measure.dirac (-1) + Measure.dirac 1)
+
+instance : IsProbabilityMeasure rad := by
+  constructor
+  simp only [rad, Measure.smul_apply, Measure.add_apply, measure_univ, smul_eq_mul]
+  norm_num
+  exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+lemma rad_mean : (∫ x, x ∂rad) = 0 := by
+  unfold rad
+  rw [integral_smul_measure, integral_add_measure (integrable_dirac (by simp)) (integrable_dirac (by simp))]
+  norm_num
+
+lemma rad_square : (∫ x : ℝ, x^2 ∂rad) = 1 := by
+  unfold rad
+  rw [integral_smul_measure, integral_add_measure (integrable_dirac (by simp)) (integrable_dirac (by simp))]
+  norm_num
+
+lemma rad_bound : ∀ᵐ x ∂rad, |x| ≤ 1 := by
+  apply Measure.ae_smul_measure
+  simp [ae_add_measure_iff]
+
+lemma rad_mem : MemLp (fun x : ℝ => x) 2 rad := by
+  exact MemLp.of_bound aestronglyMeasurable_id 1 (by simpa using rad_bound)
+
+def model (n : ℕ) : Model n where
+  law := Measure.pi (fun _ : Fin n => rad)
+  probability := by infer_instance
+  theta := fun _ => 1
+  G := emptyGraph n
+  R := emptyGraph n
+  d := fun _ => 0
+
+def family : Family where
+  size := fun k => k+1
+  positive := by intro k; omega
+  grows := Filter.tendsto_atTop_mono (fun k => Nat.le_succ k) Filter.tendsto_id
+  model := fun k => model (k+1)
+
+def design (n : ℕ) : Matrix (Fin n) (Fin 1) ℝ := fun _ _ => 1
+
+lemma coord_int (n : ℕ) (i : Fin n) : Integrable (fun y => y i) (model n).law := by
+  exact integrable_eval (rad_mem.integrable (by norm_num))
+
+lemma coord_mean (n : ℕ) (i : Fin n) : expectation (model n) (fun y => y i) = 0 := by
+  simpa [expectation, model, integral_eval] using rad_mean
+
+lemma mean_zero (n : ℕ) : SAP.P011b.beta (model n) = 0 := by
+  unfold SAP.P011b.beta expectation betaHat SAP.P011b.average weighted
+  simp only [model, one_mul]
+  rw [integral_div, integral_finsetSum]
+  · simp [integral_eval, rad_mean]
+  · exact fun i _ => coord_int n i
+
+lemma dependency (n : ℕ) : Dependency (model n) := by
+  intro S T hST _
+  exact (iIndepFun_pi (μ := fun _ : Fin n => rad)
+    (X := fun _ => id) (fun _ => aemeasurable_id)).indepFun_finset S T hST
+      (fun i => measurable_pi_apply i)
+
+lemma scaled_variance (n : ℕ) (hn : 0 < n) :
+    (n : ℝ) * var (model n) (betaHat (model n)) = 1 := by
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  have hv : ProbabilityTheory.variance (fun x : ℝ => x) rad = 1 := by
+    rw [variance_eq_integral (X := fun x : ℝ => x) aemeasurable_id, rad_mean]
+    simpa using rad_square
+  have hfun : (∑ i : Fin n, fun y : Fin n → ℝ => y i) = (fun y => ∑ i, y i) := by
+    ext y
+    simp
+  have hs : ProbabilityTheory.variance (fun y : Fin n → ℝ => ∑ i, y i)
+      (model n).law = (n : ℝ) := by
+    simpa only [model, hv, hfun, Finset.sum_apply, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one] using
+      (variance_sum_pi (μ := fun _ : Fin n => rad) (X := fun _ x => x) (fun _ => rad_mem))
+  have hmeas : AEMeasurable (betaHat (model n)) (model n).law := by
+    unfold betaHat SAP.P011b.average weighted
+    exact (by fun_prop : Measurable (fun y : Fin n → ℝ => (∑ i, (model n).theta i * y i) / (n : ℝ))).aemeasurable
+  simp only [var, expectation]
+  rw [← variance_eq_integral hmeas]
+  have hbeta : betaHat (model n) = (fun y : Fin n → ℝ => (∑ i, y i) / n) := by
+    ext y
+    simp [betaHat, SAP.P011b.average, weighted, model]
+  rw [hbeta]
+  change (n : ℝ) * ProbabilityTheory.variance
+    (fun y : Fin n → ℝ => (∑ i, y i) / n) (model n).law = 1
+  simp_rw [div_eq_mul_inv]
+  rw [variance_mul_const, hs]
+  field_simp
+
+lemma coord_bound (n : ℕ) : ∀ᵐ y ∂(model n).law, ∀ i, |y i| ≤ 1 := by
+  rw [ae_all_iff]
+  intro i
+  exact (measurePreserving_eval (fun _ : Fin n => rad) i).quasiMeasurePreserving.ae rad_bound
+
+lemma scaling : Scaling family 1 1 1 2 := by
+  refine ⟨?_, by norm_num, by norm_num, by norm_num, by norm_num,
+    fun k => dependency (k+1), ?_, ?_, ?_, ?_⟩
+  · constructor
+    · intro a b hab
+      change a+1 ≤ b+1
+      omega
+    · intro k
+      refine ⟨Fin.castLEEmb (by change k+1 ≤ (k+1)+1; omega), ?_⟩
+      intro i j
+      rfl
+  · intro k
+    change ∀ᵐ y ∂(model (k+1)).law, ∀ i,
+      |weighted (model (k+1)) y i - SAP.P011b.beta (model (k+1))| ≤ 1
+    rw [mean_zero]
+    simpa only [weighted, model, one_mul, sub_zero] using coord_bound (k+1)
+  · intro k i
+    simp [family, model, degree, emptyGraph]
+  · have heq : (fun k => (family.size k : ℝ) *
+        var (family.model k) (betaHat (family.model k))) = (fun _ => (1 : ℝ)) := by
+      ext k
+      exact scaled_variance (k+1) (by omega)
+    rw [heq]
+    exact tendsto_const_nhds
+  · intro k i
+    change |(1 : ℝ)| < 2
+    norm_num
+
+lemma valid : Valid family := by
+  intro k
+  constructor
+  · intro i j h
+    exact h
+  · intro i
+    simp [family, model, degree, emptyGraph]
+
+lemma gram (n : ℕ) : (design n)ᵀ * design n =
+    Matrix.diagonal (fun _ : Fin 1 => (n : ℝ)) := by
+  ext i j
+  fin_cases i
+  fin_cases j
+  simp [design, Matrix.mul_apply]
+
+lemma det_gram (n : ℕ) (hn : 0 < n) : ((design n)ᵀ * design n).det ≠ 0 := by
+  rw [gram]
+  simpa using (Nat.cast_ne_zero.mpr hn.ne' : (n : ℝ) ≠ 0)
+
+lemma weights (n : ℕ) (hn : 0 < n) (i : Fin n) :
+    (model n).theta i = olsTheta (design n) 0 i := by
+  have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hn.ne'
+  simp [olsTheta, gram, Matrix.inv_subsingleton, Matrix.mul_apply,
+    Ring.inverse_eq_inv, design, model, hn0]
+
+lemma mean_model (n : ℕ) : MeanModel (model n) (design n) 0 := by
+  refine ⟨coord_int n, ?_⟩
+  intro i
+  rw [coord_mean]
+  simp
+
+lemma design_regular : DesignRegularW2 family 1 (fun k => design (k+1)) := by
+  refine ⟨1, 1, 1, by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro k i
+    norm_num [l2, design]
+  · intro k
+    exact coord_bound (k+1)
+  · intro k z
+    have hk0 : (k : ℝ) + 1 ≠ 0 := by positivity
+    change 1 * l2 z ^ 2 ≤ quadratic
+      ((1 / ((k+1 : ℕ) : ℝ)) • ((design (k+1))ᵀ * design (k+1))) z
+    rw [gram]
+    simp [l2, quadratic, Matrix.diagonal, hk0, Real.sq_sqrt, sq_nonneg] <;> nlinarith
+
+-- All hypotheses of the residual OLS clause, including positive limiting variance.
+theorem nonvacuity : ∃ (F : Family) (p : ℕ) (j : Fin p)
+    (D : ∀ k, Matrix (Fin (F.size k)) (Fin p) ℝ) (b : ℕ → Fin p → ℝ),
+    Scaling F 1 1 1 2 ∧ Valid F ∧ 0 < p ∧
+    (∀ k, p ≤ F.size k) ∧ (∀ k, ((D k)ᵀ * D k).det ≠ 0) ∧
+    (∀ k, MeanModel (F.model k) (D k) (b k)) ∧
+    (∀ k i, (F.model k).theta i = olsTheta (D k) j i) ∧
+    DesignRegularW2 F p D := by
+  exact ⟨family, 1, 0, (fun k => design (k+1)), (fun _ => 0),
+    scaling, valid, by norm_num, (fun k => by change 1 ≤ k+1; omega),
+    (fun k => det_gram (k+1) (by omega)), (fun k => mean_model (k+1)),
+    (fun k i => weights (k+1) (by omega) i), design_regular⟩
+
+end T16Review
+
+#print axioms T16Review.nonvacuity

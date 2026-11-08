@@ -30,6 +30,8 @@ theorem crossfit_counterexample_proof : ValidStudy study ∧ mu study = 1/20 ∧
   exact regression_counterexample_proof
 
 
+example : type_of% @AronowAudit.P046.RegressionExample.crossfit_counterexample := crossfit_counterexample_proof
+
 lemma GP046B3b_summand_facts (M : Study) (hM : ValidStudy M)
     (g : ℝ → ℝ) (mg : Measurable g) (hg : MemLp (fun o => g (W o)) 2 M.law) :
     let f := fun o => adjustedTerm (M.pi (W o)) (X o) (Y o) (g (W o))
@@ -259,6 +261,8 @@ theorem proposition4c_direct_proof (M : Study) (hM : ValidStudy M)
     exact hn
   · exact add_le_add_right hbetter _
 
+example : type_of% @AronowAudit.P046.proposition4c_direct := proposition4c_direct_proof
+
 theorem proposition4c_corrected_proof (M : Study) (hM : ValidStudy M)
     (d : ℕ) (family : (Fin d → ℝ) → ℝ → ℝ) (F : ∀ n, CrossFit n) (hbal : Balanced F)
     (hG : ∀ theta, MemLp (fun o => family theta (W o)) 2 M.law)
@@ -280,6 +284,8 @@ theorem proposition4c_corrected_proof (M : Study) (hM : ValidStudy M)
     zero_benchmark_risk_proof M hM (Set.range family) hGL2 hzero gstar hstar
       (by rintro g ⟨theta, rfl⟩; exact hmin theta)
   exact proposition4c_direct_proof M hM F hbal gstar (hGL2 _ hstar) hconv hfitsL2 hbetter
+
+example : type_of% @AronowAudit.P046.proposition4c_corrected := proposition4c_corrected_proof
 
 end
 end AronowAudit.P046.Wave1

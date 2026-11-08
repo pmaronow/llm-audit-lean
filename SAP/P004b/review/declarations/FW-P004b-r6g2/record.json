@@ -1,0 +1,103 @@
+[
+ {
+  "target_id": "P004-T21",
+  "decision": "whole",
+  "theorem": "SAP.P004b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.hajek_sah_bound",
+   "AronowAudit.P004.node_variance_identity",
+   "SAP.P004b.WH.W2.T21_whole",
+   "SAP.P004b.WH.W2.T21_assembly",
+   "AronowAudit.P004.CLTCompletion.nodeSeparation_self",
+   "AronowAudit.P004.CLTCompletion.nodeSeparation_symm",
+   "AronowAudit.P004.assignment_two_univ",
+   "AronowAudit.P004.barMu",
+   "AronowAudit.P004.expect_const",
+   "AronowAudit.P004.expect_sub",
+   "AronowAudit.P004.marginal",
+   "AronowAudit.P004.marginal_is_marginalization",
+   "SAP.P004b.Bridge.population"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P004b.T21WholeStatement"
+ },
+ {
+  "target_id": "P004-T22",
+  "decision": "whole",
+  "theorem": "SAP.P004b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.augmented_homophily_bound",
+   "AronowAudit.P004.augmented_variance",
+   "AronowAudit.P004.residualContrast_mean",
+   "SAP.P004b.WH.W1.T22_whole",
+   "SAP.P004b.WH.W1.T22_assembly",
+   "SAP.P004b.WH.W1.T22_L1_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.augmented_unbiased",
+    "reason": "Unbiasedness is a helper, not an additional variance claim."
+   }
+  ],
+  "statement_definition": "SAP.P004b.T22WholeStatement"
+ },
+ {
+  "target_id": "P004-T23",
+  "decision": "whole",
+  "theorem": "SAP.P004b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.observational_sandwich_identity",
+   "SAP.P004b.WH.W1.T23_whole",
+   "SAP.P004b.WH.W1.T23_assembly",
+   "AronowAudit.P004.MatrixCompletion.sandwich_treatment",
+   "AronowAudit.P004.MatrixCompletion.treatment_row",
+   "AronowAudit.P004.Wave1.DesignLimits.nf_proof",
+   "AronowAudit.P004.symmetric_critical_event"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.symmetric_critical_event",
+    "reason": "Only a scalar statement under an assumed sign; it does not establish the Gaussian quantile assertions."
+   }
+  ],
+  "statement_definition": "SAP.P004b.T23WholeStatement"
+ },
+ {
+  "target_id": "P004-T24",
+  "decision": "whole",
+  "theorem": "SAP.P004b.T24",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.regression_matrix_identities",
+   "SAP.P004b.WH.W1.T24_whole",
+   "SAP.P004b.WH.W1.T24_assembly",
+   "AronowAudit.P004.MatrixCompletion.counts_total",
+   "AronowAudit.P004.MatrixCompletion.sandwich_treatment"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P004b.T24WholeStatement"
+ },
+ {
+  "target_id": "P004-T25",
+  "decision": "whole",
+  "theorem": "SAP.P004b.T25",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.centered_summand_identity",
+   "SAP.P004b.WH.W1.T25_whole",
+   "SAP.P004b.WH.W1.T25_assembly",
+   "SAP.P004b.WH.W1.T25_L1_proof",
+   "AronowAudit.P004.Wave1.FiniteConditioning.conditionOn_of_depends",
+   "AronowAudit.P004.Wave1.FiniteConditioning.fc2_proof",
+   "AronowAudit.P004.Wave1.FiniteConditioning.fc8_proof",
+   "AronowAudit.P004.ball",
+   "AronowAudit.P004.expect_const",
+   "AronowAudit.P004.marginal_is_marginalization"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P004b.T25WholeStatement"
+ }
+]

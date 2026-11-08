@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P041-T1",
+    "theorem": "SAP.P041.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "q=4/5 and q=99/100 lie strictly in (0,1), as checked in scratch/AuditNonvacuity.lean. They give positive ordinary exponential hazards, positive contrasts 16/125 and 9801/1000000, and four removal probabilities strictly between zero and one. Every specified k is at most its n; exact rational checks in scratch/audit_arithmetic.py confirm positive binomial masses. The time-domain implication has, for example, t=12.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T2",
+    "theorem": "SAP.P041.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The central four values hF=.691, sF=.318, hA=.629, sA=.091 jointly satisfy the rounding hypotheses; all four intervals stay strictly positive. The existential countermodel is realized by qA=4/5, qF=99/100, with 13 D(qF)<D(qA). The two sets of count contrasts use positive group sizes and feasible removal counts. Compiled interval/domain checks and independent arithmetic/numerical diagnostics are in scratch/.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T3",
+    "theorem": "SAP.P041.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The general hypotheses have a=75, b=52 (also a=2, b=1). Both b and a+b are strictly positive. Exact rational checks confirm all three supplied directional values, each individual failed printed rounding, every symmetric rounding, and all three gaps. The canonical claim asserts a failure of the specified reading, which is exactly what this theorem establishes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T4",
+    "theorem": "SAP.P041.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is unconditional arithmetic at positive denominators 150,100,52,69,32. The 76-removal expression is a separate explicit alternative-count identity and does not assert that the alternative timestamp convention was adopted. Exact rational checks confirm 575/13,100/3,375/4,600/13, their indicated roundings, and the symmetric alternative.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T5",
+    "theorem": "SAP.P041.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "m=2 gives the six actual two-element subsets of Fin 4; {0,1} is a member, checked in Lean. The compiled check proves (balancedSequences m).card>0 for every natural m, so no expectation uses an empty sample space. For m>=1 the arm denominators are positive, and k<=m protects the natural subtractions in the binomial formula. Exact enumeration at m=1,2,3,4 and the exact K distribution at m=50 confirm the stated moments; the independent 16-sequence HT expectation is exactly zero.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T6",
+    "theorem": "SAP.P041.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take m=2 and g(r,true)=1, g(r,false)=0: the contrast and rank-average direct effect both equal one. A fixed calendar vector (0,0,1,1) gives zero expected contrast. The scrutiny rule instead has zero own-treatment effects on the full assignment domain and balanced expectation 1/6. These are nonempty four-rank examples; m>=1 and choose(2m,m)>0 rule out empty-rank and zero-denominator explanations.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T7",
+    "theorem": "SAP.P041.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Construct 50 observations with each design row (1,0,0),(1,1,0),(1,0,1),(1,1,1), with respectively 12,25,23,42 binary ones. This realizes the supplied counts, Gram, and response sufficient statistics. Independent exact OLS/HC1 computation gives beta=(21/100,8/25,7/25) and cited variance 2047/492500 with n-k=197>0. The citation Gram's nonsingularity is also checked in Lean. The omitted tail and significance conclusions are explicitly disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T8",
+    "theorem": "SAP.P041.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Each supplied central pair (.670,.095),(.480,.174),(.274,.162),(.316,.149) satisfies its rectangle, as checked in Lean; all h and s remain positive. The abstract nested-cutoff assumptions are jointly realized by p1=.005 and p2=p3=p4=.03. Mathlib gaussianReal 0 1 is a probability measure with variance one, so the CDF denotes the ordinary standard normal. Numerical corner checks, with monotonicity of -h log h on each rectangle, support all retained uniform bounds and tiers. Omitted finer enclosures and critical values are disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T9",
+    "theorem": "SAP.P041.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general block, n=2,k=1,j0=0,X=(1,1)^T has k<n, a nonsingular Gram and a column of ones; the existence proof compiles in scratch/AuditNonvacuity.lean. All three fixed Grams are also proved nonsingular there. Explicit artificial binary datasets in scratch/audit_arithmetic.py realize P with 300 rows and X^T S=(193,105,91,65), C with 200 rows and X^T S=(102,67,65), and F with 151 rows and X^T S=(147,72). Complementing those responses preserves the exact HC1 covariance and negates residuals. The disclosed k<n restriction applies to the entire general complementation conjunction. No extraction from the actual dataset is claimed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P041-T10",
+    "theorem": "SAP.P041.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the positive-variance block take g=0,V=1,s=1, checked in Lean. Each reciprocal rectangle contains its printed centre and lies strictly above zero. Exact rational endpoint checks verify all four reciprocal enclosures. The predictor identity is a polynomial identity and the hazard identity follows pointwise by exp(x+y)=exp(x)exp(y), including ordinary nonnegative baseline hazards. V>0 is explicitly disclosed and excludes a zero-variance Wald statistic.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T11",
+    "theorem": "SAP.P041.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The three printed pairs (.691,.318),(.775,.503),(.627,.406) satisfy their positive rounding rectangles. Numerical normal-tail corner ranges are approximately [.420580187,.423185439], [.693685526,.695356462], [.470014824,.471915432], inside the asserted enclosures; central approximation tolerances also pass. The central living p is .694521402, so the docstring correctly declines to assert its rounding to .70. The restriction excludes the confinement/mechanism reading, rather than presenting its refutation as a refutation of the canonical assertion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P041-T12",
+    "theorem": "SAP.P041.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The unchanged closed proposition is independently proved from the revised Defs by norm_num in scratch/AuditDeltaT12.lean, importing no Challenge or Solution theorem and using no sorry. The reference risks 52/150,69/150,32/100 and group sizes 150,100 are strictly positive. All three individual directional roundings fail, so the weaker negation of their conjunction is true. The earlier documentation finding is fixed: the revised docstring identifies the reference-risk reading, discloses the exact omitted directional equalities and individual negations, and keeps the restricted decision.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P041-T13",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No T13 theorem is present. The local claims list marks it no_lean=true and record2 supplies no target-specific credited rows. The revised rationale explicitly recognizes the precise canonical implication comparing implemented and planned expectations and direct effects; its countermodel is covered by T5 and its sufficient condition by T6. Their nonempty m=2 model has zero direct/slow effects and accelerated expectation 1/6. Omission remains acceptable on the visible provenance and existing coverage, not because the canonical claim lacks an estimand or is unformalizable. The no_lean flag is packaging metadata, not a clause-removal rule for the canonical claim.",
+    "confidence": 0.96
+  }
+]

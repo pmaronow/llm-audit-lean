@@ -1,0 +1,72 @@
+[
+ {
+  "target_id": "P015-T4",
+  "decision": "restricted",
+  "theorem": "SAP.P015a.T4",
+  "restriction": "Retains formal clauses (i)-(iii), the multivalued-support and fitted-zero counterexamples, and the rare-overlap positivity and arbitrarily-small-effective-mass family for every 0 < epsilon < 1/2. Estimator unbiasedness, moments, deviation bounds, and consistency are asserted only at epsilon = 1/1000000, rather than jointly with arbitrarily small effective-profile mass. Omits the empirical Jensen country-contribution assertion.",
+  "rows_used": [
+   "AronowAudit.P015.PositivityCorrection_checked"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.binary_variance_reversal_arithmetic",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.finite_variance_pos_of_atoms",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.finite_variance_zero_iff",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.binary_variance_and_reversal",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.corrected_positivity",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.finite_pair_positive_variance",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.finite_zero_variance",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   }
+  ],
+  "bridge": "SAP.P015a.Bridge.T4_correspondence",
+  "statement_definition": "SAP.P015a.T4Statement",
+  "supporting_declarations": [
+   "AronowAudit.P015.PositivityCompletion.cell_probability",
+   "AronowAudit.P015.PositivityCompletion.cell_ae_of_ae",
+   "AronowAudit.P015.PositivityCompletion.binary_probability_zero",
+   "AronowAudit.P015.PositivityCompletion.effective_probability",
+   "MeasureTheory.integral_nonneg"
+  ]
+ },
+ {
+  "target_id": "P015-T19",
+  "decision": "whole",
+  "theorem": "SAP.P015a.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P015.conditional_weight_variance",
+   "AronowAudit.P015.binary_conditional_variance"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.binary_variance_reversal_arithmetic",
+    "reason": "The countable positive-mass-cell companion is redundant and does not cover arbitrary covariates."
+   },
+   {
+    "lean_name": "AronowAudit.P015.binary_variance_and_reversal",
+    "reason": "The countable positive-mass-cell companion is redundant and does not cover arbitrary covariates."
+   }
+  ],
+  "bridge": "SAP.P015a.Bridge.T19_correspondence",
+  "statement_definition": "SAP.P015a.T19Statement"
+ }
+]

@@ -10,7 +10,7 @@ import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 
-/-! Formalization of claims in Aronow and Samii (2013), P027.
+/-! Formal audit of Aronow and Samii (2013), P027.
 The sample distribution is finite, genuine and normalized; outcomes are fixed.
 Ordered pairs are used throughout, including the diagonal in the HT estimator.
 -/
@@ -450,7 +450,7 @@ theorem corollary3 (D : Design U Ω) (h : Positive D) (y : U → ℝ) (ω : Ω) 
 
 /-- The four-sample systematic PPS design common to the exact witnesses
 T1 and T10: s_g={g,g+4}, with alternating low/high interval probabilities.
-The coordinates are zero-based; supplement pp. A3–A4. -/
+The coordinates are zero-based; supplement pp. A3–A4, validators E004/E003. -/
 def fourPhase (low high : ℝ) (hl : 0 ≤ low) (hh : 0 ≤ high)
     (hn : 2*low + 2*high = 1) : Design (Fin 8) (Fin 4) where
   weight g := if g.val % 2 = 0 then low else high
@@ -466,7 +466,7 @@ def periodic8 : Design (Fin 8) (Fin 4) :=
 def random8 : Design (Fin 8) (Fin 4) :=
   fourPhase (1/8) (3/8) (by norm_num) (by norm_num) (by norm_num)
 
-/-- The alternating demeaned population of T1, (-1,1,...). -/
+/-- The alternating demeaned population of T1, (-1,1,...); E004 witness. -/
 def alternating8 (k : Fin 8) : ℝ := if k.val % 2 = 0 then -1 else 1
 
 /-- Positive sizes in the periodic example, (2,10,...), supplement p. A4. -/
@@ -475,7 +475,7 @@ def periodicSize8 (k : Fin 8) : ℝ := if k.val % 2 = 0 then 2 else 10
 /-- T10's positive size vector (1,3,...) in the offset-NB support. -/
 def randomSize8 (k : Fin 8) : ℝ := if k.val % 2 = 0 then 1 else 3
 
-/-- T10's mixed-sign outcomes (1,-1,...). -/
+/-- T10's mixed-sign outcomes (1,-1,...), validator E003, §3. -/
 def randomOutcome8 (k : Fin 8) : ℝ := -alternating8 k
 
 /-- Inclusion probabilities derived from all four atoms, not supplied as
@@ -535,7 +535,7 @@ theorem periodic8_counterexample :
   norm_num [periodic8, fourPhase]
 
 /-- Cluster witness law: {1,2} or {3}, each with probability 1/2;
-units 1 and 2 are always co-included (main p. 237). -/
+units 1 and 2 are always co-included (main p. 237; validator N002). -/
 def cluster3 : Design (Fin 3) (Fin 2) where
   weight _ := 1/2
   nonneg _ := by norm_num
@@ -639,11 +639,11 @@ def liftDesign {G : Type} [Fintype G] (D : Design G Ω) (n : G → ℕ) :
   total := D.total
   selected ω k := D.selected ω k.1
 
-/-- "Y_g = ∑_{k∈G_g} y_k", cluster totals (main p. 237). -/
+/-- "Y_g = ∑_{k∈G_g} y_k", cluster totals (main p. 237; N002 correction). -/
 def groupTotal {G : Type} (n : G → ℕ) (y : (Σ g, Fin (n g)) → ℝ) (g : G) : ℝ :=
   ∑ j, y ⟨g,j⟩
 
-/-- "S_g = ∑_{k∈G_g} y_k²", within-cluster sums of squares. -/
+/-- "S_g = ∑_{k∈G_g} y_k²", N002 derivation §§2–5. -/
 def groupSquares {G : Type} (n : G → ℕ) (y : (Σ g, Fin (n g)) → ℝ) (g : G) : ℝ :=
   ∑ j, y ⟨g,j⟩ ^ 2
 
@@ -674,7 +674,7 @@ def oneDraw {G : Type} [Fintype G] (p : G → ℝ) (hp : ∀ g, 0 ≤ p g)
   selected g k := decide (g = k)
 
 /-- The q=2r phases have probabilities 1/(3q), 5/(3q); zero-based
-second coordinate 0 is a low-size phase. T2 (i). -/
+second coordinate 0 is a low-size phase. T2 (i), N005 derivation §2. -/
 def phaseProb (r : ℕ) (g : Fin r × Fin 2) : ℝ :=
   if g.2 = 0 then 1/(6*r) else 5/(6*r)
 
@@ -721,7 +721,7 @@ theorem centered_cross_products {G : Type} [Fintype G] (Y : G → ℝ)
   linarith
 
 /-- Cumulative-size interval left endpoint ∑_{a<k}x_a, the usual systematic
-PPS rule (supplement pp. A3–A4). -/
+PPS rule used by validators and targets (supplement pp. A3–A4). -/
 def cumulativeLeft {N : ℕ} (x : Fin N → ℝ) (k : Fin N) : ℝ :=
   ∑ a, if a.val < k.val then x a else 0
 
@@ -776,21 +776,30 @@ theorem a3_grouped_table_refutation (row : Fin 4) (V G : ℝ)
   fin_cases row <;> norm_num [a3LowTrue, a3LowC2, a3LowQ] at * <;>
     constructor <;> linarith
 
+/-- T5's exact 120-unit population (zero-based k):
+z_k=x_k−6+2 floor(k/4)−29 (N005 derivation §6). -/
+def row21Outcome (k : Fin 120) : ℝ :=
+  (if k.val % 2 = 0 then 2 else 10) - 6 + 2*(k.val/4 : ℕ) - 29
 
 /-- The same explicit population in the fibre coordinates of the periodic
 model: k=2*g.1+g.2+4*j, so the residual is 2*j−29. -/
 def row21Fibre (k : Σ _ : Fin 2 × Fin 2, Fin 30) : ℝ :=
   (if k.1.2 = 0 then -4 else 4) + 2*(k.2 : ℝ) - 29
 
-/- The source prose specifies no precise tendency probability, limit regime,
-or exponent reassignment rule. Explicit mathematical readings are distinguished
-from the paper's printed theorems. -/
+/- The earlier declarations cancellation_as_printed,
+cancellation_limit_as_printed, and aggregation_no_increase_as_printed
+have been retired after the independent fidelity review. They converted
+unspecified hedges into universal theorems and/or omitted the outcome model.
+The source prose has no precise tendency probability, limit regime, or
+exponent reassignment rule. lean.json records the printed-prose entries as
+not_stated. Explicit, labelled mathematical readings are recorded below;
+they are not attributed to the paper as printed theorems. -/
 
 /-- The printed PPS formula mx_k/∑x, supplement p. A3. -/
 def printedPPS {N : ℕ} (m : ℕ) (x : Fin N → ℝ) (k : Fin N) : ℝ :=
   m*x k/(∑ a, x a)
 
-/-- T12's size vector, (30,1,1,1,1,1,1,1). -/
+/-- T12's size vector, (30,1,1,1,1,1,1,1), E002 exact witness. -/
 def invalidSize8 (k : Fin 8) : ℝ := if k = 0 then 30 else 1
 
 /-- T12 (C1–C2): the formula gives π₁=60/37>1; no genuine sampling
@@ -809,7 +818,7 @@ theorem invalid_pps_counterexample :
   linarith
 
 /-- The real-shape NB mass in T12 (C3): (r)_j/j! p^r(1−p)^j,
-r=18/5, p=3/8. -/
+r=18/5, p=3/8 (E002 derivation, exact counterexample). -/
 def nbMass (j : ℕ) : ℝ :=
   (∏ i ∈ Finset.range j, ((18/5 : ℝ)+(i:ℝ))) / (j.factorial : ℝ) *
     (3/8 : ℝ) ^ (18/5 : ℝ) * (5/8 : ℝ)^j
@@ -899,6 +908,17 @@ theorem redistributed_witness :
   simp only [printedPPS, invalidSize8, Fin.sum_univ_succ, Fin.forall_fin_succ]
   norm_num
 
+/-- T13 (iii): systematic selection on intervals of lengths π_k∈(0,1]
+with total m gives exactly m distinct units and the prescribed first-order
+probabilities under one uniform start on [0,1). -/
+theorem systematic_probability_construction {N : ℕ} (hN : 2 ≤ N)
+    (m : ℕ) (hm : 0 < m) (hmN : m < N)
+    (π : Fin N → ℝ) (hp : ∀ k, 0 < π k ∧ π k ≤ 1) (hs : ∑ k, π k = m) :
+    (∀ u : ℝ, 0 ≤ u → u < 1 →
+      (Finset.univ.filter (fun k => systematicSelected π m u k)).card = m) ∧
+    (∀ k, (∫ u : ℝ, (if systematicSelected π m u k then (1:ℝ) else 0)
+      ∂(MeasureTheory.volume.restrict (Set.Ico 0 1))) = π k) := by
+  sorry
 
 open MeasureTheory ProbabilityTheory Filter
 open scoped Topology
@@ -917,7 +937,7 @@ def NoiseMoments {Ξ K : Type} [MeasurableSpace Ξ] (μ : Measure Ξ)
   ∀ k l, Integrable (fun ξ => ε k ξ * ε l ξ) μ ∧
     outcomeE μ (fun ξ => ε k ξ * ε l ξ) = if k = l then σ2 else 0
 
-/-- T11 correction: "mean-zero errors" with
+/-- T11 correction, validator E003 derivation §6: "mean-zero errors" with
 finite variances and zero distinct-coordinate cross moments. Diagonal products
 are integrable, but their integrals need not agree across population units. -/
 def UncorrelatedNoise {Ξ K : Type} [MeasurableSpace Ξ] (μ : Measure Ξ)
@@ -993,7 +1013,7 @@ fixed stratum means, with stratum 0 corresponding to printed stratum 1. -/
 def stratumMeans (α : ℝ) (s : Fin 2) : ℝ := if s = 0 then α else -α
 
 /-- S_α²=∑_s(α_s-α_bar)²/(2-1), the divisor-1 variance of
-stratum means in T17 (ii). -/
+stratum means in T17 (ii), A001 correction §4. -/
 def stratumMeansVariance (α : ℝ) : ℝ :=
   (∑ s : Fin 2, (stratumMeans α s-(∑ t : Fin 2, stratumMeans α t)/2)^2)/(2-1)
 
@@ -1076,7 +1096,7 @@ theorem strata_large_size_limits (α : ℝ) :
     have hMr : (M:ℝ) ≠ 0 := by exact_mod_cast (show M ≠ 0 by omega)
     field_simp <;> ring
 
-/-- T14's deviations, (3/2,−3/2,1/2,−1/2,0). -/
+/-- T14's deviations, (3/2,−3/2,1/2,−1/2,0), validator E001 §5. -/
 def deviations5 : Fin 5 → ℝ := ![3/2,-3/2,1/2,-1/2,0]
 /-- Two explicit five-unit strata with means α,−α and deviations above. -/
 def fixedStrata5 (α : ℝ) (k : Fin 5 × Fin 2) : ℝ :=
@@ -1104,7 +1124,7 @@ def outcomeCorr (D : Design U Ω) (f g : Ω → ℝ) : ℝ :=
 def sign2 (s : Fin 2) : ℝ := if s = 0 then -1 else 1
 
 /-- Three independent symmetric signs: common stratum S, ε, ε', each
-of variance one. These moments do not require Gaussianity (T16). -/
+of variance one. The T16 target needs these moments, not Gaussianity. -/
 def pairLaw : Design Unit (Fin 2 × Fin 2 × Fin 2) where
   weight _ := 1/8
   nonneg _ := by norm_num
@@ -1215,7 +1235,7 @@ def periodicMeanW {r m : ℕ} (hr : 0 < r)
 def contrastR (q : ℝ) : ℝ := 5*(q-1)/(9*q-5)
 /-- c=6q/(9q−5) in T19's diagonalization and tail bound. -/
 def contrastCoefficient (q : ℝ) : ℝ := 6*q/(9*q-5)
-/-- T(z)=C−(1+R)H, T19 (iii). -/
+/-- T(z)=C−(1+R)H, T19 (iii), N004 derivation §4. -/
 def periodicContrast {r m : ℕ} (hr : 0 < r)
     (z : (Σ _ : Fin r × Fin 2, Fin m) → ℝ) : ℝ :=
   periodicMeanC hr z-(1+contrastR (2*r))*periodicMeanH hr z
@@ -1223,8 +1243,8 @@ def periodicContrast {r m : ℕ} (hr : 0 < r)
 /-- Squared Euclidean norm of a finite population vector, T19 (iii). -/
 def populationSquareNorm {K : Type} [Fintype K] (z : K → ℝ) : ℝ := ∑ k, z k^2
 
-/-- The W,P,L,G components of the centered periodic-population space:
-within-phase zero sums, alternating signal, and low/high
+/-- The W,P,L,G components of the centered periodic-population space,
+N004 derivation §4: within-phase zero sums, alternating signal, and low/high
 phase constants whose totals separately sum to zero. -/
 structure PhaseDecomposition (r m : ℕ)
     (z : (Σ _ : Fin r × Fin 2, Fin m) → ℝ) where
@@ -1240,8 +1260,8 @@ structure PhaseDecomposition (r m : ℕ)
     (∀ g, g.2 = 0 → v g = 0) ∧ ∀ k, high k = v k.1
   reconstruct : ∀ k, z k = within k+signal k+low k+high k
 
-/-- The space of demeaned vectors, "sum_i z_i = 0" (T19 iii),
-with its usual real vector-space operations. -/
+/-- The space of demeaned vectors, "sum_i z_i = 0" (T19 iii,
+N004 derivation §4), with its usual real vector-space operations. -/
 def phaseCenteredSpace (r m : ℕ) :
     Submodule ℝ ((Σ _ : Fin r × Fin 2, Fin m) → ℝ) where
   carrier := {v | ∑ k, v k = 0}
@@ -1256,8 +1276,8 @@ def phaseCenteredSpace (r m : ℕ) :
     change (∑ k, v k) = 0 at hv
     simpa [← Finset.mul_sum, hv]
 
-/-- W: "vectors that sum to zero within every G_g" (T19 iii).
-Its dimension is asserted separately, not assumed. -/
+/-- W: "vectors that sum to zero within every G_g" (T19 iii,
+N004 derivation §4). Its dimension is asserted separately, not assumed. -/
 def phaseWithinSpace (r m : ℕ) :
     Submodule ℝ ((Σ _ : Fin r × Fin 2, Fin m) → ℝ) where
   carrier := {v | ∀ g, ∑ j : Fin m, v ⟨g,j⟩ = 0}
@@ -1267,13 +1287,13 @@ def phaseWithinSpace (r m : ℕ) :
     simpa [Finset.sum_add_distrib, hv g, hw g]
   smul_mem' := by intro c v hv g; simpa [← Finset.mul_sum, hv g]
 
-/-- P: "the multiples of x - 6" (T19 iii). -/
+/-- P: "the multiples of x - 6" (T19 iii, N004 derivation §4). -/
 def phaseSignalSpace (r m : ℕ) :
     Submodule ℝ ((Σ _ : Fin r × Fin 2, Fin m) → ℝ) :=
   Submodule.span ℝ {fun k => phaseSize k - 6}
 
 /-- L or G: "constant on each G_g", supported on one parity and
-"sum to zero" (T19 iii). `false` selects the low-size
+"sum to zero" (T19 iii, N004 derivation §4). `false` selects the low-size
 phases; `true` selects the high-size phases. -/
 def phaseParitySpace (r m : ℕ) (high : Bool) :
     Submodule ℝ ((Σ _ : Fin r × Fin 2, Fin m) → ℝ) where
@@ -1296,12 +1316,38 @@ def phaseParitySpace (r m : ℕ) (high : Bool) :
     · simpa [← Finset.mul_sum, hv.2.2]
 
 /-- The four subspaces W,P,L,G of the orthogonal direct sum in T19 iii,
-in that order. -/
+N004 derivation §4, in that order. -/
 def phaseComponentSpace (r m : ℕ) (i : Fin 4) :
     Submodule ℝ ((Σ _ : Fin r × Fin 2, Fin m) → ℝ) :=
   if i = 0 then phaseWithinSpace r m else if i = 1 then phaseSignalSpace r m
   else if i = 2 then phaseParitySpace r m false else phaseParitySpace r m true
 
+/-- T19 (iii): the centered space has the stated component decomposition,
+the contrast's signal and all signal-noise cross terms cancel EXACTLY, and
+its only negative component is the low-phase component. -/
+theorem contrast_deterministic_correction (r m : ℕ) (hr : 0 < r) (hm : 2 ≤ m)
+    (z : (Σ _ : Fin r × Fin 2, Fin m) → ℝ) (hz : ∑ k, z k = 0) :
+    Module.finrank ℝ (phaseCenteredSpace r m) = m*(2*r)-1 ∧
+    Module.finrank ℝ (phaseWithinSpace r m) = m*(2*r)-2*r ∧
+    Module.finrank ℝ (phaseSignalSpace r m) = 1 ∧
+    Module.finrank ℝ (phaseParitySpace r m false) = r-1 ∧
+    Module.finrank ℝ (phaseParitySpace r m true) = r-1 ∧
+    (∀ (i j : Fin 4) (v w : (Σ _ : Fin r × Fin 2, Fin m) → ℝ),
+      i ≠ j → v ∈ phaseComponentSpace r m i → w ∈ phaseComponentSpace r m j →
+      (∑ k, v k * w k) = 0) ∧
+    (Nonempty (PhaseDecomposition r m z)) ∧
+    (∀ d₁ d₂ : PhaseDecomposition r m z,
+      d₁.within = d₂.within ∧ d₁.signal = d₂.signal ∧
+      d₁.low = d₂.low ∧ d₁.high = d₂.high) ∧
+    (∀ d : PhaseDecomposition r m z, periodicContrast hr z =
+      (((m:ℝ)*(2*r)-m)/((m:ℝ)*(2*r))^2) *
+        (populationSquareNorm d.within+contrastCoefficient (2*r)*
+          (populationSquareNorm d.high-populationSquareNorm d.low)) ∧
+      -(((m:ℝ)*(2*r)-m)*contrastCoefficient (2*r)/((m:ℝ)*(2*r))^2)*
+        populationSquareNorm d.low ≤ periodicContrast hr z) ∧
+    (∀ β : ℝ, periodicContrast hr (fun k => β*(phaseSize k-6)+z k) =
+      periodicContrast hr z) := by
+  sorry
 
 /-- Independent Gaussian noise in one generated population, as used in
 the simulation's ordinary reading: measurable coordinates, marginal law
@@ -1317,6 +1363,46 @@ def chiSquaredLaw (d : ℕ) : Measure ℝ :=
   (Measure.pi (fun _ : Fin d => gaussianReal 0 1)).map
     (fun v : Fin d → ℝ => ∑ j, v j^2)
 
+/-- T19 (iv): the actual contrast under Gaussian errors has the stated
+independent chi-square representation and positive mean. -/
+theorem contrast_gaussian_law {Ξ : Type} [MeasurableSpace Ξ]
+    (μ : Measure Ξ) [IsProbabilityMeasure μ] (r m : ℕ) (hr : 0 < r) (hm : 2 ≤ m)
+    (β σ2 : ℝ) (hσ : 0 < σ2)
+    (ε : (Σ _ : Fin r × Fin 2, Fin m) → Ξ → ℝ) (hε : GaussianNoise μ ε σ2) :
+    let z := centeredOutcomes phaseSize β ε
+    let N : ℝ := m*(2*r)
+    let a := (N-m)*σ2/N^2
+    let c := contrastCoefficient (2*r)
+    (∃ X : Fin 3 → Ξ → ℝ, iIndepFun X μ ∧
+      μ.map (X 0) = chiSquaredLaw (m*(2*r)-2*r) ∧
+      μ.map (X 1) = chiSquaredLaw (r-1) ∧ μ.map (X 2) = chiSquaredLaw (r-1) ∧
+      (∀ᵐ ξ ∂μ, periodicContrast hr (z ξ) = a*(X 0 ξ+c*(X 1 ξ-X 2 ξ)))) ∧
+    outcomeE μ (fun ξ => periodicContrast hr (z ξ)) = a*(N-2*r) ∧
+    0 < outcomeE μ (fun ξ => periodicContrast hr (z ξ)) := by
+  sorry
+
+/-- T19 (v): K≥1 populations, each with independent Gaussian errors;
+NO independence across the K populations. Markov/convexity yields the stated
+exponential lower-tail bound and its binary bound with exact floor/ceil. -/
+theorem contrast_gaussian_tail {Ξ : Type} [MeasurableSpace Ξ]
+    (μ : Measure Ξ) [IsProbabilityMeasure μ] (r m K : ℕ)
+    (hr : 0 < r) (hm : 2 ≤ m) (hK : 0 < K) (β σ2 ℓ : ℝ)
+    (hσ : 0 < σ2) (hℓ : 0 < ℓ)
+    (ε : Fin K → (Σ _ : Fin r × Fin 2, Fin m) → Ξ → ℝ)
+    (hε : ∀ i, GaussianNoise μ (ε i) σ2) :
+    let z := fun i => centeredOutcomes phaseSize β (ε i)
+    let N : ℝ := m*(2*r)
+    let a := (N-m)*σ2/N^2
+    let c := contrastCoefficient (2*r)
+    let k := a*c
+    let d : ℝ := r-1
+    let Tbar := fun ξ => (∑ i, periodicContrast hr (z i ξ))/(K:ℝ)
+    let prob := (μ {ξ | Tbar ξ ≤ -ℓ}).toReal
+    let J : ℤ := ⌊ℓ/(4*k)⌋
+    let h : ℤ := ⌈d/2⌉
+    prob ≤ Real.exp (-ℓ/(4*k)) * (2:ℝ)^(d/2) ∧
+    (h < J → Real.exp (-ℓ/(4*k)) * (2:ℝ)^(d/2) ≤ (2:ℝ)^(-((J-h):ℝ))) := by
+  sorry
 
 /-- High-ρ rows 30,40,50,60: printed H means (Table A3 p. A8). -/
 def a3HighH : Fin 4 → ℝ := ![1412.15,1564.34,1430.59,1562.38]
@@ -1326,7 +1412,7 @@ def a3HighC : Fin 4 → ℝ := ![2029.28,2396.58,2032.07,2395.86]
 def a3HighR : Fin 4 → ℕ := ![2,10,2,10]
 /-- Sample sizes m=30,30,60,60. -/
 def a3HighM : Fin 4 → ℕ := ![30,30,60,60]
-/-- The four exact contrast values. -/
+/-- The four exact contrast values, N004 §5. -/
 def a3HighContrast : Fin 4 → ℝ := ![-102561/1550,-29703/1750,-281297/3100,-25671/1750]
 /-- Lower bound exponents J−h: 189,213,522,371. -/
 def a3HighExponent : Fin 4 → ℕ := ![189,213,522,371]
@@ -1345,6 +1431,20 @@ theorem a3_high_contrast_arithmetic (row : Fin 4) :
   fin_cases row <;>
     norm_num [a3HighC, a3HighH, contrastR, a3HighR, a3HighContrast, a3HighExponent, h522, h371]
 
+/-- T19 (vi): probabilities of rounding-compatible joint H/C means for
+the four rows are ≤2^−189,2^−213,2^−522,2^−371 under the stated Gaussian
+model, for every K≥1. These are probability bounds, NOT deterministic exclusions. -/
+theorem a3_high_rows_probability_bound {Ξ : Type} [MeasurableSpace Ξ]
+    (μ : Measure Ξ) [IsProbabilityMeasure μ] (row : Fin 4) (K : ℕ) (hK : 0 < K) (β : ℝ)
+    (ε : Fin K → (Σ _ : Fin (a3HighR row) × Fin 2, Fin (a3HighM row)) → Ξ → ℝ)
+    (hε : ∀ i, GaussianNoise μ (ε i) 17.91) :
+    let hr : 0 < a3HighR row := by fin_cases row <;> norm_num [a3HighR]
+    let z := fun i => centeredOutcomes phaseSize β (ε i)
+    let Hbar := fun ξ => (∑ i, periodicMeanH hr (z i ξ))/(K:ℝ)
+    let Cbar := fun ξ => (∑ i, periodicMeanC hr (z i ξ))/(K:ℝ)
+    (μ {ξ | |Hbar ξ-a3HighH row| ≤ 0.005 ∧ |Cbar ξ-a3HighC row| ≤ 0.005}).toReal ≤
+      ((2:ℝ)^(a3HighExponent row))⁻¹ := by
+  sorry
 
 /-- All 48 ordered distinct zero-inclusion pairs in the T1/T10 examples.
 The small finite certificate counts the actual derived joint probabilities. -/
@@ -1367,18 +1467,39 @@ for the invalid-probability witnesses in T12 C4. -/
 def ppsConfigurationN : Fin 6 → ℕ := ![8,40,120,600,240,1200]
 /-- The sample sizes of the six configurations, Table A2 p. A7. -/
 def ppsConfigurationM : Fin 6 → ℕ := ![2,2,30,30,60,60]
-/-- "L = floor((N-1)/(m-1))+1" (T12 C4).
+/-- "L = floor((N-1)/(m-1))+1" (T12 C4, E002 derivation).
 The values are 8,40,5,21,5,21. -/
 def ppsConfigurationL : Fin 6 → ℕ := ![8,40,5,21,5,21]
 /-- The six exact first-unit printed probabilities in T12 C4. -/
 def ppsConfigurationPi : Fin 6 → ℝ := ![16/15,80/79,150/124,630/620,300/244,1260/1220]
 
-/-- Product measure built from the real-shape negative-binomial masses
-specified in T12 C3. Normalization is not assumed by this definition. -/
+/-- Independent negative-binomial count vectors, with the real-shape mass
+specified in T12 C3 (E002 derivation). Normalization is a theorem obligation,
+not supplied as an instance or replaced by the zero measure. -/
 def nbProductLawN (N : ℕ) : Measure (Fin N → ℕ) :=
   Measure.sum (fun v : Fin N → ℕ =>
     ENNReal.ofReal (∏ k, nbMass (v k)) • Measure.dirac v)
 
+/-- T12 C4: every Table A2 configuration has the stated explicit size
+vector (L,1,...,1) in the support of the stated count law, whose first
+printed marginal exceeds one. The actual probability law and positive
+singleton event are included; numerical ratios alone do not prove this. -/
+theorem all_pps_configurations_invalid (row : Fin 6) :
+    let N := ppsConfigurationN row
+    let m := ppsConfigurationM row
+    let L := ppsConfigurationL row
+    let v : Fin N → ℕ := fun k => if k.val = 0 then L-1 else 0
+    let x : Fin N → ℝ := fun k => 1 + (v k : ℝ)
+    2 ≤ N ∧ 0 < m ∧ m < N ∧ L = (N-1)/(m-1)+1 ∧
+    (∑ k, x k) = (L:ℝ)+N-1 ∧
+    (∀ k, x k = if k.val = 0 then L else 1) ∧
+    (∃ k : Fin N, k.val = 0 ∧ printedPPS m x k = ppsConfigurationPi row ∧
+      1 < printedPPS m x k) ∧
+    IsProbabilityMeasure (nbProductLawN N) ∧
+    0 < ((nbProductLawN N) {v}).toReal ∧
+    ∀ (Ω' : Type) [Fintype Ω'] (D : Design (Fin N) Ω'),
+      ¬ (∀ k, pi D k = printedPPS m x k) := by
+  sorry
 
 /-- The numerical model expectations in T19 (ii) are closed second-moment
 predictions, not proposed replacements for unavailable realized table means. -/
@@ -1431,7 +1552,7 @@ theorem mean_bias_identity (D : Design U Ω) (hD : Positive D) (y : U → ℝ) :
   ring
 
 /-- Expectation of the actual raw-model cross product, T11 (i), proved
-without Gaussianity from the stated integrability and zero-cross-moment assumptions. -/
+without Gaussianity from the target's integrable zero-cross-moment assumptions. -/
 theorem raw_model_cross_moment {Ξ K : Type} [MeasurableSpace Ξ]
     (μ : Measure Ξ) [IsProbabilityMeasure μ] (x : K → ℝ) (β : ℝ)
     (ε : K → Ξ → ℝ) (hε : UncorrelatedNoise μ ε) (k l : K) (hkl : k ≠ l) :
@@ -1777,6 +1898,24 @@ def phaseIndex {r m : ℕ} (k : Σ _ : Fin r × Fin 2, Fin m) : ℕ :=
 def phaseStartLeft {r : ℕ} (g : Fin r × Fin 2) : ℝ :=
   12*(g.1:ℝ)+(if g.2 = 0 then 0 else 2)
 
+/-- T2 (i): the phase model is precisely the cumulative-size, one-uniform-
+start PPS design. This statement supplies the general bridge to the printed
+selection rule, including partition of the start interval. -/
+theorem periodic_systematic_bridge (r m : ℕ) (hr : 0 < r) (hm : 0 < m) :
+    (∀ k : Σ _ : Fin r × Fin 2, Fin m,
+      (∑ a : Σ _ : Fin r × Fin 2, Fin m, if phaseIndex a < phaseIndex k then phaseSize a else 0) =
+        phaseStartLeft k.1+12*r*(k.2:ℝ)) ∧
+    (∀ u : ℝ, 0 ≤ u → u < 12*r → ∃! g : Fin r × Fin 2,
+      phaseStartLeft g ≤ u ∧ u < phaseStartLeft g+(if g.2 = 0 then 2 else 10)) ∧
+    (∀ (g : Fin r × Fin 2) (u : ℝ),
+      phaseStartLeft g ≤ u → u < phaseStartLeft g+(if g.2 = 0 then 2 else 10) →
+      ∀ k : Σ _ : Fin r × Fin 2, Fin m,
+        ((∃ j : Fin m, (∑ a : Σ _ : Fin r × Fin 2, Fin m, if phaseIndex a < phaseIndex k then phaseSize a else 0) ≤
+          u+(j:ℝ)*(12*r) ∧ u+(j:ℝ)*(12*r) <
+          (∑ a : Σ _ : Fin r × Fin 2, Fin m, if phaseIndex a < phaseIndex k then phaseSize a else 0)+phaseSize k) ↔
+          (phaseOriginal r m hr).selected g k = true)) ∧
+    (∀ g, phaseProb r g = (if g.2 = 0 then 2 else 10)/(12*r)) := by
+  sorry
 
 /-- The periodic sizes have mean 6 and divisor-(N−1) variance 16N/(N−1),
 T2 (vi), T19 calibration, with original N=2rm. -/
@@ -1830,7 +1969,7 @@ theorem realized_ratio_example :
   norm_num [variance, expect, groupedPeriodic4, oneDraw, periodic8, fourPhase,
     ratioExampleTotals, Fin.sum_univ_succ]
 
-/-- The corrected witness of T13 draws {1,j}, j=2,...,8, with probability
+/-- The repaired witness of T13 draws {1,j}, j=2,...,8, with probability
 1/7, after redistributing certainty-unit inclusion probability. -/
 def certainty8 : Design (Fin 8) (Fin 7) where
   weight _ := 1/7
@@ -1838,7 +1977,7 @@ def certainty8 : Design (Fin 8) (Fin 7) where
   total := by norm_num [Fin.sum_univ_succ]
   selected ω k := decide (k = 0 ∨ k.val = ω.val+1)
 
-/-- T13 (iv): the corrected positive finite design has π=(1,1/7,...),
+/-- T13 (iv): the repaired positive finite design has π=(1,1/7,...),
 certainty-to-other joints 1/7 and all distinct noncertainty joints zero. -/
 theorem certainty8_probabilities : Positive certainty8 ∧
     (∀ k, pi certainty8 k = min 1 ((1/7:ℝ)*invalidSize8 k)) ∧
@@ -2148,7 +2287,7 @@ theorem aggregation_bias_change {G : Type} [Fintype G]
 
 
 /-- The count vector (29,0,...,0) corresponding to the size witness
-(30,1,...,1), T12 (C3). -/
+(30,1,...,1), T12 (C3), E002 exact-counterexample construction. -/
 def nbWitness (k : Fin 8) : ℕ := if k = 0 then 29 else 0
 
 /-- Independent eight-coordinate NB counts with the printed mean 6 and
@@ -2158,13 +2297,26 @@ def nbProductLaw : Measure (Fin 8 → ℕ) :=
   Measure.sum (fun v : Fin 8 → ℕ =>
     ENNReal.ofReal (∏ k, nbMass (v k)) • Measure.dirac v)
 
+/-- T12 (C3): the actual independent NB measure is normalized, has the
+stated marginal moments, and assigns the explicit size vector positive mass.
+Normalization and NB-series moments remain drafted; positivity of the
+explicit mass expression alone is separately proved in nb_witness_positive. -/
+theorem nb_generated_witness :
+    IsProbabilityMeasure nbProductLaw ∧
+    (∀ (k : Fin 8) (j : ℕ), (nbProductLaw {v | v k = j}).toReal = nbMass j) ∧
+    (∀ k : Fin 8, outcomeE nbProductLaw (fun v => (v k:ℝ)) = 6 ∧
+      outcomeE nbProductLaw (fun v => ((v k:ℝ)-6)^2) = 16) ∧
+    (nbProductLaw {nbWitness}).toReal = nbMass 29*nbMass 0^7 ∧
+    0 < (nbProductLaw {nbWitness}).toReal := by
+  sorry
 
 /-- m_g in T4 (vi): the number of groups with zero joint inclusion
-with g, excluding g itself. -/
+with g, excluding g itself (N002 correction §9). -/
 def zeroNeighborCount {G : Type} [Fintype G] (D : Design G Ω) (g : G) : ℕ :=
   (Finset.univ.filter (fun h => g ≠ h ∧ joint D g h = 0)).card
 
-/-- M_g in T4 (vi): the sum of sizes of g's zero-inclusion neighbors. -/
+/-- M_g in T4 (vi): the sum of sizes of g's zero-inclusion neighbors,
+N002 correction §9. -/
 def zeroNeighborSize {G : Type} [Fintype G] (D : Design G Ω) (n : G → ℕ) (g : G) : ℝ :=
   ∑ h, if g ≠ h ∧ joint D g h = 0 then (n h:ℝ) else 0
 
@@ -2569,7 +2721,7 @@ theorem phase_correction_values (r m : ℕ) (hr : 0 < r) (hm : 0 < m)
     ring
 
 /-- For a one-phase draw the uncorrected variance estimator is
-(1-p_g)Y_g^2/p_g^2 (T2 iii). -/
+(1-p_g)Y_g^2/p_g^2 (T2 iii, E004 derivation §3). -/
 theorem oneDraw_ht_estimator {G : Type} [Fintype G] (p : G → ℝ)
     (hp : ∀ g, 0 ≤ p g) (hs : ∑ g, p g = 1) (hpos : ∀ g, 0 < p g)
     (Y : G → ℝ) (g : G) :
@@ -2597,7 +2749,7 @@ theorem oneDraw_ht_estimator {G : Type} [Fintype G] (p : G → ℝ)
   simp
 
 /-- Within a nonempty group, n S_g-Y_g^2 equals n times the sum of
-squared deviations from its mean (T6 v). -/
+squared deviations from its mean (T6 v, N005 derivation). -/
 theorem group_deviation_identity {G : Type} (n : G → ℕ)
     (hn : ∀ g, 0 < n g) (z : (Σ g, Fin (n g)) → ℝ) (g : G) :
     (n g : ℝ)*groupSquares n z g-(groupTotal n z g)^2 =
@@ -2866,7 +3018,7 @@ theorem row21_exact_witness :
 
 
 /-- On a selected periodic phase, the with-replacement estimator has the
-within-phase sum-of-squares value used in T19 i.
+within-phase sum-of-squares value used in T19 i (N004 derivation §2).
 It keeps the original population-mean divisor N². -/
 theorem phase_wr_value (r m : ℕ) (hr : 0 < r) (hm : 2 ≤ m)
     (z : (Σ _ : Fin r × Fin 2, Fin m) → ℝ) (g : Fin r × Fin 2) :
@@ -3008,7 +3160,7 @@ theorem periodic_mean_identities (r m : ℕ) (hr : 0 < r) (hm : 2 ≤ m)
 
 /-- In the one-unit-per-stratum design, the uncorrected total-variance
 estimate and its quadratic correction both equal M(M-1) times the sum
-of squares of the two selected outcomes (T15 i). -/
+of squares of the two selected outcomes (T15 i, E001 derivation §3). -/
 theorem strata_quadratic_values (M : ℕ) (hM : 2 ≤ M)
     (y : (Fin M × Fin 2) → ℝ) (ω : Fin M × Fin M) :
     let D := strataDesign M (by omega)
@@ -3227,7 +3379,7 @@ theorem noise_linear_moments {Ξ K : Type} [MeasurableSpace Ξ] [Fintype K]
   exact ⟨hZ,hmean,hsqint,hsquare,hshiftint,hshiftmean⟩
 
 /-- The coefficients of "ε_i - ε-bar" under population demeaning
-(supplement A4; corrected T2 v). -/
+(supplement A4; corrected T2 v, E004 derivation §5). -/
 def centeringCoeff {K : Type} [Fintype K] (i k : K) : ℝ :=
   (if i = k then 1 else 0)-1/(Fintype.card K : ℝ)
 
@@ -3282,7 +3434,7 @@ theorem centered_outcomes_linear {K Ξ : Type} [Fintype K]
 
 /-- Each demeaned outcome's actual second moment is the squared
 centered signal plus σ²(1-1/N), under the finite second-moment model
-(T2 v, T19 ii). -/
+(T2 v, T19 ii; E004 derivation §5). -/
 theorem centered_unit_second_moment {Ξ K : Type} [MeasurableSpace Ξ] [Fintype K]
     (μ : Measure Ξ) [IsProbabilityMeasure μ] (hK : 0 < Fintype.card K)
     (x : K → ℝ) (β σ2 : ℝ) (ε : K → Ξ → ℝ) (hε : NoiseMoments μ ε σ2) (i : K) :
@@ -3304,13 +3456,13 @@ theorem centered_unit_second_moment {Ξ K : Type} [MeasurableSpace Ξ] [Fintype 
   ring
 
 /-- Coefficients of R_g=sum_{i∈G_g} ε_i-m ε-bar in the corrected
-periodic model (T2 v); m/N=1/q. -/
+periodic model (T2 v, E004 derivation §5); m/N=1/q. -/
 def phaseNoiseCoeff {r m : ℕ} (g : Fin r × Fin 2)
     (k : Σ _ : Fin r × Fin 2, Fin m) : ℝ :=
   (if g = k.1 then 1 else 0)-1/(2*r)
 
 /-- The phase-centered noise has coefficient squared sum m(1-1/q),
-the finite covariance calculation in T2 v. -/
+the finite covariance calculation in T2 v (E004 derivation §5). -/
 theorem phase_noise_coeff_square_sum (r m : ℕ) (hr : 0 < r) (hm : 0 < m)
     (g : Fin r × Fin 2) :
     (∑ k : Σ _ : Fin r × Fin 2, Fin m, phaseNoiseCoeff g k^2) =
@@ -3390,8 +3542,8 @@ theorem phase_centered_total_formula {Ξ : Type} (r m : ℕ) (hr : 0 < r) (hm : 
     dsimp [N] <;> field_simp [hq,hmR] <;> ring
 
 /-- The actual second moment of every phase total is
-16m²β²+mσ²(1-1/q), requiring only the stated finite error moments
-(T2 v, T19 ii). -/
+16m²β²+mσ²(1-1/q), requiring only the target's finite error moments
+(T2 v, T19 ii; E004 derivation §5). -/
 theorem phase_centered_second_moment {Ξ : Type} [MeasurableSpace Ξ]
     (μ : Measure Ξ) [IsProbabilityMeasure μ] (r m : ℕ) (hr : 0 < r) (hm : 0 < m)
     (β σ2 : ℝ) (ε : (Σ _ : Fin r × Fin 2, Fin m) → Ξ → ℝ)
@@ -3415,7 +3567,7 @@ theorem phase_centered_second_moment {Ξ : Type} [MeasurableSpace Ξ]
   ring
 
 /-- The reciprocal phase probabilities sum to (9/5)q². This is the
-finite design coefficient in T2 v and T19 ii. -/
+finite design coefficient in T2 v and T19 ii (E004 §5, N004 §2). -/
 theorem phase_inverse_sum (r : ℕ) (hr : 0 < r) :
     (∑ g : Fin r × Fin 2, 1/phaseProb r g) = (9/5)*(2*(r:ℝ))^2 := by
   have hrR : (r:ℝ) ≠ 0 := by exact_mod_cast hr.ne'
@@ -3931,6 +4083,214 @@ theorem strata_model_moments {Ξ : Type} [MeasurableSpace Ξ]
     field_simp [hmR.ne'] <;> ring
 
 
+/-- T7 R1, an explicitly labelled mathematical reading of supplement A4:
+the demeaned populations from the stated calibrated Gaussian generator have
+A=0 almost surely. This is false and drafted. It is not a printed theorem;
+unlike the retired draft it includes the outcome generator and calibration. -/
+theorem cancellation_model_reading {Ξ : Type} [MeasurableSpace Ξ]
+    (μ : Measure Ξ) [IsProbabilityMeasure μ] (r m : ℕ) (hr : 0 < r) (hm : 0 < m)
+    (hplot : r = 2 ∨ r = 10) (hmplot : m = 2 ∨ m = 30 ∨ m = 60)
+    (ρ β : ℝ) (hρ : |ρ| ≤ 1)
+    (ε : (Σ _ : Fin r × Fin 2, Fin m) → Ξ → ℝ)
+    (hε : GaussianNoise μ ε (900*(1-ρ^2)))
+    (hβ : β^2 = 900*ρ^2*((m:ℝ)*(2*r)-1)/(16*((m:ℝ)*(2*r)))) :
+    ∀ᵐ ξ ∂μ, biasA (phaseOriginal r m hr) (centeredOutcomes phaseSize β ε ξ) = 0 := by
+  sorry
+
+/-- T7 R2, an explicitly labelled fixed-fraction reading of supplement A4:
+under the calibrated generator, A OR its mean-scale bias converges in
+probability to zero as m grows with q=4 or 20. The two alternatives are
+not conjoined. The source supplies no limit mode; this chosen interpretation
+is false and drafted, and is separate from the underdetermined printed prose. -/
+theorem cancellation_model_limit_reading {Ξ : Type} [MeasurableSpace Ξ]
+    (μ : Measure Ξ) [IsProbabilityMeasure μ] (r : ℕ) (hr : 0 < r)
+    (hplot : r = 2 ∨ r = 10) (ρ : ℝ) (hρ : |ρ| ≤ 1) (β : ℕ → ℝ)
+    (ε : (n : ℕ) → (Σ _ : Fin r × Fin 2, Fin (n+1)) → Ξ → ℝ)
+    (hε : ∀ n, GaussianNoise μ (ε n) (900*(1-ρ^2)))
+    (hβ : ∀ n, (β n)^2 =
+      900*ρ^2*((((n+1:ℕ):ℝ)*(2*r))-1)/(16*(((n+1:ℕ):ℝ)*(2*r)))) :
+    TendstoInMeasure μ (fun n ξ => biasA (phaseOriginal r (n+1) hr)
+      (centeredOutcomes phaseSize (β n) (ε n) ξ)) atTop (fun _ => 0) ∨
+    TendstoInMeasure μ (fun n ξ => biasA (phaseOriginal r (n+1) hr)
+      (centeredOutcomes phaseSize (β n) (ε n) ξ)/(((n+1:ℕ):ℝ)*(2*r))^2)
+      atTop (fun _ => 0) := by
+  sorry
+
+/-- T8's expressly labelled count-of-pairs rationale reading (main p. 237):
+with arbitrary admissible original-pair and totalled-pair exponents,
+aggregation cannot increase the actual conservative-estimator bias. The
+source does not prescribe how to reassign exponents or define a population
+law for its hedge. This universal rationale is false and drafted; it is not
+attributed to the paper as a quantified theorem. -/
+theorem aggregation_rationale_reading {G : Type} [Fintype G]
+    (D : Design G Ω) (hD : Positive D) (n : G → ℕ) (hn : ∀ g, 0 < n g)
+    (y : (Σ g, Fin (n g)) → ℝ)
+    (a b : (Σ g, Fin (n g)) → (Σ g, Fin (n g)) → ℝ)
+    (ac bc : G → G → ℝ)
+    (hab : ∀ k l, k ≠ l ∧ joint (liftDesign D n) k l = 0 →
+      (a k l).HolderConjugate (b k l))
+    (hc : ∀ g h, g ≠ h ∧ joint D g h = 0 → (ac g h).HolderConjugate (bc g h)) :
+    expect D (conservativeEstimator D (groupTotal n y) ac bc) -
+      variance D (htTotal D (groupTotal n y)) ≤
+    expect (liftDesign D n) (conservativeEstimator (liftDesign D n) y a b) -
+      variance (liftDesign D n) (htTotal (liftDesign D n) y) := by
+  sorry
+
+
 end
 end AronowAudit.P027
 
+#print axioms AronowAudit.P027.expect_sum
+#print axioms AronowAudit.P027.expect_add
+#print axioms AronowAudit.P027.expect_mul_const
+#print axioms AronowAudit.P027.expect_const
+#print axioms AronowAudit.P027.indicator_nonneg
+#print axioms AronowAudit.P027.pi_le_one
+#print axioms AronowAudit.P027.joint_nonneg
+#print axioms AronowAudit.P027.joint_self
+#print axioms AronowAudit.P027.joint_symm
+#print axioms AronowAudit.P027.variance_second_moment
+#print axioms AronowAudit.P027.ht_unbiased
+#print axioms AronowAudit.P027.ht_variance_identity
+#print axioms AronowAudit.P027.expected_ht_estimator
+#print axioms AronowAudit.P027.proposition1
+#print axioms AronowAudit.P027.biasA_same_sign
+#print axioms AronowAudit.P027.expected_young_correction
+#print axioms AronowAudit.P027.young_bounds
+#print axioms AronowAudit.P027.conservative_expectation
+#print axioms AronowAudit.P027.proposition2
+#print axioms AronowAudit.P027.corollary1
+#print axioms AronowAudit.P027.expected_quadratic_correction
+#print axioms AronowAudit.P027.c2_bias_identity
+#print axioms AronowAudit.P027.corollary2
+#print axioms AronowAudit.P027.c2_is_young_two
+#print axioms AronowAudit.P027.zero_pair_sum_swap
+#print axioms AronowAudit.P027.corollary3
+#print axioms AronowAudit.P027.fourPhase_pi
+#print axioms AronowAudit.P027.fourPhase_joint
+#print axioms AronowAudit.P027.periodic8_positive
+#print axioms AronowAudit.P027.random8_positive
+#print axioms AronowAudit.P027.periodic8_bias
+#print axioms AronowAudit.P027.periodic8_sample_values
+#print axioms AronowAudit.P027.periodic8_counterexample
+#print axioms AronowAudit.P027.aggregation_counterexample_positive
+#print axioms AronowAudit.P027.aggregation_counterexample_mixed
+#print axioms AronowAudit.P027.random8_sample_values
+#print axioms AronowAudit.P027.random8_counterexample
+#print axioms AronowAudit.P027.lift_pi
+#print axioms AronowAudit.P027.lift_joint
+#print axioms AronowAudit.P027.group_cauchy
+#print axioms AronowAudit.P027.phaseProb_total
+#print axioms AronowAudit.P027.periodic_finite_correction
+#print axioms AronowAudit.P027.centered_cross_products
+#print axioms AronowAudit.P027.periodic8_systematic
+#print axioms AronowAudit.P027.random8_systematic
+#print axioms AronowAudit.P027.a3_grouped_table_refutation
+#print axioms AronowAudit.P027.row21_exact_witness
+#print axioms AronowAudit.P027.invalid_pps_counterexample
+#print axioms AronowAudit.P027.nb_witness_positive
+#print axioms AronowAudit.P027.pps_feasibility_necessary
+#print axioms AronowAudit.P027.capped_pps_exists
+#print axioms AronowAudit.P027.redistributed_witness
+#print axioms AronowAudit.P027.systematic_probability_construction
+#print axioms AronowAudit.P027.random8_outcome_coefficient
+#print axioms AronowAudit.P027.periodic_model_moments
+#print axioms AronowAudit.P027.fixed_fraction_bias_limit
+#print axioms AronowAudit.P027.alternating_family_witness
+#print axioms AronowAudit.P027.strata_finite_formulas
+#print axioms AronowAudit.P027.strata_model_moments
+#print axioms AronowAudit.P027.strata_bias_ranking
+#print axioms AronowAudit.P027.strata_ratio_formula
+#print axioms AronowAudit.P027.strata_large_size_limits
+#print axioms AronowAudit.P027.strata_model_numeric_witnesses
+#print axioms AronowAudit.P027.icc_counterexample
+#print axioms AronowAudit.P027.heterogeneity_conversion
+#print axioms AronowAudit.P027.heterogeneity_conversion_monotone
+#print axioms AronowAudit.P027.printed_icc_labels
+#print axioms AronowAudit.P027.periodic_mean_identities
+#print axioms AronowAudit.P027.contrast_deterministic_correction
+#print axioms AronowAudit.P027.contrast_gaussian_law
+#print axioms AronowAudit.P027.contrast_gaussian_tail
+#print axioms AronowAudit.P027.a3_high_contrast_arithmetic
+#print axioms AronowAudit.P027.a3_high_rows_probability_bound
+#print axioms AronowAudit.P027.four_phase_zero_pair_count
+#print axioms AronowAudit.P027.all_pps_configurations_invalid
+#print axioms AronowAudit.P027.periodic_model_prediction_values
+#print axioms AronowAudit.P027.heterogeneity_conversion_limit
+#print axioms AronowAudit.P027.expect_div_const
+#print axioms AronowAudit.P027.variance_div_const
+#print axioms AronowAudit.P027.mean_bias_identity
+#print axioms AronowAudit.P027.raw_model_cross_moment
+#print axioms AronowAudit.P027.outcome_average_A
+#print axioms AronowAudit.P027.aggregation_total_preserved
+#print axioms AronowAudit.P027.lift_positive
+#print axioms AronowAudit.P027.oneDraw_pi
+#print axioms AronowAudit.P027.oneDraw_joint
+#print axioms AronowAudit.P027.phaseGrouped_positive
+#print axioms AronowAudit.P027.phaseOriginal_positive
+#print axioms AronowAudit.P027.oneDraw_total
+#print axioms AronowAudit.P027.oneDraw_centered_variance
+#print axioms AronowAudit.P027.biasA_pair_sum
+#print axioms AronowAudit.P027.witness_product_perturbation
+#print axioms AronowAudit.P027.outcome_averaged_conservativity
+#print axioms AronowAudit.P027.negative_bias_neighborhood
+#print axioms AronowAudit.P027.strata_pi_value
+#print axioms AronowAudit.P027.strata_joint_value
+#print axioms AronowAudit.P027.strata_inclusion_correction
+#print axioms AronowAudit.P027.pair_sum_factor
+#print axioms AronowAudit.P027.aggregation_ht_estimator_preserved
+#print axioms AronowAudit.P027.aggregation_A_preserved
+#print axioms AronowAudit.P027.aggregation_preservation
+#print axioms AronowAudit.P027.periodic_systematic_bridge
+#print axioms AronowAudit.P027.periodic_size_moments
+#print axioms AronowAudit.P027.periodic_calibrated_bias
+#print axioms AronowAudit.P027.realized_ratio_example
+#print axioms AronowAudit.P027.certainty8_probabilities
+#print axioms AronowAudit.P027.phase_inclusions
+#print axioms AronowAudit.P027.periodic_negative_square
+#print axioms AronowAudit.P027.periodic_ht_expectations
+#print axioms AronowAudit.P027.quadraticA_lift
+#print axioms AronowAudit.P027.strata_sample_mean
+#print axioms AronowAudit.P027.strata5_counterexample
+#print axioms AronowAudit.P027.stratum_means_variance
+#print axioms AronowAudit.P027.c2_expectation
+#print axioms AronowAudit.P027.aggregation_bias_change
+#print axioms AronowAudit.P027.nb_generated_witness
+#print axioms AronowAudit.P027.aggregation_degree_bound
+#print axioms AronowAudit.P027.constant_aggregation_strict
+#print axioms AronowAudit.P027.random8_mean_counterexample
+#print axioms AronowAudit.P027.same_stratum_correlation
+
+#print axioms AronowAudit.P027.quadratic_correction_degree
+#print axioms AronowAudit.P027.sum_ne_const
+#print axioms AronowAudit.P027.phase_zero_degree
+#print axioms AronowAudit.P027.phase_grouped_zero_degree
+#print axioms AronowAudit.P027.phase_correction_values
+#print axioms AronowAudit.P027.oneDraw_ht_estimator
+#print axioms AronowAudit.P027.group_deviation_identity
+
+#print axioms AronowAudit.P027.cancellation_model_reading
+#print axioms AronowAudit.P027.cancellation_model_limit_reading
+#print axioms AronowAudit.P027.aggregation_rationale_reading
+#print axioms AronowAudit.P027.noiseMoments_uncorrelated
+
+#print axioms AronowAudit.P027.phase_wr_value
+
+#print axioms AronowAudit.P027.strata_quadratic_values
+
+#print axioms AronowAudit.P027.noise_linear_moments
+
+#print axioms AronowAudit.P027.centering_coeff_square_sum
+#print axioms AronowAudit.P027.centered_outcomes_zero
+#print axioms AronowAudit.P027.centered_outcomes_linear
+#print axioms AronowAudit.P027.centered_unit_second_moment
+
+#print axioms AronowAudit.P027.phase_noise_coeff_square_sum
+#print axioms AronowAudit.P027.phase_centered_total_formula
+#print axioms AronowAudit.P027.phase_centered_second_moment
+
+#print axioms AronowAudit.P027.phase_inverse_sum
+#print axioms AronowAudit.P027.periodic_model_bias
+
+#print axioms AronowAudit.P027.shifted_noise_second_moment
+#print axioms AronowAudit.P027.outcomeE_expect

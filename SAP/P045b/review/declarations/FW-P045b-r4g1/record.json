@@ -1,0 +1,75 @@
+[
+ {
+  "target_id": "P045-T17",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.empty_hajek",
+   "AronowAudit.P045.empty_ht_total",
+   "AronowAudit.P045.nonempty_ht_conditional"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T17_glue",
+  "statement_definition": "SAP.P045b.T17Statement",
+  "supporting_declarations": [
+   "AronowAudit.P045.ht_unbiased_headline"
+  ],
+  "supporting_definitions": [
+   "SAP.P045b.exposureSampleMean"
+  ]
+ },
+ {
+  "target_id": "P045-T18",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.coordinate_removal_correct",
+   "AronowAudit.P045.coordinate_removal_instance",
+   "AronowAudit.P045.reindexed_outcome_unique"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T18_glue",
+  "statement_definition": "SAP.P045b.T18Statement"
+ },
+ {
+  "target_id": "P045-T19",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.fixed_count_peers_correct"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T19_glue",
+  "statement_definition": "SAP.P045b.T19Statement"
+ },
+ {
+  "target_id": "P045-T20",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.within_hops_counterexample"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T20_glue",
+  "statement_definition": "SAP.P045b.T20Statement"
+ },
+ {
+  "target_id": "P045-T21",
+  "decision": "whole",
+  "theorem": "SAP.P045b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P045.epsilon_net_correction"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P045b.Bridge.T21_glue",
+  "statement_definition": "SAP.P045b.T21Statement",
+  "supporting_declarations": [
+   "AronowAudit.P045.within_hops_counterexample"
+  ]
+ }
+]

@@ -1,0 +1,80 @@
+[
+  {
+    "theorem": "SAP.P005b.T15",
+    "target_id": "P005-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All corrected control and treatment coefficients, the printed intermediate treatment fraction, and the combined covariance expression are present with t,c >= 2 and n=t+c. The finite sample covariance has the paper's divisor equal to arm size. Every denominator is nonzero under these hypotheses. A positive-dimensional instance is t=c=2, x=(-7/5,-1/5,1/5,7/5), with arbitrary outcomes."
+  },
+  {
+    "theorem": "SAP.P005b.T16",
+    "target_id": "P005-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The corrected pair and distinct-triple calculations, diagonal/off-diagonal expansion, complete coefficient chain, both third moments, and complement relation match the canonical mathematical content. n>=3, 0<m<n, and the three zero-sum assumptions are exactly the required hypotheses; the arrays are unrestricted scalar arrays rather than covariates. Nonvacuous example: n=3,m=1,a=b=c=(1,1,-2). Independent exact checks of both final moments cover 492 allocations for sizes 3 through 8."
+  },
+  {
+    "theorem": "SAP.P005b.T17",
+    "target_id": "P005-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every corrected contraction and leverage identity, the centering inequality, and both deterministic order assertions are included. The omitted variance inequality is explicitly excluded by the canonical target. The extra finite residual-difference bound is true: the common slope cancels, leaving the centered difference of the outcomes, whose second moment is at most 4K. No standardization is needed for that added bound. The sequential hypotheses allow d=0 and do not acquire the positive-dimension restriction of standingAssumptions. Nonvacuity: n=2,d=m=1,x=(1,-1) for the finite contraction; a standardized distinct linear grid with d_n=1 and m_n=floor(n/2) for the orders."
+  },
+  {
+    "theorem": "SAP.P005b.T18",
+    "target_id": "P005-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The arbitrary-residual normal equation yields exactly the three bracketed vectors with their factors inside the treated sum; the second conjunct derives the normal equation for the actual standardized common residuals and identifies the observed-residual term. It does not assume the identity it concludes. n>0 and 0<m<n guard all divisions. Nonzero instance: n=5,m=2,x=(-3/2,-1/2,0,1/2,3/2),yT=x^2,yC=0,S={0,1}; the identified scalar is 1/2."
+  },
+  {
+    "theorem": "SAP.P005b.T19",
+    "target_id": "P005-T19",
+    "my_reading_vs_claim": "different",
+    "reason": "The stub states the negation of the entire printed universal expectation-and-variance conjunction, rather than asserting that conjunction. This is a faithful refutation of its exact printed domain, with no centering assumption inserted. The refutation is true: n=7,m=6,treated arm,a=(10,1,1,1,1,1,1),b=(1/10,1,1,1,1,1,1) gives variance 243/1568 > printed bound 31853/226800, while the expectation identity still holds with expectation -27/28. The design contains seven allocations; no empty or zero-denominator convention is involved."
+  },
+  {
+    "theorem": "SAP.P005b.T20",
+    "target_id": "P005-T20",
+    "my_reading_vs_claim": "different",
+    "reason": "The stub proves the valid exact part T24, refutes the printed universal third-component identity under the canonical finite hypotheses, and additionally refutes the quoted literal-logarithm expansion. Both refutations target the printed reading. Finite witness n=5,m=2,d=1,x=(-3/2,-1/2,0,1/2,3/2),yT=x^2,yC=0 is standardized and regular for every assignment; actual third component is 21/320 versus printed -21/320. A sequence with d=1, one high-leverage covariate, distinct nearly constant remaining covariates and bounded outcomes satisfies every sequential premise; its regression remainder grows linearly whereas log(d)=0. All arm matrices are invertible eventually. Details and exact finite enumerations are retained in scratch."
+  },
+  {
+    "theorem": "SAP.P005b.T21",
+    "target_id": "P005-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two exact unbiasedness assertions, inverse-free identity, bias decomposition and inverse-component identity retain the full canonical n>=3 and nonempty-arm range. Only the proof-step expectations of (11),(12), the equivalent third-component coefficient formula, and their pointwise collection acquire m>=2 and n-m>=2. This is a meaningful restriction of the canonical proof-step clauses and guards the m-1 and n-m-1 denominators. It is already disclosed exactly in the docstring. Standardization and all-assignment nonsingularity match the canonical assumptions. Positive-dimensional n=5 distinct standardized covariates provide examples with m=1 as well as m=2; exact enumeration supports both unbiasedness assertions."
+  },
+  {
+    "theorem": "SAP.P005b.T22",
+    "target_id": "P005-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "The bias and ATE unbiasedness, pointwise inverse-free formula, both arm means, and the two additional centered-covariate-only assertions all match the canonical clauses, including their separate arm-size hypotheses. The inverse matrices are guarded in the main part and are absent from the weaker parts. A standardized five-point distinct grid with m=2 has both arm determinants positive for every assignment; outcomes x^2 and zero are nontrivial examples."
+  },
+  {
+    "theorem": "SAP.P005b.T23",
+    "target_id": "P005-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "The slope and bias decompositions, equations (5),(6), population covariance interpretation, additive-effect implication and balanced-design implication are all present under exactly the explicit finite canonical hypotheses. Inverses and n-2 denominators are guarded. Nonvacuity is supplied by the standardized distinct five-point grid with m=2; additive effects can be obtained by yT=yC+1, and a standardized four-point grid with m=2 realizes the balanced implication."
+  },
+  {
+    "theorem": "SAP.P005b.T24",
+    "target_id": "P005-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "This target is explicitly the valid exact part of Theorem 4.1; both arm decompositions, the bias identity, both separate first moments and their difference are included. The false third-component identity and asymptotic paragraph belong to T20, not this canonical target. The n>=2, nonempty-arm, standardization and all-assignment arm-invertibility hypotheses match. The d=1,n=5,m=2 distinct standardized grid realizes all of them."
+  },
+  {
+    "theorem": "SAP.P005b.T25",
+    "target_id": "P005-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "The full stochastic remainder with its d/n -> 0 premise is present, and the custom O_p has the canonical tail-probability quantifiers. The positive-dimension hypothesis agrees with the target's own definitions_needed paragraph '[Reading of the order symbols]', which explicitly says 1 <= d_n <= n; it is therefore not an additional restriction relative to the supplied canonical package, despite the docstring's assertion that the canonical claim imposes only d_n <= n. A finite initial segment and eventual regularity do not change this asymptotic assertion. Nonvacuity: d_n=1, centered and variance-normalized distinct linear grids, m_n=floor(n/2), bounded outcomes."
+  },
+  {
+    "theorem": "SAP.P005b.T26",
+    "target_id": "P005-T26",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The requested leverage-decay little-o expansion is correctly rendered, but the canonical statement also gives the unconditional O_p(sqrt(kappa/n)) rate and the exact identification with term (*) on p.1516; these are absent and disclosed as absent. Positive dimension is not an additional canonical restriction: definitions_needed '[Reading of the order symbols]' explicitly already requires 1 <= d_n <= n. The shared sequence assumptions and probability definition are genuine and satisfiable, for example by normalized distinct linear grids with d_n=1, m_n=floor(n/2), whose kappa_n=3(n-1)/(n(n+1)) tends to zero."
+  },
+  {
+    "theorem": "SAP.P005b.T27",
+    "target_id": "P005-T27",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The arm-specific leverage-decay little-o expansion matches, but the canonical statement additionally supplies O_p(sqrt(kappa/n)) without leverage decay, which is absent and disclosed. The docstring's alleged added positive-dimension restriction is already part of definitions_needed '[Reading of the order symbols]' (1 <= d_n <= n). A normalized distinct linear grid with d_n=1,m_n=floor(n/2) has both arm covariances positive under every allocation for n>=4 and kappa_n -> 0, so the hypotheses are jointly satisfiable without singular-inverse conventions."
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "target_id": "P004-T16",
+    "theorem": "SAP.P004b.T16",
+    "fingerprint": "17d8eb422958a0cce0d865dfba2fd4f227b56d8c6180073ccdcdc830e6a477b0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No antecedent; all witnesses are explicit. Checked all printed range/area conditions mathematically: bounded measurable 0/1 outcomes, independent fair coins, positive finite averaging masses, compact rectangles and the two-atom witness; the disjoint thin rectangles have area 1 and the stated distances/counts. Detailed witness checks are in scratch/WitnessChecks.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P004-T17",
+    "theorem": "SAP.P004b.T17",
+    "fingerprint": "c7925511b7e4c90b00cea78584cf03e6cfc273059dc9a8bf62a06ddd0f304ffb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:20: one singleton node in the metric space Nat, counting measure, zero outcomes, bands={0}, d=dbar=D=0 satisfies every DiameterCutoff hypothesis. Separately, a single closed unit square satisfies the polygon-count hypotheses with a=1 and D=2 (triangulable, area 1, diameter sqrt(2)<=2); this geometric branch is argued in scratch/WitnessChecks.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P004-T18",
+    "theorem": "SAP.P004b.T18",
+    "fingerprint": "769c0c74f3b7399e560fc714d6715bb46737360e81472be8ee7b68b7fac6da43",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:115: nodes at i*N in Nat, counting measure, zero outcomes and singleton distance bands, p=1/4 and d=0 satisfy all asymptotic hypotheses, with positive finite averaging masses, h=0, and eventually singleton balls at every fixed radius. Independently compiled the balanced N=2 scaled error variance 4/3 at line 142; exact rational checks at N=2,4,6,8 also passed. The balanced fixed-outcome witness is measurable, bounded and spatially realizable with C1-C4; see scratch/WitnessChecks.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P004-T19",
+    "theorem": "SAP.P004b.T19",
+    "fingerprint": "0418425fee8996a8901af4933571af763239d7c3e263244256034924cce01a7a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit fair independent coordinate coins supply both arrays. Singleton or cancelling-pair source classes give full subvector independence with degrees 1 or 2, and the sum is exactly the unpaired fair sign with positive variance 1. Compiled independent finite variance and sum checks in scratch/Nonvacuity.lean:127 and :132; rational cancellation checks at N=1,3,5,7,9 passed. All-row validity and the normal-CDF contradiction are checked mathematically in scratch/WitnessChecks.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P004-T20",
+    "theorem": "SAP.P004b.T20",
+    "fingerprint": "5d1876dbf72cc5177118336d8276c64fd23e50786502167c0b2ee4c8245f648e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/CLTNonvacuity.lean: independent fair Bool-coordinate signs satisfy every hypothesis of the general corrected CLT (M=1, singleton dependency neighborhoods, second moment N), and their division by sqrt(N) satisfies every hypothesis of the normalized form (K=1, unit second moment for N>0). Compiled spatial C1-C4 instance in scratch/Nonvacuity.lean:115. scratch/WitnessChecks.md gives a separated balanced-outcome spatial instance with positive scaled variance for both HT and linearized Hajek.",
+    "confidence": "high",
+    "resolved": [
+      "Fixed: earlier Challenge/Part1.lean:47 optimality wording. The current docstring states the canonical numerical bounds without calling them sharp or optimal.",
+      "Fixed: earlier Defs/WholeW2.lean:233 definition-docstring wording. At current lines 232-236 it says \"Centered contrast bounds, with no geometry assumed\" and asserts only the required inequalities. The retained identifier is not an optimality assertion.",
+      "Fixed: earlier Defs/WholeW2.lean:262 whole-statement wording. The current lines 258-266 describe bounds with constants 2 and 4 without claiming optimality."
+    ]
+  }
+]

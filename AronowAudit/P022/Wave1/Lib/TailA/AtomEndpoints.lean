@@ -5,7 +5,8 @@ import Mathlib.MeasureTheory.Measure.Portmanteau
 
 /-!
 Atom-sensitive endpoints for corrected P022 Lemma 2. Both strict and nonstrict
-thresholds are retained at each quantile.
+thresholds are retained at each quantile. The permutation calculation below
+adapts the proved calculation in Wave1/Gap/GP022B1b, without importing that module.
 -/
 
 namespace AronowAudit.P022.Wave1.TailA
@@ -110,7 +111,7 @@ theorem atom_indicator_block_moments (d : Design) {s : ℕ} (hs : 0 < s)
     ring
   simpa only [hv] using atom_block_moments d hs e he (fun i => if p i then 1 else 0)
 
-/-- Empirical probability law, used to connect finite averages to Portmanteau. -/
+/-- Empirical probability law, used to connect the frozen averages to Portmanteau. -/
 def atom_empiricalLaw {α : Type*} [MeasurableSpace α] {N : ℕ} (hN : 0 < N)
     (y : Fin N → α) : ProbabilityMeasure α := by
   letI instAtomEmpiricalNeZero : NeZero N := ⟨ne_of_gt hN⟩
@@ -575,7 +576,7 @@ theorem atom_grid_sampling_bound (d : Design) {s n : ℕ} (hs : 0 < s)
         Fintype.card_fin, Fintype.card_bool, nsmul_eq_mul, Nat.cast_mul, Nat.cast_ofNat,
         Nat.cast_add, Nat.cast_one]; ring
 
-/-- Cardinality and mesh size for the explicit partition integer. -/
+/-- Cardinality and mesh size for the exact retained partition integer. -/
 theorem atom_partition_mesh (η : ℝ) (hη : 0 < η) :
     let R := Nat.ceil (4 / min η 1)
     2 ≤ R ∧ (R - 2 + 2 = R) ∧
@@ -711,25 +712,9 @@ theorem atom_injected_tail_bound (S : ExperimentSequence) (P : ProbabilityMeasur
     (correctedPartitionInteger η) hp hη hratio)
   exact hle.trans (le_of_eq hlimit.limsup_eq)
 
-/-- Corrected Lemma 2 with an explicit partition and bounds for both sample CDFs. -/
+/-- The exact retained explicit endpoint. The held declaration supplies only its type. -/
 theorem lemma2_corrected_explicit_final :
-    (∀ (S : ExperimentSequence)
-      (H : JointLaw)
-      (θ ρ : ℝ)
-      (h : Conditions123 S H θ ρ)
-      (hleft : AtomLeftConvergence S H),
-      (∀ η, 0 < η → 0 < correctedPartitionInteger η) ∧
-    (∀ a b, 0 < a → a ≤ b → correctedPartitionInteger b ≤ correctedPartitionInteger a) ∧
-    (∀ t, Tendsto (fun q => cdfDistance (lawCDF H t)
-      (empiricalCDF (rowOutcomes S t q))) atTop (𝓝 0)) ∧
-    (∀ η, 0 < η →
-      scaledProbabilityLimsup S (fun q π => η ≤
-        cdfDistance (lawCDF H true) (sampledCDF S true q π)) ≤
-        ENNReal.ofReal ((1 - θ * ρ) * correctedPartitionInteger η / (θ * ρ * η ^ 2)) ∧
-      scaledProbabilityLimsup S (fun q π => η ≤
-        cdfDistance (lawCDF H false) (sampledCDF S false q π)) ≤
-        ENNReal.ofReal ((1 - θ * (1 - ρ)) * correctedPartitionInteger η /
-          (θ * (1 - ρ) * η ^ 2)))) := by
+    type_of% @AronowAudit.P022.lemma2_corrected_explicit := by
   intro S H θ ρ h hleft
   refine ⟨corrected_partition_integer_properties.1, corrected_partition_integer_properties.2,
     atom_uniform_convergence S H θ ρ h hleft, ?_⟩
@@ -773,6 +758,9 @@ theorem lemma2_corrected_explicit_final :
     convert ht using 1 <;>
       simp only [atom_marginal_Iic, sampledCDF, Bool.false_eq_true, if_false, e0,
         observedControl] <;> rfl
+
+example : type_of% @AronowAudit.P022.lemma2_corrected_explicit :=
+  AronowAudit.P022.Wave1.TailA.lemma2_corrected_explicit_final
 
 end
 end AronowAudit.P022.Wave1.TailA

@@ -1,0 +1,55 @@
+import SAP.P039.Defs
+open SAP.P039 MeasureTheory ProbabilityTheory
+open scoped BigOperators Matrix NNReal
+set_option autoImplicit false
+
+noncomputable def covGaussian : Measure (Fin 6 → ℝ) :=
+  Measure.pi (fun _ : Fin 6 => gaussianReal 0 1)
+
+instance : IsProbabilityMeasure covGaussian := by
+  unfold covGaussian
+  infer_instance
+
+lemma coord_l2 (i : Fin 6) : MemLp (fun e : Fin 6 → ℝ => e i) 2 covGaussian := by
+  simpa [covGaussian] using
+    (memLp_id_gaussianReal (μ := 0) (v := 1) 2).comp_measurePreserving
+      (measurePreserving_eval (fun _ : Fin 6 => gaussianReal 0 1) i)
+
+lemma coord_mean (i : Fin 6) : (∫ e, e i ∂covGaussian) = 0 := by
+  simp [covGaussian, integral_eval]
+
+-- T4 covariance: all finite-moment and centered-isotropic hypotheses, at sigma=1.
+example :
+    (∀ i : Fin 6, Integrable (fun e : Fin 6 → ℝ => e i) covGaussian) ∧
+    (∀ i j : Fin 6, Integrable (fun e : Fin 6 → ℝ => e i * e j) covGaussian) ∧
+    (∀ i : Fin 6, (∫ e, e i ∂covGaussian) = 0) ∧
+    vectorCovariance covGaussian (fun e => e) =
+      (1 : ℝ)^2 • (1 : Matrix (Fin 6) (Fin 6) ℝ) := by
+  refine ⟨fun i => (coord_l2 i).integrable (by norm_num), ?_, coord_mean, ?_⟩
+  · intro i j
+    exact ((coord_l2 i).integrable_mul (coord_l2 j)).congr
+      (Filter.Eventually.of_forall fun _ => rfl)
+  · ext i j
+    simp only [vectorCovariance, coord_mean, sub_zero, one_pow, one_smul,
+      Matrix.one_apply]
+    by_cases hij : i = j
+    · subst j
+      simp only [ite_eq_left rfl]
+      calc
+        (∫ e, e i * e i ∂covGaussian) = ∫ x : ℝ, x*x ∂gaussianReal 0 1 := by
+          simpa only [covGaussian] using
+            (integral_comp_eval (μ := fun _ : Fin 6 => gaussianReal 0 1) (i := i)
+              (f := fun x : ℝ => x*x)
+              (measurable_id.mul measurable_id).aestronglyMeasurable)
+        _ = 1 := by
+          have hv := variance_fun_id_gaussianReal (μ := 0) (v := 1)
+          rw [variance_eq_integral (X := fun x : ℝ => x) measurable_id.aemeasurable] at hv
+          simpa [pow_two] using hv
+    · simp only [ite_eq_right hij]
+      have hind : IndepFun (fun e : Fin 6 → ℝ => e i) (fun e : Fin 6 → ℝ => e j)
+          covGaussian :=
+        (iIndepFun_pi (X := fun _ : Fin 6 => (id : ℝ → ℝ))
+          (fun _ => aemeasurable_id)).indepFun hij
+      have h := hind.integral_mul_eq_mul_integral
+        (coord_l2 i).aestronglyMeasurable (coord_l2 j).aestronglyMeasurable
+      simpa only [Pi.mul_apply, coord_mean, zero_mul] using h

@@ -1,5 +1,16 @@
 name: Check repository
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      full_rebuild:
+        description: Rebuild all proof sources and recheck every current theorem's axioms
+        type: boolean
+        default: false
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -14,3 +25,25 @@ jobs:
       - run: python3 -m unittest discover -s scripts -p 'test_*.py'
         env:
           PYTHONDONTWRITEBYTECODE: "1"
+  lean:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_rebuild }}
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      LEAN_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Provision disposable runner disk and proof memory
+        run: bash scripts/provision_lean_runner.sh
+      - name: Install Lean toolchain
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch pinned dependencies and Mathlib build cache
+        run: lake exe cache get
+      - name: Build full library and current statement/proof entries; check proof axioms
+        run: python3 scripts/build_current.py --priority-work P003

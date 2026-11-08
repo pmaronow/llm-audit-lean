@@ -1,0 +1,85 @@
+[
+ {
+  "target_id": "P003-T24",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T24",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.Wave1.balanced_mean_symmetry_proof",
+   "AronowAudit.P003.complement_estimator_identity"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P003-T25",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T25",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.Wave1.corrected_lattice_interval_proof",
+   "AronowAudit.P003.lattice_interval_witness",
+   "SAP.P003b.WH.W2.T25_whole",
+   "SAP.P003b.WH.W2.T25_assembly",
+   "AronowAudit.P003.possible_table_facts",
+   "AronowAudit.P003.balanced_estimate_in_interval",
+   "AronowAudit.P003.ConfidenceFollowup.real_extrema_of_intervalQ",
+   "AronowAudit.P003.ConfidenceFollowup.accepted_real_iff"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P003b.T25WholeStatement"
+ },
+ {
+  "target_id": "P003-T8",
+  "decision": "restricted",
+  "theorem": "SAP.P003b.T8",
+  "restriction": "Uses a real critical value z in the displayed rational enclosure; it does not identify z with the normal 0.975 quantile or prove that quantile enclosure. Omits the extensions to every sqrt(2)<=z<=2 and every z>=1.95, the pointwise variance lower bound V_k>=1/50, the sharper pointwise HC1 width bound 2*z*sqrt(1/50), and the sharper pointwise HC0 width bound 2*z*sqrt(12/625). Retains both exact coverage fractions, both design medians, the HC0 classification and 0.54 bound, and the finite-run sharp median bound and reported-pair incompatibility for the enclosed critical values. The statement uses the explicit two-type Wald formulas without a separate labeled-assignment-to-k derivation. The design conclusions certify the displayed values as medians without asserting uniqueness.",
+  "rows_used": [
+   "AronowAudit.P003.Wave1.corrected_wald_row_proof",
+   "AronowAudit.P003.Wave1.wald_median_and_hc0_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P003.wald_exact_arithmetic",
+    "reason": "Its exact fraction values are already in the main Wald result; its separate variance equalities are not asserted."
+   }
+  ]
+ },
+ {
+  "target_id": "P003-T19",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.Wave1.corrected_stratum_count_proof",
+   "AronowAudit.P003.stratum_count_witness",
+   "SAP.P003b.WH.W2.T19_whole",
+   "SAP.P003b.WH.W2.T19_assembly",
+   "SAP.P003b.WH.W2.T19_L1_proof",
+   "AronowAudit.P003.Wave1.corrected_stratum_count_mem",
+   "AronowAudit.P003.Wave1.corrected_stratum_count_card",
+   "AronowAudit.P003.Wave1.corrected_stratum_count_eight_sum",
+   "AronowAudit.P003.Wave1.neyman_exists_table"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P003b.T19WholeStatement"
+ },
+ {
+  "target_id": "P003-T20",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.Wave1.count_distribution_invariance_proof",
+   "AronowAudit.P003.corrected_update",
+   "AronowAudit.P003.symbol_corrections",
+   "SAP.P003b.WH.W2.T20_whole",
+   "SAP.P003b.WH.W2.T20_assembly",
+   "AronowAudit.P003.first_on_line_spec",
+   "AronowAudit.P003.possible_table_facts",
+   "AronowAudit.P003.corrected_general_loop",
+   "AronowAudit.P003.Wave1.GLP0032B6_reuse_pvalue"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P003b.T20WholeStatement"
+ }
+]

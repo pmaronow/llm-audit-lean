@@ -1,0 +1,242 @@
+import SAP.P001b.Defs.WholeW2
+
+open MeasureTheory ProbabilityTheory Set
+open scoped ENNReal NNReal Classical
+
+noncomputable section
+
+namespace Audit
+
+lemma indicator_facts {α : Type*} [MeasureSpace α]
+    (s : Set α) (hs : MeasurableSet s) (hfinite : volume s ≠ ∞) :
+    AEMeasurable (s.indicator (fun _ => (1 : ℝ))) volume ∧
+    (∀ x, 0 ≤ s.indicator (fun _ => (1 : ℝ)) x) ∧
+    Integrable (s.indicator (fun _ => (1 : ℝ))) volume ∧
+    volume.withDensity (fun x => ENNReal.ofReal (s.indicator (fun _ => (1 : ℝ)) x)) =
+      volume.restrict s := by
+  refine ⟨(measurable_const.indicator hs).aemeasurable, ?_,
+    (integrable_indicator_iff hs).2 (integrableOn_const (C := (1 : ℝ)) hfinite), ?_⟩
+  · intro x
+    by_cases hx : x ∈ s <;> simp [hx]
+  · have hw : (fun x => ENNReal.ofReal (s.indicator (fun _ => (1 : ℝ)) x)) =
+        s.indicator (fun _ => (1 : ℝ≥0∞)) := by
+      funext x
+      by_cases hx : x ∈ s <;> simp [hx]
+    rw [hw]
+    exact withDensity_indicator_one hs
+
+lemma density_gives_lower_CDF (ν : Measure ℝ) (f : ℝ → ℝ)
+    (h : SAP.P001b.Density ν f) : SAP.P001b.CDFDensity ν f := by
+  refine ⟨h.1, h.2.1, ?_⟩
+  intro x
+  rw [h.2.2.2, withDensity_apply _ measurableSet_Iic]
+
+lemma uniform_density : SAP.P001b.Density SAP.P001b.unitUniformLaw
+    SAP.P001b.closedUniformDensity := by
+  have h := indicator_facts (Icc (0 : ℝ) 1) measurableSet_Icc (by simp)
+  have hf : SAP.P001b.closedUniformDensity =
+      (Icc (0 : ℝ) 1).indicator (fun _ => (1 : ℝ)) := by
+    funext x
+    simp [SAP.P001b.closedUniformDensity, Set.indicator]
+  rw [SAP.P001b.Density, hf]
+  exact ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.symm⟩
+
+lemma uniform_probability : IsProbabilityMeasure SAP.P001b.unitUniformLaw := by
+  constructor
+  simp [SAP.P001b.unitUniformLaw]
+
+-- All univariate premises of T30, including two PDF versions and a replacement,
+-- hold simultaneously for a concrete nonzero probability density.
+example : IsProbabilityMeasure SAP.P001b.unitUniformLaw ∧
+    SAP.P001b.CDFDensity SAP.P001b.unitUniformLaw SAP.P001b.closedUniformDensity ∧
+    SAP.P001b.CDFDensity SAP.P001b.unitUniformLaw SAP.P001b.closedUniformDensity ∧
+    (∀ x, 0 ≤ SAP.P001b.closedUniformDensity x) ∧
+    SAP.P001b.closedUniformDensity =ᵐ[volume] SAP.P001b.closedUniformDensity := by
+  exact ⟨uniform_probability, density_gives_lower_CDF _ _ uniform_density,
+    density_gives_lower_CDF _ _ uniform_density, uniform_density.2.1,
+    Filter.EventuallyEq.rfl⟩
+
+-- The universal T32 premises are inhabited by X=id with this same law.
+example : ∃ (μ : Measure ℝ) (X : ℝ → ℝ) (f : ℝ → ℝ),
+    IsProbabilityMeasure μ ∧ Measurable X ∧ SAP.P001b.Density (μ.map X) f := by
+  refine ⟨SAP.P001b.unitUniformLaw, id, SAP.P001b.closedUniformDensity,
+    uniform_probability, measurable_id, ?_⟩
+  simpa using uniform_density
+
+-- T33 is checked on a nonempty type, and also directly at its full generality.
+example : (fun x : ℝ => x ^ 2) ∘ id = (fun x : ℝ => x * x) ∘ id := by
+  funext x
+  simp [pow_two]
+
+example {Ω : Type*} (X : Ω → ℝ) (g h : ℝ → ℝ) :
+    g ∘ X = h ∘ X ↔ ∀ x ∈ range X, g x = h x := by
+  constructor
+  · intro heq x hx
+    obtain ⟨ω, rfl⟩ := hx
+    exact congrFun heq ω
+  · intro heq
+    funext ω
+    exact heq (X ω) (mem_range_self ω)
+
+lemma joint_indicator_lower_CDF (s : Set (ℝ × ℝ)) (hs : MeasurableSet s)
+    (hfinite : volume s ≠ ∞) :
+    SAP.P001b.JointCDFDensity (volume.restrict s) (s.indicator (fun _ => (1 : ℝ))) := by
+  have h := indicator_facts s hs hfinite
+  refine ⟨h.1, h.2.1, ?_⟩
+  intro x y
+  rw [← setLIntegral_prod _ (h.1.ennreal_ofReal.restrict)]
+  rw [← h.2.2.2, withDensity_apply _ (measurableSet_Iic.prod measurableSet_Iic)]
+  rw [Measure.volume_eq_prod]
+
+-- The joint and both marginal density premises of T30 are simultaneously true.
+example : ∃ (ν : Measure (ℝ × ℝ)) (f : ℝ × ℝ → ℝ) (fx fy : ℝ → ℝ),
+    IsProbabilityMeasure ν ∧ SAP.P001b.JointCDFDensity ν f ∧
+    SAP.P001b.JointCDFDensity ν f ∧ SAP.P001b.CDFDensity (ν.map Prod.fst) fx ∧
+    SAP.P001b.CDFDensity (ν.map Prod.snd) fy := by
+  have := uniform_probability
+  let S := Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1
+  have heq : SAP.P001b.unitUniformLaw.prod SAP.P001b.unitUniformLaw = volume.restrict S :=
+    Measure.prod_restrict _ _
+  refine ⟨SAP.P001b.unitUniformLaw.prod SAP.P001b.unitUniformLaw,
+    S.indicator (fun _ => (1 : ℝ)), SAP.P001b.closedUniformDensity,
+    SAP.P001b.closedUniformDensity, inferInstance, ?_, ?_, ?_, ?_⟩
+  · rw [heq]
+    exact joint_indicator_lower_CDF S (measurableSet_Icc.prod measurableSet_Icc)
+      (by change volume (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ≠ ∞
+          rw [Measure.volume_eq_prod, Measure.prod_prod]
+          simp)
+  · rw [heq]
+    exact joint_indicator_lower_CDF S (measurableSet_Icc.prod measurableSet_Icc)
+      (by change volume (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ≠ ∞
+          rw [Measure.volume_eq_prod, Measure.prod_prod]
+          simp)
+  · simpa using density_gives_lower_CDF _ _ uniform_density
+  · simpa using density_gives_lower_CDF _ _ uniform_density
+
+-- The discrete part of T30 has a genuine measurable probability-space instance.
+example : ∃ (μ : Measure Unit) (X Y : Unit → ℝ),
+    IsProbabilityMeasure μ ∧ Measurable X ∧ Measurable Y ∧
+    (range X).Countable ∧ (range Y).Countable := by
+  exact ⟨Measure.dirac (), fun _ => 0, fun _ => 1, inferInstance,
+    measurable_const, measurable_const, countable_range _, countable_range _⟩
+
+def R : Set (ℝ × ℝ) := Ioo (0 : ℝ) 1 ×ˢ Ioo (-1 : ℝ) 0
+
+lemma R_measurable : MeasurableSet R := measurableSet_Ioo.prod measurableSet_Ioo
+
+lemma R_volume : volume R = 1 := by
+  rw [R, Measure.volume_eq_prod, Measure.prod_prod]
+  norm_num
+
+lemma negative_indicator : SAP.P001b.negativeRectangleDensity =
+    R.indicator (fun _ => (1 : ℝ)) := by
+  funext z
+  simp [SAP.P001b.negativeRectangleDensity, R, Set.indicator]
+
+-- T34's density determines a probability law with the required joint-CDF density.
+example : IsProbabilityMeasure (volume.restrict R) ∧
+    SAP.P001b.JointCDFDensity (volume.restrict R) SAP.P001b.negativeRectangleDensity := by
+  constructor
+  · constructor
+    simpa using R_volume
+  · rw [negative_indicator]
+    exact joint_indicator_lower_CDF R R_measurable (by rw [R_volume]; simp)
+
+-- Independent verification of the entire retained T34 counterexample.
+example : SAP.P001b.T34Statement := by
+  have hf := indicator_facts R R_measurable (by rw [R_volume]; simp)
+  have htotal : (∫ z : ℝ × ℝ, SAP.P001b.negativeRectangleDensity z) = 1 := by
+    rw [negative_indicator, integral_indicator_const (1 : ℝ) R_measurable]
+    change (volume R).toReal * 1 = 1
+    rw [R_volume]
+    simp
+  let E := {z : ℝ × ℝ | 0 ≤ z.1 ∧ z.1 ≤ 1 ∧ z.2 ≤ z.1}
+  have hRE : R ⊆ E := by
+    intro z hz
+    change (0 < z.1 ∧ z.1 < 1) ∧ (-1 < z.2 ∧ z.2 < 0) at hz
+    exact ⟨hz.1.1.le, hz.1.2.le, le_trans hz.2.2.le hz.1.1.le⟩
+  have hevent : (∫ z in E, SAP.P001b.negativeRectangleDensity z) = 1 := by
+    rw [negative_indicator, integral_indicator_const (1 : ℝ) R_measurable]
+    change ((volume.restrict E) R).toReal * 1 = 1
+    rw [Measure.restrict_apply R_measurable, inter_eq_left.mpr hRE, R_volume]
+    simp
+  have hinner : ∀ x : ℝ,
+      (∫ y in Icc 0 x, SAP.P001b.negativeRectangleDensity (x,y)) = 0 := by
+    intro x
+    apply integral_eq_zero_of_ae
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with y hy
+    simp [SAP.P001b.negativeRectangleDensity, not_lt.mpr hy.1]
+  have htriangle : (∫ x in Icc (0 : ℝ) 1,
+      ∫ y in Icc 0 x, SAP.P001b.negativeRectangleDensity (x,y)) = 0 := by
+    simp only [hinner, integral_zero]
+  refine ⟨?_, ?_, htotal, hevent, htriangle, ?_⟩
+  · simpa only [negative_indicator] using hf.2.1
+  · simpa only [negative_indicator] using hf.2.2.1
+  · rw [hevent, htriangle]
+    norm_num
+
+def C : Set ℝ := Icc (0 : ℝ) (1/2) \ range (fun q : ℚ => (q : ℝ))
+
+lemma C_measurable : MeasurableSet C :=
+  measurableSet_Icc.diff (countable_range (fun q : ℚ => (q : ℝ))).measurableSet
+
+lemma C_volume : volume C = 1/2 := by
+  rw [C, measure_sdiff_null ((countable_range (fun q : ℚ => (q : ℝ))).measure_zero volume)]
+  norm_num [ENNReal.ofReal_div_of_pos]
+
+-- Independent construction of the complete existential witness in T32.
+example : let C : Set ℝ := Icc (0 : ℝ) (1/2) \ range (fun q : ℚ => (q : ℝ))
+    ∃ ν : Measure C,
+      MeasurableSet C ∧ volume C = 1/2 ∧ IsProbabilityMeasure ν ∧
+      Measurable (fun x : C => x.val) ∧ range (fun x : C => x.val) = C ∧
+      SAP.P001b.Density (ν.map (fun x : C => x.val)) (fun x => if x ∈ C then 2 else 0) ∧
+      ¬ C.Countable ∧ ¬ Countable C ∧
+      ∀ a b : ℝ, a < b → ¬ Icc a b ⊆ range (fun x : C => x.val) := by
+  change ∃ ν : Measure C, _
+  let ν : Measure C := (2 : ℝ≥0∞) • volume.comap (fun x : C => x.val)
+  have hprob : IsProbabilityMeasure ν := by
+    constructor
+    change ((2 : ℝ≥0∞) • volume.comap (fun x : C => x.val)) univ = 1
+    rw [Measure.smul_apply, comap_subtype_coe_apply C_measurable,
+      Set.image_univ, Subtype.range_coe, C_volume]
+    norm_num [ENNReal.mul_inv_cancel]
+  have hmap : ν.map (fun x : C => x.val) = (2 : ℝ≥0∞) • volume.restrict C := by
+    rw [Measure.map_smul _ measurable_subtype_coe.aemeasurable,
+      map_comap_subtype_coe C_measurable]
+  have hdensity : SAP.P001b.Density (ν.map (fun x : C => x.val))
+      (fun x => if x ∈ C then 2 else 0) := by
+    have heq : (fun x => if x ∈ C then (2 : ℝ) else 0) =
+        C.indicator (fun _ => (2 : ℝ)) := by
+      funext x
+      simp [Set.indicator]
+    rw [SAP.P001b.Density, heq]
+    refine ⟨(measurable_const.indicator C_measurable).aemeasurable, ?_,
+      (integrable_indicator_iff C_measurable).2
+        (integrableOn_const (C := (2 : ℝ)) (by rw [C_volume]; norm_num)), ?_⟩
+    · intro x
+      by_cases hx : x ∈ C <;> simp [hx]
+    · have hw : (fun x => ENNReal.ofReal (if x ∈ C then (2 : ℝ) else 0)) =
+          C.indicator (fun _ => (2 : ℝ≥0∞)) := by
+        funext x
+        by_cases hx : x ∈ C <;> simp [hx]
+      rw [hw, withDensity_indicator C_measurable, withDensity_const]
+      exact hmap
+  have huncountable : ¬ C.Countable := by
+    intro h
+    have hz := h.measure_zero volume
+    rw [C_volume] at hz
+    norm_num at hz
+  refine ⟨ν, C_measurable, C_volume, hprob, measurable_subtype_coe,
+    Subtype.range_coe, ?_, huncountable, ?_, ?_⟩
+  · convert hdensity using 1
+    · rfl
+    · funext x
+      simp [C]
+  · exact fun h => huncountable (countable_coe_iff.mp h)
+  · intro a b hab hsubset
+    obtain ⟨q, hqa, hqb⟩ := exists_rat_btwn hab
+    have hq := hsubset ⟨hqa.le, hqb.le⟩
+    rw [Subtype.range_coe] at hq
+    exact hq.2 ⟨q, rfl⟩
+
+end Audit

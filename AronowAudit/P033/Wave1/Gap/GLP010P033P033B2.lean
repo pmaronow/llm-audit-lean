@@ -1,7 +1,3 @@
-/-
-Upstream project: Causalean / CausalSmith.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.P010.Wave1.Gap.GP010P033B2
 import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Analysis.SpecificLimits.Normed
@@ -9,7 +5,8 @@ import Mathlib.Data.Rat.BigOperators
 import Mathlib.Algebra.BigOperators.Group.Finset.Powerset
 
 /-!
-Proofs for P033-T6 and P033-T7, with exact arithmetic certificates.
+Proofs for P033-T6 and P033-T7. The held declarations are used only by the
+final type checks. Exact arithmetic certificates below are checked by the kernel.
 -/
 namespace AronowAudit.P033.Wave1
 
@@ -30,12 +27,10 @@ def Interval.Contains (I : Interval) (x : ℝ) : Prop :=
   (I.lo : ℝ) ≤ x ∧ x ≤ (I.hi : ℝ)
 
 /- The Gaussian integral series lemmas in this namespace adapt
-the `CausalSmith/Causalean` module `Mathlib.Probability.Certified.NormalCDF.PowerSeries`,
+CausalSmith/Causalean/Mathlib/Probability/Certified/NormalCDF/PowerSeries.lean,
 commit a7085d88d2e4b30003db7097ca374f4718da0f01 (Apache-2.0).
 Only the required series lemmas are copied; normalization uses Mathlib's
-proved twenty-decimal bounds for pi.
-See NOTICE at the repository root.
--/
+proved twenty-decimal bounds for pi. -/
 /-- The magnitude of the `k`th integrated Gaussian-series term at `x`, namely `x` to the power
 `2k+1` divided by `2^k k! (2k+1)`. It is nonnegative for nonnegative `x`, which is how it is used; for
 negative `x` the same formula is negative. -/
@@ -177,9 +172,9 @@ integral on every finite nonnegative interval. -/
 theorem gaussianIntegral_hasSum (x : ℝ) (hx : 0 ≤ x) :
     HasSum (fun k => (-1 : ℝ) ^ k * gaussianIntegralMagnitude x k)
       (∫ t in (0 : ℝ)..x, Real.exp (-(t ^ 2) / 2)) := by
-  -- Use the Gaussian power series and summable sup norms to justify termwise
-  -- integration on `[0,x]`, then integrate monomials.
-  -- Termwise integration uses `intervalIntegral.hasSum_intervalIntegral_of_summable_norm`.
+  -- Rewrite `exp (-(t^2)/2)` by `Real.hasSum_exp`, justify termwise
+  -- integration on `[0,x]` using summable sup norms, then integrate monomials.
+  -- `intervalIntegral.hasSum_intervalIntegral_of_summable_norm` is available.
   let f : ℕ → C(ℝ, ℝ) := fun k =>
     ⟨gaussianIntegrandTerm k, by
       unfold gaussianIntegrandTerm
@@ -210,9 +205,7 @@ theorem gaussianIntegral_hasSum (x : ℝ) (hx : 0 ≤ x) :
     exact (gaussianIntegrand_hasSum t).tsum_eq.symm]
   exact hi
 
-/-- At a nonnegative rational endpoint `x`, if `x ^ 2 ≤ 2 * (n + 2)`,
-two consecutive rational Gaussian-series partial sums enclose the
-unnormalised Gaussian integral. -/
+/-- At [a rational endpoint](hyp:x) that is [nonnegative](hyp:hx), with [a partial-sum index](hyp:n) satisfying [the exact decreasing-tail condition](hyp:hmono), [two consecutive rational Gaussian-series sums enclose the unnormalised Gaussian integral](goal). -/
 theorem gaussianIntegralInterval_sound (x : ℚ) (hx : 0 ≤ x) (n : ℕ)
     (hmono : x ^ 2 ≤ 2 * (n + 2 : ℕ)) :
     (gaussianIntegralInterval x n).Contains
@@ -752,6 +745,9 @@ theorem binary_standardization_correction_proof :
   · intro β se σ hσ hse
     exact standardized_ratio |β| se σ hσ.ne' hse.ne'
 
+
+
+example : type_of% @AronowAudit.P033.binary_standardization_correction := binary_standardization_correction_proof
 
 namespace caliper_counterexample
 
@@ -1463,6 +1459,11 @@ lemma power_nine : caliperProbability (powerCaliperDensity 9) (49/125) = 4609141
 end caliper_counterexample
 
 
+
+
+
+
+
 theorem caliper_counterexamples_proof :
     (∫ x in (0:ℝ)..4, x/8) = 1 ∧
     (∀ r ∈ ({(1/10:ℝ),3/20,1/5} : Finset ℝ),
@@ -1540,6 +1541,9 @@ theorem caliper_counterexamples_proof :
   · have hp := caliper_counterexample.folded_zero
     constructor <;> linarith [hp.1, hp.2]
 
+
+
+example : type_of% @AronowAudit.P033.caliper_counterexamples := caliper_counterexamples_proof
 
 end
 end AronowAudit.P033.Wave1

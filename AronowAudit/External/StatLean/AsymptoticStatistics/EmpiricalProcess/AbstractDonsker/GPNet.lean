@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -9,15 +8,14 @@ import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.Brack
 /-!
 # A Dudley dyadic net family for `(↥F, distL2 P)` from finite bracketing entropy
 
-The Gaussian-chaining headline `GaussianChaining.gaussianChaining_UC_iUnion` consumes its
+The Gaussian-chaining headline `GaussianChaining.gaussianChaining_UC` consumes its
 dyadic net as **explicit data**: a family `net : ℕ → Finset T`, each `net j` a
 `2^{-j}`-net of `T`, nested (`Monotone net`), together with the **Dudley
 summability**
 `Summable (fun j => 2^{-j} · √(log (2 · (net j).card)))`.
 This file constructs that data for `T = ↥F` in the `L²(P)` semimetric `distL2 P`,
-for a nonempty class under a probability measure, assuming
-`bracketingEntropyIntegral 1 F P < ⊤` (van der Vaart §19.2's finite bracketing-entropy
-integral).
+from the single analytic input `bracketingEntropyIntegral 1 F P < ⊤` (van der Vaart
+§19.2's finite bracketing-entropy integral).
 
 ## Construction
 
@@ -27,10 +25,9 @@ integral).
   `totallyBounded_L2` (which discards the count): each covering bracket contributes
   at most one representative, so the net is no larger than the minimal bracketing
   cover.
-* Inside `exists_dudley_net`, the local family `rawNet j` chooses a net at
-  scale `(1/2)^j` using `cardNet`.
-* The local family `net j := (Finset.range (j+1)).biUnion rawNet` is nested and
-  remains `2^{-j}`-dense because `rawNet j ⊆ net j`.
+* `rawNet hF_ent F P j := cardNet …` — the per-scale net at `(1/2)^j`.
+* `dudleyNet … j := (Finset.range (j+1)).biUnion (rawNet …)` — the nested net
+  (`Monotone` by construction, still `2^{-j}`-dense since `rawNet j ⊆ dudleyNet j`).
 
 ## Main result
 
@@ -138,7 +135,7 @@ lemma cardNet {F : Set (Ω → ℝ)} {P : Measure Ω} {ε : ℝ}
 /-- **Dudley dyadic net for `(↥F, distL2 P)`.** From a finite bracketing-entropy
 integral `J_{[]}(1, F, L²(P)) < ⊤`, there is a nested dyadic net family
 `net : ℕ → Finset ↥F` for the `L²(P)` semimetric on `↥F`, satisfying the three
-properties the Gaussian-chaining headline `GaussianChaining.gaussianChaining_UC_iUnion` requires: each
+properties the Gaussian-chaining headline `gaussianChaining_UC` requires: each
 `net j` is a `2^{-j}`-net, the family is `Monotone`, and the Dudley series
 `∑_j 2^{-j} √(log (2 · (net j).card))` is summable. -/
 lemma exists_dudley_net {F : Set (Ω → ℝ)} {P : Measure Ω} [IsProbabilityMeasure P]

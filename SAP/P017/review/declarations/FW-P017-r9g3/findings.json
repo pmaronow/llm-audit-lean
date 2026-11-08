@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P017-T11",
+    "theorem": "SAP.P017.T11",
+    "fingerprint": "58c987c606ad2bf60d81dca7d61a7d45c3d63583215a8df1482b1cf20702120c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: n=c=sigma=1, P=gaussianReal 0 1, W=id satisfies every finite-radius numerical, probability and law hypothesis. The infinite-radius branch has an empty integration set and imposes no problematic law assumption.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P017-T12",
+    "theorem": "SAP.P017.T12",
+    "fingerprint": "172644c74172e71a8b4b2d85080ba5c4bb60a2f23013d014c354b82ec297c5bf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean independently constructs p_n=1/(n+1), proves 0<p_n<=1 for n>=1 and p_n->0, and supplies a positive vanishing r. It also evaluates a genuine observed-coordinate sample with flag one, estimator ten and actual error nine. The specified product population has centered integrable effects, support [-1,1], radius one, and IID units; uniform addition modulo one, independent Gaussian coordinates and the remainder-zero event establish the required witness properties. See witness-audit.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P017-T13",
+    "theorem": "SAP.P017.T13",
+    "fingerprint": "ea178107c94da7899a68d7eb0bc4a808d61650563439043913e59f58b5bf7de0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean independently constructs G=fairPair(-1,1), tau=id, mean zero and radius one, with Gaussian P and hat_n(z)=z/sqrt(n); it proves all population, measurability and root-n-normal hypotheses together. It also constructs admissible p and a finite-bound instance with n=c=sigma=1, tilde=id and u=0. The rare-outlier witness for the existential clause is audited separately in witness-audit.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P017-T14",
+    "theorem": "SAP.P017.T14",
+    "fingerprint": "14a8d80909b823e4aa629ffc93b8da12810d039109b80b1c54c3440dd524bde6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean independently satisfies every general population and root-n-normal hypothesis with a mean-zero radius-one two-point population and a Gaussian estimator. The concrete IID shifted-normal witness additionally has tilde=M_n, u=1/n, exact variance 1/n and sqrt(n)u->0; positiveReciprocal is strictly positive, D_n is nonzero almost surely and equals -1/n on a central event of probability tending to one. All printed conditions are checked in witness-audit.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P017-T15",
+    "theorem": "SAP.P017.T15",
+    "fingerprint": "8a0676a04bc10727ce989f7c47986c31e4e47d2601ab66e578a394cda0affef3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean independently satisfies all general hypotheses, including positive variance, exact NormalRemainder and SmallRemainderMS, using G=fairPair(-1,1), Gaussian P, hat_n(z)=z/sqrt(n), Z_n=id and epsilon_n=0. It also checks the concrete shifted witness at size 25: intermediate squared error 1/625 and actual error zero on a central sample. For the complete IID witness, epsilon_n=1/sqrt(n) gives E epsilon_n^2=1/n and the required moment rate; the central event and strict finite tail gap are genuine. See witness-audit.md.",
+    "confidence": 0.98
+  }
+]

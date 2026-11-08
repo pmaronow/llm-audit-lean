@@ -1,0 +1,183 @@
+import SAP.P015a.Defs.WholeW1
+
+set_option autoImplicit false
+set_option maxRecDepth 4000
+set_option maxHeartbeats 800000
+
+open SAP.P015a Matrix Finset MeasureTheory ProbabilityTheory
+open scoped BigOperators Topology
+
+noncomputable section
+
+-- Conditional independence of a function of X, for the exact package definition.
+lemma condIndep_function {A B C : Type*} [Fintype A]
+    (p : A → ℝ) (X : A → B) (g : B → C) (D : A → ℝ) :
+    ConditionalIndependent p X (fun a => g (X a)) D := by
+  classical
+  intro x u d
+  by_cases hu : g x = u
+  · have h₁ : eventMass p (fun a => X a = x ∧ g (X a) = u ∧ D a = d) =
+        eventMass p (fun a => X a = x ∧ D a = d) := by
+      unfold eventMass
+      apply Finset.sum_congr rfl
+      intro a _
+      by_cases hx : X a = x <;> simp [hx, hu]
+    have h₂ : eventMass p (fun a => X a = x ∧ g (X a) = u) =
+        eventMass p (fun a => X a = x) := by
+      unfold eventMass
+      apply Finset.sum_congr rfl
+      intro a _
+      by_cases hx : X a = x <;> simp [hx, hu]
+    rw [h₁, h₂, mul_comm]
+  · have h₁ : eventMass p (fun a => X a = x ∧ g (X a) = u ∧ D a = d) = 0 := by
+      unfold eventMass
+      apply Finset.sum_eq_zero
+      intro a _
+      by_cases hx : X a = x <;> simp [hx, hu]
+    have h₂ : eventMass p (fun a => X a = x ∧ g (X a) = u) = 0 := by
+      unfold eventMass
+      apply Finset.sum_eq_zero
+      intro a _
+      by_cases hx : X a = x <;> simp [hx, hu]
+    rw [h₁, h₂, zero_mul, zero_mul]
+
+-- T1: actual atom probabilities, causal independence, overlap, normalizer and OLS rank.
+example : IsProbabilityVector (rareProbability (1/1000000)) := by
+  constructor
+  · intro a; fin_cases a <;> norm_num [rareProbability]
+  · norm_num [rareProbability, Fin.sum_univ_succ]
+
+example : ConditionalIndependent (rareProbability (1/1000000)) binaryCovariate
+    (fun a => (rarePotentialOutcome a 0, 1 + binaryCovariate a)) binaryTreatment := by
+  simpa [rarePotentialOutcome] using condIndep_function
+    (rareProbability (1/1000000)) binaryCovariate
+    (fun x : ℝ => (2*x, 1+x)) binaryTreatment
+
+example : (∀ x ∈ ({0,1} : Finset ℝ),
+    0 < conditionalProbability (rareProbability (1/1000000)) binaryCovariate binaryTreatment x 0 ∧
+    0 < conditionalProbability (rareProbability (1/1000000)) binaryCovariate binaryTreatment x 1) ∧
+    0 < mean (rareProbability (1/1000000))
+      (residualWeight (rareProbability (1/1000000)) binaryCovariate binaryTreatment) := by
+  constructor
+  · intro x hx
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl <;>
+      norm_num [conditionalProbability, eventMass, rareProbability,
+        binaryCovariate, binaryTreatment, Fin.sum_univ_succ]
+  · norm_num [mean, residualWeight, conditionalMean, eventMass, rareProbability,
+      binaryCovariate, binaryTreatment, Fin.sum_univ_succ]
+
+example :
+    let p := rareProbability (1/1000000)
+    let W : Matrix (Fin 4) (Fin 3) ℝ := fun i => ![1,binaryTreatment i,binaryCovariate i]
+    Matrix.det (fun j k => mean p (fun i => W i j * W i k)) ≠ 0 := by
+  change Matrix.det (Matrix.of (fun j k => mean (rareProbability (1/1000000))
+    (fun i => (![1,binaryTreatment i,binaryCovariate i] : Fin 3 → ℝ) j *
+      (![1,binaryTreatment i,binaryCovariate i] : Fin 3 → ℝ) k))) ≠ 0
+  rw [Matrix.det_fin_three]
+  norm_num [Matrix.of_apply, mean, rareProbability, binaryTreatment, binaryCovariate,
+    Fin.sum_univ_succ]
+
+example : rareIPW (1/1000000) = ![0,1000000,-4,8] ∧
+    mean (rareProbability (1/1000000)) (rareIPW (1/1000000)) = 3/2 ∧
+    variance (rareProbability (1/1000000)) (rareIPW (1/1000000)) = 2000071/4 := by
+  constructor
+  · funext a; fin_cases a <;>
+      norm_num [rareIPW, inverseProbabilityVariable, rarePotentialOutcome,
+        binaryTreatment, binaryCovariate]
+  · norm_num [mean, SAP.P015a.variance, rareProbability, rareIPW,
+      inverseProbabilityVariable, rarePotentialOutcome,
+      binaryTreatment, binaryCovariate, Fin.sum_univ_succ]
+
+-- T2: a genuine infinite sequence of independent, uniformly distributed draws.
+def atomLaw : Measure (Fin 4) := (PMF.uniformOfFintype (Fin 4)).toMeasure
+
+instance : IsProbabilityMeasure atomLaw := by
+  unfold atomLaw
+  infer_instance
+
+def iidLaw : Measure (ℕ → Fin 4) := Measure.infinitePi (fun _ : ℕ => atomLaw)
+
+instance : IsProbabilityMeasure iidLaw := by
+  unfold iidLaw
+  infer_instance
+
+example : UniformIndependentSampling iidLaw (fun i s => s i) := by
+  refine ⟨fun i => measurable_pi_apply i, ?_, ?_⟩
+  · exact iIndepFun_infinitePi (X := fun _ => id) (fun _ => measurable_id)
+  · intro i a
+    have h := (measurePreserving_eval_infinitePi (fun _ : ℕ => atomLaw) i).measure_preimage
+      (measurableSet_singleton a).nullMeasurableSet
+    change iidLaw {s | s i = a} = atomLaw {a} at h
+    rw [h, atomLaw, PMF.toMeasure_apply_singleton _ _ (measurableSet_singleton a)]
+    fin_cases a <;> norm_num [PMF.uniformOfFintype_apply, uniformProbability,
+      ENNReal.ofReal_div_of_pos]
+
+example : IsProbabilityVector uniformProbability ∧
+    mean uniformProbability (residualWeight uniformProbability binaryCovariate multivaluedTreatment) = 5/8 ∧
+    effectiveLaw uniformProbability binaryCovariate multivaluedTreatment = ![1/10,1/10,2/5,2/5] := by
+  refine ⟨?_, ?_, ?_⟩
+  · constructor
+    · intro a; fin_cases a <;> norm_num [uniformProbability]
+    · norm_num [uniformProbability, Fin.sum_univ_succ]
+  · norm_num [mean, residualWeight, conditionalMean, eventMass, uniformProbability,
+      binaryCovariate, multivaluedTreatment, Fin.sum_univ_succ]
+  · funext a
+    fin_cases a <;> norm_num [effectiveLaw, mean, residualWeight, conditionalMean,
+      eventMass, uniformProbability, binaryCovariate, multivaluedTreatment, Fin.sum_univ_succ]
+
+example : ConditionalIndependent uniformProbability binaryCovariate
+    (fun a => (outcomeWorldB a 0, outcomeWorldB a 1, outcomeWorldB a 2)) multivaluedTreatment := by
+  simpa [outcomeWorldB] using condIndep_function uniformProbability binaryCovariate
+    (fun x : ℝ => (0, if x=1 then (3:ℝ) else 1, 2)) multivaluedTreatment
+
+example : (∀ a, observedTriple outcomeWorldA a = observedTriple outcomeWorldB a) ∧
+    mean uniformProbability (effectContrast outcomeWorldB 0 1) = 2 ∧
+    mean (effectiveLaw uniformProbability binaryCovariate multivaluedTreatment)
+      (effectContrast outcomeWorldB 0 1) = 13/5 := by
+  constructor
+  · intro a; fin_cases a <;>
+      norm_num [observedTriple, outcomeWorldA, outcomeWorldB, binaryCovariate, multivaluedTreatment]
+  · norm_num [mean, effectContrast, outcomeWorldB, effectiveLaw, residualWeight,
+      conditionalMean, eventMass, uniformProbability, binaryCovariate,
+      multivaluedTreatment, Fin.sum_univ_succ]
+
+-- T3: overlap, the independent sample atom, and nonsingular sample matrices.
+example :
+    (∀ x ∈ ({0,1} : Finset ℝ), ∀ d ∈ ({0,1} : Finset ℝ),
+      conditionalProbability uniformProbability binaryCovariate binaryTreatment x d = 1/2) ∧
+    independentDrawLaw uniformProbability 4 (![0,0,2,3] : Fin 4 → Fin 4) = 1/256 ∧
+    (0:ℝ) < 1/256 ∧
+    (fittedZeroControls.transpose * fittedZeroControls).det = 4 ∧
+    (fittedZeroDesign.transpose * fittedZeroDesign).det = 2 := by
+  refine ⟨?_, ?_, by norm_num, ?_, ?_⟩
+  · intro x hx d hd
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx hd
+    rcases hx with rfl | rfl <;> rcases hd with rfl | rfl <;>
+      norm_num [conditionalProbability, eventMass, uniformProbability,
+        binaryCovariate, binaryTreatment, Fin.sum_univ_succ]
+  · norm_num [independentDrawLaw, uniformProbability, Fin.prod_univ_succ]
+  · norm_num [fittedZeroControls, Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_succ]
+  · norm_num [fittedZeroDesign, Matrix.det_fin_three, Matrix.mul_apply, Fin.sum_univ_succ]
+
+-- T13: the logit center and a fully admissible probability value.
+example : (0:ℝ) < 1/2 ∧ (1/2:ℝ) < 1 ∧ logOdds (1/2) = 0 := by
+  norm_num [logOdds]
+
+-- T12: a genuine nondegenerate interval strictly inside its Taylor circle.
+example : (0:ℝ) < 1/2 ∧ (1/2:ℝ) < 1 ∧ (0:ℝ) ≤ 1 ∧ (1:ℝ) < 2 ∧
+    (2:ℝ) < inverseLogitRadius (logOdds (1/2)) := by
+  norm_num [inverseLogitRadius, logOdds, Real.sqrt_sq Real.pi_pos.le]
+  linarith [Real.pi_gt_three]
+
+example : ((100:ℝ) • (outsideTaylorDesign.transpose * outsideTaylorDesign)).det = 10000 ∧
+    outsideTaylorDesign.mulVec (![-Real.log 99, 2*Real.log 99] : Fin 2 → ℝ) =
+      ![-Real.log 99, Real.log 99] := by
+  constructor
+  · norm_num [outsideTaylorDesign, Matrix.det_fin_two, Matrix.mul_apply,
+      Fin.sum_univ_succ]
+  · ext i
+    fin_cases i <;>
+      simp [outsideTaylorDesign, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] <;> ring
+
+-- No Challenge theorem, `sorry`, or new axiom is used in any check above.

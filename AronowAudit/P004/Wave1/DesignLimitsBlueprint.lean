@@ -1,19 +1,30 @@
 import AronowAudit.P004.P004_Spatial
 
-/-! # Limit lemmas for the finite design laws (P004)
+/-! # Shared blueprint module: limit lemmas for the finite design laws (P004, wave 1)
 
-The statements concern finite-design probability, expectation, L² norms,
-convergence in probability, and standard-normal limits for sample-size-indexed
-product laws. The probability bounds use Markov and Chebyshev inequalities
-and monotonicity. CDF convergence uses event inclusions and continuity of the
-Gaussian CDF.
+Shared by the T36 (`ObservationalCoverage`) and T44 (`NedHeadline`) blueprints. Every node is
+a generic statement about the project's own finite-design probability `prob`, expectation
+`expect`, `l2Norm`, `InProb` and `NormalLimit` (sample-size-indexed product laws `p N`), so no
+general limit theorem is assumed: each is an elementary consequence of Chebyshev/Markov,
+monotonicity of probabilities, and continuity of the Gaussian CDF.
 
-For random-radius coverage, the radius is bounded between fixed radii outside
-an event of probability tending to zero; the CLT applies at their endpoints.
-The scale parameter σ must be positive. For approximation by fixed-radius
-arrays, Markov's inequality controls the squared error. Each radius has its
-own eventual sample-size threshold: first take the sample-size limit, then
-the radius limit, and finally let the CDF tolerance tend to zero.
+Paper-proof sources (map-P004 REPORT): record 5 "Finite-law probability limits ... prove
+Chebyshev and union bounds for its finite design, and prove CDF convergence under vanishing
+errors or positive random radii by elementary event inclusions", record 5 "for any ε>0,
+outside an event of probability tending to zero, its random root-N radius lies between ...
+Sandwich the event between the corresponding fixed-radius events", record 7 "Markov on the
+squared error gives P(|T_N−T_N^r|>ε)≤4η_r²/ε² ... First fix ε and r, take the N limit in the
+projected CLT, then let r→∞, and finally let ε↓0", and the referee fixes: the random-radius
+helper requires `σ > 0` (referee 1); the approximation lemma quantifies each fixed radius with
+an `N`-threshold depending on it (referee 2; here radii are indexed by `ℕ`, callers reindex to
+"sufficiently large").
+
+Useful existing lemmas: `expect_mono`, `design_weight_nonneg`, `design_normalized`,
+`expect_const`, `CLTCompletion.designMeasure_apply`, `CLTCompletion.designMeasure_integral`;
+for Gaussian facts `AronowAudit.P053.NormalCompletion.{cdf_continuousAt,
+strictMono_normal_cdf, normal_cdf_neg, normal_cdf_zero, normalCritical_cdf, exists_cdf_eq,
+standardNormalCDF_eq_cdf}` (`P053_NormalQuantiles.lean`; `normalCDF` here is definitionally
+`P053.standardNormalCDF`, and `normalQuantile a = P053.normalCritical (2 - 2a)`).
 -/
 
 namespace AronowAudit.P004.Wave1.DesignLimits
@@ -26,7 +37,7 @@ open scoped BigOperators
 /-- Every design law in the sequence has interior coin probabilities. -/
 abbrev AdmissibleSeq (p : ∀ N, Fin N → ℝ) : Prop := ∀ N i, 0 < p N i ∧ p N i < 1
 
-/-- Standard Gaussian CDF and quantile facts. -/
+/-- NF (standard Gaussian facts; adapters from `P053_NormalQuantiles.lean`). -/
 def NF : Prop :=
   Continuous normalCDF ∧ StrictMono normalCDF ∧ normalCDF 0 = 1/2 ∧
   (∀ x, normalCDF (-x) = 1 - normalCDF x) ∧
@@ -68,10 +79,10 @@ def DL5 : Prop :=
   ∀ (p : ∀ N, Fin N → ℝ), AdmissibleSeq p → ∀ T U : ∀ N, Assignment N → ℝ,
     NormalLimit p T → InProb p U → NormalLimit p (fun N z => T N z + U N z)
 
-/-- Approximation by fixed-radius limits: if for each fixed `r` the
-approximants have the standard normal limit and are eventually within `η r`
-in `L²`, with an `r`-dependent threshold and `η r → 0`, then the original
-sequence has the standard normal limit. -/
+/-- DL6 (approximation by fixed-radius limits; paper proof, record 7, "Remove localization
+without a growing-degree CLT"): if for each fixed `r` the approximants have the standard
+normal limit and are eventually (with an `r`-dependent threshold) within `η r` in `L²`, with
+`η r → 0`, then the original sequence has the standard normal limit. -/
 def DL6 : Prop :=
   ∀ (p : ∀ N, Fin N → ℝ), AdmissibleSeq p → ∀ (T : ∀ N, Assignment N → ℝ)
     (Tr : ℕ → ∀ N, Assignment N → ℝ) (η : ℕ → ℝ),
@@ -85,10 +96,10 @@ def DL7 : Prop :=
   ∀ (p : ∀ N, Fin N → ℝ), AdmissibleSeq p → ∀ (Z : ∀ N, Assignment N → ℝ) (a : ℕ → ℝ),
     NormalLimit p Z → Tendsto a atTop (nhds 1) → NormalLimit p (fun N z => a N * Z N z)
 
-/-- Random-radius coverage: if `T_N/σ ⇒ N(0,1)` and `W_N → w > 0`
-in probability, then `P(|T_N| ≤ c √W_N) → 2Φ(c√w/σ) − 1` for `σ > 0` and `c > 0`.
-Sandwich the event between fixed-radius events, apply the CLT at their
-endpoints, then let the radius tolerance tend to zero. -/
+/-- DL8 (random-radius coverage; paper proof, record 5, "Sandwich the event between the
+corresponding fixed-radius events, use the CLT at their endpoints, then let ε↓0"; referee-1
+fix: `σ > 0`): if `T_N/σ ⇒ N(0,1)` and `W_N → w > 0` in probability, then
+`P(|T_N| ≤ c √W_N) → 2Φ(c√w/σ) − 1` for `c > 0`. Uses NF. -/
 def DL8 : Prop :=
   ∀ (p : ∀ N, Fin N → ℝ), AdmissibleSeq p → ∀ (T W : ∀ N, Assignment N → ℝ) (σ w c : ℝ),
     0 < σ → 0 < w → 0 < c →

@@ -1,0 +1,71 @@
+[
+ {
+  "target_id": "P006-T11",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T11_corrected_impossibility",
+   "AronowAudit.P006.T11_unbounded_shift_arithmetic"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P006a.T11Statement"
+ },
+ {
+  "target_id": "P006-T12",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T12_density_direction_counterexample",
+   "SAP.P006a.WH.W1.T12_whole",
+   "SAP.P006a.WH.W1.T12_assembly",
+   "SAP.P006a.WH.W1.T12_L1_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P006.smul_support_eq",
+    "reason": "The density counterexample already exports both support equalities, so the generic scaling helper is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P006a.T12WholeStatement",
+  "scope": "Counterexample to the sufficiency reading of the printed absolute-continuity direction: P_agent << P_reference alone need not supply the named reference-to-agent density. This does not refute the ranking conclusion under a separate assumption that the named representing density exists."
+ },
+ {
+  "target_id": "P006-T13",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.Wave1.T13_corrected_ranking_treated_residuals"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P006a.T13Statement"
+ },
+ {
+  "target_id": "P006-T14",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T14_corrected_rank_inequality",
+   "AronowAudit.P006.positivePart_eq_max",
+   "SAP.P006a.WH.W1.T14_whole",
+   "SAP.P006a.WH.W1.T14_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P006a.T14WholeStatement"
+ },
+ {
+  "target_id": "P006-T15",
+  "decision": "whole",
+  "theorem": "SAP.P006a.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P006.T15_constant_private_heterogeneity",
+   "AronowAudit.P006.T15_untreated_positivity_counterexamples"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P006a.T15Statement"
+ }
+]

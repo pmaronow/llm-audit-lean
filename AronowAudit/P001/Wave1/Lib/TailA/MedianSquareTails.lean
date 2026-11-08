@@ -2,6 +2,11 @@ import AronowAudit.P001.Wave1.Lib.TailA.MedianTailBounds
 import AronowAudit.P001.Wave1.Lib.TailA.MedianMaximum
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
+-- self-audit-palomar repair (2026-11-03): this module relies on auto-bound implicit names, as compiled in the
+-- original audit workspace (Lean defaults). The published lakefile sets autoImplicit = false, under which it fails.
+set_option autoImplicit true
+set_option relaxedAutoImplicit true
+
 /-! Square-tail control from a positive-order population moment. -/
 noncomputable section
 open MeasureTheory ProbabilityTheory Filter

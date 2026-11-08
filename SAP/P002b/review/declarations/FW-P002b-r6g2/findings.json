@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P002-T21",
+    "theorem": "SAP.P002b.T21",
+    "fingerprint": "9ab26bf3c3be17b417f4f1b422cda6d9f2e8dde21e9b979e07da63ad1bd85da6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:72 (Review.T21_nonvacuity). Take n=4, k=1, n1=2, all units compliers, x=(-1,-1,1,1), and y(0)=y(1)=(-1,1,-1,1). With delta=0, epsilon=A=B=1, r=alpha=1/2, the population belongs to Xi, its LATE is 0, its population augmented Gram is the identity, and both residual variances are 4/3>0. The outer parameter hypotheses and the model-class membership are checked together. Repeating each of the four cells equally gives admissible models at every size 4m: the second/fourth covariate moments and residual fourth moment remain one and the residual variance is 4m/(4m-1), so the asymptotic class is not eventually empty. The scratch proof's printed axioms contain no sorryAx; compilation exited 0 (scratch/Check.log).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T22",
+    "theorem": "SAP.P002b.T22",
+    "fingerprint": "d870669f0346e7af718a6be7269f82912200c3b4e6ea63b2506e6db47f089047",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:204 and :329 (Review.T22_nonvacuity and Review.T22_completed). M=2, alpha=1/2, observed curve beta^2, simulated curves beta^2 and 0, each represented with denominator 1. Their complete intersection list is [0]. The policy selects the second curve (Lean index 1) for every history and sample; it is a quantile index everywhere. The explicit two-piece list [(-infinity,0,1),(0,+infinity,1)] satisfies Algorithm2Run and PolicyAlgorithm2Run, independently of the target theorem. Thus the nonempty crossing branch and completed-run hypotheses are genuinely inhabited. The printed scratch-proof axioms contain no sorryAx; compilation exited 0 (scratch/Check.log).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T23",
+    "theorem": "SAP.P002b.T23",
+    "fingerprint": "ec6e7982505f16985190f272bc6e274ddc7ea7bc325d568ab0630988de785b0c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:344 (Review.T23_nonvacuity), including direct proofs of data generation, regularity and an actual Algorithm1Run. Use four all-complier units with both potential-outcome vectors (1,-1,-1,1), n1=2, observed set {0,1}, simulations {0,1} and {0,2}, and alpha=1/2. The observed and first simulated coefficient tuple is (1/16,0,0,0,0,1/16); the second is (0,0,0,1/64,0,1/16). Their curves are beta^2 and 0, with everywhere-positive variance denominators. The complete crossing list is [0]; both recorded gaps (-infinity,0] and [0,+infinity) select the second curve. All antecedents, including DataGeneratedCoefficients, are checked in one theorem. The printed scratch-proof axioms contain no sorryAx; compilation exited 0 (scratch/Check.log).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T24",
+    "theorem": "SAP.P002b.T24",
+    "fingerprint": "197c35805426c6b4780a180b0b510ee079a2dd5253685d81c3780c86c7359c04",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:101 and :335 (Review.T24_nonvacuity and Review.T24_denominator). With n=4, k=1, n1=2, x=(-1,-1,1,1), and S={0,2}, both arm augmented Gram matrices are exactly the 2-by-2 identity. Every full-rank/design hypothesis holds. For D=(1,0,1,0), the adjusted receipt contrast equals 1, so the Wald-cancellation implication's own antecedent is also nonvacuous. Y and beta have no further hypotheses and can be chosen arbitrarily. The printed scratch-proof axioms contain no sorryAx; compilation exited 0 (scratch/Check.log).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T25",
+    "theorem": "SAP.P002b.T25",
+    "fingerprint": "ea6541866720db894ebc4b309ddc218efe7be31b56ea3f94e5238f86b1e60fdb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:117 and :125 (Review.T25_nonvacuity and Review.T25_recovery). Take four all-complier units, n1=2, k=1, x=(-1,-1,1,1), baseline outcomes (-1,1,-1,1), and y_i(1)=y_i(0)+2 for every unit. Every design, monotonicity, nonempty-complier and constant-effect hypothesis holds with beta=2. Baseline recovery is proved for every subset R, including subsets outside the randomization support. This instance includes assignments with singular arm regressions, which are permitted by the declared fixed least-squares rule. Interior significance levels such as alpha=1/2 are available. The printed scratch-proof axioms contain no sorryAx; compilation exited 0 (scratch/Check.log).",
+    "confidence": 0.99
+  }
+]

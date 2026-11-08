@@ -1,0 +1,108 @@
+[
+  {
+    "target_id": "P019-T17",
+    "theorem": "SAP.P019b.T17",
+    "fingerprint": "b670b3d4026b45b63193d7e14719fa5ef8582c910eb691e24649fa4627e6d62e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/WholeCheck.lean using only Defs and Mathlib. WholeReview.good_standing (line 100) proves all four assumptions for uniform independent fair B,Y,Z, with W=B, X=Y, V=B+YZ. Each cell has probability and conditional V variance 1/4; Var(Y)=Var(Z)=1/4. WholeReview.bad_nonvacuous (line 107) instead uses X=not Y and V=B+(1-Y)Z, proving Assumptions 2–4 and failure of almost-sure monotonicity. The example at line 115 checks falseMass=1/2, confessorX=0, mu=1/2 and combined=1 in the bad model, and mu=combined=1/2 in the good model. Printed helper axioms exclude sorryAx.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P019-T18",
+    "theorem": "SAP.P019b.T18",
+    "fingerprint": "9325cb4be2571b3d98fba76176056b51de1f627f44f78af63bbbd3425109504b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteCheck.lean using only Defs and Mathlib. Review.fair_standing (line 26) proves all four assumptions for uniform independent fair B,Y,Z, W=B, X=Y, V=B+YZ. Each cell has probability and conditional V variance 1/4; Var(Y)=Var(Z)=1/4. The example at line 50 checks mu=1/2, truthRate=1, gamma=1/2 and sigmaSq=3/4. Completions are unconstrained fixed real numbers and may be zero. Line 59 constructs a positive-probability iid sample with both nonconfessor cells empty, verifying that the product law includes deficient samples. Printed helper axioms exclude sorryAx.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P019b/Defs/Part5.lean:13: T18Statement quantifies over (Omega : Type) [Fintype Omega] and Study Omega. This is a theorem only for finite underlying probability spaces. The canonical iid finite-list setting permits arbitrary measurable subject spaces; bounded observables do not make the underlying space finite. Although a finite observable encoding can support an extension, neither that arbitrary-space extension nor its sampling-variance transport is asserted by this target or its closure.",
+        "status": "fixed",
+        "judgment": "Fixed by accurately classifying the retained finite-domain theorem as a permitted restriction. The arbitrary-space extension remains absent; current Challenge/Part1.lean:59–61 and record.json:26–28 now disclose that precise limitation. A finite observable encoding is not being treated as an exported general-space theorem."
+      },
+      {
+        "earlier_issue": "SAP/P019b/Challenge/Part1.lean:53: The docstring describes Proposition 1 under the maintained Assumptions 1–4 without disclosing the additional finite-space restriction.",
+        "status": "fixed",
+        "judgment": "Fixed. Current SAP/P019b/Challenge/Part1.lean:59–61 explicitly says finite underlying probability space, allows arbitrary real masses, and states that the arbitrary measurable-space extension is not asserted."
+      },
+      {
+        "earlier_issue": "record.json:26: The decision is whole, with restriction null at record.json:28, despite the finite-space quantifier in the audited statement.",
+        "status": "fixed",
+        "judgment": "Fixed. Current record.json:26 sets decision to restricted and record.json:28 gives the exact finite-space restriction."
+      }
+    ]
+  },
+  {
+    "target_id": "P019-T19",
+    "theorem": "SAP.P019b.T19",
+    "fingerprint": "430a4af3ab25b60ed98fa2050f0bf130a36709eab9a64695b0d948972f8d79db",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteCheck.lean. Review.fair_standing (line 26) constructs uniform independent fair B,Y,Z with W=B, X=Y, V=B+YZ, satisfying all four assumptions. Each cell has probability and conditional V variance 1/4; Var(Y)=Var(Z)=1/4. Line 50 checks mu=1/2, truthRate=1, gamma=1/2 and positive sigmaSq=3/4. All completions can be zero; an interior alpha is 1/20. Line 59 also constructs an actual positive-probability deficient sample. Printed helper axioms exclude sorryAx.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P019b/Defs/Part5.lean:18: The outer quantifier requires Fintype Omega and a finite-law Study. Consequently the root-n tightness, Gaussian limit, plug-in consistency and Wald coverage assertions are stated only for finite subject spaces. The canonical claim has arbitrary measurable subject spaces with bounded list observables. This target contains no extension transporting these assertions from an observable finite encoding.",
+        "status": "fixed",
+        "judgment": "Fixed by accurate restriction rather than extension of the mathematical statement. All inference clauses remain finite-domain results, as explicitly stated in Challenge/Part1.lean:68–70 and record.json:61–63. Correct narrower results are permitted by the author."
+      },
+      {
+        "earlier_issue": "SAP/P019b/Challenge/Part1.lean:58: The inference docstring names only Assumptions 1–4 and the completion conventions; it omits the finite-space restriction.",
+        "status": "fixed",
+        "judgment": "Fixed. Current SAP/P019b/Challenge/Part1.lean:68–70 expressly discloses the finite underlying-space premise and omission of arbitrary measurable spaces with bounded list counts."
+      },
+      {
+        "earlier_issue": "record.json:61: The decision whole and restriction null at record.json:63 misdescribe the scope of T19Statement.",
+        "status": "fixed",
+        "judgment": "Fixed. Current record.json:61 sets decision to restricted and record.json:63 discloses the domain and lists the retained inference clauses."
+      }
+    ]
+  },
+  {
+    "target_id": "P019-T20",
+    "theorem": "SAP.P019b.T20",
+    "fingerprint": "29065d0c99dd5bc0f326fa0fc299e9c618ff0b78539c7c30621c9cc4eadbb24a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteCheck.lean. Review.fair_standing (line 26) proves all four assumptions for uniform independent fair B,Y,Z with W=B, X=Y, V=B+YZ. Each cell has probability and conditional V variance 1/4; Var(Y)=Var(Z)=1/4. Line 50 checks sigmaSq=3/4 and standardSigmaSq=3/2, giving a genuine strict gap. All four fixed real completions can be zero. Printed helper axioms exclude sorryAx.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "SAP/P019b/Defs/Part5.lean:30: T20Statement restricts Omega to a finite type before stating both sampling-variance limits and their strict comparison. The canonical result is for the general iid finite-list setting, which does not require a finite underlying probability space. The actual arbitrary-space sampling variances and their limits are absent from this target; no general-space transport assertion appears in its closure.",
+        "status": "fixed",
+        "judgment": "Fixed by explicitly accepting and describing the finite-domain restriction. The two arbitrary-space variance limits remain absent; Challenge/Part1.lean:76–78 and record.json:85–87 now accurately say so. No finite-encoding argument is substituted for an asserted general-space conclusion."
+      },
+      {
+        "earlier_issue": "SAP/P019b/Challenge/Part1.lean:64: The docstring presents Proposition 2 under Assumptions 1–4 and fixed completions without declaring the finite-space domain.",
+        "status": "fixed",
+        "judgment": "Fixed. Current SAP/P019b/Challenge/Part1.lean:76–78 names the finite underlying-space domain and expressly omits the arbitrary-space variance limits and comparison."
+      },
+      {
+        "earlier_issue": "record.json:85: The decision whole, with restriction null at record.json:87, fails to disclose this narrower theorem.",
+        "status": "fixed",
+        "judgment": "Fixed. Current record.json:85 sets decision to restricted and record.json:87 precisely describes the omitted arbitrary-space conclusions."
+      }
+    ]
+  },
+  {
+    "target_id": "P019-T21",
+    "theorem": "SAP.P019b.T21",
+    "fingerprint": "adbf5d09ddd265a227a92e80ca969e1ef4646867db3f97a20e1f8b13f67dde8c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/WholeCheck.lean. WholeReview.good_standing (line 100) proves all four assumptions for uniform independent fair B,Y,Z with W=B, X=Y, V=B+YZ, on a measurable probability space. Both confessor cells have probability 1/4, so the weaker population/testing hypotheses also hold. WholeReview.neverReject_level (line 127) proves the uniform null-level premise for the test that never rejects; line 133 instantiates alpha=1/20 at every sample size and supplies positive confessor-cell probabilities. All fixed completions may be zero. Printed helper axiom lists contain only propext, choice and Quot.sound.",
+    "confidence": "high"
+  }
+]

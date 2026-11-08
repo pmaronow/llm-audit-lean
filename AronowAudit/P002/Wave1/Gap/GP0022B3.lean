@@ -1,8 +1,8 @@
 import AronowAudit.P002.P002_Audit
 import AronowAudit.External.Causalean.Experimentation.FinitePopulationMoments
 
-/-! P002-T7: finite-contrast variance identities and oracle variance formulas
-(D.5)–(D.6). -/
+/-! Draft for P002-T7. No Lean process was used to prepare this file.
+The finite-contrast layer is included because NV.2 is not yet in this worktree. -/
 namespace AronowAudit.P002.Wave1
 noncomputable section
 open scoped BigOperators ENNReal Matrix
@@ -93,7 +93,7 @@ private lemma OV_sample_variance {n} (P : Population n) (h : ValidDesign P)
       (show P.n1 ≤ Fintype.card (Fin n) by simpa using h.2.2.le) h.2.1
       (show 2 ≤ Fintype.card (Fin n) by simpa using h.1) y)
 
-/-- Two-potential-response contrast variance, derived from the proved SRS mean variance. -/
+/-- Generic NV.2 variance identity, derived from the proved SRS mean variance. -/
 private lemma OV_contrast_variance {n} (P : Population n) (h : ValidDesign P)
     (a b : Fin n → ℝ) :
     designVariance P (fun S => groupMean S a - groupMean Sᶜ b) =
@@ -166,8 +166,7 @@ private lemma OV_arm_intercept {n k} (P : CovPopulation n k)
       ring
     _ = _ := groupMean_add_const _ _ _ hA
 
-/-- The oracle is a residual contrast plus an intercept difference; no LATE
-specialization or zero-mean residual premise is needed. -/
+/-- OV.1: no LATE specialization or zero-mean residual premise is needed. -/
 private lemma OV_oracle_decomposition {n k} (P : CovPopulation n k)
     (h : ValidDesign P.pop) (β : ℝ) (S : Finset (Fin n))
     (hS : S ∈ assignments P.pop) :
@@ -191,7 +190,7 @@ private lemma OV_oracle_decomposition {n k} (P : CovPopulation n k)
       (groupMean Sᶜ (residual P false β) + psi P false β none) = _
   ring
 
-/-- The reassignment oracle is a contrast of pooled residuals; the pooled intercept cancels. -/
+/-- OV.2: the pooled intercept cancels. -/
 private lemma OV_star_decomposition {n k} (P : CovPopulation n k)
     (h : ValidDesign P.pop) (q : Fin n → ℝ) (S : Finset (Fin n))
     (hS : S ∈ assignments P.pop) :
@@ -229,6 +228,8 @@ theorem oracle_variances_proof {n k} (P : CovPopulation n k) (h : ValidDesign P.
       simp [popVar, mean]
     simp only [sub_self, hz, zero_div, sub_zero]
     ring
+
+example : type_of% @AronowAudit.P002.oracle_variances := oracle_variances_proof
 
 end
 end AronowAudit.P002.Wave1

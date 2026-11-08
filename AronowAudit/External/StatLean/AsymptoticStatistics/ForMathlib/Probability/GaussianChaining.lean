@@ -1,8 +1,3 @@
-/-
-Documentation corrected for llm-audit-lean.
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.Probability.GaussianMaximal
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.Topology.MetricSpace.Basic
@@ -15,30 +10,28 @@ import Mathlib.Analysis.SpecificLimits.Normed
 
 This is the abstract chaining argument behind the existence of the `P`-Brownian
 bridge `G_P` (vdV §19.2 / §18.1; van der Vaart–Wellner §2.1).  It is
-stated for a process `X : T → Ω → ℝ` over a pseudo-metric index `T`, with
-measurable coordinates and increments that are sub-Gaussian with variance proxy
-`K² · dist²`, where `K ≥ 0`. Given finite nested dyadic nets and the Dudley
-summability hypothesis `hDudley`, the process has almost surely bounded, uniformly
-continuous sample paths on their countable dense union.
+stated for a process `X : T → Ω → ℝ` over a pseudo-metric index `T`, whose
+increments are sub-Gaussian with proxy variance
+`K² · dist²`, has (a.s.) bounded, uniformly-continuous sample paths on a
+countable dense subset.
 
 Mathematical content.  Fix dyadic scales `2^{-j}` and a `2^{-j}`-net `T_j` of
-`T` at each scale.  For a point `t`, let `π_j t` be its chosen net point.  The
+`T` at each scale.  For a point `t`, let `π_j t` be its nearest net point.  The
 telescope
 `X (π_J t) - X (π_0 t) = ∑_{j<J} (X (π_{j+1} t) - X (π_j t))`
 reduces the modulus of continuity to the **per-level links** `(π_j t, π_{j+1} t)`.
-Each consecutive-projection link has distance at most `3·2^{-j}` by the triangle
-inequality on the two net distances. Its standard-deviation scale is at most
-`3K·2^{-j}`, and its variance proxy is at most `K²(3·2^{-j})²`, so the level
+Each link increment is sub-Gaussian with proxy `≤ K · 3·2^{-j}` (triangle
+inequality on the two net distances + the original distance), so the level
 maximum over the *finite* link set is controlled by the Gaussian maximal
 inequality `√(2σ² log(2·#links))`
-for the finite link family. Summing a
+(`ProbabilityTheory.expectation_iSup_abs_le_of_subgaussian`).  Summing a
 Dudley-finite schedule and a Borel–Cantelli argument yields a.s. uniform
 continuity.
 
-The proof develops nets, net-point projections, and the chaining telescope.
+The proof develops nets, nearest-point projections, and the chaining telescope.
 The analytic argument runs over the `closePairs` Dudley level set
 (`measure_bigOsc_le`, `summable_bigOsc`, `aeUC_via_borelCantelli`) and assembles
-into `gaussianChaining_UC_iUnion`.
+into `gaussianChaining_UC`.
 -/
 
 open MeasureTheory Real
@@ -59,7 +52,7 @@ bare ε-net total-boundedness existential via `Classical.choose` — makes the n
 cardinality explicit in the `hDudley` entropy hypothesis. Total boundedness of
 `T` follows from `hnet` by `gc_totallyBounded_univ`. -/
 
-/-! ## Dyadic nets and net-point projection
+/-! ## Dyadic nets and nearest-point projection
 
 The chaining input is an **explicit dyadic net family** `net : ℕ → Finset T`
 with two properties: each `net j` is a `2^{-j}`-net of `T` (`hnet`), and the
@@ -67,7 +60,7 @@ family is nested (`hnet_mono`).  Taking the net as data (rather than deriving it
 from a bare ε-net existential via `Classical.choose`) keeps the net cardinality
 explicit in the `hDudley` entropy hypothesis, stated on `(net j).card`. -/
 
-/-- **Self-projecting chosen net point.** `dyadicProj net hnet j t` is `t`
+/-- **Self-projecting nearest net point.** `dyadicProj net hnet j t` is `t`
 itself when `t` is already in `net j`, and otherwise *a* net point within
 `2^{-j}` of `t` (the witness of `hnet`).  The self-projection branch
 (`dyadicProj_self`) is what makes the chaining telescope terminate exactly at a
@@ -209,10 +202,11 @@ private theorem tail_one_sided_le {Z : Ω → ℝ} {c : ℝ≥0} {a σsq : ℝ}
     rw [← ENNReal.ofReal_toReal (measure_ne_top μ _)]
     exact ENNReal.ofReal_le_ofReal hbound
 
-/-- **Summability of `2^{-j}·√(log(j+2))`.** A geometric factor times a slowly
-growing factor. The schedule's `log(j+2)` correction, which makes the
-Borel–Cantelli masses summable, is itself modulus-summable. Proved by comparison
-with `∑ (j+2)·(1/2)^j` after the bound `√(log(j+2)) ≤ √(j+2) ≤ j+2`. -/
+/-- **Summability of `2^{-j}·√(log(j+2))`.** A super-geometric decay against a
+sub-polynomial (in fact `≪ √(log)`) entropy growth: the schedule's
+`log(j+2)`-correction (which makes the Borel–Cantelli masses summable) is itself
+modulus-summable.  Proved by comparison with `∑ (j+2)·(1/2)^j` after the crude
+bound `√(log(j+2)) ≤ √(j+2) ≤ j+2`. -/
 private theorem summable_pow_neg_sqrt_log :
     Summable (fun j : ℕ =>
       (2 : ℝ) ^ (-(j : ℤ)) * Real.sqrt (Real.log (j + 2))) := by
@@ -1065,8 +1059,8 @@ private theorem gc_dense_iUnion
   · rw [Metric.mem_ball']; exact lt_trans hd hj
   · exact Set.mem_iUnion.mpr ⟨j, by simpa using hsmem⟩
 
-/-- **A.e. bounded + UC on the explicit skeleton `⋃ j, net j`** (the core of
-`gaussianChaining_UC_iUnion`). A.s. UC comes from
+/-- **A.e. bounded + UC on the explicit skeleton `⋃ j, net j`** (the shared core of
+both `gaussianChaining_UC` and its explicit-witness variant). A.s. UC comes from
 `aeUC_via_borelCantelli`; a.s. boundedness follows because the UC image of the
 totally bounded `⋃ j, net j` is totally bounded, hence bounded. -/
 private theorem gaussianChaining_UC_iUnion_aux
@@ -1107,10 +1101,43 @@ private theorem gaussianChaining_UC_iUnion_aux
     exact huniv_tb.image habs
   exact hrange_tb.isBounded.bddAbove
 
+/-- **Gaussian chaining: a.s. bounded, uniformly-continuous paths.**
+For a sub-Gaussian-increment process over a totally bounded pseudometric index
+with finite Dudley entropy, there is a countable dense set `T₀` on which the
+sample paths are a.s. bounded and uniformly continuous.  This is the analytic
+heart of the `P`-Brownian-bridge existence (vdV §19.2 / §18.1).
 
-/-- **Explicit-witness Gaussian chaining (skeleton = `⋃ j, net j`).** The dense
-skeleton is named explicitly as the dyadic union `⋃ j, net j`, so the
-skeleton and the chaining oscillation net are definitionally the same set. -/
+Built from `aeUC_via_borelCantelli` (a.s. UC on the skeleton); a.s. boundedness
+then follows because a uniformly continuous map on the totally bounded `T₀` has
+totally bounded (hence bounded) range. `T₀ = ⋃ j, net j`; its density is
+the `2^{-j} → 0` net coverage; countability is a countable union of finite sets.
+
+This conclusion supplies the uniformly continuous path field used in the
+construction of `G_P` and `IsPBrownianBridge`. -/
+theorem gaussianChaining_UC
+    (hK : 0 ≤ K)
+    (hXmeas : ∀ t, Measurable (X t))
+    (net : ℕ → Finset T)
+    (hnet : ∀ (j : ℕ) (t : T), ∃ s ∈ net j, dist t s < (2 : ℝ) ^ (-(j : ℤ)))
+    (hnet_mono : Monotone net)
+    (hSG : ∀ s t, ProbabilityTheory.HasSubgaussianMGF (fun ω => X s ω - X t ω)
+      ⟨K ^ 2 * dist s t ^ 2, by positivity⟩ μ)
+    (hDudley : Summable (fun j : ℕ =>
+      (2 : ℝ) ^ (-(j : ℤ)) * Real.sqrt (Real.log (2 * (net j).card)))) :
+    ∃ T₀ : Set T, T₀.Countable ∧ Dense T₀ ∧
+      (∀ᵐ ω ∂μ, (BddAbove (Set.range (fun t : T₀ => |X t ω|))) ∧
+                UniformContinuousOn (fun t => X t ω) T₀) :=
+  ⟨⋃ j : ℕ, (↑(net j) : Set T),
+    Set.countable_iUnion (fun j => (net j).finite_toSet.countable),
+    gc_dense_iUnion net hnet,
+    gaussianChaining_UC_iUnion_aux hK hXmeas net hnet hnet_mono hSG hDudley⟩
+
+/-- **Explicit-witness Gaussian chaining (skeleton = `⋃ j, net j`).** Identical
+content to `gaussianChaining_UC`, but with the dense skeleton named explicitly as
+the dyadic union `⋃ j, net j` rather than hidden behind an existential.  The
+modulus-ball `G_P`-tightness transport (`PBridgeTight`) needs the skeleton and the
+chaining oscillation net to be the **same** set; this variant supplies that
+alignment definitionally. -/
 theorem gaussianChaining_UC_iUnion
     (hK : 0 ≤ K)
     (hXmeas : ∀ t, Measurable (X t))

@@ -199,7 +199,7 @@ theorem tb13_covariance_limit (S : ExperimentSequence) (H : JointLaw) (θ ρ : �
     SharpBounds.n12_proof _ _
   simpa only [he, TailB_lawCovariance_eq_sub H h1 h0] using hh
 
-/-- N times the actual randomization variance converges to its limiting expression. -/
+/-- N times the actual randomization variance has exactly the held limit. -/
 theorem tb13_true_variance_limit (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ)
     (h : Conditions123 S H θ ρ) (hUI : UniformSquareIntegrability S) :
     Tendsto (fun q => ((S.design q).N : ℝ) * trueVariance (S.design q)

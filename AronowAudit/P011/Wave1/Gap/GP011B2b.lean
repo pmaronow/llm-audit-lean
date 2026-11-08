@@ -4,7 +4,7 @@ import Mathlib.Algebra.Order.Floor.Semiring
 import Mathlib.MeasureTheory.Order.Lattice
 
 /-!
-Degree-only conservativeness and revised corollaries.
+Degree-only conservativeness and revised corollaries, with the held statements unchanged.
 A maximal graph within finitely many residual bins has at most D + 1 unsaturated
 vertices per bin. This yields an error C / n + D * η², sufficient for the lower-tail
 limit without the exact finite sorted-clique constants.
@@ -19,7 +19,7 @@ noncomputable section
 set_option maxHeartbeats 3000000
 set_option maxRecDepth 4000
 
-/-! Bounded comparison without bounding the original supplied caps. -/
+/-! Record 12: bounded comparison without bounding the original supplied caps. -/
 
 def GP011B2b_degree_only_comparisonCaps {n : ℕ} (d : Fin n → ℕ) (D : ℕ) : Fin n → ℕ :=
   fun i => min (truncatedDegree d i) D
@@ -434,6 +434,8 @@ theorem degree_only_conservative_proof (F : Family) (c1 c2 c3 c4 : ℝ)
   change ε / 2 < (F.size k : ℝ) * (var (F.model k) (betaHat (F.model k)) - VYoung (c k) x)
   nlinarith
 
+example : type_of% @AronowAudit.P011.degree_only_conservative := degree_only_conservative_proof
+
 lemma GP011B2b_revised_corollaries_V1_measurable {n : ℕ} (m : Model n) (B : Graph n) :
     Measurable (fun y => V1 B (weighted m y)) := by
   unfold V1 quadratic centered average weighted
@@ -554,6 +556,8 @@ theorem revised_corollaries_proof (F : Family) (c1 c2 c3 c4 : ℝ)
           (fun k y => (hm k y).2 _ (hv k))
   exact ⟨hcon, (conditional_wald_coverage F c1 c2 c3 c4 h V hmeas).2 hcon⟩
 
+
+example : type_of% @AronowAudit.P011.revised_corollaries := revised_corollaries_proof
 
 end
 end AronowAudit.P011.Wave1

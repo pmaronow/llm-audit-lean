@@ -12,7 +12,8 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 3000
 set_option autoImplicit false
 
-/-! The logistic density normalizes the Cauchy conditional densities in the second coordinate.
+/-! Adapted from the unverified internal lw-GLP0013B1 draft cited in sweep-P001b.
+The logistic density normalizes the Cauchy conditional densities in the second coordinate.
 The exceptional marginal slice is handled with a lower nonnegative integral throughout. -/
 
 lemma t36B1r2_exp_two (x : ℝ) : Real.exp (2 * x) = (Real.exp x) ^ 2 := by
@@ -249,6 +250,8 @@ theorem infinite_marginal_slice_counterexample_proof : ContDiff ℝ ⊤ smoothSl
    (∀ y : ℝ, y≠0 → Integrable (fun x => smoothSlicePDF (x,y)) volume) := by
   exact ⟨t36B1r2_smooth, t36B1r2_positive, t36B1r2_joint_normalization.1,
     t36B1r2_joint_normalization.2, t36B1r2_zero_slice_infinite, t36B1r2_nonzero_slice_integrable⟩
+
+example : type_of% @AronowAudit.P001.infinite_marginal_slice_counterexample := infinite_marginal_slice_counterexample_proof
 
 end
 end AronowAudit.P001.Wave1

@@ -1,6 +1,5 @@
-/- P011 T3(i): oracle concentration with a moving mean term.
-The neighborhood-product variance bound is adapted from CausalSmith
-(Apache-2.0); see NOTICE at the repository root. -/
+/- Original P011 T3(i) oracle concentration, with unchanged hypotheses and moving mean term.
+The neighborhood-product variance engine is licensed CausalSmith pin a7085d88d2e4b30003db7097ca374f4718da0f01 (Apache-2.0); local AE adaptation is recorded with the External.Causalean provenance. -/
 import AronowAudit.P011.P011_CoverageCompletion
 import AronowAudit.P011.P011_QuadraticCompletion
 import AronowAudit.External.Causalean.Mathlib.Probability.SteinMethod.AlmostEverywhereDepGraphVariance
@@ -435,3 +434,4 @@ theorem revised_oracle_convergence (F : Family) (c1 c2 c3 c4 : ℝ)
   exact OracleCompletion.revised_oracle_convergence_completed F c1 c2 c3 c4 h
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.revised_oracle_convergence

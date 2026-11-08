@@ -1,0 +1,68 @@
+[
+ {
+  "target_id": "P026-T11",
+  "decision": "whole",
+  "theorem": "SAP.P026a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.arm_variance_corrected_T11",
+   "AronowAudit.P026.PaperScope.ht_arm_variance_T11"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P026a.T11Statement",
+  "bridge": "SAP.P026a.Bridge.target11",
+  "supporting_declarations": [
+   "AronowAudit.P026.VarianceCompletion.zeroSum_of_positive"
+  ]
+ },
+ {
+  "target_id": "P026-T12",
+  "decision": "whole",
+  "theorem": "SAP.P026a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P026.PaperScope.ht_arm_variance_T12",
+   "AronowAudit.P026.PaperScope.ht_covariance_full_T12",
+   "AronowAudit.P026.PaperScope.ht_covariance_split_T12",
+   "AronowAudit.P026.PaperScope.ht_variance_identity_T12",
+   "AronowAudit.P026.PaperScope.variance_sub_div_T12",
+   "AronowAudit.P026.sum_diagonal_off"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P026.PaperScope.unit_sampling_variance_identity_T12",
+    "reason": "Duplicate of the sampling-variance identity used here."
+   },
+   {
+    "lean_name": "AronowAudit.P026.control_covariance",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.covariance_scale",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.covariance_sum",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.indicator_complement",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   },
+   {
+    "lean_name": "AronowAudit.P026.table_joint",
+    "reason": "Wrong credit: this computes numerical-example probabilities and proves no component of the arbitrary-design variance identity."
+   },
+   {
+    "lean_name": "AronowAudit.P026.table_marginal",
+    "reason": "Wrong credit: this computes numerical-example probabilities and proves no component of the arbitrary-design variance identity."
+   },
+   {
+    "lean_name": "AronowAudit.P026.variance_sub",
+    "reason": "Auxiliary or certificate fact already contained in the main declarations used for this target; no separate helper statement is included."
+   }
+  ],
+  "statement_definition": "SAP.P026a.T12Statement",
+  "bridge": "SAP.P026a.Bridge.target12"
+ }
+]

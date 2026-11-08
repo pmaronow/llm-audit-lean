@@ -3,6 +3,8 @@ import Mathlib.Probability.CramerWold
 
 /-!
 P018-T1: the nonlinear uniform counterexample, with the actual uniform law.
+All new helpers have the prefix `nonlinear_witness_`. The held declaration is
+used only in the final exact-type check.
 -/
 noncomputable section
 namespace AronowAudit.P018.Wave1
@@ -562,5 +564,7 @@ theorem nonlinear_counterexample_proof :
     rw [nonlinear_witness_conditional_zero]
   · rw [nonlinear_witness_variance 3 (by decide)]
     convert nonlinear_matrix_certificate.2.2.2.2.2 using 1 <;> norm_num [Dreal]
+
+example : type_of% @AronowAudit.P018.nonlinear_counterexample := nonlinear_counterexample_proof
 
 end AronowAudit.P018.Wave1

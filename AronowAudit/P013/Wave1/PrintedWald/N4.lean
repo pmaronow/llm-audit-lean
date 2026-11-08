@@ -9,9 +9,8 @@ open scoped BigOperators Topology NNReal ENNReal
 
 noncomputable section
 
-/-- Under an independent product design, the variance of a sum of coordinate
-functions is the sum of their coordinate variances. The proof first shows that
-distinct coordinates have zero covariance. -/
+/-- The covariance matrix of coordinate functions of an independent product design
+is diagonal, and its diagonal consists of the original coordinate variances. -/
 theorem n4_proof : N4 := by
   classical
   intro Ω _ P R g

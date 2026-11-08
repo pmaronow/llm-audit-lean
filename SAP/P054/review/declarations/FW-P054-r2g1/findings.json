@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P054-T1",
+    "theorem": "SAP.P054.T1",
+    "fingerprint": "ec8afe9f16b96a2011d3b634bc222a970a012375b6bd23a04f340e268e9385c8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean, exit 0: P054Audit.t1_hypotheses constructs N=2, d=(1,1), w=(1,1), y=(0,1), including the c=1 equal-weight branch. P054Audit.nonzero_values proves n=W=2, p=1/2, Q=1/8, V=1/4, V0=1/8. Further compiled instances have unequal weights (10,1), with V=400/14641 < V0=5/121, and a proper subgroup N=3, d=(1,1,0), w=(1,1,1), y=(0,1,1), with V=3/16 and V0=1/8. Compiled scratch/Denominators.lean, exit 0, proves all T1 denominators nonzero from its hypotheses.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P054-T2",
+    "theorem": "SAP.P054.T2",
+    "fingerprint": "b3c78ecdd075669dd6fc64aa279f36f9beaeaec62e2d678aa997afe351fefd81",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean, exit 0: P054Audit.t2_hypotheses independently constructs N=2, d=(1,1), w=(1,1), y=(0,1), including n>=2. P054Audit.nonzero_values proves n=W=2, p=1/2, RSS_w=1/2, classical variance=1/4, V0=1/8. Unequal weights (10,1) also satisfy every hypothesis, with RSS_w=10/11 and classical variance=10/121. A proper subgroup N=3, d=(1,1,0), w=(1,1,1), y=(0,1,1) has n=2 and classical variance=1/4. Compiled scratch/Denominators.lean, exit 0, proves all T2 denominators nonzero from its hypotheses.",
+    "confidence": "high"
+  }
+]

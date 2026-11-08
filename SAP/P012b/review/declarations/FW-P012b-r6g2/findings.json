@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P012-T18",
+    "theorem": "SAP.P012b.T18",
+    "fingerprint": "44cae8fb8ef40be8981b1ad4621f84cc90db75c7d61cd39d651a49abd35c3403",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:8-16 compiles admissibility, compatibility and positive preferential-domain checks for starHistory, chainHistory and reorderedHistory on historyState. The first conjunct is universal displayed-pair invariance, with no extra antecedents. Independent exact arithmetic gives p=-1/12, 1/6, -1/3 respectively (scratch/exact_checks.json).",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P012-T19",
+    "theorem": "SAP.P012b.T19",
+    "fingerprint": "0ebe96211bdee0b63045abcc35f2395dd1ef1e3cb865ac48b69258318d16afd4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:19-32 compiles admissibility of wholeProposalData, compatibility of wholeProposalStart, the explicit GraphProposal.deleteUnobserved execution with fresh u(4,0), and incompatibility of wholeProposalBad. Its output edges are 12,1b,ab, where a,b are unsampled. The printed conditions are checked individually in refutation-checks.md; both statistics are ordinary, as independently verified in scratch/exact_checks.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P012-T20",
+    "theorem": "SAP.P012b.T20",
+    "fingerprint": "1829bac18c7b03f0c8517910571d62bbff1fbd960462a603dcb02e20a7003935",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/StudyCounts.lean:8-17 compiles a six-seed, 527-subject admissible synthetic forest with sampled degree sum 4487 and positive sampled degree in both traits. The same datum can fill all three structural input slots. This establishes consistency of the quantified structural data, not the impossible table conjunction or the unpublished actual inputs. The rounding inequalities compile at lines 21-23. For every possible actual study input, the opposite-trait private-leaf construction in refutation-checks.md is compatible, has a strictly positive homophily denominator, and yields h <= -1462/1983, contradicting the printed lower endpoints.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P012-T22",
+    "theorem": "SAP.P012b.T22",
+    "fingerprint": "7a9218e1087aed1584431d28eceb6233ba1b43e1f63920911adc31695207c2c5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:35-57 compiles both a zero-spare mixed-trait dyad with a recruitment and oneLeafData with spare degree at sampled vertex 2. These satisfy admissibility, both positive sampled-trait degree conditions and a nonseed; both oneLeafState trait choices are compatible. Independent rational checks give (h,p)=(-1,0) and (-1/3,0). Thus the identification and leaf-flip hypotheses are jointly satisfiable in both relevant cases.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P012-T23",
+    "theorem": "SAP.P012b.T23",
+    "fingerprint": "57b31a70413cebbdc55012cc29a73704580c61904619f4a342f8667a20bbbf37",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean:60-70 compiles tau=id as strictly increasing on the sample, admissibility, four recruitment events, both positive sampled-trait degree totals, both private-leaf completions, and a compatible complemented state. Independent exact enumeration in scratch/exact_checks.py yields 26182 configurations and extrema (-5/8,79/105,-11/80,49/120); minimum-p witnesses with different vertex counts certify nonuniqueness modulo renaming.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, round 5, issue 1: the Challenge docstring extended coding-specific edge and stub counts to either trait coding.",
+        "status": "fixed",
+        "judgment": "SAP/P012b/Challenge/Part1.lean:83-87 now explicitly limits trait-specific counts to (1,1,1,0,1), extends arithmetic and statistics to every strictly increasing time order, and extends only extrema, bounds, nonuniqueness and preservation of defined statistics to either coding. This matches WholeFigure1Arithmetic and WholeFigure1Assertions at SAP/P012b/Defs/WholeW2.lean:107-115."
+      },
+      {
+        "earlier_issue": "earlier.json, round 5, issue 2: the duplicate T23WholeStatement docstring repeated the same overbroad coding assertion.",
+        "status": "fixed",
+        "judgment": "SAP/P012b/Defs/WholeW2.lean:101-105 contains the same precise coding qualification as the Challenge docstring. Arithmetic is asserted only for the original coding at line 108; statistical assertions cover the original and complemented coding at lines 109-110. The architect accepted the earlier criticism and the current text fixes it without introducing a new mismatch."
+      }
+    ]
+  }
+]

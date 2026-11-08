@@ -1,0 +1,69 @@
+import SAP.P012a.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 4096
+set_option synthInstance.maxSize 1000
+set_option maxHeartbeats 2000000
+
+open SAP.P012a Finset
+
+namespace EndpointReview
+
+def twoStars (extra : ℕ) : Data :=
+  ⟨range 527, range 6, fun i => if i < 266 then 0 else 1, id,
+    fun i => if i = 0 then 260 + extra else if i = 1 then 261
+      else if 6 ≤ i ∧ i < 527 then 1 else 0,
+    fun i => decide (i = 0 ∨ (6 ≤ i ∧ i < 266))⟩
+
+-- Closed finite sets are shared by the native evaluation, so checking all
+-- sampled degrees does not rebuild the recruitment graph for every subject.
+def cachedEdges := recruitmentEdges (twoStars 0)
+def cachedDegree (i : ℕ) := (cachedEdges.filter (fun e => s i ∈ e)).card
+
+def nominalState : State :=
+  ⟨sampledVertices (twoStars 3445) ∪ (range 3445).image (u 0),
+    cachedEdges ∪ (range 3445).image (fun k => {s 0, u 0 k}),
+    fun v => match v with | Sum.inl i => (twoStars 3445).trait i | Sum.inr _ => false⟩
+
+theorem inputChecks : Admissible (twoStars 2984) ∧
+    (twoStars 2984).sampled.card = 527 ∧ (twoStars 2984).seeds.card = 6 ∧
+    a (twoStars 2984) = 260 ∧ b (twoStars 2984) = 261 ∧ cR (twoStars 2984) = 0 ∧
+    totalSpare (twoStars 2984) = 2984 ∧
+    (∑ i ∈ (twoStars 2984).sampled, (twoStars 2984).degree i) = 4026 := by
+  have hD : Admissible (twoStars 2984) := by
+    refine ⟨by native_decide, by native_decide, by native_decide, ?_⟩
+    change ∀ i ∈ (twoStars 2984).sampled, cachedDegree i ≤ (twoStars 2984).degree i
+    native_decide
+  refine ⟨hD, by decide, by decide, by native_decide, by native_decide,
+    by native_decide, ?_, by native_decide⟩
+  change (∑ i ∈ (twoStars 2984).sampled, ((twoStars 2984).degree i - cachedDegree i)) = 2984
+  native_decide
+
+run_cmd IO.println "Rounded-endpoint input checks complete"
+
+theorem nominationCheck :
+    (∑ i ∈ (twoStars 2984).sampled,
+      graphDegree nominalState (s i)) = 4487 := by
+  native_decide
+
+run_cmd IO.println "Nomination graph degree sum checked"
+
+-- The T4 converse antecedent, including the rounded infimum and nomination total,
+-- is satisfiable. Only existence/identification of the infimum uses certified T5;
+-- all data, counts, and the rounding inequality are independently checked.
+example : ∃ (D : Data) (Hnom : State) (L : ℝ),
+    Admissible D ∧ D.sampled.card = 527 ∧ D.seeds.card = 6 ∧
+    (∑ i ∈ D.sampled, graphDegree Hnom (s i)) = 4487 ∧
+    IsGLB (hValues D) L ∧
+    (∃ q ∈ ({-7027/10000, -6918/10000, -7179/10000} : Finset ℝ),
+      |L-q| ≤ 1/20000) ∧
+    (∑ i ∈ D.sampled, D.degree i) = 4026 := by
+  obtain ⟨hD, hn, hm, ha, hb, hc, hT, hsum⟩ := inputChecks
+  have hreg : 0 < totalSpare (twoStars 2984) := by omega
+  have hleast := (SAP.P012a.T5.1 (twoStars 2984) hD (Or.inl hreg)).1
+  refine ⟨twoStars 2984, nominalState,
+    hLower (twoStars 2984), hD, hn, hm, nominationCheck, hleast.isGLB, ?_, hsum⟩
+  refine ⟨-7027/10000, by simp, ?_⟩
+  norm_num [hLower, phi, ha, hb, hc, hT]
+
+end EndpointReview

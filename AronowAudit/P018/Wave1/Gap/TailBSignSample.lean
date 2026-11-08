@@ -121,7 +121,7 @@ def tb05_edgePolynomial (n D s u r a b l : ℝ) : ℝ :=
   (1+l^2)*(n*(n-2)+u^2-2*a*(n-1)*u-2*b*(s*r-u)+(a^2+b^2)*D+a*b*(s^2-n))-
   2*l*(s^2+r^2-2*n-2*a*(s*r-u)-2*b*(n-1)*u+(a^2+b^2)*(s^2-n)/2+2*a*b*D)
 
-/-- Exact second-order bread/meat identity. All three sign sums and the OLS fit
+/-- Public exact second-order bread/meat identity. All three sign sums and the OLS fit
 are retained; no first-order replacement of the fitted residuals is made. -/
 theorem tb05_slope_bread_meat {N : ℕ} (z w : Fin N → ℝ)
     (hz : ∀ i,(z i)^2=1) (hw : ∀ i,(w i)^2=1) (hN : 2 ≤ N)

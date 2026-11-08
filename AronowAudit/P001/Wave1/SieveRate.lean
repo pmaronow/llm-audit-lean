@@ -21,7 +21,7 @@ import AronowAudit.P001.Wave1.SieveRate.N18
 import AronowAudit.P001.Wave1.SieveRate.N19
 import AronowAudit.P001.Wave1.SieveRate.N20
 
-/-! # Refutation of the printed sieve degree-rate assertion (P001-T119) -/
+/-! # Refutation of the printed sieve degree-rate contract (P001-T119) -/
 
 set_option autoImplicit false
 
@@ -48,6 +48,8 @@ theorem printed_sieve_degree_rate_contract_refuted :
     SieveRate.n9_proof SieveRate.n10_proof SieveRate.n11_proof SieveRate.n12_proof
     SieveRate.n13_proof SieveRate.n14_proof SieveRate.n15_proof SieveRate.n16_proof
     SieveRate.n17_proof SieveRate.n19_proof SieveRate.n18_proof SieveRate.n20_proof
+
+example : AronowAudit.P001.Wave1.SieveRate.Target := printed_sieve_degree_rate_contract_refuted
 
 end
 

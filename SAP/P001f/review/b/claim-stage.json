@@ -1,0 +1,110 @@
+[
+  {
+    "theorem": "SAP.P001f.T96",
+    "target_id": "P001-T96",
+    "my_reading_vs_claim": "whole",
+    "reason": "The closed grouped sample has exactly the stated cell counts, arm outcome sums, fitted probabilities, unique logit maximizer, observed fractions, score arithmetic, IPW and poststratified values, and nonzero gap. Grouping the repeated units changes neither the likelihood maximizer nor the estimators. A population with Z uniform on three cells, deterministic potential outcomes (3,2,3) and (4,3,4), and the displayed logit treatment probabilities realizes this sample with positive probability under iid sampling and ignorability."
+  },
+  {
+    "theorem": "SAP.P001f.T97",
+    "target_id": "P001-T97",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem proves the cell-sum identity characterization for positive real arm masses and arbitrary real outcome sums. It omits canonical part (i), the raw-unit regrouping and plug-in identities, and does not identify arbitrary cell outcome sums with all raw outcome vectors. Its normalization need not equal total arm mass. All divisors are positive; Fin 1 with nt=nc=1, q=1/2 and n=2 is a nonempty instance."
+  },
+  {
+    "theorem": "SAP.P001f.T98",
+    "target_id": "P001-T98",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All formal true-score conditional and ordinary expectation conclusions match. The full stabilized outcome-estimator formula and fitted-score convergence/efficiency prose are absent. Binary treatment and uniform overlap are imposed at every sample point for every index, stronger than the allowed version interpretation up to null sets. An infinite product of fair Bernoulli trials with constant covariates and p=1/2 satisfies the premises, with epsilon=1/4."
+  },
+  {
+    "theorem": "SAP.P001f.T99",
+    "target_id": "P001-T99",
+    "my_reading_vs_claim": "whole",
+    "reason": "The nonnegative normalized two-atom law, constant covariate and potential outcomes, conditional independence, positive event probabilities, both positivity bounds, failure of unnormalized ATT equality, and successful normalization match the counterexample. All finite conditional-mean denominators are strictly positive. The second illustrative example in the note is not a further canonical assertion."
+  },
+  {
+    "theorem": "SAP.P001f.T100",
+    "target_id": "P001-T100",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical integrable effect, binary treatment with both arms represented, conditional ignorability, propensity mean, weighted-effect identities, normalized ATT and equality criterion are all present. ConditionalMean is a standard version definition when X is measurable. Positivity and finiteness of the ATT denominator follow from explicit probability hypotheses. Constant covariate and potential outcomes 0,1 with fair binary treatment are a nontrivial instance."
+  },
+  {
+    "theorem": "SAP.P001f.T101",
+    "target_id": "P001-T101",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected relative-complement identity and elementwise definition are exact. The equivalence characterizing when the erroneous union identity happens to hold, its equivalent covering/disjointness conditions and the three finite-set numerical equalities are missing. The theorem is true for arbitrary ambient types, including nonempty ones."
+  },
+  {
+    "theorem": "SAP.P001f.T102",
+    "target_id": "P001-T102",
+    "my_reading_vs_claim": "whole",
+    "reason": "The negated predicate renders the printed distributional well-definedness assertion, with joint and marginal densities, integrable coordinates/outcome, conditional-mean versions and coordinate differentiability wherever the chosen marginal density is positive. The separate estimator formula is the defining plug-in identity guarded by positive n and actual differentiability. A valid refutation uses X uniform on (-2,-1) union (1,2), independent centered continuous Y, m0=0 and m1(x)=x near zero and zero on the support; the mean is zero and the actual derivatives at the mean differ. Thus the negation need not rely on singular joint laws or totalized derivatives."
+  },
+  {
+    "theorem": "SAP.P001f.T103",
+    "target_id": "P001-T103",
+    "my_reading_vs_claim": "narrower",
+    "reason": "This refutes only assertion (A), maximizer existence, for the displayed seven-parameter mixture, with positive scales/rate and simplex weights. It says nothing about assertion (B), full-parameter consistency or asymptotic efficiency. The sample n=1,y=1 witnesses the negation: pure normal weight one, mean one, and scale tending to zero make the finite-valued likelihood unbounded."
+  },
+  {
+    "theorem": "SAP.P001f.T104",
+    "target_id": "P001-T104",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem only negates the unrestricted countable joint-mass equivalence. It neither proves the valid implication (A) nor states the directed failure (B), the qualified (C), or regional example values. Its support convention agrees with positive PMF support, not topological closure. For k>=0, t_k=4^(-(k+1)), c_k=2^(-(k+1))-4^(-(k+1)) have sums 1/3 and 2/3, both supports all natural numbers, and propensity 2^(-(k+1)) tending to zero."
+  },
+  {
+    "theorem": "SAP.P001f.T106",
+    "target_id": "P001-T106",
+    "my_reading_vs_claim": "whole",
+    "reason": "All five canonical groups are present, with first moments for linearity, second moments for variance and standard deviation, and positive variance for standardized Chebyshev. These are the explicit form of the standing finite-expectation convention, so no infinite-variance toReal convention is used. A fair Bernoulli variable has mean 1/2 and positive variance 1/4."
+  },
+  {
+    "theorem": "SAP.P001f.T107",
+    "target_id": "P001-T107",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Only iterated expectation is asserted. The law of total variance and every part of the best-predictor/MSE decomposition are absent. ConditionalMean requires measurability of m, integrability and the defining eventwise equalities; taking the whole covariate space gives the displayed conclusion as it should. Missing explicit measurability of X does not falsify this integral identity; ordinary measurable constant-X examples satisfy it."
+  },
+  {
+    "theorem": "SAP.P001f.T108",
+    "target_id": "P001-T108",
+    "my_reading_vs_claim": "whole",
+    "reason": "The sample-mean expectation, variance divided by n, and Chebyshev bound have precisely the required nested moment and positive-variance assumptions and n>0. Encoding sampling by an infinite iid sequence preserves the fixed-n distributional result. An infinite sequence of independent fair Bernoulli variables supplies positive-variance instances at every n."
+  },
+  {
+    "theorem": "SAP.P001f.T109",
+    "target_id": "P001-T109",
+    "my_reading_vs_claim": "whole",
+    "reason": "Weierstrass and the eventual mean-square approximation by every population polynomial least-squares minimizing family are both present, with minimizer existence supplied as a conclusion. The PMF/PDF positive-support convention and implicit second moments are explicitly rendered. The discrete full-interval branch is possible only for a singleton interval, but the continuous branch is nonvacuous on [0,1]: uniform X, Y=X, m(x)=x, and density 1 on [0,1] satisfy all assumptions. All polynomial risks are integrable because X is bounded and Y is square integrable."
+  },
+  {
+    "theorem": "SAP.P001f.T110",
+    "target_id": "P001-T110",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every nonempty binary sample, both endpoint samples and the (1,0,1) likelihood example have the unique maximizer stated by the canonical claim. Bool encodes binary outcomes exactly. The success count is at most n, so natural subtraction n-k is the genuine failure count, and no sample-average denominator is zero."
+  },
+  {
+    "theorem": "SAP.P001f.T111",
+    "target_id": "P001-T111",
+    "my_reading_vs_claim": "whole",
+    "reason": "The three identification conclusions and both worked estimates match. Integrability of the respondent CEF under the population measure is explicitly a premise in both MAR components; under integrable Y, MAR and a uniform positive response lower bound this integrability follows anyway (the respondent covariate law dominates epsilon times the population covariate law). Thus it is a conservative explicit premise rather than an independent population-model restriction. The general estimators are supplied as definitions and evaluated on the required nondegenerate sample. Finite independent fair X and R, with Y=X, meet all premises."
+  },
+  {
+    "theorem": "SAP.P001f.T112",
+    "target_id": "P001-T112",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three propensity-score conclusions are asserted, including a ConditionalMean version of E[R|p(X)]=p(X), which establishes the missing third-bullet justification. There is no extraneous outcome moment premise. A four-atom law of independent fair X and R, with Y=X and p=1/2, satisfies the assumptions."
+  },
+  {
+    "theorem": "SAP.P001f.T113",
+    "target_id": "P001-T113",
+    "my_reading_vs_claim": "whole",
+    "reason": "The precise MAR double-robust identity and both alternatives are present, with measurable nuisances, a.e. versions and bounds. Integrability of m(X) is required in both branches; canonical_claim.note expressly says this integrability is implicit in case (ii), while it follows from MAR/overlap for a correct respondent regression in case (i). Relative to that supplied finite-moment canonical target this is not a new restriction. Both branches are nonvacuous: independent fair X,R with Y=X; choose m=X,q=1/4 for branch (i), or m=42,q=1/2 for branch (ii)."
+  },
+  {
+    "theorem": "SAP.P001f.T114",
+    "target_id": "P001-T114",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The population interval, width b-a and attainment of every value with the same observable law are asserted, and even retain the same treatment variable and sample space. The example gives both ATE endpoints but omits all four separate potential-outcome mean-bound estimates and their individual-imputation interpretation. Binary treatment with positive arm probabilities and bounded potential outcomes make every integral and event mean legitimate. Fair D, Y0=0,Y1=1,a=0,b=1 gives interval [0,1]."
+  }
+]

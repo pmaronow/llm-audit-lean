@@ -1,0 +1,104 @@
+[
+  {
+    "theorem": "SAP.P009a.T1",
+    "target_id": "P009-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The sparse fair sequence and its retained estimand, variance, conservativeness and half-coverage assertions match the counterexample, but regularity is only at (q,s)=(4,1), coverage is only for V_BER at alpha=1/20, and the additional pointwise, tail, normalized-bias, rate and relative-underestimation assertions are not all included. Every displayed estimator denominator is positive."
+  },
+  {
+    "theorem": "SAP.P009a.T2",
+    "target_id": "P009-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The finite coverage bound, relative-underestimation implication, scaled-error implication, Bernoulli application and unbiasedness are retained. The standalone general implication from the iterated Definition 10 limit to each fixed positive threshold, the vanishing-bias observation and the failure without a variance lower bound are absent. Measurability and integrability give the ordinary domain; probability liminfs are bounded."
+  },
+  {
+    "theorem": "SAP.P009a.T3",
+    "target_id": "P009-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All three specified two-unit experiments and all three strict signed-covariance violations are retained, but only regularity at (q,s)=(4,1), and not every auxiliary distribution, covariance entry or raw moment from the canonical counterexamples, is asserted. Negative outcomes and zero-probability full-cube schedules are represented faithfully."
+  },
+  {
+    "theorem": "SAP.P009a.T4",
+    "target_id": "P009-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The finite-space weighted identity and absolute bound, covariance cancellation equalities, finite pairwise moment bound and final application bounds are retained. The arbitrary probability-space case, infinite moment-order endpoint and several intermediate inequalities in the corrected chains are absent. Additionally the standalone absolute Lemma A3 component (Defs/Part5.lean:146-149) assumes full Regularity E k q s, whereas its canonical condition is only Assumption 1B with q>=2a. This ties the same k to arm-probability bounds and potential moments as well, and is an additional narrowing not stated in the Challenge docstring. The mixing quantities are explicitly parameterized finite-order sums, rather than an unconditional identification with the maximal-order coefficient."
+  },
+  {
+    "theorem": "SAP.P009a.T5",
+    "target_id": "P009-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The fair-design cluster family realizes the stated density, limit, threshold set and even/odd gap formulas. The full entrywise interference pattern, separate small-size values, explicit finite-limsup identification and failure of Assumption 2 are not separately asserted. Choosing fair designs is allowed by the canonical example. Natural subtraction in max(1,n/2-1) matches the intended h_n at every positive n."
+  },
+  {
+    "theorem": "SAP.P009a.T6",
+    "target_id": "P009-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The finite-limsup subsequence lemma and all stated finite HT construction conclusions are retained with 0<L<=1. The construction is not assembled into the sequence-level nonconvergence statement or related explicitly to failure of Assumption 2. Additionally the finite construction (Defs/Part5.lean:170-171) requires full Regularity E k q s, although the canonical finite_lemmas explicitly say any design satisfying Assumption 1A; the original outcome moments are irrelevant because those outcomes are replaced. This is an additional narrowing not mentioned in the Challenge docstring."
+  },
+  {
+    "theorem": "SAP.P009a.T7",
+    "target_id": "P009-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The first sparse family, its positive variance, bounded dependence, exact fair two-atom standardized law, failure of Gaussian convergence and vanishing n times variance are retained. The second family, universal continuous-CDF distance bound, all moment orders and several explicit finite identities are not stated. Standardization has a strictly positive denominator."
+  },
+  {
+    "theorem": "SAP.P009a.T8",
+    "target_id": "P009-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected Gaussian limit, Bernoulli design, uniform regularity, bounded maximum dependence and eventual positive lower bound for n Var(HT) are retained. Positivity of Var(HT) at every index is added, excluding finitely many zero-variance cases allowed by the canonical asymptotic assumptions. This is a real but finite-prefix restriction; no conclusion is assumed as a premise. Bounded dependence and product assignment make q=2 sufficient by bounding the full-cube outcomes."
+  },
+  {
+    "theorem": "SAP.P009a.T9",
+    "target_id": "P009-T9",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The entire specified complete-randomization outcome schedule, zero dependence for the selected pair, aggregate interference formulas and exact mixing coefficient 1/4 are retained. Separate full-cube bounds, marginal probabilities, entrywise interference counts and the coincident event witness are omitted, with regularity fixed at (q,s)=(4,1). The retained assertions suffice to refute convergence for every nondependent pair."
+  },
+  {
+    "theorem": "SAP.P009a.T10",
+    "target_id": "P009-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exceptional ordered-pair sets are selected before epsilon, their relative size vanishes, and mixing is eventually uniformly below epsilon outside them, exactly the central corrected assertion. Nonemptiness of the nondependent pair set at every index is added. The separate assertion that exceptions cannot always be empty is absent here. The denominator is thus never zero; eventual nonemptiness would already follow from growing sample size and bounded d_AVG."
+  },
+  {
+    "theorem": "SAP.P009a.T11",
+    "target_id": "P009-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The square-size block-star sequence, its actual d_AVG/C1 divergence, exact aggregate bias formulas B1=2/m^2>0 and B2=0, and comparison with the mean squared effect are retained. The all-size extension, all moment orders, individual and entrywise quantities, conditional covariance identities and explicit Assumption 2 limit are not separately asserted. These retained positive and zero terms still refute guaranteed B2 domination."
+  },
+  {
+    "theorem": "SAP.P009a.T12",
+    "target_id": "P009-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The three finite bias/effect bounds and main asymptotic comparisons are retained. The final relative-domination implication adds eventual B2!=0, so its ratio has its ordinary meaning. The explicit consequence 1/(d_AVG*abs(B2))->0, the eventually positive-lower-bound special case and the counterexample to a forced positive B2 are not separately asserted here."
+  },
+  {
+    "theorem": "SAP.P009a.T13",
+    "target_id": "P009-T13",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact fair three-unit cancelling experiment, actual interference 0->1, and zero expected and weighted spillovers are retained, with regularity only at (q,s)=(4,1). Universal moment orders, the separate full-cube absolute bound and the pointwise spillover expression are omitted. The retained interference and zero weighted spillover directly refute the printed implication."
+  },
+  {
+    "theorem": "SAP.P009a.T14",
+    "target_id": "P009-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The absence-of-interference implication, its contrapositive and a concrete failure of its converse are retained for arbitrary finite designs. The no-interference/zero-B1 component adds positive probabilities for both own-treatment arms, making its conditional means well-defined in ordinary mathematics. All other central clauses are present."
+  },
+  {
+    "theorem": "SAP.P009a.T15",
+    "target_id": "P009-T15",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The growing identity-outcome family has maximal observed and potential order infinity; it satisfies the three required averaged asymptotic conditions and has strictly positive full covariance sum versus zero off-diagonal mixing sum. Separate entrywise values, exact zero mixing aggregates, the normalized 1/n versus 0 display and n=4 instance, and Var(nHat/n)=1/n are not asserted. Positivity of n makes the unnormalized contradiction equivalent to the printed normalized one."
+  },
+  {
+    "theorem": "SAP.P009a.T16",
+    "target_id": "P009-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two summed inequalities for arbitrary designs, both arms and k>0 use all ordered pairs including the diagonal, and indicator covariances equal the stated joint-probability differences. The termwise assertion, universal alpha bounds and alternative explicit diagonal-variance display are not separately included."
+  },
+  {
+    "theorem": "SAP.P009a.T17",
+    "target_id": "P009-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The specified four-unit complete design, entire outcome schedule, incoming cause count, and t=0,z=1 unconditional, conditional and likelihood-ratio discrepancies are retained. Other probability-table entries, T_0=Z_1 as a pointwise identity, the second no-interference instance and simplified numerical ratios are not separately asserted. The hypergeometric arguments used have valid support and positive denominators."
+  }
+]

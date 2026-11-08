@@ -1,6 +1,4 @@
 /-
-Documentation corrected for llm-audit-lean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -20,13 +18,11 @@ measures, the product expectation `E_π[XY] = ∫ p, p.1 * p.2 ∂π` is:
 * **minimised** by the countermonotone coupling.
 
 The argument: by Hoeffding's identity `E_π[XY] = E[X]E[Y] + ∫∫ (H_π - F·G)`.
-The term `E[X]E[Y]` depends only on the marginals `μ, ν` and cancels when two
-such identities are compared. The Fréchet–Hoeffding bounds
-`H_countermonotone ≤ H_π ≤ H_comonotone` order the gaps `H_π - F·G` pointwise.
-These gaps are integrable by `integrable_frechet_gap`, so monotonicity of the
-double integral gives the corresponding ordering of product expectations.
-The integral of `H_π` alone over `ℝ²` diverges; the finite comparison uses the
-gaps throughout.
+The term `E[X]E[Y]` depends only on the marginals `μ, ν`, hence is **constant**
+across `Π(μ, ν)`; so extremising `E_π[XY]` is the same as extremising
+`∫∫ H_π`. The Fréchet–Hoeffding bounds give this pointwise: `H_π ≤ H_comonotone`
+and `H_countermonotone ≤ H_π`, and monotonicity of the double integral lifts the
+pointwise ordering to the integrals.
 
 A closed form for the optimum is also recorded:
 `E[XY]` under the comonotone coupling equals `∫_(0,1) quantile μ · quantile ν`.

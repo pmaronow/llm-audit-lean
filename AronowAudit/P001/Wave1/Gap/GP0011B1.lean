@@ -3,7 +3,10 @@ import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.Real
 import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 
-
+/-!
+Drafts for dd-GP0011B1. No Lean executable was run when preparing this file.
+The three original held declarations are used only in the type checks.
+-/
 
 namespace AronowAudit.P001.Wave1
 
@@ -101,9 +104,57 @@ theorem mixture_unbounded_positive_sample_proof {n : ℕ} (hn : 0  <  n) (y : Fi
     t10_likelihood_lower y hy i0 s hs
   exact (hBM.trans_eq hratio.symm).trans_le hlower
 
+example : type_of% @AronowAudit.P001.mixture_unbounded_positive_sample :=
+  mixture_unbounded_positive_sample_proof
+
+/-! P001-T100: equality of weighted outcome laws, on arbitrary Ω. -/
+
+
+private lemma t100_weighted_apply {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (w : Ω → ℝ) (hw : Integrable w μ)
+    (hw0 : ∀ᵐ ω ∂μ, 0 ≤ w ω) (S : Set Ω) (hS : MeasurableSet S) :
+    (μ.withDensity (fun ω => ENNReal.ofReal (w ω))) S =
+      ENNReal.ofReal (∫ ω in S, w ω ∂μ) := by
+  rw [withDensity_apply _ hS]
+  exact (ofReal_integral_eq_lintegral_ofReal hw.integrableOn
+    (ae_restrict_of_ae hw0)).symm
+
+/-- Transport a real integral through a weighted pushforward. The theorem applies
+to all measurable real test functions, and so avoids an L2 restriction. -/
+private lemma t100_weighted_map_integral {Ω F : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace F]
+    (μ : Measure Ω) (w : Ω → ℝ) (hw : Measurable w)
+    (hw0 : ∀ᵐ ω ∂μ, 0 ≤ w ω) (U : Ω → F) (hU : Measurable U)
+    (v : F → ℝ) (hv : Measurable v) :
+    (∫ z, v z ∂(μ.withDensity (fun ω => ENNReal.ofReal (w ω))).map U) =
+      ∫ ω, w ω * v (U ω) ∂μ := by
+  rw [integral_map_of_stronglyMeasurable hU hv.stronglyMeasurable]
+  rw [integral_withDensity_eq_integral_toReal_smul
+    hw.ennreal_ofReal (ae_of_all μ (fun _ => ENNReal.ofReal_lt_top))]
+  apply integral_congr_ae
+  filter_upwards [hw0] with ω hω
+  simp only [ENNReal.toReal_ofReal hω, smul_eq_mul]
 
 
 
+
+/-! P001-T12: apply the scalar residual square to each test vector a. -/
+
+private lemma t12_linear_memLp {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) {τ : ℕ} (f : Ω → Fin τ → ℝ)
+    (hf : ∀ j, MemLp (fun ω => f ω j) 2 μ) (a : Fin τ → ℝ) :
+    MemLp (fun ω => ∑ j, a j * f ω j) 2 μ := by
+  exact memLp_finsetSum Finset.univ (fun j _ => (hf j).const_mul (a j))
+
+
+private lemma t12_centered_covariance {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) {τ : ℕ} (ψ : Ω → Fin τ → ℝ)
+    (hψ0 : ∀ j, mean μ (fun ω => ψ ω j) = 0) (j k : Fin τ) :
+    covarianceMatrix μ ψ j k = mean μ (fun ω => ψ ω j * ψ ω k) := by
+  change (∫ ω, (ψ ω j - mean μ (fun ω => ψ ω j)) *
+    (ψ ω k - mean μ (fun ω => ψ ω k)) ∂μ) = _
+  rw [hψ0 j, hψ0 k]
+  simp only [sub_zero, mean]
 
 
 

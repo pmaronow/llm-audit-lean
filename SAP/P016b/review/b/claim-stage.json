@@ -1,0 +1,62 @@
+[
+  {
+    "theorem": "SAP.P016b.T12",
+    "target_id": "P016-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The effect-increasing assertions, arbitrary-statistic full-support exact-tail validity, six p-values, and complete rejection-probability function agree with canonical (EI) and (i)-(iv). The explicit raw KS score table in (iv) is absent as a conjunct. The group-size hypotheses are exactly those needed for group means and ECDFs. Both KS failures have the concrete nonempty-group witness z=1100, y=(0,0,0,1), y'=(1,0,0,1), with each statistic decreasing from 1/2 to 0. No circular hypothesis or false retained assertion found."
+  },
+  {
+    "theorem": "SAP.P016b.T13",
+    "target_id": "P016-T13",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The general tie-free law explicitly adds 0<=alpha<1, losing at least the admissible alpha=1 case for odd B from the canonical formula with 2c<B. The five decimal approximations in (ii)-(iii) are not asserted, but the exact mixtures, weak/strict comparisons and zero-p positivity are retained. The RSS fiber equivalence z=w or z=complement(w), together with balanced 16-unit assignments, actually implies the canonical two-element fibers, although no separate cardinality certificate is written. Every retained formula checks mathematically; exact enumeration confirms 6435 RSS values of multiplicity two, and independent high-precision mixture evaluation confirms the numerical inequalities. Nonvacuity: uniformly permute the distinct values 0,...,B for the tie-free law; use the explicitly nonempty uniform balanced design for the finite witness. The statement targets the archived weak cutoff and does not claim to refute the paper's strict cutoff."
+  },
+  {
+    "theorem": "SAP.P016b.T14",
+    "target_id": "P016-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exchangeable rank bounds, strict-cutoff bounds, corrected p-values, and iid coordinate-permutation invariance match (a)-(d), with ties allowed. ExactValidity in (e) is explicitly limited to finite laws with every represented weight positive, whereas the standalone wording of (e) mentions the exact assignment distribution without imposing full support. This is only a conservative representational restriction: the referenced P016-T12(iii) itself has precisely that positivity premise, and every finite distribution can instead be represented on its positive support. Zero weights remain allowed in (d). A point mass on a constant reference vector witnesses the exchangeability hypotheses; uniform permutation of a distinct vector witnesses a nonconstant exchangeable case. All probability events are Borel and all measures are probability measures, so real-valued conversion does not hide infinite masses."
+  },
+  {
+    "theorem": "SAP.P016b.T15",
+    "target_id": "P016-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three canonical witnesses are present: both adjusted four-vectors and treated ECDFs at 6; the ECDF of (1,3) at 2 and 3; and the universal diagonal equivalence with exclusion of (1/2,2). Control invariance follows directly from the explicit vectors. These are unconditional finite examples with nonempty groups and nonzero multiplicative parameter, and they refute exactly the three local printed readings identified in the target, without adding claims about the actual simulations."
+  },
+  {
+    "theorem": "SAP.P016b.T16",
+    "target_id": "P016-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The coordinate adjustment identities, parameter sensitivity conditions, ECDF count identity and corrected two-parameter truth witness all match canonical (a)-(c). The formal ECDF-invariance clause additionally requires a positive control-group size, and the whole-sample ECDF clause requires n>0. These explicitly exclude the empty cases of the total real-division definitions. Requiring a and a' nonzero in the common coordinate clause is the natural multiplicative domain and causes no loss for its additive identities, since the latter do not depend on a or a'. Nonvacuity: n=2, Y=(2,4), z=01, t=1, a=2, a'=3. No additional substantive hypothesis or false conclusion found."
+  },
+  {
+    "theorem": "SAP.P016b.T17",
+    "target_id": "P016-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "With both groups nonempty, the let-bound u=Y-z*t is exactly the adjusted outcome. meanDifference u z is the corrected comparison C, and both equalities identify the diagnostic imputed-treated comparison as C+t and as the raw observed difference. The 2-versus-12 example uses the canonical u=(0,1,2,3), z=0011, t=10. Every adjusted u is attainable by taking Y=u+z*t, so quantifying over Y imposes no hidden outcome restriction."
+  },
+  {
+    "theorem": "SAP.P016b.T18",
+    "target_id": "P016-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "The coordinate ordering in calibrationY and calibrationZ exactly realizes the canonical counts of 9,11 controls and 8,9,11,12 treated outcomes. CalibrationWitness contains the group means, population variance, all discrepancies, 127 nonzero treated discrepancies, median zero, both forward shifts and both adjustment reductions with their ratios. The final universal nonnegativity clause proves global minimality. All arithmetic was independently checked with rational numbers. This refutes equality of hypothesis strength under this median criterion, not an unstated quantitative tolerance for the paper's phrase 'very similar'."
+  },
+  {
+    "theorem": "SAP.P016b.T19",
+    "target_id": "P016-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every canonical mathematical clause (a)-(f) is present: the discrepancy formula, half of the least treated discrepancy, every nonzero-treated-outcome root and its other discrepancies, group and uniform-design expected adjustment reductions, the matched-parameter equivalence, and the calibration counterexample. The condition m>0 supplies the nonempty domain required by the canonical m-th/(m+1)-th order statistics and treated minimum; it prevents default list lookup or an empty real infimum from doing work. The condition a!=0 for inverse mean shifts is already specified in canonical (d) and inherited by (e). The canonical note explicitly says the empirical powers and the simulated-data mismatch assertion are not targets; the quoted approximate parameter 1.035312 concerns that simulated dataset, whereas the mathematical target (f) uses the exact constructed witness. Their absence does not remove any canonical mathematical clause. Nonvacuity: m=1, y=(2,4), z=01, j=1, t=1, a=2; for the matching formula use mu=3, t=1, a=3/2."
+  },
+  {
+    "theorem": "SAP.P016b.T20",
+    "target_id": "P016-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The additive observed-outcome identity and true-parameter inverse identity agree with (a); the general t-t0 identity is an additional harmless algebraic fact. The network multiplier uses sum_j z_j*S_ji with exactly the canonical sign and parameter square, and all four clauses (b1)-(b4) are present under the exact canonical nonnegative-S, beta>0, arbitrary-tau hypotheses. Positivity follows because the exponential is in (0,1], making the control multiplier lie between beta and 1; there is no zero-division extension. S=0, beta=2, tau=1/2 and any baseline outcome/family generated by the multiplier give a concrete satisfiable model."
+  },
+  {
+    "theorem": "SAP.P016b.T21",
+    "target_id": "P016-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The 256-unit half-treated uniform design, symmetric binary matrix, true beta=2 and tau=1/2, arbitrary baseline and arbitrary statistic exactly match the canonical setting. All three canonical conclusions are present: uniformity recovery, validity of all three exact tails at weak and strict .05 cutoffs, and iid strict-cutoff bounds for both reference counts. Quantifying T after S permits arbitrary dependence on the fixed S. The probability of all B+1 draws is the unconditional iid law required by the claim, not a conditional or bank-dependent substitute. Nonvacuity: the balanced assignments correspond to 128-element subsets of Fin 256, whose cardinality is choose(256,128)>0, so the actual uniform law has the specified weights; S=0 is a symmetric binary matrix. No degree, Gaussian-outcome or particular-statistic premise has been added."
+  }
+]

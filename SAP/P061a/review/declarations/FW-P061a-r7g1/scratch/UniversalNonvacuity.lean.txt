@@ -1,0 +1,205 @@
+import SAP.P061a.Defs
+import SAP.P061a.Defs.WholeW2
+
+set_option autoImplicit false
+open SAP.P061a Filter MeasureTheory
+open scoped BigOperators Classical Topology BoundedContinuousFunction
+
+namespace AuditUniversal
+
+noncomputable def twoPointDesign {Ω : Type} (a b : Ω) : AtomicDesign Ω where
+  mass := fun z => (if z = a then (1/2 : ℝ) else 0) + if z = b then (1/2 : ℝ) else 0
+  mass_nonnegative := by intro z; positivity
+  mass_summable := (hasSum_ite_eq a (1/2 : ℝ)).summable.add
+    (hasSum_ite_eq b (1/2 : ℝ)).summable
+  mass_total := by
+    have h := ((hasSum_ite_eq a (1/2 : ℝ)).add (hasSum_ite_eq b (1/2 : ℝ))).tsum_eq
+    norm_num at h ⊢
+    exact h
+
+lemma twoPoint_weighted {Ω : Type} (a b : Ω) (f : Ω → ℝ) :
+    HasSum (fun z => (twoPointDesign a b).mass z * f z) ((f a + f b)/2) := by
+  have heq : (fun z => (twoPointDesign a b).mass z * f z) =
+      (fun z => (if z = a then (1/2 : ℝ)*f a else 0) +
+        if z = b then (1/2 : ℝ)*f b else 0) := by
+    funext z
+    by_cases ha : z = a <;> by_cases hb : z = b <;> simp_all [twoPointDesign] <;> ring
+  rw [heq]
+  convert (hasSum_ite_eq a ((1/2 : ℝ)*f a)).add (hasSum_ite_eq b ((1/2 : ℝ)*f b)) using 1 <;> ring
+
+lemma twoPoint_mean {Ω : Type} (a b : Ω) (f : Ω → ℝ) :
+    mean (twoPointDesign a b) f = (f a + f b)/2 := (twoPoint_weighted a b f).tsum_eq
+
+lemma twoPoint_hasMean {Ω : Type} (a b : Ω) (f : Ω → ℝ) :
+    HasMean (twoPointDesign a b) f := (twoPoint_weighted a b (fun z => |f z|)).summable
+
+lemma twoPoint_probability {Ω : Type} (a b : Ω) (E : Ω → Prop) :
+    eventProbability (twoPointDesign a b) E =
+      ((if E a then (1 : ℝ) else 0) + if E b then 1 else 0)/2 := by
+  have heq : eventProbability (twoPointDesign a b) E =
+      mean (twoPointDesign a b) (fun z => if E z then 1 else 0) := by
+    unfold eventProbability mean
+    congr 1
+    funext z
+    by_cases h : E z <;> simp [h]
+  rw [heq, twoPoint_mean]
+
+def fullSpace (n : ℕ) : Set (Fin (n+1) → ℝ) := Set.univ
+def zeroVector (n : ℕ) : fullSpace n := ⟨fun _ => 0, Set.mem_univ _⟩
+def oneVector (n : ℕ) : fullSpace n := ⟨fun _ => 1, Set.mem_univ _⟩
+noncomputable def design (n : ℕ) : AtomicDesign (fullSpace n) :=
+  twoPointDesign (zeroVector n) (oneVector n)
+
+lemma margins (n : ℕ) (i : Fin (n+1)) :
+    exposureProbability (design n) (coordinateExposure (fullSpace n)) i 0 = 1/2 ∧
+    exposureProbability (design n) (coordinateExposure (fullSpace n)) i 1 = 1/2 := by
+  simp [exposureProbability, design, twoPoint_probability, coordinateExposure, zeroVector, oneVector]
+
+lemma independence_constant_right {Ω A B : Type} (D : AtomicDesign Ω)
+    (X : Ω → A) (Y : Ω → B) (b : B) (hY : ∀ z, Y z = b) : independent D X Y := by
+  intro E F
+  simp_rw [hY]
+  by_cases hF : F b
+  · simp [hF, eventProbability, D.mass_total]
+  · simp [hF, eventProbability]
+
+lemma one_unit_independence (i : Fin 1) : independent (design 0)
+    (fun z => z.val i) (fun z => otherCoordinates z.val i) := by
+  apply independence_constant_right (design 0) _ _ (otherCoordinates (zeroVector 0).val i)
+  intro z
+  funext j
+  exact False.elim (j.property (by omega))
+
+-- T3(i): every hypothesis, with two distinct targets and a nonzero response contrast.
+example :
+    (0 < (1 : ℕ)) ∧
+    (∀ i : Fin 1, 0 < exposureProbability (design 0) (coordinateExposure (fullSpace 0)) i 1 ∧
+      0 < exposureProbability (design 0) (coordinateExposure (fullSpace 0)) i 0) ∧
+    targetMoment (design 0) (coordinateExposure (fullSpace 0))
+      (fun i z => z.val i) 1 ∧
+    targetMoment (design 0) (coordinateExposure (fullSpace 0))
+      (fun i z => z.val i) 0 ∧
+    (∀ i : Fin 1, independent (design 0) (fun z => z.val i)
+      (fun z => otherCoordinates z.val i)) := by
+  refine ⟨by decide, ?_, ?_, ?_, one_unit_independence⟩
+  · intro i
+    rw [(margins 0 i).1, (margins 0 i).2]
+    norm_num
+  · intro i
+    exact twoPoint_hasMean _ _ _
+  · intro i
+    exact twoPoint_hasMean _ _ _
+
+-- T3(ii): the same data satisfy every hypothesis with H_i(v)=v_i.
+example :
+    (∀ i : Fin 1, independent (design 0) (coordinateExposure (fullSpace 0) i)
+      (fun z => otherCoordinates (fun j => coordinateExposure (fullSpace 0) j z) i)) ∧
+    (∀ (i : Fin 1) (z : fullSpace 0), supported (design 0) z →
+      coordinateExposure (fullSpace 0) i z = 1 ∨ coordinateExposure (fullSpace 0) i z = 0 →
+      z.val i = (fun (i : Fin 1) (v : Fin 1 → ℝ) => v i) i
+        (fun j => coordinateExposure (fullSpace 0) j z)) := by
+  exact ⟨one_unit_independence, fun _ _ _ _ => rfl⟩
+
+lemma zero_hybrid (n : ℕ) (i : Fin (n+1)) (e : ℝ) (z : fullSpace n) :
+    hybridResponse (fullSpace n) (fun _ _ => 0) i e z = 0 := by
+  simp [hybridResponse]
+
+-- T5 transfer: all domain hypotheses at every positive population size.
+example : PopulationDomainW2 fullSpace design (fun _ _ _ => 0) 1 0 := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro n i
+    rw [(margins n i).1, (margins n i).2]
+    norm_num
+  · intro n
+    constructor <;> intro i <;> exact twoPoint_hasMean _ _ _
+  · intro n i z _
+    exact ⟨Set.mem_univ _, Set.mem_univ _⟩
+  · intro n i
+    exact twoPoint_hasMean _ _ _
+
+lemma zero_target (n : ℕ) :
+    populationContrast (design n) (coordinateExposure (fullSpace n)) (fun _ _ => 0) 1 0 = 0 := by
+  simp [populationContrast, populationExposureMean, exposureMean, mean]
+
+lemma zero_direct (n : ℕ) :
+    averageDirectContrast (fullSpace n) (design n) (fun _ _ => 0) 1 0 = 0 := by
+  simp [averageDirectContrast, zero_hybrid, mean]
+
+example : IsProbabilityMeasure (Measure.dirac (0 : ℝ)) := inferInstance
+
+-- Positive scale, valid first-order law, and consistent scale estimation.
+example :
+    (∀ n : ℕ, (0 : ℝ) < (fun _ : ℕ => (1 : ℝ)) n) ∧
+    weakLimit design (fun n (_ : fullSpace n) =>
+      (0 - populationContrast (design n) (coordinateExposure (fullSpace n))
+        (fun _ _ => 0) 1 0) / 1) (Measure.dirac (0 : ℝ)) ∧
+    probabilityLimit design (fun n (_ : fullSpace n) => (1 : ℝ)/1) 1 ∧
+    Tendsto (fun n => |populationContrast (design n) (coordinateExposure (fullSpace n))
+      (fun _ _ => 0) 1 0 - averageDirectContrast (fullSpace n) (design n)
+        (fun _ _ => 0) 1 0| / 1) atTop (𝓝 0) := by
+  refine ⟨by intro n; norm_num, ?_, ?_, ?_⟩
+  · intro f
+    simp only [zero_target, sub_self, zero_div]
+    simp_rw [design, twoPoint_mean]
+    simpa using tendsto_const_nhds (x := f 0)
+  · intro ε hε
+    simpa [eventProbability, not_lt.mpr hε.le] using (tendsto_const_nhds (x := (0 : ℝ)))
+  · simpa [zero_target, zero_direct] using (tendsto_const_nhds (x := (0 : ℝ)))
+
+-- T5 local bound: every hypothesis holds simultaneously, on the same feasible
+-- design with distinct targets. The neighborhood is empty and responses zero.
+def H (n : ℕ) : Fin (n+1) → Finset (Fin (n+1)) := fun _ => ∅
+def emptyConfig (n : ℕ) (i : Fin (n+1)) : Neighborhood ℝ (H n i) :=
+  fun j => by have hj := j.property; simp [H] at hj
+noncomputable def K (n : ℕ) (i : Fin (n+1)) : Finset (Neighborhood ℝ (H n i)) :=
+  {emptyConfig n i}
+def C (n : ℕ) (i : Fin (n+1)) : Set (Neighborhood ℝ (H n i)) := {emptyConfig n i}
+
+example (n : ℕ) :
+    0 < n+1 ∧
+    (∀ i, i ∉ H n i) ∧
+    (∀ i, (K n i).Nonempty) ∧
+    (∀ i x, x ∈ K n i → x ∈ C n i) ∧
+    (∀ i z, supported (design n) z → neighborhoodVectorW2 (H n i) z ∈ K n i) ∧
+    (∀ i (e : ℝ), e = 1 ∨ e = 0 → HasExtremaW2 (fun _ : Neighborhood ℝ (H n i) => (0 : ℝ)) (C n i)) ∧
+    (∀ i, 0 < exposureProbability (design n) (coordinateExposure (fullSpace n)) i 1 ∧
+      0 < exposureProbability (design n) (coordinateExposure (fullSpace n)) i 0) ∧
+    (∀ i z, supported (design n) z →
+      insertCoordinate i 1 (otherCoordinates z.val i) ∈ fullSpace n ∧
+      insertCoordinate i 0 (otherCoordinates z.val i) ∈ fullSpace n) ∧
+    (∀ i (e : ℝ), e = 1 ∨ e = 0 → ∀ z, supported (design n) z →
+      hybridResponse (fullSpace n) (fun _ _ => 0) i e z =
+        (fun (_ : ℝ) (_ : Neighborhood ℝ (H n i)) => (0 : ℝ)) e
+          (neighborhoodVectorW2 (H n i) z)) := by
+  refine ⟨Nat.succ_pos _, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simp [H]
+  · intro i
+    exact Finset.singleton_nonempty _
+  · simp [K, C]
+  · intro i z _
+    simp only [K, Finset.mem_singleton]
+    funext j
+    have hj := j.property
+    simp [H] at hj
+  · intro i e _
+    have himage : (fun _ : Neighborhood ℝ (H n i) => (0 : ℝ)) '' C n i = {0} := by
+      simp [C]
+    simp only [HasExtremaW2, himage]
+    exact ⟨⟨0, isLeast_singleton⟩, ⟨0, isGreatest_singleton⟩⟩
+  · intro i
+    rw [(margins n i).1, (margins n i).2]
+    norm_num
+  · intro i z _
+    exact ⟨Set.mem_univ _, Set.mem_univ _⟩
+  · intro i e _ z _
+    exact zero_hybrid n i e z
+
+-- T5's separate rate assertion also has a nonzero-bound instance.
+example : (∀ n : ℕ, (0 : ℝ) < 1) ∧
+    (∀ n : ℕ, |(0 : ℝ)-0| ≤ (1 : ℝ)/(n+1)) ∧
+    Tendsto (fun n : ℕ => ((1 : ℝ)/(n+1))/1) atTop (𝓝 0) := by
+  refine ⟨fun _ => by norm_num, (by intro n; simp only [sub_self, abs_zero]; positivity), ?_⟩
+  simpa using (tendsto_one_div_add_atTop_nhds_zero_nat :
+    Tendsto (fun n : ℕ => (1 : ℝ)/(n+1)) atTop (𝓝 0))
+
+end AuditUniversal

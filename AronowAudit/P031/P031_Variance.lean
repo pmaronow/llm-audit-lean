@@ -52,13 +52,14 @@ def intercept (s : Finset ι) (Y : ι → ℝ) : ℝ := groupMean sᶜ Y
 def designMatrix (s : Finset ι) : Matrix ι (Fin 2) ℝ :=
   fun i j => if j = 0 then 1 else treatment s i
 
-/-- "(Z'Z)⁻¹" (p. 367), represented by its explicit two-by-two formula. -/
+/-- "(Z'Z)⁻¹" (p. 367), represented by its explicit two-by-two formula.
+`gram_inverse` proves that this matrix really is the inverse of `Z'Z`. -/
 def gramInverse (s : Finset ι) : Matrix (Fin 2) (Fin 2) ℝ :=
   !![1 / (sᶜ.card : ℝ), -(1 / (sᶜ.card : ℝ));
      -(1 / (sᶜ.card : ℝ)), 1 / (s.card : ℝ) + 1 / (sᶜ.card : ℝ)]
 
 /-- "ê_i = Y_i - Z_i(Z'Z)⁻¹Z'Y" (p. 367), using the coefficient
-formula in (4). -/
+formula in (4). `regression_coefficients` verifies the matrix formula. -/
 def residual (s : Finset ι) (Y : ι → ℝ) (i : ι) : ℝ :=
   Y i - intercept s Y - treatment s i * estimate s Y
 
@@ -76,6 +77,9 @@ def coefficientWeight (s : Finset ι) (i : ι) : ℝ :=
 def sampleVariance (s : Finset ι) (v : ι → ℝ) : ℝ :=
   (∑ i ∈ s, (v i - groupMean s v) ^ 2) / ((s.card : ℝ) - 1)
 
+/-- "σ̂²_FP(y_t) = ((N-1)/N) σ̂²(y_t)" (p. 366). -/
+def sampleVarianceFP (s : Finset ι) (v : ι → ℝ) : ℝ :=
+  ((Fintype.card ι : ℝ) - 1) / Fintype.card ι * sampleVariance s v
 
 /-- "V̂_N(β̂) = σ̂²(y₁)/M + σ̂²(y₀)/(N-M)" (p. 367). -/
 def neyman (s : Finset ι) (Y : ι → ℝ) : ℝ :=
@@ -91,6 +95,14 @@ This is the [2,2] entry of the printed sandwich, expanded as a finite sum. -/
 def hc2 (s : Finset ι) (Y : ι → ℝ) : ℝ :=
   ∑ i, coefficientWeight s i ^ 2 * residual s Y i ^ 2 / (1 - leverage s i)
 
+/-- "V̂_HC2 = N(Z'Z)⁻¹((1/N)∑ Z_i'Z_i ê_i²/(1-h_ii))(Z'Z)⁻¹"
+(p. 367), the full covariance matrix with the printed normalization.
+`hc2_sandwich_entry` connects its [2,2] entry to the scalar definition. -/
+def hc2Covariance (s : Finset ι) (Y : ι → ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  (Fintype.card ι : ℝ) • (gramInverse s *
+    ((1 / (Fintype.card ι : ℝ)) • Matrix.of (fun a b => ∑ i,
+      designMatrix s i a * designMatrix s i b * (residual s Y i ^ 2 / (1 - leverage s i)))) *
+    gramInverse s)
 
 /-- HC1 (footnote 2, p. 368; not defined there): the conventional N/(N-2)
 multiple of HR, with two fitted coefficients. This convention is explicit. -/
@@ -140,6 +152,13 @@ def randomizationVariance (M : ℕ) (y1 y0 : ι → ℝ) : ℝ :=
     (estimate s (observed s y1 y0) -
       expectation M (fun t => estimate t (observed t y1 y0))) ^ 2)
 
+/-- The group-size form of the standing assumption, p. 366, is exactly
+the printed strict inequality 1<M<N-1. -/
+theorem admissible_iff_printed (s : Finset ι) :
+    Admissible s ↔ 1 < s.card ∧ s.card < Fintype.card ι - 1 := by
+  have hc := s.card_add_card_compl
+  unfold Admissible
+  omega
 
 /-- Treatment and control cardinalities sum to N, as in the setting on p. 366. -/
 lemma arm_card_sum (s : Finset ι) :
@@ -180,6 +199,54 @@ theorem leverage_formula (s : Finset ι) (i : ι) :
   by_cases hi : i ∈ s <;>
     simp [leverage, gramInverse, designMatrix, treatment, hi, Fin.sum_univ_two] <;> ring
 
+/-- The normal matrix inverse used in equation (4), p. 367, is the explicit
+matrix `gramInverse`; no model or distributional assumption is needed. -/
+theorem gram_inverse (s : Finset ι) (h : Admissible s) :
+    ((designMatrix s)ᵀ * designMatrix s)⁻¹ = gramInverse s := by
+  have hp := arm_pos h
+  have hs := arm_card_sum s
+  have hm : (s.card : ℝ) ≠ 0 := by linarith [hp.1]
+  have hk : (sᶜ.card : ℝ) ≠ 0 := by linarith [hp.2]
+  apply Matrix.inv_eq_right_inv
+  ext a b
+  fin_cases a <;> fin_cases b <;>
+    simp [Matrix.mul_apply, Matrix.transpose_apply, designMatrix, gramInverse,
+      Fin.sum_univ_two, treatment, ← Finset.sum_filter] <;>
+    field_simp <;> nlinarith
+
+/-- Equation (4), p. 367: OLS coefficients are the control mean and the
+difference in arm means. -/
+theorem regression_coefficients (s : Finset ι) (Y : ι → ℝ) (h : Admissible s) :
+    gramInverse s *ᵥ ((designMatrix s)ᵀ *ᵥ Y) =
+      ![intercept s Y, estimate s Y] := by
+  have hp := arm_pos h
+  have hm : (s.card : ℝ) ≠ 0 := by linarith [hp.1]
+  have hk : (sᶜ.card : ℝ) ≠ 0 := by linarith [hp.2]
+  have hy := s.sum_add_sum_compl Y
+  ext a
+  fin_cases a <;>
+    simp [Matrix.mulVec, dotProduct, Matrix.transpose_apply, designMatrix, gramInverse,
+      Fin.sum_univ_two, treatment, intercept, estimate, groupMean,
+      ← Finset.sum_filter] <;> field_simp <;> nlinarith
+
+/-- The scalar HC2 definition is exactly the [2,2] element of the full
+normalized sandwich printed on p. 367. Together with `gram_inverse` this
+identifies it with the matrix estimator, independently of Theorem 1. -/
+theorem hc2_sandwich_entry (s : Finset ι) (Y : ι → ℝ) (h : Admissible s) :
+    hc2Covariance s Y 1 1 = hc2 s Y := by
+  have hp := arm_pos h
+  have hs := arm_card_sum s
+  have hn : (Fintype.card ι : ℝ) ≠ 0 := by linarith [hp.1, hp.2]
+  have hsym : gramInverse s 0 1 = gramInverse s 1 0 := by simp [gramInverse]
+  unfold hc2Covariance
+  rw [Matrix.mul_smul, Matrix.smul_mul, smul_smul]
+  simp only [one_div, mul_inv_cancel₀ hn, one_smul]
+  simp only [hc2, coefficientWeight, Matrix.mul_apply, Matrix.of_apply, Fin.sum_univ_two, hsym]
+  simp only [add_mul, Finset.mul_sum, Finset.sum_mul, ← sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  simp only [div_eq_mul_inv]
+  ring
 
 /-- Theorem 1 (p. 367; proof p. 368): the HC2 sandwich's treatment variance
 equals Neyman's variance estimator for every admissible realized experiment. -/
@@ -248,9 +315,9 @@ lemma imputed_means (s : Finset ι) (Y : ι → ℝ) (h : Admissible s) :
     simp [groupMean, imputed0_residual, imputed1_residual,
       Finset.sum_add_distrib, residual_sum s Y h, hn]
 
-/-- The moments needed in the corrected proof of Theorem 2, p. 369, with
-two missing tildes restored: all three imputed moments equal (1/N)∑ ê_i².
-The original potential-outcome covariance is not asserted. -/
+/-- The moments needed in the proof of Theorem 2, p. 369, with the
+validator's two missing tildes restored: all three imputed moments equal
+(1/N)∑ ê_i². The original potential-outcome covariance is not asserted. -/
 theorem imputed_moments (s : Finset ι) (Y : ι → ℝ) (h : Admissible s) :
     popVariance (imputed0 s Y) = (∑ i, residual s Y i ^ 2) / Fintype.card ι ∧
     popVariance (imputed1 s Y) = (∑ i, residual s Y i ^ 2) / Fintype.card ι ∧
@@ -395,7 +462,7 @@ theorem expected_treatment (M : ℕ) (hM : 1 ≤ M) (hMN : M ≤ Fintype.card ι
   nlinarith
 
 /-- Distinct inclusion probabilities are M(M-1)/(N(N-1)), the finite
-sampling fact underlying equation (3), p. 366. -/
+sampling fact underlying equation (3), p. 366 (validator E002, section 6). -/
 theorem expected_treatment_pair (M : ℕ) (hM : 2 ≤ M) (hMN : M ≤ Fintype.card ι)
     (i j : ι) (hij : i ≠ j) :
     expectation M (fun s => treatment s i * treatment s j) =
@@ -569,6 +636,16 @@ theorem expected_sample_variance (M : ℕ) (hM : 2 ≤ M)
     unfold sampleVariance
     rw [group_sse_raw s v (by simpa only [hc] using hm), hc]
 
+/-- The finite-population corrected variance estimator on p. 366 is
+unbiased for the population variance with divisor N. -/
+theorem expected_sample_varianceFP (M : ℕ) (hM : 2 ≤ M)
+    (hMN : M ≤ Fintype.card ι) (v : ι → ℝ) :
+    expectation M (fun s => sampleVarianceFP s v) = popVariance v := by
+  have hnR : 2 ≤ (Fintype.card ι : ℝ) := by exact_mod_cast (by omega : 2 ≤ Fintype.card ι)
+  have hn : (Fintype.card ι : ℝ) ≠ 0 := by linarith
+  have hn1 : (Fintype.card ι : ℝ) - 1 ≠ 0 := by linarith
+  simp only [sampleVarianceFP, expectation_mul, expected_sample_variance M hM hMN]
+  field_simp
 
 /-- Complementing assignments changes a uniform size-M design into the uniform size-(N-M) design, supporting both arm variances on p. 366. -/
 lemma expectation_compl (M : ℕ) (hMN : M ≤ Fintype.card ι) (f : Finset ι → ℝ) :
@@ -595,6 +672,13 @@ lemma expectation_compl (M : ℕ) (hMN : M ≤ Fintype.card ι) (f : Finset ι �
 lemma observed_treatment (s : Finset ι) (y1 y0 : ι → ℝ) {i : ι} (hi : i ∈ s) :
     observed s y1 y0 i = y1 i := by simp [observed, treatment, hi]
 
+/-- Unbiasedness of the control-arm σ̂²_FP, p. 366: the complement of
+a uniform size-M treated set is a uniform size-(N-M) control set. -/
+theorem expected_control_sample_varianceFP (M : ℕ) (hK : 2 ≤ Fintype.card ι - M)
+    (hMN : M ≤ Fintype.card ι) (v : ι → ℝ) :
+    expectation M (fun s => sampleVarianceFP sᶜ v) = popVariance v := by
+  rw [expectation_compl M hMN (fun s => sampleVarianceFP s v)]
+  exact expected_sample_varianceFP (Fintype.card ι - M) hK (by omega) v
 
 /-- A control unit reveals its control potential outcome, exactly equation (1), p. 366. -/
 lemma observed_control (s : Finset ι) (y1 y0 : ι → ℝ) {i : ι} (hi : i ∈ sᶜ) :
@@ -774,6 +858,20 @@ theorem randomization_variance_identity (M : ℕ) (hM : 2 ≤ M)
     congr 1
     ring
 
+/-- The bound in Section 2, p. 366, footnote 1: twice the covariance
+minus the two variances is nonpositive. The proof uses the exact variance
+of unit-level effects, avoiding an assumed Cauchy--Schwarz step. -/
+theorem covariance_bound (y1 y0 : ι → ℝ) :
+    2 * popCovariance y1 y0 - popVariance y1 - popVariance y0 ≤ 0 := by
+  have hlin := pop_variance_linear 1 (-1) y1 y0
+  have hn : 0 ≤ popVariance (fun i => y1 i - y0 i) := by
+    unfold popVariance
+    positivity
+  simp only [one_mul, neg_one_mul, one_pow, neg_one_sq] at hlin
+  have he : popVariance (fun i => y1 i - y0 i) =
+      popVariance y1 + popVariance y0 - 2 * popCovariance y1 y0 := by
+    convert hlin using 1 <;> ring
+  linarith
 
 /-- The bias display on p. 367: the exact bias of the Neyman estimate
 is σ²(y₁-y₀)/(N-1), hence is nonnegative. -/
@@ -840,9 +938,8 @@ lemma residual_sse (s : Finset ι) (Y : ι → ℝ) (h : Admissible s) :
   field_simp
 
 /-- An exact finite lemma supporting the unnumbered OLS passage, p. 369:
-the expectation of OLS is expressed in terms of the population variances
-and covariance. An expectation limit is kept distinct
-from an estimator probability limit. -/
+the expectation of OLS is the expression derived in validator E003 section 3.
+An expectation limit is kept distinct from an estimator probability limit. -/
 theorem expected_ols (M : ℕ) (hM : 2 ≤ M) (hK : 2 ≤ Fintype.card ι - M)
     (hMN : M ≤ Fintype.card ι) (y1 y0 : ι → ℝ) :
     expectation M (fun s => ols s (observed s y1 y0)) =
@@ -931,8 +1028,62 @@ theorem hc_variant_relations (s : Finset ι) (Y : ι → ℝ) (h : Admissible s)
     unfold sampleVariance
     field_simp <;> ring
 
+/-- The explicit N=8 supporting populations in validator E003 section 5:
+z=(-1,-1,-1,-1,1,1,1,1). They instantiate the passage on p. 369. -/
+def exampleControl (i : Fin 8) : ℝ := if i.val < 4 then -1 else 1
 
-/-- A finite lemma for footnote 2, p. 368.
+/-- y₁=a z+2 in validator E003 sections 4--5, for the same eight units. -/
+def exampleTreatment (a : ℝ) (i : Fin 8) : ℝ := a * exampleControl i + 2
+
+/-- The explicit eight-unit supporting population has control variance 1, treatment variance a squared, and covariance a, for the p. 369 comparison (validator E003 section 5). -/
+lemma example_moments (a : ℝ) :
+    popVariance exampleControl = 1 ∧ popVariance (exampleTreatment a) = a ^ 2 ∧
+      popCovariance (exampleTreatment a) exampleControl = a := by
+  refine ⟨?_, ?_, ?_⟩ <;>
+    norm_num [popVariance, popCovariance, groupMean, exampleControl, exampleTreatment,
+      Fin.sum_univ_succ] <;> ring
+
+/-- An exact finite instance of OLS being too small, supporting p. 369:
+N=8, M=2, y₀=(-1,-1,-1,-1,1,1,1,1), y₁=(0,0,0,0,4,4,4,4).
+Actual randomization variance is 7/3 and E[OLS] is 8/7 (E003 section 5). -/
+theorem finite_ols_understatement :
+    randomizationVariance 2 (exampleTreatment 2) exampleControl = 7 / 3 ∧
+      expectation 2 (fun s => ols s (observed s (exampleTreatment 2) exampleControl)) = 8 / 7 ∧
+      expectation 2 (fun s => ols s (observed s (exampleTreatment 2) exampleControl)) <
+        randomizationVariance 2 (exampleTreatment 2) exampleControl := by
+  have hv : randomizationVariance 2 (exampleTreatment 2) exampleControl = 7 / 3 := by
+    rw [randomization_variance_identity 2 (by norm_num) (by norm_num) (by norm_num)]
+    unfold varianceExpression
+    rw [(example_moments 2).1, (example_moments 2).2.1, (example_moments 2).2.2]
+    norm_num
+  have he : expectation 2 (fun s => ols s (observed s (exampleTreatment 2) exampleControl)) = 8 / 7 := by
+    rw [expected_ols 2 (by norm_num) (by norm_num) (by norm_num)]
+    rw [(example_moments 2).1, (example_moments 2).2.1]
+    norm_num
+  exact ⟨hv, he, by rw [hv, he]; norm_num⟩
+
+/-- An exact finite instance of OLS being too large, supporting p. 369:
+N=8, M=2, y₀=(-1,-1,-1,-1,1,1,1,1),
+y₁=(3/2,3/2,3/2,3/2,5/2,5/2,5/2,5/2).
+Actual variance is 25/84 and E[OLS] is 2/3 (E003 section 5). -/
+theorem finite_ols_overstatement :
+    randomizationVariance 2 (exampleTreatment (1 / 2)) exampleControl = 25 / 84 ∧
+      expectation 2 (fun s => ols s (observed s (exampleTreatment (1 / 2)) exampleControl)) = 2 / 3 ∧
+      randomizationVariance 2 (exampleTreatment (1 / 2)) exampleControl <
+        expectation 2 (fun s => ols s (observed s (exampleTreatment (1 / 2)) exampleControl)) := by
+  have hv : randomizationVariance 2 (exampleTreatment (1 / 2)) exampleControl = 25 / 84 := by
+    rw [randomization_variance_identity 2 (by norm_num) (by norm_num) (by norm_num)]
+    unfold varianceExpression
+    rw [(example_moments (1 / 2)).1, (example_moments (1 / 2)).2.1,
+      (example_moments (1 / 2)).2.2]
+    norm_num
+  have he : expectation 2 (fun s => ols s (observed s (exampleTreatment (1 / 2)) exampleControl)) = 2 / 3 := by
+    rw [expected_ols 2 (by norm_num) (by norm_num) (by norm_num)]
+    rw [(example_moments (1 / 2)).1, (example_moments (1 / 2)).2.1]
+    norm_num
+  exact ⟨hv, he, by rw [hv, he]; norm_num⟩
+
+/-- A finite lemma for footnote 2, p. 368 (validator E001 section 6).
 With two treated units and zero control outcomes, HR=HC2/2 and HC3=2 HC2,
 and HC1=N HC2/(2(N-2)), including assignments with zero HC2. -/
 theorem two_treated_zero_controls (s : Finset ι) (Y : ι → ℝ) (h : Admissible s)
@@ -961,7 +1112,7 @@ theorem two_treated_zero_controls (s : Finset ι) (Y : ι → ℝ) (h : Admissib
     field_simp <;> ring
 
 /-- The equivalent form of equation (3), p. 366, used to compare leading
-variance terms on p. 369. -/
+variance terms on p. 369 (validator E003 equation (B)). -/
 theorem randomization_variance_alternative (M : ℕ) (hM : 2 ≤ M)
     (hK : 2 ≤ Fintype.card ι - M) (hMN : M ≤ Fintype.card ι) (y1 y0 : ι → ℝ) :
     randomizationVariance M y1 y0 = 1 / ((Fintype.card ι : ℝ) - 1) *
@@ -978,10 +1129,64 @@ theorem randomization_variance_alternative (M : ℕ) (hM : 2 ≤ M)
   field_simp
   ring
 
+/-- Finite leverage bounds supporting footnote 2, p. 368 (validator E001
+section 7). With H=max(1/M,1/(N-M)), (1-H) HC2≤HR≤HC2≤HC3 and
+(1-H) HC3≤HC2. They hold even if every estimate is zero. -/
+theorem hc_variant_bounds (s : Finset ι) (Y : ι → ℝ) (h : Admissible s) :
+    let H : ℝ := max (1 / (s.card : ℝ)) (1 / (sᶜ.card : ℝ))
+    (1 - H) * hc2 s Y ≤ hr s Y ∧ hr s Y ≤ hc2 s Y ∧
+      hc2 s Y ≤ hc3 s Y ∧ (1 - H) * hc3 s Y ≤ hc2 s Y := by
+  have hp := arm_pos h
+  let a : ℝ := 1 / (s.card : ℝ)
+  let b : ℝ := 1 / (sᶜ.card : ℝ)
+  let H : ℝ := max a b
+  let A : ℝ := sampleVariance s Y / s.card
+  let B : ℝ := sampleVariance sᶜ Y / sᶜ.card
+  have ha : 0 ≤ a := by dsimp [a]; positivity
+  have hb : 0 ≤ b := by dsimp [b]; positivity
+  have ha1 : a < 1 := (div_lt_one (by linarith [hp.1])).mpr hp.1
+  have hb1 : b < 1 := (div_lt_one (by linarith [hp.2])).mpr hp.2
+  have hH1 : H < 1 := max_lt ha1 hb1
+  have haH : a ≤ H := le_max_left _ _
+  have hbH : b ≤ H := le_max_right _ _
+  have hA : 0 ≤ A := by
+    dsimp [A, sampleVariance]
+    have hm1 : 0 < (s.card : ℝ) - 1 := by linarith [hp.1]
+    positivity
+  have hB : 0 ≤ B := by
+    dsimp [B, sampleVariance]
+    have hk1 : 0 < (sᶜ.card : ℝ) - 1 := by linarith [hp.2]
+    positivity
+  have hAT : A ≤ A / (1 - a) := by
+    apply (le_div_iff₀ (by linarith : 0 < 1 - a)).mpr
+    nlinarith [mul_nonneg hA ha]
+  have hBC : B ≤ B / (1 - b) := by
+    apply (le_div_iff₀ (by linarith : 0 < 1 - b)).mpr
+    nlinarith [mul_nonneg hB hb]
+  have hAH : A / (1 - a) ≤ A / (1 - H) :=
+    div_le_div_of_nonneg_left hA (by linarith) (by linarith)
+  have hBH : B / (1 - b) ≤ B / (1 - H) :=
+    div_le_div_of_nonneg_left hB (by linarith) (by linarith)
+  have hsum : (1 - H) * (A / (1 - a) + B / (1 - b)) ≤ A + B := by
+    have ht : A / (1 - a) + B / (1 - b) ≤ (A + B) / (1 - H) := by
+      rw [add_div]
+      linarith
+    have hh := (le_div_iff₀ (by linarith : 0 < 1 - H)).mp ht
+    nlinarith
+  have hn : hc2 s Y = A + B := hc2_eq_neyman s Y h
+  have hrh : hr s Y = (1 - a) * A + (1 - b) * B := (hc_variant_relations s Y h).1
+  have h3 : hc3 s Y = A / (1 - a) + B / (1 - b) := (hc_variant_relations s Y h).2.1
+  change (1 - H) * hc2 s Y ≤ hr s Y ∧ hr s Y ≤ hc2 s Y ∧
+    hc2 s Y ≤ hc3 s Y ∧ (1 - H) * hc3 s Y ≤ hc2 s Y
+  rw [hn, hrh, h3]
+  refine ⟨?_, ?_, by linarith, hsum⟩
+  · nlinarith [mul_nonneg hA (sub_nonneg.mpr haH), mul_nonneg hB (sub_nonneg.mpr hbH)]
+  · nlinarith [mul_nonneg hA ha, mul_nonneg hB hb]
 
-/-! Asymptotic definitions: explicit finite-population sequences and filters.
+/-! Asymptotic targets: explicit finite-population sequences and filters.
 The paper does not supply these definitions. They give operational meanings
-to its wording, and the additional hypotheses are stated explicitly.
+to its wording, and the missing hypotheses are documented at each statement.
+No drafted asymptotic assertion is used in any proved finite result.
 -/
 
 /-- "An experiment on a finite population U of N units ... 1<M<N-1"
@@ -1055,9 +1260,9 @@ def StandardizedNormalLimit (P : ℕ → Population) : Prop :=
     (pointEstimate (P r) s - populationEffect (P r)) / Real.sqrt (trueVariance (P r)) ≤ x))
     atTop (𝓝 (normalCDF x))
 
-/-- Convergence in probability: every positive error-threshold event has
-probability tending to zero. It is defined on each row's actual finite
-randomization space. -/
+/-- Convergence in probability, needed for the validator's repair of p. 367:
+every positive error-threshold event has probability tending to zero.
+It is defined on each row's actual finite randomization space. -/
 def ConvergesInProbability (P : ℕ → Population) (f : VarianceEstimator) (c : ℝ) : Prop :=
   ∀ ε : ℝ, 0 < ε → Tendsto (fun r =>
     eventProbability (P r) (fun s => ε < |f (P r) s - c|)) atTop (𝓝 0)
@@ -1096,6 +1301,36 @@ lemma population_assignment_admissible (P : Population) (s : Finset (Fin P.N))
   · rw [hc]; omega
   · rw [card_compl, hc]; simp only [Fintype.card_fin]; omega
 
+/-- The extension from Neyman intervals to HC2 on p. 368 is exact:
+their coverage probabilities coincide at every population size and z. -/
+theorem coverage_neyman_eq_hc2 (P : Population) (z : ℝ) :
+    coverage P neymanEstimator z = coverage P hc2Estimator z := by
+  unfold coverage eventProbability
+  apply expectation_congr
+  intro s hs
+  have he := hc2_eq_neyman s (observed s P.y1 P.y0)
+    (population_assignment_admissible P s hs)
+  simp only [neymanEstimator, hc2Estimator, he]
+  rfl
+
+/-- The transfer used after Theorem 2, p. 369: the exact CE/OLS
+finite-sample scaling coefficient tends to one when N→∞. -/
+theorem ce_ols_scale_tends_to_one (P : ℕ → Population) (hN : GrowingPopulations P) :
+    Tendsto (fun r => ((P r).N - 2 : ℝ) / ((P r).N - 1 : ℝ)) atTop (𝓝 1) := by
+  have hn : Tendsto (fun r => ((P r).N : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_atTop.comp hN
+  have hd : Tendsto (fun r => ((P r).N : ℝ) - 1) atTop atTop := by
+    simpa [sub_eq_add_neg] using tendsto_atTop_add_const_right atTop (-1 : ℝ) hn
+  have hi : Tendsto (fun r => 1 / (((P r).N : ℝ) - 1)) atTop (𝓝 (0 : ℝ)) :=
+    hd.const_div_atTop 1
+  have hl : Tendsto (fun r => 1 - 1 / (((P r).N : ℝ) - 1)) atTop (𝓝 (1 : ℝ)) := by
+    simpa using tendsto_const_nhds.sub hi
+  apply hl.congr
+  intro r
+  have hnR : 4 ≤ ((P r).N : ℝ) := by exact_mod_cast (population_sizes (P r)).2.2.2
+  have hn1 : ((P r).N : ℝ) - 1 ≠ 0 := by linarith
+  field_simp
+  ring
 
 /-- A scalar limit supporting the leading-variance comparison on p. 369:
 N/(N-a) tends to one for the fixed offsets a=1,2 used by the estimators.
@@ -1118,10 +1353,11 @@ theorem population_ratio_tends_one (P : ℕ → Population) (hN : GrowingPopulat
   field_simp
   ring
 
-/-- A deterministic true-variance limit supporting p. 369.
-Under the explicit additional conditions M/N→p in (0,1) and convergence
-of the two variances and covariance, N V(β̂) tends to
-(1-p)v1/p + p v0/(1-p) + 2c. These conditions are not printed in the paper. -/
+/-- A deterministic true-variance limit supporting p. 369, derived in
+validator E003 equation (D). Under the EXPLICIT additional conditions
+M/N→p in (0,1) and convergence of the two variances and covariance,
+N V(β̂) tends to (1-p)v1/p + p v0/(1-p) + 2c. These conditions are not
+printed in the paper and are not silently added to target T6. -/
 theorem scaled_true_variance_limit (P : ℕ → Population) (hN : GrowingPopulations P)
     (p v1 v0 c : ℝ) (hp : 0 < p) (hp1 : p < 1)
     (hAlloc : Tendsto (fun r => ((P r).M : ℝ) / (P r).N) atTop (𝓝 p))
@@ -1161,10 +1397,10 @@ theorem scaled_true_variance_limit (P : ℕ → Population) (hN : GrowingPopulat
   simp only [Fintype.card_fin]
   field_simp <;> ring
 
-/-- An expectation limit supporting p. 369.
-Under explicit allocation and population-variance limits,
+/-- An EXPECTATION limit supporting p. 369, derived in validator E003
+equation (E). Under explicit allocation and population-variance limits,
 N E[V̂_OLS] tends to v1/(1-p)+v0/p. This does not assert convergence
-in probability of V̂_OLS. -/
+in probability of V̂_OLS and is not a proof of the drafted T6 statement. -/
 theorem scaled_expected_ols_limit (P : ℕ → Population) (hN : GrowingPopulations P)
     (p v1 v0 : ℝ) (hp : 0 < p) (hp1 : p < 1)
     (hAlloc : Tendsto (fun r => ((P r).M : ℝ) / (P r).N) atTop (𝓝 p))
@@ -1208,6 +1444,41 @@ theorem scaled_expected_ols_limit (P : ℕ → Population) (hN : GrowingPopulati
   simp only [Fintype.card_fin]
   field_simp <;> ring
 
+/-- Literal formalization of the unnumbered large-sample claim, pp. 367--368
+and footnote 2: standardized asymptotic normality alone gives conservative
+normal coverage for all five estimators, and HR/HC1/HC3 are first-order
+equivalent to HC2. No arm-growth or variance-ratio hypothesis is inserted.
+Validator E001 establishes this literal implication is false; it is
+deliberately only a drafted statement, with no claimed proof. -/
+theorem large_sample_coverage_as_printed (P : ℕ → Population)
+    (hN : GrowingPopulations P) (hNormal : StandardizedNormalLimit P) :
+    FirstOrderEquivalent P hrEstimator hc2Estimator ∧
+    FirstOrderEquivalent P hc1Estimator hc2Estimator ∧
+    FirstOrderEquivalent P hc3Estimator hc2Estimator ∧
+    ∀ z : ℝ, 0 < z →
+      ConservativeCoverage P neymanEstimator z ∧ ConservativeCoverage P hc2Estimator z ∧
+      ConservativeCoverage P hrEstimator z ∧ ConservativeCoverage P hc1Estimator z ∧
+      ConservativeCoverage P hc3Estimator z := by
+  sorry
+
+/-- The explicit sufficient repair from validator E001 section 7, not
+a printed theorem: add V̂_N/V→p c for finite c≥1 and growth of BOTH arms.
+These added conditions are visible in the signature. The limit/coverage
+argument is drafted separately and is not used to prove any finite target. -/
+theorem large_sample_coverage_repaired (P : ℕ → Population)
+    (hN : GrowingPopulations P) (hNormal : StandardizedNormalLimit P)
+    (c : ℝ) (hc : 1 ≤ c)
+    (hRatio : ConvergesInProbability P (fun Q s => neymanEstimator Q s / trueVariance Q) c)
+    (hT : Tendsto (fun r => (P r).M) atTop atTop)
+    (hC : Tendsto (fun r => (P r).N - (P r).M) atTop atTop) :
+    FirstOrderEquivalent P hrEstimator hc2Estimator ∧
+    FirstOrderEquivalent P hc1Estimator hc2Estimator ∧
+    FirstOrderEquivalent P hc3Estimator hc2Estimator ∧
+    ∀ z : ℝ, 0 < z →
+      ConservativeCoverage P neymanEstimator z ∧ ConservativeCoverage P hc2Estimator z ∧
+      ConservativeCoverage P hrEstimator z ∧ ConservativeCoverage P hc1Estimator z ∧
+      ConservativeCoverage P hc3Estimator z := by
+  sorry
 
 /-- The "too big or too small relative to V(β̂)" passage on p. 369,
 interpreted on the N-times-variance scale (the raw variances can both tend
@@ -1219,14 +1490,30 @@ def UnbalancedVarianceLimit (P : ℕ → Population) (a v : ℝ) : Prop :=
     ConvergesInProbability P (fun Q s => (Q.N : ℝ) * olsEstimator Q s) a ∧
     ConvergesInProbability P (fun Q s => (Q.N : ℝ) * ceEstimator Q s) a
 
+/-- The unnumbered OLS/CE warning, p. 369: there exist unbalanced growing
+population sequences with OLS/CE probability limits below the true leading
+variance, and others above it. On a sequence of the first kind, normal
+intervals under-cover even with a standardized normal limit. This makes
+"may" and "not assured" existential assertions; it does not assert that
+every arbitrary sequence has a probability limit. The sequence and
+probability-limit proof remain drafted; the finite lemmas above are proved. -/
+theorem ols_ce_may_be_too_small_or_large :
+    (∃ (P : ℕ → Population) (a v : ℝ), UnbalancedVarianceLimit P a v ∧ a < v ∧
+      StandardizedNormalLimit P ∧ ∀ z : ℝ, 0 < z →
+        ∃ q : ℝ, q < 2 * normalCDF z - 1 ∧
+          Tendsto (fun r => coverage (P r) olsEstimator z) atTop (𝓝 q) ∧
+          Tendsto (fun r => coverage (P r) ceEstimator z) atTop (𝓝 q)) ∧
+    (∃ (P : ℕ → Population) (a v : ℝ), UnbalancedVarianceLimit P a v ∧ v < a) := by
+  sorry
 
-/-! Corrections and counterexamples. -/
 
-/-- Explicit potential outcomes, `(0,2,5,9)` in both arms,
+/-! Corrections and counterexamples added for the expanded target list. -/
+
+/-- E002's explicit actual potential outcomes, `(0,2,5,9)` in both arms,
 for the counterexample to the untilded covariance in the proof on p. 369. -/
 def proofExampleOutcomes : Fin 4 → ℝ := ![0, 2, 5, 9]
 
-/-- Explicit assignment: the first two of four units are treated.
+/-- E002's explicit assignment: the first two of four units are treated.
 The labels 0,1 are the paper's labels 1,2. -/
 def proofExampleTreated : Finset (Fin 4) := {0, 1}
 
@@ -1374,7 +1661,7 @@ theorem corrected_theorem_three_proof (s : Finset ι) (Y : ι → ℝ)
   · simp only [neyman, hk]
 
 /-- Adding a constant shifts a nonempty group's mean by that constant,
-for the mean defined on p. 366. -/
+for the mean defined on p. 366; this supports the E003 repair. -/
 lemma group_mean_add_const (s : Finset ι) (v : ι → ℝ) (c : ℝ)
     (hs : (s.card : ℝ) ≠ 0) :
     groupMean s (fun i => v i + c) = groupMean s v + c := by
@@ -1400,14 +1687,14 @@ lemma pop_covariance_add_const (v w : ι → ℝ) (c d : ℝ)
     group_mean_add_const univ w d (by simpa using hn)]
   simp only [add_sub_add_right_eq_sub]
 
-/-- Equation (1), p. 366, under the shifts y0'=y0+c, y1'=y1+c+d:
+/-- Equation (1), p. 366, under E003's shifts y0'=y0+c, y1'=y1+c+d:
 the observed vector becomes Y+c+dX for the same assignment. -/
 lemma observed_shift (s : Finset ι) (y1 y0 : ι → ℝ) (c d : ℝ) :
     observed s (fun i => y1 i + (c + d)) (fun i => y0 i + c) =
       fun i => observed s y1 y0 i + c + d * treatment s i := by
   ext i; unfold observed; ring
 
-/-- Exact regression shift identities, supporting T10 and T11:
+/-- E003's exact regression shift identities, supporting T10 and T11:
 Y+c+dX shifts α̂ by c and β̂ by d, leaving every residual and OLS variance
 estimate unchanged under the standing experiment assumptions (p. 366). -/
 theorem regression_shift_invariance (s : Finset ι) (Y : ι → ℝ) (c d : ℝ)
@@ -1450,7 +1737,7 @@ theorem regression_shift_invariance (s : Finset ι) (Y : ι → ℝ) (c d : ℝ)
 /-- T10(a) and T11's final exact assertion: for any admissible finite
 population, shifting y0 by c and y1 by c+d changes the control mean by c
 and the average effect by d but preserves the actual randomization variance
-and the OLS variance estimate for every possible assignment, correcting
+and the OLS estimate for every possible assignment. E003 section 2 repairs
 the first-moment dependency description in footnote 3 (p. 369). -/
 theorem potential_outcome_shift_invariance (M : ℕ) (hM : 2 ≤ M)
     (hK : 2 ≤ Fintype.card ι - M) (hMN : M ≤ Fintype.card ι)
@@ -1486,7 +1773,7 @@ theorem potential_outcome_shift_invariance (M : ℕ) (hM : 2 ≤ M)
     rw [observed_shift]
     exact regression_shift_invariance s (observed s y1 y0) c d (ha s hs)
 
-/-- The algebraic difference in the corrected footnote 3 (p. 369):
+/-- The algebraic difference in the corrected footnote 3 (p. 369, E003):
 the OLS and true leading variances differ by allocation imbalance plus
 the centered variance of unit treatment effects; no first moment enters. -/
 lemma leading_variance_difference (p v1 v0 c : ℝ) (hp : 0 < p) (hp1 : p < 1) :
@@ -1497,9 +1784,9 @@ lemma leading_variance_difference (p v1 v0 c : ℝ) (hp : 0 < p) (hp1 : p < 1) :
   field_simp; ring
 
 /-- T11's deterministic part: the full corrected footnote 3 relation
-(p. 369), under explicit sequence, allocation and
-centered-moment conditions. This includes both leading limits, their bias
-difference, and the treatment-effect variance limit. -/
+(p. 369, E003 equations D--E), under the validator's explicit sequence,
+allocation and centered-moment conditions. This includes both leading
+limits, their bias difference, and the treatment-effect variance limit. -/
 theorem corrected_footnote_three_limits (P : ℕ → Population) (hN : GrowingPopulations P)
     (p v1 v0 c : ℝ) (hp : 0 < p) (hp1 : p < 1)
     (hAlloc : Tendsto (fun r => ((P r).M : ℝ) / (P r).N) atTop (𝓝 p))
@@ -1544,7 +1831,7 @@ lemma expectation_nonneg (M : ℕ) (f : Finset ι → ℝ)
   exact div_nonneg (Finset.sum_nonneg h) (Nat.cast_nonneg _)
 
 /-- Finite Markov inequality for the actual randomization probabilities
-on p. 366. It bounds event probabilities using a nonnegative expectation. -/
+on p. 366, used in the E003 sequence counterexample and bounded-moment repair. -/
 lemma finite_markov (P : Population) (f : Finset (Fin P.N) → ℝ) (ε : ℝ)
     (hε : 0 < ε) (hf : ∀ s ∈ (univ : Finset (Fin P.N)).powersetCard P.M, 0 ≤ f s) :
     eventProbability P (fun s => ε < f s) ≤ expectation P.M f / ε := by
@@ -1592,7 +1879,7 @@ lemma probability_limit_congr (P : ℕ → Population) {f g : VarianceEstimator}
 
 /-- An affine function of a square with vanishing expectation has its
 constant-term probability limit when its deterministic multiplier tends
-to one. This finite-design lemma yields limits for the explicit sequences. -/
+to one. This finite-design lemma proves E003's explicit sequence limits. -/
 theorem affine_square_probability_limit (P : ℕ → Population)
     (R : VarianceEstimator) (F : Population → ℝ) (A B : ℝ)
     (hF : Tendsto (fun n => F (P n)) atTop (𝓝 1))
@@ -1622,11 +1909,11 @@ theorem affine_square_probability_limit (P : ℕ → Population)
         rw [expectation_add, expectation_const _ (by simpa using (population_sizes (P n)).2.2.1),
           expectation_mul]
 
-/-- The fully specified sign population: the first 2k units have z=-1
+/-- E003's fully specified sign population: the first 2k units have z=-1
 and the last 2k have z=1, in the counterexample to footnote 3, p. 369. -/
 def footnoteSigns (k : ℕ) (i : Fin (4 * k)) : ℝ := if i.val < 2 * k then -1 else 1
 
-/-- T10's bounded population sequences: k=n+2, N=4k,
+/-- T10's bounded population sequences (E003 section 4): k=n+2, N=4k,
 M=k, y0=z and y1=a z+2. Starting k at two ensures 1<M<N-1 in every row. -/
 def footnotePopulation (a : ℝ) (n : ℕ) : Population where
   N := 4 * (n + 2)
@@ -1636,12 +1923,12 @@ def footnotePopulation (a : ℝ) (n : ℕ) : Population where
   hM := by omega
   hMN := by omega
 
-/-- The treated mean r of the signs, used to prove probability
+/-- The treated mean r of the E003 signs, used to prove probability
 limits on the explicit N=4k,M=k populations; the cutoff is 2M. -/
 def footnoteTreatedMean : VarianceEstimator := fun Q s =>
   groupMean s (fun i => if i.val < 2 * Q.M then (-1 : ℝ) else 1)
 
-/-- The sign vector has total sum zero and squared entries one.
+/-- E003's sign vector has total sum zero and squared entries one.
 This proves its mean zero and divisor-N population variance one exactly. -/
 lemma footnote_sign_moments (k : ℕ) (hk : 2 ≤ k) :
     (∑ i, footnoteSigns k i) = 0 ∧ (∀ i, footnoteSigns k i ^ 2 = 1) ∧
@@ -1723,7 +2010,7 @@ lemma footnote_population_growth (a : ℝ) :
 
 /-- For any arm sampled from squared-unit signs, its centered sum of
 squares after the affine outcome transformation a z+b is
-m a²(1-r²). This exact lemma supports T10's finite OLS formula. -/
+m a²(1-r²). This exact lemma supports T10's finite OLS formula (E003). -/
 lemma affine_sign_sse (s : Finset ι) (z : ι → ℝ) (a b : ℝ)
     (hs : (s.card : ℝ) ≠ 0) (hz : ∀ i, z i ^ 2 = 1) :
     (∑ i ∈ s, (a * z i + b - groupMean s (fun j => a * z j + b)) ^ 2) =
@@ -1739,7 +2026,7 @@ lemma affine_sign_sse (s : Finset ι) (z : ι → ℝ) (a b : ℝ)
   simp only [hz, sum_const, nsmul_eq_mul, mul_one, groupMean]
   field_simp <;> ring
 
-/-- T10's exact realized-assignment identity:
+/-- T10's exact realized-assignment identity (E003 equation G):
 N V̂_OLS=N/(N-2)[4a²/3+4-(4a²/3+4/9)r²], where r is the treated sign mean.
 It is an identity of the observed-data regression, not an expectation. -/
 theorem footnote_scaled_ols_formula (a : ℝ) (n : ℕ) (s : Finset (Fin (footnotePopulation a n).N))
@@ -1808,7 +2095,7 @@ theorem footnote_scaled_ols_formula (a : ℝ) (n : ℕ) (s : Finset (Fin (footno
   field_simp <;> ring
 
 /-- T10's exact concentration input: the treated sign mean satisfies
-E[r²]=3/(N-1), by finite sampling without replacement. -/
+E[r²]=3/(N-1), as E003 derives from finite sampling without replacement. -/
 theorem footnote_treated_mean_square (a : ℝ) (n : ℕ) :
     expectation (footnotePopulation a n).M (fun s => footnoteTreatedMean
       (footnotePopulation a n) s ^ 2) = 3 / ((footnotePopulation a n).N - 1 : ℝ) := by
@@ -1829,7 +2116,7 @@ theorem footnote_treated_mean_square (a : ℝ) (n : ℕ) :
     have hc := (mem_powersetCard.mp hs).2
     simp only [groupMean, hc, div_pow, Nat.cast_add, Nat.cast_ofNat]
 
-/-- T10's exact true variance, from the actual uniform
+/-- T10's exact true variance (E003 equation F), from the actual uniform
 randomization variance, for every population in its explicitly given family. -/
 theorem footnote_true_variance_formula (a : ℝ) (n : ℕ) :
     trueVariance (footnotePopulation a n) =
@@ -1850,7 +2137,7 @@ theorem footnote_true_variance_formula (a : ℝ) (n : ℕ) :
   have hk : (n : ℝ) + 2 ≠ 0 := by positivity
   field_simp <;> ring
 
-/-- Both deterministic limits for the three explicit sequences:
+/-- Both deterministic limits for the three explicit E003 sequences:
 N V→3a²+2a+1/3 and N E[V̂_OLS]→4a²/3+4. These are separated from the
 estimator probability limits, which are proved with finite concentration. -/
 theorem footnote_deterministic_limits (a : ℝ) :
@@ -1882,7 +2169,7 @@ theorem footnote_deterministic_limits (a : ℝ) :
   · convert ht using 1 <;> congr 1 <;> ring
   · convert he using 1 <;> congr 1 <;> ring
 
-/-- The Markov concentration input tends to zero: E[r²]→0 along the
+/-- E003's Markov concentration input tends to zero: E[r²]→0 along the
 explicit growing populations, independently of the treatment scale a. -/
 lemma footnote_treated_square_limit (a : ℝ) :
     Tendsto (fun n => expectation (footnotePopulation a n).M
@@ -1937,7 +2224,7 @@ theorem footnote_ce_probability_limit (a : ℝ) :
     _ = _ := by rw [ho]; field_simp <;> ring
 
 /-- The deterministic ratio (N-1)/(N-2) tends to one on every growing
-population sequence, as needed for the estimator-to-variance ratios. -/
+population sequence, as needed for E003's estimator-to-variance ratios. -/
 lemma population_ratio_one_two (P : ℕ → Population) (hN : GrowingPopulations P) :
     Tendsto (fun n => ((P n).N - 1 : ℝ) / ((P n).N - 2 : ℝ)) atTop (𝓝 1) := by
   have hl := (population_ratio_tends_one P hN 2 (by norm_num)).div
@@ -1952,9 +2239,9 @@ lemma population_ratio_one_two (P : ℕ → Population) (hN : GrowingPopulations
   have hn2 : ((P n).N : ℝ) - 2 ≠ 0 := by linarith
   field_simp
 
-/-- T10(b)'s estimator ratio limit: for a with nonzero leading
-true variance, V̂_OLS/V→p (4a²/3+4)/(3a²+2a+1/3). The three
-positive-scale cases below satisfy the nonzero hypothesis. -/
+/-- T10(b)'s genuine estimator ratio limit: for a with nonzero leading
+true variance, V̂_OLS/V→p (4a²/3+4)/(3a²+2a+1/3). All three requested
+positive-scale cases satisfy the nonzero hypothesis. -/
 theorem footnote_ratio_probability_limit (a : ℝ)
     (hv : 3 * a ^ 2 + 2 * a + 1 / 3 ≠ 0) :
     ConvergesInProbability (footnotePopulation a)
@@ -1985,9 +2272,9 @@ theorem footnote_ratio_probability_limit (a : ℝ)
   field_simp <;> ring
 
 /-- One fully specified asymptotic counterexample row-family for T10,
-with fixed allocation and first moments, actual deterministic and
+with allocation and first moments held fixed, actual deterministic and
 probability limits, and a specified limiting OLS/true variance ratio q.
-The equations correct the description on p. 369. -/
+The equations are E003 section 4's repair of the description on p. 369. -/
 def FootnoteVarianceWitness (a q : ℝ) : Prop :=
   GrowingPopulations (footnotePopulation a) ∧
   (∀ n, (footnotePopulation a n).N ≠ 2 * (footnotePopulation a n).M) ∧
@@ -2020,7 +2307,7 @@ theorem footnote_variance_witness (a q : ℝ) (hv : 3 * a ^ 2 + 2 * a + 1 / 3 �
     footnote_ce_probability_limit a, ?_⟩
   rw [← hq]; exact footnote_ratio_probability_limit a hv
 
-/-- Shifts as finite populations, retaining N, M and the
+/-- E003's shifts as actual finite populations, retaining N, M and the
 standing design while changing y0 by c and y1 by c+d. -/
 def shiftedPopulation (P : Population) (c d : ℝ) : Population where
   N := P.N
@@ -2030,7 +2317,7 @@ def shiftedPopulation (P : Population) (c d : ℝ) : Population where
   hM := P.hM
   hMN := P.hMN
 
-/-- Exact invariance, expressed on population records so it can
+/-- E003's exact invariance, expressed on population records so it can
 be applied to every row of any asymptotic sequence. -/
 theorem population_shift_invariance (P : Population) (c d : ℝ) :
     groupMean univ (shiftedPopulation P c d).y0 = groupMean univ P.y0 + c ∧
@@ -2047,12 +2334,45 @@ theorem population_shift_invariance (P : Population) (c d : ℝ) :
     (by simpa using (population_sizes P).2.1) (by simpa using (population_sizes P).2.2.1)
     P.y1 P.y0 c d
 
+/-- T10(c): the three exact N=8,M=2 populations have 28 equally likely
+assignments and the requested true variances, OLS expectations and ratios.
+These finite checks complement the independently proved sequence limits. -/
+theorem footnote_finite_comparisons :
+    ((univ : Finset (Fin 8)).powersetCard 2).card = 28 ∧
+    groupMean univ exampleControl = 0 ∧
+    (∀ a : ℝ, averageEffect (exampleTreatment a) exampleControl = 2) ∧
+    randomizationVariance 2 (exampleTreatment 1) exampleControl = 16 / 21 ∧
+    expectation 2 (fun s => ols s (observed s (exampleTreatment 1) exampleControl)) = 16 / 21 ∧
+    randomizationVariance 2 (exampleTreatment 2) exampleControl = 7 / 3 ∧
+    expectation 2 (fun s => ols s (observed s (exampleTreatment 2) exampleControl)) = 8 / 7 ∧
+    randomizationVariance 2 (exampleTreatment (1 / 2)) exampleControl = 25 / 84 ∧
+    expectation 2 (fun s => ols s (observed s (exampleTreatment (1 / 2)) exampleControl)) = 2 / 3 ∧
+    expectation 2 (fun s => ols s (observed s (exampleTreatment 1) exampleControl)) /
+      randomizationVariance 2 (exampleTreatment 1) exampleControl = 1 ∧
+    expectation 2 (fun s => ols s (observed s (exampleTreatment 2) exampleControl)) /
+      randomizationVariance 2 (exampleTreatment 2) exampleControl = 24 / 49 ∧
+    expectation 2 (fun s => ols s (observed s (exampleTreatment (1 / 2)) exampleControl)) /
+      randomizationVariance 2 (exampleTreatment (1 / 2)) exampleControl = 56 / 25 := by
+  have hv : randomizationVariance 2 (exampleTreatment 1) exampleControl = 16 / 21 := by
+    rw [randomization_variance_identity 2 (by norm_num) (by norm_num) (by norm_num)]
+    unfold varianceExpression
+    rw [(example_moments 1).1, (example_moments 1).2.1, (example_moments 1).2.2]; norm_num
+  have he : expectation 2 (fun s => ols s (observed s (exampleTreatment 1) exampleControl)) = 16 / 21 := by
+    rw [expected_ols 2 (by norm_num) (by norm_num) (by norm_num),
+      (example_moments 1).1, (example_moments 1).2.1]; norm_num
+  have hb : ∀ a : ℝ, averageEffect (exampleTreatment a) exampleControl = 2 := by
+    intro a
+    norm_num [averageEffect, groupMean, exampleTreatment, exampleControl, Fin.sum_univ_succ]
+    ring
+  simp only [hv, he, finite_ols_understatement.1, finite_ols_understatement.2.1,
+    finite_ols_overstatement.1, finite_ols_overstatement.2.1, hb]
+  norm_num [Nat.choose, groupMean, exampleControl, Fin.sum_univ_succ]
 
 /-- T10: an exact and asymptotic counterexample to footnote 3's
 first-moment dependency description (p. 369). The explicit families
 have identical allocation, control mean and average effect but limiting
 OLS/true variance ratios 1,4/7,52/25. Arbitrary first-moment shifts leave
-both variances unchanged. -/
+both variances unchanged, and the N=8 finite comparisons are also proved. -/
 theorem footnote_three_counterexample :
     FootnoteVarianceWitness 1 1 ∧ FootnoteVarianceWitness 2 (4 / 7) ∧
     FootnoteVarianceWitness (1 / 2) (52 / 25) ∧
@@ -2092,20 +2412,38 @@ theorem ols_ce_variance_limit_witnesses :
     · convert footnote_ce_probability_limit (1 / 2) using 1 <;> norm_num
 
 /-- "If in addition the sample second moments converge" in corrected
-T11: both arm sample centered second moments consistently
+T11 (E003 section 3): both arm sample centered second moments consistently
 estimate their divisor-N population variances. This hypothesis is explicit. -/
 def ArmSecondMomentsConverge (P : ℕ → Population) : Prop :=
   ConvergesInProbability P (fun Q s => sampleVariance s Q.y1 - popVariance Q.y1) 0 ∧
   ConvergesInProbability P (fun Q s => sampleVariance sᶜ Q.y0 - popVariance Q.y0) 0
 
 /-- "Potential outcomes are uniformly bounded along the sequence"
-(corrected T11): one real bound controls both schedules
+(corrected T11, E003 section 3): one real bound controls both schedules
 for every unit in every finite population. -/
 def UniformlyBoundedOutcomes (P : ℕ → Population) : Prop :=
   ∃ B : ℝ, ∀ n i, |(P n).y1 i| ≤ B ∧ |(P n).y0 i| ≤ B
 
+/-- T11's probabilistic extension, stated without weakening: convergent
+allocation and centered population moments, together with convergent arm
+sample second moments OR uniformly bounded potential outcomes, give the
+claimed OLS probability limit and, with positive leading true variance,
+the claimed ratio limit. The bounded-outcome sufficiency and general
+finite-row probability algebra are not yet proved in this declaration. -/
+theorem corrected_footnote_three_probability (P : ℕ → Population)
+    (hN : GrowingPopulations P) (p v1 v0 c : ℝ) (hp : 0 < p) (hp1 : p < 1)
+    (hAlloc : Tendsto (fun n => ((P n).M : ℝ) / (P n).N) atTop (𝓝 p))
+    (hV1 : Tendsto (fun n => popVariance (P n).y1) atTop (𝓝 v1))
+    (hV0 : Tendsto (fun n => popVariance (P n).y0) atTop (𝓝 v0))
+    (hCov : Tendsto (fun n => popCovariance (P n).y1 (P n).y0) atTop (𝓝 c))
+    (hSample : ArmSecondMomentsConverge P ∨ UniformlyBoundedOutcomes P) :
+    ConvergesInProbability P (fun Q s => (Q.N : ℝ) * olsEstimator Q s) (v1 / (1 - p) + v0 / p) ∧
+    (0 < (1 - p) / p * v1 + p / (1 - p) * v0 + 2 * c →
+      ConvergesInProbability P (fun Q s => olsEstimator Q s / trueVariance Q)
+        ((v1 / (1 - p) + v0 / p) / ((1 - p) / p * v1 + p / (1 - p) * v0 + 2 * c))) := by
+  sorry
 
-/-- The exact finite sampling identity underlying corrected T11:
+/-- The exact finite sampling identity underlying corrected T11 and E003:
 the mean-squared error of a sample mean is (N-M)/(M(N-1)) σ²(v).
 The expectation is over the actual equally likely size-M assignments. -/
 theorem sample_mean_squared_error (M : ℕ) (hM : 2 ≤ M)
@@ -2127,7 +2465,7 @@ theorem sample_mean_squared_error (M : ℕ) (hM : 2 ≤ M)
     field_simp <;> ring
 
 /-- A bounded population has divisor-N variance at most the square of
-the bound. This finite lemma supports the uniformly bounded sufficient
+the bound. This finite lemma supports E003's uniformly bounded sufficient
 condition in corrected T11; no first-moment limit is required. -/
 lemma bounded_population_variance (v : ι → ℝ) (B : ℝ) (hB : 0 ≤ B)
     (hn : 0 < (Fintype.card ι : ℝ)) (hv : ∀ i, |v i| ≤ B) : popVariance v ≤ B ^ 2 := by
@@ -2147,8 +2485,9 @@ lemma bounded_population_variance (v : ι → ℝ) (B : ℝ) (hB : 0 ≤ B)
     simpa [mul_comm] using hs
   linarith [sq_nonneg ((∑ i, v i) / (Fintype.card ι : ℝ))]
 
-/-- Corrected T11's finite bounded-moment concentration inputs: the sampled
-first and second raw moments have mean-squared errors bounded by the sampling coefficient times B² and B⁴ respectively.
+/-- Corrected T11's finite bounded-moment concentration inputs (E003
+section 3): the sampled first and second raw moments have mean-squared
+errors bounded by the sampling coefficient times B² and B⁴ respectively.
 These inequalities are exact at every fixed population size. -/
 theorem bounded_raw_sample_moment_errors (M : ℕ) (hM : 2 ≤ M)
     (hMN : M ≤ Fintype.card ι) (v : ι → ℝ) (B : ℝ) (hB : 0 ≤ B)
@@ -2180,6 +2519,192 @@ theorem bounded_raw_sample_moment_errors (M : ℕ) (hM : 2 ≤ M)
       (by linarith) hv2
     simpa [← pow_mul] using mul_le_mul_of_nonneg_left hl hcoef
 
+/-- The exact assignment-indicator variance used in corrected T11's
+finite derivation (E003 section 3): Var(X_i)=M(N-M)/N², under the uniform
+fixed-count design of Section 2, p. 366. -/
+theorem treatment_indicator_variance (M : ℕ) (hM : 2 ≤ M)
+    (hMN : M ≤ Fintype.card ι) (i : ι) :
+    expectation M (fun s => (treatment s i - (M : ℝ) / Fintype.card ι) ^ 2) =
+      (M : ℝ) * ((Fintype.card ι : ℝ) - M) / (Fintype.card ι : ℝ) ^ 2 := by
+  have hnR : 2 ≤ (Fintype.card ι : ℝ) := by exact_mod_cast (by omega : 2 ≤ Fintype.card ι)
+  have hn : (Fintype.card ι : ℝ) ≠ 0 := by linarith
+  rw [← expected_treatment M (by omega) hMN i, expectation_centered_square M hMN]
+  rw [expectation_congr M (g := fun s => treatment s i)
+    (fun s _ => treatment_square s i), expected_treatment M (by omega) hMN]
+  field_simp <;> ring
+
+/-- The exact covariance of two distinct assignment indicators used
+in corrected T11 (E003 section 3): Cov(X_i,X_j)=-M(N-M)/(N²(N-1)).
+It is derived from the uniform pair inclusion count, not assumed. -/
+theorem treatment_indicator_covariance (M : ℕ) (hM : 2 ≤ M)
+    (hMN : M ≤ Fintype.card ι) (i j : ι) (hij : i ≠ j) :
+    expectation M (fun s => (treatment s i - (M : ℝ) / Fintype.card ι) *
+      (treatment s j - (M : ℝ) / Fintype.card ι)) =
+      -((M : ℝ) * ((Fintype.card ι : ℝ) - M)) /
+        ((Fintype.card ι : ℝ) ^ 2 * ((Fintype.card ι : ℝ) - 1)) := by
+  have hnR : 2 ≤ (Fintype.card ι : ℝ) := by exact_mod_cast (by omega : 2 ≤ Fintype.card ι)
+  have hn : (Fintype.card ι : ℝ) ≠ 0 := by linarith
+  have hn1 : (Fintype.card ι : ℝ) - 1 ≠ 0 := by linarith
+  have he : ∀ s : Finset ι,
+      (treatment s i - (M : ℝ) / Fintype.card ι) *
+        (treatment s j - (M : ℝ) / Fintype.card ι) =
+      treatment s i * treatment s j - ((M : ℝ) / Fintype.card ι) * treatment s i -
+        ((M : ℝ) / Fintype.card ι) * treatment s j + ((M : ℝ) / Fintype.card ι) ^ 2 := by
+    intro s; ring
+  simp_rw [he, expectation_add, expectation_sub, expectation_mul,
+    expectation_const M hMN, expected_treatment M (by omega) hMN]
+  rw [expected_treatment_pair M hM hMN i j hij]
+  field_simp <;> ring
+
+/-- E003's remaining exact first-moment input for T10: the treated
+sign mean has expectation zero under every row's uniform size-M design. -/
+theorem footnote_treated_mean_expectation (a : ℝ) (n : ℕ) :
+    expectation (footnotePopulation a n).M
+      (fun s => footnoteTreatedMean (footnotePopulation a n) s) = 0 := by
+  change expectation (n + 2) (fun s : Finset (Fin (4 * (n + 2))) =>
+    groupMean s (footnoteSigns (n + 2))) = 0
+  rw [expectation_congr (n + 2) (g := fun s => (∑ i ∈ s, footnoteSigns (n + 2) i) / (n + 2 : ℕ))]
+  · rw [expectation_div, expected_group_sum (n + 2) (by omega) (by simp <;> omega),
+      (footnote_sign_moments (n + 2) (by omega)).1]
+    simp
+  · intro s hs
+    simp only [groupMean, (mem_powersetCard.mp hs).2]
+
+/-- T10's explicit finite probability bound from E003 section 4:
+Pr(r²>ε)≤3/((N-1)ε), for every ε>0 and every row of the stated sequence. -/
+theorem footnote_markov_bound (a : ℝ) (n : ℕ) (ε : ℝ) (hε : 0 < ε) :
+    eventProbability (footnotePopulation a n)
+      (fun s => ε < footnoteTreatedMean (footnotePopulation a n) s ^ 2) ≤
+        3 / (((footnotePopulation a n).N - 1 : ℝ) * ε) := by
+  have h := finite_markov (footnotePopulation a n)
+    (fun s => footnoteTreatedMean (footnotePopulation a n) s ^ 2) ε hε
+    (fun _ _ => sq_nonneg _)
+  rw [footnote_treated_mean_square] at h
+  simpa only [div_div] using h
+
+#print axioms admissible_iff_printed
+#print axioms arm_card_sum
+#print axioms arm_pos
+#print axioms residual_treated
+#print axioms residual_control
+#print axioms weight_treated
+#print axioms weight_control
+#print axioms leverage_formula
+#print axioms gram_inverse
+#print axioms regression_coefficients
+#print axioms hc2_sandwich_entry
+#print axioms hc2_eq_neyman
+#print axioms sum_centered
+#print axioms residual_sum
+#print axioms imputed0_residual
+#print axioms imputed1_residual
+#print axioms imputed_means
+#print axioms imputed_moments
+#print axioms scaled_ols_eq_constantEffects
+#print axioms balanced_equivalences
+#print axioms expectation_congr
+#print axioms expectation_const
+#print axioms expectation_add
+#print axioms expectation_sub
+#print axioms expectation_mul
+#print axioms expectation_div
+#print axioms expectation_sum
+#print axioms treatment_sum
+#print axioms treatment_square
+#print axioms inclusion_count
+#print axioms expected_treatment
+#print axioms expected_treatment_pair
+#print axioms group_sse_raw
+#print axioms pop_variance_raw
+#print axioms expected_group_sum
+#print axioms expected_group_sum_square
+#print axioms expected_sample_variance
+#print axioms expected_sample_varianceFP
+#print axioms expectation_compl
+#print axioms observed_treatment
+#print axioms expected_control_sample_varianceFP
+#print axioms observed_control
+#print axioms sample_variance_congr
+#print axioms observed_neyman
+#print axioms expected_neyman
+#print axioms expectation_centered_square
+#print axioms expected_group_deviation
+#print axioms group_mean_linear
+#print axioms pop_variance_linear
+#print axioms observed_group_means
+#print axioms linearized_estimate
+#print axioms estimate_unbiased
+#print axioms randomization_variance_identity
+#print axioms covariance_bound
+#print axioms neyman_bias_identity
+#print axioms hc2_conservative
+#print axioms gram_inverse_coefficient
+#print axioms residual_sse
+#print axioms expected_ols
+#print axioms robust_group_formula
+#print axioms hc_variant_relations
+#print axioms example_moments
+#print axioms finite_ols_understatement
+#print axioms finite_ols_overstatement
+#print axioms two_treated_zero_controls
+#print axioms randomization_variance_alternative
+#print axioms hc_variant_bounds
+#print axioms population_sizes
+#print axioms population_assignment_admissible
+#print axioms coverage_neyman_eq_hc2
+#print axioms ce_ols_scale_tends_to_one
+#print axioms population_ratio_tends_one
+#print axioms scaled_true_variance_limit
+#print axioms scaled_expected_ols_limit
+#print axioms large_sample_coverage_as_printed
+#print axioms large_sample_coverage_repaired
+#print axioms ols_ce_may_be_too_small_or_large
+#print axioms printed_covariance_counterexample
+#print axioms pop_covariance_symm
+#print axioms corrected_theorem_two_proof
+#print axioms corrected_theorem_three_proof
+#print axioms group_mean_add_const
+#print axioms pop_variance_add_const
+#print axioms pop_covariance_add_const
+#print axioms observed_shift
+#print axioms regression_shift_invariance
+#print axioms potential_outcome_shift_invariance
+#print axioms leading_variance_difference
+#print axioms corrected_footnote_three_limits
+#print axioms expectation_mono
+#print axioms expectation_nonneg
+#print axioms finite_markov
+#print axioms probability_limit_of_mean_absolute_error
+#print axioms probability_limit_congr
+#print axioms affine_square_probability_limit
+#print axioms footnote_sign_moments
+#print axioms footnote_population_moments
+#print axioms footnote_population_growth
+#print axioms affine_sign_sse
+#print axioms footnote_scaled_ols_formula
+#print axioms footnote_treated_mean_square
+
+#print axioms footnote_true_variance_formula
+#print axioms footnote_deterministic_limits
+#print axioms footnote_treated_square_limit
+#print axioms footnote_ols_probability_limit
+#print axioms footnote_ce_probability_limit
+#print axioms population_ratio_one_two
+#print axioms footnote_ratio_probability_limit
+#print axioms footnote_variance_witness
+#print axioms population_shift_invariance
+#print axioms footnote_finite_comparisons
+#print axioms footnote_three_counterexample
+#print axioms ols_ce_variance_limit_witnesses
+#print axioms corrected_footnote_three_probability
+
+#print axioms sample_mean_squared_error
+#print axioms bounded_population_variance
+#print axioms bounded_raw_sample_moment_errors
+#print axioms treatment_indicator_variance
+#print axioms treatment_indicator_covariance
+#print axioms footnote_treated_mean_expectation
+#print axioms footnote_markov_bound
 
 end
 end AronowAudit.P031

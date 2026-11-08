@@ -1,0 +1,94 @@
+import SAP.P001g.Defs
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped ENNReal NNReal Topology BigOperators
+
+noncomputable section
+namespace Review
+
+def normalSequence : Measure (ℕ → ℝ) :=
+  Measure.infinitePi (fun _ : ℕ => gaussianReal 0 1)
+
+instance : IsProbabilityMeasure normalSequence := by
+  unfold normalSequence
+  infer_instance
+
+lemma marginal (i : ℕ) : normalSequence.map (fun ω => ω i) = gaussianReal 0 1 :=
+  Measure.infinitePi_map_eval _ i
+
+lemma marginalIdent (i : ℕ) :
+    IdentDistrib (fun ω : ℕ → ℝ => ω i) id normalSequence (gaussianReal 0 1) := by
+  refine ⟨(measurable_pi_apply i).aemeasurable, measurable_id.aemeasurable, ?_⟩
+  simpa using marginal i
+
+lemma iidNormal : SAP.P001g.IID normalSequence (fun i ω => ω i) := by
+  refine ⟨fun i => measurable_pi_apply i, ?_, ?_⟩
+  · exact iIndepFun_infinitePi (X := fun _ : ℕ => id) (fun _ => measurable_id)
+  · intro i
+    exact (marginalIdent i).trans (marginalIdent 0).symm
+
+lemma normalL2 : MemLp (fun ω : ℕ → ℝ => ω 0) 2 normalSequence := by
+  exact (marginalIdent 0).symm.memLp_snd (memLp_id_gaussianReal 2)
+
+lemma normalVariance : SAP.P001g.var normalSequence (fun ω : ℕ → ℝ => ω 0) = 1 := by
+  unfold SAP.P001g.var
+  rw [(marginalIdent 0).variance_eq]
+  simp
+
+-- All sampling/moment hypotheses of T125 and each independent conjunct of T126.
+example : SAP.P001g.IID normalSequence (fun i ω => ω i) ∧
+    MemLp (fun ω : ℕ → ℝ => ω 0) 2 normalSequence ∧
+    0 < SAP.P001g.var normalSequence (fun ω : ℕ → ℝ => ω 0) := by
+  exact ⟨iidNormal, normalL2, by rw [normalVariance]; norm_num⟩
+
+-- Also check that zero variance is genuinely allowed in T125.
+example : SAP.P001g.IID normalSequence (fun (_ : ℕ) (_ : ℕ → ℝ) => (7 : ℝ)) ∧
+    MemLp (fun (_ : ℕ → ℝ) => (7 : ℝ)) 2 normalSequence := by
+  exact ⟨⟨fun _ => measurable_const,
+    iidNormal.2.1.comp (fun (_ : ℕ) (_ : ℝ) => (7 : ℝ)) (fun _ => measurable_const),
+    fun _ => IdentDistrib.refl measurable_const.aemeasurable⟩, memLp_const 7⟩
+
+lemma normalPDF :
+    SAP.P001g.HasPDF (normalSequence.map (fun ω => ω 0)) (gaussianPDFReal 0 1) := by
+  refine ⟨(measurable_gaussianPDFReal 0 1).aemeasurable,
+    gaussianPDFReal_nonneg 0 1, integrable_gaussianPDFReal 0 1, ?_⟩
+  rw [marginal, gaussianReal_of_var_ne_zero 0 one_ne_zero]
+  rfl
+
+lemma normalPDFContinuous : Continuous (gaussianPDFReal 0 1) := by
+  unfold gaussianPDFReal
+  fun_prop
+
+def bandwidth (n : ℕ) : ℝ := 1 / (Real.sqrt n + 1)
+
+lemma bandwidthPositive (n : ℕ) : 0 < bandwidth n := by
+  unfold bandwidth
+  positivity
+
+lemma bandwidthZero : Tendsto bandwidth atTop (nhds 0) := by
+  have hs : Tendsto (fun n : ℕ => Real.sqrt n + 1) atTop atTop :=
+    (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop).atTop_add tendsto_const_nhds
+  change Tendsto (fun n : ℕ => 1 / (Real.sqrt n + 1)) atTop (nhds (0 : ℝ))
+  simpa only [one_div, Function.comp_def] using tendsto_inv_atTop_zero.comp hs
+
+lemma bandwidthGrowth : Tendsto (fun n : ℕ => (n : ℝ) * bandwidth n) atTop atTop := by
+  have hs : Tendsto (fun n : ℕ => Real.sqrt n - 1) atTop atTop := by
+    simpa [sub_eq_add_neg] using
+      (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop).atTop_add
+        (tendsto_const_nhds (x := (-1 : ℝ)))
+  apply tendsto_atTop_mono _ hs
+  intro n
+  simp only [bandwidth, mul_one_div]
+  apply (le_div_iff₀ (by positivity : (0 : ℝ) < Real.sqrt n + 1)).2
+  nlinarith [Real.sq_sqrt (Nat.cast_nonneg (α := ℝ) n)]
+
+-- Every hypothesis of T127 with a genuine continuous density and an explicit bandwidth.
+example : SAP.P001g.IID normalSequence (fun i ω => ω i) ∧
+    SAP.P001g.HasPDF (normalSequence.map (fun ω => ω 0)) (gaussianPDFReal 0 1) ∧
+    Continuous (gaussianPDFReal 0 1) ∧ (∀ n, 0 < bandwidth n) ∧
+    Tendsto bandwidth atTop (nhds 0) ∧
+    Tendsto (fun n : ℕ => (n : ℝ) * bandwidth n) atTop atTop := by
+  exact ⟨iidNormal, normalPDF, normalPDFContinuous, bandwidthPositive, bandwidthZero,
+    bandwidthGrowth⟩
+
+end Review

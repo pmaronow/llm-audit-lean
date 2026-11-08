@@ -1,0 +1,17 @@
+All five reviewed declarations are **faithful**, with severity **none**. Every canonical clause is stated, the SAP definitions have their ordinary mathematical meanings on the data used, and the architect's five `whole` decisions and corresponding docstrings are accurate. No step-2 conclusion changed after reading the record.
+
+| Declaration | Review result |
+| --- | --- |
+| `SAP.P015a.T1` | Includes the rare-overlap family, the fixed-law IPW moments, every-sample-size bounds, consistency in probability, and the actual nonsingular population OLS coefficient. The distinction between fixed-epsilon estimation results and arbitrarily small effective profile mass is accurate. |
+| `SAP.P015a.T2` | Includes both observationally identical outcome worlds, nominal and effective target discrepancies, support failure for a fixed distinct treatment pair, and impossibility of common consistency under independent sampling. Arbitrary potential outcomes are permitted in this section; positive within-profile variance remains intact. |
+| `SAP.P015a.T3` | The fitted weights come from actual least squares in a positive-probability independent sample, with both required Gram matrices nonsingular and population overlap positive. Repeated realized atoms do not make the draws dependent. The docstring correctly distinguishes fitted sample weights from population weights. |
+| `SAP.P015a.T13` | States all derivative and Taylor identities and the genuine discrepancy from the printed fraction at probability one half. All relevant denominators and logarithm arguments are valid. |
+| `SAP.P015a.T12` | Includes the local quadratic remainder, exact complex radius, attained finite circle maximum, uniform supremum error bound and its limit, and an explicit full-rank binary-data witness with a unique finite MLE outside the disk. It also asserts the all-degree error lower bound. No coefficient or weight accuracy is promised. |
+
+The counterexample targets assert their canonical examples; they are not refutations of those canonical assertions. Their docstrings accurately identify the readings of the paper's guidance being challenged.
+
+The blind reading was saved as `reading.md` before opening `claims.json`; `claim-stage.json` was saved before opening `record.json`. Every closure entry was read, including all 34 generated proof declarations, whose printed terms are preserved in `scratch/closure-print.log`.
+
+`/home/ubuntu/sap/tools/sap-lean scratch/Check.lean` completed successfully. These independent checks import definitions only and use no Challenge theorem, new axiom or `sorry`. They construct a genuine countable product probability law satisfying all T2 sampling hypotheses, verify finite probability and overlap calculations, positive normalizers and Gram determinants, and instantiate every analytic interval hypothesis with `p=1/2, r=1, rho=2`. The log contains only a harmless tactic-style warning. The supplied Comparator certification remains the basis for the full proofs; the scratch checks test admissibility and selected exact computations.
+
+No zero-denominator, singular-inverse, nonintegrable-mean, empty-index or supremum-default loophole affects these statements. In T12, nonemptiness and boundedness of both supremum sets are conclusions, and its circles avoid the complex poles. T1's empty sample at size zero appears only as an irrelevant initial term of the consistency sequence.

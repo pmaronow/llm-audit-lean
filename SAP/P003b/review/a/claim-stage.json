@@ -1,0 +1,104 @@
+[
+  {
+    "theorem": "SAP.P003b.T24",
+    "target_id": "P003-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three canonical clauses are present: the pointwise complement identity, unbiased design mean, and every real reflected point-mass equality. The count weights are exactly the pushforward of uniform labeled assignments. Positive m and n=2m exclude zero denominators and empty assignment spaces. For example n=2,m=1,w(0)=(1,1),w(1)=(0,0) is admissible."
+  },
+  {
+    "theorem": "SAP.P003b.T25",
+    "target_id": "P003-T25",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The two balanced lattice equalities and one impossible-vector/nonlattice example are present. The canonical all-design J=K assertion and inclusion, explicit example lattice, reflected impossible vector, uniqueness and p=1/3 of the possible endpoint vector, five maximal p-values, and full unrestricted-set calculation are not separately asserted. The numerical rational representation is faithful: at o=(0,2,0,2),alpha=1/2 the accepted numerators are {-1,0,1} and endpoints are (-1/4,1/4); these and the impossible-vector p-value were checked in Lean."
+  },
+  {
+    "theorem": "SAP.P003b.T8",
+    "target_id": "P003-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The statement uses the canonical HC1/HC0 formulas and exact weighted design law, and includes both coverage fractions, both design medians, empirical incompatibility and sharp empirical median bound. It treats z as any real in the rational enclosure rather than proving or identifying the normal quantile, omits the broader critical-value ranges and separate pointwise variance/sharp-width assertions, and does not separately derive the formulas from labeled assignments. A rational midpoint z=1.959963984540055 satisfies both strict bounds (compiled). Empty empirical lists are explicitly excluded; k ranges prevent negative variances, and m=25,50 prevent zero denominators."
+  },
+  {
+    "theorem": "SAP.P003b.T19",
+    "target_id": "P003-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The independent weak-composition model, both stratum totals, product count, degree-six bound, convolution and 100-versus-330 numbers are correct. No explicit labeled-table/covariate correspondence, linear independence, 256 labeled tables, or separately defined total-only eight-coordinate set cardinality is asserted. The nonempty instance N0=N1=2 has 100 vectors, checked in Lean. This is a correct count-model portion of the canonical target."
+  },
+  {
+    "theorem": "SAP.P003b.T20",
+    "target_id": "P003-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Contains count-distribution invariance, the exact four-coordinate update, all four corrected B.8 equivalences, the corrected-index affine identity, and parity. Omits the minimum-feasible k>=0/strict positivity conclusions, the wrong-index witness, the fixed-assignment 1 versus -1 witness, and a separate spelling assertion for (2.3). Extending the algebraic identities to arbitrary integers is harmless. For n=2,m=1 the two swapped (11),(00) tables satisfy the equal-count hypothesis; v=(1,0,0,1) satisfies both update positivity hypotheses."
+  },
+  {
+    "theorem": "SAP.P003b.T26",
+    "target_id": "P003-T26",
+    "my_reading_vs_claim": "different",
+    "reason": "The canonical target is the printed universal coverage assertion; the Lean theorem instead gives a valid refutation. Its deterministic mask is an allowed missingness law because it is a function of the assignment for the fixed population, and each mask selects an existing observed cell. Every extremal accepted set is explicitly nonempty, so the fallback endpoint convention is unused. Independent exact enumeration of all ten treated-count states gives coverage 297/380 < 391/500=1-109/500. This refutes the printed claim even when its endpoints are defined."
+  },
+  {
+    "theorem": "SAP.P003b.T27",
+    "target_id": "P003-T27",
+    "my_reading_vs_claim": "different",
+    "reason": "The Lean proposition negates the conjunction of universal printed endpoint correctness and its evaluation allowance, rather than proving that false conjunction. The definition implements the printed midpoint-before-stop rule and left-boundary branch priority literally. Legal input k1=1,k2=2,r=2,f identically false returns 1 with two evaluations for any positive fuel; zero fuel returns none. Concrete positive-fuel instances compiled. Thus the refutation concerns the printed reading and does not merely exploit a negative or singleton search domain."
+  },
+  {
+    "theorem": "SAP.P003b.T30",
+    "target_id": "P003-T30",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Contains the canonical headline endpoint inequalities and stronger accepted-set/interval membership. Does not separately assert the specified vector (0,A+D,B+C,0), its p-value exactly one or the explicit labeled-table witness included in the canonical content. All balanced positive designs and 0<alpha<1 remain. The admissible o=(0,1,0,1),alpha=1/2 has an accepted all-zero-outcome vector (0,0,0,2), whose p-value one and accepted-set nonemptiness compiled."
+  },
+  {
+    "theorem": "SAP.P003b.T31",
+    "target_id": "P003-T31",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the printed length bound on the canonical defined-endpoint domain: both arms positive, alpha in (0,1), and accepted set nonempty. The canonical target explicitly limits the interval's definition to this domain, so nonemptiness does not silently narrow it. The unused fixed true table is immaterial. Positive arms give n>=2, so natural n-1 is the intended integer difference. A nonempty accepted-set instance at o=(0,1,0,1),alpha=1/2 compiled."
+  },
+  {
+    "theorem": "SAP.P003b.T33",
+    "target_id": "P003-T33",
+    "my_reading_vs_claim": "whole",
+    "reason": "All and only the canonical design/count hypotheses are explicit, including the population total, balanced observed arms, min(b,c)>=1 and max(b,c)>=2. No possibility assumption has been added. Natural b-1 and c-1 are exact on this domain. The legal pair o=(1,1,1,1),v=(0,2,1,1) satisfies every hypothesis (compiled)."
+  },
+  {
+    "theorem": "SAP.P003b.T7",
+    "target_id": "P003-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains both final joint-probability inclusions, their distinct level conditions, and arbitrary-oracle pathwise upper-search termination and D-test budget. Omits separate conditional-history one-test and bad-event bounds, pathwise endpoint comparisons, reflected lower-endpoint statements and the midpoint/zero-query budget decomposition. D=(n+1)(Nat.log2(n+1)+3) equals the canonical floor formula. The pool has 2D+1 batches, so at most D tests per endpoint never wrap and all reached tests have fresh independent draws. Positive m,K give nonempty sample spaces. For example n=2,m=1,K=1,alpha=1/2,epsilon=1/8 is admissible."
+  },
+  {
+    "theorem": "SAP.P003b.T32",
+    "target_id": "P003-T32",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Contains both corrected exact endpoint returns and total 4n log2(n) test bound, with n>=15 and positive balanced arms. Omits the separate oracle iff/initial-segment property, individual nonzero/zero-query bounds, individual endpoint D budgets and B.10. The corrected sentinel procedure is the procedure the canonical definitions explicitly instruct one to use. Independent exact computations at n=16 on five observed vectors and two levels agree with exhaustive endpoints and satisfy the total bound."
+  },
+  {
+    "theorem": "SAP.P003b.T34",
+    "target_id": "P003-T34",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both canonical probability bounds, all constants, level shifts, joint randomization, n>=15, and K/epsilon conditions match. The first K threshold is only a premise of part 1; epsilon<alpha/3 is only a premise of part 2. For epsilon>=alpha/2 in part 1 the totalized acceptance rule accepts every candidate, exactly the extension discussed in the canonical note. A genuine instance is v=(0,0,0,16),m=8,alpha=1/2,epsilon=1/8 and K=1+recommendedK(1/8,16). The ceiling ensures the K threshold without assuming any conclusion."
+  },
+  {
+    "theorem": "SAP.P003b.T6",
+    "target_id": "P003-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains valid data and positive data probability, both rational intervals, all three A/B/D positive-probability traces, both E probability inequalities, and F's aggregate lower bound/comparison. Omits separate candidate/search-domain identities and the full individual p-values/vector lists and decimal probabilities. Independent rational calculation reproduces returns 10,10,9,16,16, the 16-test trace, E probabilities 0.862847... versus 0.948854... and 0.0300453... versus 0.00379847..., and exactly F's rational Chebyshev product. The trace products certify actual positive-probability K=1 paths since acceptance has probability p and batches do not wrap. It refutes intermediate claims, not Lemma B.15's final bounds."
+  },
+  {
+    "theorem": "SAP.P003b.T35",
+    "target_id": "P003-T35",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains coverage for every positive K and arbitrary real theta,R and the one-step reuse law for the intended full-j-loop corrected procedure. Does not separately assert universal plus-one rank validity, every-possible-vector testing or true-table possibility. The finite factorial-seed construction implements exactly the two independent Bernoulli updates: every positive cell size divides n!, and the guards k<=a,d ensure positive cells before every used transition. Reused samples remain correlated along a line as intended. All possible vectors' reachability was checked in 2539 small cases; three exact transition kernels match fresh-draw hypergeometric laws. n=2,m=1,K=1,v=(1,0,0,1),alpha=1/2,theta=0,R=0 is admissible."
+  },
+  {
+    "theorem": "SAP.P003b.T36",
+    "target_id": "P003-T36",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The finite draw/update bounds and one uniform cubic constant correctly imply the joint O(Kn^3) bound for the stipulated arithmetic cost. This certifies that explicit count model for the corrected full-j-loop procedure, without a refinement theorem bounding execution of the exhaustive table/minimum enumeration actually used to define the Lean functions. That scope is narrower than an unqualified runtime certification. Positive arms in the eventual hypothesis are exactly design admissibility; no cost-order conclusion is assumed. An all-zero-outcome observed family o(n,K)=(0,floor(n/2),0,n-floor(n/2)), c0=c1=c2=1, satisfies total n always and positive arms eventually."
+  },
+  {
+    "theorem": "SAP.P003b.T18",
+    "target_id": "P003-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Retains the conditional asymptotic upper bound with the natural ceiling, positive-probability and expected full-shuffle lower bounds, failure of every nonnegative-real-exponent linear-polylogarithmic expected bound on the dyadic family, and the n>=15 logarithm comparison. Omits the independent unbalanced-cost assertion, separate finite product/envelope inequality and draw-count/order bound, and the other separate finite witness lemmas. The eventual test/per-draw bounds are the canonical conditional premises, not circular algorithmic-cost assumptions. For the upper implication tests=operations=0,c=1 is legal, and the nonzero family tests(n)=n,operations(n)=n^2,c=1 also satisfies the eventual premises. For the lower bound r=4,K=1 gives five first-query tests and 75 shuffle iterations on a positive-probability path, independently checked with explicit legal draws."
+  }
+]

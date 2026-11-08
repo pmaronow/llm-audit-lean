@@ -1,0 +1,79 @@
+[
+ {
+  "target_id": "P025-T17",
+  "decision": "whole",
+  "theorem": "SAP.P025b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P025.reported_counts_unique",
+   "AronowAudit.P025.table_six_exact",
+   "AronowAudit.P025.table_all_cells",
+   "AronowAudit.P025.table_grid_comparison"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P025-T18",
+  "decision": "whole",
+  "theorem": "SAP.P025b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P025.ratio_only_and_equal_probabilities",
+   "AronowAudit.P025.equal_probability_box_and_endpoints"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P025-T19",
+  "decision": "whole",
+  "theorem": "SAP.P025b.T19",
+  "restriction": null,
+  "statement_definition": "SAP.P025b.T19WholeStatement",
+  "rows_used": [
+   "AronowAudit.P025.tied_outcomes_equal_weights",
+   "SAP.P025b.WH.W2.T19_whole",
+   "SAP.P025b.WH.W2.T19_assembly",
+   "SAP.P025b.WH.W2.T19_L1_proof",
+   "SAP.P025b.WH.W2.T19_L2_proof",
+   "AronowAudit.P025.corrected_weighted_bounds",
+   "AronowAudit.P025.ratio_le",
+   "AronowAudit.P025.ratio_scale_weights",
+   "AronowAudit.P025.threshold_shift",
+   "AronowAudit.P025.threshold_sum_update",
+   "AronowAudit.P025.threshold_den_update"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P025-T20",
+  "decision": "whole",
+  "theorem": "SAP.P025b.T20",
+  "restriction": null,
+  "statement_definition": "SAP.P025b.T20WholeStatement",
+  "rows_used": [
+   "AronowAudit.P025.dichotomous_closed_form",
+   "SAP.P025b.WH.W1.T20_whole",
+   "SAP.P025b.WH.W1.T20_assembly",
+   "SAP.P025b.WH.W1.T20_L1_proof",
+   "SAP.P025b.WH.W1.retained_T20",
+   "AronowAudit.P025.normalize_box",
+   "AronowAudit.P025.ratio_scale_weights"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P025-T21",
+  "decision": "whole",
+  "theorem": "SAP.P025b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P025.printed_proposition_three"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P025.upper_cut_from_strict_neighbors",
+    "reason": "Auxiliary deterministic cut certificate; printed_proposition_three supplies the stated almost-sure conclusion directly."
+   }
+  ]
+ }
+]

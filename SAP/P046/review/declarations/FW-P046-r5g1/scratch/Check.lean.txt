@@ -1,0 +1,127 @@
+import SAP.P046.Challenge
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open MeasureTheory ProbabilityTheory Filter Finset SAP.P046
+open scoped BigOperators ENNReal
+
+noncomputable section
+
+-- T1: the explicit law is valid; the data equations are not arbitrary labels.
+example : ValidStudy IntervalExample.study := SAP.P046.T1.1.1
+
+example : IntervalExample.generate (1/4, 1/10) =
+    ((1/4 : ℝ), (true, (false, true))) := by
+  norm_num [IntervalExample.generate, IntervalExample.score]
+
+example : IntervalExample.generate (4/5, 1/2) =
+    ((4/5 : ℝ), (true, (false, false))) := by
+  norm_num [IntervalExample.generate, IntervalExample.score]
+
+-- T2: validity and positivity of the actual event, not conditioning on a null singleton.
+example : ValidStudy ConditionalExample.study := SAP.P046.T2.1.1
+
+example : 0 < sampleLaw ConditionalExample.study 100 ConditionalExample.E :=
+  SAP.P046.T2.1.2.2.2.2.1
+
+example : ConditionalExample.generate (1/4, 1/10) =
+    ((1/4 : ℝ), (true, (false, false))) := by
+  norm_num [ConditionalExample.generate]
+
+example : (fun _ : Fin 100 => ((1/4 : ℝ), (true, (false, false)))) ∈
+    ConditionalExample.E := by
+  norm_num [ConditionalExample.E, W]
+
+-- T3: jointly instantiate validity, positive n, confidence level, lower bound, threshold.
+example : ∃ (M : Study) (n : ℕ) (alpha b t : ℝ),
+    ValidStudy M ∧ 0 < n ∧ (0 < alpha ∧ alpha < 1) ∧ 0 < b ∧
+    (∀ᵐ o ∂M.law, b ≤ M.pi (W o)) ∧ 0 ≤ t := by
+  refine ⟨ConditionalExample.study, 100, 1/20, 9/10, 1,
+    SAP.P046.T2.1.1, by norm_num, by norm_num, by norm_num, ?_, by norm_num⟩
+  exact Filter.Eventually.of_forall (by intro o; rfl)
+
+-- T4: the generated support includes both treatment assignments independently of Z.
+example : ValidStudy RegressionExample.study := SAP.P046.T4.1.1
+
+example : Balanced RegressionExample.fits := SAP.P046.T4.1.2.2.2.1
+
+example : RegressionExample.generate ((1/4, 1/20), 1/10) =
+    ((1/4 : ℝ), (true, (true, true))) := by
+  norm_num [RegressionExample.generate, RegressionExample.score,
+    RegressionExample.scoreL]
+
+example : RegressionExample.generate ((1/4, 1/20), 1/2) =
+    ((1/4 : ℝ), (false, (true, true))) := by
+  norm_num [RegressionExample.generate, RegressionExample.score,
+    RegressionExample.scoreL]
+
+example : RegressionExample.prediction 0 ≠ (fun _ : ℝ => 0) := by
+  intro h
+  have h0 := congrFun h 0
+  norm_num [RegressionExample.prediction, RegressionExample.predictionL] at h0
+
+-- T5: a genuine balanced learner with the singleton zero family. No T5 result is used.
+def auditZeroFits (n : ℕ) : CrossFit n where
+  fold := (RegressionExample.fits n).fold
+  g _ _ _ := 0
+  measurable_g _ := measurable_const
+  opposite_fold _ _ _ _ := rfl
+
+def auditZeroFamily (_ : Fin 0 → ℝ) (_ : ℝ) : ℝ := 0
+
+lemma auditZeroBalanced : Balanced auditZeroFits := by
+  exact (SAP.P046.T4.1.2.2.2.1 : SAP.P046.Balanced RegressionExample.fits)
+
+lemma auditZeroConvergence (M : Study) (j : Bool) :
+    WholeL2InProbability M auditZeroFits j (fun _ => 0) := by
+  intro eps heps
+  have hpos : 0 < ENNReal.ofReal eps := ENNReal.ofReal_pos.mpr heps
+  simpa [WholeL2InProbability, wholeL2Sq, auditZeroFits, hpos.ne'] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
+
+-- Every hypothesis of WholeT5Family, with a specific valid continuous law.
+example :
+    ValidStudy ConditionalExample.study ∧
+    Balanced auditZeroFits ∧
+    (∀ theta, MemLp (fun o => auditZeroFamily theta (W o)) 2 ConditionalExample.study.law) ∧
+    ZeroBenchmark ConditionalExample.study (Set.range auditZeroFamily) ∧
+    (∀ n j, ∀ᵐ a ∂sampleLaw ConditionalExample.study n, ∃ theta,
+      (auditZeroFits n).g j a = auditZeroFamily theta ∧ ∀ eta,
+      empiricalRisk ConditionalExample.study
+        (univ.filter (fun i => (auditZeroFits n).fold i ≠ j)) a (auditZeroFamily theta) ≤
+      empiricalRisk ConditionalExample.study
+        (univ.filter (fun i => (auditZeroFits n).fold i ≠ j)) a (auditZeroFamily eta)) ∧
+    (fun _ : ℝ => (0 : ℝ)) ∈ Set.range auditZeroFamily ∧
+    (∀ theta, risk ConditionalExample.study (fun _ => 0) ≤
+      risk ConditionalExample.study (auditZeroFamily theta)) ∧
+    (∀ j, WholeL2InProbability ConditionalExample.study auditZeroFits j (fun _ => 0)) := by
+  refine ⟨SAP.P046.T2.1.1, auditZeroBalanced, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro theta
+    exact MemLp.zero
+  · exact Or.inl ⟨(fun i => Fin.elim0 i), rfl⟩
+  · intro n j
+    exact Filter.Eventually.of_forall (fun a =>
+      ⟨(fun i => Fin.elim0 i), rfl, fun eta => le_rfl⟩)
+  · exact ⟨(fun i => Fin.elim0 i), rfl⟩
+  · intro theta
+    exact le_rfl
+  · exact auditZeroConvergence ConditionalExample.study
+
+-- Every hypothesis of WholeT5Direct. Extended errors are zero by genuine integration.
+example :
+    ValidStudy ConditionalExample.study ∧ Balanced auditZeroFits ∧
+    Measurable (fun _ : ℝ => (0 : ℝ)) ∧
+    (∀ j, WholeL2InProbability ConditionalExample.study auditZeroFits j (fun _ => 0)) ∧
+    wholeRisk ConditionalExample.study (fun _ => 0) ≤
+      wholeRisk ConditionalExample.study (fun _ => 0) := by
+  exact ⟨SAP.P046.T2.1.1, auditZeroBalanced, measurable_const,
+    auditZeroConvergence ConditionalExample.study, le_rfl⟩
+
+-- Additional universal components of T5 also have actual admissible inputs.
+example (M : Study) : MemLp (fun _ : SAP.P046.Unit => (0 : ℝ)) 2 M.law := MemLp.zero
+example : Measurable (fun _ : ℝ => (0 : ℝ)) := measurable_const
+example : ∀ k : ℕ, Measurable (fun _ : ℝ => (0 : ℝ)) := fun _ => measurable_const
+
+-- The degenerate Gaussian is the intended point mass, not a missing distribution.
+example : gaussianReal 0 (0 : ℝ).toNNReal = Measure.dirac (0 : ℝ) := by simp

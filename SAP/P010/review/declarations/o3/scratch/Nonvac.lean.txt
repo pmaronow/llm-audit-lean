@@ -1,0 +1,92 @@
+import SAP.P010.Challenge
+open SAP.P010 MeasureTheory ProbabilityTheory Set
+open scoped ENNReal NNReal
+
+namespace NV
+
+/-- one-arm population: Y(0) = y ~ N(0,1), S(0) = true, Z = 0. -/
+noncomputable def emb (y : ℝ) : Population 1 0 := (fun _ => y, fun _ => true, 0, fun _ => 0)
+
+lemma emb_meas : Measurable emb := by
+  unfold emb
+  refine Measurable.prodMk ?_ measurable_const
+  exact measurable_pi_iff.mpr (fun _ => measurable_id)
+
+noncomputable def μ1 : Measure (Population 1 0) := (gaussianReal 0 1).map emb
+
+instance : IsProbabilityMeasure μ1 := by unfold μ1; infer_instance
+
+lemma full (s : Set (Population 1 0)) (hs : emb ⁻¹' s = univ) : μ1 s = 1 := by
+  apply le_antisymm prob_le_one
+  have := Measure.le_map_apply (μ := gaussianReal 0 1) emb_meas.aemeasurable s
+  rw [hs, measure_univ] at this
+  exact this
+
+lemma Y0_meas : Measurable (potentialOutcome (K := 1) (d := 0) 0) :=
+  (measurable_pi_apply 0).comp measurable_fst
+
+lemma resp_eq : (response : Population 1 0 → ℝ) = potentialOutcome 0 := by
+  funext ω; simp [response, potentialOutcome, arm, Subsingleton.elim (ω.2.2.1) 0]
+
+lemma arm_eq : (arm : Population 1 0 → Fin 1) = fun _ => 0 := by
+  funext ω; exact Subsingleton.elim _ _
+
+lemma map_Y0 : μ1.map (potentialOutcome 0) = gaussianReal 0 1 := by
+  rw [μ1, Measure.map_map Y0_meas emb_meas]
+  have : potentialOutcome 0 ∘ emb = id := by funext y; rfl
+  rw [this, Measure.map_id]
+
+lemma noatoms_map_Y0 (x : ℝ) : μ1.map (potentialOutcome 0) {x} = 0 := by
+  rw [map_Y0]
+  have := nullSingletonClass_gaussianReal (μ := 0) (v := 1) one_ne_zero
+  exact measure_singleton x
+
+lemma integrable_Y0 : Integrable (potentialOutcome 0) μ1 := by
+  unfold μ1
+  rw [integrable_map_measure Y0_meas.aestronglyMeasurable emb_meas.aemeasurable]
+  have : potentialOutcome 0 ∘ emb = id := by funext y; rfl
+  rw [this]; exact (memLp_id_gaussianReal (μ := 0) (v := 1) 1).integrable le_rfl
+
+/-- T14 hypotheses jointly satisfiable (K = 1, a = 0). -/
+example : IsProbabilityMeasure μ1 ∧ 0 < μ1 allPass ∧
+    noAtoms (conditionalLaw μ1 (potentialOutcome 0) (wouldPass 0)) ∧
+    Integrable (potentialOutcome 0) (μ1.restrict (wouldPass 0)) := by
+  refine ⟨inferInstance, ?_, ?_, integrable_Y0.restrict⟩
+  · rw [full allPass (by ext y; simp [emb, allPass])]; exact one_pos
+  · intro x
+    simp only [conditionalLaw, Measure.smul_apply, smul_eq_mul]
+    have h1 : (μ1.restrict (wouldPass 0)).map (potentialOutcome 0) {x} = 0 := by
+      apply nonpos_iff_eq_zero.mp
+      calc (μ1.restrict (wouldPass 0)).map (potentialOutcome 0) {x}
+          ≤ μ1.map (potentialOutcome 0) {x} :=
+            Measure.map_mono Measure.restrict_le_self Y0_meas _
+        _ = 0 := noatoms_map_Y0 x
+    rw [h1, mul_zero]
+
+/-- T15 hypotheses jointly satisfiable (K = 1, a = 0). -/
+example : populationAssumptions μ1 ∧ 0 < μ1 allPass ∧ noAtoms (μ1.map response) ∧
+    Integrable response (μ1.restrict (passed ∩ assigned 0)) := by
+  have hA : ∀ a : Fin 1, μ1 (assigned a) = 1 := fun a =>
+    full _ (by ext y; simp [emb, assigned, arm, Subsingleton.elim (0 : Fin 1) a])
+  have hP : ∀ a : Fin 1, μ1 (passed ∩ assigned a) = 1 := fun a =>
+    full _ (by ext y; simp [emb, assigned, passed, check, arm, Subsingleton.elim (0 : Fin 1) a])
+  refine ⟨⟨inferInstance, ⟨fun a => ?_, fun a => ?_⟩, fun a => ?_⟩, ?_, ?_, ?_⟩
+  · rw [arm_eq]; exact indepFun_const_right _ _
+  · rw [hA a]; exact one_pos
+  · simp [passRate, hA a, hP a]
+  · rw [full allPass (by ext y; simp [emb, allPass])]; exact one_pos
+  · intro x; rw [resp_eq]; exact noatoms_map_Y0 x
+  · rw [resp_eq]; exact integrable_Y0.restrict
+
+/-- T12 hypotheses jointly satisfiable: Ω = Unit, ν = δ, π = 1/2, fR = fO = 1. -/
+example : let ν : Measure Unit := Measure.dirac ()
+    (0:ℝ) < 1/2 ∧ (1/2:ℝ) < 1 ∧ (∀ᵐ x ∂ν, (0:ℝ) < (fun _ => (1:ℝ)) x) ∧
+    (∀ᵐ x ∂ν, (0:ℝ) < (fun _ => (1:ℝ)) x) ∧
+    Integrable (fun _ => (1:ℝ)) ν ∧ (∫ x, (fun _ => (1:ℝ)) x ∂ν) = 1 := by
+  intro ν
+  refine ⟨by norm_num, by norm_num, ?_, ?_, integrable_const _, ?_⟩
+  · exact Filter.Eventually.of_forall (fun _ => one_pos)
+  · exact Filter.Eventually.of_forall (fun _ => one_pos)
+  · simp [ν]
+
+end NV

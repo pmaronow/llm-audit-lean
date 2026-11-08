@@ -277,7 +277,8 @@ theorem dominatingTerm_B1 {m : ℕ} (hm : 2 ≤ m) :
   have hm0 : (m:ℝ) ≠ 0 := by exact_mod_cast (show m ≠ 0 by omega)
   field_simp
 
-/-! Conditioning under the product law. -/
+/-! Conditioning under the product law. The numerator lemmas below follow
+the proved helpers in GP0092B1, with names local to this record. -/
 
 theorem dominatingTerm_one_numerator {n : ℕ} (E : Experiment n)
     (hb : Bernoulli E) (i : Fin n) (a : Bool) (f : Assignment n → ℝ) :
@@ -458,6 +459,8 @@ theorem dominating_term_counterexample_proof :
       nlinarith
   · exact (tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 2)).atTop_div_const
       (by norm_num)
+
+example : type_of% @AronowAudit.P009.dominating_term_counterexample := dominating_term_counterexample_proof
 
 end
 end AronowAudit.P009.Wave1

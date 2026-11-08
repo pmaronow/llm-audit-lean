@@ -1,0 +1,267 @@
+[
+  {
+    "target_id": "P042-T1",
+    "decision": "whole",
+    "theorem": "SAP.P042.T1",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P042.Wave1.binomial_coverage_from_arms_proof",
+      "AronowAudit.P042.binomial_arm_moments",
+      "AronowAudit.P042.binomial_coverage_exact",
+      "AronowAudit.P042.binomial_coverage_fraction_reduced",
+      "AronowAudit.P042.binomial_diagonal",
+      "AronowAudit.P042.binomial_diagonal_radius",
+      "AronowAudit.P042.binomial_interval_thresholds",
+      "AronowAudit.P042.binomial_shared_control_moments",
+      "AronowAudit.P042.exactChoose_eq",
+      "AronowAudit.P042.six_counterexample",
+      "AronowAudit.P042.six_design",
+      "AronowAudit.P042.six_moments",
+      "AronowAudit.P042.six_sharp_null",
+      "AronowAudit.P033.Wave1.native_power_correction_critical_cdf",
+      "AronowAudit.P033.Wave1.binary_standardization.critical_bounds",
+      "AronowAudit.P033.Wave1.binary_standardization.z_lo_cdf",
+      "AronowAudit.P033.Wave1.binary_standardization.cdf_mono",
+      "SAP.P042.WH.W1.normal975_certificate",
+      "AronowAudit.P042.sqrt_enclosure",
+      "AronowAudit.P042.covers_zero_iff_abs",
+      "SAP.P042.WH.W1.T1_L1_proof",
+      "SAP.P042.WH.W1.T1_assembly",
+      "SAP.P042.WH.W1.T1_whole"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P042.binomial_convolution",
+        "reason": "The existing coverage-linkage proof already supplies the convolution step; no separate helper clause is stated."
+      },
+      {
+        "lean_name": "AronowAudit.P042.binomial_expectation_add",
+        "reason": "Auxiliary expectation identity already used inside the existing shared-control moment theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P042.binomial_expectation_div",
+        "reason": "Auxiliary expectation identity already used inside the existing shared-control moment theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P042.binomial_expectation_mul",
+        "reason": "Auxiliary expectation identity already used inside the existing shared-control moment theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P042.binomial_expectation_sub",
+        "reason": "Auxiliary expectation identity already used inside the existing shared-control moment theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P042.binomial_expectation_tensor",
+        "reason": "Auxiliary expectation identity already used inside the existing shared-control moment theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P042.binomial_marginal_one",
+        "reason": "Auxiliary expectation identity already used inside the existing shared-control moment theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P042.binomial_marginal_two",
+        "reason": "Auxiliary expectation identity already used inside the existing shared-control moment theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P042.binomial_marginal_zero",
+        "reason": "Auxiliary expectation identity already used inside the existing shared-control moment theorem."
+      },
+      {
+        "lean_name": "AronowAudit.P042.covers_zero_iff_abs",
+        "reason": "The existing numerical threshold equivalences already supply the required interval-containment result."
+      },
+      {
+        "lean_name": "AronowAudit.P042.six_contrast_numerators",
+        "reason": "The existing six_moments theorem already computes moments of the actual contrasts."
+      },
+      {
+        "lean_name": "AronowAudit.P042.six_integer_moments",
+        "reason": "The existing six_moments theorem already transports the integer computation to the actual contrasts."
+      }
+    ],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P042.T1WholeStatement"
+  },
+  {
+    "target_id": "P042-T2",
+    "decision": "restricted",
+    "theorem": "SAP.P042.T2",
+    "restriction": "Retains general mathematical clauses (i)-(viii) and the covariance-based and printed half-width identities. Omits application to actual historical contrasts and pools, estimation of their covariance matrices, numerical pool and mail-comparison recalculations, the staged-size recalculation, block/overlap-specific numerical bounds, relabeling the printed inference, and the requested rejection of the old GGL-only covariance certification. Finite second moments, positive marginal variances, positive arm sizes and feasible nonempty randomization designs rule out undefined statistical quantities.",
+    "rows_used": [
+      "AronowAudit.P042.Wave1.finite_population_shared_control_proof",
+      "AronowAudit.P042.corrected_precision_variance",
+      "AronowAudit.P042.covariance_abs_bound",
+      "AronowAudit.P042.covariance_form_decomposition",
+      "AronowAudit.P042.difference_variance",
+      "AronowAudit.P042.independent_arm_shared_control",
+      "AronowAudit.P042.pooled_difference_covariance",
+      "AronowAudit.P042.pooled_mean",
+      "AronowAudit.P042.pooled_rank_one_equality",
+      "AronowAudit.P042.pooled_variance",
+      "AronowAudit.P042.pooled_variance_upper_bound",
+      "AronowAudit.P042.positive_covariance_inflation",
+      "AronowAudit.P042.precision_diagonal",
+      "AronowAudit.P042.precision_weights",
+      "AronowAudit.P042.shared_control_covariance",
+      "AronowAudit.P042.three_contrast_block",
+      "AronowAudit.P042.uncorrelated_precision_variance"
+    ],
+    "rows_not_used": [
+      {"lean_name": "AronowAudit.P042.arm_sample_mean_memLp", "reason": "Auxiliary arm-mean fact already used inside the existing independent-arm shared-control theorem."},
+      {"lean_name": "AronowAudit.P042.arm_sample_mean_variance", "reason": "Auxiliary arm-mean fact already used inside the existing independent-arm shared-control theorem."},
+      {"lean_name": "AronowAudit.P042.arm_sample_means_uncorrelated", "reason": "Auxiliary arm-mean fact already used inside the existing independent-arm shared-control theorem."},
+      {"lean_name": "AronowAudit.P042.population_effect_covariance", "reason": "The finite-population shared-control theorem already includes the individual-effect expansion."},
+      {"lean_name": "AronowAudit.P042.shared_control_correlation_from_moments", "reason": "The independent-arm theorem already includes the correlation formula."}
+    ],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "statement_definition": "SAP.P042.T2Statement",
+    "supporting_declarations": [
+      "AronowAudit.P042.Wave1.P042B1_support_nonempty",
+      "MeasureTheory.memLp_finsetSum'",
+      "ProbabilityTheory.covariance_self",
+      "ProbabilityTheory.variance_nonneg",
+      "Real.sqrt_inj",
+      "mul_left_cancel₀"
+    ]
+  },
+  {
+    "target_id": "P042-T3",
+    "decision": "whole",
+    "theorem": "SAP.P042.T3",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P042.robo_fixed_counterexample",
+      "AronowAudit.P042.robo_fixed_endpoint_counterexample",
+      "AronowAudit.P042.robo_fixed_exact",
+      "AronowAudit.P042.robo_random_exact",
+      "AronowAudit.P042.robo_random_interval",
+      "AronowAudit.P042.robo_random_rounding",
+      "AronowAudit.P033.Wave1.native_power_correction_critical_cdf",
+      "AronowAudit.P033.Wave1.binary_standardization.critical_bounds",
+      "AronowAudit.P033.Wave1.binary_standardization.z_lo_cdf",
+      "AronowAudit.P033.Wave1.binary_standardization.cdf_mono",
+      "SAP.P042.WH.W1.normal975_certificate",
+      "SAP.P042.WH.W1.T3_L1_proof",
+      "SAP.P042.WH.W1.T3_assembly",
+      "SAP.P042.WH.W1.T3_whole"
+    ],
+    "rows_not_used": [],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P042.T3WholeStatement"
+  },
+  {
+    "target_id": "P042-T4",
+    "decision": "restricted",
+    "theorem": "SAP.P042.T4",
+    "restriction": "Retains the fixed-effects point estimate, endpoint bins, positivity, stochastic variance identity under the stipulated variances and zero covariance, and alternative DerSimonian-Laird calculation. Omits the assertion that the standard normal 0.975 quantile lies in [1.9599,1.96]; endpoints use that explicit multiplier range. Omits implementation of the replacement sentence, replication-program analysis command and alternative method disclosure.",
+    "rows_used": [
+      "AronowAudit.P042.robo_fixed_exact",
+      "AronowAudit.P042.robo_fixed_interval",
+      "AronowAudit.P042.robo_fixed_positive",
+      "AronowAudit.P042.robo_fixed_rounding",
+      "AronowAudit.P042.robo_random_exact",
+      "AronowAudit.P042.robo_random_interval",
+      "AronowAudit.P042.robo_random_rounding"
+    ],
+    "rows_not_used": [
+      {"lean_name": "AronowAudit.P042.sqrt_enclosure", "reason": "The existing fixed- and random-effects endpoint theorems already include the square-root bounds."}
+    ],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "statement_definition": "SAP.P042.T4Statement",
+    "supporting_declarations": [
+      "AronowAudit.P042.uncorrelated_precision_variance",
+      "ProbabilityTheory.covariance_comm"
+    ]
+  },
+  {
+    "target_id": "P042-T5",
+    "decision": "restricted",
+    "theorem": "SAP.P042.T5",
+    "restriction": "States only the failure of the audit's two unrestricted diagonal-variance readings. Omits reproduction or rejection of all nine historical point estimates, treatment counts and intervals, the mail-type significance assertion, and the qualitative assertions about study size, common outcome scales and treatment similarity. This does not contradict the printed empirical assertions themselves, so the decision is restricted rather than refuted.",
+    "rows_used": [
+      "AronowAudit.P042.Wave1.printed_comparison_variance_refuted",
+      "AronowAudit.P042.Wave1.printed_pooling_variance_refuted"
+    ],
+    "rows_not_used": [
+    ],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "statement_definition": "SAP.P042.T5Statement"
+  },
+  {
+    "target_id": "P042-T6",
+    "decision": "whole",
+    "theorem": "SAP.P042.T6",
+    "restriction": null,
+    "rows_used": [
+      "AronowAudit.P042.cace_randomization_identity",
+      "AronowAudit.P042.complete_randomization_balance",
+      "AronowAudit.P042.itt_complier_identity",
+      "AronowAudit.P042.michelson_cace_example",
+      "AronowAudit.P029.Wave1.LateIdentity.n1_proof",
+      "AronowAudit.P042.complete_inclusion_probability",
+      "AronowAudit.P042.finite_expectation_const",
+      "AronowAudit.P042.finite_expectation_mul",
+      "AronowAudit.P042.finite_expectation_sub",
+      "SAP.P042.WH.W2.T6_L1_proof",
+      "SAP.P042.WH.W2.T6_L2_proof",
+      "SAP.P042.WH.W2.T6_assembly",
+      "SAP.P042.WH.W2.T6_whole"
+    ],
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P042.complete_group_mean",
+        "reason": "The existing balance theorem already includes both group-mean identities."
+      },
+      {
+        "lean_name": "AronowAudit.P042.complete_inclusion_probability",
+        "reason": "The existing balance theorem already uses the uniform-design inclusion calculation."
+      },
+      {
+        "lean_name": "AronowAudit.P042.finite_expectation_const",
+        "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+      },
+      {
+        "lean_name": "AronowAudit.P042.finite_expectation_div",
+        "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+      },
+      {
+        "lean_name": "AronowAudit.P042.finite_expectation_mul",
+        "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+      },
+      {
+        "lean_name": "AronowAudit.P042.finite_expectation_sub",
+        "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+      },
+      {
+        "lean_name": "AronowAudit.P042.finite_expectation_sum",
+        "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+      }
+    ],
+    "proof_status": "proved",
+    "proof_plan": null,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "statement_definition": "SAP.P042.T6WholeStatement_W2"
+  }
+]

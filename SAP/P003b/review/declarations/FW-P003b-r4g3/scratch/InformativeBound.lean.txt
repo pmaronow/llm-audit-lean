@@ -1,0 +1,18 @@
+import SAP.P003b.Defs
+open SAP.P003b
+example : ∃ (v : Counts) (m K : ℕ) (α ε : ℝ),
+    0 < m ∧ v.total = 2*m ∧ 0 < K ∧ (0 < α ∧ α < 1) ∧
+    (0 < ε ∧ ε < α) ∧ 0 < α-2*ε ∧
+    0 < 1-2*(testBudget v.total : ℝ)*Real.exp (-2*(K : ℝ)*ε^2) := by
+  refine ⟨⟨0,1,1,0⟩,1,256,1/2,1/8,?_⟩
+  have h4 : (5 : ℝ) ≤ Real.exp 4 := by linarith [Real.add_one_le_exp (4 : ℝ)]
+  have h8 : Real.exp (8 : ℝ) = Real.exp 4 * Real.exp 4 := by
+    rw [← Real.exp_add]
+    norm_num
+  have he : (24 : ℝ) < Real.exp 8 := by nlinarith [sq_nonneg (Real.exp 4-5)]
+  have hb : (24 : ℝ)*Real.exp (-8) < 1 := by
+    rw [Real.exp_neg]
+    change 24/Real.exp 8 < 1
+    exact (div_lt_one (Real.exp_pos (8 : ℝ))).2 he
+  norm_num [Counts.total, testBudget, show Nat.log2 3 = 1 from by decide] at *
+  linarith

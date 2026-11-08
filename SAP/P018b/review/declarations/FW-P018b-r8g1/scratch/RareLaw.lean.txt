@@ -1,0 +1,86 @@
+import SAP.P018b.Challenge
+open SAP.P018b Finset Matrix MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology ENNReal Matrix.Norms.Elementwise
+noncomputable section
+set_option maxRecDepth 3000
+set_option maxHeartbeats 1000000
+
+namespace IndependentRareLaw
+
+abbrev U := (m : ℕ) × (Fin (m+1) × Bool × Bool)
+instance : MeasurableSpace U := ⊤
+instance : DiscreteMeasurableSpace U := ⟨fun _ => trivial⟩
+
+def geo : PMF ℕ := ProbabilityTheory.geometricPMF (p := (1/2 : ℝ)) (by norm_num) (by norm_num)
+
+def conditional (m : ℕ) : PMF U :=
+  (PMF.uniformOfFintype (Fin (m+1) × Bool × Bool)).map (Sigma.mk m)
+
+def pmf : PMF U := geo.bind conditional
+
+def F : WholeRareModel U :=
+  ⟨pmf.toMeasure, fun u => u.1, fun u => u.2.1.val, fun u => u.2.2.1, fun u => u.2.2.2⟩
+
+lemma conditional_atom (n m : ℕ) (c : Fin (m+1)) (a b : Bool) :
+    conditional n ⟨m,c,a,b⟩ =
+      if n = m then ((m+1 : ℝ≥0∞)*4)⁻¹ else 0 := by
+  classical
+  by_cases h : n = m
+  · subst n
+    simp [conditional, PMF.map_apply, Sigma.mk.inj_iff]
+  · have hne : ∀ x : Fin (n+1) × Bool × Bool,
+        (⟨m,c,a,b⟩ : U) ≠ Sigma.mk n x := by
+      intro x he
+      have := congrArg Sigma.fst he
+      exact h this.symm
+    simp [conditional, PMF.map_apply, hne, h]
+
+lemma atom (m : ℕ) (c : Fin (m+1)) (a b : Bool) :
+    pmf ⟨m,c,a,b⟩ =
+      ENNReal.ofReal ((2 : ℝ)^(-(m+1 : ℤ)) / ((m+1 : ℝ)*4)) := by
+  classical
+  change (geo.bind conditional) ⟨m,c,a,b⟩ = _
+  rw [PMF.bind_apply]
+  simp only [conditional_atom, mul_ite, mul_zero, tsum_ite_eq]
+  change ENNReal.ofReal ((1-(1/2 : ℝ))^m * (1/2)) * ((m+1 : ℝ≥0∞)*4)⁻¹ = _
+  have hpow : ((1-(1/2 : ℝ))^m * (1/2)) = (2 : ℝ)^(-(m+1 : ℤ)) := by
+    rw [_root_.zpow_neg, zpow_add₀ (by norm_num : (2 : ℝ) ≠ 0)]
+    simp only [zpow_natCast, zpow_one]
+    norm_num
+    rw [← one_div, div_pow]
+    simp [pow_succ, _root_.mul_inv_rev, mul_comm]
+  rw [hpow]
+  rw [ENNReal.ofReal_div_of_pos (by positivity)]
+  congr 1
+  rw [ENNReal.ofReal_mul (by positivity)]
+  norm_num [ENNReal.ofReal_add (Nat.cast_nonneg m) (by norm_num : (0 : ℝ) ≤ 1)]
+
+example : wholeRareLaw F := by
+  classical
+  refine ⟨?_, measurable_of_countable _, measurable_of_countable _,
+    measurable_of_countable _, measurable_of_countable _, ?_, ?_⟩
+  · change IsProbabilityMeasure pmf.toMeasure
+    infer_instance
+  · intro u
+    exact u.2.1.isLt
+  · intro m c a b
+    have hs :
+        {u | F.level u = m ∧ F.label u = c.val ∧ F.A u = a ∧ F.B u = b} =
+          ({⟨m,c,a,b⟩} : Set U) := by
+      ext u
+      rcases u with ⟨n,d,e,f⟩
+      simp only [F, Set.mem_setOf_eq, Set.mem_singleton_iff]
+      constructor
+      · rintro ⟨rfl,hc,rfl,rfl⟩
+        have : d = c := Fin.ext hc
+        subst d
+        rfl
+      · intro h
+        cases h
+        exact ⟨rfl,rfl,rfl,rfl⟩
+    rw [hs]
+    change pmf.toMeasure {⟨m,c,a,b⟩} = _
+    rw [PMF.toMeasure_apply_singleton _ _ (measurableSet_singleton _)]
+    exact atom m c a b
+
+end IndependentRareLaw

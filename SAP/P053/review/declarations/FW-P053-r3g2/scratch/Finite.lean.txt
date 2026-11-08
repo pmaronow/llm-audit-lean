@@ -1,0 +1,38 @@
+import SAP.P053.Defs
+
+open SAP.P053
+open scoped BigOperators
+set_option maxHeartbeats 4000000
+
+-- Independent finite checks of the witness; no audited Challenge theorem is used.
+example : averageEffect (heterogeneousWitness 0) = 0 ∧
+    populationVariance (heterogeneousWitness 0) (heterogeneousWitness 0).Y0 = 10/9 ∧
+    populationVariance (heterogeneousWitness 0) (heterogeneousWitness 0).Y1 = 40/9 ∧
+    populationVariance (heterogeneousWitness 0) (unitEffects (heterogeneousWitness 0)) = 10/9 := by
+  dsimp [averageEffect, populationMean, populationVariance, sampleVariance,
+    centeredSS, sampleMean, unitEffects, heterogeneousWitness, Population.size,
+    ]
+  norm_num [Fin.sum_univ_succ]
+
+example : ¬ConstantEffects (heterogeneousWitness 0) := by
+  intro h
+  have h0 := h (⟨0, by decide⟩ : Fin (heterogeneousWitness 0).size)
+  have h5 := h (⟨5, by decide⟩ : Fin (heterogeneousWitness 0).size)
+  have heq := h0.trans h5.symm
+  change (2*(1 : ℝ)-1) = 2*(-1)-(-1) at heq
+  norm_num at heq
+
+example : ((support (ι := Fin (heterogeneousWitness 0).size)
+    (heterogeneousWitness 0).n1).card : ℕ) = 45 := by
+  rw [support, Finset.card_powersetCard]
+  change Nat.choose 10 2 = 45
+  decide
+
+example (k : ℕ) : ¬ConstantEffects (heterogeneousWitness k) := by
+  intro h
+  let a : Fin (heterogeneousWitness k).size := ⟨0, by dsimp [heterogeneousWitness, Population.size]; omega⟩
+  let b : Fin (heterogeneousWitness k).size := ⟨5*(k+1), by dsimp [heterogeneousWitness, Population.size]; omega⟩
+  have heq := (h a).trans (h b).symm
+  have hk : 0 < 5*(k+1) := by omega
+  simp [unitEffects, heterogeneousWitness, a, b, hk] at heq
+  norm_num at heq

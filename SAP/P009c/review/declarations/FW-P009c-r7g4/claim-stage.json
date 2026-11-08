@@ -1,0 +1,14 @@
+[
+  {
+    "theorem": "SAP.P009c.T50",
+    "target_id": "P009-T50",
+    "my_reading_vs_claim": "whole",
+    "reason": "T50Statement states both alternatives of Proposition 10, with uniform Assumption 1 and q >= 4, the Bernoulli design, the printed spectral little-o condition in A, and restricted interference plus an eventually positive lower bound on the nonnegative mean squared expected effects in B. It concludes exactly Definition 10's iterated-limit conservativeness, explicitly requiring the inner limits, and separately states dAvg <= lambdaMax <= dMax for every positive population. The finite probability, potential-outcome, structural interference, HT, variance estimator, mean-square effect, growth and rate definitions match the canonical definitions. The dependence matrix is symmetric and entrywise nonnegative, so its maximum Rayleigh value is its largest eigenvalue and spectral radius. All divisions, square roots and suprema have their intended domains. scratch/Nonvacuity.lean compiles an explicit growing fair Bernoulli study with k=2,q=4,s=1 satisfying both alternatives simultaneously: dAvg=lambdaMax=1 and msq=4. No extra substantive premise, vacuity, or missing clause was found."
+  },
+  {
+    "theorem": "SAP.P009c.T51",
+    "target_id": "P009-T51",
+    "my_reading_vs_claim": "whole",
+    "reason": "T51Statement states Proposition 11 in the printed proof's explicit form: for every uniformly interior Bernoulli design sequence, every alpha in (0,1) and every x in [0,1), one replacement outcome family preserves designs and sizes, satisfies Assumptions 1 and 2 and dAvg=O(n^x), additionally satisfies dMax=O(sqrt(n)) at x=0, and gives the exact printed centered HT weak limit. The three-point law, its mean and variance, and both equivalent finite Chebyshev equalities are included. All replacement-outcome interference and moment quantities are recomputed from that same family. The CDF convergence definition is standard for this explicitly valid CDF and makes no extra assertion about tail convergence at its atoms. scratch/Nonvacuity.lean compiles simultaneous input premises at k=2,alpha=1/2,x=0, constructs and checks the nondegenerate sharp finite law without using Challenge, and proves that sharpCDF is the mass law's CDF for every admissible alpha and every real threshold. A direct square-population construction also checks existential nonvacuity mathematically: with h=t+2,n=h^2, fair designs, f=1_{z0=true}(2*1_{z1=true}-1), a=2-1/h, take y_i=(sqrt(a)/2)(2*1_{zi=true}-1)f for i<h and zero otherwise. The induced dependence graph is an h-clique plus isolated loops, hence dAvg=a and dMax=h, outcomes are uniformly bounded, and the normalized centered HT variable equals f exactly, whose law is sharpLaw(1/2). No extra substantive premise, vacuity, or missing clause was found."
+  }
+]

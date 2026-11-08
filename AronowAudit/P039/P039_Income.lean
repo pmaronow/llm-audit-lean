@@ -24,7 +24,7 @@ noncomputable def incomeDenominator (decay : ℝ) : ℝ :=
   (1 / 3 : ℝ) + ∑ k ∈ Finset.range 14, decay ^ (k + 1)
 
 /-- Corrected predictor "uses quarters 2--16 ... quarter 1 is excluded", T2's
-correction to pp. 128, 136 and Table 2: the normalized weighted numerator. -/
+repair of pp. 128, 136 and Table 2: the normalized weighted numerator. -/
 noncomputable def incomeGrowth (decay : ℝ) (h : QuarterGrowth) : ℝ :=
   incomeNumerator decay h / incomeDenominator decay
 
@@ -33,13 +33,13 @@ noncomputable def incomeGrowth (decay : ℝ) (h : QuarterGrowth) : ℝ :=
 noncomputable def describedNumerator (decay : ℝ) (h : QuarterGrowth) : ℝ :=
   (1 / 3 : ℝ) * h 16 + ∑ k ∈ Finset.range 15, decay ^ (k + 1) * h (15 - k)
 
-/-- Normalization of the all-sixteen-quarter description,
+/-- The validator's normalization of the all-sixteen-quarter description,
 extending the script's denominator by λ^15; not a printed formula (T1). -/
 noncomputable def describedDenominator (decay : ℝ) : ℝ :=
   (1 / 3 : ℝ) + ∑ k ∈ Finset.range 15, decay ^ (k + 1)
 
 /-- Normalized all-sixteen-quarter variable of T1; the printed description
-fixes the numerator's weights, whereas the denominator extends the script's denominator by λ^15. -/
+fixes the numerator's weights, whereas the denominator is the validator's extension. -/
 noncomputable def describedGrowth (decay : ℝ) (h : QuarterGrowth) : ℝ :=
   describedNumerator decay h / describedDenominator decay
 
@@ -126,7 +126,7 @@ theorem income_endpoint_values (h : QuarterGrowth) :
     omega
 
 /-- The exact witness of T1(iii),(iv): h₁=1 and h₂=...=h₁₆=0. This is
-a synthetic construction, not election-level data printed in the paper. -/
+the validator's construction, not election-level data printed in the paper. -/
 noncomputable def firstQuarterOnly : QuarterGrowth := fun q => if q = 1 then 1 else 0
 
 /-- T1(iii): λ=1/2 is admissible and yields zero for the implemented variable,
@@ -162,3 +162,12 @@ theorem income_counterexample_nine_tenths :
 
 end AronowAudit.P039
 
+#print axioms AronowAudit.P039.missing_quarter_numerator
+#print axioms AronowAudit.P039.missing_quarter_denominator
+#print axioms AronowAudit.P039.income_ignores_quarter_one
+#print axioms AronowAudit.P039.income_denominators_positive
+#print axioms AronowAudit.P039.income_growth_difference
+#print axioms AronowAudit.P039.income_growth_equality_iff
+#print axioms AronowAudit.P039.income_endpoint_values
+#print axioms AronowAudit.P039.income_counterexample_half
+#print axioms AronowAudit.P039.income_counterexample_nine_tenths

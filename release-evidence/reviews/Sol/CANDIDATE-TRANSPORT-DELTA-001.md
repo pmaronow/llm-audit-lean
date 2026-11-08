@@ -1,0 +1,7 @@
+# Actual candidate transport — documentary delta
+
+No mismatch was found in the new parent candidate-transport receipts. The local intent at2026-11-07T21:10:22.721860Z precedes the recorded sole SSH exit0 at21:10:28.884708Z and copy receipt at21:10:30.325209Z. Source and prepared map are unchanged: candidate0f8d and map54abd from final-current-collection-v5-001/candidate, with exactly6413 files and59,321,483 payload bytes. The parent-recorded tar is73,369,600 bytes/SHA c9e8ccb0c9e59e1d0d1378fe766af5ea8a05f8dd0528505f7641e82fbba78018.
+
+The actual site input is /Users/paronow/sap-lean/reports/A3-2026-11-05/parent-final-candidate-export-001/intake/SAP. Its parent is the isolated intake directory required by the existing consumer. The copy receipt records closed file/directory membership, regular archive members without links, all source-payload and destination hashes matching, stderr0 and no automatic retry. These are reused parent transport observations; this review did not open or rehash the tar or intake payload, inspect the live remote source, or rerun an intake/certificate predicate.
+
+CANDIDATE-TRANSPORT-JOINS.json binds the exact intent/exit/copy receipts and transport source bytes. Checkpoint001 remains unchanged. The candidate is now materialized for the site input role; this does not imply a completed formal repository package or final-all/A1/release approval. The distinct formal-baseline/Works/admission materialization receipts and final evidence bindings remain to be joined when supplied.

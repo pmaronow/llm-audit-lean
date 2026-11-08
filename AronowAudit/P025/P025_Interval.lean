@@ -107,16 +107,17 @@ noncomputable def upperEndpoint {ι : Type*} [Fintype ι] (y a : ι → ℝ) (α
   sSup (attainable y a α β)
 
 /-- "For any k ≥ 0, y_(k+1) ≠ [upper ratio], y_(k+1) ≠ [lower ratio]"
-(Assumption 2, p. 238), with the valid index range 0 ≤ k < |Y|. -/
+(Assumption 2, p. 238), with the validator's valid index range 0 ≤ k < |Y|. -/
 def separation {n : ℕ} (y a : Fin n → ℝ) (γ : ℝ) : Prop :=
   ∀ k : Fin n, y k ≠ upperValue y a γ k.val ∧
     y k ≠ lowerValue y a γ k.val
 
-/-- A two-unit sample `(0,1)` used in the exact counterexamples (T1, T2, T12). -/
+/-- A two-unit sample `(0,1)` used in the validators' exact counterexamples
+(T1, T2, T12; derivations for E001 and E004). -/
 def binaryTwo : Fin 2 → ℝ := ![0, 1]
 
 /-- Concrete marginal inclusion probabilities `(1/2,1)` from the design
-"include unit 2 always and unit 1 with probability 1/2". -/
+"include unit 2 always and unit 1 with probability 1/2" (E001, §3). -/
 def twoPi : Fin 2 → ℝ := ![1/2, 1]
 
 /-- T1: the printed lower rule chooses zero for y=(0,1), α=1/2, β=1,
@@ -358,7 +359,7 @@ theorem threshold_cut_exists {n : ℕ} (hn : 0 < n) (a y : Fin n → ℝ)
 
 /-- The first cut separates outcomes strictly below its value from
 outcomes at least its value. The statement covers both H and corrected L
-weights; its lower instance gives T3(f). -/
+weights; its lower instance is the validator's T3(f) certificate. -/
 theorem threshold_separator {n : ℕ} (hn : 0 < n) (a y : Fin n → ℝ)
     (ha : ∀ i, 0 < a i) (hy : Monotone y)
     (l b : ℝ) (hl : 0 < l) (hb : 0 < b) (k : Fin n)
@@ -486,13 +487,13 @@ positive and negative strata (equation (1), p. 236; T5--T6). -/
 def reweightedPrevalence (p π₁ π₀ : ℝ) : ℝ :=
   (p/π₁) / (p/π₁ + (1-p)/π₀)
 
-/-- The sample odds ratio K=p_G(1-p_E)/{(1-p_G)p_E}. -/
+/-- The odds ratio K=p_G(1-p_E)/{(1-p_G)p_E} in the E003 correction. -/
 def sampleOddsRatio (pG pE : ℝ) : ℝ := pG*(1-pE)/((1-pG)*pE)
 
 /-- T5(A)--(B): the two exact fixed-quota populations have the reported
 sample counts, equal true and reweighted prevalences, and respectively
 r_E<3 and r_G<3. Inclusion probabilities are the quota divided by its
-stratum population size. -/
+stratum population size, as in E003 §§4--5. -/
 theorem application_counterexample_numbers :
     (48 : ℝ)/(48+16) = 3/4 ∧ (864 : ℝ)/(864+288) = 3/4 ∧
     (48 : ℝ)/(48+12) = 4/5 ∧ (1156 : ℝ)/(1156+289) = 4/5 ∧
@@ -554,7 +555,7 @@ theorem binaryLower_monotone (p q γ : ℝ) (hp : 0 < p) (hq1 : q < 1)
 
 /-- T6(a): gallery and exchange intervals overlap exactly when their
 opposing endpoints cross, equivalently when γ² is at least their sample
-odds ratio. Equality permits touching (Section 4, corrected). -/
+odds ratio. Equality permits touching (Section 4 corrected, E003 §§2--3). -/
 theorem overlap_criterion (pG pE γ : ℝ)
     (hE : 0 < pE) (hEG : pE < pG) (hG : pG < 1) (hγ : 1 ≤ γ) :
     (((binaryInterval pG γ) ∩ (binaryInterval pE γ)).Nonempty ↔
@@ -678,7 +679,7 @@ theorem table_six_exact :
 γ, whether H is used, printed tenths of a percent, and corrected tenths. -/
 abbrev TableCell := ℝ × ℝ × ℝ × Bool × ℕ × ℕ
 
-/-- All 42 Table 1 cells (p. 238).
+/-- All 42 Table 1 cells (p. 238), transcribed from the page image.
 Only the six entries singled out by T17 differ in the last column. -/
 def tableCells : List TableCell := [
   (44/48,917/1000,1,false,917,917),(44/48,917/1000,1,true,917,917),
@@ -930,8 +931,8 @@ theorem tied_outcomes_equal_weights {n : ℕ} (hn : 0 < n) (y : Fin n → ℝ)
     · simp [threshold, hi, hj]
   exact ⟨hsame kL γ 1 hsL, hsame kH 1 γ hsH⟩
 
-/-- The four-class support (0,1,2,3) from the six-unit
-population (0,0,1,1,2,3) (T10). -/
+/-- The validator's four-class support (0,1,2,3) from the six-unit
+population (0,0,1,1,2,3), E002 §4 (T10). -/
 def fourOutcomes : Fin 4 → ℝ := ![0,1,2,3]
 
 /-- The printed lower expression's tail starts at printed class k-1.
@@ -1011,7 +1012,7 @@ theorem equal_probability_proof_counterexample :
   all_goals norm_num [upperValue, ratio, upperWeights, binaryTwo, Fin.sum_univ_two]
 
 /-- All uniformly possible fixed-quota subsets of a stratum of N labeled
-units, the design used in the application counterexamples.
+units, the design used in the application counterexamples (E003 §§4--5).
 An independent choice of one such subset in each stratum defines the
 stratified uniform fixed-size design, with exactly the indicated counts. -/
 def quotaDraws (N s : ℕ) : Finset (Finset (Fin N)) := Finset.univ.powersetCard s
@@ -1060,9 +1061,10 @@ theorem quota_marginal_eq (N s : ℕ) (hs : 0 < s) (hsN : s ≤ N) (i : Fin N) :
   rw [hc, hc', div_eq_div_iff hcp.ne' (by exact_mod_cast hN.ne')]
   nlinarith
 
-/-- T5(A)--(B): the four uniform stratum laws in each example have
-nonempty support and the stated unit marginal inclusion probabilities.
-The population sizes and quotas are the explicit integers in the statement. -/
+/-- T5(A)--(B): the four independent uniform stratum laws in each example
+are valid and their actual unit marginal probabilities are exactly those
+used in the numerical counterexample. Population sizes and tested quotas
+are the validators' fixed integers (E003 §§4--5). -/
 theorem application_counterexample_designs :
     (quotaDraws 48 44).Nonempty ∧ (quotaDraws 16 4).Nonempty ∧
     (quotaDraws 864 291).Nonempty ∧ (quotaDraws 288 288).Nonempty ∧
@@ -1085,7 +1087,8 @@ theorem application_counterexample_designs :
   all_goals intro i; rw [quota_marginal_eq _ _ (by norm_num) (by norm_num)]; norm_num
 
 /-- T11(A2): at γ=1 every upper and lower threshold value equals the
-sample mean, regardless of the cut; the feasible box is a singleton. -/
+sample mean, regardless of the cut; the feasible box is a singleton.
+This disposes of the boundary before using the appendix's equivalences. -/
 theorem equal_probability_thresholds {n : ℕ} (y : Fin n → ℝ) (k : ℕ) :
     upperValue y (fun _ => 1) 1 k = populationMean y ∧
     lowerValue y (fun _ => 1) 1 k = populationMean y ∧
@@ -1099,9 +1102,10 @@ theorem equal_probability_thresholds {n : ℕ} (y : Fin n → ℝ) (k : ℕ) :
     · intro hw; funext i; exact le_antisymm (hw i).2 (hw i).1
     · intro hw; subst w; exact fun _ => ⟨le_rfl,le_rfl⟩
 
-/-- T11(A1),(A3): for γ>1, the appendix increment identity and equality
-of the stationary and outcome-test index sets.
-Class masses generalize the unit-sample identity. -/
+/-- T11(A1),(A3): the appendix increment identity holds for γ≥1, while
+the stationary-index equivalence requires γ>1. The second conjunction
+states the equality of the two index sets, hence of their first indices.
+Class masses generalize the unit-sample identity without changing it. -/
 theorem strict_gamma_stationarity {n : ℕ} (hn : 0 < n) (y a : Fin n → ℝ)
     (ha : ∀ i, 0 < a i) (γ : ℝ) (hγ : 1 < γ) :
     (∀ k : Fin n, upperValue y a γ (k.val+1) - upperValue y a γ k.val =
@@ -1130,8 +1134,9 @@ theorem strict_gamma_stationarity {n : ℕ} (hn : 0 < n) (y a : Fin n → ℝ)
       exact (not_le_of_gt (mul_pos_of_neg_of_neg hc hneg)) h
     · intro h; exact mul_nonpos_of_nonpos_of_nonneg hc.le (sub_nonneg.mpr h)
 
-/-- T11(A3): after an upper cut qualifies, the next ratio is no greater
-than the same outcome. -/
+/-- T11(A3): after an upper cut qualifies, the next ratio is below the
+same outcome; ordering makes every subsequent test qualify. The global
+threshold maximum follows from the already proved whole-box optimizer. -/
 theorem upper_cut_persistence {n : ℕ} (hn : 0 < n) (y a : Fin n → ℝ)
     (ha : ∀ i, 0 < a i) (hy : Monotone y) (γ : ℝ) (hγ : 1 ≤ γ)
     (k : Fin n) (hk : upperValue y a γ k.val ≤ y k) :
@@ -1283,7 +1288,7 @@ theorem expected_class_count {ι κ : Type*} [Fintype ι] [Fintype κ] {J : ℕ}
   intro i _
   by_cases h : cls i = j <;> simp [h]
 
-/-- A realizable two-unit design: state 0 samples only the
+/-- The realizable two-unit design of E001: state 0 samples only the
 one-outcome unit and state 1 samples both units, each with probability 1/2. -/
 def twoDesign : FiniteDesign (Fin 2) (Fin 2) where
   sample := fun ω => if ω = 0 then {1} else {0,1}
@@ -1302,13 +1307,13 @@ theorem two_design_realizes_example :
   · have hs : ({1} : Finset (Fin 2)) ≠ {0,1} := by decide
     norm_num [designExpectation,twoDesign,Fin.sum_univ_two,hs]
 
-/-- The six-unit population (0,0,1,1,2,3) (T10). -/
+/-- The six-unit population (0,0,1,1,2,3), E002 §4 (T10). -/
 def sixTailOutcomes : Fin 6 → ℝ := ![0,0,1,1,2,3]
-/-- The classes {1,2},{3,4},{5},{6} in the six-unit T10 example;
-zero-based labels are (0,0,1,1,2,3). -/
+/-- The classes {1,2},{3,4},{5},{6} in the six-unit T10 example
+(E002 derivation §4); zero-based labels are (0,0,1,1,2,3). -/
 def sixTailClass : Fin 6 → Fin 4 := ![0,0,1,1,2,3]
 
-/-- Independently choose one of the two zeros, one of the two
+/-- E002 §4: independently choose one of the two zeros, one of the two
 ones, and include the two remaining units. Four equally likely states. -/
 def fourClassDesign : FiniteDesign (Fin 6) (Fin 2 × Fin 2) where
   sample := fun ω => {⟨ω.1.val, by omega⟩,⟨ω.2.val+2, by omega⟩,4,5}
@@ -1338,7 +1343,7 @@ theorem tail_design_realizes_example :
   · intro j; fin_cases j <;> decide
   · norm_num [populationMean,sixTailOutcomes,Fin.sum_univ_succ]
 
-/-- A census of (0,1) (T12), represented on a one-state
+/-- A census of (0,1) (E004 §§3--4, T12), represented on a one-state
 probability space, so both unit inclusion probabilities are one. -/
 def censusDesign : FiniteDesign (Fin 2) (Fin 1) where
   sample := fun _ => Finset.univ
@@ -1352,7 +1357,7 @@ theorem census_realizes_boundary : ∀ i : Fin 2, inclusion censusDesign i = 1 :
   intro i; simp [inclusion,designExpectation,censusDesign]
 
 /-- A nonempty uniform sample of size two from three units: choose the
-omitted unit uniformly. Used by T16(A). -/
+omitted unit uniformly. Used by T16(A), E/N002 validation §5. -/
 def omitOneDesign : FiniteDesign (Fin 3) (Fin 3) where
   sample := fun ω => Finset.univ.erase ω
   probability := fun _ => 1/3
@@ -1361,7 +1366,8 @@ def omitOneDesign : FiniteDesign (Fin 3) (Fin 3) where
 
 /-- The population (0,1,1) and its two outcome classes (T16(A)). -/
 def integralityOutcomes : Fin 3 → ℝ := ![0,1,1]
-/-- The outcome classes {1},{2,3} of T16(A), with zero-based labels (0,1,1). -/
+/-- The outcome classes {1},{2,3} of T16(A), with zero-based labels
+(0,1,1) (N002 doubt-check §5). -/
 def integralityClass : Fin 3 → Fin 2 := ![0,1,1]
 
 /-- T16(A)(i): all three actual marginals are 2/3, the absolute class
@@ -1393,10 +1399,10 @@ def absoluteCompatible {J : ℕ} (α β : ℝ) (mass : Fin J → ℝ) (m : Fin J
 def classMean {J : ℕ} (y : Fin J → ℝ) (m : Fin J → ℕ) : ℝ :=
   (∑ j, (m j : ℝ)*y j)/(∑ j, (m j : ℝ))
 
-/-- For m>0, αm≤mass≤βm is equivalent to the existence of m real
-values in [α,β] summing to mass; the constant value mass/m suffices.
-When 0≤α≤β≤1, these values can be realized as Bernoulli inclusion
-probabilities (T15(e)). -/
+/-- Integer first-moment constraints are sufficient, as well as necessary:
+constant marginal probabilities Π/m realize the class total and bounds.
+They can be realized by Bernoulli sampling; no within-sample dependence
+condition is imposed by the paper (T15(e), validator N002 §2). -/
 theorem one_class_compatibility (m : ℕ) (hm : 0 < m) (α β mass : ℝ) :
     (∃ π : Fin m → ℝ, (∀ i, α ≤ π i ∧ π i ≤ β) ∧ ∑ i, π i = mass) ↔
       α*(m:ℝ) ≤ mass ∧ mass ≤ β*(m:ℝ) := by
@@ -1490,7 +1496,7 @@ theorem known_size_sharpness_counterexample :
 
 /-- Exact difference certificate for two Hajek ratios at a fixed mass
 vector. Termwise signs of the residual prove inequalities over a whole box;
-no vertex enumeration is needed (T3(f)). -/
+no vertex enumeration is needed (validator E001 §4, T3(f)). -/
 theorem ratio_difference_residual {ι : Type*} [Fintype ι]
     (y a w v : ι → ℝ) (hw : (∑ i, a i*w i) ≠ 0) (hv : (∑ i, a i*v i) ≠ 0) :
     ratio y a w - ratio y a v =
@@ -1632,7 +1638,7 @@ theorem nonnegative_mass_mean_bounds {ι : Type*} [Fintype ι]
       mul_le_mul_of_nonneg_left (hy i).2 (mul_nonneg (hp i) hwi)
 
 /-- The exact mass-perturbation identity with m=f(W,p), used for the
-uniform bound in the correction to Proposition 3 (T13(F2)). -/
+uniform bound in the correction to Proposition 3 (E005 §4, T13(F2)). -/
 theorem ratio_difference_masses {ι : Type*} [Fintype ι]
     (y p a w : ι → ℝ) (hp : (∑ i,p i*w i) ≠ 0) (ha : (∑ i,a i*w i) ≠ 0) :
     ratio y p w - ratio y a w =
@@ -1693,7 +1699,8 @@ theorem uniform_ratio_error {n : ℕ} (hn : 0 < n) (y p a : Fin n → ℝ)
     _ ≤ K*(∑ i,a i*w i) := mul_le_mul_of_nonneg_left hD hK
 
 /-- T13(F3): maxima over the same feasible set change by at most a
-uniform function error. The extrema are explicitly assumed attained. -/
+uniform function error. The extrema are explicitly assumed attained,
+as in the validator's finite deterministic lemma. -/
 theorem greatest_error_bound {ι : Type*} (B : Set ι) (f g : ι → ℝ) (F G ε : ℝ)
     (hf : IsGreatest (f '' B) F) (hg : IsGreatest (g '' B) G)
     (he : ∀ w ∈ B, |f w-g w| ≤ ε) : |F-G| ≤ ε := by
@@ -1742,7 +1749,7 @@ theorem class_mean_ratio {J : ℕ} (y mass : Fin J → ℝ) (m : Fin J → ℕ)
 /-- Conditional only on limiting shares q, a population has unrestricted
 positive integer class sizes m and an unknown positive absolute scale T.
 The condition α m≤Tq≤βm is equivalent to per-unit marginal compatibility
-by `one_class_compatibility` (T15). -/
+by `one_class_compatibility` (T15, N002 doubt-check §§2--4). -/
 def sharesCompatible {J : ℕ} (α β : ℝ) (q : Fin J → ℝ) (m : Fin J → ℕ) : Prop :=
   ∃ T : ℝ, 0 < T ∧ absoluteCompatible α β (fun j => T*q j) m
 
@@ -1757,12 +1764,12 @@ def proportionRegion {J : ℕ} (q : Fin J → ℝ) (γ : ℝ) (r : Fin J → ℝ
   (∀ j, 0 ≤ r j) ∧ (∑ j,r j)=1 ∧ ∀ j k, r j*q k ≤ γ*r k*q j
 
 /-- Finite population proportions m_j/N, as used in the identification
-argument on p. 237 and the corrected sharpness statement. -/
+argument on p. 237 and the N002 corrected sharpness statement. -/
 def classProportions {J : ℕ} (m : Fin J → ℕ) (j : Fin J) : ℝ :=
   (m j : ℝ)/(∑ k,(m k : ℝ))
 
 /-- The proportions induced by a feasible class weight vector,
-r_j=W_j q_j/∑W_k q_k (T15(c)). -/
+r_j=W_j q_j/∑W_k q_k (T15(c), N002 doubt-check §3). -/
 def weightProportions {J : ℕ} (q W : Fin J → ℝ) (j : Fin J) : ℝ :=
   W j*q j/(∑ k,W k*q k)
 
@@ -1947,7 +1954,7 @@ def pooledUpper {ι κ : Type*} [Fintype ι] [Fintype κ] {J : ℕ}
     (α β : ℝ) (h : ℕ) (ω : ℕ → κ) : ℝ :=
   upperEndpoint (fun ri : Fin h × ι => y (cls ri.2)) (pooledIndicator d h ω) α β
 
-/-- The pooled sample S_h is nonempty (Assumption 1). -/
+/-- S_h is nonempty (Assumption 1 and target convention S7(e)). -/
 def pooledNonempty {ι κ : Type*} [Fintype κ]
     (d : FiniteDesign ι κ) (h : ℕ) (ω : ℕ → κ) : Prop :=
   ∃ r : Fin h, (d.sample (ω r.val)).Nonempty
@@ -2086,7 +2093,8 @@ theorem class_totals_positive {N J : ℕ} {κ : Type*} [Fintype κ]
     exact ⟨i,Finset.mem_filter.mpr ⟨Finset.mem_univ _,hi⟩,hπ i⟩
 
 /-- The class box extrema are the minimum and maximum of the finitely
-many threshold values, including ties of optimal cut values (T13). -/
+many threshold values. This exact finite identity is an alternative route
+to continuity of the extrema, including ties of optimal cut values (T13). -/
 theorem endpoints_as_finite_thresholds {J : ℕ} (hJ : 0 < J) (y p : Fin J → ℝ)
     (hy : StrictMono y) (hp : ∀ j,0 < p j) (α β : ℝ)
     (hα : 0 < α) (hab : α ≤ β) (hb1 : β ≤ 1) :
@@ -2224,28 +2232,41 @@ theorem printed_proposition_three {N J : ℕ} (hN : 0 < N) (hJ : 0 < J)
         (nhds (upperEndpoint y (classTotal d cls) α β)) := by
   exact corrected_proposition_three hN hJ d cls hcls y hy α β hα hab hb1 hπ
 
-/- P025-T7 and P025-T8: the universal printed assertions are stated and refuted
-in AronowAudit.P025.P025_PrintedRefutations, by printed_proposition_one_refuted
-and printed_proposition_two_formula_refuted. Their valid upper halves are
-proved below by printed_proposition_one_upper and printed_proposition_two_upper. -/
+/- T7: Proposition 1 and (5) as PRINTED, preserving ≥ in the lower
+cut rule. This faithfully drafted claim is false, as the T1 counterexample
+proves. Its upper part is independently proved by the shared optimizer theorem. -/
+/- The false assertion `printed_proposition_one` is retired.
+Its original closed contract is archived in the confidence-all campaign,
+and its checked refutation is recorded in the completion ledger. -/
 
+/- T8: the algebraic part of Proposition 2 as PRINTED, preserving the
+≥ lower rule and the overlapping j=k_- -1 tails. `Option.none` records an
+undefined printed index instead of assigning a fictitious class. The claim
+that the display supplies μ_- requires `some μ_-`. This claim is false by
+T2 and T10; the separate unqualified sharpness sentence is represented
+by the absolute-information claim below, whose reading T16 refutes. -/
+/- The false assertion `printed_proposition_two_formula` is retired.
+Its original closed contract is archived in the confidence-all campaign,
+and its checked refutation is recorded in the completion ledger. -/
 
 /-- Compatible means when the absolute totals Π are retained, with N
 unrestricted (T16(A); the richer reading of the printed sharpness claim). -/
 def absoluteCompatibleMeans {J : ℕ} (y mass : Fin J → ℝ) (α β : ℝ) : Set ℝ :=
   {v | ∃ m : Fin J → ℕ, absoluteCompatible α β mass m ∧ classMean y m = v}
 
-/- The absolute-information sharpness assertion is stated and refuted by
-printed_sharpness_absolute_information_refuted in
-AronowAudit.P025.P025_PrintedRefutations. The shares-only corrected statement
-is shares_sharpness_and_attainment below. -/
+/- T8 sharpness sentence under the absolute-information reading fixed
+by T16: the box endpoints would be sharp infimum/supremum bounds. It is
+faithfully stated and deliberately unproved because T16(A) refutes it.
+The shares-only corrected version is T15. -/
+/- The false assertion `printed_sharpness_absolute_information` is retired.
+Its original closed contract is archived in the confidence-all campaign,
+and its checked refutation is recorded in the completion ledger. -/
 
-
-/-- The three outcome classes (0,2,3) in T14. Each class has
+/-- The three outcome classes (0,2,3) in E005 §3 (T14). Each class has
 two population units, represented as `Fin 3 × Fin 2`. -/
 def threeOutcomes : Fin 3 → ℝ := ![0,2,3]
 
-/-- One equally likely choice from each pair (T14). -/
+/-- One equally likely choice from each pair (T14, E005 §3). -/
 def pairChoice (ω : Fin 2 × Fin 2 × Fin 2) : Fin 3 → Fin 2 := ![ω.1,ω.2.1,ω.2.2]
 
 /-- The explicit eight-state finite sampling design of T14: independently
@@ -2603,7 +2624,7 @@ theorem printed_proposition_two_upper {J : ℕ} (hJ : 0 < J) (y mass : Fin J →
 
 /-- T9(c): the printed tail includes exactly the two extra classes
 k-1 and k. This finite identity records the overlap independently of the
-choice of an optimal cut. -/
+choice of an optimal cut (E002 derivation, steps 2--3). -/
 theorem printed_tail_overlap {J : ℕ} (f : Fin J → ℝ) (k : ℕ)
     (hk2 : 2 ≤ k) (hkJ : k ≤ J) :
     (∑ i with k-2 ≤ i.val,f i) = (∑ i with k ≤ i.val,f i) +
@@ -2630,7 +2651,7 @@ theorem printed_tail_overlap {J : ℕ} (f : Fin J → ℝ) (k : ℕ)
   simp [u,v]
 
 /-- Exact algebra for the difference caused by two duplicated classes
-(T9(c)). Denominators are explicitly nonzero. -/
+(T9(c), E002 derivation step 3). Denominators are explicitly nonzero. -/
 theorem duplicated_classes_difference (N D a b x z : ℝ)
     (hD : D ≠ 0) (hD' : D+a+b ≠ 0) :
     (N+a*x+b*z)/(D+a+b)-N/D =
@@ -2714,7 +2735,7 @@ theorem absolute_outer_bound {J : ℕ} (hJ : 0 < J) (y mass : Fin J → ℝ)
   exact ⟨hl.2 hz,hh.2 hz⟩
 
 /-- Compatible means conditional on the known original population size
-N as well as absolute class totals (T16(B)). -/
+N as well as absolute class totals (T16(B), N002 doubt-check §5). -/
 def knownSizeCompatibleMeans {J : ℕ} (y mass : Fin J → ℝ) (α β : ℝ) (N : ℕ) : Set ℝ :=
   {v | ∃ m : Fin J → ℕ,absoluteCompatible α β mass m ∧ (∑ j,m j)=N ∧ classMean y m=v}
 
@@ -2892,7 +2913,8 @@ theorem class_proportion_mean {J : ℕ} (y : Fin J → ℝ) (m : Fin J → ℕ) 
   simp only [classProportions,classMean,div_mul_eq_mul_div,← Finset.sum_div]
 
 /-- T15(c), necessary direction: the class proportions of every
-share-compatible finite population belong to C_γ(q) and are rational. -/
+share-compatible finite population belong to C_γ(q) and are rational.
+The converse and density/attainment claims remain in the full drafted theorem. -/
 theorem compatible_proportions_necessary {J : ℕ} (hJ : 0 < J) (q : Fin J → ℝ)
     (hq : ∀ j,0 < q j) (α β : ℝ) (hα : 0 < α) (hab : α ≤ β)
     (m : Fin J → ℕ) (hm : sharesCompatible α β q m) :
@@ -3073,9 +3095,9 @@ theorem rational_region_has_compatible_sizes {J : ℕ} (hJ : 0 < J) (q r : Fin J
     rw [he] at hb
     simpa [div_eq_mul_inv] using hb
 
-/-- T15(c): exact finite-population realizability is membership in
-C_γ(q) together with rational coordinates, as required to distinguish
-finite-population attainment from continuous weight-box optimization. -/
+/-- T15(c): EXACT finite-population realizability is membership in
+C_γ(q) together with rational coordinates. This distinction is what the
+continuous weight-box sharpness claim needs (N002 doubt-check §§3--4). -/
 theorem compatible_proportions_iff_rational_region {J : ℕ} (hJ : 0 < J) (q r : Fin J → ℝ)
     (hq : ∀ j,0 < q j) (α β : ℝ) (hα : 0 < α) (hab : α ≤ β) :
     (∃ m : Fin J → ℕ,sharesCompatible α β q m ∧ classProportions m=r) ↔
@@ -3088,8 +3110,8 @@ theorem compatible_proportions_iff_rational_region {J : ℕ} (hJ : 0 < J) (q r :
 
 /-- T15(d): either variational endpoint is an actual finite-population
 mean exactly when its optimizer set contains a rational proportion vector.
-The statement holds for any specified value v and thus applies
-to both μ_- and μ_+. -/
+The statement holds for ANY specified endpoint value v and thus applies
+to both μ_- and μ_+ (N002 doubt-check §4). -/
 theorem compatible_mean_iff_rational_region {J : ℕ} (hJ : 0 < J) (y q : Fin J → ℝ)
     (hq : ∀ j,0 < q j) (α β : ℝ) (hα : 0 < α) (hab : α ≤ β) (v : ℝ) :
     v ∈ compatibleMeans y q α β ↔
@@ -3105,8 +3127,8 @@ theorem compatible_mean_iff_rational_region {J : ℕ} (hJ : 0 < J) (y q : Fin J 
     exact hv
 
 /-- Auxiliary strict cone "a_j>0 and a_j q_k<γ a_k q_j for every j,k"
-for the density proof of T15(b). Normalizing these vectors gives
-population proportions in C_γ(q), on p. 237 as corrected. -/
+for the density proof of T15(b), N002 doubt-check §3. Normalizing these
+vectors gives population proportions in C_γ(q), on p. 237 as corrected. -/
 def strictSelectionCone {J : ℕ} (q : Fin J → ℝ) (γ : ℝ) : Set (Fin J → ℝ) :=
   {a | (∀ j,0 < a j) ∧ ∀ j k,a j*q k < γ*a k*q j}
 
@@ -3349,3 +3371,175 @@ theorem proportion_region_mean_extrema {J : ℕ} (hJ : 0 < J) (y q : Fin J → �
 
 end
 end AronowAudit.P025
+#print axioms AronowAudit.P025.sample_sign_counterexample
+#print axioms AronowAudit.P025.class_sign_counterexample
+#print axioms AronowAudit.P025.denominator_pos
+#print axioms AronowAudit.P025.ratio_le
+#print axioms AronowAudit.P025.le_ratio
+#print axioms AronowAudit.P025.ratio_scale_weights
+#print axioms AronowAudit.P025.ratio_scale_masses
+#print axioms AronowAudit.P025.normalize_box
+#print axioms AronowAudit.P025.threshold_sum_update
+#print axioms AronowAudit.P025.threshold_den_update
+#print axioms AronowAudit.P025.threshold_increment
+#print axioms AronowAudit.P025.threshold_shift
+#print axioms AronowAudit.P025.threshold_cut_exists
+#print axioms AronowAudit.P025.threshold_separator
+#print axioms AronowAudit.P025.ratio_residual_zero
+#print axioms AronowAudit.P025.lower_threshold_optimal
+#print axioms AronowAudit.P025.upper_threshold_optimal
+#print axioms AronowAudit.P025.application_counterexample_numbers
+#print axioms AronowAudit.P025.application_rounded_counterexamples
+#print axioms AronowAudit.P025.binary_denominators
+#print axioms AronowAudit.P025.binary_endpoints_order
+#print axioms AronowAudit.P025.binaryLower_monotone
+#print axioms AronowAudit.P025.overlap_criterion
+#print axioms AronowAudit.P025.overlap_threshold_numbers
+#print axioms AronowAudit.P025.reweighted_formula
+#print axioms AronowAudit.P025.equal_estimates_product
+#print axioms AronowAudit.P025.common_cap_product
+#print axioms AronowAudit.P025.reported_counts_unique
+#print axioms AronowAudit.P025.table_six_exact
+#print axioms AronowAudit.P025.table_all_cells
+#print axioms AronowAudit.P025.table_grid_comparison
+#print axioms AronowAudit.P025.attainable_normalization
+#print axioms AronowAudit.P025.ratio_segment_attains
+#print axioms AronowAudit.P025.corrected_weighted_bounds
+#print axioms AronowAudit.P025.corrected_proposition_one
+#print axioms AronowAudit.P025.corrected_proposition_two
+#print axioms AronowAudit.P025.threshold_partition
+#print axioms AronowAudit.P025.ratio_only_and_equal_probabilities
+#print axioms AronowAudit.P025.tied_outcomes_equal_weights
+#print axioms AronowAudit.P025.tail_index_counterexample
+#print axioms AronowAudit.P025.equal_probability_proof_counterexample
+#print axioms AronowAudit.P025.quota_design_valid
+#print axioms AronowAudit.P025.quota_marginal_eq
+#print axioms AronowAudit.P025.application_counterexample_designs
+#print axioms AronowAudit.P025.equal_probability_thresholds
+#print axioms AronowAudit.P025.strict_gamma_stationarity
+#print axioms AronowAudit.P025.upper_cut_persistence
+#print axioms AronowAudit.P025.pair_difference_identities
+#print axioms AronowAudit.P025.pair_boundary_repair
+#print axioms AronowAudit.P025.lower_partition_original_box
+#print axioms AronowAudit.P025.expected_class_count
+#print axioms AronowAudit.P025.two_design_realizes_example
+#print axioms AronowAudit.P025.tail_design_realizes_example
+#print axioms AronowAudit.P025.census_realizes_boundary
+#print axioms AronowAudit.P025.integrality_design_realizes_example
+#print axioms AronowAudit.P025.one_class_compatibility
+#print axioms AronowAudit.P025.integrality_sharpness_counterexample
+#print axioms AronowAudit.P025.known_size_sharpness_counterexample
+#print axioms AronowAudit.P025.ratio_difference_residual
+#print axioms AronowAudit.P025.dichotomous_closed_form
+#print axioms AronowAudit.P025.denominator_ge_total
+#print axioms AronowAudit.P025.nonnegative_mass_mean_bounds
+#print axioms AronowAudit.P025.ratio_difference_masses
+#print axioms AronowAudit.P025.uniform_ratio_error
+#print axioms AronowAudit.P025.greatest_error_bound
+#print axioms AronowAudit.P025.least_error_bound
+#print axioms AronowAudit.P025.actual_class_weights
+#print axioms AronowAudit.P025.class_mean_ratio
+#print axioms AronowAudit.P025.shares_outer_bound
+#print axioms AronowAudit.P025.shares_sharpness_and_attainment
+#print axioms AronowAudit.P025.joint_replications_iid
+#print axioms AronowAudit.P025.pooled_class_aggregation
+#print axioms AronowAudit.P025.empirical_ratio_identity
+#print axioms AronowAudit.P025.fixed_weight_continuity
+#print axioms AronowAudit.P025.corrected_proposition_three
+#print axioms AronowAudit.P025.printed_proposition_three
+#print axioms AronowAudit.P025.pair_membership
+#print axioms AronowAudit.P025.pair_design_realizes_example
+#print axioms AronowAudit.P025.pair_pooled_ratio
+#print axioms AronowAudit.P025.pair_pooled_attainable
+#print axioms AronowAudit.P025.nonseparation_class_extrema
+#print axioms AronowAudit.P025.three_replicate_extrema
+#print axioms AronowAudit.P025.assumption_two_not_necessary
+#print axioms AronowAudit.P025.printed_lower_rule_always_zero
+#print axioms AronowAudit.P025.printed_lower_vector_not_optimal
+#print axioms AronowAudit.P025.sample_counterexample_range
+#print axioms AronowAudit.P025.sharpness_counterexample_box_extrema
+#print axioms AronowAudit.P025.integrality_mean_set_and_gaps
+#print axioms AronowAudit.P025.printed_proposition_one_upper
+#print axioms AronowAudit.P025.printed_proposition_two_upper
+
+#print axioms AronowAudit.P025.grouped_numerator
+
+#print axioms AronowAudit.P025.ratio_class_constant_weights
+
+#print axioms AronowAudit.P025.normalized_class_aggregation
+
+#print axioms AronowAudit.P025.class_aggregation_box
+
+#print axioms AronowAudit.P025.class_count_bounded
+
+#print axioms AronowAudit.P025.empirical_totals_strong_law
+
+#print axioms AronowAudit.P025.class_totals_positive
+
+#print axioms AronowAudit.P025.endpoints_as_finite_thresholds
+
+#print axioms AronowAudit.P025.endpoints_tendsto
+
+#print axioms AronowAudit.P025.printed_tail_overlap
+
+#print axioms AronowAudit.P025.duplicated_classes_difference
+
+#print axioms AronowAudit.P025.printed_partition_discrepancy
+
+#print axioms AronowAudit.P025.absolute_integer_calibration
+
+#print axioms AronowAudit.P025.absolute_outer_bound
+
+#print axioms AronowAudit.P025.known_size_mean_set_and_gap
+
+#print axioms AronowAudit.P025.equal_probability_box_and_endpoints
+
+#print axioms AronowAudit.P025.corrected_lower_display_at_cut
+
+#print axioms AronowAudit.P025.upper_cut_from_strict_neighbors
+
+#print axioms AronowAudit.P025.weight_proportions_scale_mass
+
+#print axioms AronowAudit.P025.box_proportions_in_region
+
+#print axioms AronowAudit.P025.class_proportions_rational
+
+#print axioms AronowAudit.P025.class_proportion_mean
+
+#print axioms AronowAudit.P025.compatible_proportions_necessary
+
+#print axioms AronowAudit.P025.weight_proportions_scale_weights
+
+#print axioms AronowAudit.P025.proportion_region_positive
+
+#print axioms AronowAudit.P025.region_has_box_weights
+
+#print axioms AronowAudit.P025.box_proportion_image
+
+#print axioms AronowAudit.P025.rational_proportions_have_sizes
+
+#print axioms AronowAudit.P025.rational_region_has_compatible_sizes
+
+#print axioms AronowAudit.P025.compatible_proportions_iff_rational_region
+
+#print axioms AronowAudit.P025.compatible_mean_iff_rational_region
+
+#print axioms AronowAudit.P025.strict_selection_cone_open
+
+#print axioms AronowAudit.P025.rational_vectors_dense
+
+#print axioms AronowAudit.P025.rational_cone_mean_compatible
+
+#print axioms AronowAudit.P025.region_mean_mem_closure
+
+#print axioms AronowAudit.P025.mean_weight_proportions
+
+#print axioms AronowAudit.P025.compatible_endpoints_mem_closure
+
+#print axioms AronowAudit.P025.shares_sharp_endpoints
+
+#print axioms AronowAudit.P025.jointLaw_isProbability
+
+#print axioms AronowAudit.P025.proportion_region_mean_image
+
+#print axioms AronowAudit.P025.proportion_region_mean_extrema

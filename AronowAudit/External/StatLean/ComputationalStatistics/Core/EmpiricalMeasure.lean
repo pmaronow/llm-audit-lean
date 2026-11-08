@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.ComputationalStatistics.Core.Defs
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
@@ -13,8 +9,10 @@ The finite-sum/measure conversions every later module reduces to:
 
 * `isProbabilityMeasure_empiricalMeasure` — `(1/n)·Σᵢ δ_{xᵢ}` is a probability
   measure for `n ≥ 1`;
-* `isProbabilityMeasure_weightedMeasure` — the weighted analogue under simplex weights;
-* `weightedMeasure_eq_map_categorical`,
+* `integral_empiricalMeasure` — `∫ f d𝔽ₙ = (1/n)·Σᵢ f(xᵢ)` (`= mcEstimate f x`);
+* `isProbabilityMeasure_weightedMeasure`, `integral_weightedMeasure` — the
+  weighted analogues under simplex weights;
+* `integral_categorical`, `weightedMeasure_eq_map_categorical`,
   `empiricalMeasure_eq_map_categorical` — a weighted sample is the pushforward
   of a categorical index draw through the data; the empirical measure is the
   uniform-weights case.
@@ -22,9 +20,12 @@ The finite-sum/measure conversions every later module reduces to:
 **Reference.** James E. Gentle, *Elements of Computational Statistics*, Springer,
 2002 (ISBN 0-387-95489-9), §2.5 (random sampling from data: "the discrete uniform
 population defined by the data"), ch. 4 p. 83–84 (the ECDF as a population).
+(`ECS §X.Y`.)
 
 **Proof formalization notes.**
 
+* Integrals against Dirac sums need strong measurability of the integrand
+  (`MeasureTheory.integral_dirac'`); these are LEAN-ONLY hypotheses.
 * `empiricalMeasure_apply` is stated for measurable sets in `ℝ≥0∞` count form
   `(1/n)·#{i | xᵢ ∈ s}`.
 * The pushforward lemmas need no measurability hypothesis on `x` because
@@ -66,6 +67,28 @@ theorem empiricalMeasure_apply
   rw [Measure.dirac_apply' _ hs]
   rfl
 
+/-- **Integral against the empirical measure is the sample average**
+(ECS §2.5, ch. 4 p. 84): `∫ f d𝔽ₙ = (1/n)·Σᵢ f(xᵢ) = mcEstimate f x`.  This
+identity is what lets every Monte Carlo and resampling module avoid redoing
+finite-sum/measure conversions. -/
+theorem integral_empiricalMeasure
+    -- LEAN-ONLY: strong measurability, needed to integrate against Diracs
+    (hf : StronglyMeasurable f) :
+    ∫ z, f z ∂(empiricalMeasure x) = mcEstimate f x := by
+  have hint : ∀ i : Fin n, Integrable f (Measure.dirac (x i)) :=
+    fun i => integrable_dirac' hf (by simp)
+  rw [empiricalMeasure, integral_smul_measure,
+    integral_finsetSum_measure fun i _ => hint i]
+  simp only [integral_dirac' _ _ hf, ENNReal.toReal_inv, ENNReal.toReal_natCast,
+    smul_eq_mul, mcEstimate]
+
+/-- Lower integral against the empirical measure, `ℝ≥0∞` version. -/
+theorem lintegral_empiricalMeasure {φ : 𝓧 → ℝ≥0∞}
+    -- LEAN-ONLY: measurability, needed to integrate against Diracs
+    (hφ : Measurable φ) :
+    ∫⁻ z, φ z ∂(empiricalMeasure x) = (n : ℝ≥0∞)⁻¹ * ∑ i, φ (x i) := by
+  rw [empiricalMeasure, lintegral_smul_measure, lintegral_finsetSum_measure]
+  simp only [lintegral_dirac' _ hφ, smul_eq_mul]
 
 /-- **A weighted sample carries a probability measure** (ECS §2.6): under
 simplex weights, `Σᵢ wᵢ·δ_{xᵢ}` is a probability measure. -/
@@ -80,6 +103,19 @@ theorem isProbabilityMeasure_weightedMeasure
   simp only [Measure.smul_apply, measure_univ, smul_eq_mul, mul_one]
   rw [← ENNReal.ofReal_sum_of_nonneg (fun i _ => hw0 i), hw1, ENNReal.ofReal_one]
 
+/-- **Integral against a weighted empirical measure** (ECS §2.6):
+`∫ f d(Σᵢ wᵢ δ_{xᵢ}) = Σᵢ wᵢ·f(xᵢ)`. -/
+theorem integral_weightedMeasure
+    -- USER-INPUT: nonnegative weights; ECS §2.6
+    (hw0 : ∀ i, 0 ≤ w i)
+    -- LEAN-ONLY: strong measurability, needed to integrate against Diracs
+    (hf : StronglyMeasurable f) :
+    ∫ z, f z ∂(weightedMeasure w x) = ∑ i, w i * f (x i) := by
+  have hint : ∀ i : Fin n, Integrable f (ENNReal.ofReal (w i) • Measure.dirac (x i)) :=
+    fun i => (integrable_dirac' hf (by simp)).smul_measure (by simp)
+  rw [weightedMeasure, integral_finsetSum_measure fun i _ => hint i]
+  simp only [integral_smul_measure, integral_dirac' _ _ hf,
+    ENNReal.toReal_ofReal (hw0 _), smul_eq_mul]
 
 /-- The empirical measure is the weighted empirical measure with uniform
 weights `1/n`. -/
@@ -90,6 +126,14 @@ theorem empiricalMeasure_eq_weightedMeasure [NeZero n] :
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [ENNReal.ofReal_inv_of_pos hn, ENNReal.ofReal_natCast]
 
+/-- **Integral against a categorical distribution**: `∫ g d(categorical q)
+= Σᵢ qᵢ·g(i)`. -/
+theorem integral_categorical {m : ℕ} {q : Fin m → ℝ} (g : Fin m → ℝ)
+    -- USER-INPUT: nonnegative probability vector; ECS §2.5
+    (hq0 : ∀ i, 0 ≤ q i) :
+    ∫ i, g i ∂(categorical q) = ∑ i, q i * g i := by
+  rw [categorical_eq_weightedMeasure]
+  exact integral_weightedMeasure hq0 (Measurable.of_discrete (f := g)).stronglyMeasurable
 
 /-- The categorical distribution is a probability measure under simplex
 weights. -/

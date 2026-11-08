@@ -1,0 +1,174 @@
+import SAP.P006a.Challenge
+
+open MeasureTheory ProbabilityTheory
+open scoped BigOperators ENNReal
+
+namespace Audit
+open SAP.P006a
+noncomputable section
+
+/-- A genuine experiment with arbitrary preselected Unit policies. For an
+admissible policy, its only value is exactly the Bernoulli parameter. -/
+def simpleE : Experiment Bool Unit 1 where
+  hn := by norm_num
+  PX := Measure.dirac ()
+  μ0 := fun _ => 0
+  μ1 := fun _ => 1
+  law := fun π => by
+    classical
+    exact if h : Admissible π then
+      bernoulliMeasure true false ⟨π (), h.2 ()⟩ else Measure.dirac false
+  X := fun _ _ => ()
+  Y0 := fun _ _ => 0
+  Y1 := fun _ _ => 1
+  T := fun _ _ ω => ω
+  μhat := fun _ _ _ => 0
+
+lemma simpleE_law (π : Unit → ℝ) (hπ : Admissible π) :
+    simpleE.law π = bernoulliMeasure true false ⟨π (), hπ.2 ()⟩ := by
+  simp [simpleE, hπ]
+
+instance simpleE_prob (π : Unit → ℝ) : IsProbabilityMeasure (simpleE.law π) := by
+  classical
+  change IsProbabilityMeasure (if h : Admissible π then
+    bernoulliMeasure true false ⟨π (), h.2 ()⟩ else Measure.dirac false)
+  split <;> infer_instance
+
+instance simpleE_px_prob : IsProbabilityMeasure simpleE.PX := by
+  change IsProbabilityMeasure (Measure.dirac ())
+  infer_instance
+
+lemma simpleE_cov (i : Fin 1) : simpleE.covariateSigma i = ⊥ := by
+  simp [Experiment.covariateSigma, simpleE]
+
+theorem simpleE_standing : OutcomeStanding simpleE := by
+  classical
+  constructor
+  · change IsProbabilityMeasure (Measure.dirac ())
+    infer_instance
+  · exact ⟨measurable_const, measurable_const⟩
+  · exact ⟨integrable_const 0, integrable_const 1⟩
+  · intro π _
+    infer_instance
+  · intro π _ i
+    exact ⟨measurable_const, measurable_const, measurable_const, measurable_id⟩
+  · intro π _ i
+    exact ⟨integrable_const 0, integrable_const 1⟩
+  · intro π _ i
+    refine ⟨aemeasurable_const, aemeasurable_id, ?_⟩
+    change Measure.map (fun _ : Bool => ()) (simpleE.law π) =
+      Measure.map (fun x : Unit => x) (Measure.dirac ())
+    rw [Measure.map_dirac]
+    simp only [Measure.map_const, measure_univ, one_smul]
+  · intro π π' _ _ i
+    refine ⟨(measurable_of_finite _).aemeasurable,
+      (measurable_of_finite _).aemeasurable, ?_⟩
+    change Measure.map (fun _ : Bool => ((), (0 : ℝ), (1 : ℝ))) (simpleE.law π) =
+      Measure.map (fun _ : Bool => ((), (0 : ℝ), (1 : ℝ))) (simpleE.law π')
+    simp only [Measure.map_const, measure_univ, one_smul]
+  · intro π _
+    exact iIndepFun.of_subsingleton
+  · intro π _ i j
+    have hij : i = j := Subsingleton.elim _ _
+    subst j
+    exact IdentDistrib.refl (measurable_of_finite _).aemeasurable
+  · intro π _ i
+    simp only [simpleE_cov]
+    constructor <;> rw [condExp_bot]
+    · change (fun _ => ∫ _ : Bool, (0 : ℝ) ∂simpleE.law π) =ᵐ[simpleE.law π] (fun _ => 0)
+      simp only [integral_const, probReal_univ, one_smul]
+      exact Filter.EventuallyEq.rfl
+    · change (fun _ => ∫ _ : Bool, (1 : ℝ) ∂simpleE.law π) =ᵐ[simpleE.law π] (fun _ => 1)
+      simp only [integral_const, probReal_univ, one_smul]
+      exact Filter.EventuallyEq.rfl
+  · intro π hπ i
+    simp only [simpleE_cov]
+    rw [condExp_bot]
+    change (fun _ => ∫ ω : Bool, bit ω ∂simpleE.law π) =ᵐ[simpleE.law π]
+      (fun _ => π ())
+    rw [simpleE_law π hπ, integral_bernoulliMeasure]
+    simp [bit]
+  · intro π hπ i B hB
+    simp only [simpleE_cov]
+    rw [condExp_bot, condExp_bot]
+    change (fun _ => ∫ ω : Bool, bit ω * B.indicator (fun _ => (1 : ℝ)) (0,1)
+        ∂simpleE.law π) =ᵐ[simpleE.law π]
+      (fun _ => π () * ∫ _ : Bool, B.indicator (fun _ => (1 : ℝ)) (0,1) ∂simpleE.law π)
+    rw [simpleE_law π hπ, integral_bernoulliMeasure, integral_bernoulliMeasure]
+    by_cases hmem : ((0 : ℝ), (1 : ℝ)) ∈ B <;>
+      simp [bit, Set.indicator_of_mem, Set.indicator_of_notMem, hmem]
+
+theorem simpleE_l1 : EstimatorL1 simpleE {π | Admissible π} := by
+  intro π _ i
+  exact integrable_const 0
+
+theorem simpleE_vector : VectorUnbiased simpleE {π | Admissible π} := by
+  intro π _ i
+  simp [simpleE]
+
+theorem simpleE_pointwise : PointwiseUnbiased simpleE {π | Admissible π} := by
+  intro π _ x
+  exact ⟨integrable_const 0, by simp [simpleE]⟩
+
+theorem simpleE_independent : IndependentEstimator simpleE {π | Admissible π} := by
+  refine ⟨Unit, inferInstance, (fun _ => ()), (fun _ _ _ => 0), measurable_const, ?_⟩
+  intro π _
+  exact ⟨measurable_const, (by intros; rfl), indepFun_const_left () _⟩
+
+lemma simpleE_reward (π : Unit → ℝ) (hπ : Admissible π) :
+    simpleE.expectedATT π = π () := by
+  rw [Experiment.expectedATT, simpleE_law π hπ, integral_bernoulliMeasure]
+  norm_num [simpleE, Experiment.observed, wATT, wATO, treatedCount,
+    Fin.sum_univ_one, bit]
+
+lemma simpleE_welfare (π : Unit → ℝ) (hπ : Admissible π) :
+    simpleE.V π = π () := by
+  rw [Experiment.V, simpleE_law π hπ, integral_bernoulliMeasure]
+  norm_num [simpleE, Experiment.observed]
+
+example : IsBest {π | Admissible π} simpleE.expectedATT (fun _ => 1) ∧
+    IsBest {π | Admissible π} simpleE.V (fun _ => 1) := by
+  have hone : Admissible (fun _ : Unit => (1 : ℝ)) :=
+    ⟨measurable_const, by intro x; norm_num⟩
+  constructor
+  · refine ⟨hone, ?_⟩
+    intro π hπ
+    rw [simpleE_reward π hπ, simpleE_reward _ hone]
+    exact (hπ.2 ()).2
+  · refine ⟨hone, ?_⟩
+    intro π hπ
+    rw [simpleE_welfare π hπ, simpleE_welfare _ hone]
+    exact (hπ.2 ()).2
+
+example : (∀ π ∈ ({π : Unit → ℝ | Admissible π}), Admissible π) ∧
+    (fun _ : Unit => (0 : ℝ)) ∈ ({π | Admissible π}) := by
+  exact ⟨fun _ h => h, measurable_const, by intro x; norm_num⟩
+
+example : ∀ i : Fin 2, 0 < (![1/2,1/2] : Fin 2 → ℝ) i := by
+  intro i
+  fin_cases i <;> norm_num
+
+example : (∑ i : Fin 2, (![1/2,1/2] : Fin 2 → ℝ) i) = 1 := by
+  norm_num [Fin.sum_univ_two]
+
+example : Antitone (![1,9/10] : Fin 2 → ℝ) := by
+  intro i j hij
+  fin_cases i <;> fin_cases j <;> norm_num at *
+
+example : ∃ E : Experiment Bool Unit 1,
+    OutcomeStanding E ∧
+    EstimatorL1 E {π | Admissible π} ∧
+    VectorUnbiased E {π | Admissible π} ∧
+    PointwiseUnbiased E {π | Admissible π} ∧
+    IndependentEstimator E {π | Admissible π} := by
+  exact ⟨simpleE, simpleE_standing, simpleE_l1, simpleE_vector,
+    simpleE_pointwise, simpleE_independent⟩
+
+#print axioms simpleE_standing
+#print axioms simpleE_vector
+#print axioms simpleE_independent
+#print axioms simpleE_reward
+#print axioms simpleE_welfare
+
+end
+end Audit

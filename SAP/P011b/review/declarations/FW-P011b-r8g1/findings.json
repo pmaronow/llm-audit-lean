@@ -1,0 +1,20 @@
+[
+  {
+    "target_id": "P011-T16",
+    "theorem": "SAP.P011b.T16",
+    "fingerprint": "483b859337441acb0d003e765280fa336f3bec12faeff6c848ae4074ee06526a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean: T16Review.nonvacuity constructs a family, p, j, designs and coefficient sequence satisfying every hypothesis of ResidualOLSConclusionsW2, together with Valid. The instance has n_k=k+1, independent fair-sign coordinates, empty true and recruitment graphs, zero caps, theta_i=1, p=1, an intercept-only design and b_k=0. Scaling holds with constants (1,1,1,2), n_k Var(betaHat)=1 at every size, and DesignRegularW2 holds with Bx=By=lambda=1. This also supplies instances of the finite OLS and raw-oracle premises. Separately, scratch/Witness.lean independently proves the entire concrete RawSlopeShiftWitnessW2, including its mean model, inverse domain, OLS weights, unchanged slope/residuals and raw values 0 and 1/2. Both scratch proofs depend only on propext, Classical.choice and Quot.sound, with no use of T16. Exact rational enumeration in scratch/check_star.py checks all 3072 elementary draws of the lower-star block, joint independence of the leaves, the conditional center law, mean vector (3/4,1/4,1/4,1/4), covariance matrix, and the constants 27/128, -3/128 and 15/64. Across blocks the source law is a uniform product, giving independent draws. The block moment calculation, bounded binary outcomes, append-block graph embeddings, explicit Gram diag(4K,12K), and empty recruitment check every standing, OLS and validity condition of the nonnecessity witness. Its maxima dominate the feasible empty-graph objective, whose scaled limit 15/64 exceeds 27/128.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json: the earlier record note claimed a retained fixed-b domain and denied a generalized coefficient-sequence result, despite WholeW2.lean:185 and the Challenge docstring allowing b_k.",
+        "status": "fixed",
+        "reason": "record.json:51 now explicitly permits arbitrary deterministic sequences b : Nat -> Fin p -> Real and sample-size-dependent targets, while keeping only p and j fixed in the residual asymptotics. This agrees with SAP/P011b/Defs/WholeW2.lean:184-190 and SAP/P011b/Challenge/Part1.lean:41. The architect-report.md:121-123 account of the metadata-only repair is accurate. No current restriction or wording defect remains."
+      }
+    ]
+  }
+]

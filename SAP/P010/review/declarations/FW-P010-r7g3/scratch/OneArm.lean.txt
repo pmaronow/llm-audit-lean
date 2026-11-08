@@ -1,0 +1,104 @@
+import SAP.P010.Defs
+
+open MeasureTheory ProbabilityTheory Set Filter
+open SAP.P010
+open scoped ENNReal NNReal Classical Topology BigOperators
+
+namespace Review
+
+def embed (y : ℝ) : Population 1 0 :=
+  (fun _ => y, fun _ => true, 0, fun _ => 0)
+
+lemma embed_measurable : Measurable embed := by
+  unfold embed
+  fun_prop
+
+noncomputable def mu : Measure (Population 1 0) := (gaussianReal 0 1).map embed
+
+instance : IsProbabilityMeasure mu := by unfold mu; infer_instance
+
+lemma potential_measurable : Measurable (potentialOutcome (0 : Fin 1) : Population 1 0 → ℝ) := by
+  unfold potentialOutcome
+  fun_prop
+
+lemma response_eq : (response : Population 1 0 → ℝ) = potentialOutcome 0 := by
+  funext ω
+  exact congrArg ω.1 (Subsingleton.elim _ _)
+
+lemma assigned_univ (a : Fin 1) : (assigned a : Set (Population 1 0)) = univ := by
+  ext ω
+  simp only [assigned, mem_ofPred_eq, mem_univ, iff_true]
+  exact Subsingleton.elim _ _
+
+lemma mass_allPass : mu allPass = 1 := by
+  rw [mu, Measure.map_apply embed_measurable (by unfold allPass; measurability)]
+  simp [Set.preimage, allPass, embed]
+
+lemma mass_passed : mu passed = 1 := by
+  rw [mu, Measure.map_apply embed_measurable (by unfold passed check arm; measurability)]
+  simp [Set.preimage, passed, check, arm, embed]
+
+lemma mass_wouldPass : mu (wouldPass (0 : Fin 1)) = 1 := by
+  rw [mu, Measure.map_apply embed_measurable (by unfold wouldPass; measurability)]
+  simp [Set.preimage, wouldPass, embed]
+
+lemma response_law : mu.map response = gaussianReal 0 1 := by
+  rw [response_eq, mu, Measure.map_map potential_measurable embed_measurable]
+  change (gaussianReal 0 1).map id = _
+  simp
+
+lemma potential_integrable : Integrable (potentialOutcome (0 : Fin 1)) mu := by
+  rw [mu, integrable_map_measure potential_measurable.aestronglyMeasurable
+    embed_measurable.aemeasurable]
+  exact (memLp_id_gaussianReal (μ := 0) (v := 1) 1).integrable (by norm_num)
+
+lemma population_hypotheses : populationAssumptions mu := by
+  refine ⟨inferInstance, ⟨?_, ?_⟩, ?_⟩
+  · intro a
+    have hArm : (arm : Population 1 0 → Fin 1) = fun _ => (0 : Fin 1) := by
+      funext ω; exact Subsingleton.elim _ _
+    rw [hArm]
+    exact indepFun_const_right _ _
+  · intro a
+    rw [assigned_univ]
+    simp
+  · intro a
+    unfold passRate
+    rw [assigned_univ, inter_univ, mass_passed]
+    norm_num
+
+lemma atomless_response : noAtoms (mu.map response) := by
+  rw [response_law]
+  haveI := nullSingletonClass_gaussianReal (μ := 0) (v := 1) (by norm_num)
+  intro x
+  exact measure_singleton x
+
+-- Every T15 hypothesis is simultaneously satisfied by explicit Gaussian data.
+example : populationAssumptions mu ∧ 0 < mu allPass ∧ noAtoms (mu.map response) ∧
+    Integrable response (mu.restrict (passed ∩ assigned (0 : Fin 1))) := by
+  refine ⟨population_hypotheses, by rw [mass_allPass]; norm_num, atomless_response, ?_⟩
+  rw [response_eq]
+  exact potential_integrable.restrict
+
+lemma conditional_potential_law :
+    conditionalLaw mu (potentialOutcome (0 : Fin 1)) (wouldPass 0) = gaussianReal 0 1 := by
+  unfold conditionalLaw
+  rw [mass_wouldPass]
+  simp only [inv_one, one_smul]
+  have hRest : mu.restrict (wouldPass (0 : Fin 1)) = mu := by
+    rw [mu, Measure.restrict_map embed_measurable (by unfold wouldPass; measurability)]
+    simp [Set.preimage, wouldPass, embed]
+  rw [hRest, mu, Measure.map_map potential_measurable embed_measurable]
+  change (gaussianReal 0 1).map id = _
+  simp
+
+-- Every T14 hypothesis holds, and its universal fixed-mass assertion applies
+-- in particular to the nonzero discard share p=1/4 for this Gaussian law.
+example : IsProbabilityMeasure mu ∧ 0 < mu allPass ∧
+    noAtoms (conditionalLaw mu (potentialOutcome (0 : Fin 1)) (wouldPass 0)) ∧
+    Integrable (potentialOutcome (0 : Fin 1)) (mu.restrict (wouldPass 0)) := by
+  refine ⟨inferInstance, by rw [mass_allPass]; norm_num, ?_, potential_integrable.restrict⟩
+  rw [conditional_potential_law]
+  simpa only [response_law] using atomless_response
+
+end Review

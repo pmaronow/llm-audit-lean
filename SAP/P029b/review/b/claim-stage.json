@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P029b.T14",
+    "target_id": "P029-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:20-49 proves the distributional properties of the explicitly defined positive-part receipt-rate difference, not its identification as the saturated ML estimate. It omits canonical (a)'s optimization, uniqueness and interior nested-parameter conclusions, (b)'s explicit extreme-event probability, and the fixed-finite-strata joint formulation. The remaining binomial bias, tail, pointwise, limit and one-sided conclusions match. Positive arm sizes and 0<=p0<=p1<=1 avoid undefined rates; n1=n0=1,p1=3/4,p0=1/4 gives bias 1/16."
+  },
+  {
+    "theorem": "SAP.P029b.T15",
+    "target_id": "P029-T15",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:52-66 gives the actual six-point oracle-score counterexample, a valid IV law, latent ignorability, score 1/2>1/4, correct ICSW population value, quantile existence and uniqueness for every type-7 level in [0,1], and no changed scores. It omits the inverse-empirical-CDF quantile convention, a separately quantified power-level n^(-alpha) clause, and the separate numerical arm receipt means 3/4 and 1/4. The counterexample does refute the printed cutoff-to-zero reason, while leaving intact the printed no-impact conclusion. All conditioning events used have positive mass."
+  },
+  {
+    "theorem": "SAP.P029b.T16",
+    "target_id": "P029-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:69-106 correctly uses sample size N=n+1: its 1+n*lambda count bound is canonical 1+(N-1)*lambda. It states the finite bounds, vanishing changed fraction and finite-covariate probability limits, but omits the explicit floor(h) intermediate bound and half-score quantile existence/power-level instantiation in clause (ii). It adds measurable versions/estimates/cutoffs and, substantively, almost-sure eventual definedness of both ratio sequences. The iid all-complier, fair-assignment, constant-effect oracle-score model satisfies all these conditions; thus neither the type-7 hypothesis nor the added ratio assumptions is vacuous."
+  },
+  {
+    "theorem": "SAP.P029b.T17",
+    "target_id": "P029-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:109-124 states corrected Bernoulli substitution, equality of full and treated-only products, exact equivalence of their global-maximizer predicates, and both specified interior counterchecks. It omits canonical (c)'s arbitrary-probability formulas for the additive misprint and its general lower bound 1. The universally quantified likelihood family need not have a maximizer; the theorem does not assume or claim one. Nonempty data and parameter instances exist (e.g. constant pi=1/2 and D=Z on Boolean observations)."
+  },
+  {
+    "theorem": "SAP.P029b.T18",
+    "target_id": "P029-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:127-161 gives the correct nested probability identities on positive-mass profiles with positive AC mass, the pointwise type partition, interior range, cancellation, and a uniform four-point misconditioning witness. Canonical (iii)'s implication for every law with the three stated probabilities is replaced by this one-profile witness. The full corrected weighted-ITT integral identity and corrected-estimator-display equality are not asserted. Profile/AC positivity is explicit rather than relying on division by zero. A fair independent assignment applied to the three-type law in T15 supplies a nontrivial population instance with a=3/4,b=1/3."
+  },
+  {
+    "theorem": "SAP.P029b.T19",
+    "target_id": "P029-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:164-181 gives the pointwise binary-type, monotone-treatment, classification, ill-posed printed-equation, and potential-outcome algebra assertions for arbitrary real indices. The baseline/nonlinear index formulas are only definitions. The corrected stochastic simulation recipe, including independent normal/logistic noises with their specified parameters and balanced random assignment, is not a theorem conclusion. The retained algebra is valid for all index signs, including index zero under the strict >0 convention, and does not depend on any empty index type."
+  },
+  {
+    "theorem": "SAP.P029b.T20",
+    "target_id": "P029-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The Challenge correctly refutes the false universal implication in the canonical printed reading and supplies the separate true reverse-direction example. The negation is over ordinary probability laws with all IV assumptions, positive profile mass and positive compliance score, not over undefined conditionals. An explicit first-direction witness has complier/always/never masses 1/2,1/4,1/4, fair independent Z, Y0=0 and Y1=1_C: both received-treatment Y1 means are 1/2 and both Y0 means zero, but E[tau]=1/2 and E[tau|C]=1. The stated reverse-direction six-point law has constant effect 1 and baseline selection, with exactly the four displayed means."
+  },
+  {
+    "theorem": "SAP.P029b.T21",
+    "target_id": "P029-T21",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part3.lean:202-234 proves canonical constant-effect population conclusions only with measurable score/effect versions, uniform positive overlap, and positive-mass, positive-score profile conditionals. It correctly refutes the marginal-complier-indicator and conditional-full-type readings by negating their complete conjunctions; this does not claim that each individual consequence fails. It does not separately refute the alternative marginal full-type-independence reading or assert sample convergence. Exact finite witnesses exist: marginal independence can give ATE=IV=1/2 but ICSW=5/12 with a conditional mean failure; conditional full-type independence can give ATE=ICSW=1/2 but IV=3/4. Both have strictly positive profile scores."
+  },
+  {
+    "theorem": "SAP.P029b.T23",
+    "target_id": "P029-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part3.lean:237-249 is a genuine counterexample to the canonical exact observation-weight fitting contract: a global minimizer of -sum log(L_i*w_i) fails to minimize -sum w_i*log L_i. Its four saturated interior receipt cells are valid nested Bernoulli probabilities, all 16 likelihood contributions are positive, and the observation weights are 9 or 1. The package minimizer is (q00,q01,q10,q11)=(1/4,1/2,1/4,3/4); the weighted minimizer (3/4,9/10,3/4,27/28) is also admissible and has strictly better weighted likelihood. It appropriately makes no assertion against the article's bootstrap recommendation or numerical solver performance; one counterexample suffices for the universal contract."
+  },
+  {
+    "theorem": "SAP.P029b.T25",
+    "target_id": "P029-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part4.lean:21-50 matches the canonical ITT identities, positive-complier LATE ratio, defined-sample centered-IV equality, and all three exact numerical worked-example values including the rounding interval. The integrability, nondegenerate assignment, no-defier and relevance conditions are the canonical ones. The unused covariate can be chosen constant, so including X in IVAssumptions does not restrict the covariate-free target. Both-arm and first-stage sample conditions exclude empty samples and zero denominators. A two-unit sample with D=Z taking both Boolean values is a concrete defined instance."
+  },
+  {
+    "theorem": "SAP.P029b.T26",
+    "target_id": "P029-T26",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part4.lean:53-82 gives the actual observable weighted-moment population identities and an actual sample probability limit to the ATE, rather than assuming that limit. Its asymptotic part replaces unspecified/pointwise score consistency by maximum-in-sample convergence in probability, requires measurable positive estimates and conditional-mean versions, uses iid integrable joint draws and second-countable Borel covariates, imposes Assumptions 1 and 3 on the covariate-law support, and additionally assumes almost-sure eventual definedness of sample ratios. These are concrete sufficient hypotheses and a genuine restriction, not consequences asserted from pointwise Assumption 2 alone. The fair-assignment iid all-complier oracle model satisfies them simultaneously."
+  },
+  {
+    "theorem": "SAP.P029b.T27",
+    "target_id": "P029-T27",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Defs/Part4.lean:85-106 correctly renders Bayes' density as equality of measures, the LATE integral, the ICSW probability limit without Assumption 1, and exact equality of constant-weight and unweighted sample Wald ratios. The limit adds the same maximum-in-sample score consistency, measurable versions and positive estimates, iid integrable draws, second-countable Borel covariates, support overlap, and almost-sure eventual ratio definedness as T26. The density clause needs only positive complier mass; its ENNReal.ofReal density agrees with the nonnegative score almost everywhere, and m is integrable under the complier law even if unconstrained on zero-score profiles. The finite identity explicitly requires both ratios defined."
+  }
+]

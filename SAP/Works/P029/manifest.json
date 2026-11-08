@@ -1,0 +1,779 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.ignorability_counterexample",
+      "AronowAudit.P029.potential_pair_independent_of_receipt"
+    ],
+    "target_id": "P029-T1",
+    "theorem": "SAP.P029a.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.one_sided_ignorability_implication_proof",
+      "AronowAudit.P029.baseline_selection_counterexample",
+      "AronowAudit.P029.corrected_ignorability_incomparability",
+      "SAP.P029a.WH.W1.T2_whole",
+      "SAP.P029a.WH.W1.T2_assembly",
+      "SAP.P029a.WH.W1.T2_L1_proof",
+      "AronowAudit.P029.Wave1.LateIdentity.n1_proof",
+      "AronowAudit.P029.ignorability_counterexample"
+    ],
+    "statement_definition": "SAP.P029a.T2WholeStatement",
+    "target_id": "P029-T2",
+    "theorem": "SAP.P029a.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.conditional_independence_counterexample",
+      "AronowAudit.P029.conditional_witness_not_marginally_independent",
+      "AronowAudit.P029.marginal_independence_counterexample",
+      "AronowAudit.P029.marginal_witness_nested_probabilities"
+    ],
+    "target_id": "P029-T3",
+    "theorem": "SAP.P029a.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.profile_covariance_gap",
+        "reason": "The transported corrected_weighted_limits_proof already supplies the population covariance-gap identity; this finite-profile helper is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+        "reason": "The transported corrected_weighted_limits_proof already supplies inverse-score cancellation; this finite-profile helper is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.corrected_weighted_limits_proof",
+      "AronowAudit.P029.Wave1.joint_independence_suffices_proof",
+      "AronowAudit.P029.conditional_independence_counterexample",
+      "AronowAudit.P029.marginal_independence_counterexample",
+      "SAP.P029a.WH.W1.T4_whole",
+      "SAP.P029a.WH.W1.T4_assembly",
+      "SAP.P029a.WH.W1.T4_L1_proof",
+      "SAP.P029a.WH.W1.T4_L2_proof",
+      "SAP.P029a.WH.W1.T4_L3_proof",
+      "SAP.P029a.WH.W1.T4_L4_proof",
+      "AronowAudit.P029.Wave1.LateIdentity.n1_proof",
+      "AronowAudit.P015.ConvergenceCompletion.finite_cmt",
+      "AronowAudit.P015.ConvergenceCompletion.constant_limit",
+      "SAP.P029a.Bridge.proveIndependenceWitnessMeans"
+    ],
+    "statement_definition": "SAP.P029a.T4WholeStatement",
+    "target_id": "P029-T4",
+    "theorem": "SAP.P029a.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.normal_equation_exact_recovery",
+        "reason": "The selected counterexample and positive-weight theorem already export coefficient recovery; the generic matrix helper is not separately invoked."
+      },
+      {
+        "lean_name": "AronowAudit.P029.rmse_design_gram",
+        "reason": "The selected homogeneous_rmse_counterexample already exports this exact Gram identity, which is used to transport the outcome cross-products."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.homogeneous_rmse_counterexample",
+      "AronowAudit.P029.rmse_design_determinant",
+      "AronowAudit.P029.rmse_positive_weight_recovery",
+      "AronowAudit.P029.rmse_witness_admissible",
+      "AronowAudit.P029.rmse_witness_outcomes"
+    ],
+    "target_id": "P029-T5",
+    "theorem": "SAP.P029a.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.homogeneous_rmse_rule",
+        "reason": "This narrower row states only R=2500; the all-positive-R formula instead follows by unfolding the existing parametric rmse definition, copied under its SAP name."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.heterogeneous_benchmark_moments_proof",
+      "AronowAudit.P029.expected_mse_discrepancy",
+      "AronowAudit.P029.finite_expected_mse_discrepancy",
+      "AronowAudit.P029.finite_run_mse_discrepancy",
+      "AronowAudit.P029.homogeneous_population_effect",
+      "AronowAudit.P029.homogeneous_sample_effect",
+      "AronowAudit.P029.squared_error_discrepancy",
+      "AronowAudit.P029.uniform_covariate_moments",
+      "AronowAudit.P029.homogeneous_rmse_counterexample",
+      "AronowAudit.P029.rmse_witness_admissible"
+    ],
+    "target_id": "P029-T6",
+    "theorem": "SAP.P029a.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.bootstrap_first_step_derivative",
+      "AronowAudit.P029.bootstrap_refit_ratio",
+      "AronowAudit.P029.inside_log_minimizers",
+      "AronowAudit.P029.inside_log_weights_identity",
+      "AronowAudit.P029.two_sided_weight_counterexample",
+      "AronowAudit.P029.weighted_score_counterexample",
+      "AronowAudit.P029.zero_weight_infinite_contribution",
+      "AronowAudit.P029.zero_weight_objective_infinite",
+      "SAP.P029a.WH.W1.T7_whole",
+      "SAP.P029a.WH.W1.T7_assembly",
+      "SAP.P029a.WH.W1.binary_saturation",
+      "SAP.P029a.WH.W1.nested_saturation",
+      "SAP.P029a.WH.W1.realize_free_fit",
+      "SAP.P029a.WH.W1.realize_package_fit",
+      "SAP.P029a.WH.W1.treated_unweighted_fit",
+      "SAP.P029a.WH.W1.two_sided_unweighted_fit",
+      "SAP.P029a.WH.W1.clipped_realization",
+      "SAP.P029a.Bridge.treated_weighted_fit",
+      "SAP.P029a.Bridge.two_sided_weighted_fit",
+      "SAP.P029a.Bridge.treated_perturbed_fit",
+      "AronowAudit.P029.saturated_weighted_objective_minimum",
+      "AronowAudit.P029.nested_receipt_parameters",
+      "AronowAudit.P053.NormalCompletion.strictMono_normal_cdf",
+      "AronowAudit.P053.NormalCompletion.exists_cdf_eq"
+    ],
+    "statement_definition": "SAP.P029a.T7WholeStatement",
+    "target_id": "P029-T7",
+    "theorem": "SAP.P029a.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the weighted-objective rules, strict concavity, unique general free-cell optimum, three concrete corrected free-cell fits, constant-positive-weight equivalence and the numerical Wald evaluations. Does not identify free-cell optima with finite-coefficient one-sided or nested two-sided probit fits. Omits the claim that the package and corrected probit minimizers differ for the nonconstant-weight witnesses.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.bootstrap_refit_ratio",
+      "AronowAudit.P029.constant_weight_minimizers",
+      "AronowAudit.P029.corrected_objective_zero_unit",
+      "AronowAudit.P029.integer_weight_replication",
+      "AronowAudit.P029.saturated_weighted_objective_minimum",
+      "AronowAudit.P029.two_sided_weight_counterexample",
+      "AronowAudit.P029.weighted_cell_strict_concavity",
+      "AronowAudit.P029.weighted_cell_unique_max",
+      "AronowAudit.P029.weighted_score_counterexample"
+    ],
+    "target_id": "P029-T8",
+    "theorem": "SAP.P029a.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the prescribed 18,933-record completions, exported pooled counts and both directions of the strict sign reversal, preservation of the binary labels and arbitrary compatible raw codes, arbitrary outcomes, and assignment-vector support. Omits the standalone general binary-count sign identity and independent staged-data summaries: the 4,660 Raleigh records, 8,721 assignments, 1,685 Raleigh assignments, the 602/1370 and 160/315 Raleigh rates, and the 21 unknown-code records and their breakdown. Does not validate a raw data file.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.canvass_cell_expectation",
+        "reason": "The selected conditional-mean compression theorem already incorporates the expectation compression; no separate invocation is needed."
+      },
+      {
+        "lean_name": "AronowAudit.P029.canvass_cell_probability",
+        "reason": "The selected conditional-mean compression theorem already incorporates the probability compression; no separate invocation is needed."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.canvass_assignment_supported",
+      "AronowAudit.P029.canvass_cell_conditional_mean",
+      "AronowAudit.P029.racial_completion_counterexample",
+      "AronowAudit.P029.racial_raw_code_preservation"
+    ],
+    "target_id": "P029-T9",
+    "theorem": "SAP.P029a.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the finite count-sign formulas, both Raleigh rational rate calculations, the binary-label-compatible completions and the covariance decomposition. Omits empirical assertions about prior voting, fitted compliance scores including the within-Raleigh comparison, the quantitative between-city contribution, party/race availability and zero coding, and other covariate missingness and imputation. Does not assert raw-string-code preservation here. Adds positive probability for the distinguished group in its conditional covariance formula. In part (b), only the two displayed rational rate calculations are retained; the empirical identification of seven treatment-assigned unknown-code records, five of them contacted, and the exclusion producing 155/308 are not certified.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.binary_count_sign_identity",
+        "reason": "The selected binary_population_count_sign gives the formulas for actual finite binary variables and counts; this abstract count-algebra helper is not separately invoked."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.grouped_covariance_decomposition_proof",
+      "AronowAudit.P029.binary_population_count_sign",
+      "AronowAudit.P029.canvass_assignment_supported",
+      "AronowAudit.P029.racial_completion_counterexample",
+      "AronowAudit.P029.raleigh_recorded_comparison"
+    ],
+    "target_id": "P029-T10",
+    "theorem": "SAP.P029a.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.sem_defier_counterexample",
+      "AronowAudit.P029.sem_dependence_counterexample"
+    ],
+    "target_id": "P029-T11",
+    "theorem": "SAP.P029a.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.heterogeneous_iv_counterexample",
+      "AronowAudit.P029.sem_defier_counterexample",
+      "AronowAudit.P029.sem_dependence_counterexample",
+      "AronowAudit.P029.sem_forces_constant_effect"
+    ],
+    "target_id": "P029-T12",
+    "theorem": "SAP.P029a.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.constant_score_counterexample_law",
+        "reason": "The selected saturated_ml_bias_full_counterexample already exports the population IV, latent-ignorability and overlap facts needed here."
+      },
+      {
+        "lean_name": "AronowAudit.P029.two_observation_ml_maxima",
+        "reason": "The selected saturated_ml_bias_full_counterexample already exports maximality for every two-receipt data set."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.five_per_arm_bias_counterexample",
+      "AronowAudit.P029.saturated_ml_bias_full_counterexample",
+      "AronowAudit.P029.saturated_unbiasedness_counterexample"
+    ],
+    "target_id": "P029-T13",
+    "theorem": "SAP.P029a.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.Wave1.saturated_ml_characterization_conditional",
+        "reason": "Its proof requires an external ordered-binomial theorem as a hypothesis; the supplied unconditional whole proof establishes optimization instead."
+      },
+      {
+        "lean_name": "AronowAudit.P029.positive_part_bias_identity",
+        "reason": "The binomial bias row already supplies the target-specific identity and sign."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.one_sided_saturated_unbiasedness_proof",
+      "AronowAudit.P029.Wave1.saturated_binomial_bias_bound_proof",
+      "AronowAudit.P029.Wave1.saturated_score_consistency_proof",
+      "AronowAudit.P029.positive_part_error_bound",
+      "SAP.P029b.WH.W1.T14_whole",
+      "SAP.P029b.WH.W1.T14_assembly",
+      "SAP.P029b.WH.W1.T14_L1_proof",
+      "SAP.P029b.WH.W1.T14_L2_proof",
+      "SAP.P029b.WH.W1.T14_L3_proof",
+      "AronowAudit.P029.nested_receipt_parameters",
+      "AronowAudit.P029.weighted_cell_unique_max"
+    ],
+    "statement_definition": "SAP.P029b.T14WholeStatement",
+    "target_id": "P029-T14",
+    "theorem": "SAP.P029b.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.constant_quantile",
+      "AronowAudit.P029.constant_score_counterexample_law",
+      "AronowAudit.P029.cutoff_not_zero",
+      "AronowAudit.P029.winsorization_cutoff_counterexample",
+      "SAP.P029b.WH.W1.T15_whole",
+      "SAP.P029b.WH.W1.T15_assembly",
+      "SAP.P029b.WH.W1.constantInverseW1",
+      "SAP.P029b.WH.W1.powerLevelW1"
+    ],
+    "statement_definition": "SAP.P029b.T15WholeStatement",
+    "target_id": "P029-T15",
+    "theorem": "SAP.P029b.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.inverse_score_accuracy",
+        "reason": "Reciprocal-error auxiliary is used within the existing limit argument; it is not a separate claim clause."
+      },
+      {
+        "lean_name": "AronowAudit.P029.outcome_tail_weight_bound",
+        "reason": "Tail-truncation auxiliary is already contained in the existing corrected-limit proof."
+      },
+      {
+        "lean_name": "AronowAudit.P029.ratio_perturbation",
+        "reason": "Ratio algebra is an auxiliary already subsumed by the corrected-limit proof."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.winsorization_corrected_limit_proof",
+      "AronowAudit.P029.bounded_weighted_mean_change",
+      "AronowAudit.P029.quantile_changed_fraction_tends_zero",
+      "AronowAudit.P029.quantile_count_and_lower_bound",
+      "AronowAudit.P029.weight_change_bound",
+      "SAP.P029b.WH.W1.T16_whole",
+      "SAP.P029b.WH.W1.T16_assembly",
+      "SAP.P029b.WH.W1.T16_L1_proof",
+      "SAP.P029b.WH.W1.T16_L2_proof",
+      "SAP.P029b.WH.W1.T16_L3_proof",
+      "SAP.P029b.WH.W1.powerLevelW1",
+      "AronowAudit.P029.constant_quantile",
+      "AronowAudit.P029.cutoff_not_zero",
+      "AronowAudit.P029.Wave1.wcl_quantile_level_bound",
+      "AronowAudit.P029.Wave1.wcl_mass_mul_mean",
+      "AronowAudit.P029.Wave1.wcl_profile_integral",
+      "AronowAudit.P029.Wave1.wcl_cell_integral",
+      "AronowAudit.P029.Wave1.wcl_event_cell_integral",
+      "AronowAudit.P029.Wave1.wcl_ae_positive_cell",
+      "AronowAudit.P029.Wave1.GP029B3b_appendix_complier_measurable",
+      "AronowAudit.P029.Wave1.GP029B3b_appendix_indicator_integrable",
+      "AronowAudit.P029.Wave1.GP029B3b_appendix_effect_integrable"
+    ],
+    "statement_definition": "SAP.P029b.T16WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P029.constant_quantile",
+      "AronowAudit.P029.cutoff_not_zero"
+    ],
+    "supporting_note": "Both are usable T15 rows in this unit; reused only for the explicit constant-cutoff clause in corrected T16.",
+    "target_id": "P029-T16",
+    "theorem": "SAP.P029b.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.one_sided_likelihood_reduction",
+      "AronowAudit.P029.one_sided_unit_likelihood",
+      "AronowAudit.P029.printed_one_sided_factor_countercheck",
+      "SAP.P029b.WH.W1.T17_whole",
+      "SAP.P029b.WH.W1.T17_assembly"
+    ],
+    "statement_definition": "SAP.P029b.T17WholeStatement",
+    "target_id": "P029-T17",
+    "theorem": "SAP.P029b.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.nested_receipt_parameters",
+        "reason": "The actual conditional-probability and positive-AC identities are supplied by the whole proof; this separate algebraic parameterization lemma is unnecessary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.corrected_nested_receipt_model_proof",
+      "AronowAudit.P029.compliance_type_partition",
+      "AronowAudit.P029.corrected_equation_nine_integrand",
+      "AronowAudit.P029.nested_probability_range",
+      "AronowAudit.P029.receipt_conditioning_countercheck",
+      "SAP.P029b.WH.W1.T18_whole",
+      "SAP.P029b.WH.W1.T18_assembly",
+      "SAP.P029b.WH.W1.T18_L1_proof",
+      "SAP.P029b.WH.W1.T18_L2_proof",
+      "SAP.P029b.WH.W1.T18_L3_proof",
+      "AronowAudit.P029.Wave1.GP029B3b_appendix_observed_mean",
+      "AronowAudit.P029.unit_itt_identities"
+    ],
+    "statement_definition": "SAP.P029b.T18WholeStatement",
+    "statement_summary": "Under random assignment and no defiers, every law with no always-takers, conditional compliance probability one half at the profile, and assignment probability one half gives the printed misconditioning discrepancy; the theorem also retains the type, receipt, range, integral, and sample-display identities.",
+    "target_id": "P029-T18",
+    "theorem": "SAP.P029b.T18"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.corrected_simulation_types",
+      "AronowAudit.P029.printed_simulation_equation_failure",
+      "AronowAudit.P029.simulation_outcome_identity",
+      "SAP.P029b.WH.W2.T19_whole",
+      "SAP.P029b.WH.W2.T19_assembly",
+      "SAP.P029b.WH.W2.T19_L1_proof",
+      "SAP.P029b.WH.W2.T19_L2_proof",
+      "SAP.P029b.WH.W2.T19_L3_proof"
+    ],
+    "statement_definition": "SAP.P029b.T19WholeStatement",
+    "target_id": "P029-T19",
+    "theorem": "SAP.P029b.T19"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.Wave1.printed_ignorability_ordering_all_profiles_refuted",
+        "reason": "The direct positive-profile universal ordering is already refuted by the selected measure-theoretic row; a second kernel presentation is unnecessary."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.printed_ignorability_ordering_refuted",
+      "AronowAudit.P029.baseline_selection_counterexample"
+    ],
+    "statement_definition": "SAP.P029b.T20Statement",
+    "target_id": "P029-T20",
+    "theorem": "SAP.P029b.T20"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "The two false joint implications are refuted. The additional true constant-effect component is stated with measurable conditional-mean versions and uniform positive overlap, and only positive-probability, positive-score profiles are evaluated. The weaker positivity-only constant-effect assertion and sample consistency are not asserted. The marginal refutation uses independence of the complier indicator, not a separately stated full-type marginal implication.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.constant_effect_population_limits_proof",
+      "AronowAudit.P029.Wave1.printed_conditional_sufficiency_refuted",
+      "AronowAudit.P029.Wave1.printed_marginal_sufficiency_refuted"
+    ],
+    "statement_definition": "SAP.P029b.T21Statement",
+    "target_id": "P029-T21",
+    "theorem": "SAP.P029b.T21"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Records only the empirical RMSE scoring convention for a supplied array of 2500 estimates and a supplied constant benchmark of 5. Omits the simulation design and estimator implementations, including alpha=0.275; any connection to historical estimates or simulated datasets; identification of the sample average effect, population ATE, or LATE with 5; and every numerical entry and graphical result of Table A3 and Figure A3. No simulation output or implementation is validated or refuted.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.homogeneous_rmse_rule"
+    ],
+    "statement_definition": "SAP.P029b.T22Statement",
+    "target_id": "P029-T22",
+    "theorem": "SAP.P029b.T22"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.nested_bernoulli_package_weighted_fit_counterexample"
+    ],
+    "statement_definition": "SAP.P029b.T23Statement",
+    "statement_summary": "An exact minimizer of the package's inside-log criterion in an interior nested Bernoulli model with positive observation weights does not minimize the weighted negative log likelihood.",
+    "target_id": "P029-T23",
+    "theorem": "SAP.P029b.T23"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.Wave1.late_identity_proof",
+        "reason": "Duplicate export of the same population identity; use the paper-scope declaration directly."
+      },
+      {
+        "lean_name": "AronowAudit.P029.Wave1.randomized_probability_independent",
+        "reason": "Randomization auxiliary is already included in the existing population identity proof."
+      },
+      {
+        "lean_name": "AronowAudit.P029.bernoulli_measure_probability",
+        "reason": "Probability-law auxiliary is already included in the existing population identity proof."
+      },
+      {
+        "lean_name": "AronowAudit.P029.bivariate_ratio_algebra",
+        "reason": "Algebraic auxiliary is already included in the sample coefficient identity."
+      },
+      {
+        "lean_name": "AronowAudit.P029.randomized_conditional_mean",
+        "reason": "Finite-arm auxiliary is already subsumed by the general population identity."
+      },
+      {
+        "lean_name": "AronowAudit.P029.randomized_valid",
+        "reason": "Finite-law auxiliary is already subsumed by the general population identity."
+      },
+      {
+        "lean_name": "AronowAudit.P029.sample_arm_unweighted_raw",
+        "reason": "Raw-sum auxiliary is already included in the sample coefficient identity."
+      },
+      {
+        "lean_name": "AronowAudit.P029.sample_cross_raw",
+        "reason": "Centering auxiliary is already included in the sample coefficient identity."
+      },
+      {
+        "lean_name": "AronowAudit.P029.unit_itt_identities",
+        "reason": "Unitwise auxiliary is already included in the population identity proof."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.late_identity_paper_scope",
+      "AronowAudit.P029.gender_worked_example",
+      "AronowAudit.P029.sample_wald_bivariate_2sls"
+    ],
+    "statement_definition": "SAP.P029b.T25Statement",
+    "target_id": "P029-T25",
+    "theorem": "SAP.P029b.T25"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the general population weighted-moment identities and ATE consistency. Adds maximum-in-sample fitted-score consistency, measurable positive estimates in (0,1], iid joint draws, integrable potential outcomes, measurable conditional-mean versions, second-countable Borel covariates, and explicit support overlap and latent-ignorability conditions. Also requires the sample ratios to be eventually defined along almost every draw sequence. Does not derive the result from the paper's pointwise Assumption 2 alone. The sample conclusion states only consistency of the final Wald ratio; it omits the Appendix's two separate convergence assertions for the sample weighted outcome-arm difference and the sample weighted receipt-arm difference.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.appendix_finite_identities",
+        "reason": "Finite-support specialization is unnecessary: the selected population theorem already supplies the general integral identities."
+      },
+      {
+        "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+        "reason": "Finite-sum cancellation auxiliary adds no coverage beyond the selected general population/limit statements."
+      },
+      {
+        "lean_name": "AronowAudit.P029.sample_arm_scale",
+        "reason": "Common-scale identity is an auxiliary, not a separate clause of the retained consistency claim."
+      },
+      {
+        "lean_name": "AronowAudit.P029.sample_wald_scale",
+        "reason": "Common-scale auxiliary is unnecessary for the selected direct constant-score identity and consistency statements."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.appendix_population_identities_proof",
+      "AronowAudit.P029.Wave1.icsw_consistency_proof"
+    ],
+    "statement_definition": "SAP.P029b.T26Statement",
+    "target_id": "P029-T26",
+    "theorem": "SAP.P029b.T26"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P029.complier_profile_bayes",
+        "reason": "Finite Bayes auxiliary is subsumed by the selected genuine complier pushforward law."
+      },
+      {
+        "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+        "reason": "Finite-sum cancellation auxiliary adds no coverage beyond the selected general population/limit statements."
+      },
+      {
+        "lean_name": "AronowAudit.P029.sample_wald_scale",
+        "reason": "Common-scale auxiliary is unnecessary for the selected direct constant-score identity and consistency statements."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P029.Wave1.complier_covariate_distribution_proof",
+      "AronowAudit.P029.Wave1.icsw_complier_effect_limit_proof",
+      "AronowAudit.P029.constant_scores_equal_iv",
+      "SAP.P029b.WH.W2.T27_whole",
+      "SAP.P029b.WH.W2.T27_assembly",
+      "SAP.P029b.WH.W2.T27_L1_proof",
+      "SAP.P029b.WH.W2.T27_L2_proof",
+      "SAP.P029b.WH.W2.T27_L3_proof",
+      "SAP.P029b.WH.W2.T27_L4_proof",
+      "SAP.P029b.WH.W2.T27_L5_proof",
+      "SAP.P029b.WH.W2.T27_L6_proof",
+      "SAP.P029b.WH.W2.cancellation_population",
+      "AronowAudit.P029.randomized_valid",
+      "AronowAudit.P029.randomized_independent",
+      "AronowAudit.P029.Wave1.FiniteMeasure.n1_proof",
+      "AronowAudit.P029.Wave1.FiniteMeasure.n2_proof",
+      "AronowAudit.P029.Wave1.FiniteMeasure.n3_proof",
+      "AronowAudit.P029.saturated_weighted_objective_minimum",
+      "AronowAudit.P015.ConvergenceCompletion.div_limit",
+      "AronowAudit.P015.ConvergenceCompletion.sub_limit",
+      "AronowAudit.P053.NormalCompletion.exists_cdf_eq"
+    ],
+    "statement_definition": "SAP.P029b.T27WholeStatement",
+    "target_id": "P029-T27",
+    "theorem": "SAP.P029b.T27"
+  }
+]

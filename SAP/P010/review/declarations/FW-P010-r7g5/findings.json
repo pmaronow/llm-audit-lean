@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P010-T21",
+    "theorem": "SAP.P010.T21",
+    "fingerprint": "84b230fcaac3d476821f3698b937a702bcada27eb46f90780ffe159e367d18f2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean imports only SAP.P010.Defs and independently proves an example of the complete T21Statement. Its explicit law Audit.mu has six equally weighted atoms: three subject types with (Y0,Y1; C0,C1) equal to (1,1; false,true), (0,0; true,false), and (0,0; true,true), independently assigned to either arm with probability 1/2, with X=0. Each arm has mass 1/2 and passing rate 2/3; the always-passer event and both selected arm events have mass 1/3. Every real function is integrable for this finite law. The selected means are 1/2 and 0, and the always-passer mean effect is 0. Arbitrary-measurable-set independence of S and Z and the required randomization are proved, so the witness satisfies all printed conditions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T22",
+    "theorem": "SAP.P010.T22",
+    "fingerprint": "7d726ff623597bee54adb20cfb5b0ffc67bc419ebbbfb389c3a50b456abfda1e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently constructs Audit.commonMu and proves an existential example satisfying every T22 hypothesis at K=2,d=1. It has four atoms of mass 1/4, equivalent to independent fair bits U and Z, with Y0=Y1=0, C0=C1=U, and X=U. The file proves IsProbabilityMeasure, covariateRandomAssignment including both positive arm masses, and commonMu sameCheck=1. Both check strata have positive probability 1/2, and X is nonconstant. Thus nonvacuity does not rely on an empty arm type, one arm, zero-dimensional covariates, or a null check stratum.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T23",
+    "theorem": "SAP.P010.T23",
+    "fingerprint": "25d7adc697185265278c9e9368247993a78853119d0548ba97c93745cfe355fa",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves an example of the entire T23Statement using the six-atom Audit.mu law described for T21. It separately proves covariateRandomAssignment, positivePassRates, and covariateBalance for both positive-mass S strata. Since every atom has X=0, intersecting any event with X=0 preserves its mass and conditional mean. The three conditioning masses are 1/3, all restricted integrands are integrable, and the selected and always-passer contrasts are 1/2 and 0. The counterexample therefore satisfies Assumptions 1, 3 and 4 and uses ordinary finite conditional expectations.",
+    "confidence": "high"
+  }
+]

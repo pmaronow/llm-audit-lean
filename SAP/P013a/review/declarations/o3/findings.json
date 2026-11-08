@@ -1,0 +1,50 @@
+[
+ {
+  "target_id": "P013-T11",
+  "theorem": "SAP.P013a.T11",
+  "fingerprint": "000b8e03cebd77184bcd1f87d45b7dd150b208e620cedec08c2e039a690976da",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/Nonvac.lean (compiled): U = range 400, nb = Icc 1 39, i = 0, n = 40 satisfies i ∈ U, nb ⊆ U, i ∉ nb, |nb| = 39, 1 ≤ n ≤ |U|−39 and |U| ≤ 10n+5; also U = range 50, n = 5, where the closed form p = C(10,4)/C(50,5) ≤ 27/40000 was checked, so the inner implication p ≤ 0.000675 → q < 0.01 is not vacuous.",
+  "confidence": "high",
+  "notes": "All of the corrected claim's formal content (a)-(d) is stated, with the design (uniform n-subset of the school), the 39 in-school neighbours and the d10/d00 exposure events rendered exactly (Defs/Part4.lean:83-90, Defs/Part6.lean:124-134). No junk: C(|U|,n) > 0, and |U| ≥ 40, n ≥ 1 make the Nat subtractions exact. The docstring (Challenge/Part2.lean:27-28) matches the corrected claim. The parenthetical glosses (N ≤ 10n+5 holds for n = N/10 or its nearest rounding; values rounding to 0.00067 are ≤ 0.000675) are elementary applicability remarks, and the hypothesis N ≤ 10n+5 is kept exactly as in the claim."
+ },
+ {
+  "target_id": "P013-T12",
+  "theorem": "SAP.P013a.T12",
+  "fingerprint": "8151e97e20a092487021d61bb9286bf705cfb6b73679a2361246be68215791f6",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "Negation statement. Witness checked in scratch/T12Witness.lean and scratch/T12Strong.lean (both compiled): signedReplicationPopulation 2 on signedReplicationDesign (Defs/Part2.lean:89-97), d = 1, R = 1, p0 = 1/3. Here π = (1/3, 2/3) at d = 1 and (2/3, 1/3) at d = 0, so positivity holds at every exposure with K = 2; y^T = 1 and E[ŷ_{HT,1}] = 2/9, so the relative bias is 7/9 > (2/3)^2 = 4/9. With b = 1/2 < 1, R = 1 ≥ log(1/2)/log(2/3) − 1 and 7/9 > 1/2. Both negations are proved for the strongest reading (1 ≤ R, ∀k positivity, b < 1).",
+  "confidence": "high",
+  "notes": "Printed reading: for any full-support design, exposure mapping, potential outcomes of any sign, 0<π<1, and R independent replicates from the plan, |(E[ŷ_{HT,R}]−y^T)/y^T| ≤ (1−min_i π_i)^{R+1}, and R ≥ log b/log(1−π_0) − 1 gives relative bias ≤ b. Each hypothesis of PrintedBiasBound/PrintedReplicateRule (Defs/Part6.lean:136-149) is among these conditions: product law = replicates independent of each other and of Z, add-one π̂, exact π_0, y^T ≠ 0 (strengthens the refutation). The canonical claim states that no sign condition is printed, so 'The printed claim is false' is correct. The formal statement admits R = 0 and asks for positivity only at d. Neither weakens the refutation: the printed formula and rule cover R = 0, positivity can be restored by merging exposure values, and the compiled witness meets the strongest reading anyway."
+ },
+ {
+  "target_id": "P013-T13",
+  "theorem": "SAP.P013a.T13",
+  "fingerprint": "2a8f59501127e5a4e3e61759ea59bc114b7a6569f1426243c86a4e038dd0fb5c",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/Nonvac.lean (compiled): sharedPopulation 1 on sharedDesign (Defs/Part2.lean:48-55) satisfies Positivity at exposures 0 and 1 (π = 1/2), with N = 1 > 0 and 0 ≠ 1. So both conjuncts' hypotheses are jointly satisfiable.",
+  "confidence": "high",
+  "notes": "Lemma 4.1 (1)-(2) and Proposition 4.2 (4)-(6) are stated exactly (Defs/Part6.lean:153-170), under 0<π<1 for the exposures involved (the standing assumption), d ≠ e for Prop 4.2, and N > 0. HT total with y_i(d) equals the printed Y_i form by Condition 2. No junk value is reachable. Universe-polymorphic in Ω."
+ },
+ {
+  "target_id": "P013-T14",
+  "theorem": "SAP.P013a.T14",
+  "fingerprint": "cd1479902613f7054b6fbf93a3f2875625b8973ea2fd44cb2c2f4adc1efc199b",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": null,
+  "nonvacuity": "scratch/Nonvac.lean (compiled): sharedPopulation 1 has Positivity at 0 and all joint π_ij(0,0) > 0 (Lemma 5.1 hypothesis). antiPop (2 units on sharedDesign, opposite exposures) has Positivity at 0, π_01(0,0) = 0 and missingA = −6 (Prop 5.1 with a missing pair and mixed signs). unitDesign (one certainty unit, π = 1) satisfies the general part's hypothesis 0 < π_i.",
+  "confidence": "high",
+  "notes": "Lemma 5.1, Prop 5.1 (stated unconditionally, which contains the printed 'some π_ij = 0' case) and Prop 5.2 are stated (Defs/Part6.lean:172-178). Expression (7)'s 0/0 = 0 convention matches pairTerm's x/0 = 0 because full-support weights force 1[D_i=d]1[D_j=d] ≡ 0 when π_ij = 0. The general Appendix A.5 results (Prop A.1, Prop A.2 with conjugate exponents, Cor A.2) are stated for any finite sampling law with positive marginals, zero atoms and certainty units allowed, and outcomes of any sign (Defs/WholeW1.lean:163-218). Every division has a positive denominator on the guarded branch."
+ }
+]

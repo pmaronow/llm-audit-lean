@@ -3,7 +3,7 @@ import AronowAudit.P025.P025_Interval
 noncomputable section
 namespace AronowAudit.P025
 
-/-- Refutation of printed Proposition 1: its lower stopping rule does not give the minimum. -/
+/-- The exact closed contract of the retired false printed assertion. -/
 theorem printed_proposition_one_refuted :
     ¬ (∀ {n : ℕ} (hn : 0 < n) (y : Fin n → ℝ)
     (hy : Monotone y) (α β : ℝ) (hα : 0 < α) (hab : α ≤ β) (hb1 : β ≤ 1),
@@ -25,7 +25,7 @@ theorem printed_proposition_one_refuted :
   have hb := hl.2 hm
   norm_num [lowerValue, ratio, lowerWeights, binaryTwo, Fin.sum_univ_two] at hb
 
-/-- Refutation of the printed Proposition 2 formula, including its lower stopping rule. -/
+/-- The exact closed contract of the retired false printed assertion. -/
 theorem printed_proposition_two_formula_refuted :
     ¬ (∀ {J : ℕ} (hJ : 0 < J) (y mass : Fin J → ℝ)
     (hy : StrictMono y) (hmass : ∀ j, 0 < mass j) (α β : ℝ)
@@ -49,7 +49,7 @@ theorem printed_proposition_two_formula_refuted :
   have hb := hl.2 hm
   norm_num [lowerValue, ratio, lowerWeights, binaryTwo, twoPi, Fin.sum_univ_two] at hb
 
-/-- Refutation of sharpness when the absolute class totals are retained. -/
+/-- The exact closed contract of the retired false printed assertion. -/
 theorem printed_sharpness_absolute_information_refuted :
     ¬ (∀ {J : ℕ} (hJ : 0 < J) (y mass : Fin J → ℝ)
     (hy : StrictMono y) (hmass : ∀ j, 0 < mass j) (α β : ℝ)
@@ -71,3 +71,6 @@ theorem printed_sharpness_absolute_information_refuted :
 
 end AronowAudit.P025
 
+#print axioms AronowAudit.P025.printed_proposition_one_refuted
+#print axioms AronowAudit.P025.printed_proposition_two_formula_refuted
+#print axioms AronowAudit.P025.printed_sharpness_absolute_information_refuted

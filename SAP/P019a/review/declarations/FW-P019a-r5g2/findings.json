@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P019-T6",
+    "theorem": "SAP.P019a.T6",
+    "fingerprint": "eecdcfcd2e27dea066f1a3321eb03db6be2a7eebe1be8e7ad34f783508126824",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: distributionWitness on Fin 8 satisfies monotonicity, noLiarsDesign, independence of Z from the whole (W,X,Y) triple, and both positive affirmative-cell hypotheses. All premises were constructed directly from the definitions without using any audited theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T7",
+    "theorem": "SAP.P019a.T7",
+    "fingerprint": "b9a547afff179122fcd0b0430b182d9cf9d517a948883619a9623f098203d0b8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean proves the entire T7Statement directly for diagnosisWitness: monotonicity, noLiarsDesign, nondegeneracy, delta=0, beta=2, and failure of treatment independence. Both 16- and 8-atom populations were independently enumerated using exact fractions in scratch/Enumerate.py; all cells, independence claims and population contrasts were checked. See scratch/CounterexampleConditions.md for the printed reading and condition-by-condition witness audit. scratch/Finite.lean additionally compiles monotonicity, noLiarsDesign, nondegeneracy, delta=0, beta=2 and failure of treatment independence for the eight-atom witness.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T8",
+    "theorem": "SAP.P019a.T8",
+    "fingerprint": "f57c6eb295df61bd32fffb4af3bf4ff3c57e1b5bdb95c5c41d0b9acbac1298ec",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean constructs distributionWitness satisfying the hypotheses of the strongest branch. It also constructs diagnosisWitness with both positive affirmative cells, monotonicity, noLiarsDesign, and beta != 1, and independently proves failure of treatment independence. Thus the positive/null and substantive departure branches are both inhabited.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P019-T9",
+    "theorem": "SAP.P019a.T9",
+    "fingerprint": "eb75b3baf2094579ae74c5db64b640aacfc1ddfa3d414a121e0bf29239586f78",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional assertion about an explicit uniform 128-atom population, not an implication with potentially inconsistent premises. scratch/Enumerate.py independently checks all five lists using exact fractions: positive cell masses and variances, monotonicity, V=W+XZ, whole-triple independence from each own assignment, beta=1, independent fair assignment coordinates, both influence formulas and the full influence second-moment matrix. The respondent sample law is the actual iid product law. See scratch/CounterexampleConditions.md. The certified asymptotic proof is not independently reproved by these finite checks. scratch/Finite.lean additionally compiles per-list monotonicity and noLiarsDesign, the empty sign-product conventions, and the first/fifth-list affirmative probabilities 1/4 and 1/2.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P019-T10",
+    "theorem": "SAP.P019a.T10",
+    "fingerprint": "6a3e4e0c7a61df799a8546fa17fa3cc161320eceb62547ceb79027d0d64e0d46",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Joint.lean constructs every hypothesis on (Fin 5 -> Bool) x (Bool x Bool), with uniform weight 1/128: five independent assignment bits, common W equal to an independent fair baseline bit, common X=Y equal to another independent fair bit, and V_j=W+X Z_j. It proves common-law equality, every per-list standing assumption, and the full jointAssignmentStable factorization for arbitrary functions of the entire latent vector. Outcomes are shared across lists, so this is a substantive satisfiable premise rather than a conclusion encoded as an assumption.",
+    "confidence": 0.99
+  }
+]

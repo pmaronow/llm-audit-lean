@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P004-T32",
+    "theorem": "SAP.P004c.T32",
+    "fingerprint": "285b9efa2e7095e26bef0ac86d4e10685f4de61139bd36aa90981487ab6b31f5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0), importing only SAP.P004c.Defs. Lines 9-17 instantiate all finite hypotheses with N=1,p=1/2,R=1,b=2,B_i={i}. Lines 18-31 instantiate both table-rate premise blocks with R_N=1,B_N,i={i},D=1. Lines 33-110 construct the full spatial sequence: X_N=R, node i={N*i}, counting measure, bands(d)={0}, outcomes identically 1, boundedness constant 2, locality radius h(d)=0, spacing bound c(r)=1 once N>r. Every region is a singleton of measure 1 and its outcomes are integrable. The final example includes p=1/2,d=0 and every premise of the spatial-rate conjunct.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P004-T33",
+    "theorem": "SAP.P004c.T33",
+    "fingerprint": "b037781de8849f30a68417d2dad65de39bbb2ba119fa1f17d9bd297da579f33c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0), importing only SAP.P004c.Defs. Lines 9-17 instantiate N=1,p=1/2,R=1,B_i={i}, which satisfy the local-expansion/homophily premise block (and C5 has value 0). Lines 123-133 independently compute actual HT variance=4 and construct all standardized-summand hypotheses with positive variance. Thus neither the locality assumptions nor the positive-variance guard is vacuous.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P004-T34",
+    "theorem": "SAP.P004c.T34",
+    "fingerprint": "aba32bb7e435c6132ed4067d890573cadac4f7f4bc1742528297d410a7f24b2a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0), importing only SAP.P004c.Defs. Lines 185-227 construct N=8,p=1/2,z=(true,true,true,true,true,false,false,false), residual vector (1,-1,0,0,0,0,0,0), D_ij=|i-j|, bandwidth 8, K(t)=1 for t<=1 and 0 otherwise, Kmax=1. All finite premises hold; arm counts are 5 and 3, each arm residual sum is zero, and the actual cross-sum divided by N is -1/4. All retained scalar equalities and the failure of 9/25<=-9/25 are checked. The rate premise is simply p in (0,1), instantiated by p=1/2. These scratch checks do not add the omitted realization or bandwidth conclusion to T34.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P004-T39",
+    "theorem": "SAP.P004c.T39",
+    "fingerprint": "92439325a0c0f864c7db98fbc6744c82b689635b5730faa544d5bb9063a2586e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0), importing only SAP.P004c.Defs. Lines 135-145 take N=1,p=1/2,R_i(z)=3*bit(z_0)+1. Both required hypotheses hold and direct evaluation gives expected HT=3 and forced-coordinate AME=3. R is otherwise unrestricted in the theorem, so no locality or no-interference hypothesis needs an instance.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P004-T40",
+    "theorem": "SAP.P004c.T40",
+    "fingerprint": "1b9001f4f88b8a07268554bafae63acb6eb7a7dd01099d2b9d8aa8d93fe11787",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0), importing only SAP.P004c.Defs. Lines 147-183 construct N=2 on R with distinct singleton nodes {0},{1}, counting measure, bands(0)={0}, baseline f=3, additive coefficients g_0=1,g_1=2, and potential outcome 3+z_0+2*z_1. The node-indexed law puts probability one on the all-false assignment. The example verifies positive N, normalization, nonnegativity, additivity for every x,z, and all WellDefined clauses; each region has measure 1 and integrable outcomes. Nonzero coefficients ensure the additive premise does not force a zero effect.",
+    "confidence": "high"
+  }
+]

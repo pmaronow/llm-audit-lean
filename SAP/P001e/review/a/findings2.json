@@ -1,0 +1,192 @@
+[
+  {
+    "target_id": "P001-T77",
+    "theorem": "SAP.P001e.T77",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Nonvacuity.lean: take a nonempty one-dimensional parameter space Theta=R^1 and g=2. One may take Omega=Unit, Y=0 and X=0. Thus neither an empty parameter space nor an empty data space is needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T78",
+    "theorem": "SAP.P001e.T78",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled positive-residual minimizer: n=2, K=0, X has both entries 1, Y=(0,2), bstar=1. Q(b)=2+2*(b-1)^2, hence Qstar=2>0 and fitted scale is 1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T79",
+    "theorem": "SAP.P001e.T79",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=1, K=1, X_0=0 and nu_0=dirac(0). The mixture is the probability measure dirac((0,0)); n and the covariate dimension are both positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T80",
+    "theorem": "SAP.P001e.T80",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the compiled fair Bernoulli measure on Bool, let Y=R=1_{true}, a=0 and b=1. Every pointwise hypothesis holds, the response rate is 1/2, and the mean interval is [1/2,1]. The separate six-unit example has four respondents and two missing outcomes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T81",
+    "theorem": "SAP.P001e.T81",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed finite example, with four respondent indices and two missing indices. Independent exact rational arithmetic verifies both nearest donors, the second-nearest gap, completed outcomes (2,2,3,10,12,3) and mean 16/3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T82",
+    "theorem": "SAP.P001e.T82",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the compiled fair Bernoulli measure, take X constant Unit and R the Bool identity. Both response states have probability 1/2; p is the constant 1/2 and kappa is the constant fair Bernoulli law. The conditional mean and mass computations are compiled in scratch/Nonvacuity.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T83",
+    "theorem": "SAP.P001e.T83",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled common model: fair Bernoulli R, constant X, Y=2, p=1/2 and epsilon=1/4. The propensity conditional-mean property and conditional independence of constant Y from R are proved in scratch/Nonvacuity.lean. All functions are bounded and measurable.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T84",
+    "theorem": "SAP.P001e.T84",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed counts (4,4,4), responses (2,3,2), and sums (3/4,3/2,3/4) are realized by the canonical twelve-unit data. The sample also has positive probability under an IID MAR population with three positive-mass covariate cells, response probability 7/12, and independent outcome atoms 1/4,1/2,3/4. Exact arithmetic verifies 3/7,5/12 and 1/84; the logistic Hessian is strictly negative definite because the design spans the intercept and slope directions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T85",
+    "theorem": "SAP.P001e.T85",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled nonempty cell system: E=Fin 1, N=2, r=1, q=1/2, n=2. It is also a genuine two-unit sample with one respondent; every real cell sum S is obtainable by assigning S to that respondent. No zero denominator or empty finite type is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T86",
+    "theorem": "SAP.P001e.T86",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled fair-coin response model with constant X, R=1_{true}, p=1/2 and epsilon=1/4 satisfies every premise. R/p has mean 1 and 1/p has mean 2. The equality case is also realizable in the broader Lean statement by R=1, p=1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T87",
+    "theorem": "SAP.P001e.T87",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the compiled fair-coin model with X constant, Y=2, R=1_{true}, p=1/2, epsilon=1/4 and supplied respondent mean m=2. Both response events have mass 1/2. Restricted respondent integrals of Y and Ystar coincide; m composed with X is integrable under the full finite measure. Independence follows from constant Y.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T88",
+    "theorem": "SAP.P001e.T88",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the countable product of fair Bernoulli measures on Bool^N. Set D_i to the ith coordinate indicator, Y0_i=Y1_i=0 and [a,b]=[0,1]. Observed pairs (0,D_i) are IID, p=1/2, lower_i=-D_i and upper_i=1-D_i. Endpoints are -1/2 and 1/2, so the interval and random estimators are nondegenerate. This is a mathematical product-measure witness; the full infinite-product hypotheses were not compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T89",
+    "theorem": "SAP.P001e.T89",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The supplied six-state probability space has six positive weights 1/6 summing to one. Its four (X,D) cell masses are 1/3,1/6,1/6,1/3. Positivity of all four cells is compiled; independent rational arithmetic verifies the conditional means and contrast -1/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T90",
+    "theorem": "SAP.P001e.T90",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lebesgue measure restricted to [0,1] has mass one and dose density one on the support. X=0 and both potential processes are deterministic in the sample point, hence independent of dose; all outcomes are measurable and bounded. The observable laws differ only on the null singleton {1/2}, while the two stated potential-effect contrasts differ by one.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T91",
+    "theorem": "SAP.P001e.T91",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The revised disclosure matches the unchanged premises. On the fair Bernoulli measure on Bool, take X constant, D the indicator of true, Y(t,omega)=t at every real t, d=0 and dprime=1. Each potential outcome is measurable and integrable, the observed diagonal equals D and is measurable and integrable, and the full real-indexed process is deterministic and conditionally independent of treatment. Both queried dose cells have mass 1/2. These components compile against the refreshed Defs in scratch/Nonvacuity.lean (scratch/lean-check2.log). The same file verifies that the earlier supported-process versus full-process distinction is real; the new docstring and record2.json now disclose it explicitly.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T92",
+    "theorem": "SAP.P001e.T92",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed six-unit example with positive sample size and determinant 7311. Independent Fraction arithmetic solves the actual normal equations and reproduces every coefficient and both printed-table estimates, including the nonzero difference -253/4874.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T93",
+    "theorem": "SAP.P001e.T93",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled general witness with n=2, D=(0,1), g=(2,2), beta=3 and Y=(2,5), so both residual sums are zero and both arms are nonempty. Independent exact arithmetic also verifies the supplied full-rank six-unit fit and both corrected estimates 6178/2437.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T94",
+    "theorem": "SAP.P001e.T94",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A model satisfying even correct-density semantics is Omega=[0,1] times Bool with uniform times fair-coin measure, X constant, D the Bool indicator, Y0(z,r)=z and Y1(z,r)=z+1. Take p=1/2, epsilon=1/4 and g(y,d,x,theta)=1_{[d,d+1]}(y). Its integrated mean is d+1/2; every inner integral is finite, the observed conditional mean is correct, overlap holds, and the potential pair is independent of D. For the estimator component use any positive n and the same density; no nonintegrable default or empty index is needed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T95",
+    "theorem": "SAP.P001e.T95",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed six-unit example with positive opposite-arm candidate sets of sizes two and four. Exact rational arithmetic verifies every nearest donor, the completed columns, means 22/6 and 15/6 and contrast 7/6.",
+    "confidence": 0.99
+  }
+]

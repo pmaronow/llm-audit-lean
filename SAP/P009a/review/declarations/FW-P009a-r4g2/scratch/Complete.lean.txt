@@ -1,0 +1,108 @@
+import SAP.P009a.Challenge
+open SAP.P009a Filter
+open scoped BigOperators Topology Classical
+noncomputable section
+set_option maxHeartbeats 800000
+
+def oneHot {n : ℕ} (i : Fin n) : TreatmentVector n := fun j => decide (j = i)
+
+lemma oneHot_inj {n : ℕ} (i j : Fin n) : oneHot i = oneHot j ↔ i = j := by
+  constructor
+  · intro h
+    have hh := congrFun h i
+    by_contra hij
+    simp [oneHot, hij] at hh
+  · intro h
+    subst j
+    rfl
+
+def oneDesign (n : ℕ) (hn : 0 < n) : FiniteDistribution (TreatmentVector n) where
+  mass := fun z => ∑ i, if z = oneHot i then 1/(n : ℝ) else 0
+  nonneg := by
+    intro z
+    apply Finset.sum_nonneg
+    intro i _
+    split_ifs <;> positivity
+  total := by
+    rw [Finset.sum_comm]
+    have hnr : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+    simp [hnr]
+
+lemma count_one_iff {n : ℕ} (z : TreatmentVector n) :
+    (∑ i, if z i then (1 : ℕ) else 0) = 1 ↔ ∃ i, z = oneHot i := by
+  constructor
+  · intro h
+    have hc : (Finset.univ.filter (fun i => z i = true)).card = 1 := by
+      simpa only [Finset.card_filter] using h
+    obtain ⟨i, hi⟩ := Finset.card_eq_one.mp hc
+    refine ⟨i, ?_⟩
+    funext j
+    have heq : z j = true ↔ j = i := by
+      have hj := Finset.ext_iff.mp hi j
+      simpa using hj
+    by_cases hji : j = i
+    · have ht := heq.mpr hji
+      simpa [oneHot, hji] using ht
+    · have ht : z j ≠ true := fun ht => hji (heq.mp ht)
+      cases hz : z j <;> simp_all [oneHot]
+  · rintro ⟨i, rfl⟩
+    simp [oneHot]
+
+def onePopulation (n : ℕ) (hn : 0 < n) : FiniteExperiment n :=
+  ⟨oneDesign n hn, fun i z => treatmentValue (z i)⟩
+
+lemma one_fixed {n : ℕ} (hn : 1 < n) : FixedSizeDesign (onePopulation n (by omega)) 1 := by
+  refine ⟨by norm_num, hn, ?_⟩
+  intro z
+  change (∑ i, if z = oneHot i then 1/(n : ℝ) else 0) = _
+  by_cases hz : (∑ i, if z i then (1 : ℕ) else 0) = 1
+  · obtain ⟨i, rfl⟩ := (count_one_iff z).mp hz
+    simp only [oneHot_inj]
+    simp [hz, Nat.choose_one_right, oneHot]
+  · have hne (i : Fin n) : z ≠ oneHot i := fun h => hz ((count_one_iff z).mpr ⟨i, h⟩)
+    rw [if_neg hz]
+    simp [hne]
+
+def oneSequence : ExperimentSequence where
+  N := fun t => t+2
+  positive := by intro t; omega
+  grows := by
+    refine tendsto_atTop.2 (fun b => ?_)
+    filter_upwards [eventually_ge_atTop b] with t ht
+    omega
+  experiment := fun t => onePopulation (t+2) (by omega)
+
+lemma one_affects {n : ℕ} (hn : 0 < n) (i j : Fin n) :
+    Affects (onePopulation n hn) i j ↔ i = j := by
+  constructor
+  · rintro (hij | ⟨z, z', hz, hne⟩)
+    · exact hij
+    · by_contra hij
+      apply hne
+      change treatmentValue (z j) = treatmentValue (z' j)
+      rw [hz j (Ne.symm hij)]
+  · exact Or.inl
+
+lemma one_average {n : ℕ} (hn : 0 < n) : averageDependence (onePopulation n hn) = 1 := by
+  have hc (i j : Fin n) : SharesCause (onePopulation n hn) i j ↔ i = j := by
+    constructor
+    · rintro ⟨l, hi, hj⟩
+      exact ((one_affects hn l i).mp hi).symm.trans ((one_affects hn l j).mp hj)
+    · intro hij
+      subst j
+      exact ⟨i, Or.inl rfl, Or.inl rfl⟩
+  have hnr : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  simp [averageDependence, dependenceDegree, dependenceIndicator, hc, hnr]
+
+theorem t10_nonvacuity : ∃ S : ExperimentSequence,
+    (∀ t, ∃ m, FixedSizeDesign (S.experiment t) m) ∧
+    (∃ D : ℝ, ∀ᶠ t in atTop, averageDependence (S.experiment t) ≤ D) := by
+  refine ⟨oneSequence, ?_, 1, Filter.Eventually.of_forall ?_⟩
+  · intro t
+    change ∃ m, FixedSizeDesign (onePopulation (t+2) (by omega)) m
+    exact ⟨1, one_fixed (by omega)⟩
+  · intro t
+    change averageDependence (onePopulation (t+2) (by omega)) ≤ 1
+    rw [one_average]
+
+#print axioms t10_nonvacuity

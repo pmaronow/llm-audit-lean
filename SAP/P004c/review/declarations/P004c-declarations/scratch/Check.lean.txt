@@ -1,0 +1,27 @@
+import SAP.P004c.Defs
+open SAP.P004c
+
+example : 0 < armCount (fun _ : Fin 2 => true) true := by
+  norm_num [armCount]
+
+example : And ((0 : Real) < (1/2 : Real)) ((1/2 : Real) < 1) := by
+  norm_num
+
+example : 0 < (1 : Real) := by norm_num
+
+example : denominatorError (1/2) 2 (fun _ => true) = 3 := by
+  norm_num [denominatorError, armCount]
+
+example : abs ((8 : Real)^2/5^2 - 1/(1/2 : Real)^2) * abs (-(1/4 : Real)) = 9/25 := by
+  norm_num
+
+example : And
+    (forall t : Real, 0 <= t -> abs (if t <= 1 then (1 : Real) else 0) <= 1)
+    (forall t : Real, 1 < t -> (if t <= 1 then (1 : Real) else 0) = 0) := by
+  constructor
+  case left =>
+    intro t ht
+    split_ifs <;> norm_num
+  case right =>
+    intro t ht
+    simp [not_le.mpr ht]

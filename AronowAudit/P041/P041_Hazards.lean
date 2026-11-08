@@ -7,31 +7,31 @@ noncomputable section
 namespace AronowAudit.P041
 
 /-!
-P041-E006: exponential survival laws illustrating proportional hazards.
-The paper defines survival time on p. 4/8 and uses a Cox proportional hazard
-model. These laws refute the inference from a small absolute contrast to no
-relative bias; they are not fitted to the observations.
+The exponential laws below are the validator's P041-E006 construction, not a
+fit to the observations. The paper defines survival time on p. 4/8 and uses
+a Cox proportional hazard model. These laws instantiate proportional hazards
+and refute the inference from a small absolute contrast to no relative bias.
 -/
 
-/-- P041-T1: "λ₊ = -2 log(q)/12".
-This is the positive-fact constant removal hazard, per hour. -/
+/-- P041-T1, validator derivation section 6: "λ₊ = -2 log(q)/12".
+This is the positive-fact constant removal hazard, in hours. -/
 def positiveHazard (q : ℝ) : ℝ := -2 * Real.log q / 12
 
-/-- P041-T1: "λ₋ = -3 log(q)/12".
-This is the negative-fact constant removal hazard, per hour. -/
+/-- P041-T1, validator derivation section 6: "λ₋ = -3 log(q)/12".
+This is the negative-fact constant removal hazard, in hours. -/
 def negativeHazard (q : ℝ) : ℝ := -3 * Real.log q / 12
 
-/-- "S±(t;q) = exp(-λ±(q)t)", P041-T1.
+/-- "S±(t;q) = exp(-λ±(q)t)", P041-T1 / validator section 6.
 The parameter is a constant removal hazard; t is hours after insertion. -/
 def exponentialSurvival (hazard t : ℝ) : ℝ := Real.exp (-hazard * t)
 
-/-- "D(q) = S₊(12;q) - S₋(12;q)", P041-T1. -/
+/-- "D(q) = S₊(12;q) - S₋(12;q)", validator section 6 / P041-T1. -/
 def twelveHourContrast (q : ℝ) : ℝ :=
   exponentialSurvival (positiveHazard q) 12 -
     exponentialSurvival (negativeHazard q) 12
 
 /-- Independent-fact probability of observing k removals among n facts:
-"choose(n,k) p^k (1-p)^(n-k)", P041-T1(v).
+"choose(n,k) p^k (1-p)^(n-k)", P041-T1(v), validator section 6.
 No independence assertion about the actual experiment is made. -/
 def binomialCountProbability (n k : ℕ) (p : ℝ) : ℝ :=
   (n.choose k : ℝ) * p^k * (1-p)^(n-k)
@@ -76,7 +76,7 @@ theorem twelve_hour_survival (q : ℝ) (hq : 0 < q) :
   ring
 
 /-- P041-T1 setting: the same exponential survival laws are q^(t/6)
-and q^(t/4) at every real time. -/
+and q^(t/4) at every real time, as the validator's construction specifies. -/
 theorem exponential_survival_power_laws (q t : ℝ) (hq : 0 < q) :
     exponentialSurvival (positiveHazard q) t = q^(t/6) ∧
     exponentialSurvival (negativeHazard q) t = q^(t/4) := by
@@ -137,8 +137,8 @@ theorem common_bias_countermodel :
   simp only [hpa, hna, hda, hpf, hnf, hdf, hra, hrf, p1, p2, p3, p4, and_true]
   norm_num
 
-/-- P041-T2(d): the empirical positive-minus-negative survival contrast
-from removed counts. nP,nN are the original arm sizes;
+/-- P041-T2(d), validator section 5: the empirical positive-minus-negative
+survival contrast from removed counts. nP,nN are the original arm sizes;
 rP,rN are removals by the stated horizon. -/
 def observedSurvivalContrast (nP nN rP rN : ℝ) : ℝ :=
   (1-rP/nP) - (1-rN/nN)
@@ -162,7 +162,7 @@ theorem observed_early_contrasts :
   norm_num [observedSurvivalContrast]
 
 /-- P041-T2(e): smaller absolute contrast does not entail no relative bias.
-The witness is the qA,qF law; this says nothing about the true
+The witness is the validator's qA,qF law; this says nothing about the true
 relative bias on the actual former-senator pages (p. 5/8). -/
 theorem smaller_contrast_does_not_exclude_common_bias :
     ∃ qA qF : ℝ, 0 < qA ∧ qA < 1 ∧ 0 < qF ∧ qF < 1 ∧
@@ -181,3 +181,10 @@ theorem smaller_contrast_does_not_exclude_common_bias :
 
 end AronowAudit.P041
 
+#print axioms AronowAudit.P041.proportional_hazards
+#print axioms AronowAudit.P041.twelve_hour_survival
+#print axioms AronowAudit.P041.exponential_survival_power_laws
+#print axioms AronowAudit.P041.binomial_count_positive
+#print axioms AronowAudit.P041.common_bias_countermodel
+#print axioms AronowAudit.P041.observed_early_contrasts
+#print axioms AronowAudit.P041.smaller_contrast_does_not_exclude_common_bias

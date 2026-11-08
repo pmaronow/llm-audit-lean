@@ -1,0 +1,61 @@
+[
+  {
+    "target_id": "P018-T6",
+    "theorem": "SAP.P018a.T6",
+    "fingerprint": "69e28be2cc17aeb6da7297bc9f2d963091f9eefcae215a05fc405a9b3c2e2c94",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/ReviewNonvacuity.lean constructs a probability measure on Unit, nonempty one-dimensional independent L2 constant effects with covariance parameters zero, and C=F=I_1 with positive definite C and both required determinants units. The N>=3, tau>0 incidence-mismatch domain is nonempty (e.g. N=3, tau=1); the incidence sets contain all three actual dyads. The GLS hypotheses hold in a positive-dimensional canonical case.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T7",
+    "theorem": "SAP.P018a.T7",
+    "fingerprint": "f5886685b8fe4dbfe4cbae564c2ac1d19170742e07160b97692911283d8ae220",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed assertion, with no antecedent that could make it vacuous. scratch/ReviewNonvacuity.lean independently checks the eight-unit witness Gram, determinant 768, OLS zero, meat [[240,160],[160,64]], actual negative sandwich slope entry, and the product-law atom probability 4^(-8)=1/65536. scratch/ReviewFinite.py independently recomputes the same matrices using exact rational arithmetic. The model uses independent fair sign coordinates and independent units, as required.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T8",
+    "theorem": "SAP.P018a.T8",
+    "fingerprint": "0f3cd135595f178bf22ec8bf4fad7f3691cbf09f103cd18eae47fd5a84cd7fd3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/ReviewNonvacuity.lean proves Standing signKernel directly from its definitions and independently computes Q=1, beta=0, Gamma=1. The contrast c=(1) has limiting variance 4>0, so the positive-variance inference implication has a concrete nonvacuous instance. The closed degenerate-contrast example is the genuine finite product sign-pair model used in T7.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P018-T9",
+    "theorem": "SAP.P018a.T9",
+    "fingerprint": "d45bd5ef4c26c24d66d68c5a396897ce6aef4a7b520b8d9ed6cd12c8f99c3d9f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed witness is iid fair signs with X=1 and deterministic weights 2^(-i-j), hence has no conditional antecedent to vacuate. scratch/ReviewNonvacuity.lean directly checks the sign-kernel standing assumptions and Q=1, beta=0, and compiles W1W 1=0 and W1c(0:Fin 1)=0, confirming the disclosed initial completion. Exact rational checks in scratch/ReviewFinite.py verify coefficient/variance identities and sandwich separation at N=8 and N=9; at N=8 the all-positive atom has probability 1/256, sandwich zero, and variance 56098/53975>9/16. Every repeated count is finite; the construction deliberately lacks a uniform bound, exactly as canonical clause (e) states.",
+    "confidence": 0.99,
+    "resolved": [
+      "Fixed: the earlier issue at SAP/P018a/Challenge/Part2.lean:27 is resolved. The current sentence explicitly says the all-N linear-fit and variance identities include zero completion when N<2, matching the unrestricted identities and the denominator in W1c.",
+      "Fixed: the earlier issue at SAP/P018a/Defs/WholeW1.lean:153 is resolved by the same accurate sentence. The substantive canonical N>=2/N>=8 formulas and counterexample remain intact; no incorrect domain assertion remains."
+    ]
+  },
+  {
+    "target_id": "P018-T10",
+    "theorem": "SAP.P018a.T10",
+    "fingerprint": "937c1d1441bcd7b64adf2dc7f4970e335ca8dfadb82a89778c8752e79dea0737",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/ReviewRepeated.lean constructs Unit units with Dirac law, X=1, Y=0 and one common record per dyad. It proves every C1 hypothesis jointly, including the uniform count/data bounds, common kernels, H_N tending to positive definite I_1, and the zero mean-overlap limit. It also proves the common ordered-kernel/direction hypotheses, positive unit normalized weights, and positive definite weighted-design limit for C2; both ordinary-inverse guards hold at N=2 for C3. Its standing bounds supply the fixed-size bounded-data conditions, and a=1>0. The two closed obstructions have genuine finite/deterministic witnesses; scratch/ReviewFinite.py checks nonzero scaled block-mean meat despite zero total block mean for the displayed deterministic witness.",
+    "confidence": 0.99
+  }
+]

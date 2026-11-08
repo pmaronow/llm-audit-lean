@@ -85,6 +85,14 @@ lemma fittedBlock_small_bound {Ω : ℕ → Type*} [∀ n, Fintype (Ω n)]
   exact squeeze_zero (fun n => WitnessCompletion.probability_nonneg _ _)
     hb (by simpa using hE.add (hX _ hδ))
 
+lemma fittedBlock_small_cmul {Ω : ℕ → Type*} [∀ n, Fintype (Ω n)]
+    (d : ∀ n, FiniteDesign (Ω n)) (X : ∀ n, Ω n → ℝ) (C : ℝ)
+    (hX : fittedBlock_small d X) : fittedBlock_small d (fun n w => C * X n w) := by
+  apply fittedBlock_small_bound d X _ (fun _ _ => False) C hX
+  · simpa [designProbability, designMean] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+  · intro n w _
+    rw [abs_mul]
 
 lemma fittedBlock_small_deterministic {Ω : ℕ → Type*} [∀ n, Fintype (Ω n)]
     (d : ∀ n, FiniteDesign (Ω n)) (a : ℕ → ℝ) (a₀ : ℝ)
@@ -946,6 +954,8 @@ theorem fitted_block_estimator_limit_proof {q : ℕ} (r : ∀ B, RetainedBlockRo
       (fun z => (ProbabilityTheory.gaussianReal 0 1 (Set.Iic z)).toReal)
       hZ hD fittedBlock_normal_cdf_continuous z
     simpa only [blockRowProbability, designProbability, designMean, productDesign] using hh
+
+example : type_of% @AronowAudit.P037.fitted_block_estimator_limit := fitted_block_estimator_limit_proof
 
 end
 end AronowAudit.P037.Wave1

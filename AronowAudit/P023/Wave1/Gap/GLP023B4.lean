@@ -13,7 +13,7 @@ open Finset MeasureTheory Set Filter
 
 local instance instDecidableGLP023B4 (p : Prop) : Decidable p := Classical.propDecidable p
 
-/-! The Jackson kernel with its removable singularities filled. -/
+/-! Record 13: the literal filled Jackson kernel. -/
 
 private def jka_fejer : ℕ → Polynomial ℝ
   | 0 => 1
@@ -576,7 +576,7 @@ private lemma jka_convolution_error (s : ℕ) (hs : 1 ≤ s)
     _ = _ := by ring
 
 /-- The explicit normalized Jackson kernel, with its convolution represented by
-an algebraic polynomial and approximation bound using the constant `jacksonK`. -/
+an algebraic polynomial and the fixed constant in the audit contract. -/
 theorem jackson_kernel_approximation_proof (s : ℕ) (hs : 1 ≤ s) (h : ℝ → ℝ)
     (L : ℝ) (hL : 0 ≤ L) (hlip : ∀ x ∈ Set.Icc (-1) 1, ∀ y ∈ Set.Icc (-1) 1,
       |h x-h y| ≤ L*|x-y|) :
@@ -593,6 +593,8 @@ theorem jackson_kernel_approximation_proof (s : ℕ) (hs : 1 ≤ s) (h : ℝ →
   have hb := jka_convolution_error s hs h L hL hlip (Real.arccos x)
   rw [he, hcos] at hb
   exact hb
+
+example : type_of% @AronowAudit.P023.jackson_kernel_approximation := jackson_kernel_approximation_proof
 
 end
 end AronowAudit.P023.Wave1

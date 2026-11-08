@@ -1,0 +1,180 @@
+import SAP.P009c.Defs
+
+open scoped BigOperators
+open SAP.P009c
+
+noncomputable section
+
+namespace Review
+
+lemma sum_one_cube (f : Assignment 1 → ℝ) :
+    (∑ z, f z) = f (fun _ => true) + f (fun _ => false) := by
+  rw [← (Equiv.funUnique (Fin 1) Bool).symm.sum_comp f]
+  simp [Equiv.funUnique, Equiv.piUnique]
+  congr 1
+
+def pointLaw {Ω : Type*} [Fintype Ω] [DecidableEq Ω] (a : Ω) : Law Ω where
+  mass := fun x => if x = a then 1 else 0
+  nonneg := by intro x; split_ifs <;> norm_num
+  total := by simp
+
+def fairOne : Law (Assignment 1) where
+  mass := fun _ => 1 / 2
+  nonneg := by intro z; norm_num
+  total := by norm_num [Fintype.card_fun]
+
+def directOne : Experiment 1 where
+  design := fairOne
+  outcome := fun i z => bit (z i)
+
+lemma directOne_marginal (i : Fin 1) (b : Bool) : marginal directOne i b = 1/2 := by
+  fin_cases i
+  cases b <;>
+    norm_num [marginal, prob, mean, directOne, fairOne, sum_one_cube]
+
+lemma directOne_noInterference : NoInterference directOne := by
+  intro i z z' h
+  simpa [directOne] using congrArg bit h
+
+lemma directOne_Bernoulli : Bernoulli directOne := by
+  constructor
+  · intro i; rw [directOne_marginal]; norm_num
+  · intro z
+    change (1 / 2 : ℝ) = ∏ i : Fin 1,
+      (if z i then marginal directOne i true else 1 - marginal directOne i true)
+    simp only [directOne_marginal]
+    norm_num [Fin.prod_univ_succ]
+
+-- T35: all three implication antecedents can hold jointly, with nonzero effects.
+example : ∃ E : Experiment 1,
+    0 < (1 : ℕ) ∧ NoInterference E ∧
+    (∀ i, 0 < marginal E i true ∧ marginal E i true < 1) ∧ Bernoulli E := by
+  exact ⟨directOne, by decide, directOne_noInterference,
+    directOne_Bernoulli.1, directOne_Bernoulli⟩
+
+example : ate directOne = 1 ∧ eate directOne = 1 ∧ adse directOne = 1 := by
+  norm_num [ate, ateAt, effect, potential, eate, adse, cmean, prob, mean,
+    directOne, fairOne, bit, sum_one_cube, Fin.sum_univ_succ]
+
+def zeroZ : Assignment 2 := fun _ => false
+def oneZ : Assignment 2 := fun _ => true
+
+-- Unit 0's direct effect is the treatment bit of unit 1; unit 1's outcome is zero.
+def interaction : Experiment 2 where
+  design := pointLaw zeroZ
+  outcome := fun i z => if i = 0 then bit (z 0) * bit (z 1) else 0
+
+def otherDesign : Law (Assignment 2) := pointLaw oneZ
+
+lemma interaction_effect (i : Fin 2) (z : Assignment 2) :
+    effect interaction i z = if i = 0 then bit (z 1) else 0 := by
+  fin_cases i <;> simp [effect, potential, interaction, bit]
+
+lemma interaction_bounded : BoundedEffects interaction 1 := by
+  intro i z
+  rw [interaction_effect]
+  split_ifs
+  · cases h : z 1 <;> norm_num [bit, h]
+  · norm_num
+
+lemma interaction_eate : eate interaction = 0 := by
+  simp [eate, mean, interaction, pointLaw, ateAt, effect, potential, bit, zeroZ,
+    Function.update_apply]
+
+lemma other_eate : eate {interaction with design := otherDesign} = 1/2 := by
+  norm_num [eate, mean, otherDesign, pointLaw, interaction, ateAt, effect,
+    potential, bit, oneZ, Fin.sum_univ_succ, Function.update_apply]
+
+-- T36 has only a positive-population hypothesis: this nonconstant table is valid data.
+example : ∃ E : Experiment 2, 0 < (2 : ℕ) ∧
+    E.outcome 0 zeroZ = 0 ∧ E.outcome 0 oneZ = 1 := by
+  refine ⟨interaction, by decide, ?_, ?_⟩ <;>
+    norm_num [interaction, bit, zeroZ, oneZ]
+
+-- T37: different designs, bounded effects, and a nonzero estimand difference.
+example : ∃ (E : Experiment 2) (Q : Law (Assignment 2)) (K : ℝ),
+    0 < (2 : ℕ) ∧ BoundedEffects E K ∧
+    |eate E - eate {E with design := Q}| = 1/2 := by
+  refine ⟨interaction, otherDesign, 1, by decide, interaction_bounded, ?_⟩
+  rw [interaction_eate, other_eate]
+  norm_num
+
+example : totalVariation interaction.design otherDesign = 1 := by
+  have hne : zeroZ ≠ oneZ := by
+    intro h
+    have := congrFun h (0 : Fin 2)
+    simp [zeroZ, oneZ] at this
+  have hterm (z : Assignment 2) :
+      |(if z = zeroZ then (1 : ℝ) else 0) - (if z = oneZ then 1 else 0)| =
+      (if z = zeroZ then (1 : ℝ) else 0) + (if z = oneZ then 1 else 0) := by
+    by_cases h0 : z = zeroZ
+    · subst z; simp [hne]
+    · by_cases h1 : z = oneZ
+      · subst z; simp [h0]
+      · simp [h0, h1]
+  simp only [totalVariation, interaction, otherDesign, pointLaw, hterm,
+    Finset.sum_add_distrib]
+  norm_num
+
+-- T38: all hypotheses at each endpoint/exponent tested, with a nonconstant t(z).
+example (r : ℝ) (hr : 1 ≤ r) : ∃ (E : Experiment 2) (K : ℝ),
+    0 < (2 : ℕ) ∧ BoundedEffects E K ∧ 1 ≤ r ∧
+    ateAt E zeroZ ≠ ateAt E oneZ := by
+  refine ⟨interaction, 1, by decide, interaction_bounded, hr, ?_⟩
+  norm_num [ateAt, interaction_effect, zeroZ, oneZ, bit, Fin.sum_univ_succ]
+
+example : 1 ≤ (1 : ℝ) ∧ 1 ≤ (2 : ℝ) := by norm_num
+
+-- A generic product construction checks that the coupling-cost infimum is genuine.
+def productLaw {Ω : Type*} [Fintype Ω] (P Q : Law Ω) : Law (Ω × Ω) where
+  mass := fun xy => P.mass xy.1 * Q.mass xy.2
+  nonneg := by intro xy; exact mul_nonneg (P.nonneg _) (Q.nonneg _)
+  total := by
+    rw [Fintype.sum_prod_type]
+    simp_rw [← Finset.mul_sum, Q.total, mul_one]
+    exact P.total
+
+lemma productLaw_couples {Ω : Type*} [Fintype Ω] (P Q : Law Ω) :
+    Coupling P Q (productLaw P Q) := by
+  constructor
+  · intro x
+    change (∑ y, P.mass x * Q.mass y) = P.mass x
+    rw [← Finset.mul_sum, Q.total, mul_one]
+  · intro y
+    change (∑ x, P.mass x * Q.mass y) = Q.mass y
+    rw [← Finset.sum_mul, P.total, one_mul]
+
+lemma distance_nonneg {n : ℕ} (r : ℝ) (x y : Assignment n) :
+    0 ≤ lrDistance r x y := by
+  apply Real.rpow_nonneg
+  exact Finset.sum_nonneg (fun i _ => Real.rpow_nonneg (abs_nonneg _) _)
+
+lemma costSet_valid {n : ℕ} (r : ℝ) (P Q : Law (Assignment n)) :
+    Set.Nonempty {v : ℝ | ∃ J : Law (Assignment n × Assignment n),
+      Coupling P Q J ∧ v = mean J (fun xy => lrDistance r xy.1 xy.2)} ∧
+    BddBelow {v : ℝ | ∃ J : Law (Assignment n × Assignment n),
+      Coupling P Q J ∧ v = mean J (fun xy => lrDistance r xy.1 xy.2)} := by
+  constructor
+  · exact ⟨mean (productLaw P Q) (fun xy => lrDistance r xy.1 xy.2),
+      productLaw P Q, productLaw_couples P Q, rfl⟩
+  · refine ⟨0, ?_⟩
+    rintro v ⟨J, _hJ, rfl⟩
+    exact Finset.sum_nonneg (fun xy _ =>
+      mul_nonneg (J.nonneg _) (distance_nonneg r _ _))
+
+lemma countSup_valid {n : ℕ} (hn : 0 < n) (E : Experiment n) :
+    (Set.range (outgoing E)).Nonempty ∧ BddAbove (Set.range (outgoing E)) := by
+  exact ⟨⟨outgoing E ⟨0, hn⟩, ⟨⟨0, hn⟩, rfl⟩⟩, (Set.finite_range _).bddAbove⟩
+
+-- T39: all hypotheses, a genuine coupling, and a nonzero estimand difference.
+example (r : ℝ) (hr : 1 ≤ r) :
+    ∃ (E : Experiment 2) (Q : Law (Assignment 2)) (K : ℝ)
+      (J : Law (Assignment 2 × Assignment 2)),
+      0 < (2 : ℕ) ∧ BoundedEffects E K ∧ 1 ≤ r ∧ Coupling E.design Q J ∧
+      |eate E - eate {E with design := Q}| = 1/2 := by
+  refine ⟨interaction, otherDesign, 1, productLaw interaction.design otherDesign,
+    by decide, interaction_bounded, hr, productLaw_couples _ _, ?_⟩
+  rw [interaction_eate, other_eate]
+  norm_num
+
+end Review

@@ -3,7 +3,11 @@ import Mathlib.MeasureTheory.Function.SimpleFuncDenseLp
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
 import Mathlib.Probability.IdentDistrib
 
-
+/-!
+Draft for records 9--11. No Lean process was run by the drafter.
+The shared conditional-moment bridge is included here because this worktree
+has no earlier Wave1 modules. No held theorem is used in a proof.
+-/
 
 namespace AronowAudit.P006.Wave1
 
@@ -14,7 +18,7 @@ noncomputable section
 
 local instance instDecidableGP006B3 (p : Prop) : Decidable p := Classical.propDecidable p
 
-/-! P006-T7: bounded-factor and conditional-moment lemmas. -/
+/-! ## Record 9: T7. Shared bounded-factor and conditional-moment helpers. -/
 
 lemma T7_policy_norm {C : Type*} [MeasurableSpace C] {π : C → ℝ}
     (hπ : Admissible π) (x : C) : ‖π x‖ ≤ 1 := by
@@ -286,6 +290,56 @@ lemma T7_actual_treated_score {Ω C : Type*} [MeasurableSpace Ω]
   rw [hsutva, integral_finsetSum Finset.univ (fun i _ => hi i)]
   simp only [hmean, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
+lemma T7_weighted_actual_score {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n) (hS : Standing E)
+    (g : C → ℝ) (hg : Measurable g)
+    (hU : TreatedUnbiased E E.μ0 {π | Admissible π})
+    (hreward : ∀ π, Admissible π → ∀ i, Integrable
+      (fun ω => (E.observed π ω i-E.μhat π ω (E.X i ω)) *
+        bit (E.T π i ω) * g (E.X i ω)) (E.law π))
+    (π : C → ℝ) (hπ : Admissible π) :
+    E.expectedWeightedTT g π = (n : ℝ) * (∫ x, g x * E.τ x * π x ∂E.PX) := by
+  letI : IsProbabilityMeasure (E.law π) := hS.law_probability π hπ
+  let W : Fin n → Ω → ℝ := fun i ω =>
+    (E.observed π ω i - E.μhat π ω (E.X i ω)) * bit (E.T π i ω) * g (E.X i ω)
+  have hmean (i : Fin n) : (∫ ω, W i ω ∂E.law π) =
+      ∫ x, g x * E.τ x * π x ∂E.PX := by
+    let U : Ω → ℝ := fun ω => bit (E.T π i ω) *
+      (E.Y1 i ω - E.μhat π ω (E.X i ω))
+    have hui : Integrable U (E.law π) :=
+      T7_bit_mul (hS.measurable_units π hπ i).2.2.2
+        ((hS.integrable_units π hπ i).2.1.sub (hS.integrable_units π hπ i).2.2)
+    have heq : W i = fun ω => g (E.X i ω) * U ω := by
+      funext ω
+      cases ht : E.T π i ω <;> simp [W, U, Experiment.observed, ht, bit, mul_comm]
+    have hgi : Integrable (fun ω => g (E.X i ω) * U ω) (E.law π) := by
+      rw [← heq]
+      exact hreward π hπ i
+    have hgm : StronglyMeasurable[E.covariateSigma i] (fun ω => g (E.X i ω)) :=
+      (hg.comp (comap_measurable (E.X i))).stronglyMeasurable
+    have hpull := condExp_mul_of_stronglyMeasurable_left hgm hgi hui
+    have hscore := T7_treated_score_condExp E hS E.μ0 hS.means_measurable.1
+      hS.means_integrable.1 π hπ i (hU π hπ i)
+    have hce : (E.law π)[W i | E.covariateSigma i] =ᵐ[E.law π]
+        fun ω => g (E.X i ω) * E.τ (E.X i ω) * π (E.X i ω) := by
+      rw [heq]
+      filter_upwards [hpull, hscore] with ω h₁ h₂
+      simp only [Pi.mul_apply] at h₁
+      change _ = π (E.X i ω) * E.τ (E.X i ω) at h₂
+      rw [h₂] at h₁
+      exact h₁.trans (by ring)
+    have hm : E.covariateSigma i ≤ ‹MeasurableSpace Ω› :=
+      (hS.measurable_units π hπ i).1.comap_le
+    calc
+      _ = ∫ ω, (E.law π)[W i | E.covariateSigma i] ω ∂E.law π :=
+        (integral_condExp hm).symm
+      _ = ∫ ω, g (E.X i ω) * E.τ (E.X i ω) * π (E.X i ω) ∂E.law π :=
+        integral_congr_ae hce
+      _ = _ := ((hS.covariate_law π hπ i).comp
+        ((hg.mul (hS.means_measurable.2.sub hS.means_measurable.1)).mul hπ.1)).integral_eq
+  change (∫ ω, ∑ i, W i ω ∂E.law π) = _
+  rw [integral_finsetSum Finset.univ (fun i _ => hreward π hπ i)]
+  simpa only [W, hmean, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
 lemma T7_positiveRule_admissible {C : Type*} [MeasurableSpace C]
     (t : C → ℝ) (ht : Measurable t) : Admissible (positiveRule t) := by
@@ -340,12 +394,73 @@ lemma T7_zero_deficit_characterization {C : Type*} [MeasurableSpace C]
     have hc := mul_left_cancel₀ (mul_ne_zero (hpos x).ne' htx.ne) hx
     simpa only [positiveRule, if_neg (not_lt.mpr htx.le)] using hc
 
+theorem T7_corrected_weighted_alignment_proof {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (g : C → ℝ) (hg : Measurable g) (hpos : ∀ x, 0 < g x)
+    (hU : TreatedUnbiased E E.μ0 {π | Admissible π})
+    (hprod : Integrable (fun x => g x * E.τ x) E.PX)
+    (hreward : ∀ π, Admissible π → ∀ i, Integrable
+      (fun ω => (E.observed π ω i-E.μhat π ω (E.X i ω)) *
+        bit (E.T π i ω) * g (E.X i ω)) (E.law π)) :
+    (∀ π, Admissible π →
+      E.expectedWeightedTT g π = (n : ℝ)*(∫ x, g x*E.τ x*π x ∂E.PX)) ∧
+    IsBest {π | Admissible π} (E.expectedWeightedTT g) (positiveRule E.τ) ∧
+    (∀ b, IsBest {π | Admissible π} (E.expectedWeightedTT g) b →
+      (∀ᵐ x ∂E.PX, (0 < E.τ x → b x = 1) ∧ (E.τ x < 0 → b x = 0)) ∧
+      E.V b = (∫ x, E.τ x * positiveRule E.τ x ∂E.PX) ∧
+      IsBest {π | Admissible π} E.V b ∧
+      regret {π | Admissible π} E.V b = 0) := by
+  have hn : (0 : ℝ) < n := Nat.cast_pos.mpr E.hn
+  have ht : Measurable E.τ := hS.means_measurable.2.sub hS.means_measurable.1
+  have hti : Integrable E.τ E.PX := hS.means_integrable.2.sub hS.means_integrable.1
+  have hp : Admissible (positiveRule E.τ) := T7_positiveRule_admissible E.τ ht
+  have hscore := T7_weighted_actual_score E hS g hg hU hreward
+  have hbest : IsBest {π | Admissible π} (E.expectedWeightedTT g) (positiveRule E.τ) := by
+    refine ⟨hp, ?_⟩
+    intro π hπ
+    rw [hscore π hπ, hscore _ hp]
+    exact mul_le_mul_of_nonneg_left
+      (T7_integral_maximum E.PX E.τ g ht hg (fun x => (hpos x).le) hprod π hπ) hn.le
+  refine ⟨hscore, hbest, ?_⟩
+  intro b hb
+  have hba : Admissible b := hb.1
+  have heq : (∫ x, g x * E.τ x * b x ∂E.PX) =
+      ∫ x, g x * E.τ x * positiveRule E.τ x ∂E.PX := by
+    have h₁ := hb.2 (positiveRule E.τ) hp
+    have h₂ := hbest.2 b hba
+    rw [hscore b hba, hscore _ hp] at h₁ h₂
+    exact mul_left_cancel₀ hn.ne' (le_antisymm h₂ h₁)
+  have hsign := T7_zero_deficit_characterization E.PX E.τ g ht hg hpos hprod b hba heq
+  have hae : (fun x => b x * E.τ x) =ᵐ[E.PX]
+      (fun x => E.τ x * positiveRule E.τ x) := by
+    filter_upwards [hsign] with x hx
+    rcases lt_trichotomy 0 (E.τ x) with h | h | h
+    · rw [hx.1 h]
+      simp [positiveRule, h]
+    · simp [← h]
+    · rw [hx.2 h]
+      simp [positiveRule, not_lt.mpr h.le]
+  have hvalue : E.V b = ∫ x, E.τ x * positiveRule E.τ x ∂E.PX := by
+    rw [T7_actual_welfare E hS b hba]
+    exact integral_congr_ae hae
+  have hVbest : IsBest {π | Admissible π} E.V b := by
+    refine ⟨hba, ?_⟩
+    intro π hπ
+    rw [T7_actual_welfare E hS π hπ, hvalue]
+    have h := T7_integral_maximum E.PX E.τ (fun _ => 1) ht measurable_const
+      (fun _ => zero_le_one) (by simpa only [one_mul] using hti) π hπ
+    simpa only [one_mul, mul_comm] using h
+  refine ⟨hsign, hvalue, hVbest, ?_⟩
+  rw [regret, bestValue_eq hVbest, sub_self]
 
-/-! P006-T8: corrected information bound. -/
+example : type_of% @AronowAudit.P006.T7_corrected_weighted_alignment :=
+  T7_corrected_weighted_alignment_proof
 
-/-- The subtraction identity assumes integrability of all three functions y, m and a.
-In the information bound, y is E.μ1, whose integrability is given by
-Standing.means_integrable.2. -/
+/-! ## Record 10: T8 corrected information bound. -/
+
+/-- Referee correction: the subtraction statement has THREE explicitly
+bound integrable functions y,m,a. At the application y is E.μ1 and its
+integrability is Standing.means_integrable.2. -/
 lemma T8_information_integral_bias_bound {C : Type*} [MeasurableSpace C]
     (P : Measure C) (y m a π : C → ℝ)
     (hy : Integrable y P) (hm : Integrable m P) (ha : Integrable a P)
@@ -422,7 +537,10 @@ theorem T8_corrected_information_bound_proof {Ω X U : Type*}
   intro π hπ
   exact ((hpolicy π hπ).2.2).trans hγ
 
-/-! Lemma 2 and Proposition 10. -/
+example : type_of% @AronowAudit.P006.T8_corrected_information_bound :=
+  T8_corrected_information_bound_proof
+
+/-! ## Record 11: Lemma 2 and Proposition 10. -/
 
 /-- Integrate the coin-mean-independence premise without replacing the
 random evaluated estimator by a population regression function. -/
@@ -493,7 +611,7 @@ lemma T8_lemma2_common_score {Ω C : Type*} [MeasurableSpace Ω]
   rw [hsutva, integral_finsetSum Finset.univ (fun i _ => hi i)]
   simp only [hmean, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
-/-- First recover integrability of the signed residual from its absolute
+/-- Referee correction: first recover the SIGNED residual from its absolute
 value, then add the population baseline. The absolute residual itself is
 not the summand that reconstructs the second coordinate. -/
 lemma T8_lemma2_signed_residual_integrable {C : Type*} [MeasurableSpace C]
@@ -583,6 +701,9 @@ theorem T8_lemma2_proposition10_proof {Ω X U : Type*} [MeasurableSpace Ω]
   exact uniform_error_regret PiSet (normalizedTT E) E.V b s
     (T8_information_normalized_best E PiSet b hb) hs
     (∫ z, |z.2 - E.μ0 z.1| ∂D) herror_policy
+
+example : type_of% @AronowAudit.P006.T8_lemma2_proposition10 :=
+  T8_lemma2_proposition10_proof
 
 end
 

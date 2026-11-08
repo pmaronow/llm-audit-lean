@@ -1,0 +1,142 @@
+import SAP.P008b.Defs.WholeW1
+
+open scoped BigOperators
+open MeasureTheory SAP.P008b
+
+set_option maxRecDepth 4000
+
+noncomputable section
+
+-- T20: the nonempty-boundary premise has ordinary, nonempty finite examples.
+example : (rasterBoundary ({(0, 0)} : Finset (ℤ × ℤ))).Nonempty := by
+  refine ⟨(0, 0), ?_⟩
+  simp only [rasterBoundary, Finset.mem_filter, Finset.mem_singleton]
+  refine ⟨trivial, 0, 0, by decide, ?_⟩
+  norm_num
+
+example : (rasterPolygonCells 0).card = 25 ∧
+    (rasterPolygonBoundary 0).card = 16 ∧
+    (rasterPolygonCells 1).card = 25 ∧
+    (rasterPolygonBoundary 1).card = 16 := by
+  decide +kernel
+
+example : nTreated (![true, false] : Assignment 2) = 1 ∧
+    nControl (![true, false] : Assignment 2) = 1 := by
+  unfold nControl nTreated
+  simp only [Fin.sum_univ_two]
+  norm_num [bit]
+
+-- A nonempty continuous frontier, independently of the Challenge theorem.
+example : (frontier ({(0 : Plane)} : Set Plane)).Nonempty := by
+  simp [frontier, interior_singleton]
+
+-- T21: the complete retained proposition, with no Challenge import.
+example : T21Statement := by
+  norm_num [T21Statement]
+
+-- T22: list *all* two-treated assignments, in statistic order.
+def auditAssignments : Fin 6 → Assignment 4 :=
+  ![![true, true, false, false], ![true, false, true, false],
+    ![true, false, false, true], ![false, true, true, false],
+    ![false, true, false, true], ![false, false, true, true]]
+
+example : Function.Injective auditAssignments := by
+  decide +kernel
+
+example : ∀ z : Assignment 4,
+    wholeTreatedCount z = 2 ↔ ∃ k, auditAssignments k = z := by
+  decide +kernel
+
+example : ∀ k, nTreated (auditAssignments k) = 2 ∧
+    nControl (auditAssignments k) = 2 := by
+  intro k
+  unfold nControl nTreated
+  simp only [Fin.sum_univ_four]
+  fin_cases k <;>
+    norm_num [auditAssignments, bit]
+
+def auditStatistic (k : Fin 6) : ℝ :=
+  hajek (fun i (_ : Assignment 4) => (i.val : ℝ)) (auditAssignments k)
+
+example : auditStatistic = ![-2, -1, 0, 0, 1, 2] := by
+  ext k
+  unfold auditStatistic hajek nControl nTreated
+  simp only [Fin.sum_univ_four]
+  fin_cases k <;>
+    norm_num [auditAssignments, bit]
+
+example : wholeQuantile7 (![-2, -1, 0, 0, 1, 2] : Fin 6 → ℝ) (1 / 40) = -15 / 8 ∧
+    wholeQuantile7 (![-2, -1, 0, 0, 1, 2] : Fin 6 → ℝ) (39 / 40) = 15 / 8 := by
+  norm_num [wholeQuantile7]
+
+example : (uniformLaw (Fin 6)).prob (fun k =>
+    (![-2, -1, 0, 0, 1, 2] : Fin 6 → ℝ) k < -15 / 8 ∨
+      15 / 8 < (![-2, -1, 0, 0, 1, 2] : Fin 6 → ℝ) k) = 1 / 3 := by
+  unfold FiniteLaw.prob
+  rw [Finset.sum_filter, Fin.sum_univ_six]
+  norm_num [uniformLaw]
+
+example : wholeQuantile7 (![-10, -5, 0, 0, 5, 10] : Fin 6 → ℝ) (1 / 40) = -75 / 8 ∧
+    wholeQuantile7 (![-10, -5, 0, 0, 5, 10] : Fin 6 → ℝ) (39 / 40) = 75 / 8 := by
+  norm_num [wholeQuantile7]
+
+example : T22Statement := by norm_num [T22Statement]
+
+-- T23: perfectly correlated, nonconstant contributions with positive variance.
+def auditContrib (_ : Fin 2) (z : Bool) : ℝ := bit z
+def auditDistance (i j : Fin 2) : ℝ := if i = j then 0 else 1
+
+example : ∀ i j, (1 : ℝ) < auditDistance i j →
+    (uniformLaw Bool).cov (auditContrib i) (auditContrib j) = 0 := by
+  intro i j h
+  simp only [auditDistance] at h
+  split_ifs at h <;> linarith
+
+example : (uniformLaw Bool).var (fun z => ∑ i : Fin 2, auditContrib i z) = 1 := by
+  norm_num [FiniteLaw.var, FiniteLaw.cov, FiniteLaw.expect, uniformLaw,
+    auditContrib, bit, Fintype.sum_bool, Fin.sum_univ_two]
+
+-- A second T23 instance actually has pairs *beyond* the cutoff, with zero
+-- covariance there and positive variance on both sides of the cutoff.
+def auditIndependent (i : Fin 2) (z : Bool × Bool) : ℝ :=
+  if i = 0 then bit z.1 else bit z.2
+
+example : ∀ i j, (0 : ℝ) < auditDistance i j →
+    (uniformLaw (Bool × Bool)).cov (auditIndependent i) (auditIndependent j) = 0 := by
+  intro i j h
+  fin_cases i <;> fin_cases j
+  all_goals try { norm_num [auditDistance] at h }
+  all_goals norm_num [FiniteLaw.cov, FiniteLaw.expect, uniformLaw,
+    auditIndependent, bit, Fintype.sum_prod_type, Fintype.sum_bool]
+
+example : (uniformLaw (Bool × Bool)).var
+    (fun z => ∑ i : Fin 2, auditIndependent i z) = 1 / 2 := by
+  norm_num [FiniteLaw.var, FiniteLaw.cov, FiniteLaw.expect, uniformLaw,
+    auditIndependent, bit, Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_two]
+
+-- T25: one measured point, one node, and a genuine treatment effect of one.
+def auditMetricModel : MetricSpatialModel (Fin 1) 1 where
+  coord _ := 0
+  coord_injective := by intro x y _; exact Subsingleton.elim x y
+  node _ := 0
+  metric := inferInstance
+  ζ := Measure.count
+  Y _ z := bit (z 0)
+
+example : 0 < (1 : ℕ) ∧ ∀ i : Fin 1,
+    auditMetricModel.validCircle (uniformLaw (Assignment 1)) i 0 := by
+  constructor
+  · norm_num
+  intro i
+  have hc : auditMetricModel.circle i 0 = Set.univ := by
+    ext x
+    change dist (0 : Plane) 0 = 0 ↔ x ∈ (Set.univ : Set (Fin 1))
+    simp
+  simp only [MetricSpatialModel.validCircle, hc]
+  norm_num [auditMetricModel]
+
+example : auditMetricModel.pointEffect (uniformLaw (Assignment 1)) 0 0 = 1 := by
+  simp only [MetricSpatialModel.pointEffect, MetricSpatialModel.marginalY,
+    marginal, auditMetricModel, Function.update_self]
+  simp [FiniteLaw.expect, bit, FiniteLaw.total]
+

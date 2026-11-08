@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P016-T1",
+    "theorem": "SAP.P016a.T1",
+    "fingerprint": "a34d9f60688c738e9529d6070c88fc0366f7afae9948998d1a65609946ba4cd3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: T1Statement (SAP/P016a/Defs/Part3.lean:11-31) is a closed proposition with no hypotheses. The witnesses are explicit literals. I recomputed every stated value by hand (RSS/KS tables, inclusive tail masses 1/3, 1/3, 1/2, 1/2, design covariances -5/12 and -1/2, listed-order covariances +1/-1 with divisor 2), and each matches the canonical claim's numbers and orderings (complete4 = treated sets {1,2},{1,3},{1,4},{2,3},{2,4},{3,4}; blocked4 = {1,2},{1,4},{2,3},{3,4} with blocks {1,3},{2,4}).",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T2",
+    "theorem": "SAP.P016a.T2",
+    "fingerprint": "4aa6bb172cf1380c8acedd97fc1f9e476e97dfe3bd91910b99c127159c6e6ab7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvac.lean (compiles, 0 errors): n=2, u=(0,1), z=(T,F), w=(F,T) satisfy 2<=n, groupSize z false>0, groupSize z true>0, groupSize w true = groupSize z true, and sameMargins (0,1) z (1,0) w. uniformLaw (Fin 2) with assign = ![z,w] satisfies hsize with (n0,n1)=(1,1), which covers conjuncts (d) and (g). The network and scalar-KS witnesses (conjuncts 8, 9) are closed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T3",
+    "theorem": "SAP.P016a.T3",
+    "fingerprint": "14ebd1ea8e985775ba18ece7e1942de881a65ce0080833d745a66c2602e10fe6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: T3Statement (SAP/P016a/Defs/Part4.lean:11-66) is a closed proposition. I checked the witnesses independently with exact Python fractions: six-unit x, h and degree; LS RSS 4/3, 655/708, 515/859; the four-unit determinant 1/8; and the recorded-table determinant -14030283848669586515272953541/10^28, with each Lean decimal literal equal to the claim's decimal. The four-unit S, mu, x, Dz and h, and the cutoff counts at 25/40/980, were checked by hand.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T4",
+    "theorem": "SAP.P016a.T4",
+    "fingerprint": "ce1f0e4984c9af87c873c0bce67f9d07eedbfd2c7989178f8a62002b65bf6e30",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvac.lean (compiles, 0 errors). (a): n=2, S=[[0,1],[1,0]] (symmetric, zero diagonal), bank=(TF,FT,TT) (every unit takes both values), Omega={TF}, centered exposure (-1/2,0) with sampleSD>0. (b): h=(0,1), sampleSD>0. (c): scores4, matchedBank4 (every unit takes both values, every entry has 2 treated), z=complete4 1 with m=2. Both premises of the sign identity are satisfiable: h^D=(-1/4,-1/4,1/4,1/4) and h^S=(1/8,1/8,-1/8,-1/8), both with positive SD. (d)-(g) are closed or hold for all reals (B>0 is satisfiable).",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P016-T6",
+    "theorem": "SAP.P016a.T6",
+    "fingerprint": "e4ed81ac50db315562603137361f9be9a52dbe9890e51ff6ea15f4c1abadd12e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvac.lean (compiles, 0 errors): n=3, Omega=Unit, assign = const (T,F,F), Gamma = distance (0,1,2) (IsDistanceMatrix proved: abs_nonneg, abs_sub_comm, sub_self, abs_sub_le), g = const (-1,0,1) with sampleVariance = 1, y0=0, b1=b2=1, y given by the generation equation. All hypotheses of conjunct (a) hold. Conjunct (b) has no hypotheses.",
+    "confidence": "high"
+  }
+]

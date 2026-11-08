@@ -1416,5 +1416,7 @@ theorem simulation_width_counterexample_proof :
   · constructor <;> linarith [hw10.1, hw10.2]
   · linarith [hw15.1, hw10.2]
 
+example : type_of% @AronowAudit.P010.simulation_width_counterexample := simulation_width_counterexample_proof
+
 end
 end AronowAudit.P010.Wave1

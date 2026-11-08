@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P001e.T82",
+    "target_id": "P001-T82",
+    "my_reading_vs_claim": "whole",
+    "reason": "The response is genuinely nondegenerate binary, and the measurable probability kernel satisfies the conditional-law disintegration identity. Its true response probability equals its Bernoulli mean, yields a [0,1]-valued conditional-mean version, and agrees almost surely with every other such version. The range equivalence and the separate tautology cover both threshold corrections in the canonical statement. Reading conditional quantities as versions is authorized by the standing assumptions. General measurable covariates cover real vectors without an added restriction."
+  },
+  {
+    "theorem": "SAP.P001e.T83",
+    "target_id": "P001-T83",
+    "my_reading_vs_claim": "whole",
+    "reason": "The support assumption is represented by almost-sure binarity and positive probability of both response values. The conditional-mean predicate represents the true propensity rather than assuming the desired weighted identity. Conditional independence and the almost-sure uniform lower bound are precisely the two conditions of Definition 6.1.8. The stable-outcomes sentinel, integrability and both weighted expectation identities agree with the corrected theorem and its printed derivation. Ordinary measurability and integrability are standing assumptions. A fair two-point population with constant outcome 7 and propensity 1/2 satisfies all hypotheses, compiled in scratch/Nonvacuity.lean."
+  },
+  {
+    "theorem": "SAP.P001e.T84",
+    "target_id": "P001-T84",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical statement explicitly identifies the exact-equality reading and supplies this twelve-unit logit counterexample. The theorem's three grouped cells have exactly the specified sample sizes, response counts, respondent outcome sums, unique ML fit, fitted probabilities, two estimator values and nonzero gap. scratch/T84Witness.lean reconstructs the actual twelve observations, verifies all aggregates and the sample Bernoulli likelihood, and computes both sample estimates. The sample has positive probability under independent draws from the finite population with independent uniform X in {-1,0,1}, uniform latent Y in {1/4,1/2,3/4}, and Bernoulli(7/12) response; thus finite support, stable outcomes, i.i.d. sampling, MAR, positivity and a correctly specified logit can all hold. The example refutes the stated exact-equality interpretation; it does not refute the canonical counterexample assertion itself."
+  },
+  {
+    "theorem": "SAP.P001e.T85",
+    "target_id": "P001-T85",
+    "my_reading_vs_claim": "whole",
+    "reason": "Actual binary-response samples are partitioned into their observed nonempty covariate fibers, with the canonical cell counts, respondent counts and recorded respondent sums. All grouping and difference formulas, equality under saturation, the all-outcome-vectors iff criterion, the saturated mean weight one and the stabilized-estimator agreement are asserted. The finite observed support is defined from the sample rather than imposed as an unrelated finite ambient type. Allowing arbitrary positive q generalizes the algebraic identity and includes fitted probabilities. Every denominator is positive when used. A two-cell four-unit sample realizes every hypothesis and saturation in scratch/Nonvacuity.lean."
+  },
+  {
+    "theorem": "SAP.P001e.T86",
+    "target_id": "P001-T86",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem contains the one-unit conditional and unconditional mean-one identities for R/p, the reciprocal-propensity expectation bound and its exact almost-sure equality criterion. It omits the canonical finite-sample mean-one conclusion and the displayed stabilized-estimator definition and comparison of the two sample denominators, as well as the printed fitted-propensity convergence and efficiency discussion. Its binary and uniform positive/upper-bounded propensity hypotheses are pointwise, a disclosed strengthening of version assumptions. No nondegeneracy assumption is imposed, which harmlessly extends the population identities to certain response. The docstring explicitly declares these retained conclusions, stronger pointwise assumptions and omissions. A nondegenerate fair two-point instance with p=1/2 compiles in scratch/Nonvacuity.lean and gives E[R/p]=1 and E[1/p]=2 by direct finite summation."
+  }
+]

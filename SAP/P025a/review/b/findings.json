@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P025-T1",
+    "theorem": "SAP.P025a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual binary sample y=(0,1), alpha=1/2, beta=1, gamma=2 has feasible weights (2,1) and ratio 1/3. The normalized two-outcome design selects {1} or {0,1}, each with probability 1/2, giving inclusion probabilities (1/2,1). The general strict branch is met by this same nonconstant y. scratch/Check.lean checks feasibility, the attained value, and the distribution and marginals.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T2",
+    "theorem": "SAP.P025a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For J=2, y=(0,1), masses=(1/2,1), alpha=1/2, beta=1, the four outcome/threshold comparisons in separation are 0!=2/3, 0!=2/3, 1!=1/2, 1!=4/5. All masses are positive. Feasible weights (2,1) attain 1/2. The two-outcome design in scratch/Check.lean realizes these probabilities; the population mean is 1/2. Design realization is audit evidence, not an exported conjunct of T2.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T3",
+    "theorem": "SAP.P025a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2, y=(0,1), alpha=1/2, beta=1. The first lower and upper cuts are both 1; scaled threshold weights are (2,1) and (1,2), with values 1/3 and 2/3. Equal bounds alpha=beta=1 and constant samples are also allowed and give a singleton range. scratch/Check.lean verifies the nonconstant ordered data and box feasibility. In general the box contains the constant vector 1/beta, every denominator is positive, and every attainable value lies between min(y) and max(y), so the real infimum/supremum are genuine.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T4",
+    "theorem": "SAP.P025a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take J=2, y=(0,1), mass=(1/2,1), alpha=1/2, beta=1. Both first cuts are 1, and the endpoint values are 1/2 and 4/5. Strict order and positive masses are checked in scratch/Check.lean. For all stated inputs a constant weight 1/beta is feasible and every weighted denominator is positive; the attainable set is nonempty and bounded between the smallest and largest outcomes.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T5",
+    "theorem": "SAP.P025a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Every listed quota size satisfies 0<s<=N, and the subset of the first s units is a draw. scratch/Check.lean proves nonemptiness for all seven spaces without enumerating them. Therefore the uniform masses 1/choose(N,s) have positive denominators; symmetry gives each marginal s/N. The four explicitly stated inverse-probability calculations give common prevalences 3/4 and 4/5, and both rounded variants use positive probabilities in [1/4,1]. The omitted joint design is not claimed by T5.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T6",
+    "theorem": "SAP.P025a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use pG=44/48, pE=291/579, gamma=4 and (g1,g0,e1,e0)=(11/12,1/4,97/288,1). The ordered interior-proportion and positivity hypotheses hold; both reweighted values are 3/4; both directional ratios are <=4, while e0/e1=288/97<3. This joint antecedent is compiled in scratch/Check.lean. The odds ratio is 1056/97>0, so sqrt is used on its ordinary domain. Both fine square-root brackets were also checked by exact rational squaring.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T7",
+    "theorem": "SAP.P025a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves not printedSampleClaim using n=2, y=(0,1), alpha=1/2, beta=1: the printed first cut must be 0 with value 1/2, but the feasible vector (2,1) attains 1/3. This refutes the printed lower optimizer/range reading on a realizable sample. The separate surviving upper assertion has the same satisfiable ordered-data hypotheses, with cut 1 and value 2/3.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T8",
+    "theorem": "SAP.P025a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves not printedClassFormulaClaim using J=2, y=(0,1), masses=(1/2,1), alpha=1/2, beta=1. The printed cut must be 0 with value 2/3, while feasible weights (2,1) attain 1/2. The refutation uses optimizer failure, not the undefined Option tail. The same file checks the finite sampling design realizing these masses; hence the refutation is not confined to artificial unrealizable class totals. The surviving upper value is 4/5 at cut 1.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T9",
+    "theorem": "SAP.P025a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "J=4, y=(0,1,2,3), masses=(1,1,1,1), alpha=1/2, beta=1 gives corrected first cut 2, N2=7, D2=6 and minimum 7/6. The printed duplicated-tail expression at this cut is (7+0+1)/(6+1+1)=1, with discrepancy -1/6. J=2 binary positive-mass data also meet every hypothesis. Strict order, nonempty domains, feasible boxes and positive denominators are checked in scratch/Check.lean. The k=0,1 cases assert absence of a printed value rather than division at an invalid index.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T10",
+    "theorem": "SAP.P025a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four equally likely outcomes (r,s) in {0,1}^2 select {r,s+2,4,5}. Thus every sample has four units and inclusions are (1/2,1/2,1/2,1/2,1,1); class totals are all 1 and class sizes (2,2,1,1). The sample-space masses are positive and sum to 1. scratch/Check.lean checks the strictly ordered four-class outcomes, feasibility of (2,2,1,1), and its value 7/6. The supplied definition fixes actual six-unit population outcomes, not merely an abstract mass vector.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P025-T11",
+    "theorem": "SAP.P025a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the normalized sample part take n=2 and y=(0,1); gamma=1 meets the boundary branch and gamma=2 the strict branch. Both normalized boxes are nonempty, checked in scratch/Check.lean. For the two-coordinate part choose c1=c2=0, p=q=1, u=0, v=1, a=1, b=2: all hypotheses hold, F(b,a)=1/3 and F(a,a)=F(b,b)=1/2. Taking a=b=1 instead meets the equality branch. Positive a,p,q and c2>=0 make all three displayed denominators strictly positive.",
+    "confidence": "high"
+  }
+]

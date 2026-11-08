@@ -1,0 +1,129 @@
+[
+ {
+  "target_id": "P009-T40",
+  "decision": "restricted",
+  "theorem": "SAP.P009c.T40",
+  "restriction": "The replacement regularity, unchanged designs and sizes, preserved positive interference-density limsup, and HT inconsistency hold under the stated outer hypotheses. Hájek inconsistency is asserted only if, for all sufficiently large populations, every assignment of positive design mass has nonempty weighted treatment and control arms; in that case every real extension is inconsistent. No Hájek inconsistency is claimed for designs failing this eventual-support condition.",
+  "rows_used": [
+   "AronowAudit.P009.Wave1.unrestricted_inconsistency_zero_completion",
+   "AronowAudit.P009.CompleteConditional.mean_support_congr"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009c.T40WholeStatement",
+  "row_roles": {
+   "AronowAudit.P009.Wave1.unrestricted_inconsistency_zero_completion": "Supplies the replacement outcomes, regularity, common positive limsup, HT inconsistency and zero-completed Hájek inconsistency; the latter is used only under the eventual supported-arms condition.",
+   "AronowAudit.P009.CompleteConditional.mean_support_congr": "Transfers probabilities between equal functions on positive-mass assignments; the existing assembly uses this to transfer Hájek inconsistency to every real extension under the eventual supported-arms condition."
+  },
+  "review_resolution": {
+   "round": 1,
+   "fingerprint": "f103417eef92b230",
+   "source": "fw/round1/P009-T40/r1g5/findings.json",
+   "action": "Accept the finding: the stored wrong_credit judgment concerns the joint literal-paper conclusion and does not invalidate the separately proved HT restriction."
+  },
+  "round2_review_resolution": {
+   "round": 2,
+   "fingerprint": "b586cef3dbe664b376710e30eeabb5936d23fe8bde4b48a52fbb0ef2f1143b3e",
+   "source": "fw/round2/T40/r5g2/findings.json",
+   "action": "Accepted: relabelled the existing conditional theorem as restricted, disclosed the exact Hájek scope loss, and preserved its statement and proof."
+  }
+ },
+ {
+  "target_id": "P009-T41",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T41",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.bernoulli_consistency",
+   "AronowAudit.P009.probability_union_bound",
+   "AronowAudit.P009.BernoulliCompletion.second_moment_tail",
+   "AronowAudit.P009.probability_nonnegative",
+   "AronowAudit.P009.BernoulliCompletion.probability_of_op_zero",
+   "AronowAudit.P009.BernoulliCompletion.regular_marginal_bounds",
+   "AronowAudit.P009.mean_div",
+   "AronowAudit.P009.expected_arm_count",
+   "AronowAudit.P009.BernoulliCompletion.centered_square_mean",
+   "AronowAudit.P009.BernoulliCompletion.count_variance_bound",
+   "AronowAudit.P009.BernoulliCompletion.bernoulli_rate_zero"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P009.bernoulli_finite_lemmas",
+    "reason": "Supporting finite bundle; the asymptotic row already exports the retained HT conclusions."
+   }
+  ],
+  "statement_definition": "SAP.P009c.T41WholeStatement"
+ },
+ {
+  "target_id": "P009-T42",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T42",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.complete_consistency_proof",
+   "AronowAudit.P009.Wave1.complete_finite_lemmas_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009c.T42Statement",
+  "domain_bridge": "SAP.P009c.Bridge.complete_supportedArms",
+  "row_roles": {
+   "AronowAudit.P009.Wave1.complete_consistency_proof": "Consistency and both printed rates.",
+   "AronowAudit.P009.Wave1.complete_finite_lemmas_proof": "Nonempty supported arms, verified in the domain bridge."
+  },
+  "round3_review_resolution": {
+   "round": 3,
+   "fingerprint": "7643146a58789198930b7600c79932ff1e68563d0d15a09e8f614a1f12f8bba4",
+   "source": "fw/round3/T42/r6g2/findings.json",
+   "action": "Accepted: corrected only the shared hajek docstring to distinguish supported nonempty arms under complete/paired randomization from arbitrary extension values off the ratio domain. The estimator body, theorem statement, proof and whole decision are unchanged."
+  }
+ },
+ {
+  "target_id": "P009-T43",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T43",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.Wave1.root_n_consistency_proof",
+   "AronowAudit.P009.probability_union_bound",
+   "AronowAudit.P009.BernoulliCompletion.second_moment_tail",
+   "AronowAudit.P009.probability_nonnegative",
+   "AronowAudit.P009.BernoulliCompletion.probability_of_op_zero",
+   "AronowAudit.P009.BernoulliCompletion.regular_marginal_bounds",
+   "AronowAudit.P009.mean_div",
+   "AronowAudit.P009.expected_arm_count",
+   "AronowAudit.P009.BernoulliCompletion.centered_square_mean",
+   "AronowAudit.P009.BernoulliCompletion.count_variance_bound",
+   "AronowAudit.P009.Wave1.complete_finite_lemmas_proof",
+   "AronowAudit.P009.CompleteConditional.mean_support_congr",
+   "AronowAudit.P009.mean_const"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009c.T43WholeStatement",
+  "domain_bridge": "SAP.P009c.Bridge.complete_supportedArms",
+  "supporting_declarations": [
+   "AronowAudit.P009.Wave1.complete_finite_lemmas_proof"
+  ]
+ },
+ {
+  "target_id": "P009-T44",
+  "decision": "whole",
+  "theorem": "SAP.P009c.T44",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P009.paired_consistency",
+   "AronowAudit.P009.paired_finite_lemmas"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P009c.T44Statement",
+  "domain_bridge": "SAP.P009c.Bridge.paired_supportedArms",
+  "row_roles": {
+   "AronowAudit.P009.paired_consistency": "Consistency and all printed rate terms.",
+   "AronowAudit.P009.paired_finite_lemmas": "Nonempty supported arms, verified in the domain bridge."
+  },
+  "round3_review_resolution": {
+   "round": 3,
+   "fingerprint": "0dd5f47d03683a50532e0621dce7a27c8410d229ee668c9975de8a607022b9fd",
+   "source": "fw/round3/T44/r6g2/findings.json",
+   "action": "Accepted: corrected only the shared hajek docstring to distinguish supported nonempty arms under complete/paired randomization from arbitrary extension values off the ratio domain. The estimator body, theorem statement, proof and whole decision are unchanged."
+  }
+ }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "theorem": "SAP.P054.T1",
+    "target_id": "P054-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "T1Statement expands to the canonical statement with exactly its finite index size N>=2, binary d and y, positive weights, and positive selected count n. groupCount, groupWeight, weightedProportion, and ratioResidual are precisely n, W, pHat, and z. linearisationVariance is the entire displayed left-hand expression, and squaredWeightTerm is the displayed squared-weight expression. The conclusions include residual centering, the N/(N-1) identity, and both equal-weight consequences. The inner universal c>0 with w constant c expresses the equal-weight case; c>0 already follows from the outer hypotheses when weights are constant. There is no unequal-weight inequality, historical-use, survey-design-validity, or coverage conclusion. Binary d makes n a genuine count and d^2=d; positive weights and n>0 imply W>0. All divisions are consequently ordinary nonzero-denominator divisions, and N-1 is real subtraction. The hypotheses neither assume the conclusions nor impose a hidden stochastic model. Independent finite algebra verifies the identities, and scratch/Check.lean compiles both unequal-weight and equal-weight instances with N=3, d=(1,1,0), y=(0,1,1), n=2, and nonzero variances. The standing assumptions explicitly identify these expressions as conditional audit reconstructions, so no additional inference from a printed variance formula is being attributed to the paper. The audit-history note and finite_lemmas were not used to modify the canonical assertion."
+  },
+  {
+    "theorem": "SAP.P054.T2",
+    "target_id": "P054-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "T2Statement retains T1's finite binary/positive-weight setting and requires n>=2, exactly as the canonical claim does. weightedResidualSumSquares is RSS_w, referenceVariance is V0 with the same weighted pHat, and classicalWlsVariance is the particular classical formula RSS_w/((n-1)W) explicitly stipulated by the claim. All three canonical equations are present: RSS_w=W*pHat*(1-pHat), C=pHat*(1-pHat)/(n-1), and C=n/(n-1)*V0. This does not assert that a sampling variance or regression model is valid, or that a historical procedure has independently been identified; the Challenge docstring accurately says so. Binary y yields the RSS identity by expansion using sum d*w*y=W*pHat. The hypotheses imply W>0 and n-1>0, so there is no zero-division artifact, truncated subtraction, hidden extra hypothesis, or circular premise. scratch/Check.lean compiles a joint instance of every hypothesis with N=3, d=(1,1,0), y=(0,1,1), w=(1,2,3), W=3, pHat=2/3, RSS_w=2/3, C=2/9, and V0=1/9. The standing assumptions make historical reports and empirical interval matching provenance inputs, not further Lean conclusions. The audit-history note and finite_lemmas were not used to modify the canonical assertion."
+  }
+]

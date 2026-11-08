@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P007-T1",
+    "theorem": "SAP.P007.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Observe columns 0 through 404 in 947 rows and columns 0 through 405 in 7633 rows. This is an actual 8580 by 1205 mask with 3482533 observed cells and numerator 9560288484630. Exact checks in scratch/numerical_checks.py verify feasibility, equality in the bound, every supporting-line inequality, and the certificate fractions. This is a feasibility witness, not an identification of the empirical data.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T2",
+    "theorem": "SAP.P007.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Append 19 wholly missing columns to the T1 count witness. Its missing counts are 7019387 before removal and 6856367 afterward. Its original average differs from 0.668390827582004 by approximately 5.26e-17, within the stated 1e-9 tolerance; the tolerance interval contains exactly the one asserted integer count. The three simulation-decimal comparisons are exact rational arithmetic. The restriction to those three estimates, dropping claims for k>6, is accurately stated in both record and docstring.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T3",
+    "theorem": "SAP.P007.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The first law is the normalized point mass on the one-row mask (missing,observed). The second is the point mass on (missing,missing); the same law meets the observation assumption for every 0<=q<1, including q=1/2. Point-law independence and the all-missing observation assumptions are checked in scratch/Check.lean, and the concrete probabilities are enumerated exactly in scratch/checks.json. Two singleton groups give the group examples.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T4",
+    "theorem": "SAP.P007.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The first witness is the point mass on (missing,observed), now using q=1/2; every v in [0,1] satisfies 0=v*0, including v=1>q. For the second, each of two independent rows is (missing,observed,observed) or (observed,missing,observed), with probability 1/2 each. Exact enumeration verifies normalization, independence, prefix probabilities (1,1/2,0,0), all-deletion probability one and the required bounds. No conditional-probability value at a null event is used.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T5",
+    "theorem": "SAP.P007.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For any positive n,h, the all-missing point mass satisfies the observation assumption for every 0<=q<1 and is row independent, as proved without sorry in scratch/Check.lean. The normalized one-row two-column independent q=3/4 law gives the nontrivial survival sequence (1,3/4,9/16). Both the zero-prefix and positive-prefix cases are genuine possibilities. The explicit null-prefix coefficient convention is exactly the canonical repair.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T6",
+    "theorem": "SAP.P007.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=2,h=1,q=1/2 and independent observation chances 1/4 and 1/2: the actual all-deletion probability is 3/8 and the product lower bound is 1/4. The q=0 branch is realized by an all-missing point mass. For the counting example, the fibers of the first projection Fin n times Fin 2 form n nonempty groups of two elements, with total 2n different from n for n>0. The exponential identity is used only with n>0 and q>0.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T7",
+    "theorem": "SAP.P007.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All model parameters have observation chances strictly between zero and one, and scratch/Check.lean proves product-weight normalization for arbitrary dimensions. Exact enumeration of the one-row two-column equal and unequal laws gives deletion probabilities 7/16 and 13/16. Exact rational interval checks certify the 33/34 and 952/953 comparisons, and rational arithmetic verifies the 16/17 and 1-30000/4^33 comparisons. Thus the counterexamples meet the paper's hypotheses and refute the specified equality, rounding and literal upper-guarantee readings.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T8",
+    "theorem": "SAP.P007.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=1,q=3/4,a=1/2: the threshold lies strictly between 2 and 3, and the independent two-column equal law attains 7/16 below a. An integral-threshold case is n=1,q=1/2,a=1/2, where the threshold is one. Arbitrary product weights normalize by the Lean scratch check. The four large-parameter bounds and the advertised rounding intervals are certified by exact integer interval arithmetic. All roots and logarithms are on their positive intended domains.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T9",
+    "theorem": "SAP.P007.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Enumerating all 16 arrays with the stated product weights gives a normalized independent-row law, row survival 3/8, expected deleted fraction 5/8, least admissible q=3/4, and actual all-deletion probability 25/64. Exact arithmetic verifies the distinct bounds 7/16 and 49/256. Results are saved under figure5 in scratch/checks.json.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T10",
+    "theorem": "SAP.P007.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Positive product laws attain the fraction bound, and the two-row two-column q=3/4 equal law has fraction bound 7/16 and all-deletion bound 49/256. At q=0, any positive dimensions with the all-missing law give both bounds equal to one, including n=2,k=2. The necessary qualification of the final 'only n=1' assertion to 0<q<1 is accurately disclosed in both the docstring and record, while all expectation bounds and algebraic identities retain q=0.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T11",
+    "theorem": "SAP.P007.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four arrays for two independent one-column rows with observation chances 1/4 and 1/2 have normalized product weights. Their distinct observed-event marginals refute sameRowLaw; all-deletion probability is 3/8 and the q=1/2 lower bound is 1/4. Exact enumeration checks these facts and row independence. The general product formula uses independent row events without imposing identical row distributions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T12",
+    "theorem": "SAP.P007.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The T1 count mask with 19 wholly missing columns appended satisfies both application antecedents: its original average lies in [0.6675,0.6685) and its original missing count is 7019387. Exact rational checks give the retained average 6856367/10338900, upper endpoint 199811/301250 and the stated difference 66168127/12654813600. The general identity also has n=1,K=1,d=0 as a simple instance. No zero denominator or truncated real subtraction is involved.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T13",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable to an omitted theorem. claims.json explicitly marks no_lean=true and permits non-applicability if nothing beyond T1, T2 and T12 can be stated. The actual named empirical mask is absent; its positive printed assertions would contradict the supplied log-derived counts. The universal conditional refutation and corrections are already present in those three targets. The record's omission is justified by the supplied materials without assuming any unprovided data.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T14",
+    "theorem": "SAP.P007.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The independent two-row one-column law with observation chances 1/4 and 1/2 satisfies observationBound at q=1/2 and has actual all-deletion probability 3/8 above the bound 1/4. Its probabilities and independence are checked exactly. All-missing point masses also realize every permitted q, including zero, as compiled in scratch/Check.lean. Arbitrary finite joint laws represent all distributions of the paper's finite indicator arrays.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T15",
+    "theorem": "SAP.P007.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Read the T14 two-row one-column example as one nonempty group, or the T4 three-column example as three singleton groups. These realize the group-indicator setting and its observation/independence assumptions. A group is represented by exactly its common missingness indicator, which is the canonical allowed formulation; no empty groups or missing variable-level hypotheses are needed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T16",
+    "theorem": "SAP.P007.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Set k(n)=n^2+1 and L_n equal to the all-missing point mass on n by k(n) arrays, with one fixed q=1/2. scratch/Check.lean proves positivity, row independence, observationBound for the whole family, and superlogarithmic growth, without sorry. The n=0 law exists as well. Total division at n=0,1 changes only finitely many terms. Positive product laws give further nontrivial families; the elementary estimate 0<=1-p_all<=n*q^k proves the stated limit for all admissible families.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T17",
+    "theorem": "SAP.P007.T17",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Set g(n)=n^2+1, use singleton groups, and take all-missing point masses with the one fixed q=1/2. The same compiled family in scratch/Check.lean proves every positive-index hypothesis and the growth assumption. The group-indicator interpretation is exactly the one authorized in the canonical claim, and the finite zero-index extension has no effect on the probability limit.",
+    "confidence": "high"
+  }
+]

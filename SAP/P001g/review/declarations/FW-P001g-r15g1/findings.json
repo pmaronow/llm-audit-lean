@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P001-T115",
+    "theorem": "SAP.P001g.T115",
+    "fingerprint": "07be7958189d9b1b54495080b678344fe24025683258688e35de5929c0574c1d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: fair Bernoulli treatment on Fin 2, both arm probabilities 1/2, measurable integrable zero potential outcomes independent of treatment; a two-observation binary sample has both positive arm counts.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T116",
+    "theorem": "SAP.P001g.T116",
+    "fingerprint": "10c6f0f90b387f36c3a9766f0b4533ddcb2d551c4c5b86bd9efd48cb5ce35ab7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: fair Bernoulli treatment, constant Unit covariate, p=1/2, epsilon=1/4, zero potential outcomes, genuine conditional independence, zero arm CEFs and full-law integrability. The same data instantiate the discrete, general identification and moment-free score domains.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T117",
+    "theorem": "SAP.P001g.T117",
+    "fingerprint": "5d4d90605a38235cc04296fa4e4943a061189f3501da85ffa0849f8fb5559f34",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: the same fair-coin population with K=0, constant covariates, p=q=1/2 and zero regressions; all population assumptions, augmented-score integrability and both robustness alternatives are satisfied.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T118",
+    "theorem": "SAP.P001g.T118",
+    "fingerprint": "0252ebfa8b4d07e0b27fd6b87991295d3930c0d0e83ab4a82d37e420a845a210",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/RefutationChecks.lean: genuinely iid degenerate real observations, the constant-zero functional with Hadamard derivative zero, and an identically zero scaled plug-in statistic; also checked the finite second moment of delta_0. A positive-variance Gaussian has CDF 1/2 at zero, unlike the zero statistic. For the second assertion, the admissible two-atom laws (1-t_n^2)delta_0+t_n^2 delta_(1/t_n) have second moment 1, mean t_n, and CDF directions tending uniformly to zero while the mean quotient is 1. The full path calculation and all printed conditions are checked mathematically in claim-analysis.md; this path refutation was not re-proved in Lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T119",
+    "theorem": "SAP.P001g.T119",
+    "fingerprint": "c58ba5a1070f04753abace307488c683aedc94b60be52ab216c77e79f06371fc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/SieveDomain.lean constructs every hypothesis using iid uniform covariates on [0,1], zero outcomes and analytic CEF, J_n=Nat.sqrt n with both required limits, and exact zero least-squares fits. This is a domain instance. The separate genuine Gaussian-noise/uniform-design counterexample to integrated squared-risk consistency, with J_n=floor(n^(3/4)), is checked mathematically in claim-analysis.md: every printed condition holds, the fit can be chosen measurable, and the error-event liminf is at least exp(-1). This full counterexample was not re-proved in Lean.",
+    "confidence": 0.97
+  }
+]

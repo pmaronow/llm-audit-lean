@@ -1,0 +1,75 @@
+import Lean
+import SAP.<U>.Challenge
+open Lean
+
+/-! Declaration-review support (orchestrator tool, not part of the package): for each Challenge theorem of unit <U>,
+the set of declarations of the unit's own modules that its statement depends on (types, definition bodies,
+constructors; proofs of lemmas excluded), with file positions, and a structural fingerprint of that set. -/
+
+def fwModOf (env : Environment) (c : Name) : Option Name :=
+  (env.getModuleIdxFor? c).bind fun i => env.allImportedModuleNames[i.toNat]?
+
+def fwInUnit (env : Environment) (c : Name) : Bool :=
+  match fwModOf env c with
+  | some m => (`SAP.<U>).isPrefixOf m
+  | none => false
+
+partial def fwClosure (env : Environment) : List Name → NameSet → NameSet
+  | [], seen => seen
+  | n :: rest, seen =>
+    if seen.contains n then fwClosure env rest seen else
+    let seen := seen.insert n
+    match env.find? n with
+    | none => fwClosure env rest seen
+    | some ci =>
+      let vals : Array Name := match ci with
+        | .defnInfo d => d.value.getUsedConstants
+        | .opaqueInfo o => o.value.getUsedConstants
+        | _ => #[]
+      let ctors : List Name := match ci with
+        | .inductInfo i => i.ctors
+        | _ => []
+      let cs := (ci.type.getUsedConstants ++ vals).toList ++ ctors
+      fwClosure env ((cs.filter fun c => fwInUnit env c && !seen.contains c) ++ rest) seen
+
+def fwDeclHash (ci : ConstantInfo) : UInt64 :=
+  let v : UInt64 := match ci with
+    | .defnInfo d => d.value.hash
+    | .opaqueInfo o => o.value.hash
+    | .inductInfo i => hash i.ctors
+    | _ => 0
+  mixHash (mixHash (hash ci.name) ci.type.hash) v
+
+#eval show CoreM Unit from do
+  let env ← getEnv
+  let mut lines : Array String := #[]
+  -- inventory: every non-internal theorem declared in the unit's Challenge modules
+  let mut chal : Array String := #[]
+  let mods := env.allImportedModuleNames
+  for i in [0:mods.size] do
+    if (`SAP.<U>.Challenge).isPrefixOf mods[i]! then
+      for n in env.header.moduleData[i]!.constNames do
+        if let some (.thmInfo _) := env.find? n then
+          if !n.isInternal then chal := chal.push n.toString
+  let chalMods := (mods.filter fun m => (`SAP.<U>.Challenge).isPrefixOf m).map (·.toString)
+  lines := lines.push (Json.compress (Json.mkObj [("challenge_theorems", toJson (chal.qsort (· < ·))),
+    ("challenge_modules", toJson (chalMods.qsort (· < ·)))]))
+  for t in [<THMS>] do
+    let some ci := env.find? t
+      | do lines := lines.push (Json.compress (Json.mkObj [("theorem", toJson t.toString), ("error", toJson "missing")])); continue
+    let deps := (fwClosure env (ci.type.getUsedConstants.toList.filter (fwInUnit env)) {}).toList.toArray.qsort
+      (fun a b => a.toString < b.toString)
+    let mut h : UInt64 := mixHash (hash t) ci.type.hash
+    let mut items : Array Json := #[]
+    for d in deps do
+      let some di := env.find? d | continue
+      h := mixHash h (fwDeclHash di)
+      let r ← findDeclarationRanges? d
+      items := items.push (Json.mkObj [("name", toJson d.toString), ("module", toJson ((fwModOf env d).map toString)),
+        ("line", toJson ((r.map (·.range.pos.line)).getD 0))])
+    let doc ← findDocString? env t
+    let r ← findDeclarationRanges? t
+    lines := lines.push (Json.compress (Json.mkObj [("theorem", toJson t.toString), ("closure_fp", toJson (toString h)),
+      ("doc", toJson doc), ("module", toJson ((fwModOf env t).map toString)),
+      ("line", toJson ((r.map (·.range.pos.line)).getD 0)), ("closure", Json.arr items)]))
+  IO.FS.writeFile "scratch/fw-closure.jsonl" (String.intercalate "\n" lines.toList ++ "\n")

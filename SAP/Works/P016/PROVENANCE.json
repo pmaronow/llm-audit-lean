@@ -1,0 +1,428 @@
+{
+  "base_source_sha256": {
+    "AronowAudit/P016/P016_Interference.lean": "5275d867d5bbb3a1da2ce4e2e04cb3ae6b40834f1e5a230165f3b76a69caf679",
+    "AronowAudit/P016/P016_RankCompletion.lean": "9f7860ab75d035698338fdd2293bb8cc45051cb321a38d7619a42ecee3ab7b78",
+    "AronowAudit/P016/Wave1/Gap/FidP016.lean": "e2db3347361a815e4d2446891ca1e0dcf7fa439776c0718aa8096f99062411bb",
+    "AronowAudit/P016/Wave1/Gap/GLP027P016P031P016B1.lean": "54944ecaf27e583ca795f629d2cbf76b98c1721ddb3e04db651ed6a77ce8359d",
+    "AronowAudit/P016/Wave1/Gap/GLP027P016P031P016B2.lean": "7188fa1ea2d033ab8b7613ab4fbb2416956449f34d86a9cb08ad4868cda06a0d"
+  },
+  "declarations_added": [],
+  "declarations_renamed": [],
+  "definition_policy": "Shared unit Defs are imported unchanged by both sides; Comparator checks all referenced definitions.",
+  "frozen_work_catalog_sha256": "e6721256b275840ee9fd0969722fb79ed0150d8ebda3ee8bb8073f45823c043e",
+  "review_scope": "Existing unit evidence is linked byte-for-byte; no new semantic or combined review is claimed.",
+  "schema": "palomar-work-entries-v4",
+  "site_work_sha256": "76f228c13cc3e21f4eca2a66e037bc5fd4e7dab97fef03bd0fe3f84e357267a7",
+  "source_kind": "collected_candidate",
+  "static_import_closures": {
+    "Challenge": [
+      "Mathlib",
+      "SAP.P016a.Challenge",
+      "SAP.P016a.Challenge.Part1",
+      "SAP.P016a.Defs",
+      "SAP.P016a.Defs.Part1",
+      "SAP.P016a.Defs.Part2",
+      "SAP.P016a.Defs.Part3",
+      "SAP.P016a.Defs.Part4",
+      "SAP.P016a.Defs.Part5",
+      "SAP.P016a.Defs.Part6",
+      "SAP.P016b.Challenge",
+      "SAP.P016b.Challenge.Part1",
+      "SAP.P016b.Defs",
+      "SAP.P016b.Defs.Part1",
+      "SAP.P016b.Defs.Part2",
+      "SAP.P016b.Defs.Part3",
+      "SAP.P016b.Defs.Part4",
+      "SAP.P016b.Defs.Part5",
+      "SAP.P016b.Defs.Part6",
+      "SAP.P016b.Defs.WholeW1",
+      "SAP.Works.P016.Challenge",
+      "SAP.Works.P016.Defs"
+    ],
+    "Defs": [
+      "Mathlib",
+      "SAP.P016a.Defs",
+      "SAP.P016a.Defs.Part1",
+      "SAP.P016a.Defs.Part2",
+      "SAP.P016a.Defs.Part3",
+      "SAP.P016a.Defs.Part4",
+      "SAP.P016a.Defs.Part5",
+      "SAP.P016a.Defs.Part6",
+      "SAP.P016b.Defs",
+      "SAP.P016b.Defs.Part1",
+      "SAP.P016b.Defs.Part2",
+      "SAP.P016b.Defs.Part3",
+      "SAP.P016b.Defs.Part4",
+      "SAP.P016b.Defs.Part5",
+      "SAP.P016b.Defs.Part6",
+      "SAP.Works.P016.Defs"
+    ],
+    "Solution": [
+      "AronowAudit.P016.P016_Interference",
+      "AronowAudit.P016.P016_RankCompletion",
+      "AronowAudit.P016.Wave1.Gap.FidP016",
+      "AronowAudit.P016.Wave1.Gap.GLP027P016P031P016B1",
+      "AronowAudit.P016.Wave1.Gap.GLP027P016P031P016B2",
+      "Mathlib",
+      "Mathlib.Analysis.Calculus.Deriv.Polynomial",
+      "Mathlib.Analysis.InnerProductSpace.PiL2",
+      "Mathlib.Analysis.SpecialFunctions.Exp",
+      "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+      "Mathlib.Analysis.SpecialFunctions.Sqrt",
+      "Mathlib.Analysis.SumIntegralComparisons",
+      "Mathlib.Data.Fintype.Powerset",
+      "Mathlib.Data.List.GetD",
+      "Mathlib.Data.List.Sort",
+      "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+      "Mathlib.MeasureTheory.Constructions.BorelSpace.Basic",
+      "Mathlib.MeasureTheory.Constructions.Pi",
+      "Mathlib.MeasureTheory.Integral.Bochner.Set",
+      "Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts",
+      "Mathlib.MeasureTheory.Measure.Real",
+      "Mathlib.Order.Interval.Finset.Fin",
+      "Mathlib.RingTheory.Polynomial.Bernstein",
+      "Mathlib.Tactic",
+      "SAP.P016a.Bridge",
+      "SAP.P016a.Defs",
+      "SAP.P016a.Defs.Part1",
+      "SAP.P016a.Defs.Part2",
+      "SAP.P016a.Defs.Part3",
+      "SAP.P016a.Defs.Part4",
+      "SAP.P016a.Defs.Part5",
+      "SAP.P016a.Defs.Part6",
+      "SAP.P016a.Solution",
+      "SAP.P016b.Bridge",
+      "SAP.P016b.Defs",
+      "SAP.P016b.Defs.Part1",
+      "SAP.P016b.Defs.Part2",
+      "SAP.P016b.Defs.Part3",
+      "SAP.P016b.Defs.Part4",
+      "SAP.P016b.Defs.Part5",
+      "SAP.P016b.Defs.Part6",
+      "SAP.P016b.Defs.WholeW1",
+      "SAP.P016b.Solution",
+      "SAP.P016b.WH.W1.Arithmetic",
+      "SAP.P016b.WH.W1.Leaves",
+      "SAP.P016b.WH.W1.P.T13_L1",
+      "SAP.P016b.WH.W1.P.T13_L2",
+      "SAP.P016b.WH.W1.P.T13_L3",
+      "SAP.P016b.WH.W1.P.T13_L4",
+      "SAP.P016b.WH.W1.P.T13_L5",
+      "SAP.P016b.WH.W1.P.T13_L6",
+      "SAP.P016b.WH.W1.P.T13_L7",
+      "SAP.P016b.WH.W1.P.T13_L8",
+      "SAP.P016b.WH.W1.Proofs.T12",
+      "SAP.P016b.WH.W1.Proofs.T13",
+      "SAP.P016b.WH.W1.Proofs.T16",
+      "SAP.Works.P016.Defs",
+      "SAP.Works.P016.Solution"
+    ]
+  },
+  "units": {
+    "P016a": {
+      "base": {
+        "lean_path_sha256": "106b6c29e452ac414675c33d9be3b3ca08fda5aa00dd817881bd77da11dd963f",
+        "repo2_head": "e5f65537d7cf736a6381967285fc8e63c834f754",
+        "toolchain_434": "/home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1",
+        "toolchain_435": "/home/ubuntu/.elan/toolchains/leanprover--lean4---v4.35.0-rc2"
+      },
+      "certificate_sha256": "06c798a07509a2bc0287750fcc24ec280705ebaafb2e1785667d8384da690a03",
+      "certificate_stamp": "20261104T104233Z",
+      "comparator_sha256": "b4236ddda0b85e9d96708d8e6800fc7ce795ee683bc62c5e061d95a5b99cfff8",
+      "manifest_sha256": "9d31af34e6c2e1a15f79aa429739d4eb11b6b77ce542816b1ac8760a2fb70cae",
+      "review": {
+        "files_sha256": {
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/REPORT.md": "efe45f1ace8c137c1b1ee07310a111c6e8580e900de0ac7cd8222f8bbbb42d58",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/claim-stage.json": "6136cd49a103dc7d47bf09c66226c8c2ec14b670bc357d84ac40801e615cb388",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/claims.json": "4be7e39efa58509229d707a1ac940c229935a4cfe344aa250b244edca126c340",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/closure.json": "b69802eb0bdc58662fa985de4e2ec38d69b763c84e7142f98719a1c2c8f500df",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/findings.json": "5a36e6d6526d707867e2e2091c49191ea8e76f4ae575789648c5d9577986e47f",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/reading.md": "da79d179e742c3ca015d9c1f69d971dfc248a3f8b08f6b7fbdb5e35192907c70",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/record.json": "3ad1706a9c9731197a19d9deb3f17784fa068fb938925ad4040cb79ed518955f",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/scratch/ClosurePrint.lean.txt": "20c49c90f5ce5a2f4b35ffbff3d8e0c1070f5a5bb6a0badc22ac5e501bf4ef84",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/scratch/Generated.lean.txt": "b4f0f85c463045a2603fd2a1dcbb3ccab0f409bd0f85869d76452efd26e5fc03",
+          "SAP/P016a/review/declarations/FW-P016a-r3g1/scratch/Nonvacuity.lean.txt": "521a72030f234940a5aa5f23d0baf8a4d15093c1421a2a6b26371f1560b6c6ce",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/REPORT.md": "746e4e04b8a60ebf524229be2c6b71cb9b0eb2e4ee15327a348b6aaadaefa886",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/claim-stage.json": "e30e9d8f30400aa5fb472e987069642d92598bd379181918c0051c8cda873a55",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/claims.json": "69421ec3dcd6df51ac94a3c48ef9eb126f6939ee37cd7a42cbe70572ce5de38e",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/closure.json": "d01b2ed0083e214529365c45029983dcf14ee77ec8d639ee9b063b706cec9390",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/findings.json": "a717402867aba7179d379947ab7c941d3523f45cb04ba19d4f859e4d9d03575d",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/reading.md": "b0f6a080883f499a78f70407d15e22024df22a5691bb7244bed5c267c6f53c2a",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/record.json": "ccc959b3f47b159a7de050ce32ae286e93e372c263f8d552e22cc6809983087d",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/scratch/ClosureCheck.lean.txt": "7feb6dcc621554bfbbe1fc835fb83ca348e2ddff1e2ea1900ac12fbd3179d5d8",
+          "SAP/P016a/review/declarations/FW-P016a-r3g2/scratch/Nonvacuity.lean.txt": "4811922eddca3af43b9832e0dab59bb021d36852b4be9a75d2fa96144e4794b1",
+          "SAP/P016a/review/declarations/FW-P016a-r3g3/REPORT.md": "7ba70d70baf7866f221fdfe3e79d3457b4308b9b2ebf78be58b60b8ae6cb5cf9",
+          "SAP/P016a/review/declarations/FW-P016a-r3g3/claims.json": "139f34a2b79f350730814268c8eda35d1de9a6df08b6214f3141c13ef204a913",
+          "SAP/P016a/review/declarations/FW-P016a-r3g3/closure.json": "92b367fed1abdeaa06fda13dbffe40cc4aa98ee5ca5bf4630dbc8b97d5789f7e",
+          "SAP/P016a/review/declarations/FW-P016a-r3g3/findings.json": "94d82c793ac3af86215dd75d37f7e7a6271fbe3da1c1de462d55967cb782ba56",
+          "SAP/P016a/review/declarations/FW-P016a-r3g3/record.json": "71554daba800b69c894c5187233ee90f36d02c9ab5be42f2f9b2e3158429a886",
+          "SAP/P016a/review/declarations/FW-P016a-r3g3/scratch/Check.lean.txt": "6bd15e54ffa32550ca2c99440b52eb18d52da896bb3d312a444af16432ebf92b",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/REPORT.md": "334c0f3c1c542f2771846e48b00099cd7d49462d2b669d2a4823ca7ab3e42432",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/claim-stage.json": "f6c8f3d7ccb827392a4f7c7d62a11b300f89da2b152f76d661da3f1b8fc4db52",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/claims.json": "159662499fa4b54b3b016ffd3f668c7b271da4fc5253edfdf3490653fc2e73d7",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/closure.json": "fc92a8c3e0d305a4ee2dfb6d2ab588f80ca0b4c9a9b0920e7419cbdac14c881f",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/findings.json": "579605e04a4ffe3d2fc642b929e2cc1eb538617411bf1bdc3dc2c7b84abbeaec",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/reading.md": "81334ea80ecbf79b0321d2dd0795a770c72d3cb4cfce20edd5127f2898104ec6",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/record.json": "ff258dbf45c7fbdd5d3ad2e917b68d68a85203aa13c2bc5afbf550588b8b7243",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/scratch/Blind.lean.txt": "f7f8c6079caa49bedcb6e16efa0dd7125096586e019f553607aada4635b1e095",
+          "SAP/P016a/review/declarations/FW-P016a-r4g1/scratch/Nonvacuity.lean.txt": "0c2c6a458f45e2c4a4acb8dae7cfdedcfdd5eb28c38be9d05444ad08d0e83cd3",
+          "SAP/P016a/review/declarations/o1/REPORT.md": "12249488299772e19837f01bb15e97b9553f757033a2a762362c6a3866582e47",
+          "SAP/P016a/review/declarations/o1/claim-stage.json": "c53132aabe6b178b6c3a46a04e1b279413cdb7af57d34f0a58900e951c5c5f58",
+          "SAP/P016a/review/declarations/o1/claims.json": "7e068246414fb1b97c4f6c52d3560df419a135dbf28fbf5d6a1a9cbbb271f0bb",
+          "SAP/P016a/review/declarations/o1/closure.json": "9d13abf1208f5226dc9d106fc0876f1f8f8f4a87c15758b3af687339cecd1ce8",
+          "SAP/P016a/review/declarations/o1/findings.json": "23a9e6b3899c9f87e35bacd1b4b1efe9848bc1def8ad4fbe436778543ad56567",
+          "SAP/P016a/review/declarations/o1/reading.md": "a99ff5dd5a14c365c57b1df24c12110fd5a1cf90fdc4a2c874423c9200eeb3f5",
+          "SAP/P016a/review/declarations/o1/record.json": "95e73f3c351186cf378bd994ce5af761c0175cfa257ad8e6a2bb4acc5e0b9de5",
+          "SAP/P016a/review/declarations/o1/scratch/AuxCheck.lean.txt": "c2d8518135c82efe741c273f8e3eec18ffd94ff29cd0e9526dfbdb89128df885",
+          "SAP/P016a/review/declarations/o1/scratch/Nonvac.lean.txt": "eeef7212327298f1405f1d91ff71a5dd5607bd67cee03170f736a5d80edbc008",
+          "SAP/P016a/review/declarations/o1/scratch/Print.lean.txt": "cde88987283560bcec3502dd8b090ecbf6ad4b0e8bd2969f3f65ac934addc4c7",
+          "SAP/P016a/verification/claims.json": "8711ee49f960dc90853fe9f88725c41c40781660dd4dc8a696ffa5c8690f20e6",
+          "SAP/P016a/verification/comparator-result.json": "06c798a07509a2bc0287750fcc24ec280705ebaafb2e1785667d8384da690a03",
+          "SAP/P016a/verification/comparator.log": "43043d95b0bcbef1d51420f42fb94fe4abb8a5470dd53f7ad19a26da393ecaf1",
+          "SAP/P016a/verification/declaration-review.json": "52b4f6a569193937babf1ee7758e42fe356cfd4ecc4cf5f73d4168bb73f06417"
+        },
+        "items": {
+          "OMIT.P016-T5": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g3"
+            ],
+            "fingerprint": "f533ddc5436f7180a2d28af636a3963ba3c6e0d882a102b2d155a103773c82f3",
+            "target_id": "P016-T5"
+          },
+          "SAP.P016a.T1": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g1",
+              "SAP/P016a/review/declarations/o1"
+            ],
+            "fingerprint": "a34d9f60688c738e9529d6070c88fc0366f7afae9948998d1a65609946ba4cd3",
+            "target_id": "P016-T1"
+          },
+          "SAP.P016a.T10": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g2"
+            ],
+            "fingerprint": "6e96e462ed3074305ca483e2f217bd622d4390d377ac078a1f90de9e8663a020",
+            "target_id": "P016-T10"
+          },
+          "SAP.P016a.T11": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g2"
+            ],
+            "fingerprint": "34a7ab6fdbcc6ab7af8a3aa604e5c12700cb27a650ddf821952088eeb8eaa5b7",
+            "target_id": "P016-T11"
+          },
+          "SAP.P016a.T2": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g1",
+              "SAP/P016a/review/declarations/o1"
+            ],
+            "fingerprint": "4aa6bb172cf1380c8acedd97fc1f9e476e97dfe3bd91910b99c127159c6e6ab7",
+            "target_id": "P016-T2"
+          },
+          "SAP.P016a.T3": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g1",
+              "SAP/P016a/review/declarations/o1"
+            ],
+            "fingerprint": "14ebd1ea8e985775ba18ece7e1942de881a65ce0080833d745a66c2602e10fe6",
+            "target_id": "P016-T3"
+          },
+          "SAP.P016a.T4": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g1",
+              "SAP/P016a/review/declarations/o1"
+            ],
+            "fingerprint": "ce1f0e4984c9af87c873c0bce67f9d07eedbfd2c7989178f8a62002b65bf6e30",
+            "target_id": "P016-T4"
+          },
+          "SAP.P016a.T6": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r4g1",
+              "SAP/P016a/review/declarations/o1"
+            ],
+            "fingerprint": "e4ed81ac50db315562603137361f9be9a52dbe9890e51ff6ea15f4c1abadd12e",
+            "target_id": "P016-T6"
+          },
+          "SAP.P016a.T7": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g1"
+            ],
+            "fingerprint": "0958daf0b443a99dc92a9087ee8117e5bf86590141d34e0b138393d711cdbad1",
+            "target_id": "P016-T7"
+          },
+          "SAP.P016a.T8": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g2"
+            ],
+            "fingerprint": "dd5c9d78028c54ef9a62d9e2547c5ec86f375f7892a09fae028073922e31da96",
+            "target_id": "P016-T8"
+          },
+          "SAP.P016a.T9": {
+            "evidence": [
+              "SAP/P016a/review/declarations/FW-P016a-r3g2"
+            ],
+            "fingerprint": "96aa1caee01f1ef8d4b87ad4e962f73acf5656079c94d94b3099cf568c8276c2",
+            "target_id": "P016-T9"
+          }
+        },
+        "status": "exported_evidence_consistent_not_full_fw_rebinding"
+      },
+      "source_sha256": {
+        "SAP/P016a/Bridge.lean": "2a1766dbd510d68be4c7233c542a2d648d58ea9b15ff437e01ef4e0e9ddad6e9",
+        "SAP/P016a/Challenge.lean": "0473a4c5a13e180e9f996348ba819544f9e364fa5140b24c554b1e45ef82d21e",
+        "SAP/P016a/Challenge/Part1.lean": "94e9b3af033cc9f1898ba1ba0626a023f5f89f9b1d980e0a5cd0024263fcfe83",
+        "SAP/P016a/Defs.lean": "7116bc192d1082be96ca48c9304ea5c5bb4cfe1eb6854488dc0852702729ee02",
+        "SAP/P016a/Defs/Part1.lean": "ba7cac14f105d3370daca294a2a145298565cce8f6432ba3b992d3adf2f69156",
+        "SAP/P016a/Defs/Part2.lean": "779d00486301d8304fa017a2d10fc9476125cd1ebfa7066adc0cc65b03083d3b",
+        "SAP/P016a/Defs/Part3.lean": "30b6e8848087e74c3945592fca7df25a6a91c227f6381a66a99084945a31f9f0",
+        "SAP/P016a/Defs/Part4.lean": "d13e0a399a5bd6cafe22d1bbdc53cf7ab5f51669512794df2e8c2b8834828c59",
+        "SAP/P016a/Defs/Part5.lean": "830dcddf14d6036503357e368232af9b3da43351d501409c3384e80c2cde1172",
+        "SAP/P016a/Defs/Part6.lean": "9f379abf321faa6811d2985ddecfb3f8fb78554ebd33356e62e4588516ea3c0a",
+        "SAP/P016a/Solution.lean": "253cddffbcd2ada88d056380adbb09a13ccfc0e2a61ea275a06bb847678f7e9d"
+      },
+      "work": "P016"
+    },
+    "P016b": {
+      "base": {
+        "lean_path_sha256": "106b6c29e452ac414675c33d9be3b3ca08fda5aa00dd817881bd77da11dd963f",
+        "repo2_head": "e5f65537d7cf736a6381967285fc8e63c834f754",
+        "toolchain_434": "/home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1",
+        "toolchain_435": "/home/ubuntu/.elan/toolchains/leanprover--lean4---v4.35.0-rc2"
+      },
+      "certificate_sha256": "fdbead99612874aef302dadb92c4040bb91ff5c80c5eddd2fcec796abcbd150c",
+      "certificate_stamp": "20261104T193119Z",
+      "comparator_sha256": "693dfb55c1b6656710e472d0b2684dade0b7ee16a915b1a423fb2a49564e3dcb",
+      "manifest_sha256": "609e2602d541227e7b438d76043b76ea6cfb1608365c3d50481149ca3d592d9f",
+      "review": {
+        "files_sha256": {
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/REPORT.md": "206f579e06476ffda36540e2417c4caedef53050178cf2dac835420cdb4df867",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/claim-stage.json": "b31365396e828ec1a09bc81287492be66b2543e7ade428ca1bdf787d46b799ef",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/claims.json": "c401c7ed79226f13e6ba104ea1d2a4e85aee8e2e41a1b078f4a95212f210cb4d",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/closure.json": "03076dbd9069269bfe7572a5c1f61b1950f6653d5ff9159bb98f55ee0ea0f452",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/findings.json": "4be4ee60488bc5efa793da2c84815b5148a6946123802f35a2ba9d3a1e090ec5",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/reading.md": "68607480acd84091063e92f9968f434d60a904aa8bc1e1d878e804bf58150146",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/record.json": "41a9c1c61baaaa4521eb1cda95c9779478f54e3b0293dc7971ebf5bfc2c40410",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/scratch/ClosurePrint.lean.txt": "0e6132bd4f78486d073e7d543f2e51d87b4cc8eb13ba377af8ad9c5cad47641a",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/scratch/ExchangeableNonvacuity.lean.txt": "0b31ab2fd357e64783a7cac5e44dd22cb395de52bd49f2e6ccc48174459e9f9f",
+          "SAP/P016b/review/declarations/FW-P016b-r3g1/scratch/Nonvacuity.lean.txt": "29cb3420f3cab1ff7bc3439556a5c6d09bda8873f15db26462d243a7545740cf",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/REPORT.md": "9a402b08bd6010b19cf0bd52bd8f63431ca56784da4c31e5304bf61dbfc86541",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/claim-stage.json": "ce03bf61b6b098d9502c4b04a63393b5098c05c6f0dd15a0ded2c90a1598e06a",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/claims.json": "3a2f9ce7a320afbbec57656c27490d231eb4ce8ff4612ad7b53e0d0838edd468",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/closure.json": "d490f000977f7262f017e9f6a590dee36c4960b2f2d1d8cb5737a6d233ec70a7",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/findings.json": "6642c16cfc62db86f73c62bfe101e9f561b568683837949b7d497beec1a719bc",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/reading.md": "749f69af7b92e09b3ff6c27923881138be80bad71e70a6f42e60b459bd068e7d",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/record.json": "baeed7fa519413a676afebcb85f29ad5fc0803a6b33f0884c5595eefa03fbed8",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/scratch/Closure.lean.txt": "ae77f083d7d5dbbf67503bc310a1cbc6784626ed4ff59761d4f9c790177b8689",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/scratch/Nonvacuity.lean.txt": "a7291a0027b54679312ac1be82052a49b090cb1181bf6ef55a6918836b76da6a",
+          "SAP/P016b/review/declarations/FW-P016b-r3g2/scratch/Witness.lean.txt": "6f8cdf8a6e0446b314b5a8832da8aca60b0750d28e3babba5702131c9dc4dfc8",
+          "SAP/P016b/verification/claims.json": "2e4f2185fdc154ae136accb7f6e2bd85ed0b96b4c7dfeb9811c2938b27b490a6",
+          "SAP/P016b/verification/comparator-result.json": "fdbead99612874aef302dadb92c4040bb91ff5c80c5eddd2fcec796abcbd150c",
+          "SAP/P016b/verification/comparator.log": "fde17c1fa91448cc161544be3b732f80aaeb4d946086ce25cfc2fc74a3dc8320",
+          "SAP/P016b/verification/declaration-review.json": "f79bf2dd9bb9ed42fd4c56f8f465997e5515318fdfcb688c5e587ac4932abee7"
+        },
+        "items": {
+          "SAP.P016b.T12": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g1"
+            ],
+            "fingerprint": "deac64df993f6508693d5331d5febda71f11023b1ea3171a2eeeef876e9f7ba0",
+            "target_id": "P016-T12"
+          },
+          "SAP.P016b.T13": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g1"
+            ],
+            "fingerprint": "e95016acdb44a3606741237fdc7b189ffb1719c298b4a9a70592022bff642eda",
+            "target_id": "P016-T13"
+          },
+          "SAP.P016b.T14": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g1"
+            ],
+            "fingerprint": "144f238db6323b20db45ed6a51140836ff88edc7261271425875cd0e9f5ca17a",
+            "target_id": "P016-T14"
+          },
+          "SAP.P016b.T15": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g1"
+            ],
+            "fingerprint": "5a6868dcdc39b016907af2e1849c475f3cebb7391a322c45cbae95809e61542a",
+            "target_id": "P016-T15"
+          },
+          "SAP.P016b.T16": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g1"
+            ],
+            "fingerprint": "96f963a3022b771b2dfc32a1354787e15878d3731c0c4c584dee79a82ffabf55",
+            "target_id": "P016-T16"
+          },
+          "SAP.P016b.T17": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g2"
+            ],
+            "fingerprint": "64a6244739da8572a2f807bf1a258c843229ba3b8822b5955640438f4dee1a53",
+            "target_id": "P016-T17"
+          },
+          "SAP.P016b.T18": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g2"
+            ],
+            "fingerprint": "5cf99797e0396e9a13de59186f7dc7b66bba7726152ccf587d66c1e0ee8264d3",
+            "target_id": "P016-T18"
+          },
+          "SAP.P016b.T19": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g2"
+            ],
+            "fingerprint": "689ef443cf6bb5218c18ee6230262e767f168e7de696d1860437cde1468982d5",
+            "target_id": "P016-T19"
+          },
+          "SAP.P016b.T20": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g2"
+            ],
+            "fingerprint": "313279118151d93c6d2ee30398479d336574a3bb9aa225b121bcfdae34820f70",
+            "target_id": "P016-T20"
+          },
+          "SAP.P016b.T21": {
+            "evidence": [
+              "SAP/P016b/review/declarations/FW-P016b-r3g2"
+            ],
+            "fingerprint": "5bfcc26e79d72413ffdff0fa48991bb2023498f79d89b0ecaa1f23fc63643ecc",
+            "target_id": "P016-T21"
+          }
+        },
+        "status": "exported_evidence_consistent_not_full_fw_rebinding"
+      },
+      "source_sha256": {
+        "SAP/P016b/Bridge.lean": "5c90abf0c31bab20bdd9d41e79b2ab8a63b098191e2a1875aa6d2977419687c0",
+        "SAP/P016b/Challenge.lean": "ab42a041396b5b399fcc56c49513c0aaf741d0b9519bc2a4d959ca4d166108f0",
+        "SAP/P016b/Challenge/Part1.lean": "0b01fced1f7c0b4ddc1cfdf26acc3e87a5b9a31c3f50c939e6b8d86bf35ea0dc",
+        "SAP/P016b/Defs.lean": "0bd39562635a7f4f83b6502f34eca7e1638a37d5e89a1a198e7c2e4c96f9cf38",
+        "SAP/P016b/Defs/Part1.lean": "6425da74c6288e623760709a8342b9257e1d1b2820f0915f4d0641f70471ef7a",
+        "SAP/P016b/Defs/Part2.lean": "671866539e05afd35259d04e20842d05f04ad58f63f2bac99e70fdaab914570e",
+        "SAP/P016b/Defs/Part3.lean": "859b007433a9d76288fcb4a4acfad8efebcd20ed3dfa6e92fe1f9ff656676d58",
+        "SAP/P016b/Defs/Part4.lean": "b2e2ce161c403f678346eb2bea47e632a9f6be883078dd83d285bf61c8974315",
+        "SAP/P016b/Defs/Part5.lean": "3aad22478e52a0220f13c8356270c983b5edeb29ed699f0458947103c9969ddd",
+        "SAP/P016b/Defs/Part6.lean": "3fd762084acb972ea5063e2838c7fd73951dd5b39e337978fac48e4d1d2d06b4",
+        "SAP/P016b/Defs/WholeW1.lean": "05702ecd5e883a35a7329f59753a3a78b605b5c48091991475220eaa98a7fa7c",
+        "SAP/P016b/Solution.lean": "1939e3c97f11a2c6695b7388a68dfdbd3704126b61d0f74a3635cf7ecc74ea6b",
+        "SAP/P016b/WH/W1/Arithmetic.lean": "fbcfca7daed135dc09cc45cc3438b2887ba49ff753edf5ee98b30fe7e7f0ac51",
+        "SAP/P016b/WH/W1/Leaves.lean": "831f0d1048ee8dfc28a233f1bcd206d9304c59bf53884d5e656cd3e21c1a65c8",
+        "SAP/P016b/WH/W1/P/T13_L1.lean": "2fdd4511ce9e4d755f945e9e4d1e5b8ce2e5aa052b5df46562dfcdce004362aa",
+        "SAP/P016b/WH/W1/P/T13_L2.lean": "ebffa8e3117121173e71af260019710f7196ab28f2d72ea802626b226e279e73",
+        "SAP/P016b/WH/W1/P/T13_L3.lean": "dd26e3f3927ca2eb8158339b758590a94fbf2b3d8cf8b73a86d5c291b4b867a4",
+        "SAP/P016b/WH/W1/P/T13_L4.lean": "1500d8fd31f5724e4fd0230de65802ff6e7ce9dfd64a4c3e853d1dbb1b2f2dfe",
+        "SAP/P016b/WH/W1/P/T13_L5.lean": "25aa1ba768f98b4a0563f48994d295055a8ed57f7e6e0b56d7e87d8b4901a5ed",
+        "SAP/P016b/WH/W1/P/T13_L6.lean": "42597f1e1cf8503d2c9a1c7e6d1ddbb6af95acfcedfb097adf428295c9197bd2",
+        "SAP/P016b/WH/W1/P/T13_L7.lean": "c6d0ef29df5e11d41d08fdfafc2cf4bb4537c79571bd8b118508a30235c25305",
+        "SAP/P016b/WH/W1/P/T13_L8.lean": "0e55ee14bed906bea64c917b065458a2c7ca4cb5042b238b1197a70125608e56",
+        "SAP/P016b/WH/W1/Proofs/T12.lean": "54de162afc44a1f4e6b7f32ee8cc79106db6f19492d6965860fe94447930d8be",
+        "SAP/P016b/WH/W1/Proofs/T13.lean": "f697f3bd2de9eff1b096ac22f71b9985db5a0959888c50637218bc763408879e",
+        "SAP/P016b/WH/W1/Proofs/T16.lean": "ebe086800035c677a1aedcc489ee632642d77157cdb2ebcd70045696121a0f6c"
+      },
+      "work": "P016"
+    }
+  },
+  "work_id": "P016"
+}

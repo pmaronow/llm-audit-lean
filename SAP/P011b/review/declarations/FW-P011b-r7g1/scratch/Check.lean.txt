@@ -1,0 +1,165 @@
+import SAP.P011b.Challenge
+
+/- Independent review checks. No Challenge theorem or certified target proof is
+used below. Only the definitions and Mathlib lemmas are used. -/
+
+open SAP.P011b MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology Classical Matrix NNReal ENNReal
+
+
+set_option maxRecDepth 4096
+set_option maxHeartbeats 300000
+set_option linter.style.haveILetI false
+example : MeanModel shiftModelW2 shiftDesignW2 (0 : Fin 2 → ℝ) := by
+  constructor
+  · intro i
+    exact integrable_dirac (by simp)
+  · intro i
+    simp [expectation, shiftModelW2]
+
+example : (shiftDesignW2ᵀ * shiftDesignW2).det ≠ 0 := by
+  norm_num [shiftDesignW2, Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
+
+example : ∀ i, shiftModelW2.theta i = olsTheta shiftDesignW2 1 i := by
+  intro i
+  fin_cases i <;>
+    norm_num [shiftModelW2, olsTheta, shiftDesignW2, Matrix.inv_def,
+      Matrix.det_fin_two, Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
+      <;> norm_num [Matrix.vecMul, dotProduct, Fin.sum_univ_two, Matrix.transpose_apply]
+
+example : cwActualCovariance = 0 := by
+  simp [cwActualCovariance, ProbabilityTheory.covariance, constantWitness]
+
+example : SAP.P011b.beta constantWitness = 7/2 := by
+  norm_num [SAP.P011b.beta, expectation, betaHat, SAP.P011b.average, weighted,
+    constantWitness, Fin.sum_univ_succ]
+
+theorem cw_integrable (f : (Fin 4 → ℝ) → ℝ) : Integrable f constantWitness.law := by
+  exact integrable_dirac (by simp)
+
+example : Dependency constantWitness := by
+  letI : IsProbabilityMeasure constantWitness.law := constantWitness.probability
+  intro S T hdis hnone
+  apply IndepFun.congr
+    (indepFun_const_left (fun _ : {i // i ∈ S} => (1 : ℝ))
+      (fun _ : Fin 4 → ℝ => fun _ : {j // j ∈ T} => (1 : ℝ)))
+  · simp [constantWitness, Filter.EventuallyEq, Filter.eventually_pure]
+  · simp [constantWitness, Filter.EventuallyEq, Filter.eventually_pure]
+
+example : Homoskedastic constantWitness := by
+  intro i j
+  simp [SAP.P011b.covariance, expectation, constantWitness]
+
+lemma uniform_ae {Ω : Type} [Fintype Ω] [Nonempty Ω] {n : ℕ}
+    (f : Ω → (Fin n → ℝ)) (p : (Fin n → ℝ) → Prop)
+    (hp : MeasurableSet {y | p y}) (h : ∀ u, p (f u)) :
+    ∀ᵐ y ∂uniformLaw f, p y := by
+  classical
+  letI : MeasurableSpace Ω := ⊤
+  have hf : Measurable f := Measurable.of_discrete
+  rw [uniformLaw, ← PMF.toMeasure_map f (PMF.uniformOfFintype Ω) hf]
+  exact (ae_map_iff hf.aemeasurable hp).2 (ae_of_all _ h)
+
+lemma uniform_integrable {Ω : Type} [Fintype Ω] [Nonempty Ω] {n : ℕ}
+    (f : Ω → (Fin n → ℝ)) (g : (Fin n → ℝ) → ℝ) (hg : Measurable g) :
+    Integrable g (uniformLaw f) := by
+  classical
+  letI : MeasurableSpace Ω := ⊤
+  have hf : Measurable f := Measurable.of_discrete
+  rw [uniformLaw, ← PMF.toMeasure_map f (PMF.uniformOfFintype Ω) hf]
+  exact (integrable_map_measure hg.aestronglyMeasurable hf.aemeasurable).2 Integrable.of_finite
+
+example (upper : Bool) (K : ℕ) (i : Fin (4*K)) :
+    Integrable (fun y => y i) (starModel upper K).law := by
+  apply uniform_integrable
+  exact measurable_pi_apply i
+
+example (upper : Bool) : ((w1StarD upper 1)ᵀ * w1StarD upper 1).det ≠ 0 := by
+  cases upper <;>
+    norm_num [w1StarD, w1StarX, localIndex, Matrix.det_fin_two,
+      Matrix.mul_apply, Fin.sum_univ_succ]
+
+example : T18Statement := by
+  norm_num [T18Statement, T18Core, SAP.P011b.beta, expectation, betaHat,
+    SAP.P011b.average, weighted, constantWitness, covOf, cwActualCovariance,
+    ProbabilityTheory.covariance, cwTrueCovariance, cwPrintedFirst, cwPrintedLast,
+    cwBracketOnlyRepair, fourthMoment, pairMoment, printedBracket, Fin.sum_univ_succ]
+
+example : DesignRegularW2 signFamily 1 (fun _ _ _ => (1 : ℝ)) := by
+  refine ⟨1, 1, 1, by norm_num, by norm_num, by norm_num, ?_, ?_, ?_⟩
+  · intro k i
+    norm_num [l2, Fin.sum_univ_one]
+  · intro k
+    dsimp only [signFamily, signModel]
+    apply uniform_ae
+    · simpa only [Set.ofPred_forall] using MeasurableSet.iInter (fun i =>
+        (isClosed_le (continuous_apply i).abs continuous_const).measurableSet)
+    · intro u i
+      cases h : u i <;> norm_num [sign, h]
+  · intro k z
+    have hn : (signFamily.size k : ℝ) ≠ 0 := by
+      exact_mod_cast (ne_of_gt (signFamily.positive k))
+    let D : Matrix (Fin (signFamily.size k)) (Fin 1) ℝ := fun _ _ => 1
+    have hgram : (Dᵀ * D : Matrix (Fin 1) (Fin 1) ℝ) 0 0 =
+        (signFamily.size k : ℝ) := by
+      rw [Matrix.mul_apply]
+      change (∑ _ : Fin (signFamily.size k), (1 : ℝ) * 1) = (signFamily.size k : ℝ)
+      simp
+    change 1 * (Real.sqrt (∑ i, z i ^ 2)) ^ 2 ≤
+      quadratic ((1 / (signFamily.size k : ℝ)) • (Dᵀ * D)) z
+    simp [quadratic, hgram, hn, Real.sq_sqrt (sq_nonneg (z 0)), ← pow_two]
+
+-- T17: all five integrable moment domains hold simultaneously. Indices may
+-- repeat, so this also checks that finite subsets refer to positions.
+example (i j k l : Fin 4) :
+    let m := constantWitness
+    let B := betaHat m
+    let X : Fin 4 → (Fin 4 → ℝ) → ℝ := fun a y => weighted m y a
+    let v : Fin 4 → Fin 4 := ![i,j,k,l]
+    let Y : Fin 4 → (Fin 4 → ℝ) → ℝ := fun a y => y (v a)
+    (Integrable (fun y => (B y)^2) m.law ∧
+      ∀ p ∈ ({(i,j),(k,l)} : Finset (Fin 4 × Fin 4)),
+        Integrable (fun y => X p.1 y*X p.2 y) m.law ∧
+        Integrable (fun y => X p.1 y*B y) m.law ∧
+        Integrable (fun y => X p.2 y*B y) m.law) ∧
+    (∀ s : Finset (Fin 4),
+      Integrable (fun y => (∏ a ∈ s, X (v a) y)*(B y)^(4-s.card)) m.law) ∧
+    (∀ s : Finset (Fin 4), s.Nonempty →
+      Integrable (fun y => ∏ a ∈ s, X (v a) y) m.law) ∧
+    (Integrable (fun y => (B y)^2) m.law ∧
+      ∀ p ∈ ({(i,j),(k,l)} : Finset (Fin 4 × Fin 4)),
+        Integrable (fun y => y p.1*y p.2) m.law ∧
+        Integrable (fun y => y p.1*B y) m.law ∧
+        Integrable (fun y => y p.2*B y) m.law) ∧
+    (∀ s : Finset (Fin 4),
+      Integrable (fun y => (∏ a ∈ s, Y a y)*(B y)^(4-s.card)) m.law) := by
+  simp [cw_integrable]
+
+-- T15: both actual star constructions give binary outcomes at every latent
+-- input; the supplied true graphs satisfy the exact finite constraints.
+example (upper : Bool) (u : Fin 3 → Fin 4) (v : Fin 48) (i : Fin 4) :
+    starBlock upper u v i = 0 ∨ starBlock upper u v i = 1 := by
+  fin_cases i <;> simp only [starBlock, starLeaves, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.cons_val_two] <;>
+    split_ifs <;> simp_all
+
+example (upper : Bool) : Compatible (starModel upper 1).R (starModel upper 1).d
+    (starModel upper 1).G := by
+  constructor
+  · intro i j h
+    exact h
+  · cases upper <;> intro i <;> fin_cases i <;> decide
+
+-- T19: the natural floor in the weight is ceil(n/2), never a zero denominator
+-- at the positive sizes actually used.
+example (n : ℕ) (hn : 0 < n) : 0 < w1AlternatingWeight n := by
+  have hd : 0 < (n+1)/2 := by omega
+  have hn' : 0 < (n : ℝ) := by exact_mod_cast hn
+  unfold w1AlternatingWeight
+  exact div_pos hn' (by positivity)
+
+example (k : ℕ) (i : Fin (k+1)) :
+    Integrable (fun y => y i) (w1AlternatingFamily.model k).law := by
+  apply uniform_integrable
+  exact measurable_pi_apply i
+

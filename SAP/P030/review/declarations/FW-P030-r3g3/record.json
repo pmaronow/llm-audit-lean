@@ -1,0 +1,141 @@
+[
+ {
+  "target_id": "P030-T11",
+  "decision": "whole",
+  "theorem": "SAP.P030.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.printed_sample_counts_inconsistent",
+   "AronowAudit.P030.sample_count_arithmetic",
+   "AronowAudit.P030.sample_count_reconciliations",
+   "AronowAudit.P030.sample_partition_count"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P030.T11Statement"
+ },
+ {
+  "target_id": "P030-T12",
+  "decision": "whole",
+  "theorem": "SAP.P030.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.one_tailed_randomization_valid"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P030.attainable_exactness",
+    "reason": "Its component is already exported by one_tailed_randomization_valid; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.exact_rejection_max",
+    "reason": "Its component is already exported by one_tailed_randomization_valid; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.uniformLaw_probability",
+    "reason": "Its component is already exported by one_tailed_randomization_valid; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.uniform_point_probability",
+    "reason": "Its component is already exported by one_tailed_randomization_valid; no separate helper conclusion is added."
+   }
+  ],
+  "statement_definition": "SAP.P030.T12Statement"
+ },
+ {
+  "target_id": "P030-T13",
+  "decision": "whole",
+  "theorem": "SAP.P030.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.complete_nonempty",
+   "AronowAudit.P030.conditioned_complete_nonempty",
+   "AronowAudit.P030.proximal_exposure_expectations"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P030.complete_swap_mem",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.complete_treatment_mean",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.conditioned_treatment_mean",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.exposure_mean_from_marginals",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.exposure_mean_linearity",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.swap_units_involution",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.symmetric_treatment_mean",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.treatment_total",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   },
+   {
+    "lean_name": "AronowAudit.P030.uniform_mean_involution",
+    "reason": "Its component is already exported by proximal_exposure_expectations; no separate helper conclusion is added."
+   }
+  ],
+  "statement_definition": "SAP.P030.T13Statement"
+ },
+ {
+  "target_id": "P030-T14",
+  "decision": "whole",
+  "theorem": "SAP.P030.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.example_observed_outcomes",
+   "AronowAudit.P030.example_observed_statistic_and_p",
+   "AronowAudit.P030.example_reference_rho",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_rounding",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.ten_assignment_probabilities",
+   "AronowAudit.P030.ten_design",
+   "AronowAudit.P030.worked_table_result",
+   "AronowAudit.P030.average_rank_weight"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P030.nearest_single_treated",
+    "reason": "The selected table_distances already exports the evaluated nearest distances."
+   },
+   {
+    "lean_name": "AronowAudit.P030.table_enumeration_probability",
+    "reason": "The selected assignment-mass and observed-data p-value declarations already perform the assignment/enumeration transport."
+   },
+   {
+    "lean_name": "AronowAudit.P030.uniformProbability_image",
+    "reason": "The selected assignment-mass and observed-data p-value declarations already perform the injective-enumeration transport."
+   }
+  ],
+  "statement_definition": "SAP.P030.T14WholeStatement"
+ },
+ {
+  "target_id": "P030-T15",
+  "decision": "whole",
+  "theorem": "SAP.P030.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.half_controls_maximizers",
+   "AronowAudit.P030.half_controls_square"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P030.T15Statement"
+ }
+]

@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P020-T11",
+    "theorem": "SAP.P020.T11",
+    "fingerprint": "753919d1306f80065d03543f9b8c1f97057ef633ed8acc545624cb387c3753e8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean using only Defs imports. Lines 49-61 construct the uniform law on Fin 2 with u=(1,3), v=(1,2), check positivity on its support, E[v]=3/2, Cov(u/v,v)=1/8, and the ratio identity. Lines 14-32 construct a valid population with M=4, mt=mc=2, sizes (1,2,3,4), control totals (0,1,0,2), treatment totals (1,0,2,0), N=10 and positive size variance. Lines 79-84 independently compute difference-in-means expectation and bias 1/24 with ATE zero. All denominators used on the support are positive.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, first issue: equation (7) is restricted to finite-support laws while canonical clause (a) covers general positive-denominator random variables; clause (b) is complete.",
+        "status": "fixed",
+        "reason": "Resolved by accurate restriction rather than mathematical generalization. SAP/P020/Challenge/Part1.lean:61-62 now explicitly limits clause (a) to normalized nonnegative finite-support laws, identifies the omitted infinite-support and continuous cases, and retains clause (b) in full. record.json:4-6 agrees. The mathematical narrowing remains, but it is permitted and exactly disclosed."
+      },
+      {
+        "earlier_issue": "earlier.json, second issue: the previous whole decision, null restriction and unqualified docstring misrepresented equation (7)'s coverage.",
+        "status": "fixed",
+        "reason": "record.json:4 now says restricted, record.json:6 supplies the precise restriction, and SAP/P020/Challenge/Part1.lean:61-62 states the same finite-support scope and omission. No unqualified whole claim remains for this theorem."
+      }
+    ]
+  },
+  {
+    "target_id": "P020-T12",
+    "theorem": "SAP.P020.T12",
+    "fingerprint": "033b43e69d6d73decc27c8cb1144f3aa17fee5ef14a0af85cf5285e027d36c35",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:14-47. The four-cluster population has positive sizes (1,2,3,4), mt=mc=2 and supported assignment s={0,1}. The arm mean sizes are 3/2 and 7/2. With b0=1 and b1=2, HT(s)=-1/5 and transformed HT(s)=-6/5, which differs from 2*HT(s). The exact existential counterexample conjunct is constructed independently of the Challenge theorem.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T13",
+    "theorem": "SAP.P020.T13",
+    "fingerprint": "2600e3fe0eb3018505320a945f184d35fde4168653c2a3b08ecf9a4687648cdf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:14-32 and :86-104. On the valid unequal-size population, k=3/2 gives both Des Raj total expectations 3 and ATE expectation zero. The nonconstant fixed covariate X=(2,-1,4,0), fixed size coefficient 1 and fixed covariate coefficient -2 give both covariate-adjusted total expectations 3 and ATE expectation zero. Both the size-arm centering and combined covariate-arm centering have expectation zero. Lines 135-141 also construct admissible zero-size-variance data and functions on the empty covariate index Fin 0. No fitted coefficient or nonzero-variance premise is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T14",
+    "theorem": "SAP.P020.T14",
+    "fingerprint": "1b21ed2a6344f44f5c1d80256855a97aa81902e624941e07d3b99fab87aec053",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:14-32 and :107-121. The population has size variance 5/4, positive scaling v, arm coefficients 1/2 and -1/10, common optimum 1/5 and curvature 4/15. Direct finite enumeration gives HT design variance 1/75 and Des Raj variance at k=1/5 equal to 1/375. Thus the nonzero-variance optimization branch is satisfiable and nontrivial. Lines 135-149 independently construct an equal-size population and prove Des Raj equals HT for every real k and every assignment subset, covering the separate zero-variance branch without dividing by its size variance.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P020-T15",
+    "theorem": "SAP.P020.T15",
+    "fingerprint": "96d4ce32d4ecd9acb473f270c3393571e18b33f065d268a7f0f16e4f81c08427",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean. The population at lines 14-32 satisfies mt=mc=2, so both sample-variance denominators are positive. Direct enumeration at lines 115-132 gives HT variance 1/75, expected HT variance estimator 11/75, Des Raj variance at k=1/5 equal to 1/375, and expected adjusted variance estimator 17/125. Lines 151-186 construct B=2 blocks with total size 20, verify 36 supported assignment pairs, exhibit an off-diagonal pair with positive probability 1/36, and prove every block's actual sample-variance statistic satisfies the conservativeness hypothesis. The full-product law implements independent randomizations.",
+    "confidence": 0.99
+  }
+]

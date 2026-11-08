@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P013b.T15",
+    "target_id": "P013-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches Propositions 5.3-5.6, including the directions of all inequalities, local off-diagonal cross-joint positivity only for 5.3/5.4, equal unit potentials for 5.4, ordered zero-joint corrections including diagonal cross-exposure pairs in 5.5, and the N^-2 effect-variance normalization. N>0 and distinct exposures are the ordinary standing setting; real division by zero agrees with the explicitly chosen 0/0 convention because an impossible joint event has zero indicators on every positive-weight assignment. Nonvacuity: the fair one-treated two-unit design with both-label outcomes identically 1 satisfies positivity, positive off-diagonal cross joints and no effects; compiled in scratch/Check.lean. Independent signed-outcome rational checks also cover zero joints."
+  },
+  {
+    "theorem": "SAP.P013b.T16",
+    "target_id": "P013-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "Exactly the explicitly selected statements (a1), (b1), (b2), with deterministic predictions and the chosen zero-denominator ratio. The asymptotic remark is explicitly outside this canonical target. With W=C_d/N and H=H_d/C_d, H W=H_d/N even on C_d=0; hence E[H]-mu=-Cov(H,W), giving the stated bound. Nonvacuity: a single fair binary-exposure unit with y_1=1,y_0=0 has an exposed and an unexposed assignment, so the ratio-zero convention is exercised rather than excluded."
+  },
+  {
+    "theorem": "SAP.P013b.T17",
+    "target_id": "P013-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The randomization-indexed outcomes are genuinely unrestricted by the dummy exposure-specific outcome array. Misspecified is precisely Condition 7, and the second weight uses the exposure actually induced, as the canonical clarification requires. Both expectation formulas and all ordinary positivity/distinctness assumptions agree. Nonvacuity: two independent fair assignments, exposure equal to own assignment, and r_i(z)=the second unit's assignment give misspecification for the first unit and strictly positive marginals; compiled in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P013b.T18",
+    "target_id": "P013-T18",
+    "my_reading_vs_claim": "different",
+    "reason": "The canonical target transcribes the positive universal coverage assertion; the Lean theorem instead asserts its full logical negation, explicitly disclosed by the Challenge docstring as a refutation. It preserves nested populations, standing positivity and exactly Conditions 3, printed 5 and 6, without replacing printed 5 by a standard dependency graph. This is a sound full refutation, not a proof of the printed assertion. Nonvacuity/counterexample: at size N draw one common fair Z and give all units exposure Z. Set y_i(1)=sqrt(i+1)-sqrt(i), y_i(0)=0 for i=0,...,N-1, using the same infinite outcome array at every N. Then marginal probabilities are 1/2, outcomes lie in [0,1], the treated total is sqrt(N), and N Var(HT effect)=1. A diagonal-only h has row bound 1 and satisfies the exact printed dependency predicate (the latter fact is compiled in scratch/Check.lean). When Z=0 the variance estimator is zero and the estimation error is nonzero, so coverage is at most 1/2 at every N. Taking alpha=1/4 refutes the claimed bound 3/4 independently of the numerical normal quantile."
+  },
+  {
+    "theorem": "SAP.P013b.T19",
+    "target_id": "P013-T19",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches the nested-population consistency assertion with uniform constants and o(N^2) pair-dependence count. Finite probability is defined exactly and convergence uses every epsilon>0 in the stipulated order. Positivity prevents the reciprocal bound from admitting impossible exposures via real 1/0=0. NestedPopulationSetup represents common unit potentials and fixed comparison labels while permitting designs to be reapplied. Nonvacuity: independently assign all N units fair binary exposures, keep all potentials equal to 1 at both labels for every N, and choose g_ij=1 iff i=j. Then c1=1,c2=2, the flagged count is N and its normalized value is 1/N tending to zero; the populations are nested."
+  },
+  {
+    "theorem": "SAP.P013b.T21",
+    "target_id": "P013-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The specified three-assignment example matches every canonical baseline, shifted, error, moment and joint-shift repair value, including the fixed-count and zero prediction-covariance facts. The refutation is explicitly for numerically fixed predictions, so it does not attack the corrected joint-translation property. Nonvacuity is unconditional: the weights 1/4,1/4,1/2 are positive, all six marginals lie in (0,1), and the claims are exact rational identities in an explicitly inhabited design. The assignment and moment table was independently recomputed in scratch/audit_checks.py."
+  },
+  {
+    "theorem": "SAP.P013b.T22",
+    "target_id": "P013-T22",
+    "my_reading_vs_claim": "whole",
+    "reason": "All clauses (a)-(f) are present: arbitrary deterministic prediction shifts, exact errors and iff conditions, joint-shift total/mean/contrast behavior and target shifts, fixed-prediction and HT specializations, mean-zero errors, calibration and a concrete nonnecessity example. No hidden random fitted prediction assumption is used. Only positive marginals are required, as in this corrected target; some algebraic clauses even allow N=0 without dividing by N. Nonvacuity: the fair one-treated two-unit calibration population has pi=1/2, m=1, C_d=N=2, and gives equivariance with c=1 while prediction increments are zero. Its strict positivity is compiled in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P013b.T23",
+    "target_id": "P013-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three wearing worlds, identical complete recorded-data maps, estimator and moment tables, wearing targets and losses, nonidentification, and the respondent-only comparison agree with the canonical counterexample. Proving nonidentification even from the full assignment-indexed recorded-data function is strong enough for the stated reading. The Challenge correctly limits the refutation to wearing interpretation combined with the additional zero-scoring rule; it does not claim to refute the observed-consistently reading of Section 10 or an actual published data value. Nonvacuity: four positive-weight assignments and two units are explicit; each marginal is 1/2. Exact fractions were independently checked in all twelve world/assignment cases."
+  },
+  {
+    "theorem": "SAP.P013b.T24",
+    "target_id": "P013-T24",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The mathematical loss identities, iff conditions, nonnegative sufficient condition and HT/Hajek exclusion formulas are faithful and true. The empirical reconstruction and recorded-orange-outcome linkage are not certified: the numerical scaling clause assumes set sizes and zero scores outside the retained sets. This is broadly disclosed. However, the canonical containment of the 151 survey nonrespondents within the 342 item nonrespondents is neither asserted nor assumed: Part8.lean:116-122 assumes only item subset S and survey subset S, with all nonzero scores in both. For respondent sets the missing containment is item subset survey. The Challenge docstring says their containment is a hypothesis, which is inaccurate if read as this canonical relation. A concrete nonvacuity and separation instance is S={0,...,2049}, item={0,...,1707}, survey={1,...,1899}, positive weights 2 and the sole nonzero score at i=1. It satisfies every numerical hypothesis but item is not a subset of survey. The separate statement that the nonnegative sufficient condition is strictly stronger is not explicitly witnessed, as the docstring also discloses."
+  },
+  {
+    "theorem": "SAP.P013b.T25",
+    "target_id": "P013-T25",
+    "my_reading_vs_claim": "whole",
+    "reason": "The school support witness, 56-school binary population, full ordered-pair expression (7), general p/q moments and both signs of wrong-joint bias all match the canonical mathematical counterexample. Uniform B is exactly two of four independently per block; uniform C is exactly 28 of 56, without multiplicity errors. The statement does not claim an observed error in Table 2 or refute the correct printed block-randomization sentence. Nonvacuity: B has 6^14>0 and C has choose(56,28)>0 assignments; the general conditional clauses' marginal probability 1/2 already forces S nonempty and q is explicitly positive. All numerical fractions and the support witness were independently checked."
+  },
+  {
+    "theorem": "SAP.P013b.T26",
+    "target_id": "P013-T26",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches all formal clauses (a)-(h), including exact support counts, strict image inclusion, all four pair probabilities, nonzero differences for every distinct school pair, arbitrary common independent finite student law, all student marginals and same-school joints, and the cross-school no-exposure joints. Arbitrary four-valued student codes include the own/peer combinations of the Section 10 mapping; the product definition imposes precisely the named independence. No replacement Table 2 estimate is claimed. Nonvacuity: both school supports have the displayed positive cardinalities; take a singleton student randomization type with weight 1 and any fixed codes to realize the student-law assumptions."
+  },
+  {
+    "theorem": "SAP.P013b.T27",
+    "target_id": "P013-T27",
+    "my_reading_vs_claim": "whole",
+    "reason": "Matches the explicitly selected formal reading: binary exposure-specific wearing/reporting potentials, consistent observation, strictly positive probabilities for each of the five exact own/peer/host exposures, four proportion contrasts and their HT unbiasedness. The analysed subset is embedded injectively in the full school network, so neighbors outside the analysed set are not silently discarded. The irreflexive, symmetric, within-school network reflects the paper's undirected within-school peer construction (Section 10 of https://arxiv.org/pdf/1305.6156); it is not an added substantive restriction on that application. The twelve empirical Table 2 values are explicitly outside the canonical formal statement. Nonvacuity: two students in one school with each other as sole peer, fair independent host/own/peer indicators across eight assignments, and nonzero binary potentials at exposure 4 give exposure probabilities 1/2,1/8,1/8,1/8,1/8 for both units. The hypotheses are compiled in scratch/Check.lean."
+  }
+]

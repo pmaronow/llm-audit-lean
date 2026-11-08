@@ -1,0 +1,186 @@
+[
+ {
+  "target_id": "P005-T6",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.corrected_interacted_third_bias_proof"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P005.Wave1.t6_nu3_sign",
+   "AronowAudit.P005.expectation_mul"
+  ],
+  "statement_definition": "SAP.P005a.T6Statement"
+ },
+ {
+  "target_id": "P005-T7",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.univariate_endpoint_counterexample_proof",
+   "AronowAudit.P005.univariate_printed_condition",
+   "SAP.P005a.WH.W2.T7_whole",
+   "SAP.P005a.WH.W2.T7_assembly",
+   "SAP.P005a.WH.W2.T7_L1_proof",
+   "SAP.P005a.WH.W2.T7_L2_proof",
+   "SAP.P005a.WH.W2.T7_L3_proof",
+   "SAP.P005a.WH.W2.T7_L4_proof",
+   "SAP.P005a.WH.W2.T7_L5_proof",
+   "SAP.P005a.WH.W2.T7_L6_proof",
+   "SAP.P005a.WH.W2.spikeVariance_pos",
+   "SAP.P005a.WH.W2.spikeFit_eq",
+   "SAP.P005a.WH.W2.spikeLowFit",
+   "AronowAudit.P005.Wave1.InteractedExpansion.n1_proof",
+   "AronowAudit.P005.Wave1.InteractedExpansion.n4_proof",
+   "AronowAudit.P005.Wave1.InteractedExpansion.n5_proof",
+   "AronowAudit.P005.Wave1.InteractedExpansion.n7_proof",
+   "AronowAudit.P005.Wave1.InteractedExpansion.spikeQ_pos_of_S1",
+   "AronowAudit.P005.Wave1.InteractedExpansion.spikeV_abs",
+   "AronowAudit.P005.Wave1.InteractedExpansion.spikeA_bounds",
+   "AronowAudit.P005.Wave1.InteractedExpansion.balanced_cards",
+   "AronowAudit.P005.Wave1.InteractedExpansion.mean_abs_le_bound",
+   "AronowAudit.P005.Wave1.t7_standardized",
+   "AronowAudit.P005.kappa_bounds"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P005.Wave1.InteractedExpansion.n1_proof",
+   "AronowAudit.P005.Wave1.InteractedExpansion.spikeQ_pos_of_S1"
+  ],
+  "statement_definition": "SAP.P005a.T7WholeStatement"
+ },
+ {
+  "target_id": "P005-T9",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.repaired_log_bounds",
+   "AronowAudit.P005.repaired_log_conditions",
+   "SAP.P005a.WH.W2.T9_whole",
+   "SAP.P005a.WH.W2.T9_assembly",
+   "SAP.P005a.WH.W2.T9_L1_proof",
+   "SAP.P005a.WH.W2.T9_L2_proof",
+   "SAP.P005a.WH.W2.T9_L3_proof",
+   "SAP.P005a.WH.W2.T9_L4_proof",
+   "SAP.P005a.WH.W2.T9_L5_proof",
+   "SAP.P005a.WH.W2.T9_L6_proof",
+   "SAP.P005a.WH.W2.T9_L7_proof",
+   "SAP.P005a.WH.W2.T9_L8_proof",
+   "SAP.P005a.WH.W2.T9_L9_proof",
+   "SAP.P005a.WH.W2.T9_L10_proof",
+   "SAP.P005a.WH.W2.T9_L11_proof",
+   "SAP.P005a.WH.W2.T9_L12_proof",
+   "SAP.P005a.WH.W2.T9_L13_proof",
+   "SAP.P005a.WH.W2.T9_L14_proof",
+   "SAP.P005a.WH.W2.T9_L15_proof",
+   "SAP.P005a.WH.W2.goldenThompson_of_leaves",
+   "AronowAudit.P005.Wave1.CondT8T9_markov",
+   "AronowAudit.P005.Wave1.CondT8T9_probability_mono",
+   "AronowAudit.P005.Wave1.CondT8T9_probability_union",
+   "AronowAudit.P005.Wave1.CondT8T9_probability_control",
+   "AronowAudit.P005.Wave1.CondT8T9_chernoff_uniform",
+   "AronowAudit.P005.Wave1.CondT8T9_augmented_orthogonal",
+   "AronowAudit.P005.Wave1.CondT8T9_augmented_row_bound",
+   "AronowAudit.P005.Wave1.CondT8T9_sample_threshold",
+   "AronowAudit.P005.Wave1.CondT8T9_score_nonneg",
+   "AronowAudit.P005.Wave1.CondT8T9_score_expectation",
+   "AronowAudit.P005.Wave1.CondT8T9_remainder_bound",
+   "AronowAudit.P005.Wave1.t4_expectation_add",
+   "AronowAudit.P005.Wave1.t4_complement_expectation",
+   "AronowAudit.P005.kappa_bounds"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.Wave1.corrected_interacted_expansion_two_conditional",
+    "reason": "Requires unproved Tropp2011RowSampling; the stochastic expansion is dropped and only the independently proved canonical log-equivalence clauses are retained."
+   }
+  ],
+  "statement_definition": "SAP.P005a.T9WholeStatement"
+ },
+ {
+  "target_id": "P005-T10",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.interacted_weight_counterexample",
+   "SAP.P005a.WH.W2.T10_whole",
+   "SAP.P005a.WH.W2.T10_assembly",
+   "SAP.P005a.WH.W2.T10_complete",
+   "AronowAudit.P005.interacted_inverse_counterexample",
+   "AronowAudit.P005.sampleCov_scale_both",
+   "AronowAudit.P005.sampleCov_scale_left",
+   "AronowAudit.P005.scalar_leverage",
+   "AronowAudit.P005.scalar_dot_armN",
+   "AronowAudit.P005.expectation_six_two"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.sampleCov_scale_both",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.sampleCov_scale_left",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.scalar_armL_det",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.scalar_dot_armN",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.scalar_leverage",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.standardized_scalar",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   }
+  ],
+  "statement_definition": "SAP.P005a.T10WholeStatement"
+ },
+ {
+  "target_id": "P005-T11",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.control_arm_expectation_proof",
+   "AronowAudit.P005.Wave1.corrected_arm_debiased_order_proof",
+   "AronowAudit.P005.Wave1.treated_arm_expectation_proof",
+   "AronowAudit.P005.treated_arm_cancellation",
+   "SAP.P005a.WH.W2.T11_whole",
+   "SAP.P005a.WH.W2.T11_assembly",
+   "SAP.P005a.WH.W2.wholeArmOrder_proof",
+   "AronowAudit.P005.Wave1.control_arm_generic_expectation",
+   "AronowAudit.P005.Wave1.control_arm_unbiased_any_size",
+   "AronowAudit.P005.Wave1.control_arm_coefficient_unique",
+   "AronowAudit.P005.Wave1.GP005B1b_remainder_first",
+   "AronowAudit.P005.Wave1.GP005B1b_markov",
+   "AronowAudit.P005.kappa_bounds",
+   "AronowAudit.P005.leverage_le_population_size"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.dot_comm",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.kappa_bounds",
+    "reason": "The standalone leverage-range conclusion is not retained; the rate theorem is used directly."
+   },
+   {
+    "lean_name": "AronowAudit.P005.leverage_le_population_size",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   }
+  ],
+  "statement_definition": "SAP.P005a.T11WholeStatement"
+ }
+]

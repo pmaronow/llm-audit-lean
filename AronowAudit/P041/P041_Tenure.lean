@@ -7,17 +7,17 @@ namespace AronowAudit.P041
 
 /-- "lengthofincumbency: Year Senator was first elected" (deposited codebook
 p. 1), in contrast to the S9/S10 tenure labels. The conversion "L=C-Y",
-with C=2014, is used in P041-T10 and P041-E004. -/
+with C=2014, is fixed in P041-T10 and validator E004, steps 1-3. -/
 def tenureFromYear (C Y : ℝ) : ℝ := C - Y
 
 /-- "h₀(t) exp(bY+aT+gTY+w)", P041-T10: the Cox hazard expressed using
 first-election year, the fitted S9 covariate. The paper prints hazard ratios,
-not this parameterization (P041-E004). -/
+not this formula; validator E004 supplies the parameterization. -/
 def yearHazard (h₀ b a g Y T w : ℝ) : ℝ :=
   h₀ * Real.exp (b*Y + a*T + g*T*Y + w)
 
 /-- The same Cox hazard in tenure coordinates: bL=-b, aL=a+Cg, gL=-g,
-h₀L=h₀ exp(Cb), P041-E004 / P041-T10(i). -/
+h₀L=h₀ exp(Cb), validator E004 steps 2-3 / P041-T10(i). -/
 def tenureHazard (h₀ b a g C L T w : ℝ) : ℝ :=
   (h₀ * Real.exp (C*b)) * Real.exp ((-b)*L + (a+C*g)*T + (-g)*T*L + w)
 
@@ -88,7 +88,7 @@ theorem reciprocal_standard_error_and_wald (g V s : ℝ) (_hV : 0 ≤ V)
     field_simp
   · rw [neg_sq]
 
-/-- "(132/125)^[T(Y-2009)]", P041-E004 / P041-T10(v),
+/-- "(132/125)^[T(Y-2009)]", validator E004 step 5 / P041-T10(v),
 represented equivalently by exp(log(132/125) T (Y-2009)). -/
 def illustrativeYearRelativeHazard (T Y : ℝ) : ℝ :=
   Real.exp (Real.log (132/125) * T * (Y-2009))
@@ -115,3 +115,8 @@ theorem year_tenure_exact_instance :
 
 end AronowAudit.P041
 
+#print axioms AronowAudit.P041.year_tenure_reparameterization
+#print axioms AronowAudit.P041.tenure_multiplier_is_reciprocal
+#print axioms AronowAudit.P041.printed_tenure_reciprocal_enclosures
+#print axioms AronowAudit.P041.reciprocal_standard_error_and_wald
+#print axioms AronowAudit.P041.year_tenure_exact_instance

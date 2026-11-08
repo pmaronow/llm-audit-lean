@@ -1,0 +1,208 @@
+import SAP.P029a.Challenge
+
+open SAP.P029a MeasureTheory ProbabilityTheory Set Filter
+open scoped BigOperators Classical Topology ENNReal
+
+noncomputable section
+
+-- Independently check that all fixed counterexample distributions are genuine laws.
+example : IsFiniteLaw sixAtomMass := by
+  constructor
+  · intro ⟨i,z⟩
+    fin_cases i <;> cases z <;>
+      norm_num [sixAtomMass, bernoulliProductMass, complianceTypeMass]
+  · norm_num [sixAtomMass, bernoulliProductMass, complianceTypeMass,
+      Fintype.sum_prod_type, Fin.sum_univ_succ, Fintype.sum_bool]
+
+example : IsFiniteLaw marginalWitnessMass := by
+  constructor
+  · intro ⟨⟨⟨c,t,x⟩,b⟩,z⟩
+    cases c <;> cases t <;> cases x <;> cases b <;> cases z <;>
+      norm_num [marginalWitnessMass, bernoulliProductMass, marginalBaseMass]
+  · norm_num [marginalWitnessMass, bernoulliProductMass, marginalBaseMass,
+      Fintype.sum_prod_type, Fintype.sum_bool]
+
+example : IsFiniteLaw conditionalWitnessMass := by
+  constructor
+  · intro ⟨⟨⟨c,t,x⟩,b⟩,z⟩
+    cases c <;> cases t <;> cases x <;> cases b <;> cases z <;>
+      norm_num [conditionalWitnessMass, bernoulliProductMass, conditionalBaseMass]
+  · norm_num [conditionalWitnessMass, bernoulliProductMass, conditionalBaseMass,
+      Fintype.sum_prod_type, Fintype.sum_bool]
+
+-- A nondegenerate probability space for all hypotheses of T2(c) and T4's model.
+def auditCoin : Measure Bool :=
+  (1/2 : ℝ≥0∞) • Measure.dirac false + (1/2 : ℝ≥0∞) • Measure.dirac true
+
+@[simp] lemma auditHalfSum : (2 : ℝ≥0∞)⁻¹ + (2 : ℝ≥0∞)⁻¹ = 1 := by
+  simpa only [one_div] using ENNReal.add_halves (1 : ℝ≥0∞)
+
+instance : IsProbabilityMeasure auditCoin := by
+  constructor
+  norm_num [auditCoin]
+
+def auditResponse {Ω : Type*} (_ : Ω) : PotentialResponse Unit :=
+  ⟨(),false,true,0,1⟩
+
+lemma auditCoin_true : eventProbability auditCoin {z : Bool | z = true} = 1/2 := by
+  norm_num [eventProbability, auditCoin, Measure.add_apply]
+
+lemma auditCore : WholeIVCore auditCoin auditResponse id := by
+  constructor
+  · exact measurable_const
+  · exact measurable_const
+  · exact measurable_const
+  · exact measurable_const
+  · exact measurable_const
+  · exact measurable_id
+  · exact integrable_const _
+  · exact integrable_const _
+  · exact indepFun_const_right id ((),false,true,(0:ℝ),(1:ℝ))
+  · change 0 < eventProbability auditCoin {z : Bool | z = true}
+    rw [auditCoin_true]
+    norm_num
+  · change eventProbability auditCoin {z : Bool | z = true} < 1
+    rw [auditCoin_true]
+    norm_num
+
+lemma auditProfile : ∀ x : Unit,
+    0 < eventProbability auditCoin {z | (auditResponse z).x = x} := by
+  intro x
+  cases x
+  norm_num [auditResponse, eventProbability, auditCoin, Measure.add_apply]
+
+lemma auditScore : ∀ x : Unit, complianceProbability auditCoin auditResponse x = 1 := by
+  intro x
+  cases x
+  norm_num [complianceProbability, eventProbability, auditResponse, auditCoin, Measure.add_apply,
+    PotentialResponse.isComplier]
+
+lemma auditModel : WholeFiniteModel auditCoin auditResponse id := by
+  refine ⟨auditCore, ?_, auditProfile, ?_⟩
+  · simp [auditResponse, PotentialResponse.isDefier]
+  · intro x
+    rw [auditScore]
+    norm_num
+
+lemma auditReceipt : ReceiptMeanEquality auditCoin auditResponse id () := by
+  norm_num [ReceiptMeanEquality, eventMean, eventProbability, auditResponse,
+    PotentialResponse.receivedTreatment, auditCoin, Measure.add_apply,
+    Measure.restrict_apply]
+
+-- The entire premise of the general one-sided implication has an instance.
+example : WholeIVCore auditCoin auditResponse id ∧
+    (∀ᵐ z ∂auditCoin, (auditResponse z).d0 = false) ∧
+    0 < eventProbability auditCoin {z | (auditResponse z).x = ()} ∧
+    0 < complianceProbability auditCoin auditResponse () ∧
+    ReceiptMeanEquality auditCoin auditResponse id () := by
+  refine ⟨auditCore, Filter.Eventually.of_forall (fun _ => rfl), auditProfile (), ?_, auditReceipt⟩
+  rw [auditScore]
+  norm_num
+
+-- Both optional population sufficiency premises hold on this same nonzero-effect model.
+example : WholeMeanPremises auditCoin auditResponse ∧
+    WholeJointIndependence auditCoin auditResponse := by
+  constructor
+  · have hC : {z : Bool | (auditResponse z).isComplier} = Set.univ := by
+      ext z
+      simp [auditResponse, PotentialResponse.isComplier]
+    unfold WholeMeanPremises
+    simp only [LatentMeanEquality, hC]
+    norm_num [eventMean, eventProbability, auditResponse, PotentialResponse.treatmentEffect,
+      PotentialResponse.isComplier, auditCoin, Measure.real, Measure.add_apply,
+      Measure.restrict_apply]
+  · left
+    simpa [auditResponse, PotentialResponse.treatmentEffect, PotentialResponse.isComplier] using
+      (indepFun_const_left (μ := auditCoin) (1 : ℝ) (fun _ : Bool => (true, ())))
+
+-- T5's universally quantified positive-weight premise is inhabited.
+example : ∃ w : NoiseRecord → ℝ, ∀ i, 0 < w i := ⟨fun _ => 1, by norm_num⟩
+
+example : Fintype.card NoiseRecord = 500 := by norm_num [NoiseRecord]
+
+example (opposite : Bool) (i : NoiseRecord) :
+    (noisePotentialResponse opposite i).treatmentEffect = 5 := by
+  simp [noisePotentialResponse, PotentialResponse.treatmentEffect]
+
+example : codedBenchmark (fun _ : Fin 500 => ![1/5,0,0]) = 6 := by
+  norm_num [codedBenchmark]
+
+-- An actual infinite iid experiment, rather than repeated dependent draws.
+def auditStreams : Measure (ℕ → Bool) := Measure.infinitePi (fun _ => auditCoin)
+
+instance : IsProbabilityMeasure auditStreams := by
+  unfold auditStreams
+  infer_instance
+
+lemma auditStreamMass (i : ℕ) :
+    eventProbability auditStreams {ω | ω i = true} = 1/2 := by
+  rw [← auditCoin_true]
+  unfold eventProbability auditStreams
+  congr 1
+  exact (measurePreserving_eval_infinitePi (fun _ : ℕ => auditCoin) i).measure_preimage
+    (s := {z : Bool | z = true}) (by measurability)
+
+lemma auditStreamModel :
+    WholeFiniteModel auditStreams auditResponse (fun ω => ω 0) := by
+  constructor
+  · constructor
+    · exact measurable_const
+    · exact measurable_const
+    · exact measurable_const
+    · exact measurable_const
+    · exact measurable_const
+    · exact measurable_pi_apply 0
+    · exact integrable_const _
+    · exact integrable_const _
+    · exact indepFun_const_right (μ := auditStreams) (fun ω : ℕ → Bool => ω 0)
+        ((),false,true,(0:ℝ),(1:ℝ))
+    · rw [auditStreamMass]
+      norm_num
+    · rw [auditStreamMass]
+      norm_num
+  · simp [auditResponse, PotentialResponse.isDefier]
+  · intro x
+    cases x
+    simp [auditResponse, eventProbability]
+  · intro x
+    cases x
+    norm_num [complianceProbability, eventProbability, auditResponse,
+      PotentialResponse.isComplier]
+
+lemma auditStreamIID :
+    WholeIID auditStreams (fun _ => auditResponse) (fun i ω => ω i) := by
+  constructor
+  · intro i
+    unfold wholeJoint auditResponse
+    fun_prop
+  · change iIndepFun (fun (i : ℕ) (ω : ℕ → Bool) =>
+        ((),false,true,(0:ℝ),(1:ℝ),ω i)) (Measure.infinitePi (fun _ => auditCoin))
+    exact
+      (iIndepFun_infinitePi (P := fun _ : ℕ => auditCoin)
+        (X := fun _ z => ((),false,true,(0:ℝ),(1:ℝ),z)) (fun _ => by fun_prop))
+  · intro i
+    change IdentDistrib (fun ω : ℕ → Bool => ((),false,true,(0:ℝ),(1:ℝ),ω i))
+      (fun ω : ℕ → Bool => ((),false,true,(0:ℝ),(1:ℝ),ω 0)) auditStreams auditStreams
+    have h : IdentDistrib (fun ω : ℕ → Bool => ω i) (fun ω => ω 0)
+        auditStreams auditStreams := by
+      refine ⟨(measurable_pi_apply i).aemeasurable,
+        (measurable_pi_apply 0).aemeasurable, ?_⟩
+      simp only [auditStreams, Measure.infinitePi_map_eval]
+    simpa only [Function.comp_def] using
+      h.comp (u := fun z : Bool => ((),false,true,(0:ℝ),(1:ℝ),z)) (by fun_prop)
+
+example : WholeFiniteModel auditStreams auditResponse (fun ω => ω 0) ∧
+    WholeIID auditStreams (fun _ => auditResponse) (fun i ω => ω i) ∧
+    (∀ (_n : ℕ) (_x : Unit), Measurable (fun _ : ℕ → Bool => (1:ℝ))) ∧
+    (∀ x : Unit, TendstoInMeasure auditStreams (fun (_ : ℕ) (_ : ℕ → Bool) => (1:ℝ))
+      atTop (fun _ => complianceProbability auditStreams auditResponse x)) := by
+  refine ⟨auditStreamModel, auditStreamIID, fun _ _ => measurable_const, ?_⟩
+  intro x
+  cases x
+  have hc : complianceProbability auditStreams auditResponse () = 1 := by
+    norm_num [complianceProbability, eventProbability, auditResponse,
+      PotentialResponse.isComplier]
+  rw [hc]
+  intro ε hε
+  simpa only [edist_self, not_le_of_gt hε, Set.ofPred_false, measure_empty] using
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0))

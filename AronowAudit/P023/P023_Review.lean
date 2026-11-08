@@ -1,6 +1,7 @@
 import AronowAudit.P023.P023_Audit
 
 /-!
+Positive statements retained by the 19 October author-comment review.
 These results complement the finite weight counterexamples: a nonzero distant
 weight does not contradict convergence of two estimators to a common target.
 The consistency hypotheses below are explicit. This file does not assert that
@@ -42,7 +43,7 @@ theorem convergesInProbability_sub {Ω : Type*} [MeasurableSpace Ω]
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ht
     (fun _ => bot_le) (fun N => difference_probability_bound P (A N) (B N) a b ε)
 
-/-- P023-T3, common-target qualification: shared consistency implies
+/-- P023-T3, accepted common-target qualification: shared consistency implies
 asymptotic equivalence at every fixed positive tolerance. -/
 theorem shared_target_asymptotic_equivalence {Ω : Type*} [MeasurableSpace Ω]
     (P : Measure Ω) (A B : ℕ → Ω → ℝ) (β : ℝ)
@@ -61,6 +62,20 @@ theorem polynomial_rd_shared_consistency {Ω : Type*} [MeasurableSpace Ω]
       (fun N ω => samplePolynomial sample N J ω - sampleRD sample k N ω) 0 := by
   exact shared_target_asymptotic_equivalence P _ _ β hOLS hRD
 
+/-- Constant estimators supply a nonempty instance of shared consistency for
+every measure. No artificial probability axiom is needed by the union bound. -/
+theorem constant_convergesInProbability {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) (β : ℝ) :
+    ConvergesInProbability P (fun _ _ => β) β := by
+  intro ε hε
+  simpa only [sub_self, abs_zero, not_lt_of_ge hε.le, Set.setOf_false,
+    measure_empty] using (tendsto_const_nhds :
+      Tendsto (fun _ : ℕ => (0 : ENNReal)) atTop (nhds 0))
 
 end AronowAudit.P023
 
+#print axioms AronowAudit.P023.difference_probability_bound
+#print axioms AronowAudit.P023.convergesInProbability_sub
+#print axioms AronowAudit.P023.shared_target_asymptotic_equivalence
+#print axioms AronowAudit.P023.polynomial_rd_shared_consistency
+#print axioms AronowAudit.P023.constant_convergesInProbability

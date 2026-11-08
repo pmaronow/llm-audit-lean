@@ -1,0 +1,134 @@
+[
+ {
+  "target_id": "P018-T20",
+  "decision": "restricted",
+  "theorem": "SAP.P018b.T20",
+  "restriction": "For canonical clause (ii), retain only consistency under the following explicit C1 and C2 premises; equivalence with the unsupplied canonical P018-T10 hypotheses is not asserted. C1 assumes iid units, measurable uniformly bounded common record-index pair kernels with an intercept, 1 <= T(N,d) <= T0 for one fixed T0, H_r,N tending to a positive definite H, and (N/L_N^2) times the sum over ordered overlapping dyads d,f of E[b_d] E[b_f] transpose tending to zero, including diagonal pairs. C2 assumes iid units, measurable uniformly bounded records with an intercept, at most two records per dyad, one common ordered-pair kernel used in original or reversed endpoint order with injective Boolean record orientations, deterministic weights with positive scales a_N and a uniform finite bound 0 < w_Ndt/a_N <= C, and H_(w/a),N tending to a positive definite limit. These are substantive model and limit premises, not usual measure-theoretic existence conditions. The finite covariance identities, UI-based actual-covariance implication, moment-failure examples and deterministic-limit equivalence are retained.",
+  "rows_used": [
+   "AronowAudit.P018.Wave1.variance_limit_with_UI_proof",
+   "AronowAudit.P018.Wave1.TailB_rare_gram_pos",
+   "AronowAudit.P018.Wave1.TailB_rare_standing",
+   "AronowAudit.P018.Wave1.WeightedConsistency.inProbability_deterministic",
+   "AronowAudit.P018.Wave1.repeated_consistency_with_overlap_mean_control",
+   "AronowAudit.P018.Wave1.repeated_target_correction_proof",
+   "AronowAudit.P018.Wave1.weighted_consistency_common_directed_kernel",
+   "AronowAudit.P018.Wave1.weighted_target_correction_proof",
+   "AronowAudit.P018.covariance_score_scale",
+   "SAP.P018b.WH.W1.T20_L1_proof",
+   "SAP.P018b.WH.W1.T20_L2_proof",
+   "SAP.P018b.WH.W1.T20_L3_proof",
+   "SAP.P018b.WH.W1.T20_L4_proof",
+   "SAP.P018b.WH.W1.T20_assembly",
+   "SAP.P018b.WH.W1.T20_whole",
+   "SAP.P018b.WH.W1.rareModel_law"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P018b.T20WholeStatement",
+  "documentation": {
+   "referenced_hypotheses": "The Challenge and shared-statement docstrings state the explicit repeated C1 and directed-weighted C2 premises and the finite covariance target definitions; their equivalence to the unsupplied canonical P018-T10 hypotheses is not asserted.",
+   "substantive_assumptions": "The explicit C1/C2 scope is recorded as the restriction of canonical clause (ii), including common kernels, uniform record/weight bounds, positive limiting designs and the C1 vanishing scaled overlap products of expected block scores."
+  }
+ },
+ {
+  "target_id": "P018-T21",
+  "decision": "whole",
+  "theorem": "SAP.P018b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P018.expectation_placement_correction",
+   "AronowAudit.P018.Wave1.dyad_counts_proof",
+   "AronowAudit.P018.Wave1.nonlinear_counterexample_proof",
+   "AronowAudit.P018.Wave1.vc3_corrected_expand",
+   "AronowAudit.P018.Wave1.vc3_sparse_variance",
+   "SAP.P018b.WH.W1.T21_assembly",
+   "SAP.P018b.WH.W1.T21_whole"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P018b.T21WholeStatement"
+ },
+ {
+  "target_id": "P018-T22",
+  "decision": "whole",
+  "theorem": "SAP.P018b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P018.Wave1.simulation_design_correction_proof",
+   "SAP.P018b.WH.W2.T22_L1_proof",
+   "SAP.P018b.WH.W2.T22_assembly",
+   "SAP.P018b.WH.W2.T22_whole"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P018b.T22WholeStatement"
+ },
+ {
+  "target_id": "P018-T23",
+  "decision": "whole",
+  "theorem": "SAP.P018b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P018.generic_score_meat_psd",
+   "AronowAudit.P018.logistic_formula_correction",
+   "AronowAudit.P018.logistic_summed_formulas"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P018.expit_bounds",
+    "reason": "Supporting helper already used inside the selected exported result; no separate invocation or additional claim."
+   },
+   {
+    "lean_name": "AronowAudit.P018.expit_hasDerivAt",
+    "reason": "Supporting helper already used inside the selected exported result; no separate invocation or additional claim."
+   },
+   {
+    "lean_name": "AronowAudit.P018.expit_positive_form",
+    "reason": "Supporting helper already used inside the selected exported result; no separate invocation or additional claim."
+   },
+   {
+    "lean_name": "AronowAudit.P018.predictor_partial_derivative",
+    "reason": "Supporting helper already used inside the selected exported result; no separate invocation or additional claim."
+   },
+   {
+    "lean_name": "AronowAudit.P018.scalar_logLikelihood_derivative",
+    "reason": "Supporting helper already used inside the selected exported result; no separate invocation or additional claim."
+   }
+  ],
+  "statement_definition": "SAP.P018b.T23Statement",
+  "documentation": {
+   "measure_conditions": "The generic expected same-data score-product assertion assumes a probability law and square-integrability of every score coordinate; the docstring now states these conditions."
+  }
+ },
+ {
+  "target_id": "P018-T24",
+  "decision": "whole",
+  "theorem": "SAP.P018b.T24",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P018.PaperDomains.significance_on_rounding_intervals",
+   "AronowAudit.P018.table_exact_ratios",
+   "AronowAudit.P018.table_magnitude_correction",
+   "AronowAudit.P018.table_rounding_constraints",
+   "AronowAudit.P018.significance_rounding_positive",
+   "SAP.P018b.WH.W2.T24_assembly",
+   "SAP.P018b.WH.W2.T24_whole"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P018.PaperDomains.printed_significance_rounding_refuted",
+    "reason": "Addresses the superseded denominator-free significance draft, or is already subsumed by table_magnitude_correction; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P018.significance_rounding_literal_fails",
+    "reason": "Addresses the superseded denominator-free significance draft, or is already subsumed by table_magnitude_correction; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P018.table_ratios_corrected",
+    "reason": "Addresses the superseded denominator-free significance draft, or is already subsumed by table_magnitude_correction; no separate invocation."
+   },
+   {
+    "lean_name": "AronowAudit.P018.table_rounding_ratio",
+    "reason": "Addresses the superseded denominator-free significance draft, or is already subsumed by table_magnitude_correction; no separate invocation."
+   }
+  ],
+  "statement_definition": "SAP.P018b.T24WholeStatement"
+ }
+]

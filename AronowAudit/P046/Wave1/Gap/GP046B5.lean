@@ -2,10 +2,10 @@ import AronowAudit.P046.P046_Audit
 import AronowAudit.P061.P061_Foundations
 
 /-!
-Cross-fitting remainder bounds and the normal limit.
+Independent proofs for P046 records 19 and 20.
 The remainder bound is proved by splitting the finite product into training and
 validation coordinates. The normal limit uses that bound and a direct calculation
-of the true-regression summand's variance.
+of the true-regression summand's variance; no held gap theorem is a proof dependency.
 -/
 
 noncomputable section
@@ -409,7 +409,7 @@ lemma rcheb_measurable_predictor (M : Study) (hM : ValidStudy M)
   rw [hleft, hright]
   exact htail
 
-/- The true-regression variance and normal limit. -/
+/- Record 19: the true-regression variance and normal limit. -/
 lemma p4d_xy_integral (M : Study) (hM : ValidStudy M)
     (h : ℝ → ℝ) (hm : Measurable h) (hi : Integrable (fun o => h (W o)) M.law) :
     (∫ o, h (W o) * (X o * Y1 o) ∂M.law) =
@@ -639,7 +639,9 @@ theorem proposition4d_proof (M : Study) (hM : ValidStudy M) (F : ∀ n, CrossFit
     NormalLimit M (fun n => adjusted M (F n)) (hahnBound M) := by
   exact p4d_normal_limit M hM F hconv hfitsL2
 
-/- Transfer from a Borel version to an arbitrary L2 predictor. -/
+example : type_of% @AronowAudit.P046.proposition4d := proposition4d_proof
+
+/- Record 20: transfer from a Borel version back to the exact arbitrary L2 predictor. -/
 theorem remainder_chebyshev_proof (M : Study) (hM : ValidStudy M)
     (n : ℕ) (hn : 0 < n) (F : CrossFit n) (j : Bool) (g : ℝ → ℝ)
     (hg : MemLp (fun o => g (W o)) 2 M.law)
@@ -680,5 +682,8 @@ theorem remainder_chebyshev_proof (M : Study) (hM : ValidStudy M)
     rw [herr]
   rw [htail, hevent]
   exact rcheb_measurable_predictor M hM n hn F j g₀ mg₀ hg₀ hfits eps eta heps heta
+
+example : type_of% @AronowAudit.P046.remainder_chebyshev := remainder_chebyshev_proof
+
 
 end AronowAudit.P046.Wave1

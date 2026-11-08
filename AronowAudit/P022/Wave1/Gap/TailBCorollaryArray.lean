@@ -58,7 +58,7 @@ theorem tb13_array_statistic (d : Design) (y1 y0 : Fin d.N → ℝ) (π : Assign
   simp only [sub_mul, add_mul, Finset.sum_add_distrib, Finset.sum_sub_distrib,
     ← Finset.mul_sum, h1, h0, mul_zero, sub_zero, add_zero]
 
-/-- Exact energy normalization follows from the array second moment
+/-- Exact energy normalization follows from the already proved array second moment
 and the independently defined randomization variance. -/
 theorem tb13_array_energy (d : Design) (y1 y0 : Fin d.N → ℝ)
     (hv : 0 < trueVariance d y1 y0) :

@@ -1,0 +1,14 @@
+[
+  {
+    "theorem": "SAP.P009a.T16",
+    "target_id": "P009-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The quantifiers cover every positive finite sample size, every binary-assignment design, both arms, and every positive real k. Unfolding T16WholeStatement gives both canonical full-pair inequalities, termwise alpha domination including the diagonal, 0 <= alpha <= 1/4, self-dependence, the dependence-sum identity, and the equivalent off-diagonal expression with diagonal Bernoulli variances restored. The additional covariance and absolute-gap identities are correct strengthenings, not restrictions. FiniteDistribution, Affects, SharesCause, averageDependence and mixingCoefficient render the canonical finite probability model and generated-sigma-algebra mixing coefficient correctly. The supremum is nonempty and bounded; n and n^2 are positive. scratch/Nonvacuity.lean compiles a one-unit fair identity-outcome experiment with n=1, b=true and k=2, satisfying every hypothesis. No conclusion is assumed."
+  },
+  {
+    "theorem": "SAP.P009a.T17",
+    "target_id": "P009-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical counterexample assertion is fully represented: the self-excluding count has incomingCount-1 candidate units; the specified four-unit, two-treated uniform design and full-cube outcome schedule have incomingCount=2=min(2,4-2), count Z_2, all three true/printed tables on t=0,1,2, true ratio 4/3 versus printed ratio 2, and true ratio-minus-one 1/3 versus printed RHS 1. The second specified identity-outcome design has incomingCount=1, count identically zero, true zero-count mass 1 and printed mass 1/2. Both satisfy regularity and have marginals 1/2. The witness meets every condition of the printed reading, including complete randomization, the incoming-count bound and positive support/conditioning/ratio denominators; it refutes the printed laws and identity themselves and makes no claim to refute Lemma A12's inequality. scratch/Nonvacuity.lean independently compiles both designs and all regularity/marginal/no-spillovers hypotheses; scratch/check_witness.py verifies the full-cube interference graph, all tables and discrepancies by exact rational arithmetic. Natural subtraction in printedHypergeomMass is used only at nonnegative arguments, so no junk value contributes."
+  }
+]

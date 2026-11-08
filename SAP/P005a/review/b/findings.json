@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P005-T1",
+    "theorem": "SAP.P005a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed six-unit arrays in Defs.Part1, with m=4, give 15 equally likely assignments, positive variance 16607/4800 and bound 3829/1440. Independently enumerated in scratch/audit_checks.py. All denominators are nonzero.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T2",
+    "theorem": "SAP.P005a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=6,m=4,a=witnessA,b=witnessB supplies nonconstant admissible arrays and a nonempty 15-point design. Either arm is nonempty. Additional exact checks covered both arms and every arm size for n=4,...,8. The singleton-arm covariance is zero for the mathematical reason, not zero division.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T3",
+    "theorem": "SAP.P005a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified n=16,d=1,m=8 population has positive normalizing scale, mean-zero identity-Gram covariates and 12870 assignments. Exact rational enumeration verifies positive within-arm variances for every assignment. Standardization makes Lhat the positive weighted sum of the two arm covariance matrices, hence also nonsingular.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T4",
+    "theorem": "SAP.P005a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Finite part: signPopulation with n=6,d=1,m=2,K=28, either arm. Sequence part: for n>=3 let d=1,m=floor(n/2), x_i=sqrt(12/(n^2-1))*(i-(n-1)/2), Y_Ti=x_i^2,Y_Ci=0. This grid has mean zero, mean square one, kappa=3(n-1)/(n(n+1)), and all required second moments <=3. The allocation constants may be 1/4 and 3/4. Thus all sequence hypotheses hold with positive dimension and a positive rate; initial n<3 values may be arbitrary.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T5",
+    "theorem": "SAP.P005a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "signPopulation is the stated n=6,d=1,m=2 instance. Both outcomes are nonconstant, their second moments are <=28, the two leverage covariances are nonzero, and every one of 15 assignments has positive treated/control variance. The actual component is 217/2500 and the printed one is -217/2500 by independent exact enumeration.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T6",
+    "theorem": "SAP.P005a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=6,d=1,m=2,P=signPopulation. Its covariate mean is zero and both third-component leverage covariances are nonzero, so the content does not rely on empty coordinates or zero outcomes. Separate exact checks of nonconstant centered scalar arrays included n=3,...,8 and every nonempty arm size.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T7",
+    "theorem": "SAP.P005a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed constructive theorem, not an implication from an assumed bad rate. The spike sequence has positive Q for n>=6, normalized one-dimensional covariates, bounded outcomes, and regular arms under every assignment for n>=6. The required moment/allocation conditions also hold at n=3,4,5. Exact enumeration at n=6,8,10,12 checks regularity and the remainder lower bound. The closed kappa formula tends to one; the fitted line without the spike predicts n while the other fitted value and leading term stay bounded. Consequently the even-subsequence lower bound really contradicts stochasticO on nonempty finite probability spaces.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T8",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem was retained. The canonical hypotheses themselves have nonempty examples on n>=6: the standardized scalar grid x_i=sqrt(12/(n^2-1))*(i-(n-1)/2), d=1,m=floor(n/2), bounded outcomes. All grid entries are distinct, both arms have at least three entries, kappa<3/n, and the repaired logarithm condition holds. Omission is a proof-availability issue, not vacuity.",
+    "confidence": 0.86
+  },
+  {
+    "target_id": "P005-T9",
+    "theorem": "SAP.P005a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example d(n)=1 and kappa(n)=1/(n+1) satisfy the eventual positivity/nonnegativity hypotheses and all applicable limit premises. Dimensions tending to infinity are also admitted. The retained theorem contains ordinary real limits and positive logarithm arguments, with no design-space or inverse convention involved.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T10",
+    "theorem": "SAP.P005a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified n=6,d=1,m=2 population has scale sqrt(3/20)>0 and six distinct covariate values. Both arms have positive variance for every one of 15 assignments. Exact enumeration gives 4913/1200 for the printed weight and 20/3 for the corrected weight and population mean.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T11",
+    "theorem": "SAP.P005a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the finite clauses take signPopulation, n=6,m=2; both arm sizes are >=2, and S={0,1} has nonzero arm determinant. Standardization and this determinant were checked in scratch/Check.lean. The centered normalized scalar grid described for T4 supplies positive-dimensional sequence instances with nonconstant bounded outcomes. No stochastic rate is assumed as a premise, and uniqueness concerns the numerical bias coefficient even when a particular leverage covariance vanishes.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T12",
+    "theorem": "SAP.P005a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the explicitly defined weightX and weightY as the scalar covariate and control outcome, with zero treated potential outcomes if a full population is wanted. All 15 assignments have strictly positive variances in both arms. Independent rational scaling checks reproduce the actual/corrected expectation 31085815448171/17062566567774 and wrong-inverse expectation 12010469/846720.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T13",
+    "theorem": "SAP.P005a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "signPopulation with n=6,d=1,m=2 satisfies all hypotheses, including control invertibility for every assignment. Its control leverage covariance is 868/625, so the component identities are substantive. Degenerate d=0 cases are permitted but are not needed for nonvacuity.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P005-T14",
+    "theorem": "SAP.P005a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "signPopulation,n=6,d=1,m=2 satisfies standardization and all-assignment noninteracted regularity, since Lhat is the positive weighted sum of the two positive arm variances. It therefore supplies instances for all four quantifier blocks. For the factorization, replace each arm outcome in Nhat by the observed outcome array: the values agree on the arm in question, yielding an explicit F(S,x,O) with the required population-independent order of quantifiers.",
+    "confidence": 0.97
+  }
+]

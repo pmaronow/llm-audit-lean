@@ -1,0 +1,112 @@
+[
+ {
+  "target_id": "P022-T4",
+  "decision": "whole",
+  "theorem": "SAP.P022.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.Wave1.cdf_variance_corrected_proof",
+   "AronowAudit.P022.indicator_population_variance"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P022.bernoulli_variance_bound",
+    "reason": "The corrected CDF-variance row already supplies both quarter-factor upper bounds."
+   },
+   {
+    "lean_name": "AronowAudit.P022.finite_variance_second_moment",
+    "reason": "The indicator-variance row supplies the relevant population-variance identity directly."
+   },
+   {
+    "lean_name": "AronowAudit.P022.sampled_cdfs_unbiased",
+    "reason": "Both unbiasedness identities are already in the corrected CDF-variance row."
+   }
+  ]
+ },
+ {
+  "target_id": "P022-T5",
+  "decision": "refuted",
+  "theorem": "SAP.P022.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.equation11_counterexample",
+   "AronowAudit.P022.Wave1.cdf_variance_corrected_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P022.design_constant",
+    "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P022.finiteMean_const",
+    "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+   }
+  ]
+ },
+ {
+  "target_id": "P022-T8",
+  "decision": "whole",
+  "theorem": "SAP.P022.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.Wave1.appendixB_corrected_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P022.centered_quadrature",
+    "reason": "The corrected Appendix B row already supplies the centered covariance and variance substitution identities."
+   }
+  ]
+ },
+ {
+  "target_id": "P022-T9",
+  "decision": "whole",
+  "theorem": "SAP.P022.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P022.appendixB_counterexample",
+   "AronowAudit.P022.Wave1.appendixB_general_discrepancy_proof",
+   "SAP.P022.WH.W1.T9_whole",
+   "SAP.P022.WH.W1.T9_assembly",
+   "SAP.P022.WH.W1.T9_L1_proof",
+   "SAP.P022.WH.W1.T9_L2_proof",
+   "AronowAudit.P022.Wave1.appendixB_corrected_proof",
+   "AronowAudit.P022.partition_two",
+   "AronowAudit.P022.quantile_two_ones",
+   "AronowAudit.P022.sharp_covariance_two_ones",
+   "AronowAudit.P022.finiteMean_const"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P022.partition_two",
+    "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P022.quantile_two_ones",
+    "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P022.sharp_covariance_two_ones",
+    "reason": "The selected aggregate theorem supplies the target component directly; this constituent fact is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P022.T9WholeStatement"
+ },
+ {
+  "target_id": "P022-T10",
+  "decision": "restricted",
+  "theorem": "SAP.P022.T10",
+  "restriction": "Retains the fixed-observed-sample identity and limit, and the actual-variance limit under uniformly bounded marginal variances and eventual fixed arm sizes. Drops the exact finite-N remainder identity for actual randomization variance, the (0,1) sample formulas and numerical examples, and any assertion about execution of the R branch.",
+  "rows_used": [
+   "AronowAudit.P022.fixed_sample_identity",
+   "AronowAudit.P022.fixed_sample_infinite_limit",
+   "AronowAudit.P022.Wave1.fixed_arm_variance_limit_eventually"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P022.independent_means_remainder",
+    "reason": "This is algebra for varianceExpression; the restricted theorem does not assert its exact identity for actual variance."
+   }
+  ]
+ }
+]

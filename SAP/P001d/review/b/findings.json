@@ -1,0 +1,194 @@
+[
+  {
+    "target_id": "P001-T58",
+    "theorem": "SAP.P001d.T58",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No hypotheses. At the concrete observation a=0 the signed kernel is even, integrable and normalized; its integral on (-infinity,-1] is -1/2. The negative mass therefore obstructs a CDF for every one-point sample, including samples from any continuous population.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T59",
+    "theorem": "SAP.P001d.T59",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=1, X_0=0, h=1 and rectangleKernel. scratch/Check.lean proves that this kernel is everywhere nonnegative, integrable, normalized and even. It also proves that any real kernel integral equal to 1 forces integrability, excluding the totalized undefined-integral case.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T60",
+    "theorem": "SAP.P001d.T60",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=1, X_0=0 and h=1. The rectangular kernel is integrable (checked in scratch/Check.lean). The empirical-CDF formula applies, for example, at x=0, since 0 is not x-h=-1. The general integral formula also has the admissible instance K=0.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T61",
+    "theorem": "SAP.P001d.T61",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean proves that both tail maps are measurable, uniformLaw(a,b) has mass 1 for a<b, heavyBootstrapLaw is a probability measure, and there exists a probability measure on the nonempty space (N -> R) whose coordinate process is IID with precisely this law. Thus neither an impossible law nor an empty sample space supplies the implication. The u=0 endpoint has zero uniform mass. No external bootstrap theorem is a hypothesis of the Challenge.",
+    "confidence": "medium-high"
+  },
+  {
+    "target_id": "P001-T62",
+    "theorem": "SAP.P001d.T62",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general weak-bootstrap premise use the sample mean of IID standard normal observations, phi=1: the empirical Lindeberg CLT gives the required conditional weak convergence. For the mean case the same law has finite positive variance 1. For the median case use IID uniform[-1,1] observations, m=0, delta=1/2 and constant local density f=1/2, with eta=1; the median is unique and all positive moments are finite. The law normalization and existence of IID coordinate sequences are checked generically in scratch/Check.lean; the conditional CLT and median limits are assessed mathematically, not reproved in that file.",
+    "confidence": "medium-high"
+  },
+  {
+    "target_id": "P001-T63",
+    "theorem": "SAP.P001d.T63",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let each cluster have two independent standard normal coordinates, and let the clusters be mutually independent with identical laws on the infinite product space. Each coordinate is in L2 with variance 1, the cluster mean has variance 1/2, and l=m=2 gives an ordinary nonempty instance. Correlated Gaussian clusters also satisfy the base hypotheses. The generic existence of IID coordinate processes is checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T64",
+    "theorem": "SAP.P001d.T64",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For m=2, s=1 and any rho in [0,1], set X_ij=sqrt(rho)*Z_i+sqrt(1-rho)*Z_ij using mutually independent standard normals, with disjoint underlying normals in different clusters. Diagonal covariances are 1 and off-diagonal covariances are rho; this includes both extreme cases and rho=1/2. The resampling assertion has the nonempty instance l=m=2, with four equally weighted index maps, each copying two complete clusters.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T65",
+    "theorem": "SAP.P001d.T65",
+    "verdict": "restriction_inaccurate",
+    "severity": "minor",
+    "issues": [
+      "The declared added restriction is inconsistent with the supplied canonical claim. SAP/P001d/Challenge/Part1.lean:41 and record.json[P001-T65].restriction say that Gram invertibility is added to Theorem 4.1.5 and that singular-design residual properties are dropped. But claims.json[P001-T65].canonical_claim.note explicitly says: \"Theorem 4.1.5 inherits the invertibility of $\\mathbb{X}^T\\mathbb{X}$.\" The same note specifies the exact formal content for realized samples with invertible Gram matrix. On that canonical reading T65 covers the whole target. The Lean theorem is true and nonvacuous; the error is the disclosure/classification, not its mathematical conclusion."
+    ],
+    "fix": "Set record.json[P001-T65].decision to \"whole\" and restriction to null. Replace the restriction sentence in the Challenge docstring with: \"The inverse-Gram OLS coefficient uniquely minimizes the squared criterion and satisfies all three residual identities for nonempty full-rank designs with an intercept, including the inherited Gram-invertibility assumption of Theorem 4.1.5 specified in the canonical claim.\"",
+    "nonvacuity": "n=2, K=0, X the all-ones column and y=(0,2) give Gram matrix [2], beta=1 and residual e=(-1,1). scratch/Check.lean verifies Gram invertibility and the intercept condition; the same residual gives strictly positive robust and classical selected diagonals. The theorem therefore has ordinary full-rank nonempty instances.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T66",
+    "theorem": "SAP.P001d.T66",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "n=2, K=0, X the all-ones column, supplied e=(-1,1), s2=1, k=0 give robustCov_00=classicalCov_00=1/2. scratch/Check.lean verifies invertibility, the intercept condition and strict positivity of both selected diagonals. In particular, the nonnegativity guards are jointly satisfiable without zero diagonals or an empty coefficient type.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T67",
+    "theorem": "SAP.P001d.T67",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use independent standard normal Z and epsilon, with X=(1,Z) and sigma2=1. X is measurable, epsilon is in L2, the two conditional-mean certificates follow from independence, all required products are integrable, and the population Gram matrix is the two-dimensional identity. Thus there are nonempty, invertible, positive-noise instances; no use of K=0 is needed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T68",
+    "theorem": "SAP.P001d.T68",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take independent standard normal X,W and g(x)=x. The noise has mean zero, both signal and noise are integrable, and g is globally Borel measurable. An elementary special case X=id, W=0, g=0 is also admissible; scratch/Check.lean directly proves its IsCEF certificate for every probability measure, without importing a Challenge theorem.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T69",
+    "theorem": "SAP.P001d.T69",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On R^2 with the product of uniformLaw(0,1) with itself, take the coordinate projections and Y=apdExample(X1,X2). The response is bounded almost surely, its stipulated CEF is itself, and both covariates are genuinely uniform and independent. The derivative in the first coordinate exists everywhere, including at y=4/5. The generic uniform-law normalization is checked in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T70",
+    "theorem": "SAP.P001d.T70",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The universal unsquared assertions have n=1,J=0,x=y=0 as an instance and the intercept coefficient makes the criterion -b0. For the full-rank branch use n=2,J=1,x=(0,1), whose polynomial design has Gram determinant 1. Nonempty singular samples, e.g. all x_i=0 with J=1, are covered by the first three conclusions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T71",
+    "theorem": "SAP.P001d.T71",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2,K=1, X with rows (1,0),(1,1), y=(0,1), lambda=1. The penalty is |b1| and the intercept vector (1,0) has zero slope penalty and full l1 norm 1. No rank condition or existence hypothesis is required for the asserted algebraic and convexity properties.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T72",
+    "theorem": "SAP.P001d.T72",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "K=0, x=(1), b=(0), s=1 is the standard normal density. Every positive scale is an admissible ordinary density. scratch/Check.lean separately verifies that the explicitly totalized formula normalDensity(m,0,y) is identically zero; this is not used as a probability law or as the density of gaussianReal(m,0), which is a Dirac measure.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T73",
+    "theorem": "SAP.P001d.T73",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "There is no hypothesis. The four-point space is nonempty and every atom has probability 1/4; both conditioning events have probability 1/2. scratch/Check.lean proves the full T73Statement by exact finite arithmetic, including the 1/2 versus 1/4 independence obstruction, without importing or invoking the Challenge theorem.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T74",
+    "theorem": "SAP.P001d.T74",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the product of two standard normal spaces take X=Z1, Y=Z1+Z2, m(x)=x and v(x)=1, with s=1. This satisfies the square-integrability and global-measurability assumptions and both conditional-mean certificates, and its joint law is exactly the translated product specified in the Gaussian branch. Signal and residual are nonconstant. The included T73Statement is independently proved in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T75",
+    "theorem": "SAP.P001d.T75",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "K=0, x=(1), b=(0), h(t)=1/2 for all t gives the nondegenerate PMF P(Y=0)=P(Y=1)=1/2 at the fixed covariate; its two-point mean is 1/2. Thus no zero probability, empty support or nonmeasurable conditional-kernel construction is needed.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T76",
+    "theorem": "SAP.P001d.T76",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take n=2,K=1, rows X=(1,0),(1,1), y=(0,1), bstar=(0,1), and scales s=1,t=2. RSS at bstar is zero and the positive-scale likelihood maximizer exists. The theorem also covers singular designs, but no existence or full-rank premise is used in its optimizer-set equivalences.",
+    "confidence": "high"
+  }
+]

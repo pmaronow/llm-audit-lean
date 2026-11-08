@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P008-T26",
+    "theorem": "SAP.P008b.T26",
+    "fingerprint": "964aa7373e73233b84e1e9874b4495045f9f0c49bf191ff1ca570773d05c500b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/SpatialChecks.lean with sap-lean (exit 0). Audit.T26_hypotheses at line 24 constructs a one-point counting-measure sharp-null model with N=1 and a valid radius-0 circle for every finite law, including uniformLaw (Assignment 1). Independently, Audit.cancel_valid at line 57 checks positive finite mass and integrability at radii 0 and 1 for the exact wholeCancellingModel; Audit.valid_radius at line 109 proves these are its only valid radii; Audit.cancel_all_valid at line 123 proves zero AMR for every law and every valid real radius; Audit.cancel_nonnull at line 84 proves the outcome at coordinate (1,0) changes from 0 to 1. The axiom reports contain only propext, Classical.choice and Quot.sound, with no sorryAx or audited theorem dependency.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T27",
+    "theorem": "SAP.P008b.T27",
+    "fingerprint": "ff841653aa30c2486c1bbceb6ca41124d6165b38bf2cba9a6a61346d5beb4558",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/SpatialChecks.lean with sap-lean (exit 0). Audit.T27_hypotheses at line 142 constructs N=1, field={0}, node 0, Dirac measure at 0, Euclidean distance, baseline 2 and coefficient 3, with potential outcomes 2+3*bit(z_0). It proves both the general additive and homogeneous radial hypotheses and all validSelectedCircle conditions at radius 0 for every finite law, including the uniform law. Thus the field, node, coefficient and circle are nonempty and the circle has genuine mass 1. The axiom report contains only propext, Classical.choice and Quot.sound.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T28",
+    "theorem": "SAP.P008b.T28",
+    "fingerprint": "9646a96daa683516685f8c03687c820a8024c41efaac440d772b1a793a9a5c9f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ProbabilityChecks.lean with sap-lean (exit 0). Audit.T28_hypotheses at line 75 constructs the entire sequence N=n+1, Q_n=uniformLaw (Assignment (n+1)), p=1/2, M_n(i,z)=bit(z_i), H=1, D=0 and any fixed real empty-arm completion (for example 0). Audit.local_dependency at line 45 proves the required independence of arbitrary separated collections using product-measure coordinate independence, so this is stronger than checking pairwise covariance. Audit.T28_target_nonzero at line 89 independently proves the target AMR equals 1 at every n. The hypothesis and target axiom reports contain only propext, Classical.choice and Quot.sound.",
+    "confidence": 0.99
+  }
+]

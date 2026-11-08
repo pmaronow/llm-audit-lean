@@ -94,5 +94,6 @@ theorem ht_variance_order (P : PopulationSequence Space) (p d : ℝ)
   simpa only [div_eq_mul_inv,mul_assoc] using hbound
 
 
+#print axioms ht_variance_order
 end
 end AronowAudit.P004

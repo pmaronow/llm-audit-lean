@@ -5,8 +5,9 @@ import AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.CombinatorialC
 import Mathlib.GroupTheory.GroupAction.SubMulAction.Combination
 
 /-!
-The sharp-null Wald limit under bounded-fourth-moment regularity. The
-finite-population Hájek CLT is imported from Apache-2.0 licensed StatLean. Fourth-moment regularity discharges its
+The sharp-null Wald limit from the original regularity conditions. The actual
+finite-population Hájek CLT is imported from the pinned Apache-2.0 StatLean
+closure, with unchanged proof bodies. Fourth-moment regularity discharges its
 Lindeberg condition. Finite transitive orbit averaging identifies permutation
 and complete-randomization laws without factorial enumeration; the proved
 moment LLN and varying-space Slutsky theorem supply studentization.
@@ -219,8 +220,8 @@ theorem normalized_second_moment_limit (E : ℕ → Population) (p v1 v0 vt τ :
 
 open MeasureTheory ProbabilityTheory
 
-/-- The StatLean Hájek theorem converted to the bounded-test-function notion
-of weak convergence. -/
+/-- The fully proved StatLean Hájek theorem converted to the bounded-test
+function notion of weak convergence used by the audit. -/
 theorem permutation_weakCLT {N m : ℕ → ℕ}
     (a : ∀ k, Fin (m k) → Fin (N k)) (ha : ∀ k, Function.Injective (a k))
     (d : ∀ k, Fin (N k) → ℝ) (hcent : ∀ k, ∑ l, d k l = 0)
@@ -518,7 +519,7 @@ theorem wald_validity_all_sizes (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
 
 end CLTCompletion
 
-/-- T6(c), proved by the finite-population Hájek CLT, the actual
+/-- Original T6(c), proved by the finite-population Hájek CLT, the actual
 moment LLN, and the varying-space Slutsky theorem. -/
 theorem sharp_null_wald_validity (E : ℕ → Population) (p v1 v0 vt tauInf : ℝ)
     (h : Regularity E p v1 v0 vt tauInf) (hs : ∀ k, SharpNull (E k)) (hv : 0 < v0) :
@@ -538,6 +539,8 @@ theorem sharp_null_wald_validity (E : ℕ → Population) (p v1 v0 vt tauInf : �
     exact (tendsto_add_atTop_iff_nat K).mp (hh.1 t)
   · intro α hα hα1
     exact (tendsto_add_atTop_iff_nat K).mp (hh.2 α hα hα1)
+
+#print axioms sharp_null_wald_validity
 
 end
 end AronowAudit.P053

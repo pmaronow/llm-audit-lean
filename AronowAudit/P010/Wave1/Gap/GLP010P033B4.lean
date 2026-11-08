@@ -17,7 +17,7 @@ open scoped ENNReal NNReal Classical Topology
 
 noncomputable section
 
-/-! Exact density calculations for the beta/heavy-tail witness. -/
+/-! Exact density calculations for the frozen beta/heavy-tail witness. -/
 
 def t5_betaDensity (x : ℝ) : ℝ := 30*x^2*(1-x)^2
 
@@ -1101,7 +1101,7 @@ lemma t5_extrema (a : Fin 2) :
     have he := h.unique hu
     exact EReal.top_ne_coe (1:ℝ) he
 
-/-- The complete T5 population witness. -/
+/-- The complete T5 witness, with the frozen population statement. -/
 theorem infinite_sharp_bounds_counterexample_proof :
     Assumptions boundedPassLaw ∧ boundedPassLaw alwaysPass = 1/3 ∧
     Atomless (boundedPassLaw.map observedY) ∧ FullRealSupport boundedPassLaw observedY ∧
@@ -1134,6 +1134,8 @@ theorem infinite_sharp_bounds_counterexample_proof :
     exact ⟨(ha.2 a).1, (ha.2 a).2, t5_compatible_mean a, t5_extrema a⟩
   · intro t ht ht1
     exact ⟨t5_beta_cdf t ht.le ht1.le, t5_endpoint_tail_data t ht ht1⟩
+
+example : type_of% @AronowAudit.P010.infinite_sharp_bounds_counterexample := infinite_sharp_bounds_counterexample_proof
 
 end
 end AronowAudit.P010.Wave1

@@ -91,7 +91,7 @@ lemma DecideF_weighted_actual_score {Ω C : Type*} [MeasurableSpace Ω]
   simpa only [W, hmean, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
 /-- Corrected weighted alignment with only treated estimator residual
-integrability and explicit per-unit weighted integrability assumptions. -/
+integrability and the explicit per-unit weighted regularity of the contract. -/
 theorem T7_corrected_weighted_alignment_treated_integrability
     {Ω C : Type*} [MeasurableSpace Ω] [MeasurableSpace C] {n : ℕ}
     (E : Experiment Ω C n)

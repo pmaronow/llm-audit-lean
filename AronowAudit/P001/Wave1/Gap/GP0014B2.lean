@@ -12,13 +12,48 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 3000
 set_option autoImplicit false
 
+/-! Record 9. The event-to-L¹ extension below is implemented by equality of
+weighted pushforward measures, rather than by a simple-function limit. -/
+
+
+private theorem mar_binary_bounds {Ω : Type*} (R : Ω → ℝ)
+    (hbinary : ∀ ω, R ω = 0 ∨ R ω = 1) :
+    (∀ ω, 0 ≤ R ω) ∧ (∀ ω, ‖R ω‖ ≤ 1) := by
+  constructor <;> intro ω <;> rcases hbinary ω with h | h <;> simp [h]
+
+/-- Restriction to respondents is multiplication by the binary response. -/
+private theorem mar_response_integral {Ω E : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace E]
+    (μ : Measure Ω) (X : Ω → E) (hX : Measurable X)
+    (R f : Ω → ℝ) (hR : Measurable R)
+    (hbinary : ∀ ω, R ω = 0 ∨ R ω = 1)
+    (C : Set E) (hC : MeasurableSet C) :
+    (∫ ω in X ⁻¹' C, f ω * R ω ∂μ) =
+      ∫ ω in X ⁻¹' C, f ω ∂μ.restrict {ω | R ω = 1} := by
+  have hB : MeasurableSet {ω | R ω = 1} := hR (measurableSet_singleton 1)
+  have hi : (fun ω => f ω * R ω) = {ω | R ω = 1}.indicator f := by
+    funext ω
+    rcases hbinary ω with h | h <;> simp [Set.indicator, h]
+  rw [hi, integral_indicator hB, Measure.restrict_restrict hB,
+    Measure.restrict_restrict (hX hC)]
+  rw [Set.inter_comm]
 
 
 
 
+/-! Record 10. No MAR or population integrability of `m ∘ X` is used. -/
 
 
-/-! An explicit mixture path with seven coordinates. -/
+private theorem stable_censoring_piecewise {Ω : Type*} (Y R : Ω → ℝ)
+    (hbinary : ∀ ω, R ω = 0 ∨ R ω = 1) :
+    (fun ω => censored (Y ω) (R ω)) =
+      {ω | R ω = 1}.piecewise Y (fun _ => -99) := by
+  funext ω
+  rcases hbinary ω with h | h <;> simp [censored, Set.piecewise, h]
+
+
+
+/-! Record 11. An explicit path with the exact seven required coordinates. -/
 
 private theorem mixture_sqrt_pos : 0 < Real.sqrt (2 * Real.pi) := by
   exact Real.sqrt_pos.2 (mul_pos (by norm_num) Real.pi_pos)
@@ -109,7 +144,7 @@ private theorem mixture_path_lower_bound (σ : ℝ) (hσ : 0 < σ) :
     _ = mixtureLikelihood ![1,2,3] ![1/2,1/4,1,σ,0,1,1] := by
       simp [mixtureLikelihood, Fin.prod_univ_succ, θ, mul_assoc]
 
-/-- The likelihood is unbounded along the explicit mixture path. -/
+/-- Record 11, with exactly the held theorem's conclusion. -/
 theorem mixture_three_point_unbounded_proof : (∀ B : ℝ, ∃ σ : ℝ, 0  <  σ ∧ MixtureAdmissible ![1/2,1/4,1,σ,0,1,1] ∧
    B  <  mixtureLikelihood ![1,2,3] ![1/2,1/4,1,σ,0,1,1]) ∧
    ¬ ∃ θ : Fin 7 → ℝ, MixtureAdmissible θ ∧ ∀ θ', MixtureAdmissible θ' →
@@ -137,6 +172,9 @@ theorem mixture_three_point_unbounded_proof : (∀ B : ℝ, ∃ σ : ℝ, 0  <  
   rintro ⟨θ, hθ, hmax⟩
   obtain ⟨σ, hσ, hadm, hstrict⟩ := hunbounded (mixtureLikelihood ![1,2,3] θ)
   exact (not_lt_of_ge (hmax ![1/2,1/4,1,σ,0,1,1] hadm)) hstrict
+
+example : type_of% @AronowAudit.P001.mixture_three_point_unbounded :=
+  mixture_three_point_unbounded_proof
 
 end
 end AronowAudit.P001.Wave1

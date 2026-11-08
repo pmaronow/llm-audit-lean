@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P020-T1",
+    "theorem": "SAP.P020.T1",
+    "fingerprint": "a20744a912352f902e56a4fc576e46c1fe82c060b67ac3614c9d2d58fcba3332",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:14 and :18 and :25 using definitions only. The assignment support is exactly the three singletons; mt=1, mc=2, N=7 and all sizes are positive; the specified individual control and treatment outcomes have exactly the claimed cluster totals. scratch/Check.lean:46 and :61 construct the positive replicated sequence and its strictly increasing total size; :68 verifies strict growth of both realized arm sizes for every supported common draw. Independent exact-rational enumeration also checked all three base estimates, bias, MSE polynomial, optimal coefficient, strict comparisons and the probability-one error event.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T2",
+    "theorem": "SAP.P020.T2",
+    "fingerprint": "49857fd898afe6d1c9e7e6bb0a2b149de4a314377316c7da890a15832d16fc8a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:49: on P_h=replicateWithin efficiencyPopulation (h+1), take d_h=ATE(P_h), T_h=d_h+1 and U_h=d_h. The joint hypotheses hold with limiting bias b=1 != 0 and comparator MSE identically zero, and epsilon=1>0. The normalized finite laws are clusterLaw P_h. :61 and :68 certify strict growth of total and both realized arm sizes. The concrete counterexample in the theorem uses the same growing population with difference in means and k=0 Des Raj; its bias is -1/315 and its MSE is strictly below the constant comparator MSE 1/98.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T3",
+    "theorem": "SAP.P020.T3",
+    "fingerprint": "3fd045e862ba50ea6ab40177fc9512fba705d58c9bac6fda7d4ac79b95e4a112",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:81, :91 and :103. twoClusters 1 has M=2, mt=1, positive cluster sizes and N=2, supplying an admissible two-arm design. For both individuals, choose size=1 and control predictor zero (alpha=-7/5 and zero block coefficients realize this predictor in the printed model). The shift is -1/2; the universal theorem therefore applies to this actual design, separately from its scalar illustration. The definition-only example at :103 proves every logistic value is strictly between zero and one and its denominator is positive. The canonical N=1 calculation is only a scalar calculation, as the docstring explicitly states.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T4",
+    "theorem": "SAP.P020.T4",
+    "fingerprint": "1551b9923929363943e1d298a0bea4dbcfc19b1534336fc22c4019190013a202",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:81, :91, :96, :103 and :112. twoClusters 1 is an admissible positive-sign regime with N=2; twoClusters 445 is an admissible negative-sign regime with N=890. Constant size vectors one and 445 and any finite real control predictor meet all average-clause hypotheses. The arithmetic examples prove repairedContrast 444>0, repairedContrast 445<0 and repairedContrast (4000/9)=0; the logistic example proves all probabilities lie strictly between zero and one.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P020-T5",
+    "theorem": "SAP.P020.T5",
+    "fingerprint": "47f157184c668461309192d0a7c59475c5f170cf8c6945a4b36843c03f1c561c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:118, :121, :124 and :132 using definitions only. For efficiencyPopulation, choose khat(s)=armMeanSize P true s, an assignment-measurable statistic computed from observed treated sizes. Its supported values are 1,2,4. The treatment covariance is 14/9, control covariance is -7/9, the expected adjusted ATE estimate is -9/7 and its bias is -1. Thus all hypotheses are inhabited with a genuinely varying coefficient and nonzero correction, without using a Challenge theorem.",
+    "confidence": 0.99
+  }
+]

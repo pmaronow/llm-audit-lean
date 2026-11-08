@@ -1,0 +1,170 @@
+import SAP.P061b.Defs
+import SAP.P061b.Defs.WholeW1
+
+open SAP.P061b
+open scoped BigOperators Classical
+
+namespace Review
+
+noncomputable def stableOutcome (i : Fin 2) (z : Household) : ℝ :=
+  if ownAssignment i z = 1 then (i.val : ℝ) + 1 else -(i.val : ℝ) - 2
+
+lemma stable_for_any_design (D : AtomicDesign Household) :
+    SupportStable D ownAssignment stableOutcome := by
+  intro i z w _ _ h
+  simp only [stableOutcome]
+  rw [h]
+
+lemma independent_margins :
+    ∀ i : Fin 2,
+      exposureProbability independentHousehold ownAssignment i 1 = 1 / 2 ∧
+      exposureProbability independentHousehold ownAssignment i 0 = 1 / 2 := by
+  intro i
+  fin_cases i <;>
+    norm_num [exposureProbability, eventProbability, independentHousehold,
+      tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two, ownAssignment]
+
+-- All T18 hypotheses, with two distinct exposures, nonzero outcomes and random exposure.
+example : (0 < (2 : ℕ)) ∧
+    (∀ i, 0 < exposureProbability independentHousehold ownAssignment i 1 ∧
+      0 < exposureProbability independentHousehold ownAssignment i 0) ∧
+    SupportStable independentHousehold ownAssignment stableOutcome := by
+  refine ⟨by decide, ?_, stable_for_any_design _⟩
+  intro i
+  rw [(independent_margins i).1, (independent_margins i).2]
+  norm_num
+
+lemma independent_joint_positive : ∀ i j : Fin 2,
+    0 < jointExposureProbability independentHousehold ownAssignment i j 1 1 := by
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [jointExposureProbability, eventProbability, independentHousehold,
+      tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two, ownAssignment]
+
+-- T19's joint-positive branch is inhabited, including its extra antecedent.
+example : (0 < (2 : ℕ)) ∧
+    (∀ i, 0 < exposureProbability independentHousehold ownAssignment i 1) ∧
+    SupportStable independentHousehold ownAssignment stableOutcome ∧
+    (∀ i j, 0 < jointExposureProbability independentHousehold ownAssignment i j 1 1) := by
+  refine ⟨by decide, ?_, stable_for_any_design _, independent_joint_positive⟩
+  intro i
+  rw [(independent_margins i).1]
+  norm_num
+
+lemma one_margins : ∀ i : Fin 2,
+    exposureProbability oneTreated ownAssignment i 1 = 1 / 2 := by
+  intro i
+  fin_cases i <;>
+    norm_num [exposureProbability, eventProbability, oneTreated,
+      tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two, ownAssignment]
+
+-- T19 also has a genuine zero-joint pair with individually positive margins.
+example : (0 < (2 : ℕ)) ∧
+    (∀ i, 0 < exposureProbability oneTreated ownAssignment i 1) ∧
+    SupportStable oneTreated ownAssignment stableOutcome ∧
+    jointExposureProbability oneTreated ownAssignment 0 1 1 1 = 0 ∧
+    (∀ z, InSupport oneTreated z →
+      ¬(ownAssignment 0 z = 1 ∧ ownAssignment 1 z = 1)) := by
+  refine ⟨by decide, ?_, stable_for_any_design _, ?_, ?_⟩
+  · intro i
+    rw [one_margins i]
+    norm_num
+  · norm_num [jointExposureProbability, eventProbability, oneTreated,
+      tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two, ownAssignment]
+  · rintro ⟨a,b⟩ h
+    fin_cases a <;> fin_cases b <;>
+      simp_all [InSupport, oneTreated, ownAssignment]
+
+-- Raw assignment's second coordinate changes outcomes without changing the sample.
+def surveyExposure (i : Fin 2) (z : Household) : ℝ := if i = z.1 then 1 else 0
+def rawOutcome (i : Fin 2) (z : Household) : ℝ := (z.2.val : ℝ) + (i.val : ℝ) + 1
+def prediction (_i : Fin 2) (z : Household) : ℝ := (z.2.val : ℝ) + 3
+
+lemma survey_margins : ∀ i : Fin 2,
+    exposureProbability independentHousehold surveyExposure i 1 = 1 / 2 := by
+  intro i
+  fin_cases i <;>
+    norm_num [exposureProbability, eventProbability, independentHousehold,
+      tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two, surveyExposure]
+
+lemma survey_srs : SimpleRandomExposureW1 independentHousehold surveyExposure 1 1 := by
+  intro b
+  obtain ⟨a, c, rfl⟩ : ∃ a c : Fin 2, b = ![a,c] :=
+    ⟨b 0, b 1, by ext i; fin_cases i <;> rfl⟩
+  fin_cases a <;> fin_cases c <;>
+    norm_num [eventProbability, independentHousehold, exposureMaskW1, surveyExposure,
+      tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two,
+      funext_iff, Fin.forall_fin_two, Finset.univ_fin2] <;> decide
+
+lemma survey_moments (y : Schedule Household 2) :
+    ExposureMoment independentHousehold surveyExposure y 1 := by
+  intro i
+  exact Summable.of_finite
+
+-- All three hypotheses in T17's general survey part; no stability holds.
+example : (0 < (1 : ℕ)) ∧ (1 ≤ (2 : ℕ)) ∧
+    SimpleRandomExposureW1 independentHousehold surveyExposure 1 1 ∧
+    ExposureMoment independentHousehold surveyExposure rawOutcome 1 ∧
+    ¬SupportStable independentHousehold surveyExposure rawOutcome := by
+  refine ⟨by decide, by decide, survey_srs, survey_moments _, ?_⟩
+  intro h
+  have hh := h 0 (0,0) (0,1) (by norm_num [InSupport, independentHousehold])
+    (by norm_num [InSupport, independentHousehold]) (by norm_num [surveyExposure])
+  norm_num [rawOutcome] at hh
+
+-- All T17 equal-margin algebra hypotheses, using the same nonstable raw schedule.
+example : (0 < (2 : ℕ)) ∧ (0 < (1 : ℕ)) ∧
+    (∀ i, exposureProbability independentHousehold surveyExposure i 1 = (1 : ℝ) / 2) :=
+  ⟨by decide, by decide, survey_margins⟩
+
+lemma prediction_calibrated :
+    PredictionCalibrated independentHousehold surveyExposure prediction 1 := by
+  intro i
+  rw [survey_margins i]
+  fin_cases i <;>
+    norm_num [designMean, independentHousehold, prediction, surveyExposure,
+      tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two]
+
+lemma prediction_independent : ∀ i : Fin 2,
+    EventIndependent independentHousehold (exposureIndicator surveyExposure i 1) (prediction i) := by
+  intro i E F
+  fin_cases i <;>
+    by_cases h0 : E 0 <;> by_cases h1 : E 1 <;>
+    by_cases h3 : F 3 <;> by_cases h4 : F 4 <;>
+    norm_num [eventProbability, independentHousehold, exposureIndicator,
+      surveyExposure, prediction, tsum_fintype, Fintype.sum_prod_type,
+      Fin.sum_univ_two, h0, h1, h3, h4]
+
+lemma prediction_mean_independent : ∀ i : Fin 2,
+    MeanIndependent independentHousehold (prediction i) (exposureIndicator surveyExposure i 1) := by
+  intro i b hb
+  by_cases hb0 : b = 0
+  · subst b
+    fin_cases i <;>
+      norm_num [eventProbability, designMean, independentHousehold, exposureIndicator,
+        surveyExposure, prediction, tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two]
+  · by_cases hb1 : b = 1
+    · subst b
+      fin_cases i <;>
+        norm_num [eventProbability, designMean, independentHousehold, exposureIndicator,
+          surveyExposure, prediction, tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two]
+    · fin_cases i <;>
+        norm_num [eventProbability, independentHousehold, exposureIndicator,
+          surveyExposure, tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two,
+          Ne.symm hb0, Ne.symm hb1] at hb
+
+-- T20's ordinary moments and calibration, with both random F and nonstable y.
+example : (0 < (2 : ℕ)) ∧
+    (∀ i, 0 < exposureProbability independentHousehold surveyExposure i 1) ∧
+    ExposureMoment independentHousehold surveyExposure rawOutcome 1 ∧
+    (∀ i, HasFirstMoment independentHousehold (prediction i)) ∧
+    ExposureMoment independentHousehold surveyExposure prediction 1 ∧
+    PredictionCalibrated independentHousehold surveyExposure prediction 1 := by
+  refine ⟨by decide, ?_, survey_moments _, ?_, survey_moments _, prediction_calibrated⟩
+  · intro i
+    rw [survey_margins i]
+    norm_num
+  · intro i
+    exact Summable.of_finite
+
+end Review

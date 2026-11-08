@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P005-T1",
+    "theorem": "SAP.P005a.T1",
+    "fingerprint": "14d61709da29610ea1a7818361cb1cf1e47b2608f31a0675cbe802e548c3c164",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently compiles n=6, m=4, the 15-assignment design cardinality and the concrete witness means/covariance. There are no theorem hypotheses. scratch/exact_checks.py enumerates every assignment using Fraction arithmetic and confirms the expectation, variance, both centered and uncentered bounds, and strictly positive gap 11531/14400.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T2",
+    "theorem": "SAP.P005a.T2",
+    "fingerprint": "8f8fa81bc63e03e06a73a386bdc0b9432ce1817c2c61d8dc8f58807fe2540ea7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs n=6, m=4 and the nonconstant arrays witnessA and witnessB, with both population means nonzero; the arm type is inhabited by each constructor. All size hypotheses are jointly satisfied. scratch/exact_checks.py additionally checks n=4, every m=1,2,3 and each arm, including the boundary singleton cases and the complete alpha/ell moment identities.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T3",
+    "theorem": "SAP.P005a.T3",
+    "fingerprint": "87ec8ccedffe15adf58247e791f74a55b82f936a776e78c314eda22c923b2f08",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves standardization of the specified sixteen-unit population, its outcome moments, allocation inequalities and design cardinality 12870. scratch/exact_checks.py verifies all 12870 assignments: both actual scalar arm variances and the noninteracted determinant are positive (using raw coordinates and squared scale 8/71). It also verifies all three category counts, exact covariance values, variance and failed/valid comparisons. Each coordinate value occurs at most seven times, so no eight-unit arm can be constant.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T4",
+    "theorem": "SAP.P005a.T4",
+    "fingerprint": "8a45f26906029e21ec8bcdc225a0a2b0e9320c04057ef94e98d88f6721c19ba2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs a standardized dimension-one population with n=4, m=2, x=(-1,-1,1,1), yT=(0,1,2,3), yC=-yT and K=4, satisfying the finite hypotheses for either arm. It also proves every W1SequenceAssumptions clause for d_n=0, m_n=floor(n/2), zero arrays, K=1, lo=1/4, hi=3/4 at every n>=2. Positive-dimensional sequences are consistent as well: use d_n=1, centered standardized equally spaced distinct covariates, zero outcomes and the same allocation/constants. Independent exact arithmetic also verifies the complete finite chain on T3's population with nonconstant leverage.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P005-T5",
+    "theorem": "SAP.P005a.T5",
+    "fingerprint": "28521fba9a1467136f0f6dd5b7c15d156b3cc3cde80e9f497d2254c73fb68373",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean independently proves standardization, both outcome moment bounds, allocation inequalities and injectivity of signX for the exact six-unit population. Injectivity with arm sizes two and four gives positive scalar variances and nonzero arm determinants. scratch/exact_checks.py checks this positivity under all 15 assignments and computes the individual nu3 expectations and the discrepancy: actual component 217/2500, printed value -217/2500.",
+    "confidence": "high"
+  }
+]

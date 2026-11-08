@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P004c.T32",
+    "target_id": "P004-T32",
+    "my_reading_vs_claim": "whole",
+    "reason": "All corrected clauses (a)-(c) are present: the exact HT variance and bound obtained by dropping its diagonal negative squares; the nonnegative diagonal component and explicit b^2/(Np)+b^2/(N(1-p)) bound; each of the four absolute pair-component bounds with constant 2 and degree minus one; the total bound with constant 8; and all three O(1/N) rates. Self-inclusion, neighborhood symmetry where required, and no common source outside a neighborhood hold for the paper's geometric neighborhoods. The finite-table versions abstract from geometry without removing any canonical instance. C1 is the exact finite Bernoulli product distribution with an interior common p. SpatialLocalConditions renders the eventual boundedness and radiuswise eventual C3-C4 quantifiers correctly. WellDefined makes the spatial averages genuine. The strict finite-table outcome bound follows from pointwise strict C2 and genuine positive finite integrals; thus it is not a hidden restriction. Normalizations, covariance products, Boolean signs, and the real-valued degree subtraction match the canonical formulas. No conclusion is assumed, and no relevant junk value is used. Nonvacuity instances are being checked in scratch/Nonvacuity.lean, including a full spatial sequence with measure-one regions, bounded nonzero outcomes and eventual neighborhood degree one. Lemma A.1 in definitions_needed supplies expectation notation/identities used in the proof, rather than an additional theorem conclusion."
+  },
+  {
+    "theorem": "SAP.P004c.T33",
+    "target_id": "P004-T33",
+    "my_reading_vs_claim": "whole",
+    "reason": "The first conjunct contains corrected clauses (a)-(c): the variance expansion with both negative mean-product terms; the exact expression for lines (2)+(4); their difference equal to the centered-effect neighborhood quadratic form divided by N^2; and the iff criterion and implication under C5. B includes its center, so the separate diagonal and off-diagonal terms combine exactly as printed. The control linearization uses N(1-p), and constant arm fits are barMu, not realized empty-arm means. The second conjunct is clause (d), with realized R_i(z), node-effect centering, denominator N sqrt(actual HT variance), the assignmentwise sum identity, all zero means, and unit variance of the sum. Its positive-variance assumption is required by the canonical statement and prevents sqrt/division defaults. Finite sums and positive N,p,1-p remove the other potential defaults. Both premise blocks admit N=1,p=1/2,R=1,B_i={i}; the HT variance is 4. No canonical clause or valid design is excluded."
+  },
+  {
+    "theorem": "SAP.P004c.T34",
+    "target_id": "P004-T34",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The canonical statement, regardless of its audit note or asymptotic flag, includes the composed O_p(N^(-1/2)b_N^2)=o_p(1) conclusion and an eight-node assignment/residual/kernel witness with S=-1/4. T34 omits both. Its fourth conjunct checks only numerical expressions involving 8,5,1/2,-1/4; it does not connect them to any actual assignment, residuals or kernel. It does retain (a), the nonempty-arm algebraic identity with arbitrary scalar S; (b), the finite kernel cross-sum bound with actual finite maxima; (c), the exact denominator factorization and its Bernoulli O_p(N^(-1/2)) rate. Positive N and bandwidth are the ordinary domain conditions for the finite formulas. denominatorError is explicitly zero-extended on the empty treated arm instead of asserting a reciprocal there. The docstring already discloses precisely these omissions and conventions. This is a restriction of the canonical corrected assertion, not a refutation of it. Concrete valid data, including the genuine eight-node configuration as an independent check, are in scratch/Nonvacuity.lean."
+  },
+  {
+    "theorem": "SAP.P004c.T39",
+    "target_id": "P004-T39",
+    "my_reading_vs_claim": "whole",
+    "reason": "The left side is the expectation of exactly the common-p HT estimator (13) under the independent Bernoulli product law. The right side is precisely the AME of (5),(8),(9), computed by forcing node i's coordinate before marginalizing; the extra original own-coordinate summation integrates to p+(1-p)=1. A universally arbitrary real table R covers every collection of genuine circle averages, and imposes no interference or variance restriction. The positive sample size and interior p are the canonical domain conditions. Every sum is finite and each asserted denominator is nonzero. The contextual proof lemma in definitions_needed and the note's recommendation to state that lemma do not add a separate conclusion to Proposition 1. An explicit N=1,p=1/2 instance with R(true)=4,R(false)=1 has both sides equal to 3 in scratch/Nonvacuity.lean."
+  },
+  {
+    "theorem": "SAP.P004c.T40",
+    "target_id": "P004-T40",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three canonical identities are present: every forced point effect is g_i(x), every node effect is the genuine spatial average of g_i, and their average is the AME. The quantifier over nonnegative normalized w_i on the full assignment space represents every marginal law of the other coordinates: overwriting i discards its original value, and every such marginal law admits a lift (e.g. put all own-coordinate mass at false). Independent Bernoulli assignment is not imposed. Additivity holds for all points and assignments, and WellDefined supplies measurable positive finite regions and integrable outcomes. This is equivalent to the needed integrability of f and every g_j on each region, since f is the all-false outcome and g_j is the difference of singleton-treated and all-false outcomes. Thus no integral is totalized and no extra substantive premise is hidden. Metric-space generality and arbitrary distance bands include the paper's spatial setting. The nonvacuity construction uses two distinct real nodes, counting measure, singleton regions of mass one, effects 1 and 2, baseline 3, and a normalized deterministic law."
+  }
+]

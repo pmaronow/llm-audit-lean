@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P061-T1",
+    "theorem": "SAP.P061a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N, take the uniform law p(z)=3^(-N) on {0,1,2}^N, g_i(z)=1_{z_i>0}, y_i(z)=z_i. The assignment space at N=0 is a singleton, and all substantive assertions require N>0. Exact rational checks at N=1,2,3,4 verify the margins, means, variance and both raw hybrid readings; scratch/Check.lean also compiles the equal-exposure/unequal-outcome witness. All expectations here are finite sums.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T2",
+    "theorem": "SAP.P061a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the uniform law on one binary pair, or its K-fold product for each K>0, with g_i=own_i+2*partner_i and y_i=own_i. These are normalized nonempty finite designs. Exact enumeration at K=1,2,3 checks the exposure-image obstruction and full raw-domain success probability (1/2)(1/4)^(K-1); the one-pair map is also checked in Lean. The probability 1/2 in the canonical single-pair statement is preserved at K=1; the qualitative domain failure persists at all K.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T3",
+    "theorem": "SAP.P061a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For both branches take S={0,1}^3 as real vectors, independent own assignments with probabilities 1/3,1/2,2/3, targets 1 and 0, and y_i(z)=z_i+2*z_(i+1)+3*z_i*z_(i+1), with cyclic indices. Take coordinate exposures and the same polynomial as H_i on all real vectors. Every target cell has positive probability, all moments exist, all insertions are feasible, and own-versus-other-vector independence holds. Exact rational enumeration gives AEED=direct contrast=5/2. A fair-bit one-unit positive moment instance compiles in scratch/Check.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T4",
+    "theorem": "SAP.P061a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each m>=2 use K=m^8 independent pairs with agreement-cell mass (1+1/m)/4 and disagreement-cell mass (1-1/m)/4. All four pair masses are positive and sum to one. Outcomes are 1+(partner bit)/m. At m=2, the computed quantities are T=1/4, A=0, V=39/2 and Var=39/2048, so the scale is strictly positive. Pair moments were recomputed exactly for m=2,3,5,10. Analytically V-8=16/m+14/m^2+2(m-2)/m^4>=0 and V<=79/4<20; product independence gives the variance and Chebyshev gives both coverage bounds. The docstring accurately discloses all separately omitted graph, variance-expression, unsquared-limit and order assertions, and the m+2 reindexing.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T5",
+    "theorem": "SAP.P061a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For transfer take S_N={0,1}^N as real vectors, uniform product D_N, y=0, targets 1 and 0, estimate=0, deterministic and estimated scale=1, L=Dirac(0). Every hypothesis holds for every N; the empty-vector case is a singleton and does not drive the limit. For nonzero drift take any nonempty atomic sequence, T_N=1, A_N=0, estimate=1, both scales=1, L=Dirac(0), c=1. For a nonzero local bound, the two-unit correlated-pair design with a=rho=1/2 and partner neighborhoods has TV=1/4 for each exposure and bound=gap=1/4, checked exactly. Finite nonempty alphabets ensure genuine extrema even for empty neighborhoods. The docstring fully discloses the extra moment/scale conditions, interval scope, finite common full assignment space, and omitted T4 example.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T6",
+    "theorem": "SAP.P061a.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N=1, the fair law on raw assignment values 0 and 1, own-assignment exposure, y(z)=z, and targets 1 and 0. Both exposure probabilities are 1/2, the two EPOs are 1 and 0, and AEED=ADSE=1. Positivity, moments, and the population contrast are compiled in scratch/Check.lean. The finite common domain is in the canonical statement itself, so it is not an undisclosed restriction.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T7",
+    "theorem": "SAP.P061a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the full real assignment domain, mass p(k)=2^(-k-1) on natural integers and zero elsewhere. The geometric series totals one; both target probabilities are 1/2. On positive integers y(k)=(-1)^(k+1)*2^(k+1), with zero elsewhere. Weighted response terms are 1,-1,1,-1,... and weighted HT terms are 2,-2,2,-2,.... Each sign part contains infinitely many positive constants, proving failure of ordinary means without evaluating any divergent totalized sum. Exact finite sign-part sums were checked. The docstring accurately distinguishes these certificates from separately asserting ordered-limit failure, the derived functional nonexistence assertions and extended-real infinity equalities.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T8",
+    "theorem": "SAP.P061a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled fair-bit design with N=1, g(z)=z, y(z)=z, d=1 has positive target probability and finite targeted absolute moment 1/2; its two-target contrast is 1. Its support is finite and each exposure cell is constant, so both automatic-moment branches are also satisfiable. An infinite-support example is the same geometric design as T7 with bounded response y(k)=(-1)^(k+1) for k>=1, zero elsewhere: target-1 absolute moment is 1/2 and EPO is 1/3. The general branch assumes no stability and no finite-support restriction.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T9",
+    "theorem": "SAP.P061a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On {0,1,2}^4, the supports with exactly one 2 and respectively two or three nonzero entries each have 12 assignments, all of mass 1/12. Exhaustive exact enumeration verifies the four exposure margins, stability on each support, and contrasts 2 and 3 for the shared response schedule. Global stability fails already for unit 0 between assignments (2,0,0,0) and (2,1,0,0), whose exposure is 2 in both and whose outcomes are 1 and 2. This is exactly the canonical existential witness.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T10",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: the target corrects the population index in descriptions of rate hypotheses of cited works. The canonical text supplies the meanings of three rate predicates, but no hypothesis from which a degree rate or a limit theorem is to be proved. The record's reason, 'Only a definitional transcription, with no substantive claimed rate result', is justified by the supplied statement and definitions_needed, independently of its audit-history note. A graph with no edges would satisfy the three rate conditions if an instance were desired.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P061-T11",
+    "theorem": "SAP.P061a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an accepted full refutation, as recorded, rather than a proof of the positive universal claim. The real-assignment geometric design of T7 has N=1 and both target probabilities 1/2, but its target-1 absolute moment is not summable and both signed parts diverge. It satisfies the paper's assignment-space requirements and directly contradicts the canonical assertion that ordinary real exposure means always exist under positivity alone. The Challenge docstring is therefore entitled to say that this printed claim is false. Definitional probability and contrast equalities cannot repair its failed existence clause.",
+    "confidence": "high"
+  }
+]

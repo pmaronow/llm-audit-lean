@@ -1,0 +1,142 @@
+[
+ {
+  "target_id": "P037-T11",
+  "decision": "whole",
+  "theorem": "SAP.P037a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.Wave1.fitted_block_estimator_limit_proof",
+   "AronowAudit.P037.augmented_contribution_bound",
+   "AronowAudit.P037.augmented_contribution_unbiased",
+   "AronowAudit.P037.bounded_design_mean",
+   "AronowAudit.P037.finite_chebyshev",
+   "AronowAudit.P037.fitted_mean_subtraction_identities",
+   "AronowAudit.P037.independent_blocks_exposure_contrasts",
+   "AronowAudit.P037.independent_blocks_oracle_consistent",
+   "AronowAudit.P037.independent_blocks_oracle_normal",
+   "AronowAudit.P037.oracle_block_centered_bound",
+   "AronowAudit.P037.oracle_block_unbiased",
+   "AronowAudit.P037.oracle_contrast_finite_facts",
+   "AronowAudit.P037.oracle_row_finite_bounds",
+   "AronowAudit.P037.oracle_row_unbiased",
+   "AronowAudit.P037.product_design_mean_product"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P037.augmented_subtraction_certificates",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.bounded_design_variance",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.coordinateFactor_other",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.coordinateFactor_product",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.coordinateFactor_self",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designMean_add",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designMean_const",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designMean_mul",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designMean_sub",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designMean_sum",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designVariance_centered",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designVariance_mul",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designVariance_nonneg",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.designVariance_sum_covariances",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.finite_product_factorization",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.oracle_block_bounds",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.oracle_lindeberg_vanish",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.oracle_variance_rate_bound",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.product_design_coordinate_mean",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.product_design_coordinate_pair",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P037.product_design_sum_variance",
+    "reason": "Supporting component or algebra is already consumed by the assembled declarations; it is not invoked separately."
+   }
+  ],
+  "statement_definition": "SAP.P037a.T11Statement",
+  "supporting_declarations": [
+   "AronowAudit.P037.BlockCLT.contrast_variance_bound"
+  ]
+ },
+ {
+  "target_id": "P037-T12",
+  "decision": "whole",
+  "theorem": "SAP.P037a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.seed_count_bounds_monotone",
+   "AronowAudit.P037.seed_count_cap_and_examples",
+   "AronowAudit.P037.seed_count_shares",
+   "AronowAudit.P037.seed_interpolation_no_tie"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037a.T12Statement",
+  "interpretive_scope": "The corrected integer interpolation rule has no ties, is monotone with the stated bounds and cap threshold, and gives the listed counts and eligible shares. The listed examples refute the reading that the upper-cap parenthesis assigns exactly 64 seed-eligible students to every school with fewer than 550 students. The literal upper bound of no more than 64 for those schools remains true under this rule."
+ },
+ {
+  "target_id": "P037-T13",
+  "decision": "whole",
+  "theorem": "SAP.P037a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.composition_prediction_intervals",
+   "AronowAudit.P037.composition_prediction_printed_arithmetic"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037a.T13Statement"
+ }
+]

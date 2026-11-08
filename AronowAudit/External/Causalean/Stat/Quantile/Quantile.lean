@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026 Jiyuan Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jiyuan Tan
@@ -19,7 +18,8 @@ file supplies it together with the key order characterisation
     quantile μ τ ≤ x  ↔  τ ≤ cdf μ x       (for `0 < τ < 1`),
 
 i.e. the Galois-style connection between the cdf and its inverse.  This is the
-foundation for quantile treatment effects and the quantile form of Lee trimming.
+foundation for quantile treatment effects (`PO/ID/Exact/QTE/QuantileEffect.lean`)
+and the quantile form of Lee trimming.
 
 The interior restriction `0 < τ < 1` is intrinsic: for `τ ≤ 0` the defining set
 is all of `ℝ` (so `sInf = 0` is meaningless) and for `τ ≥ 1` it can be empty in

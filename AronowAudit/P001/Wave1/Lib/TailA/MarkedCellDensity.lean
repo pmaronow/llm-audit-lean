@@ -90,6 +90,19 @@ theorem marked_donor_interval_probability (a b : ℝ)
   rw [intervalIntegral.integral_const_mul,integral_id]
   ring
 
+/-- The recipient mass retains its different local intensity. -/
+theorem marked_recipient_interval_probability (a b : ℝ)
+    (hab : a ≤ b) (ha : (1/4 : ℝ) ≤ a) (hb : b ≤ (3/4 : ℝ)) :
+    matchingUnitLaw.real (markedTypeInterval false a b) = 2*(b-a)-(b^2-a^2) := by
+  rw [marked_type_interval_probability false a b hab ha hb]
+  simp only [markedTypeDensity,Bool.false_eq_true,ite_false]
+  rw [intervalIntegral.integral_const_mul,
+    intervalIntegral.integral_sub (f := fun _ : ℝ => 1) (g := fun x : ℝ => x)
+      (intervalIntegrable_const)
+      (continuous_id.intervalIntegrable a b),
+    intervalIntegral.integral_const,integral_id]
+  simp only [smul_eq_mul,mul_one]
+  ring
 
 /-- Lower bound used to convert a shrinking interval into an exponential window bound. -/
 theorem marked_donor_interval_lower (a b : ℝ)
@@ -144,5 +157,38 @@ theorem marked_type_interval_rate (r : Bool) (p : ℝ)
     (Set.Ioc (p+a/(m n : ℝ)) (p+b/(m n : ℝ)))) _ _ at h
   simpa only [heq] using h
 
+/-- Actual finite-window donor/recipient category counts, with their distinct rates.
+The intervals can overlap geometrically when their response types differ. -/
+theorem marked_type_partition_counts (k : ℕ) (m : ℕ → ℕ)
+    (hm : Tendsto m atTop atTop) (p : ℝ)
+    (hp : p ∈ Set.Ioo (1/4 : ℝ) (3/4))
+    (r : Fin k → Bool) (a b : Fin k → ℝ) (hab : ∀ i, a i ≤ b i)
+    (hdis : ∀ i j, i ≠ j → r i ≠ r j ∨ b i ≤ a j ∨ b j ≤ a i)
+    (rates : Fin k → ℝ≥0)
+    (hrates : ∀ i, (rates i : ℝ) = (b i-a i)*markedTypeDensity (r i) p) :
+    AronowAudit.Literature.RowWeak
+      (fun n => MatchProduct (m n))
+      (fun n z i => (Finset.univ.filter (fun j =>
+        z j ∈ markedTypeInterval (r i)
+          (p+a i/(m n : ℝ)) (p+b i/(m n : ℝ)))).card)
+      (Measure.pi (fun i => poissonMeasure (rates i))) := by
+  have hdis' : ∀ n i j, i ≠ j → Disjoint
+      (markedTypeInterval (r i) (p+a i/(m n : ℝ)) (p+b i/(m n : ℝ)))
+      (markedTypeInterval (r j) (p+a j/(m n : ℝ)) (p+b j/(m n : ℝ))) := by
+    intro n i j hij
+    apply Set.disjoint_left.mpr
+    intro u hi hj
+    rcases hdis i j hij with hr | h | h
+    · exact hr (hi.2.symm.trans hj.2)
+    · have hdiv := div_le_div_of_nonneg_right h (show (0 : ℝ) ≤ m n by positivity)
+      exact (not_lt_of_ge (add_le_add (le_refl p) hdiv)) (hj.1.1.trans_le hi.1.2)
+    · have hdiv := div_le_div_of_nonneg_right h (show (0 : ℝ) ≤ m n by positivity)
+      exact (not_lt_of_ge (add_le_add (le_refl p) hdiv)) (hi.1.1.trans_le hj.1.2)
+  exact rare_partition_counts k m hm (fun _ => matchingUnitLaw)
+    (fun _ => inferInstance)
+    (fun n i => markedTypeInterval (r i) (p+a i/(m n : ℝ)) (p+b i/(m n : ℝ)))
+    (fun n i => marked_type_interval_measurable _ _ _) hdis' rates (fun i => by
+      rw [hrates i]
+      exact marked_type_interval_rate (r i) p hp m hm (a i) (b i) (hab i))
 
 end AronowAudit.P001.TailA

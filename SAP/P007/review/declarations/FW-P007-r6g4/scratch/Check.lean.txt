@@ -1,0 +1,131 @@
+import SAP.P007.Defs
+
+open Filter Topology
+open scoped BigOperators
+
+namespace ReviewT17
+
+#print SAP.P007.T17Statement
+#print SAP.P007.Law
+#check Real.log_le_self
+#check Real.log_le_sub_one_of_pos
+#check Filter.tendsto_atTop_mono'
+#check tendsto_natCast_atTop_atTop
+#check Fintype.prod_boole
+
+noncomputable def pointLaw {α : Type*} [Fintype α] (a : α) : SAP.P007.Law α := by
+  classical
+  exact {
+    weight := fun x => if x = a then 1 else 0
+    nonneg := by intro x; split_ifs <;> norm_num
+    total := by simp
+  }
+
+lemma probability_pointLaw {α : Type*} [Fintype α] (a : α) (P : α → Prop)
+    [DecidablePred P] :
+    SAP.P007.probability (pointLaw a) P = if P a then 1 else 0 := by
+  classical
+  simp only [SAP.P007.probability, pointLaw]
+  rw [Finset.sum_eq_single a]
+  · by_cases h : P a <;> simp [h]
+  · intro b _ hba
+    simp [hba]
+  · simp
+
+lemma independent_pointLaw (n h : ℕ) (a : SAP.P007.Array n h) :
+    SAP.P007.rowIndependent (pointLaw a) := by
+  classical
+  intro E
+  simp only [probability_pointLaw]
+  rw [Fintype.prod_boole]
+  by_cases hE : ∀ i, E i (a i) <;> simp [hE]
+
+noncomputable def missingLaw (n h : ℕ) : SAP.P007.Law (SAP.P007.Array n h) :=
+  pointLaw (fun _ _ => true)
+
+lemma missing_survival (n h : ℕ) (i : Fin n) (j : ℕ) (hh : 0 < h) (hj : 0 < j) :
+    SAP.P007.survival (missingLaw n h) i j = 0 := by
+  classical
+  unfold SAP.P007.survival missingLaw
+  rw [probability_pointLaw]
+  have hn : ¬ SAP.P007.prefixObserved (fun _ : Fin h => true) j := by
+    intro hp
+    have bad := hp ⟨0, hh⟩ hj
+    contradiction
+  simp [hn]
+
+lemma missing_bound (n h : ℕ) (hh : 0 < h) (q : ℝ) (hq : 0 ≤ q) (hq1 : q < 1) :
+    SAP.P007.observationBound (missingLaw n h) q := by
+  refine ⟨hq, hq1, ?_⟩
+  intro i
+  constructor
+  · intro _
+    simpa [missing_survival n h i 1 hh (by omega)] using hq
+  · intro j hj _ hs
+    rw [missing_survival n h i j hh (by omega)] at hs
+    exact (lt_irrefl 0 hs).elim
+
+lemma square_superlog : SAP.P007.superlog (fun n => n ^ 2) := by
+  unfold SAP.P007.superlog
+  refine Filter.tendsto_atTop_mono' atTop (f₁ := fun n : ℕ => (n : ℝ)) ?_
+      tendsto_natCast_atTop_atTop
+  filter_upwards [eventually_ge_atTop (2 : ℕ)] with n hn
+  have hn1 : (1 : ℝ) < (n : ℝ) := by exact_mod_cast (show 1 < n by omega)
+  have hlog : 0 < Real.log (n : ℝ) := Real.log_pos hn1
+  rw [le_div_iff₀ hlog]
+  push_cast
+  simpa [pow_two] using mul_le_mul_of_nonneg_left
+    (Real.log_le_self (by positivity : (0 : ℝ) ≤ n)) (by positivity : (0 : ℝ) ≤ n)
+
+-- This constructs one family satisfying every hypothesis, for every admissible q.
+theorem hypotheses_nonvacuous (q : ℝ) (hq : 0 ≤ q) (hq1 : q < 1) :
+    ∃ (g : ℕ → ℕ) (L : ∀ n, SAP.P007.Law (SAP.P007.Array n (g n))),
+      (∀ n, 0 < n → 0 < g n) ∧
+      (∀ n, 0 < n → SAP.P007.rowIndependent (L n)) ∧
+      (∀ n, 0 < n → SAP.P007.observationBound (L n) q) ∧
+      SAP.P007.superlog g := by
+  refine ⟨(fun n => n ^ 2), (fun n => missingLaw n (n ^ 2)), ?_, ?_, ?_,
+    square_superlog⟩
+  · intro n hn
+    exact pow_pos hn 2
+  · intro n _
+    exact independent_pointLaw n (n ^ 2) (fun _ _ => true)
+  · intro n hn
+    exact missing_bound n (n ^ 2) (pow_pos hn 2) q hq hq1
+
+-- Both the zero endpoint and an interior value are admissible.
+example :
+    ∃ (g : ℕ → ℕ) (L : ∀ n, SAP.P007.Law (SAP.P007.Array n (g n))),
+      (∀ n, 0 < n → 0 < g n) ∧
+      (∀ n, 0 < n → SAP.P007.rowIndependent (L n)) ∧
+      (∀ n, 0 < n → SAP.P007.observationBound (L n) 0) ∧
+      SAP.P007.superlog g := hypotheses_nonvacuous 0 (by norm_num) (by norm_num)
+
+example :
+    ∃ (g : ℕ → ℕ) (L : ∀ n, SAP.P007.Law (SAP.P007.Array n (g n))),
+      (∀ n, 0 < n → 0 < g n) ∧
+      (∀ n, 0 < n → SAP.P007.rowIndependent (L n)) ∧
+      (∀ n, 0 < n → SAP.P007.observationBound (L n) (1 / 2)) ∧
+      SAP.P007.superlog g := hypotheses_nonvacuous (1 / 2) (by norm_num) (by norm_num)
+
+-- The totalized logarithm affects only two terms of the growth sequence.
+example (g : ℕ → ℕ) : (g 0 : ℝ) / Real.log (0 : ℝ) = 0 := by simp
+example (g : ℕ → ℕ) : (g 1 : ℝ) / Real.log (1 : ℝ) = 0 := by simp
+
+-- The all-deletion event is the ordinary one at empty and positive dimensions.
+example {h : ℕ} (L : SAP.P007.Law (SAP.P007.Array 0 h)) :
+    SAP.P007.allDeleted L = 1 := by
+  simpa [SAP.P007.allDeleted, SAP.P007.probability] using L.total
+
+example (n h : ℕ) (hh : 0 < h) : SAP.P007.allDeleted (missingLaw n h) = 1 := by
+  classical
+  unfold SAP.P007.allDeleted missingLaw
+  rw [probability_pointLaw]
+  have hp : ∀ i : Fin n,
+      ¬ SAP.P007.prefixObserved ((fun _ _ => true) i : SAP.P007.Row h) h := by
+    intro i hi
+    have bad := hi ⟨0, hh⟩ hh
+    contradiction
+  exact if_pos hp
+
+end ReviewT17

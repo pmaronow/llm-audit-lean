@@ -79,7 +79,7 @@ theorem ols_normal_equations {n k : Type*} [Fintype n] [Fintype k] [DecidableEq 
 
 /-- XᵀX for S11's positive-fact regression on intercept, positive,
 Study 2 and Study 4: 50 treated and 50 controls within each study,
-P041-T9(ii), P041-E010. -/
+P041-T9(ii), validator E010 exact certificate. -/
 def positiveStudyGram : Matrix (Fin 4) (Fin 4) ℝ :=
   !![300,150,100,100;150,150,50,50;100,50,100,0;100,50,0,100]
 
@@ -95,11 +95,11 @@ theorem positive_balanced_slope (β : Fin 4 → ℝ) (sT sB w₂ w₄ : ℝ)
   linarith
 
 /-- Four (study,cited) design rows "xᵢ=(1,cᵢ,wᵢ)ᵀ", P041-T7,
-P041-E011: (1,U),(1,C),(4,U),(4,C). -/
+validator E011 "Exact six-hour calculation": (1,U),(1,C),(4,U),(4,C). -/
 def citationCellDesign : Matrix (Fin 4) (Fin 3) ℝ :=
   !![1,0,0; 1,1,0; 1,0,1; 1,1,1]
 
-/-- "12,25,23,42" survivors in four cells of 50 (P041-E011;
+/-- "12,25,23,42" survivors in four cells of 50 (E011 derivation;
 P041-T7). These are recounted deposited counts, not printed observations. -/
 def citationCellSurvivors : Fin 4 → ℝ := ![12,25,23,42]
 
@@ -136,7 +136,7 @@ theorem former_two_group_slope (β : Fin 2 → ℝ) (sT sB : ℝ)
   linarith
 
 /-- Sum of squared residuals of n binary observations, a of them one,
-with common fitted value f: "a(1-f)²+(n-a)f²", P041-E011. -/
+with common fitted value f: "a(1-f)²+(n-a)f²", E011 derivation. -/
 def binaryCellSSR (n a f : ℝ) : ℝ := a*(1-f)^2 + (n-a)*f^2
 
 /-- P041-T7(ii): the sufficient-statistic matrices really come from the
@@ -223,6 +223,17 @@ theorem corrected_citation_standard_error :
   simp only [hl, hu, ht, ht2, and_true]
   norm_num
 
+/-- "1 if fact i is not removed within h ... Rᵢ(h)=1-Sᵢ(h)", target
+P041-T9. A missing recorded removal survives the horizons; a recorded time
+at or below h is removed. This matches the deposited Harvard coding. -/
+def survivalIndicator (removalHours : Option ℝ) (h : ℝ) : ℝ :=
+  match removalHours with
+  | none => 1
+  | some t => if h < t then 1 else 0
+
+/-- "Rᵢ(h)=1-Sᵢ(h)", P041-T9: the removal outcome is the complement. -/
+def removalIndicator (removalHours : Option ℝ) (h : ℝ) : ℝ :=
+  1 - survivalIndicator removalHours h
 
 /-- Treatment-minus-comparison proportion surviving, P041-T9(ii), S11.
 In the balanced study-adjusted P/C designs this equals the treatment slope;
@@ -255,3 +266,14 @@ theorem s11_survival_slopes_and_not_removal :
 
 end AronowAudit.P041
 
+#print axioms AronowAudit.P041.ols_complement_coefficients
+#print axioms AronowAudit.P041.ols_complement_residuals_and_covariance
+#print axioms AronowAudit.P041.ols_normal_equations
+#print axioms AronowAudit.P041.positive_balanced_slope
+#print axioms AronowAudit.P041.cited_balanced_slope
+#print axioms AronowAudit.P041.former_two_group_slope
+#print axioms AronowAudit.P041.citation_ols_exact_fit
+#print axioms AronowAudit.P041.citation_gram_inverse_is_inverse
+#print axioms AronowAudit.P041.citation_hc1_exact_variance
+#print axioms AronowAudit.P041.corrected_citation_standard_error
+#print axioms AronowAudit.P041.s11_survival_slopes_and_not_removal

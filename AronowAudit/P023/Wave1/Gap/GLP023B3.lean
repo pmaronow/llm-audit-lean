@@ -27,7 +27,7 @@ set_option linter.style.haveILetI false
 set_option linter.unusedSimpArgs false
 set_option maxRecDepth 2048
 
-/-! Supported functions and finite normal equations. -/
+/-! Record 8: supported functions and finite normal equations. -/
 
 def GLP023B3_cpb_Bounded (f : ℝ → ℝ) : Prop :=
   Measurable f ∧ ∃ B, ∀ x ∈ Icc (-1 : ℝ) 1, |f x| ≤ B
@@ -521,18 +521,18 @@ theorem corrected_population_bias_proof (ν : Measure (ℝ × ℝ))
         exact (le_div_iff₀ hsv).mp (hbounds p hdeg).2
       exact (mul_le_mul_iff_left₀ hsv).mp (by simpa only [mul_comm] using hlow.trans htinf)
 
-/-! Analytic Legendre formulas. -/
+example : type_of% @AronowAudit.P023.corrected_population_bias := corrected_population_bias_proof
+
+
+/-! Record 9: a local port of the analytic Legendre machinery. -/
 /-
 Copyright (c) 2026 Wouter Deconinck. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Wouter Deconinck
 
-Source: EpsilonEridani (https://github.com/eic/EpsilonEridani),
-commit bfe8fdb3279de1c45eb1f5b9713f44f0c016f84c,
-`EpsilonEridani.Mathematics.Calculus.Polynomial` and
-`EpsilonEridani.Mathematics.SpecialFunctions.Legendre.Basic`.
-Adapted to a local namespace.
-See NOTICE at the repository root.
+Source: EpsilonEridani, commit bfe8fdb3279de1c45eb1f5b9713f44f0c016f84c,
+Mathematics/Calculus/Polynomial.lean and SpecialFunctions/Legendre/Basic.lean.
+Changes: unique record prefixes, local namespace, and Lean 4.34.1 compatibility.
 -/
 open Polynomial
 section GLP023B3_urcPort
@@ -553,6 +553,7 @@ theorem GLP023B3_urc_integral_derivative_mul_derivative_mul_comm (w p q : ℝ[X]
     (fun x _ => Polynomial.differentiableAt _) (Polynomial.continuous _).continuousOn]
   -- the leading coefficient `w` vanishes at both endpoints, so the boundary term drops
   simp only [eval_mul, ha, hb, zero_mul, sub_self]
+
 
 
 noncomputable def GLP023B3_urc_legendre : ℕ → ℝ[X]
@@ -586,6 +587,26 @@ theorem GLP023B3_urc_add_two_mul_legendre_add_two_eval (n : ℕ) (x : ℝ) : (n 
   simpa using congrArg (eval x) (GLP023B3_urc_add_two_mul_legendre_add_two n)
 
 
+theorem GLP023B3_urc_legendre_add_two_eval (n : ℕ) (x : ℝ) : (GLP023B3_urc_legendre (n + 2)).eval x =
+    ((2 * n + 3) * x * (GLP023B3_urc_legendre (n + 1)).eval x - (n + 1) * (GLP023B3_urc_legendre n).eval x) / (n + 2) := by
+  rw [eq_div_iff (by positivity), mul_comm]
+  exact GLP023B3_urc_add_two_mul_legendre_add_two_eval n x
+
+
+theorem GLP023B3_urc_legendre_two : GLP023B3_urc_legendre 2 = C 2⁻¹ * (3 * X ^ 2 - 1) := by
+  rw [GLP023B3_urc_legendre_add_two]
+  simp only [Nat.cast_zero, zero_add, mul_zero, GLP023B3_urc_legendre_one, GLP023B3_urc_legendre_zero]
+  ring
+
+
+theorem GLP023B3_urc_legendre_three : GLP023B3_urc_legendre 3 = C 2⁻¹ * (5 * X ^ 3 - 3 * X) := by
+  refine Polynomial.funext fun x => ?_
+  rw [GLP023B3_urc_legendre_add_two_eval, GLP023B3_urc_legendre_two]
+  simp only [Nat.cast_one, GLP023B3_urc_legendre_one, eval_mul, eval_sub, eval_C, eval_X, eval_pow, eval_ofNat,
+    eval_one]
+  ring
+
+
 @[simp] theorem GLP023B3_urc_legendre_eval_one (n : ℕ) : (GLP023B3_urc_legendre n).eval 1 = 1 := by
   induction n using Nat.twoStepInduction with
   | zero => simp
@@ -612,6 +633,10 @@ theorem GLP023B3_urc_legendre_comp_neg_X (n : ℕ) : (GLP023B3_urc_legendre n).c
 @[simp] theorem GLP023B3_urc_legendre_eval_neg (n : ℕ) (x : ℝ) :
     (GLP023B3_urc_legendre n).eval (-x) = (-1) ^ n * (GLP023B3_urc_legendre n).eval x := by
   simpa using congrArg (eval x) (GLP023B3_urc_legendre_comp_neg_X n)
+
+
+theorem GLP023B3_urc_legendre_eval_neg_one (n : ℕ) : (GLP023B3_urc_legendre n).eval (-1) = (-1) ^ n := by
+  simp [GLP023B3_urc_legendre_eval_neg]
 
 
 theorem GLP023B3_urc_add_two_mul_coeff_legendre_add_two (n k : ℕ) :
@@ -806,6 +831,12 @@ theorem GLP023B3_urc_integral_legendre_mul_legendre (m n : ℕ) :
     exact GLP023B3_urc_integral_legendre_mul_self m
   · exact GLP023B3_urc_integral_legendre_mul_legendre_of_ne h
 
+
+theorem GLP023B3_urc_setIntegral_Icc_legendre_mul_legendre (m n : ℕ) :
+    ∫ x in Set.Icc (-1 : ℝ) 1, (GLP023B3_urc_legendre m).eval x * (GLP023B3_urc_legendre n).eval x =
+      if m = n then (2 / (2 * n + 1) : ℝ) else 0 := by
+  rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by norm_num),
+    GLP023B3_urc_integral_legendre_mul_legendre]
 
 end Orthogonality
 
@@ -1511,6 +1542,8 @@ theorem uniform_residual_constants_proof :
   · rw [hv7, (Real.sqrt_eq_iff_eq_sq (by norm_num : (0 : ℝ) ≤ 1225 / 65536)
       (by norm_num : (0 : ℝ) ≤ 35 / 256)).mpr (by norm_num)]
     norm_num
+
+example : type_of% @AronowAudit.P023.uniform_residual_constants := uniform_residual_constants_proof
 
 end
 end AronowAudit.P023.Wave1

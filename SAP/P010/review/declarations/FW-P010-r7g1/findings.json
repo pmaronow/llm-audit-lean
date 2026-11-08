@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P010-T1",
+    "theorem": "SAP.P010.T1",
+    "fingerprint": "891a11a4983d8bd9b5170d33bd6ccbbdead08f3f089a9ded48d33a0f25fb4b99",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No antecedents: the finite counts are fixed canonical inputs. scratch/Check.lean independently compiled the three preference endpoint computations and positivity of all retained counts/denominators. The computed closed intervals are nonempty, so disjointness does not exploit empty intervals.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T2",
+    "theorem": "SAP.P010.T2",
+    "fingerprint": "79e0ec8185535b79f874be5a38ee081511961ef6d14b05ee571812e866316087",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No external antecedents. scratch/Check.lean independently compiled both endpoint vectors, the fractional endpoint vector, positivity and valid binary count ranges for every arm, and the explicit cutoff-range witness j=1 in every arm. All denominators are positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T3",
+    "theorem": "SAP.P010.T3",
+    "fingerprint": "fc78e2e68ff6784261d5673c3c17c315c98c63e3ee9e29bf5ce62b4462840b62",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each b:Bool, scratch/Check.lean compiled an existential witness mu=missingPassingPopulation b satisfying populationAssumptions, positive always-passer mass, atomlessness, full real support, all moments, and ratio <1, extracting the Comparator-certified T3 properties. Direct inspection of the normalized exponential/Laplace product mixtures verifies independent fair assignment, finite moments and all printed-reading conditions; see REPORT.md. There are no antecedents in T3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T4",
+    "theorem": "SAP.P010.T4",
+    "fingerprint": "72adef22007f5c4b3d1692cb48a607b920654b5c112e56118cb8f7e3f465f061",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiled an existential instance with K=2, d=0, mu=missingPassingPopulation false and a=0 satisfying every T4 hypothesis: populationAssumptions, mu(allPass)>0, noAtoms(passerDistribution mu a), Integrable response on passed intersection assigned a, and trimmingRatio mu a<1. The construction uses certified T3 properties and a separate measurable-response/atomless-Laplace argument; T4 is not used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P010-T5",
+    "theorem": "SAP.P010.T5",
+    "fingerprint": "8d56f1007320ce7aa0d286ac37035aa2d180c6d0d237fbefcca175cc903b71b1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No antecedents. scratch/Check.lean compiled the concrete family at t=1/2 for each arm, obtaining compatible populations betaEndpointPopulation (1/2) false/true and means 11/32 and 21/32, and an explicit nonempty compatibleMeans witness. This extracts certified T5 properties. Direct inspection of the base beta/heavy-tail law and four-stratum family verifies positive masses, ordinary integrable means, independent fair assignment, and the remaining printed-reading conditions; see REPORT.md.",
+    "confidence": 0.99
+  }
+]

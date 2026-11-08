@@ -5,7 +5,8 @@ import AronowAudit.P004.Wave1.LinePopulation.N5
 import AronowAudit.P004.Wave1.LinePopulation.N6
 import AronowAudit.P004.Wave1.LinePopulation.N7
 
-/-! Cyclic counting and finite Bernoulli moments for P004-T1. -/
+/-! Cyclic counting and finite Bernoulli moments for P004-T1.
+The frozen regressor has a field-remainder defect; the exact held contract is refuted below. -/
 
 namespace AronowAudit.P004.Wave1
 
@@ -45,6 +46,38 @@ theorem TailBIpw_blocks_lower (N : ℕ) (hN : 6 ≤ N) :
   have hc : (N : ℝ) ≤ 6*(N/3 : ℕ) := by exact_mod_cast hn
   linarith
 
+/-- The frozen regressor uses field remainder on `ℝ`, not natural remainder.
+Thus the purported three-type regressor is constant. -/
+theorem TailBIpw_regressor_constant (N : ℕ) (i : Fin N) :
+    threeTypeO N i = ![1, (-1 : ℝ)] := by
+  norm_num [threeTypeO, Field.mod_eq]
+
+/-- The direction `(1,1)` is annihilated by every frozen regressor. -/
+theorem TailBIpw_regressor_null (N : ℕ) (i : Fin N) :
+    dot (threeTypeO N i) ![1, (1 : ℝ)] = 0 := by
+  rw [TailBIpw_regressor_constant]
+  norm_num [dot, Fin.sum_univ_two]
+
+/-- No estimator can satisfy the frozen model's positive Gram condition. -/
+theorem TailBIpw_no_logisticConditions
+    (θhat : ∀ N, Assignment N → Fin 2 → ℝ) :
+    ¬ LogisticConditions threeTypeO threeTypeTheta threeTypeParameterSet θhat := by
+  intro hlog
+  obtain ⟨c, hc, hgram⟩ := hlog.2.2.2.1
+  obtain ⟨N, hN⟩ := hgram.exists
+  have h := hN ![1, (1 : ℝ)]
+  norm_num [TailBIpw_regressor_null, Fin.sum_univ_two] at h
+  linarith
+
+/-- Exact negation of the held existential contract, proved from its first guard.
+The requested positive final is deliberately absent because that contract is false. -/
+theorem TailBIpw_counterexample_contract_false :
+    ¬ (type_of% @AronowAudit.P004.ipw_linearization_counterexample) := by
+  rintro ⟨θhat, hlog, _⟩
+  exact TailBIpw_no_logisticConditions θhat hlog
+
+example : ¬ (type_of% @AronowAudit.P004.ipw_linearization_counterexample) :=
+  TailBIpw_counterexample_contract_false
 
 theorem TailBIpw_circle (N : ℕ) :
     circleAverage (threeTypePopulation N) 0 = threeTypeTable N :=
@@ -209,7 +242,8 @@ theorem TailBIpw_centered_moments {N : ℕ} (p : Fin N → ℝ)
       change _ ≤ 3*((a i)^2+Q)^2
       nlinarith only [hU4, hm, hX4, sq_nonneg ((a i)^2)]
 
-/-- Balanced cyclic second/fourth moments. The probabilities here are explicitly indexed by natural types. -/
+/-- Balanced cyclic second/fourth moments, available independently of the frozen
+logistic-regressor defect. The probabilities here are explicitly indexed by natural types. -/
 theorem TailBIpw_cyclic_moments (K : ℕ) (p a : ℕ → ℝ)
     (hp : ∀ t, 0 < p t ∧ p t < 1) :
     let π : Fin (3*K) → ℝ := fun i => p (i.val%3)

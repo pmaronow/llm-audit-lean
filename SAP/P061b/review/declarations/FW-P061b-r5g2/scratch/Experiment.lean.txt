@@ -1,0 +1,84 @@
+import SAP.P061b.Defs.WholeW1
+
+open SAP.P061b
+open scoped BigOperators Classical
+
+namespace ExperimentReview
+
+abbrev Feasible := (Set.univ : Set (Fin 2 → ℝ))
+def a : Feasible := ⟨![1,0], Set.mem_univ _⟩
+def b : Feasible := ⟨![0,1], Set.mem_univ _⟩
+
+lemma a_ne_b : a ≠ b := by
+  intro h
+  have hh := congrArg (fun z : Feasible => z.val 0) h
+  norm_num [a, b] at hh
+
+lemma valid_a : (∀ i, a.val i = 0 ∨ a.val i = 1) ∧
+    (Finset.univ.filter (fun i => a.val i = 1)).card = 1 := by
+  refine ⟨?_, ?_⟩
+  · intro i
+    fin_cases i <;> norm_num [a]
+  · have hf : (Finset.univ.filter (fun i => a.val i = 1)) = {0} := by
+      ext i
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+      fin_cases i <;> norm_num [a]
+    rw [hf]
+    norm_num
+
+lemma valid_b : (∀ i, b.val i = 0 ∨ b.val i = 1) ∧
+    (Finset.univ.filter (fun i => b.val i = 1)).card = 1 := by
+  refine ⟨?_, ?_⟩
+  · intro i
+    fin_cases i <;> norm_num [b]
+  · have hf : (Finset.univ.filter (fun i => b.val i = 1)) = {1} := by
+      ext i
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+      fin_cases i <;> norm_num [b]
+    rw [hf]
+    norm_num
+
+noncomputable def design : AtomicDesign Feasible where
+  p := fun z => (if z = a then 1 / 2 else 0) + (if z = b then 1 / 2 else 0)
+  nonneg := fun z => by split_ifs <;> norm_num
+  summable := (hasSum_ite_eq a (1 / 2 : ℝ)).summable.add
+    (hasSum_ite_eq b (1 / 2 : ℝ)).summable
+  total := by
+    convert ((hasSum_ite_eq a (1 / 2 : ℝ)).add
+      (hasSum_ite_eq b (1 / 2 : ℝ))).tsum_eq using 1 <;> norm_num
+
+lemma uniform : UniformBinaryDesignW1 design 1 := by
+  intro z
+  change (if z = a then (1 / 2 : ℝ) else 0) + (if z = b then 1 / 2 else 0) = _
+  by_cases ha : z = a
+  · subst z
+    rw [if_pos (rfl : a = a), if_neg a_ne_b, if_pos valid_a]
+    norm_num
+  · by_cases hb : z = b
+    · subst z
+      rw [if_neg ha, if_pos (rfl : b = b), if_pos valid_b]
+      norm_num
+    · have hnot : ¬((∀ i, z.val i = 0 ∨ z.val i = 1) ∧
+          (Finset.univ.filter (fun i => z.val i = 1)).card = 1) := by
+        rintro ⟨hc, hn⟩
+        rcases hc 0 with h0 | h0 <;> rcases hc 1 with h1 | h1
+        · norm_num [Finset.univ_fin2, Finset.filter_insert, Finset.filter_singleton, h0, h1] at hn
+        · apply hb
+          apply Subtype.ext
+          ext i
+          fin_cases i <;> simp_all [b]
+        · apply ha
+          apply Subtype.ext
+          ext i
+          fin_cases i <;> simp_all [a]
+        · norm_num [Finset.univ_fin2, Finset.filter_insert, Finset.filter_singleton, h0, h1] at hn
+      rw [if_neg ha, if_neg hb, if_neg hnot]
+      norm_num
+
+-- All experiment hypotheses in T17, on an uncountable feasible set with zero-mass
+-- nonbinary interventions, not merely the finite binary cube.
+example : ContainsBinaryCubeW1 Feasible ∧ (0 < (1 : ℕ)) ∧ (1 < (2 : ℕ)) ∧
+    UniformBinaryDesignW1 design 1 := by
+  exact ⟨fun _ => Set.mem_univ _, by decide, by decide, uniform⟩
+
+end ExperimentReview

@@ -1,0 +1,54 @@
+[
+ {
+  "target_id": "P042-T6",
+  "decision": "whole",
+  "theorem": "SAP.P042.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P042.cace_randomization_identity",
+   "AronowAudit.P042.complete_randomization_balance",
+   "AronowAudit.P042.itt_complier_identity",
+   "AronowAudit.P042.michelson_cace_example",
+   "AronowAudit.P029.Wave1.LateIdentity.n1_proof",
+   "AronowAudit.P042.complete_inclusion_probability",
+   "AronowAudit.P042.finite_expectation_const",
+   "AronowAudit.P042.finite_expectation_mul",
+   "AronowAudit.P042.finite_expectation_sub",
+   "SAP.P042.WH.W2.T6_L1_proof",
+   "SAP.P042.WH.W2.T6_L2_proof",
+   "SAP.P042.WH.W2.T6_assembly",
+   "SAP.P042.WH.W2.T6_whole"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P042.complete_group_mean",
+    "reason": "The existing balance theorem already includes both group-mean identities."
+   },
+   {
+    "lean_name": "AronowAudit.P042.complete_inclusion_probability",
+    "reason": "The existing balance theorem already uses the uniform-design inclusion calculation."
+   },
+   {
+    "lean_name": "AronowAudit.P042.finite_expectation_const",
+    "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+   },
+   {
+    "lean_name": "AronowAudit.P042.finite_expectation_div",
+    "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+   },
+   {
+    "lean_name": "AronowAudit.P042.finite_expectation_mul",
+    "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+   },
+   {
+    "lean_name": "AronowAudit.P042.finite_expectation_sub",
+    "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+   },
+   {
+    "lean_name": "AronowAudit.P042.finite_expectation_sum",
+    "reason": "Auxiliary finite-expectation identity already used inside the existing balance and CACE theorems."
+   }
+  ],
+  "statement_definition": "SAP.P042.T6WholeStatement_W2"
+ }
+]

@@ -1,0 +1,185 @@
+import SAP.P013a.Defs
+
+open scoped BigOperators Topology
+open Finset Filter
+open SAP.P013a
+noncomputable section
+
+-- Independent fair Bernoulli experiments: the basic product-moment identity.
+lemma productMean (N : ℕ) (f : Fin N → Fin 2 → ℝ) :
+    expectation (replicateDesign sharedDesign N) (fun z => ∏ i, f i (z i)) =
+      ∏ i, ((1/2 : ℝ) * f i 0 + (1/2 : ℝ) * f i 1) := by
+  unfold expectation replicateDesign sharedDesign
+  simp only [← Finset.prod_mul_distrib]
+  simpa only [Fin.sum_univ_two] using
+    (Fintype.prod_sum (fun (i : Fin N) (b : Fin 2) => (1/2 : ℝ) * f i b)).symm
+
+lemma coordinateMean (N : ℕ) (i : Fin N) (f : Fin 2 → ℝ) :
+    expectation (replicateDesign sharedDesign N) (fun z => f (z i)) =
+      (1/2 : ℝ) * f 0 + (1/2 : ℝ) * f 1 := by
+  classical
+  have h := productMean N (fun j b => if j=i then f b else 1)
+  calc
+    _ = ∏ j, ((1/2 : ℝ) * (if j=i then f 0 else 1) +
+        (1/2 : ℝ) * (if j=i then f 1 else 1)) := by simpa using h
+    _ = ∏ j, if j=i then (1/2 : ℝ)*f 0+(1/2 : ℝ)*f 1 else 1 := by
+      apply Finset.prod_congr rfl
+      intro j _
+      by_cases hj : j=i <;> simp [hj] <;> norm_num
+    _ = _ := by simp
+
+def iidLaw (N : ℕ) : Design (Fin (Fintype.card (Fin N → Fin 2))) where
+  weight z := (replicateDesign sharedDesign N).weight
+    ((Fintype.equivFin (Fin N → Fin 2)).symm z)
+  positive z := (replicateDesign sharedDesign N).positive _
+  total := by
+    rw [Equiv.sum_comp]
+    exact (replicateDesign sharedDesign N).total
+
+def iidPopulation (N : ℕ) : Population (iidLaw N) N 2 where
+  exposure z i := (Fintype.equivFin (Fin N → Fin 2)).symm z i
+  outcome _ _ := 1
+
+lemma iidExpect (N : ℕ) (X : (Fin N → Fin 2) → ℝ) :
+    expectation (iidLaw N) (fun z => X ((Fintype.equivFin (Fin N → Fin 2)).symm z)) =
+      expectation (replicateDesign sharedDesign N) X := by
+  exact (Fintype.equivFin (Fin N → Fin 2)).symm.sum_comp
+    (fun z => (replicateDesign sharedDesign N).weight z * X z)
+
+lemma iidPi (N : ℕ) (i : Fin N) (d : Fin 2) :
+    SAP.P013a.pi (iidPopulation N) i d = 1/2 := by
+  change expectation (iidLaw N)
+    (fun z => if (Fintype.equivFin (Fin N → Fin 2)).symm z i = d then 1 else 0) = 1/2
+  calc
+    _ = expectation (replicateDesign sharedDesign N) (fun z => if z i=d then 1 else 0) :=
+      iidExpect N _
+    _ = (1/2 : ℝ)*(if (0 : Fin 2)=d then 1 else 0) +
+        (1/2 : ℝ)*(if (1 : Fin 2)=d then 1 else 0) :=
+      coordinateMean N i (fun b => if b=d then 1 else 0)
+    _ = _ := by fin_cases d <;> norm_num
+
+def iidSequence : ExperimentSequence where
+  experiment n := {
+    supportSize := Fintype.card (Fin (n+1) → Fin 2)
+    exposureSize := 2
+    design := iidLaw (n+1)
+    population := iidPopulation (n+1)
+  }
+  treated _ := 1
+  control _ := 0
+  distinct _ := by change (1 : Fin 2) ≠ 0; decide
+  positiveTreated n i := by rw [iidPi]; norm_num
+  positiveControl n i := by rw [iidPi]; norm_num
+
+example : ComparisonBounded iidSequence := by
+  refine ⟨1, 2, by norm_num, by norm_num, ?_⟩
+  intro n i
+  change |(1 : ℝ)| ≤ 1 ∧ |(1 : ℝ)| ≤ 1 ∧
+    |1 / SAP.P013a.pi (iidPopulation (n+1)) i 1| ≤ 2 ∧
+    |1 / SAP.P013a.pi (iidPopulation (n+1)) i 0| ≤ 2
+  rw [iidPi, iidPi]
+  norm_num
+
+-- Nonasymptotic check of the complete estimator, not a replacement definition.
+def onePopulation : Population sharedDesign 1 2 where
+  exposure z _ := z
+  outcome _ _ := 1
+
+example : ∀ z, effectVariance onePopulation 1 0 z = 4 := by
+  intro z
+  fin_cases z <;>
+    norm_num [effectVariance, varianceHT, correctionA2, covarianceA, pairTerm,
+      SAP.P013a.pi, jointPi, expectation, indicator, onePopulation,
+      Fin.sum_univ_succ, sharedDesign]
+
+example : variance sharedDesign (htEffect onePopulation 1 0) = 4 := by
+  norm_num [variance, covariance, htEffect, htTotal, SAP.P013a.pi,
+    expectation, indicator, onePopulation, sharedDesign, Fin.sum_univ_succ]
+
+-- T5: the shared-law sequence can also be constructed without any Challenge axiom.
+lemma sharedPi (N : ℕ) (i : Fin N) (d : Fin 2) :
+    SAP.P013a.pi (sharedPopulation N) i d = 1/2 := by
+  fin_cases d <;> norm_num [SAP.P013a.pi, expectation, indicator,
+    sharedPopulation, sharedDesign, Fin.sum_univ_succ]
+
+def sharedSequence : ExperimentSequence where
+  experiment n := {
+    supportSize := 2
+    exposureSize := 2
+    design := sharedDesign
+    population := sharedPopulation (n+1)
+  }
+  treated _ := 1
+  control _ := 0
+  distinct _ := by change (1 : Fin 2) ≠ 0; decide
+  positiveTreated n i := by rw [sharedPi]; norm_num
+  positiveControl n i := by rw [sharedPi]; norm_num
+
+lemma identityPrinted {Ω : Type*} [Fintype Ω] {N K : ℕ}
+    (P : Design Ω) (D : Ω → Fin N → Fin K) :
+    PrintedDependency P D (fun i j => decide (i=j)) := by
+  classical
+  intro A B hdis hno
+  have hempty : A=∅ ∧ B=∅ := by
+    constructor
+    · apply Finset.eq_empty_iff_forall_notMem.mpr
+      intro i hi
+      exact hno ⟨i, i, by simp, Or.inl ⟨hi, Finset.disjoint_left.mp hdis hi⟩⟩
+    · apply Finset.eq_empty_iff_forall_notMem.mpr
+      intro i hi
+      exact hno ⟨i, i, by simp, Or.inr (Or.inr (Or.inl
+        ⟨Finset.disjoint_right.mp hdis hi, hi⟩))⟩
+  rcases hempty with ⟨rfl, rfl⟩
+  intro a b
+  simp [probability, P.total]
+
+lemma sharedHypotheses : StandingPositivity sharedSequence ∧ Condition3 sharedSequence ∧
+    Condition5Printed sharedSequence := by
+  refine ⟨?_, ?_, ?_⟩
+  · change ∀ n (d : Fin 2) (i : Fin (n+1)),
+      0 < SAP.P013a.pi (sharedPopulation (n+1)) i d ∧
+        SAP.P013a.pi (sharedPopulation (n+1)) i d < 1
+    intro n d i
+    rw [sharedPi]
+    norm_num
+  · refine ⟨0, 2, by norm_num, by norm_num, ?_⟩
+    change ∀ n (i : Fin (n+1)) (d : Fin 2),
+      |(0 : ℝ)| ≤ 0 ∧ |1 / SAP.P013a.pi (sharedPopulation (n+1)) i d| ≤ 2
+    intro n i d
+    rw [sharedPi]
+    norm_num
+  · refine ⟨1, fun _ i j => decide (i=j), ?_⟩
+    intro n
+    refine ⟨identityPrinted _ _, ?_⟩
+    intro i
+    simp
+
+lemma sharedNoCondition4 : ¬ Condition4 sharedSequence := by
+  rintro ⟨g, hg, ht⟩
+  change ∀ n i j, g n i j = false → PairIndependent (sharedPopulation (n+1)) i j at hg
+  have allTrue : ∀ n i j, g n i j = true := by
+    intro n i j
+    cases h : g n i j
+    · have bad := hg n i j h 1 1
+      change jointPi (sharedPopulation (n+1)) i j 1 1 =
+        SAP.P013a.pi (sharedPopulation (n+1)) i 1 *
+        SAP.P013a.pi (sharedPopulation (n+1)) j 1 at bad
+      norm_num [jointPi, SAP.P013a.pi, expectation, indicator, sharedPopulation,
+        sharedDesign, Fin.sum_univ_succ] at bad
+    · rfl
+  have counts : (fun n : ℕ =>
+      (∑ i, ∑ j, (if g n i j=true then 1 else 0 : ℝ)) / (n+1 : ℝ)^2) =
+        fun _ => (1 : ℝ) := by
+    funext n
+    simp only [allTrue, ite_true, sum_const, card_univ, Fintype.card_fin,
+      nsmul_eq_mul, Nat.cast_add, Nat.cast_one, mul_one]
+    rw [← pow_two, div_self (by positivity)]
+  rw [counts] at ht
+  have bad : (1 : ℝ) = 0 := tendsto_nhds_unique tendsto_const_nhds ht
+  norm_num at bad
+
+-- This is a complete independent construction of T5's existential witness.
+example : ∃ S : ExperimentSequence, StandingPositivity S ∧ Condition3 S ∧
+    Condition5Printed S ∧ ¬ Condition4 S :=
+  ⟨sharedSequence, sharedHypotheses.1, sharedHypotheses.2.1,
+    sharedHypotheses.2.2, sharedNoCondition4⟩

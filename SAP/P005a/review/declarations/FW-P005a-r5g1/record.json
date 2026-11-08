@@ -1,0 +1,183 @@
+[
+ {
+  "target_id": "P005-T1",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.covariance_counterexample",
+   "SAP.P005a.WH.W1.T1_whole",
+   "SAP.P005a.WH.W1.T1_assembly",
+   "AronowAudit.P005.univ_six",
+   "AronowAudit.P005.covariance_location_invariant",
+   "AronowAudit.P005.Wave1.CondP002P005P006_variance_congr"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.design_six_four",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.expectation_six_four",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.univ_six",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   }
+  ],
+  "statement_definition": "SAP.P005a.T1WholeStatement"
+ },
+ {
+  "target_id": "P005-T2",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.covariance_location_invariant",
+   "AronowAudit.P005.variance_difference_bound",
+   "SAP.P005a.WH.W1.T2_whole",
+   "SAP.P005a.WH.W1.T2_assembly",
+   "SAP.P005a.WH.W1.T2_L1_proof",
+   "SAP.P005a.WH.W1.product_uniform",
+   "SAP.P005a.WH.W1.variance_control",
+   "AronowAudit.P005.Wave1.qtc_corrected_covariance_lemma",
+   "AronowAudit.P005.Wave1.qtc_expectation_positive",
+   "AronowAudit.P005.Wave1.qtc_matrix_second_moment",
+   "AronowAudit.P005.Wave1.GP005B4c_four_coefficients",
+   "AronowAudit.P005.Wave1.GP005B4c_variance_identity",
+   "AronowAudit.P005.Wave1.GP005B4c_centered_sum",
+   "AronowAudit.P005.Wave1.CondP002P005P006_centered_mean",
+   "AronowAudit.P005.Wave1.control_arm_complement_card",
+   "AronowAudit.P005.Wave1.GP005B4c_variance_mean",
+   "AronowAudit.P005.Wave1.CondP002P005P006_outer"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.Wave1.corrected_covariance_lemma_conditional",
+    "reason": "Its literature premise is not a canonical hypothesis; the unconditional centered bound and expectation are instead supplied by existing supporting declarations."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P005.Wave1.GP005B4c_covariance_arm",
+   "AronowAudit.P005.Wave1.control_arm_covariance_expectation",
+   "AronowAudit.P005.Wave1.control_arm_transport"
+  ],
+  "statement_definition": "SAP.P005a.T2WholeStatement"
+ },
+ {
+  "target_id": "P005-T3",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.leverage_variance_counterexample_proof",
+   "SAP.P005a.WH.W1.T3_whole",
+   "SAP.P005a.WH.W1.T3_assembly",
+   "SAP.P005a.WH.W1.T3_L1_proof",
+   "AronowAudit.P005.Wave1.GP005B4b_T3_univ16",
+   "AronowAudit.P005.Wave1.GP005B4b_T3_leverage_values",
+   "AronowAudit.P005.Wave1.GP005B4b_T3_fiber_bound",
+   "AronowAudit.P005.Wave1.GP005B4b_T3_control_card",
+   "AronowAudit.P005.Wave1.GP005B4b_T3_arm_cov_pos",
+   "AronowAudit.P005.Wave1.GP005B4b_T3_covariance_formula",
+   "AronowAudit.P005.Wave1.GP005B4b_T3_expectation_const",
+   "AronowAudit.P005.Wave1.GP005B4b_T3_pair_inclusion",
+   "AronowAudit.P005.indicator_expectation",
+   "AronowAudit.P005.sampleCov_scale_both"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P005a.T3WholeStatement"
+ },
+ {
+  "target_id": "P005-T4",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.Wave1.corrected_leverage_variance_chain_proof",
+   "AronowAudit.P005.Wave1.corrected_leverage_variance_order_proof",
+   "SAP.P005a.WH.W1.T4_whole",
+   "SAP.P005a.WH.W1.T4_assembly",
+   "SAP.P005a.WH.W1.T4_L1_proof",
+   "SAP.P005a.WH.W1.finite_chain",
+   "SAP.P005a.WH.W1.variance_div",
+   "AronowAudit.P005.mean_mono",
+   "AronowAudit.P005.mean_mul",
+   "AronowAudit.P005.kappa_bounds",
+   "AronowAudit.P005.Wave1.t4_variance_nonneg"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.centered_leverage_moment_bounds",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.leverage_le_maximum",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.leverage_nonneg",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.leverage_population_mean",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.mean_add",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.mean_const",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.mean_mono",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.mean_mul",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.mean_nonneg",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.mean_square_centering",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.mean_sub",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   }
+  ],
+  "statement_definition": "SAP.P005a.T4WholeStatement"
+ },
+ {
+  "target_id": "P005-T5",
+  "decision": "whole",
+  "theorem": "SAP.P005a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P005.interacted_sign_counterexample",
+   "SAP.P005a.WH.W2.T5_whole",
+   "SAP.P005a.WH.W2.T5_assembly",
+   "SAP.P005a.WH.W2.T5_complete",
+   "AronowAudit.P005.design_six_two",
+   "AronowAudit.P005.expectation_six_two"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P005.design_six_two",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   },
+   {
+    "lean_name": "AronowAudit.P005.expectation_six_two",
+    "reason": "Not invoked separately: its relevant content is already incorporated in the selected primary proof; no additional conclusion is asserted from this auxiliary."
+   }
+  ],
+  "statement_definition": "SAP.P005a.T5WholeStatement"
+ }
+]

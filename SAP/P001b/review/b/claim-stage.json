@@ -1,0 +1,116 @@
+[
+  {
+    "theorem": "SAP.P001b.T20",
+    "target_id": "P001-T20",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The nonnegative-mass algebra states the pointwise overlap equivalence, uniform-bound implication, and finite-positive-support converse. It does not state the two conditional arm-support identities, their probability-law normalization bridge, or an infinite-support counterexample. The ratios are guarded by t(x)+c(x)>0. The hypotheses are consistent: on Unit take t=c=1/2 and epsilon=1/4 (compiled in scratch/Check.lean). Removing normalization strengthens the algebraic assertion without making it false; it does not supply the omitted probability interpretation."
+  },
+  {
+    "theorem": "SAP.P001b.T21",
+    "target_id": "P001-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "The four weights, latent types, displayed leaflets, 100-voter rule, potential outcomes, observed outcomes, positive gender masses, dependence certificate, conditional means 55 and 30, contrast 25, and ATE 5 reproduce the specified counterexample. Constant X makes unconditional cell probabilities the required conditional probabilities. The voter rule uses only displayed gender and electorate preferences; the false leaflet flag can represent no prior acquaintance. All conditional denominators are 1 or 1/2. The normalization, cell masses, conditional means, ATE, and conditional-independence failure were independently compiled from Defs."
+  },
+  {
+    "theorem": "SAP.P001b.T22",
+    "target_id": "P001-T22",
+    "my_reading_vs_claim": "narrower",
+    "reason": "This is definitionally the entire T21 fixed counterexample, so it establishes corrected clause (i). It contains neither clause (ii), independence under a common description-only response function, nor clause (iii), the ATE identification formula under explicit strong ignorability. The retained counterexample is consistent and directly addresses the printed implication."
+  },
+  {
+    "theorem": "SAP.P001b.T23",
+    "target_id": "P001-T23",
+    "my_reading_vs_claim": "whole",
+    "reason": "All three corrected-gloss clauses, all five basic probability rules, and the addition rule are present for arbitrary measurable events under a probability measure. The reversed occurrence implication is denied for every proper inclusion, using pointwise rather than almost-everywhere inclusion as the paper requires. A=empty and B=Unit on the Dirac probability space give a proper-inclusion instance; arbitrary probability spaces are not assumed to have only null events. Real-valued subtraction is signed, and toReal is applied only to finite event measures."
+  },
+  {
+    "theorem": "SAP.P001b.T24",
+    "target_id": "P001-T24",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement gives countable total probability with nonempty measurable disjoint covering cells, and the conditional-ratio formula is explicitly gated by strictly positive cell probabilities. It records that the empty event has nonnegative but not positive probability, characterizes when both an event and complement are nonempty, proves the binary split, and proves that deleting empty members gives a partition. Measurability of the complement family follows when A is an event. The universal binary-split assertion is nested under a partition, but the always-available one-cell partition removes any substantive extra assumption. A positive one-cell partition on Unit was compiled. The sums are summable probabilities, not default-zero divergent real sums."
+  },
+  {
+    "theorem": "SAP.P001b.T25",
+    "target_id": "P001-T25",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The constant-zero one-atom law proves exactly counterexample (a): the lower-tail probability is one and the three positive-integer point masses sum to zero. Counterexample (b), the Bernoulli law and its printed sum 1/3, is absent. The sole atom has weight one by definition, so this is an actual nonempty probability model, not empty-index arithmetic."
+  },
+  {
+    "theorem": "SAP.P001b.T26",
+    "target_id": "P001-T26",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Normalized nonnegative summable integer masses give clauses (i) and (ii), including the missing nonpositive mass and equality criterion. No fair-die specialization at cutoff 4 or value 1/2 is asserted, so clause (iii) is missing. Every such q realizes an integer-valued law. Summability is explicit and inherited by the restricted nonnegative sums. The q concentrated at zero is a compiled nonvacuity instance."
+  },
+  {
+    "theorem": "SAP.P001b.T27",
+    "target_id": "P001-T27",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact dyadic index, locations, and weights are used; summability, normalization, positive weights, countable image, strict increase, continuity at 1/3, and failure of local constancy are asserted. Missing are the separate per-level sum identity, injectivity and exact dyadic range identity, and the separate zero point-mass assertion at 1/3. These omissions do not defeat the refutation: a normalized countable positive atomic law has this CDF, and continuity plus failure of local constancy directly contradicts the printed reading. Each level has total weight 2^(-m-1); their sum is one, and no location equals 1/3."
+  },
+  {
+    "theorem": "SAP.P001b.T28",
+    "target_id": "P001-T28",
+    "my_reading_vs_claim": "whole",
+    "reason": "The general countable-range CDF formula, the ordered finite-law interval formulas, and all six die values are present. Passing from an arbitrary finite range to ordered indices with its point-mass weights loses no distributions; zero weights are also safely allowed. The additional finite no-points-in-(a,b] assertion is true. Probability normalization excludes an empty realized range; m+1 makes the ordered index explicitly nonempty. The normalized die weights and strict ordering were compiled."
+  },
+  {
+    "theorem": "SAP.P001b.T29",
+    "target_id": "P001-T29",
+    "my_reading_vs_claim": "whole",
+    "reason": "The three exact uniform-density versions, their nonnegativity, equal half-line integrals, pairwise pointwise inequality, both failures of differentiability, all four difference quotients, and the printed endpoint density values are asserted. These explicit functions are genuinely Lebesgue integrable, so the integral equalities do not exploit the nonintegrable-integral convention. Restricting Lebesgue measure to [0,1] supplies the probability law with this CDF. No derivative value at a nondifferentiable point is used."
+  },
+  {
+    "theorem": "SAP.P001b.T30",
+    "target_id": "P001-T30",
+    "my_reading_vs_claim": "narrower",
+    "reason": "All univariate correction clauses, bivariate almost-everywhere uniqueness, the interior-y uniform mixed-derivative failure at x=0, the product CDF identity on the square, and density factorization equivalent to product law are present. The discrete PMF factorization clause is absent. Density and JointDensity are genuine nonnegative integrable Radon-Nikodym density versions; their hypotheses follow from the canonical integral-density premises and probability normalization. Standard Gaussian and product Gaussian instances, including both marginal densities, were compiled. The inner derivative in the boundary example exists at every allowed y."
+  },
+  {
+    "theorem": "SAP.P001b.T31",
+    "target_id": "P001-T31",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The recursive intervals implement the stated middle-gap construction. The measure 1/2, subtype probability, measurable inclusion, density, literal range, positive-density support, and absence of every nondegenerate interval are all retained. The removed-length series and stage-component length bounds are not asserted. The set is not empty: stage component length is 2^(-n-1)+2^(-2n-1), stage measure is 1/2+2^(-n-1), and continuity from above gives measure 1/2. Closedness ensures the inclusion comap is a genuine pullback rather than its zero fallback."
+  },
+  {
+    "theorem": "SAP.P001b.T32",
+    "target_id": "P001-T32",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal density-law clause gives every zero point mass, uncountable literal range, and uncountable source space. The separate existential witness C=[0,1/2] minus the rationals is a valid alternative witness for the canonical existential conclusion, which does not prescribe the fat Cantor construction. With probability 2 times restricted Lebesgue measure on the subtype, its identity map has density 2*indicator_C and interval-free range. C is measurable, has measure 1/2, and every nondegenerate interval contains a rational. The general density premises are also realized by the compiled Gaussian identity example."
+  },
+  {
+    "theorem": "SAP.P001b.T33",
+    "target_id": "P001-T33",
+    "my_reading_vs_claim": "broader",
+    "reason": "The exact pointwise equivalence on the literal range is proved for arbitrary functions, dropping all probability and measurability hypotheses because they are irrelevant to that equivalence. This is a true generalization covering the whole canonical claim. Functions defined on larger-than-range subsets of R can be extended by zero off their domains without changing either side. It is not an almost-everywhere equality or equality merely on a positive-mass support. A nonempty, nonconstant identity example was compiled."
+  },
+  {
+    "theorem": "SAP.P001b.T34",
+    "target_id": "P001-T34",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact negative-rectangle example (a) is nonnegative, integrable, normalized, has integral one on the printed event, and has zero printed triangular iterated integral. It realizes a jointly absolutely continuous law with these event probabilities, so it refutes the event as printed. Example (b), the independent uniform square and probabilities 3/8 and 1/8, is absent. The zero integral comes from disjoint support, not nonintegrability."
+  },
+  {
+    "theorem": "SAP.P001b.T35",
+    "target_id": "P001-T35",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both corrected-event probability identities and the exact zero-negative-Y-mass criterion are asserted for every planar probability with a joint density. Joint integrability suffices for the Fubini computation; exceptional nonintegrable slices do not change the outer integral. The omitted negative-Y event is disjoint from the triangle and exactly completes the printed event. Product Gaussian density premises were compiled, so the theorem is not conditional on impossible density hypotheses."
+  },
+  {
+    "theorem": "SAP.P001b.T36",
+    "target_id": "P001-T36",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact explicit density is positive, normalized, integrable, has an infinite nonnegative zero-slice integral, and has integrable nonzero slices. Missing are boundedness, the logistic slice and normalization formulas, joint CDF and mixed-derivative assertions, the zero-slice limiting integrand, positive nonzero-slice integral values, and failure of a finite marginal derivative at zero. ContDiff R top is actually real analyticity in this Mathlib; this stronger true assertion was independently compiled. The divergent slice is an extended nonnegative integral, avoiding the default-zero Bochner integral. Integrating in y gives exp(x)/(1+exp(x))^2, whose integral is one; at y=0 the integrand tends to 1/pi."
+  },
+  {
+    "theorem": "SAP.P001b.T37",
+    "target_id": "P001-T37",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The marginal finiteness and every finite nonnegative almost-everywhere marginal-density version are fully stated. The separate conditional-slice normalization clause adds global Borel measurability of f; the canonical measurable-density discussion permits Lebesgue-measurable versions. It assumes an integrable slice and strictly positive real integral, which are a valid rendering of a finite positive denominator, and asserts normalization rather than a conditional kernel identity. Product Gaussian examples jointly satisfy the density and conditional-slice premises, as compiled. No finite density version is defined by taking toReal of an infinite slice."
+  },
+  {
+    "theorem": "SAP.P001b.T38",
+    "target_id": "P001-T38",
+    "my_reading_vs_claim": "whole",
+    "reason": "The standard-normal input, constant-zero linear combination, unit atom, nonexistence of any density, and exclusion of all positive-variance Gaussian laws give the specified first refutation; Mathlib's Gaussian variance parameter is used correctly. Both allowed correlation endpoints are exhibited and both denominator factors are shown to vanish at unit scales, which suffices to refute the printed parameter range. The extra zero function and zero integral assertions concern a separately and explicitly totalized Lean expression; they are not an assertion that the ordinary printed singular formula is defined or zero. Acceptance rests on the genuine zero-denominator certificate, not on division by zero manufacturing a probability."
+  }
+]

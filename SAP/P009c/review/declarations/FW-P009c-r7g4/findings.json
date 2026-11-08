@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P009-T50",
+    "theorem": "SAP.P009c.T50",
+    "fingerprint": "9d7329efb6020c72242be945e2fc2b89d3c22ec560b7963cea695ce48fd01cf1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with /home/ubuntu/sap/tools/sap-lean, importing only SAP.P009c.Defs. Review.study has N(t)=t+1, independent fair Bernoulli assignments, and y_i(z)=1 when z_i=true and -1 otherwise. The file proves RegularSequence with k=2,q=4,s=1, Bernoulli at every time, dAvg=lambdaMax=1, msq=4, the spectral little-o alternative, Restricted, and PositiveLiminf msq. Thus every premise of each alternative holds jointly in a concrete growing study. The Rayleigh supremum is explicitly shown to be the supremum of the singleton {1}, so this example also checks that it is not using a default supremum value.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T51",
+    "theorem": "SAP.P009c.T51",
+    "fingerprint": "787453a146b62d6fe0b6ff249664a0e5a223f1e1b65e6bf856b7a3ae20167fc8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with /home/ubuntu/sap/tools/sap-lean, importing only SAP.P009c.Defs. It constructs a growing fair Bernoulli study satisfying every input premise at k=2,alpha=1/2,x=0; constructs the nondegenerate three-point law and checks its mean, variance, and both Chebyshev equalities; and proves for every admissible alpha and every real threshold that sharpCDF equals the CDF computed from sharpLaw. The existential outcome conclusion was additionally checked mathematically, without relying on the Challenge theorem: for h=t+2,n=h^2 and fair assignments, let f(z)=1_{z0=true}(2*1_{z1=true}-1), a=2-1/h, and y_i(z)=(sqrt(a)/2)(2*1_{zi=true}-1)f(z) for i<h, zero otherwise. The induced dependence graph is an h-clique plus isolated loops, giving dAvg=a,dMax=h. These bounded outcomes satisfy uniform regularity, restricted interference, dAvg=O(1), and dMax=sqrt(n). The normalized centered HT variable is exactly f, with masses (1/4,1/2,1/4). This explicit outcome-family verification is mathematical; the full existential construction was not re-proved in Lean.",
+    "confidence": 0.99
+  }
+]

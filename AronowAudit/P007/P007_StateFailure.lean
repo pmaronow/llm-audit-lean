@@ -40,7 +40,7 @@ theorem row_survival_count {K k : ℕ} (o : Finset (Fin K)) :
   rw [← Finset.sum_filter, hf]
   simp [Finset.card_powersetCard]
 
-/-- P007-T1(i), exact refutation of Section 3.2, p. 153: the uniform expected
+/-- P007-T1(i), validator's exact refutation of Section 3.2, p. 153: the uniform expected
 retained fraction is sum_i choose(r_i,k)/(n choose(K,k)), for the paper's actual sampling design. -/
 theorem uniform_retention_counting_identity {n K k : ℕ} (m : FixedArray n K)
     (_hn : 0 < n) (_hk : k ≤ K) :
@@ -51,7 +51,7 @@ theorem uniform_retention_counting_identity {n K k : ℕ} (m : FixedArray n K)
   simp [columnSamples, Finset.card_powersetCard, div_div, mul_comm]
 
 /-- P007-T1(ii): the supporting line at r=405,406, checked for every possible row
-count 0,...,1205. -/
+count 0,...,1205. Constants and the finite check are from E010/check.lean. -/
 theorem supportingLine (r : Fin 1206) :
     (1104475905 : ℤ) + ((r.val : ℤ) - 405) * 10989810 ≤
       (r.val.choose 4 : ℤ) := by
@@ -73,7 +73,7 @@ noncomputable def observedTotal (r : Fin 8580 → Fin 1206) : ℤ := ∑ i, ((r 
 noncomputable def keptFourNumerator (r : Fin 8580 → Fin 1206) : ℤ := ∑ i, ((r i).val.choose 4 : ℤ)
 
 /-- P007-T1(iii): summing the supporting line gives the exact lower bound on the
-number of surviving (row,four-column-subset) pairs, conditional on the specified observed total. -/
+number of surviving (row,four-column-subset) pairs, conditional on the logged observed total. -/
 theorem numeratorLowerBound (r : Fin 8580 → Fin 1206)
     (h : observedTotal r = 3482533) :
     (9560288484630 : ℤ) ≤ keptFourNumerator r := by
@@ -99,9 +99,9 @@ noncomputable def stateFailureRowCounts (m : FixedArray 8580 1205) : Fin 8580 �
   fun i => ⟨(m i).card, by have := Finset.card_le_univ (m i); simp at this; omega⟩
 
 /-- P007-T1(v) and P007-T2(ii): for every State Failure-sized binary array with the
-specified observed-cell total, expected retained fraction at four variables is at least
+logged observed-cell total, expected retained fraction at four variables is at least
 24513560217/1923069889510 > 1/100; expected loss is at most 98.73%, strictly below 99%.
-The specified total is a hypothesis, not an independent recount of the data. -/
+The logged total is a hypothesis, not an independent recount of the missing data file. -/
 theorem fourVariablesCannotLoseMoreThan99Percent (m : FixedArray 8580 1205)
     (h : (∑ i, ((m i).card : ℤ)) = 3482533) :
     (24513560217 : ℝ) / 1923069889510 ≤ expectedRetained m 4 ∧
@@ -132,7 +132,7 @@ theorem fourVariablesCannotLoseMoreThan99Percent (m : FixedArray 8580 1205)
   exact ⟨hret, (by norm_num : (1 : ℝ)/100 < 24513560217/1923069889510).trans_le hret,
     hloss, hloss.trans_lt (by norm_num)⟩
 
-/-- P007-T2(i), P007-E010: the loose 10^-9 display tolerance for the specified
+/-- P007-T2(i), E010 derivation: the loose 10^-9 display tolerance for the logged
 pre-removal average singles out the integer missing-cell total 7019387. -/
 theorem logged_missing_count_unique (A : ℕ)
     (h : |(A : ℝ) / 10501920 - (0.668390827582004 : ℝ)| ≤ (0.000000001 : ℝ)) :
@@ -155,7 +155,7 @@ theorem stateFailure_corrected_average :
     (0.6675 : ℝ) ≤ 7019387 / 10501920 ∧ (7019387 : ℝ) / 10501920 < 0.6685 := by
   norm_num
 
-/-- P007-T2(iii): exact arithmetic on the specified simulation estimates, not population
+/-- P007-T2(iii): exact arithmetic on archived simulation estimates, not population
 expectations. Among the estimates at four, five, six variables, loss first exceeds 99% at six. -/
 theorem archived_simulation_threshold :
     (1 - 0.02820753 : ℝ) = 0.97179247 ∧
@@ -218,7 +218,7 @@ theorem removing_fully_missing_columns {n K d : ℕ} (hn : 0 < n) (hK : 0 < K)
     nlinarith [hcr]
 
 /-- P007-T12(ii): even the printed precision of the old 66.8% excludes 66.8% for
-the retained variables, by R q_before = d + K q_after. No additional last digits are needed. -/
+the retained variables, by R q_before = d + K q_after. No logged last digits are needed. -/
 theorem printed_average_cannot_be_retained {before after : ℝ}
     (hlo : (0.6675 : ℝ) ≤ before) (hhi : before < 0.6685)
     (hpartition : 1224 * before = 19 + 1205 * after) :
@@ -236,13 +236,13 @@ theorem stateFailure_average_overstatement :
 /-- A concrete feasible 8580×1205 binary array for P007-T1: the first 7633 rows
 observe columns 0,...,405, and the remaining 947 rows observe 0,...,404.
 This is a witness with the required observed-cell total, not a claim to reconstruct
-State Failure. The universal bound also applies to any array with this total. -/
+State Failure. The universal bound also applies to the logged data. -/
 noncomputable def balancedStateFailureArray : FixedArray 8580 1205 :=
   fun i => Finset.univ.filter (fun j => j.val < if i.val<7633 then 406 else 405)
 
-/-- The explicit array's row counts and observed total follow symbolically from
-cardinality, so the hypothesis of the exact refutation is satisfiable.
-Supporting finite lemma for the exact refutation of the four-variable threshold (Section 3.2, p. 153; P007-E010). -/
+/-- The explicit array's row counts and observed total are checked symbolically by
+cardinality, so the hypothesis of the exact refutation is demonstrably satisfiable. 
+Supporting finite lemma for the exact refutation of the four-variable threshold (Section 3.2, p. 153; E010 validator). -/
 theorem balanced_array_total :
     (∀ i, (balancedStateFailureArray i).card = if i.val<7633 then 406 else 405) ∧
     (∑ i, ((balancedStateFailureArray i).card : ℤ)) = 3482533 := by
@@ -262,7 +262,7 @@ theorem balanced_array_total :
     _ = (3482533 : ℤ) := by simp [Finset.sum_add_distrib, Fin.card_filter_val_lt]
 
 /-- P007-T1 concrete counterexample: the specified binary array meets the required
-dimensions and specified cell total, yet selecting four variables has expected loss below 99%. -/
+dimensions and logged cell total, yet selecting four variables has expected loss below 99%. -/
 theorem concrete_four_variable_counterexample :
     (∑ i, ((balancedStateFailureArray i).card : ℤ))=3482533 ∧
     expectedLoss balancedStateFailureArray 4 < (99 : ℝ)/100 :=
@@ -297,7 +297,7 @@ theorem observed_missing_partition {n K : ℕ} (m : Fin n → Fin K → Bool) :
   simp only [hr, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, Nat.cast_id]
 
 /-- P007-T2(i)-(ii) and P007-T12(iii): for every actual binary mask satisfying
-all preprocessing and specified-average hypotheses, the pre-removal count is 7019387,
+all preprocessing and logged-average hypotheses, the pre-removal count is 7019387,
 retained missing count 6856367, observed count 3482533, and retained mean rounds to
 66.3%. Uniform four-variable expected loss for that same retained mask is below 99%.
 No original-data reconstruction, row independence, or simulation expectation is assumed. -/
@@ -339,3 +339,21 @@ theorem logged_mask_correction (m : Fin 8580 → (Fin 1205 ⊕ Fin 19) → Bool)
 
 end AronowAudit.P007
 
+#print axioms AronowAudit.P007.row_survival_count
+#print axioms AronowAudit.P007.uniform_retention_counting_identity
+#print axioms AronowAudit.P007.supportingLine
+#print axioms AronowAudit.P007.supportingLine_equality
+#print axioms AronowAudit.P007.numeratorLowerBound
+#print axioms AronowAudit.P007.denominatorValue
+#print axioms AronowAudit.P007.fourVariablesCannotLoseMoreThan99Percent
+#print axioms AronowAudit.P007.logged_missing_count_unique
+#print axioms AronowAudit.P007.stateFailure_corrected_average
+#print axioms AronowAudit.P007.archived_simulation_threshold
+#print axioms AronowAudit.P007.columnAverage_count_identity
+#print axioms AronowAudit.P007.removing_fully_missing_columns
+#print axioms AronowAudit.P007.printed_average_cannot_be_retained
+#print axioms AronowAudit.P007.stateFailure_average_overstatement
+#print axioms AronowAudit.P007.balanced_array_total
+#print axioms AronowAudit.P007.concrete_four_variable_counterexample
+#print axioms AronowAudit.P007.observed_missing_partition
+#print axioms AronowAudit.P007.logged_mask_correction

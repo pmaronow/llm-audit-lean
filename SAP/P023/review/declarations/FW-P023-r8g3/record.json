@@ -1,0 +1,52 @@
+[
+ {
+  "target_id": "P023-T11",
+  "decision": "restricted",
+  "theorem": "SAP.P023.T11",
+  "restriction": "States the estimator-equality result under Conditions 1–3; omits the printed remark that Condition 1 is necessary for an RD estimate to exist.",
+  "rows_used": [
+   "AronowAudit.P023.printed_coarsened_proposition1",
+   "AronowAudit.P023.coarsened_ols_printed_equivalence",
+   "AronowAudit.P023.corrected_coarsened_weights",
+   "AronowAudit.P023.close_counts_positive",
+   "SAP.P023.Bridge.propositionOne"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P023.proposition1",
+    "reason": "The printed-design all-solutions theorem directly states Proposition 1; the equivalent bin parametrization is not required separately."
+   }
+  ],
+  "statement_definition": "SAP.P023.T11WholeStatement_W2",
+  "review_notes": "Declaration review round 5: accepted r7g3 coverage finding. The current W2 theorem proves positivity and estimator equality under Condition 1, and does not assert its necessity. The canonical definitions include that printed remark; an audit-history clarity note does not remove it. Both theorem and statement-definition docstrings disclose the exact omission. The statement and proof are unchanged."
+ },
+ {
+  "target_id": "P023-T12",
+  "decision": "whole",
+  "theorem": "SAP.P023.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P023.Wave1.printed_proposition2_refuted"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P023.appendix_rewriting",
+    "reason": "Algebraic step of the printed proof is unnecessary for the complete refutation of the adopted fixed-law reading."
+   },
+   {
+    "lean_name": "AronowAudit.P023.appendix_smooth_continuous",
+    "reason": "Continuity helper is unnecessary separately from the complete refutation of the adopted fixed-law reading."
+   },
+   {
+    "lean_name": "AronowAudit.P023.appendix_smooth_zero",
+    "reason": "Cutoff normalization helper is unnecessary separately from the complete reading refutation."
+   },
+   {
+    "lean_name": "AronowAudit.P023.weierstrass_without_constant",
+    "reason": "Polynomial approximation alone does not establish coefficient consistency; the credited theorem already refutes the complete adopted fixed-law reading."
+   }
+  ],
+  "statement_definition": "SAP.P023.T12Statement",
+  "review_notes": "Declaration review round 2: whole records complete coverage of the refutation of the adopted fixed-law reading in work.json:1218, not an unconditional refutation of undefined printed guidance. Removed the false-printed-claim opening, retained the precise quantifier description and formal moment guards. This supersedes the round 1 labelling response. The mathematical statement and proof are unchanged."
+ }
+]

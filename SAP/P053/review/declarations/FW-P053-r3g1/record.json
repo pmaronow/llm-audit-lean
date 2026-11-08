@@ -1,0 +1,320 @@
+[
+ {
+  "target_id": "P053-T1",
+  "decision": "whole",
+  "theorem": "SAP.P053.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P053.binary_support_identification",
+   "AronowAudit.P053.explicit_table_factor",
+   "AronowAudit.P053.ordered_sample_statistic_factors",
+   "AronowAudit.P053.binary_control_card",
+   "AronowAudit.P053.table_samples_invariant",
+   "AronowAudit.P053.factor_iff_table_constant"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P053.binary_equal_iff",
+    "reason": "Auxiliary identity or symmetry fact is already contained in the primary identification and ordered-sample declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.binary_reconstruction",
+    "reason": "Auxiliary identity or symmetry fact is already contained in the primary identification and ordered-sample declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.canonical_permutation",
+    "reason": "Auxiliary identity or symmetry fact is already contained in the primary identification and ordered-sample declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.ordered_sample_successes",
+    "reason": "Auxiliary identity or symmetry fact is already contained in the primary identification and ordered-sample declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.successes_compl",
+    "reason": "Auxiliary identity or symmetry fact is already contained in the primary identification and ordered-sample declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.successes_permutation",
+    "reason": "Auxiliary identity or symmetry fact is already contained in the primary identification and ordered-sample declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.symmetric_binary_samples",
+    "reason": "Auxiliary identity or symmetry fact is already contained in the primary identification and ordered-sample declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.symmetric_samples_table_iff",
+    "reason": "Auxiliary identity or symmetry fact is already contained in the primary identification and ordered-sample declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.table_statistic_factors",
+    "reason": "Its narrower fixed-outcome-vector existence statement omits the M-only common choice; explicit_table_factor supplies that choice directly."
+   }
+  ],
+  "statement_definition": "SAP.P053.T1Statement"
+ },
+ {
+  "target_id": "P053-T2",
+  "decision": "whole",
+  "theorem": "SAP.P053.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P053.four_counterexample_values",
+   "AronowAudit.P053.unrestricted_counterexample",
+   "AronowAudit.P053.repeated_counterexample_values",
+   "AronowAudit.P053.unrestricted_repeated_counterexample",
+   "AronowAudit.P053.repeated_counterexample_scaling",
+   "SAP.P053.WH.W1.T2_whole",
+   "SAP.P053.WH.W1.T2_assembly",
+   "SAP.P053.WH.W1.T2_L1_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P053.product_successes",
+    "reason": "Auxiliary repeated-count or moment fact is already included in the repeated values/scaling declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.repeated_fourth_moments",
+    "reason": "Auxiliary repeated-count or moment fact is already included in the repeated values/scaling declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.repeated_total",
+    "reason": "Auxiliary repeated-count or moment fact is already included in the repeated values/scaling declarations used here."
+   }
+  ],
+  "statement_definition": "SAP.P053.T2WholeStatement"
+ },
+ {
+  "target_id": "P053-T3",
+  "decision": "whole",
+  "theorem": "SAP.P053.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P053.six_difference_distribution",
+   "AronowAudit.P053.six_upper_tail_difference",
+   "AronowAudit.P053.four_upper_tail_difference",
+   "AronowAudit.P053.increasing_same_p"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P053.balanced_absolute_tail",
+    "reason": "Auxiliary order or tail-count fact is already included in the complete six-unit and four-unit inference declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.binary_order_iff",
+    "reason": "Auxiliary order or tail-count fact is already included in the complete six-unit and four-unit inference declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.binary_upperP_count",
+    "reason": "Auxiliary order or tail-count fact is already included in the complete six-unit and four-unit inference declarations used here."
+   },
+   {
+    "lean_name": "AronowAudit.P053.four_absolute_endpoint",
+    "reason": "Auxiliary order or tail-count fact is already included in the complete six-unit and four-unit inference declarations used here."
+   }
+  ],
+  "statement_definition": "SAP.P053.T3Statement",
+  "supporting_declarations": [
+   "AronowAudit.P053.four_counterexample_values"
+  ]
+ },
+ {
+  "target_id": "P053-T4",
+  "decision": "whole",
+  "theorem": "SAP.P053.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P053.limit_difference_identity",
+   "AronowAudit.P053.apparent_paradox_condition"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P053.T4Statement"
+ },
+ {
+  "target_id": "P053-T5",
+  "decision": "whole",
+  "theorem": "SAP.P053.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P053.fisher_ols_asymptotics"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P053.arm_cards",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.arm_variances_unbiased",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.centeredSS_raw",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.combined_variance_decomposition",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.control_sample_variance_unbiased",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.control_variance_observed",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.difference_in_means_unbiased",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.difference_in_means_variance",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.difference_sample_sum",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.estimate_sample_sum",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.fisher_ols_exact",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.frt_reference_variance",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.joint_treatment_mean",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.marginal_treatment_mean",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.neyman_randomization_identity",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.ols_pooled_formula",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationMean_add",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationMean_congr",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationMean_constant",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationMean_div",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationMean_mul",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationMean_sub",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationMean_sum",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationProbability_univ",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationVariance_congr",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationVariance_raw",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationVariance_scale",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomizationVariance_sub_constant",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomization_control_square",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomization_control_sum",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomization_control_variance",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomization_sample_square",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomization_sample_sum",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.randomization_sample_variance",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.reference_difference_mean",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.reference_difference_variance",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.residualSS_sample_variances",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.sampleMean_linear",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.sampleVariance_congr",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.support_positive",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.treated_sample_variance_unbiased",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.treated_variance_observed",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.treatment_product_mean",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   },
+   {
+    "lean_name": "AronowAudit.P053.weighted_potential_variance",
+    "reason": "Finite sampling or algebraic auxiliary is already used by the primary asymptotic declaration; no extra finite clause belongs to this target."
+   }
+  ],
+  "statement_definition": "SAP.P053.T5Statement"
+ }
+]

@@ -150,6 +150,7 @@ lemma path_correlation_instance_completed :
     norm_num [pathMean,betaHat,average,weighted,pathModel,pathBlock,Fin.sum_univ_succ]
   · simp only [rho,hmv,show ¬(1:ℝ)=0 by norm_num,if_false,div_one,path_covariance]
     norm_num [Fin.sum_univ_succ,adjacency,pathModel,blockGraph,pathGraph,localIndex]
+#print axioms path_correlation_instance_completed
 end
 end AronowAudit.P011.PathFiniteCompletion
 
@@ -169,3 +170,4 @@ theorem path_correlation_instance :
 end
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.path_correlation_instance

@@ -1,16 +1,12 @@
 import AronowAudit.Literature.CondP001g14
 import AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.DKWUniform
 
-/-!
-# Expected empirical CDF deviation and root-n tightness
+/-!+# Expected empirical CDF deviation and root-n tightness
 
 The expected bound has the distribution-free constant 4. The measurable
 root-n deviation consequently has tail probability at most `4 / C`.
 The rational-supremum argument follows the private right-continuity helpers
 in the vendored StatLean DKWUniform module.
-Modified for llm-audit-lean: renamed the right-continuity helpers and
-adapted the rational-supremum proof to a bounded supremum.
-Upstream license: Apache-2.0; see NOTICE at the repository root.
 -/
 
 open MeasureTheory ProbabilityTheory Filter
@@ -156,6 +152,17 @@ theorem cdf_deviation_integrable {Ω : Type u} [MeasurableSpace Ω]
     rw [Real.norm_eq_abs, abs_of_nonneg (taila09_cdfDeviation_bounds hn P _).1]
     exact (taila09_cdfDeviation_bounds hn P _).2
 
+/-- The complete literature proposition, with the universal constant `c = 4`. -/
+theorem dkw_expected_supremum : AronowAudit.Literature.DKWExpectedSupremum.{u} := by
+  refine ⟨4, by norm_num, ?_⟩
+  intro Ω mΩ μ hμ P hP n hn X hmeas hindep hlaw
+  letI instProbabilityMu : IsProbabilityMeasure μ := hμ
+  letI instProbabilityP : IsProbabilityMeasure P := hP
+  refine ⟨cdf_deviation_integrable μ hn P X hmeas, ?_⟩
+  simpa only [taila09_cdfDeviation_eq_ksDist] using
+    StatLean.HypothesisTesting.integral_ksDist_le hn P X hmeas hindep hlaw
+
+example : AronowAudit.Literature.DKWExpectedSupremum.{u} := dkw_expected_supremum
 
 /-- A measurable root-n deviation and its distribution-free Markov bound. -/
 theorem cdf_deviation_root_n_tail {Ω : Type u} [MeasurableSpace Ω]
@@ -194,5 +201,20 @@ theorem cdf_deviation_root_n_tail {Ω : Type u} [MeasurableSpace Ω]
       mul_le_mul_of_nonneg_right hsub hC.le
     _ ≤ 4 := by simpa only [mul_comm] using hmarkov
 
+/-- Root-n CDF tightness, uniformly over all positive sample sizes and iid laws. -/
+theorem cdf_deviation_root_n_tight {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (P : Measure ℝ) [IsProbabilityMeasure P]
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (n : ℕ), 0 < n → ∀ (X : Fin n → Ω → ℝ),
+      (∀ i, Measurable (X i)) → iIndepFun X μ → (∀ i, μ.map (X i) = P) →
+      MeasurableSet {ω | C < Real.sqrt n * CDFDeviation P (fun i => X i ω)} ∧
+      (μ {ω | C < Real.sqrt n * CDFDeviation P (fun i => X i ω)}).toReal ≤ ε := by
+  refine ⟨4 / ε, by positivity, ?_⟩
+  intro n hn X hmeas hindep hlaw
+  obtain ⟨hM, htail⟩ := cdf_deviation_root_n_tail μ hn P X hmeas hindep hlaw (4 / ε)
+    (by positivity)
+  refine ⟨measurableSet_lt measurable_const hM, ?_⟩
+  have hcancel : (4 : ℝ) / (4 / ε) = ε := by field_simp <;> ring
+  rwa [hcancel] at htail
 
 end AronowAudit.P001.Wave1.TailA

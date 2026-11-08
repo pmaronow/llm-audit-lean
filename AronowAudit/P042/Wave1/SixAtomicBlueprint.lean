@@ -1,14 +1,22 @@
 import AronowAudit.P042.P042_Turnout
 
 /-!
-The probability space and moments of the six-voter shared-control
-counterexample to the pooling and comparison variance assertions (P042-T5).
+# Shared blueprint nodes for the two P042-T5 refutations
 
-Every ordered pair `(T1, T2)` of disjoint two-voter treatment sets leaves the
-remaining two voters as the shared control, each of the 90 allocations having
-mass `1/90` (P042-T1 A; P042-E001). Voters `0,1,2` turn out and `3,4,5` do not,
-under every arm. The effects are `D 0 = sixD1` (treatment 1 minus control)
-and `D 1 = sixD2`.
+Blueprint (Wave 1, group P042-P045). This module fixes the explicit probability space
+on which both `printed_pooling_variance` and `printed_comparison_variance` fail, and the
+two shared nodes (atomic-measure bridge, six-voter moments). Both record blueprints
+`PrintedPoolingVarianceBlueprint` and `PrintedComparisonVarianceBlueprint` import it.
+
+The space is the validators' six-voter shared-control randomization (P042-T1 A; P042-E001 v1,
+"Exact finite-population counterexample"): every ordered pair `(T1, T2)` of disjoint
+two-voter treatment sets, the remaining two voters forming the shared control, each of the
+90 allocations having mass `1/90`. Voters `0,1,2` turn out and `3,4,5` do not, under every arm.
+The effects are `D 0 = sixD1` (treatment 1 minus control) and `D 1 = sixD2`.
+
+Writers: prove `theorem n1_proof : N1` in `AronowAudit/P042/Wave1/SixAtomic/N1.lean` and
+`theorem n2_proof : N2` in `AronowAudit/P042/Wave1/SixAtomic/N2.lean`.
+Never use the frozen false theorems `printed_pooling_variance` / `printed_comparison_variance`.
 -/
 
 set_option autoImplicit false
@@ -43,9 +51,10 @@ def sixMeasure : Measure SixΩ :=
 def sixD : Fin 2 → SixΩ → ℝ := fun j a =>
   if j = 0 then ((sixD1 a : ℚ) : ℝ) else ((sixD2 a : ℚ) : ℝ)
 
-/-- The atomic measure is a probability measure, and integration against it
-is the finite average over the 90 allocations.
-The cardinality is `six_design.1 : sixAllocations.card = 90`. -/
+/-- **Node SixAtomic.N1** (paper proof, records 1-2, paragraph "The required bridge from
+those rational finite moments to ProbabilityTheory.variance"): the atomic measure is a
+probability measure, and integration against it is the finite average over the 90
+allocations. Uses `six_design.1 : sixAllocations.card = 90`. -/
 def N1 : Prop :=
   IsProbabilityMeasure sixMeasure ∧
     ∀ f : SixΩ → ℝ, ∫ ω, f ω ∂sixMeasure = (∑ a ∈ sixAllocations, f a) / 90
@@ -58,11 +67,17 @@ def SixMoments : Prop :=
     variance (sixD 1) sixMeasure = 3/10 ∧
     covariance (sixD 0) (sixD 1) sixMeasure = 3/20
 
-/-- Under `N1`, which supplies the finite-average integral, both effects are
-in L², both variances are `3/10`, and the covariance is `3/20`.
-The rational moments are `six_moments`; `MemLp.of_discrete` gives L². -/
+/-- **Node SixAtomic.N2** (paper proof, records 1-2, first two paragraphs: `Var D1 = Var D2 =
+3/10`, `Cov(D1,D2) = 3/20`, plus "every function on this finite space is measurable and
+bounded, hence belongs to L²"). Stated under `N1`, which supplies the finite-average
+integral; the rational values are `six_moments`; `MemLp.of_discrete` gives L². -/
 def N2 : Prop :=
   N1 → SixMoments
+
+/-- Sanity check of the encoding: `sixD 0` and `sixD 1` are the casts of the two
+recorded contrasts. -/
+example (a : SixΩ) : sixD 0 a = ((sixD1 a : ℚ) : ℝ) ∧ sixD 1 a = ((sixD2 a : ℚ) : ℝ) :=
+  ⟨rfl, rfl⟩
 
 end
 

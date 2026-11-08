@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P004-T1",
+    "theorem": "SAP.P004a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The defined three-type population is an actual counting-measure spatial model with unit mass at each radius-zero node. At N=3K its type probabilities are 1/3, 1/2, 2/3, the Gram matrix is diag(1,2/3), outcomes are bounded by 2, interior truth is (0,log 2), and epsilon=1/10 gives overlap. Actual likelihood maximizers exist by continuity on the compact square. Assignment-independent outcomes give singleton source neighborhoods, zero effects and zero residual-effect homophily. The printed augmented variance has positive scaled limit 1753/750000. Independent rational arithmetic in scratch/check_finite.py verifies the retained square sums and the positive block tail bound 107516161/2205448981 for the leading difference. The all-size cyclic extension has the same limits. No conclusion is an antecedent.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T2",
+    "theorem": "SAP.P004a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take plane singleton nodes (10i,0), counting measure, assignment-independent outcomes y_i=(-1)^i at the nodes and zero elsewhere, bands [0,d], d=h=0, p=1/2, k=1, O_i=1, theta_0=0 and Theta=[-1,1]. Choose actual compact-set likelihood maximizers. All spatial averages have positive finite mass; locality holds at zero, radius-r node counts are at most 2 floor(r/10)+1, and outcomes have absolute value at most one. If bar_y=N^-1 sum_i y_i, the corrected variance satisfies N V_N=4(1-bar_y^2)>=3 for N>=2; the homophily quantity is zero. scratch/LogisticNonvacuity.lean compiles the positive-dimensional actual-MLE, interior and overlap hypotheses from Defs alone; scratch/Check.lean compiles nonsingular finite premises with both arms nonempty. Independent five-node enumeration checks every finite identity and bound.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P004-T3",
+    "theorem": "SAP.P004a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual saturated two-group model has group probabilities 1/2 and 1/10, asymptotic proportions 1/4 and 3/4, and group MLE probabilities equal to the empirical treated fractions clipped to [1/20,19/20]. Interior truth, bounded covariates, an eventually positive Gram lower bound, overlap and finite positive circle masses hold. Singleton homophily is a sum of squares. At N=8r the active signs balance, N times the printed-linearization variance is 1/4, and the actual fitted-IPW variance is eventually positive with scaled limit 1/4. The printed SAH scaled limit is 2/25, giving ratio 8/25. Independent enumeration reproduces the actual N=32 variance 18239/1505280 and printed expectation 412940740700292467/161486810505216000000. These numerical identities are supporting checks, not additional claims attributed to the stub.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P004-T4",
+    "theorem": "SAP.P004a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example N=2, p=(1/4,3/4), R_i(z)=bit(z_i), g=0, B_i={i}, z=(true,false). Both arms are nonempty, outside-neighborhood covariances vanish by independence, and the variance bound is nontrivial: 5/6<=4/3. scratch/Check.lean compiles positive propensities and simultaneous positive arm counts. Exact five-node checks independently verify both weighting identities and the expected-variance bound with a neighborhood that has excluded pairs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T5",
+    "theorem": "SAP.P004a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional explicit spatial witness, with two separated closed unit-disk nodes and binary polar-sector outcomes under ordinary Euclidean area. The six bins have positive masses pi times 1,3,5,7,9,11 and partition the region. Sector shares are 1/50 or 273/2500 when treated and 1/10 under control, all strictly between zero and one. The observed assignment has one node in each arm. Exact arithmetic yields sum -17/500 and mass-weighted whole effect 121/18000>0. Thus neither empty regions nor zero-area circle conventions cause the sign reversal.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T6",
+    "theorem": "SAP.P004a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/MeasureNonvacuity.lean compiles a simultaneous instance of every aggregation hypothesis: one node, two singleton bins in Fin 2, counting measure, constant integrable outcomes and p=1/2. There are two nonempty positive finite bins, rather than an empty index type. The binary area witness also gives an instance with unequal positive bin masses and distinct effects. Positive-scale comparisons are ordinary real identities for any statistic; normalized probability weights give their intended exact-p-value specialization.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T7",
+    "theorem": "SAP.P004a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual repeated-star population has distinct planar singleton nodes, counting measure, fixed bounded outcomes (0,1,1,-1,-1), independent fair assignment, zero effects/homophily and positive scaled linearized variance 16/5. The distance cutoff 6/5 gives exactly the entered star kernel. Its negative eigenvector is (2,-1,-1,-1,-1), with squared norm 8 and eigenvalue -1; adding vv'/8 is precisely its spectral positive part, with eigenvalues 0,1,1,1,3. The displayed twenty-node draw has both counts 10 and positive trace and trace-square parameters. Exact rational matrix arithmetic reproduces raw variances 4/25, traces 41/50 and 101/100, and adjusted variances 8/41 and 16/101. The quantile in the retained coverage event is used only with positive degrees of freedom. The probability is correctly disclosed as a guarded joint event.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P004-T8",
+    "theorem": "SAP.P004a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the asymptotic hypotheses use the alternating fixed-outcome counting-measure line population described for T2, p=1/2, d=h=0, eigenvalues all one, eigenvectors the identity matrix, alpha=1/20 and critical values q_(39/40). The uniform zero-distance kernel is the identity, homophily is zero and N times the linearized variance is at least 3 for N>=2. Both arms are nonempty with probability 1-2^(1-N), tending to one, so acceptance of empty-arm draws is not doing the asymptotic work in this instance. Finite order inequalities also pass exact checks on all 30 nonempty assignments of one five-node star block. A supplied orthonormal representation is a genuine finite symmetric-matrix spectral decomposition.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P004-T9",
+    "theorem": "SAP.P004a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The witness has one actual coefficient, O_i=1, true p=1/2, theta_0=0 and compact constraint [0,1]. Its empirical-fraction piecewise formula is the actual constrained likelihood maximizer, with explicit branches handling fractions zero and one. Its Gram matrix is one at every positive sample size and epsilon=1/4 gives overlap. On T=2 sum_i Z_i-N<0 the remainder is -2T/N. Symmetry and E T^2=N, E T^4=3N^2-2N give the uniform positive 3/32 tail bound. The relevant exact binomial tail was independently checked for all N from 1 through 300. This is a boundary example with nonempty parameter and assignment sets.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T10",
+    "theorem": "SAP.P004a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/LogisticNonvacuity.lean compiles from Defs alone the existence of an actual MLE family for k=1, O_i=1, theta_0=0 and the compact radius-one closed ball in Fin 1 -> R (the interval [-1,1]), together with interior truth, the Gram lower bound and overlap. The construction uses the extreme-value theorem and likelihood continuity, rather than assuming any consistency or expansion. The boundary [0,1] model is a further instance of the base hypotheses. Strong concavity on the bounded hull gives the root-N rate even for nonconvex compact constraint sets; interior truth then gives the ordinary vanishing score and quadratic Taylor remainder.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T11",
+    "theorem": "SAP.P004a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The one-node constant-one table at p=1/4 meets every hypothesis. scratch/Check.lean compiles directly from Defs the printed expectation -2, corrected expectation zero and positive corrected variance 16/3. More general arbitrary-interference finite tables are permitted, and the finite sums genuinely range over every assignment. No zero propensity is used in the equality criterion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T12",
+    "theorem": "SAP.P004a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Eight distinct singleton nodes carry assignment-independent outcomes 2^i/128 and positive counting mass, so the sharp null holds on the actual spatial population and every radius-zero average is ordinary. The observed and resampled assignments and all 101 draws are explicit, with probability 256^-101>0. The HT statistic is (2j-255)/512 over the 256 equally probable assignments, giving 128 equally probable absolute levels. Independent integer/rational arithmetic verifies the exact rejection-size sum, size 0.05549969550171698 and strict excess over 1/20. Natural subtraction stays nonnegative on all summation ranges. This refutes a general level guarantee at P=100, without claiming failure for every sufficiently large P on a fixed finite design.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T13",
+    "theorem": "SAP.P004a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles a nontrivial normalized law on the two assignments of one node, with weight 1/2 each. One can take P=100 and alpha=1/20. Exact independent enumeration also checks P=1 through 4 with four unequal positive assignment weights and statistics both with and without absolute-value ties. The plus-one bound follows from the exchangeable weak-rank counting inequality, so ties do not create a hidden continuity assumption. The correction identity has positive P as an explicit denominator guard.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T14",
+    "theorem": "SAP.P004a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The three positive counting atoms have node-distance rows (4,5,5) and (5,4,4), and effect rows (0,1,1) and (-1,0,0). Every singleton shell used in the statement has positive measure at both nodes. Outcomes lie between zero and two. Direct finite averaging gives circle AMEs zero, disk/donut node effects 2/3 and -1/3, and node average 1/6. Thus arbitrary real weighted combinations fail for genuine positive-mass circles, without division by zero or an empty supported shell.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T15",
+    "theorem": "SAP.P004a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed positive-mass spatial examples provide instances of the general integral identity; finite conditional expectation is a finite linear combination of the assumed integrable outcome functions. scratch/Check.lean compiles a discrete common-weight instance with one node, two atoms of masses 1 and 2, distinct labels, positive common weights 1/3 and 2/3, and effects 0 and 1, giving mean 2/3. The label set cannot be empty when node total masses are positive. In the area component center=0,a=0,b=1 gives density 2r on [0,1], which integrates to one; 0<=a<b ensures b^2-a^2>0 in every quantified instance. No zero-shell means or nonintegrable outcome integrals are used.",
+    "confidence": 0.98
+  }
+]

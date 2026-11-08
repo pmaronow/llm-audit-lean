@@ -1,0 +1,59 @@
+import SAP.P008a.Challenge
+
+open SAP.P008a MeasureTheory
+open scoped BigOperators Classical
+
+noncomputable section
+
+-- Counts the threshold set symbolically, without enumerating 40000 values.
+lemma checkRiskM (i j : Fin 4) (z : Assignment 4) :
+    riskM i j z = ((riskBaseline i : ℝ) - 321 * bit (z i)) / 40000 := by
+  unfold riskM countMean riskOutcome
+  simp only [Finset.sum_boole, Fin.card_filter_val_lt, Finset.card_univ, Fintype.card_fin]
+  cases hz : z i <;> fin_cases i <;> norm_num [riskBaseline, hz, bit]
+
+lemma checkExpectConst {Ω : Type*} [Fintype Ω] (Q : FiniteLaw Ω) (c : ℝ) :
+    Q.expect (fun _ => c) = c := by
+  unfold FiniteLaw.expect
+  rw [← Finset.sum_mul, Q.total, one_mul]
+
+lemma checkCompanionM (i j : Fin 4) (z : Assignment 4) :
+    companionRiskM i j z = 1 - bit (z i) := by
+  simp [companionRiskM, companionRiskOutcome, countMean, RiskCell]
+  ring
+
+example : (uniformLaw (Assignment 4)).mass ![true, true, false, false] = 1 / 16 := by
+  norm_num [uniformLaw, Assignment]
+
+-- The exact T7 observed sums are attached to genuine binary schedules.
+example : (∀ i j k z, riskOutcome i j k z = 0 ∨ riskOutcome i j k z = 1) ∧
+    (∀ i : Fin 4, 321 ≤ riskBaseline i ∧ riskBaseline i ≤ 40000) := by
+  constructor
+  · intro i j k z; unfold riskOutcome; split_ifs <;> simp
+  · intro i; fin_cases i <;> norm_num [riskBaseline]
+
+example : hajek (fun i z => riskM i 0 z) ![true, true, false, false] = -321 / 40000 := by
+  simp only [hajek, checkRiskM, nControl, nTreated, Fin.sum_univ_succ]
+  norm_num [riskBaseline, bit]
+
+example : (∑ j : Fin 4, finiteAMR (uniformLaw (Assignment 4))
+      (fun i z => companionRiskM i j z)) = -4 := by
+  simp only [finiteAMR, marginal, checkCompanionM, Function.update_self, checkExpectConst]
+  norm_num [bit, Fin.sum_univ_succ]
+
+example : (-321 / 40000 : ℝ) ≠ -321 / 10000 ∧
+    (7 / 400 - 321 / 10000 : ℝ) < 0 ∧
+    (∀ a b : ℝ, 0 ≤ a → a ≤ 1 → 0 ≤ b → b ≤ 1 → a - b ≠ -4) := by
+  refine ⟨by norm_num, by norm_num, ?_⟩
+  intro a b ha ha' hb hb'
+  linarith
+
+-- The spatial label data use nonzero geometry denominators, with centres in the
+-- field by construction. The full injectivity and circle-count argument is also
+-- checked mathematically in REPORT.md; it is not assumed as an input hypothesis.
+example : (∀ k : RiskCell, 0 < wholeRiskDenominator k) ∧
+    (∀ i, wholeRiskCentre i ∈ wholeRiskField) := by
+  constructor
+  · intro k; unfold wholeRiskDenominator; positivity
+  · intro i
+    exact Finset.mem_image.mpr ⟨Sum.inl i, Finset.mem_univ _, rfl⟩

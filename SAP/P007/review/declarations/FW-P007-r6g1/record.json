@@ -1,0 +1,89 @@
+[
+ {
+  "target_id": "P007-T1",
+  "decision": "whole",
+  "theorem": "SAP.P007.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.denominatorValue",
+   "AronowAudit.P007.fourVariablesCannotLoseMoreThan99Percent",
+   "AronowAudit.P007.numeratorLowerBound",
+   "AronowAudit.P007.supportingLine",
+   "AronowAudit.P007.supportingLine_equality",
+   "AronowAudit.P007.uniform_retention_counting_identity"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P007.concrete_four_variable_counterexample",
+    "reason": "Final status wrong_credit: a synthetic feasibility witness does not identify the named empirical array; the universal conditional bound supplies the refutation."
+   }
+  ],
+  "supporting_declarations": []
+ },
+ {
+  "target_id": "P007-T2",
+  "decision": "restricted",
+  "theorem": "SAP.P007.T2",
+  "restriction": "The simulation portion covers exactly the supplied archived estimates at k=4,5,6. The corrected sentence for every k>6 is omitted. All enumerated exact count, average and four-variable bounds are retained.",
+  "rows_used": [
+   "AronowAudit.P007.archived_simulation_threshold",
+   "AronowAudit.P007.fourVariablesCannotLoseMoreThan99Percent",
+   "AronowAudit.P007.logged_mask_correction",
+   "AronowAudit.P007.logged_missing_count_unique",
+   "AronowAudit.P007.stateFailure_corrected_average"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P007.columnAverage_count_identity"
+  ]
+ },
+ {
+  "target_id": "P007-T3",
+  "decision": "whole",
+  "theorem": "SAP.P007.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.fully_missing_all_bounds",
+   "AronowAudit.P007.zero_bound_counterexample"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P007.nullFirst_prefixes"
+  ]
+ },
+ {
+  "target_id": "P007-T4",
+  "decision": "whole",
+  "theorem": "SAP.P007.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.later_null_counterexample",
+   "AronowAudit.P007.null_prefix_counterexample"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P007.zero_bound_counterexample"
+  ]
+ },
+ {
+  "target_id": "P007-T5",
+  "decision": "whole",
+  "theorem": "SAP.P007.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P007.independent_rows_product",
+   "AronowAudit.P007.lemma3",
+   "AronowAudit.P007.prefix_step",
+   "AronowAudit.P007.prefix_survival_bound",
+   "AronowAudit.P007.repairedConditional_bounds",
+   "AronowAudit.P007.repaired_chain_product",
+   "AronowAudit.P007.zero_bound_all_deleted",
+   "AronowAudit.P007.zero_bound_first_missing"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P007.prefix_zero",
+   "AronowAudit.P007.probability_nonneg"
+  ]
+ }
+]

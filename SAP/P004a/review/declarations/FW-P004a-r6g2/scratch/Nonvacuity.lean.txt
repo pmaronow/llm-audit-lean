@@ -1,0 +1,121 @@
+import SAP.P004a.Challenge
+
+open MeasureTheory Set Filter
+open SAP.P004a
+open scoped BigOperators Matrix Topology ENNReal
+
+noncomputable section
+
+-- A complete, nonempty instance of every T6 aggregation hypothesis.
+example :
+    let ζ : Measure (Fin 2) := Measure.count
+    let B : Fin 1 → Fin 2 → Set (Fin 2) := fun _ k => {k}
+    let Y : Fin 2 → Assignment 1 → ℝ := fun x z =>
+      if z 0 then (if x = 0 then 2 else 4) else (if x = 0 then 1 else 0)
+    (0 < (1 : ℕ)) ∧ (0 < (2 : ℕ)) ∧
+    (∀ i k, MeasurableSet (B i k)) ∧
+    (∀ i, Pairwise (fun j k => Disjoint (B i j) (B i k))) ∧
+    (∀ i k, 0 < ζ (B i k) ∧ ζ (B i k) < ⊤) ∧
+    (∀ i k z, IntegrableOn (fun x => Y x z) (B i k) ζ) ∧
+    (∀ _ : Fin 1, 0 < (1/2 : ℝ) ∧ (1/2 : ℝ) < 1) := by
+  classical
+  dsimp
+  refine ⟨by norm_num, by norm_num, ?_, ?_, ?_, ?_, ?_⟩
+  · intro i k
+    exact measurableSet_singleton k
+  · intro i j k hjk
+    simpa using hjk
+  · intro i k
+    simp
+  · intro i k z
+    exact Integrable.integrableOn Integrable.of_finite
+  · intro i
+    norm_num
+
+-- The fixed T7 assignment has real nonempty arms, zero arm means, and
+-- strictly positive probability under the stipulated independent design.
+example :
+    armCount starAssignment20 true = 10 ∧
+    armCount starAssignment20 false = 10 ∧
+    armMean (starBlockTable 4) starAssignment20 true = 0 ∧
+    armMean (starBlockTable 4) starAssignment20 false = 0 ∧
+    designWeight (fun _ => 1/2) starAssignment20 = 1/1048576 := by
+  simp only [armMean, armCount, designWeight, Fin.sum_univ_succ, Fin.prod_univ_succ]
+  norm_num [starAssignment20, starBlockTable, starY, coin]
+
+-- Every hypothesis of T8's arbitrary-symmetric-kernel finite statement,
+-- with a nonzero residual vector, is simultaneously satisfiable.
+example :
+    (1 : Matrix (Fin 2) (Fin 2) ℝ).IsSymm ∧
+    ValidArms (![true, false] : Assignment 2) ∧
+    (![1, -1] : Fin 2 → ℝ) ≠ 0 := by
+  refine ⟨?_, ?_, ?_⟩
+  · simp [Matrix.IsSymm]
+  · simp only [ValidArms, armCount, Fin.sum_univ_succ]
+    norm_num
+  · intro h
+    have := congrFun h 0
+    norm_num at this
+
+-- The positive-degree Student comparison has an ordinary interior level.
+example : 0 < (1 : ℝ) ∧ 1/2 < (3/4 : ℝ) ∧ (3/4 : ℝ) < 1 := by
+  norm_num
+
+-- A genuine positive-probability T9 lower-tail realization; no inverse or
+-- logarithm is evaluated at a singular argument.
+example :
+    let z : Assignment 1 := fun _ => false
+    designWeight (fun _ => 1/2) z = 1/2 ∧
+    boundaryMLE z = 0 ∧ boundaryRemainder z = 2 ∧
+    1 < Real.sqrt 1 * |boundaryRemainder z| := by
+  norm_num [designWeight, coin, boundaryMLE, boundaryRemainder, boundaryLeading,
+    armCount, Fin.sum_univ_one, Fin.prod_univ_succ]
+
+-- All T10 hypotheses, including a nontrivial interior branch, in dimension
+-- one. A maximizer is chosen by the extreme value theorem, independently
+-- of every Challenge declaration.
+example : ∃ θhat : ∀ N, Assignment N → Fin 1 → ℝ,
+    LogisticConditions boundaryO (0 : Fin 1 → ℝ)
+      (Metric.closedBall 0 1) θhat ∧
+    Overlap (fun N => propensities (boundaryO N) 0) ∧
+    (0 : Fin 1 → ℝ) ∈ interior (Metric.closedBall 0 1) := by
+  classical
+  let Θ : Set (Fin 1 → ℝ) := Metric.closedBall 0 1
+  have hcompact : IsCompact Θ := isCompact_closedBall 0 1
+  have hzero : (0 : Fin 1 → ℝ) ∈ Θ := by simp [Θ]
+  have hmle : ∀ N (z : Assignment N), ∃ θ ∈ Θ, ∀ t ∈ Θ,
+      (∑ i, (bit (z i) * dot (boundaryO N i) t -
+        Real.log (1 + Real.exp (dot (boundaryO N i) t)))) ≤
+      (∑ i, (bit (z i) * dot (boundaryO N i) θ -
+        Real.log (1 + Real.exp (dot (boundaryO N i) θ)))) := by
+    intro N z
+    have hcont : Continuous (fun t : Fin 1 → ℝ =>
+        ∑ i, (bit (z i) * dot (boundaryO N i) t -
+          Real.log (1 + Real.exp (dot (boundaryO N i) t)))) := by
+      simp only [dot, boundaryO, Fin.sum_univ_one, one_mul]
+      have hlog : Continuous (fun t : Fin 1 → ℝ => Real.log (1 + Real.exp (t 0))) :=
+        (show Continuous (fun t : Fin 1 → ℝ => (1 : ℝ) + Real.exp (t 0)) from
+          continuous_const.add (Real.continuous_exp.comp (continuous_apply 0))).log
+          (fun t => ne_of_gt (add_pos (by norm_num) (Real.exp_pos (t 0))))
+      apply continuous_finsetSum
+      intro i hi
+      exact (continuous_const.mul (continuous_apply 0)).sub hlog
+    obtain ⟨θ, hθ, hmax⟩ := hcompact.exists_isMaxOn ⟨0, hzero⟩ hcont.continuousOn
+    exact ⟨θ, hθ, fun t ht => hmax ht⟩
+  choose θhat hmem hmax using hmle
+  refine ⟨θhat, ?_, ?_, ?_⟩
+  · refine ⟨hcompact, hzero, ⟨1, ?_⟩, ⟨1, by norm_num, ?_⟩, ?_⟩
+    · intro N i j
+      norm_num [boundaryO]
+    · filter_upwards [eventually_ge_atTop 1] with N hN
+      intro v
+      have hNr : (N : ℝ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
+      simp [dot, boundaryO, Finset.sum_const,
+        nsmul_eq_mul, mul_div_cancel_left₀ _ hNr]
+    · intro N z
+      exact ⟨hmem N z, hmax N z⟩
+  · refine ⟨1/4, by norm_num, by norm_num, ?_⟩
+    intro N i
+    norm_num [propensities, logistic, dot, boundaryO]
+  · rw [interior_closedBall (0 : Fin 1 → ℝ) (by norm_num : (1 : ℝ) ≠ 0)]
+    simp

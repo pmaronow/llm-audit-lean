@@ -24,6 +24,8 @@ theorem proposition3_printed_refuted :
     PropositionThree.n3_proof PropositionThree.n4_proof PropositionThree.n5_proof
     PropositionThree.n6_proof PropositionThree.n7_proof
 
+example : AronowAudit.P046.Wave1.PropositionThree.Target := proposition3_printed_refuted
+
 end
 
 end AronowAudit.P046.Wave1

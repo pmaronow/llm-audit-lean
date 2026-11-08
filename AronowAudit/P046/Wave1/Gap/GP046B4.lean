@@ -91,6 +91,9 @@ lemma zero_benchmark_young (M : Study) (hM : ValidStudy M)
       (risk M (fun _ => 0))
   exact ge_of_tendsto' hl fun k => hbound _ (by positivity)
 
+example : type_of% @AronowAudit.P046.zero_benchmark_risk := zero_benchmark_risk_proof
+
+
 lemma proposition4a_multiplier_measurable (M : Study) (hM : ValidStudy M) :
     Measurable (fun o => 1 - X o / M.pi (W o)) :=
   measurable_const.sub (((measurable_of_countable bit).comp measurable_snd.fst).div
@@ -234,6 +237,9 @@ lemma proposition4a_augmentation (M : Study) (hM : ValidStudy M) (n : ℕ)
   have hs := integral_finsetSum Finset.univ (fun i _ => (hi i).1)
   rw [hs]
   simp only [(hi _).2, Finset.sum_const_zero, zero_div, add_zero]
+
+example : type_of% @AronowAudit.P046.proposition4a := proposition4a_proof
+
 
 lemma proposition4b_sum_sq {ι : Type*} [Fintype ι] (M : Study) (hM : ValidStudy M)
     (f : Unit → ℝ) (hf : MemLp f 2 M.law) (hz : (∫ o, f o ∂M.law) = 0) :
@@ -637,6 +643,8 @@ lemma proposition4b_total_moment (M : Study) (hM : ValidStudy M) (n : ℕ) (hn :
     _ ≤ K := ht
     _ = C^2 * eps := by rw [← heq, mul_comm eps (C^2)]
 
+
+example : type_of% @AronowAudit.P046.proposition4b := proposition4b_proof
 
 end
 end AronowAudit.P046.Wave1

@@ -1,0 +1,787 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.printed_lower_rule_always_zero",
+      "AronowAudit.P025.printed_lower_vector_not_optimal",
+      "AronowAudit.P025.sample_counterexample_range",
+      "AronowAudit.P025.sample_sign_counterexample",
+      "AronowAudit.P025.two_design_realizes_example",
+      "SAP.P025a.WH.W1.T1_whole",
+      "SAP.P025a.WH.W1.T1_assembly",
+      "SAP.P025a.WH.W1.T1_L1_proof",
+      "SAP.P025a.WH.W1.T1_L2V2_proof",
+      "AronowAudit.P025.le_ratio",
+      "AronowAudit.P025.ratio_scale_weights",
+      "AronowAudit.P025.threshold_den_update",
+      "AronowAudit.P025.threshold_increment",
+      "SAP.P025a.Bridge.ratio_eq",
+      "SAP.P025a.Bridge.populationMean_eq",
+      "SAP.P025a.Bridge.threshold_lower"
+    ],
+    "statement_definition": "SAP.P025a.T1WholeStatement",
+    "target_id": "P025-T1",
+    "theorem": "SAP.P025a.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.class_sign_counterexample",
+      "SAP.P025a.WH.W1.T2_whole",
+      "SAP.P025a.WH.W1.T2_assembly",
+      "SAP.P025a.WH.W1.T2_L1_proof",
+      "AronowAudit.P025.joint_replications_iid",
+      "AronowAudit.P025.two_design_realizes_example",
+      "AronowAudit.P025.printed_lower_rule_always_zero",
+      "AronowAudit.P025.printed_lower_vector_not_optimal",
+      "AronowAudit.P025.le_ratio",
+      "AronowAudit.P025.ratio_scale_weights"
+    ],
+    "statement_definition": "SAP.P025a.T2WholeStatement",
+    "target_id": "P025-T2",
+    "theorem": "SAP.P025a.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.attainable_normalization",
+        "reason": "The selected weighted-bounds theorem already exports the original probability-box range; the segment is scaled directly with normalize_box and ratio_scale_weights."
+      },
+      {
+        "lean_name": "AronowAudit.P025.corrected_proposition_one",
+        "reason": "The selected corrected_weighted_bounds theorem exports the sample result together with the prescribed vectors and endpoint identities."
+      },
+      {
+        "lean_name": "AronowAudit.P025.le_ratio",
+        "reason": "The numerical and general counterexample rows already contain the needed lower-mean conclusions."
+      },
+      {
+        "lean_name": "AronowAudit.P025.ratio_residual_zero",
+        "reason": "The selected ratio_difference_residual theorem already contains this residual calculation."
+      },
+      {
+        "lean_name": "AronowAudit.P025.ratio_scale_masses",
+        "reason": "Unit masses are used throughout the sample claim."
+      },
+      {
+        "lean_name": "AronowAudit.P025.threshold_cut_exists",
+        "reason": "The selected bounds, increment, or separator theorem already exports the needed consequence of this supporting result."
+      },
+      {
+        "lean_name": "AronowAudit.P025.threshold_den_update",
+        "reason": "The selected bounds, increment, or separator theorem already exports the needed consequence of this supporting result."
+      },
+      {
+        "lean_name": "AronowAudit.P025.threshold_shift",
+        "reason": "The selected bounds, increment, or separator theorem already exports the needed consequence of this supporting result."
+      },
+      {
+        "lean_name": "AronowAudit.P025.threshold_sum_update",
+        "reason": "The selected bounds, increment, or separator theorem already exports the needed consequence of this supporting result."
+      },
+      {
+        "lean_name": "AronowAudit.P025.upper_threshold_optimal",
+        "reason": "Global upper optimality is already exported by corrected_weighted_bounds."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P025.Wave1.ratio_segment_attains_certificate",
+      "AronowAudit.P025.corrected_weighted_bounds",
+      "AronowAudit.P025.denominator_pos",
+      "AronowAudit.P025.lower_threshold_optimal",
+      "AronowAudit.P025.normalize_box",
+      "AronowAudit.P025.ratio_difference_residual",
+      "AronowAudit.P025.ratio_le",
+      "AronowAudit.P025.ratio_scale_weights",
+      "AronowAudit.P025.threshold_increment",
+      "AronowAudit.P025.threshold_separator",
+      "SAP.P025a.WH.W1.T3_whole",
+      "SAP.P025a.WH.W1.T3_assembly",
+      "SAP.P025a.WH.W1.T3_L1_proof",
+      "SAP.P025a.Bridge.ratio_eq",
+      "SAP.P025a.Bridge.threshold_lower",
+      "SAP.P025a.Bridge.threshold_upper",
+      "SAP.P025a.WH.W1.P.T3_L1.segment_in_box"
+    ],
+    "statement_definition": "SAP.P025a.T3WholeStatement",
+    "target_id": "P025-T3",
+    "theorem": "SAP.P025a.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.corrected_proposition_two",
+      "SAP.P025a.WH.W2.T4_whole",
+      "SAP.P025a.WH.W2.T4_assembly",
+      "AronowAudit.P025.corrected_weighted_bounds",
+      "AronowAudit.P025.denominator_pos",
+      "AronowAudit.P025.ratio_le",
+      "AronowAudit.P025.threshold_increment",
+      "AronowAudit.P025.threshold_partition",
+      "SAP.P025a.Bridge.ratio_eq",
+      "SAP.P025a.Bridge.threshold_lower",
+      "SAP.P025a.Bridge.threshold_upper"
+    ],
+    "statement_definition": "SAP.P025a.T4WholeStatement",
+    "target_id": "P025-T4",
+    "theorem": "SAP.P025a.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.quota_marginal_eq",
+        "reason": "The seven required marginal values are already exported by application_counterexample_designs."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P025.application_counterexample_designs",
+      "AronowAudit.P025.application_counterexample_numbers",
+      "AronowAudit.P025.application_rounded_counterexamples",
+      "AronowAudit.P025.quota_design_valid",
+      "SAP.P025a.WH.W2.T5_whole",
+      "SAP.P025a.WH.W2.T5_assembly",
+      "SAP.P025a.WH.W2.T5_L1_proof",
+      "SAP.P025a.WH.W2.T5_L2_proof",
+      "AronowAudit.P025.quota_marginal_eq"
+    ],
+    "statement_definition": "SAP.P025a.T5WholeStatement",
+    "target_id": "P025-T5",
+    "theorem": "SAP.P025a.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.binaryLower_monotone",
+        "reason": "The overlap_criterion theorem already incorporates the monotonicity needed for overlap."
+      },
+      {
+        "lean_name": "AronowAudit.P025.binary_denominators",
+        "reason": "The overlap_criterion theorem incorporates denominator positivity; all remaining denominators are guarded by positive inputs."
+      },
+      {
+        "lean_name": "AronowAudit.P025.binary_endpoints_order",
+        "reason": "The overlap_criterion theorem already incorporates endpoint ordering."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P025.common_cap_product",
+      "AronowAudit.P025.equal_estimates_product",
+      "AronowAudit.P025.overlap_criterion",
+      "AronowAudit.P025.overlap_threshold_numbers",
+      "AronowAudit.P025.reweighted_formula"
+    ],
+    "target_id": "P025-T6",
+    "theorem": "SAP.P025a.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.printed_proposition_one_refuted",
+      "AronowAudit.P025.printed_proposition_one_upper"
+    ],
+    "target_id": "P025-T7",
+    "theorem": "SAP.P025a.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.printed_proposition_two_formula_refuted",
+        "reason": "The old exported negation is vulnerable to an undefined Option display and is not used for the new feasible non-minimizer proof."
+      },
+      {
+        "lean_name": "AronowAudit.P025.printed_sharpness_absolute_information_refuted",
+        "reason": "Concerns separate sharpness with fixed absolute totals, outside this lower-optimizer refutation."
+      }
+    ],
+    "rows_used": [
+      "SAP.P025a.WH.W1.T10_whole",
+      "SAP.P025a.T8_realizable_counterexample",
+      "SAP.P025a.T8_not_printedClassFormulaClaim",
+      "SAP.P025a.T8_luna_assembly",
+      "AronowAudit.P025.printed_proposition_two_upper"
+    ],
+    "statement_definition": "SAP.P025a.T8Statement",
+    "target_id": "P025-T8",
+    "theorem": "SAP.P025a.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.duplicated_classes_difference",
+        "reason": "The selected printed_partition_discrepancy theorem already exports the exact duplicated-class residual."
+      },
+      {
+        "lean_name": "AronowAudit.P025.printed_tail_overlap",
+        "reason": "The selected printed_partition_discrepancy theorem already incorporates the two duplicated classes."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P025.corrected_lower_display_at_cut",
+      "AronowAudit.P025.lower_partition_original_box",
+      "AronowAudit.P025.printed_partition_discrepancy",
+      "AronowAudit.P025.threshold_partition"
+    ],
+    "target_id": "P025-T9",
+    "theorem": "SAP.P025a.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.tail_design_realizes_example",
+      "AronowAudit.P025.tail_index_counterexample",
+      "SAP.P025a.WH.W1.T10_whole",
+      "SAP.P025a.WH.W1.T10_assembly",
+      "SAP.P025a.WH.W1.T10_L1_proof",
+      "SAP.P025a.WH.W1.T10_L2_proof"
+    ],
+    "statement_definition": "SAP.P025a.T10WholeStatement",
+    "target_id": "P025-T10",
+    "theorem": "SAP.P025a.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.Wave1.gamma_stationarity_certificate",
+      "AronowAudit.P025.equal_probability_thresholds",
+      "AronowAudit.P025.pair_boundary_repair",
+      "AronowAudit.P025.pair_difference_identities",
+      "AronowAudit.P025.upper_cut_persistence",
+      "SAP.P025a.WH.W1.T11_whole",
+      "SAP.P025a.WH.W1.T11_assembly",
+      "SAP.P025a.WH.W1.T11_L1_proof",
+      "SAP.P025a.WH.W1.T11_L2_proof",
+      "SAP.P025a.WH.W1.T11_L3_proof",
+      "AronowAudit.P025.class_mean_ratio",
+      "AronowAudit.P025.denominator_pos",
+      "AronowAudit.P025.equal_probability_box_and_endpoints",
+      "AronowAudit.P025.ratio_le",
+      "AronowAudit.P025.ratio_scale_weights",
+      "AronowAudit.P025.threshold_cut_exists",
+      "AronowAudit.P025.upper_threshold_optimal",
+      "SAP.P025a.Bridge.upperValue_eq",
+      "SAP.P025a.Bridge.upperWeights_eq"
+    ],
+    "statement_definition": "SAP.P025a.T11WholeStatement",
+    "target_id": "P025-T11",
+    "theorem": "SAP.P025a.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.census_realizes_boundary",
+      "AronowAudit.P025.equal_probability_proof_counterexample",
+      "SAP.P025b.WH.W1.T12_whole",
+      "SAP.P025b.WH.W1.T12_assembly",
+      "SAP.P025b.WH.W1.retained_T12",
+      "AronowAudit.P025.equal_probability_box_and_endpoints",
+      "AronowAudit.P025.ratio_only_and_equal_probabilities"
+    ],
+    "statement_definition": "SAP.P025b.T12WholeStatement",
+    "target_id": "P025-T12",
+    "theorem": "SAP.P025b.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.class_aggregation_box",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.class_count_bounded",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.class_totals_positive",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.denominator_ge_total",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.empirical_ratio_identity",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.empirical_totals_strong_law",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.endpoints_as_finite_thresholds",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.endpoints_tendsto",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.expected_class_count",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.fixed_weight_continuity",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.greatest_error_bound",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.grouped_numerator",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.joint_replications_iid",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.least_error_bound",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.nonnegative_mass_mean_bounds",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.normalized_class_aggregation",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.pooled_class_aggregation",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.ratio_class_constant_weights",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.ratio_difference_masses",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      },
+      {
+        "lean_name": "AronowAudit.P025.uniform_ratio_error",
+        "reason": "Supporting aggregation, iid-law, strong-law, continuity, or error-transfer fact; the aggregate corrected_proposition_three supplies the full stated convergence directly."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P025.corrected_proposition_three"
+    ],
+    "target_id": "P025-T13",
+    "theorem": "SAP.P025b.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.pair_pooled_attainable",
+        "reason": "Supporting reindexing, attainable-set, or repeated-outcome extremum fact; the aggregate counterexample supplies the retained actual pooled endpoint assertions."
+      },
+      {
+        "lean_name": "AronowAudit.P025.three_replicate_extrema",
+        "reason": "Supporting reindexing, attainable-set, or repeated-outcome extremum fact; the aggregate counterexample supplies the retained actual pooled endpoint assertions."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P025.pair_design_realizes_example",
+      "AronowAudit.P025.nonseparation_class_extrema",
+      "AronowAudit.P025.pair_membership",
+      "AronowAudit.P025.assumption_two_not_necessary",
+      "SAP.P025b.WH.W1.T14_whole",
+      "SAP.P025b.WH.W1.T14_assembly",
+      "SAP.P025b.WH.W1.T14_L1_proof",
+      "SAP.P025b.WH.W1.retained_T14",
+      "SAP.P025b.WH.W1.replications_iid",
+      "SAP.P025b.WH.W1.pair_polynomial_certificates",
+      "AronowAudit.P025.joint_replications_iid",
+      "AronowAudit.P025.pair_pooled_ratio",
+      "AronowAudit.P025.ratio_scale_weights"
+    ],
+    "statement_definition": "SAP.P025b.T14WholeStatement",
+    "target_id": "P025-T14",
+    "theorem": "SAP.P025b.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.box_proportion_image",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.box_proportions_in_region",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.class_proportion_mean",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.class_proportions_rational",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.compatible_endpoints_mem_closure",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.compatible_mean_iff_rational_region",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.compatible_proportions_iff_rational_region",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.mean_weight_proportions",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.proportion_region_mean_image",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.proportion_region_positive",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.rational_proportions_have_sizes",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.region_has_box_weights",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.region_mean_mem_closure",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.shares_sharp_endpoints",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.weight_proportions_scale_mass",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      },
+      {
+        "lean_name": "AronowAudit.P025.weight_proportions_scale_weights",
+        "reason": "Supporting region, rational-realizability, or closure fact; its retained conclusion is supplied by shares_sharpness_and_attainment or proportion_region_mean_extrema."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P025.shares_sharpness_and_attainment",
+      "AronowAudit.P025.proportion_region_mean_extrema",
+      "AronowAudit.P025.actual_class_weights",
+      "AronowAudit.P025.class_mean_ratio",
+      "AronowAudit.P025.shares_outer_bound",
+      "AronowAudit.P025.absolute_integer_calibration",
+      "AronowAudit.P025.absolute_outer_bound",
+      "AronowAudit.P025.one_class_compatibility",
+      "SAP.P025b.WH.W1.T15_whole",
+      "SAP.P025b.WH.W1.T15_assembly",
+      "SAP.P025b.WH.W1.T15_L1_proof",
+      "SAP.P025b.WH.W1.T15_L2_proof",
+      "SAP.P025b.WH.W1.retained_T15",
+      "SAP.P025b.WH.W1.compatibility_existence",
+      "SAP.P025b.WH.W1.class_design_realization",
+      "SAP.P025b.WH.W1.attainable_scale",
+      "SAP.P025b.WH.W1.retained_information_failure",
+      "AronowAudit.P025.rational_vectors_dense",
+      "AronowAudit.P025.strict_selection_cone_open",
+      "AronowAudit.P025.rational_cone_mean_compatible",
+      "AronowAudit.P025.compatible_proportions_necessary",
+      "AronowAudit.P025.rational_region_has_compatible_sizes",
+      "AronowAudit.P025.ratio_scale_masses",
+      "AronowAudit.P025.integrality_mean_set_and_gaps",
+      "AronowAudit.P025.sharpness_counterexample_box_extrema",
+      "AronowAudit.P037.product_design_coordinate_mean"
+    ],
+    "statement_definition": "SAP.P025b.T15WholeStatement",
+    "target_id": "P025-T15",
+    "theorem": "SAP.P025b.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "reading": "The printed sharpness assertion with absolute class totals retained; population size is also retained in the second example. Shares-only sharpness with unrestricted population size is preserved.",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.integrality_design_realizes_example",
+      "AronowAudit.P025.integrality_sharpness_counterexample",
+      "AronowAudit.P025.integrality_mean_set_and_gaps",
+      "AronowAudit.P025.known_size_sharpness_counterexample",
+      "AronowAudit.P025.known_size_mean_set_and_gap",
+      "AronowAudit.P025.sharpness_counterexample_box_extrema",
+      "SAP.P025b.WH.W1.T16_whole",
+      "SAP.P025b.WH.W1.T16_assembly",
+      "SAP.P025b.WH.W1.T16_L1_proof",
+      "SAP.P025b.WH.W1.T16_L2_proof",
+      "SAP.P025b.WH.W1.retained_T16",
+      "SAP.P025b.WH.W1.replications_iid",
+      "SAP.P025b.WH.W1.counterexample_count_intervals",
+      "SAP.P025b.WH.W1.known_size_quota_realization",
+      "SAP.P025b.WH.W1.counterexample_preservation",
+      "AronowAudit.P025.joint_replications_iid",
+      "AronowAudit.P025.quota_design_valid",
+      "AronowAudit.P025.quota_marginal_eq",
+      "AronowAudit.P025.shares_sharp_endpoints",
+      "AronowAudit.P025.ratio_scale_masses",
+      "AronowAudit.P025.absolute_outer_bound"
+    ],
+    "statement_definition": "SAP.P025b.T16WholeStatement",
+    "target_id": "P025-T16",
+    "theorem": "SAP.P025b.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.reported_counts_unique",
+      "AronowAudit.P025.table_six_exact",
+      "AronowAudit.P025.table_all_cells",
+      "AronowAudit.P025.table_grid_comparison"
+    ],
+    "target_id": "P025-T17",
+    "theorem": "SAP.P025b.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.ratio_only_and_equal_probabilities",
+      "AronowAudit.P025.equal_probability_box_and_endpoints"
+    ],
+    "target_id": "P025-T18",
+    "theorem": "SAP.P025b.T18"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.tied_outcomes_equal_weights",
+      "SAP.P025b.WH.W2.T19_whole",
+      "SAP.P025b.WH.W2.T19_assembly",
+      "SAP.P025b.WH.W2.T19_L1_proof",
+      "SAP.P025b.WH.W2.T19_L2_proof",
+      "AronowAudit.P025.corrected_weighted_bounds",
+      "AronowAudit.P025.ratio_le",
+      "AronowAudit.P025.ratio_scale_weights",
+      "AronowAudit.P025.threshold_shift",
+      "AronowAudit.P025.threshold_sum_update",
+      "AronowAudit.P025.threshold_den_update"
+    ],
+    "statement_definition": "SAP.P025b.T19WholeStatement",
+    "target_id": "P025-T19",
+    "theorem": "SAP.P025b.T19"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P025.dichotomous_closed_form",
+      "SAP.P025b.WH.W1.T20_whole",
+      "SAP.P025b.WH.W1.T20_assembly",
+      "SAP.P025b.WH.W1.T20_L1_proof",
+      "SAP.P025b.WH.W1.retained_T20",
+      "AronowAudit.P025.normalize_box",
+      "AronowAudit.P025.ratio_scale_weights"
+    ],
+    "statement_definition": "SAP.P025b.T20WholeStatement",
+    "target_id": "P025-T20",
+    "theorem": "SAP.P025b.T20"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P025.upper_cut_from_strict_neighbors",
+        "reason": "Auxiliary deterministic cut certificate; printed_proposition_three supplies the stated almost-sure conclusion directly."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P025.printed_proposition_three"
+    ],
+    "target_id": "P025-T21",
+    "theorem": "SAP.P025b.T21"
+  }
+]

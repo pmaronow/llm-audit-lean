@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P053.T1",
+    "target_id": "P053-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "All canonical clauses (a)-(e) are present in Defs/Part3.lean: the affine identity and inverse, equivalence of statistic/success-count/table equality, a common explicit factor uniform over outcome vectors with the same total M, the nonconstant symmetric arm-sample statement and its converse, and the exact table-constancy criterion for arbitrary assignment statistics. Clause (d)'s h_F is expressed directly by evaluating F on the two canonical count vectors. Floor gives the permitted arbitrary extension off the attainable image and recovers the exact integer count on it. Positive arm sizes, fixed binary sharp-null outcomes, and complete support agree with the canonical domain. A compiled instance uses two arms of size two and a nonconstant permutation-invariant statistic. No substantive hypothesis, measurability defect on the finite assignment space, or junk-value dependence was found."
+  },
+  {
+    "theorem": "SAP.P053.T2",
+    "target_id": "P053-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical assertion is the specified counterexample to the unrestricted reading allowing labels and fixed covariates. The theorem supplies exactly its four-unit outcomes, covariate, supported assignments, identical zero differences and all-one tables, labelled and covariate statistic values, and both global nonfactorizations. The labelled indicator equals z_1*y_1 because the first fixed outcome is one, as independently checked in Lean. Repetition uses every 2m-element subset of the 4m-unit population, not a different randomization scheme. It states all positive-block witnesses. The WholeW1 additions state the six probabilities 1/6, the exact repeated-population moments, and a full S5 certificate; they correctly establish the standing asymptotic conditions. Direct Lean checks verify the finite witness, its nonfactorization, and the m=1 repetition. These witnesses satisfy positive arm sizes, binary fixed sharp-null outcomes, uniform complete assignment, fixed covariates, and the requirement of one function for every supported assignment. No restriction to a different reading has been silently introduced: that unrestricted reading is expressly the canonical target."
+  },
+  {
+    "theorem": "SAP.P053.T3",
+    "target_id": "P053-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem states the full success-count distribution and affine statistic on six units, the two exact inclusive upper-tail p-values and level-1/20 rejection distinction, every four-unit p-value case including the four nonextreme assignments, and invariance for every real outcome vector under functions strictly increasing on the attained statistic image. Its finite-count definition of upperP agrees exactly with the specified uniform randomization probability and includes ties. Independent Lean proofs in scratch/PValues.lean verify SixInference and FourInference from the definitions and finite enumerations. The universal monotonicity hypothesis is inhabited by g(t)=2t+1. No two-sided/signed-tail confusion or additional condition was found."
+  },
+  {
+    "theorem": "SAP.P053.T4",
+    "target_id": "P053-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universally quantified real parameters, interior allocation, and nonnegative standard deviations are exactly the canonical formal domain. Both the difference identity and the strict inequality iff the stated two sign cases appear with the correct order of arms and denominators. Zero standard deviations and balanced allocation are included, with correct equality behavior. Compiled rational examples inhabit both strict cases and a balanced equality case. The surrounding interpretive power statements are expressly outside this canonical target."
+  },
+  {
+    "theorem": "SAP.P053.T5",
+    "target_id": "P053-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "Regularity states S5: divergent population size, an interior limiting allocation, finite treatment/control/effect variance and average-effect limits, and one uniform bound on the combined raw fourth moments. Its eventual arm-size condition follows from the divergent size and interior allocation and adds no substantive restriction. Population variances use N-1; the Fisher and pooled OLS definitions are exactly the S4 finite formulas, with residual divisor N-2. InProbability is the specified uniform-design probability limit, and LittleOInvSize is exactly N times the remainder tending to zero in probability. All three first-order assertions and both scaled limits occur with the correct crossed arm denominators and squared average-effect term. Early totalized means or zero divisors affect only a finite prefix and no conclusion. An independent compiled construction has n1=n0=k+2, Y1 identically one, Y0 identically zero, and Regularity parameters (1/2,0,0,0,1), satisfying every hypothesis. No variance-positivity or estimator-consistency assumption is added."
+  }
+]

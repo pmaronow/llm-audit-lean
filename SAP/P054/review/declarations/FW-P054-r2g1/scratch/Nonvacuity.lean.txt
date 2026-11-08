@@ -1,0 +1,97 @@
+import SAP.P054.Defs
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+namespace P054Audit
+
+open SAP.P054
+
+def d2 : Fin 2 → ℝ := fun _ => 1
+def w2 : Fin 2 → ℝ := fun _ => 1
+def y2 : Fin 2 → ℝ := fun i => if i = 0 then 0 else 1
+
+-- Every outer hypothesis of T1 holds; the equal-weight branch is inhabited too.
+theorem t1_hypotheses :
+    2 ≤ (2 : ℕ) ∧
+    (∀ i, d2 i = 0 ∨ d2 i = 1) ∧
+    (∀ i, y2 i = 0 ∨ y2 i = 1) ∧
+    (∀ i, 0 < w2 i) ∧
+    0 < groupCount d2 ∧
+    (0 < (1 : ℝ) ∧ w2 = (fun _ => (1 : ℝ))) := by
+  norm_num [d2, w2, y2, groupCount, Fin.forall_fin_two, Fin.sum_univ_two]
+  rfl
+
+-- Check T2's full hypothesis conjunction separately, including its stronger count bound.
+theorem t2_hypotheses :
+    2 ≤ (2 : ℕ) ∧
+    (∀ i, d2 i = 0 ∨ d2 i = 1) ∧
+    (∀ i, y2 i = 0 ∨ y2 i = 1) ∧
+    (∀ i, 0 < w2 i) ∧
+    2 ≤ groupCount d2 := by
+  norm_num [d2, w2, y2, groupCount, Fin.forall_fin_two, Fin.sum_univ_two]
+
+-- These values use only the definitions, not either certified theorem.
+theorem nonzero_values :
+    groupCount d2 = 2 ∧ groupWeight d2 w2 = 2 ∧
+    weightedProportion d2 w2 y2 = 1 / 2 ∧
+    squaredWeightTerm d2 w2 y2 = 1 / 8 ∧
+    linearisationVariance d2 w2 y2 = 1 / 4 ∧
+    referenceVariance d2 w2 y2 = 1 / 8 ∧
+    weightedResidualSumSquares d2 w2 y2 = 1 / 2 ∧
+    classicalWlsVariance d2 w2 y2 = 1 / 4 := by
+  norm_num [d2, w2, y2, groupCount, groupWeight, weightedProportion,
+    squaredWeightTerm, linearisationVariance, ratioResidual, referenceVariance,
+    weightedResidualSumSquares, classicalWlsVariance, Fin.sum_univ_two]
+
+def unequalWeights : Fin 2 → ℝ := fun i => if i = 0 then 10 else 1
+
+-- Both theorems also have genuine, positive-variance unequal-weight instances.
+theorem unequal_weight_hypotheses :
+    2 ≤ (2 : ℕ) ∧
+    (∀ i, d2 i = 0 ∨ d2 i = 1) ∧
+    (∀ i, y2 i = 0 ∨ y2 i = 1) ∧
+    (∀ i, 0 < unequalWeights i) ∧
+    0 < groupCount d2 ∧ 2 ≤ groupCount d2 := by
+  norm_num [d2, y2, unequalWeights, groupCount,
+    Fin.forall_fin_two, Fin.sum_univ_two]
+
+-- In particular the definitions do not force the unclaimed inequality V ≥ V0.
+theorem unequal_weight_values :
+    weightedProportion d2 unequalWeights y2 = 1 / 11 ∧
+    squaredWeightTerm d2 unequalWeights y2 = 200 / 14641 ∧
+    linearisationVariance d2 unequalWeights y2 = 400 / 14641 ∧
+    referenceVariance d2 unequalWeights y2 = 5 / 121 ∧
+    weightedResidualSumSquares d2 unequalWeights y2 = 10 / 11 ∧
+    classicalWlsVariance d2 unequalWeights y2 = 10 / 121 ∧
+    linearisationVariance d2 unequalWeights y2 < referenceVariance d2 unequalWeights y2 := by
+  norm_num [d2, unequalWeights, y2, groupCount, groupWeight, weightedProportion,
+    squaredWeightTerm, linearisationVariance, ratioResidual, referenceVariance,
+    weightedResidualSumSquares, classicalWlsVariance, Fin.sum_univ_two]
+
+def d3 : Fin 3 → ℝ := fun i => if i = 2 then 0 else 1
+def w3 : Fin 3 → ℝ := fun _ => 1
+def y3 : Fin 3 → ℝ := fun i => if i = 0 then 0 else 1
+
+-- A proper selected subgroup checks that the full and selected sample sizes differ.
+theorem subgroup_hypotheses :
+    2 ≤ (3 : ℕ) ∧
+    (∀ i, d3 i = 0 ∨ d3 i = 1) ∧
+    (∀ i, y3 i = 0 ∨ y3 i = 1) ∧
+    (∀ i, 0 < w3 i) ∧
+    0 < groupCount d3 ∧ 2 ≤ groupCount d3 ∧
+    (0 < (1 : ℝ) ∧ w3 = (fun _ => (1 : ℝ))) := by
+  norm_num [d3, w3, y3, groupCount, Fin.forall_fin_succ, Fin.sum_univ_succ]
+  rfl
+
+theorem subgroup_values :
+    groupCount d3 = 2 ∧ groupWeight d3 w3 = 2 ∧
+    squaredWeightTerm d3 w3 y3 = 1 / 8 ∧
+    linearisationVariance d3 w3 y3 = 3 / 16 ∧
+    referenceVariance d3 w3 y3 = 1 / 8 ∧
+    classicalWlsVariance d3 w3 y3 = 1 / 4 := by
+  norm_num [d3, w3, y3, groupCount, groupWeight, weightedProportion,
+    squaredWeightTerm, linearisationVariance, ratioResidual, referenceVariance,
+    weightedResidualSumSquares, classicalWlsVariance, Fin.sum_univ_succ]
+
+end P054Audit

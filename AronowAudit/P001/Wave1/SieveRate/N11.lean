@@ -3,8 +3,12 @@ import Mathlib.Algebra.Polynomial.Taylor
 import Mathlib.Algebra.Polynomial.Eval.Degree
 
 /-!
-The Taylor coefficients at one are nonnegative.  The exact derivative
-recurrences in `Polynomial.Chebyshev` give the bound for every nonnegative `s`; the upper bound on `s` in the node is unused.
+The Taylor coefficients at one are nonnegative.  We use the exact derivative
+recurrences already proved in `Polynomial.Chebyshev`, rather than an estimate
+for the inverse hyperbolic cosine.  This actually proves the bound for every
+nonnegative `s`; the upper bound on `s` in the node is unused.
+
+Draft only: no Lean process has been run on this file.
 -/
 
 set_option autoImplicit false

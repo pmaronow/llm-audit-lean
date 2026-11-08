@@ -1,0 +1,94 @@
+[
+ {
+  "target_id": "P011-T20",
+  "decision": "refuted",
+  "theorem": "SAP.P011b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.Wave1.printed_sign_counterexample_full_printed_negation",
+   "AronowAudit.P011.auxiliary_empty_identity",
+   "AronowAudit.P011.uniform_coordinate_dependency"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011b.T20Statement",
+  "supporting_declarations": [
+   "AronowAudit.P011.Wave1.printed_sign_counterexample_full",
+   "AronowAudit.P011.DataMatrixCompletion.coord_integral",
+   "AronowAudit.P011.DataMatrixCompletion.covariance_formula",
+   "AronowAudit.P011.DataMatrixCompletion.ae_signs",
+   "AronowAudit.P011.SignCompletion.beta_zero",
+   "AronowAudit.P011.Wave1.printed_sign_full_pointwise"
+  ],
+  "credit_note": "The full fair-sign certificate already used to prove the credited universal negation supplies the explicit canonical numerical clauses.",
+  "decision_note": "Revision 2 rule 2 classifies the explicit refutation as refuted."
+ },
+ {
+  "target_id": "P011-T21",
+  "decision": "whole",
+  "theorem": "SAP.P011b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.pairwise_correlation_repair",
+   "AronowAudit.P011.path_correlation_instance"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011b.T21Statement"
+ },
+ {
+  "target_id": "P011-T22",
+  "decision": "whole",
+  "theorem": "SAP.P011b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.upper_program_equivalence"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P011b.T22Statement"
+ },
+ {
+  "target_id": "P011-T23",
+  "decision": "whole",
+  "theorem": "SAP.P011b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P011.printed_variables_counterexample",
+   "AronowAudit.P011.printed_variables_optimum"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.graph_three_cases",
+    "reason": "The optimum result already supplies the bound and equality case; the finite graph enumeration is not used separately."
+   }
+  ],
+  "statement_definition": "SAP.P011b.T23Statement",
+  "decision_note": "The theorem establishes all clauses (a)-(d) of the canonical finite counterexample to interpreting the nonzero-product instruction as a data-determined feasible or optimal edge assignment."
+ },
+ {
+  "target_id": "P011-T24",
+  "decision": "restricted",
+  "theorem": "SAP.P011b.T24",
+  "restriction": "Only formal content (i), the graph feasible-set equivalence and true-graph feasibility under valid constraints, is stated. The observed-data tuple correction, the Assumption 3 index-set correction and all of formal content (ii), including its covariance bound and scope of the cited statistical results, and the edge-set typography correction are omitted.",
+  "rows_used": [
+   "AronowAudit.P011.corrected_notation"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P011.compatible_truncated_degree",
+    "reason": "A degree auxiliary; the retained claim is the graph feasible-set equivalence."
+   },
+   {
+    "lean_name": "AronowAudit.P011.degree_row_sum",
+    "reason": "A row-sum auxiliary already used in the existing feasible-set equivalence proof."
+   },
+   {
+    "lean_name": "AronowAudit.P011.program_feasible_iff",
+    "reason": "Duplicates the feasible-set equivalence already supplied by corrected_notation."
+   },
+   {
+    "lean_name": "AronowAudit.P011.simple_degree_bound",
+    "reason": "A degree auxiliary; it does not supply the omitted statistical and textual clauses."
+   }
+  ],
+  "statement_definition": "SAP.P011b.T24Statement"
+ }
+]

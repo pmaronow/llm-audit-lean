@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P024.T8",
+  "target_id": "P024-T8",
+  "round": 6,
+  "verdict": "label_wrong",
+  "severity": "minor",
+  "issues": [
+   "record.json:21 labels T8 whole, with restriction null at record.json:23, although SAP/P024/Defs/WholeW3.lean:48, :50 and :51 impose fixed interior block quotas on every assignment and actual common marginals m_b/N_b. The governing canonical statement and definitions at claims.json:39-40 specify predetermined blocks, actual-probability HT, raw block differences in means, and population-share weights, but do not specify these quota conditions. The uniform fixed-quota design is in claims.json:41, the nonbinding note. Under the task's explicit rule that notes add no clauses, the current correct theorem is a fixed-quota specialization and must be labelled restricted. This is a scope-label defect, not a false theorem or a failed nonvacuity check.",
+   "SAP/P024/Challenge/Part1.lean:79 and SAP/P024/Defs/WholeW3.lean:30 call the fixed-quota specialization the supplied printed reading, and Challenge/Part1.lean:90 and WholeW3.lean:41 call its quotas and marginals supplied design conditions. Those provenance assertions do not establish that the conditions belong to the canonical claim supplied in this review. The docstrings should explicitly describe the additional assumptions relative to claims.json:39-40 instead of presenting them as the canonical scope. architect-report.md:254 acknowledges that the hypotheses were retained and only the claimed reading changed; this is not a canonical-statement amendment."
+  ]
+ }
+]

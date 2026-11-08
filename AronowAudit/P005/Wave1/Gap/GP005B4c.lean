@@ -574,5 +574,8 @@ theorem corrected_leverage_variance_chain_proof {n d m : ℕ} (P : Population n 
   intro i
   exact ⟨leverage_nonneg P i, leverage_le_maximum P hnpos i, hu i⟩
 
+example : type_of% @AronowAudit.P005.corrected_leverage_variance_chain :=
+  corrected_leverage_variance_chain_proof
+
 end
 end AronowAudit.P005.Wave1

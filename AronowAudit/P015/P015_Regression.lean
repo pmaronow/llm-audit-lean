@@ -44,9 +44,9 @@ attribute [local instance] Classical.propDecidable
 open scoped BigOperators Topology
 open Finset Matrix MeasureTheory ProbabilityTheory Filter
 
-/-! Regression weights, causal estimands, and counterexamples for
-Aronow and Samii (2016), pp. 250–267.
+/-! Formal audit of Aronow and Samii (2016), pp. 250–267.
 All tables are exact real-valued finite probability laws, never a zero measure.
+Invalid printed assertions are retained as propositions in P015_PrintedClaims; checked refutations are separate from positive theorems.
 -/
 
 /-- E[.] averages over the units in the population (p. 253, after (3)).
@@ -93,7 +93,7 @@ noncomputable def fCondIndep {A B C : Type*} [Fintype A]
       fMass p (fun a => X a = x ∧ D a = d)
 
 /-- Potential outcomes deterministic given X are unconfounded, as in the
-counterexamples to p. 261 (P015-T1, T2). -/
+validator's counterexamples to p. 261 (P015-T1, T2). -/
 theorem finite_unconfounded_algebra {A B C : Type*} [Fintype A] (p : A → ℝ)
     (X : A → B) (g : B → C) (D : A → ℝ) :
     fCondIndep p X (fun a => g (X a)) D := by
@@ -145,7 +145,7 @@ def fVariance {A : Type*} [Fintype A] (p Z : A → ℝ) : ℝ :=
   fExpectation p (fun a => (Z a - fExpectation p Z) ^ 2)
 
 /-- The population least-squares coefficients, E[W'W]⁻¹E[W'Y], used for
-T1(e)'s identity for Expression (7). -/
+T1(e)'s independent verification of Expression (7). -/
 def populationOLS {A Q : Type*} [Fintype A] [Fintype Q] [DecidableEq Q]
     (p : A → ℝ) (W : Matrix A Q ℝ) (Y : A → ℝ) : Q → ℝ :=
   Matrix.mulVec (((fun j k => fExpectation p (fun i => W i j*W i k)) : Matrix Q Q ℝ)⁻¹)
@@ -156,7 +156,7 @@ def populationOLS {A Q : Type*} [Fintype A] [Fintype Q] [DecidableEq Q]
 def binaryX : Fin 4 → ℝ := ![0,0,1,1]
 /-- The binary treatment D_i in (1)–(4), pp. 253–254, at T1/T3's four explicit atoms. -/
 def binaryD : Fin 4 → ℝ := ![0,1,0,1]
-/-- T1's law: P(X=0)=P(X=1)=1/2 and P(D=1|X=0)=ε, P(D=1|X=1)=1/2; p. 261 counterexample. -/
+/-- T1's validator law: P(X=0)=P(X=1)=1/2 and P(D=1|X=0)=ε, P(D=1|X=1)=1/2; p. 261 counterexample. -/
 def rareLaw (ε : ℝ) : Fin 4 → ℝ := ![(1-ε)/2, ε/2, 1/4, 1/4]
 /-- T1's affine potential outcomes Y_i(d)=2X_i+(1+X_i)d, the form Y_i(d)=Y_i(0)+τ_i d of (1), p. 253. -/
 def rareY (a : Fin 4) (d : ℝ) : ℝ := 2 * binaryX a + (1 + binaryX a) * d
@@ -270,7 +270,7 @@ theorem multivalued_support_counterexample :
 def sampleResidual {N Q : Type*} [Fintype Q] (V : Matrix N Q ℝ)
     (D : N → ℝ) (ω : Q → ℝ) : N → ℝ := fun i => D i - V.mulVec ω i
 
-
+/-  Appendix A's OLS coefficients, (W'W)⁻¹W'Y, p. 262. -/
 
 /-- P015-T3's size-four ordered sample (0,0),(0,0),(1,0),(1,1). -/
 def zeroSampleV : Matrix (Fin 4) (Fin 2) ℝ := !![1,0; 1,0; 1,1; 1,1]
@@ -302,6 +302,7 @@ theorem fitted_zero_counterexample :
     Matrix.mul_apply, Matrix.mulVec, dotProduct, Matrix.transpose_apply,
     Matrix.det_fin_two, Matrix.det_fin_three, ← Matrix.ext_iff, Fin.sum_univ_succ,
     funext_iff, Fin.forall_fin_succ]
+
 
 
 /-- “logit⁻¹(a)=[1+exp(-a)]⁻¹”, Appendix C, p. 265. -/
@@ -359,7 +360,7 @@ theorem corrected_logistic_taylor (p : ℝ) (hp : 0 < p) (hu : p < 1) :
     · ring
   · norm_num [logit, logistic, Real.deriv_sigmoid]
 
-/-- P015-T12(i), the local correction of p. 257: the approximation
+/-- P015-T12(i), the smallest supported repair of p. 257: the approximation
 is local, with a quadratic remainder at logit(P). No coefficient stability is asserted. -/
 theorem local_logistic_remainder (p : ℝ) (hp : 0 < p) (hu : p < 1) :
     (fun a => logistic a - (p+p*(1-p)*(a-logit p))) =O[𝓝 (logit p)]
@@ -515,11 +516,13 @@ def probitSuccess (i : Fin 2 × Fin 3) : ℝ := ![3,2,7] i.2
 /-- Probit score multiplier h(η)=φ(η)/[Φ(η)(1-Φ(η))], the corrected Bernoulli likelihood score, T8, Appendix C p. 264. -/
 def probitH (η : ℝ) : ℝ := normalPDF η/(normalCDF η*(1-normalCDF η))
 
+/-  P015-T6, the explicitly named probit model: the substituted equation
+has a zero at (0,0,Φ⁻¹(3/4)), but the genuine score has treatment coordinate
+strictly above 13/625 and that point is not an ML maximizer. -/
 
 
-
-/-- P015-T6 finite residual calculation, assuming the three exact normal CDF
-values. The nonzero score is not assumed. -/
+/-- P015-T6 finite residual calculation, once the three exact normal CDF
+values are certified. It does not assume the desired nonzero score. -/
 theorem probit_residual_conditional (a : ℝ)
     (hn : normalCDF (-a) = 1/4) (hz : normalCDF 0 = 1/2) (hp : normalCDF a = 3/4) :
     groupedResidual probitW (fun _ => 8) probitSuccess normalCDF ![0,0,a] = 0 := by
@@ -535,11 +538,11 @@ def rootD : Fin 6 → ℝ := ![0,1,0,1,0,1]
 def rootLaw : Fin 6 → ℝ := ![1/4,1/12,1/6,1/6,1/12,1/4]
 /-- T7's E[D|X]=1/2+X/4, an exact instance of (3), p. 253. -/
 def rootE (x : ℝ) : ℝ := 1/2+x/4
-/-- T7's baseline q₀(X)=1/4+a(3X²-2), the conditional success probability at ε=0. -/
+/-- T7's E[Y(0)|X]=1/4+a(3X²-2), the baseline potential-outcome probability in its validator model. -/
 def rootBaseline (a x : ℝ) : ℝ := 1/4+a*(3*x^2-2)
 /-- T7's z=(1,D-E[D|X],X), a residualized version of W_i=(1,D_i,X_i), Appendix C, p. 265. -/
 def rootZ : Matrix (Fin 6) (Fin 3) ℝ := fun i => ![1,rootD i-rootE (rootX i),rootX i]
-/-- Potential outcomes, P015-T7: U uniform on [0,1],
+/-- The validator's potential outcomes, P015-T7: U uniform on [0,1],
 independent of D given X, and Y(d)=1{U≤q₀(X)+ε(d-e(X))}. -/
 def rootPotential (a ε x u d : ℝ) : ℝ := if u ≤ rootBaseline a x+ε*(d-rootE x) then 1 else 0
 /-- Conditional success probability of that potential-outcome construction. -/
@@ -553,7 +556,7 @@ def rootLikelihood (a ε : ℝ) (θ : Fin 3 → ℝ) : ℝ :=
 /-- T7's parameter domain 0<z_i θ<1 at every atom, so m(z_i θ) lies strictly between 0 and 1. -/
 def rootAdmissible (θ : Fin 3 → ℝ) : Prop := ∀ i, 0 < rootZ.mulVec θ i ∧ rootZ.mulVec θ i < 1
 /-- The derivative of the treatment coordinate of the local unique ML
-branch, in P015-T7. -/
+branch, as precisely intended by P015-T7; the branch is not postulated. -/
 def RootMLDerivative (a b : ℝ) : Prop :=
   ∃ θ : ℝ → Fin 3 → ℝ, θ 0 = ![1/2,0,0] ∧
     (∃ r : ℝ, 0 < r ∧ r ≤ 1/16 ∧ ∀ ε, |ε| < r → rootAdmissible (θ ε) ∧
@@ -604,11 +607,12 @@ theorem root_link_matrix_arithmetic :
       norm_num [Matrix.mulVec,Matrix.vecMul,vecHead,vecTail,dotProduct,
         Fin.sum_univ_succ,funext_iff,Fin.forall_fin_succ]
 
-
+/-  P015-T7(c)–(e): the actual ML treatment derivative is 120/119, although
+the mean-only recipe gives 1; the same outcome mean with a=0 gives derivative 1. -/
 
 
 /-- P015-T16(i): the paper's 0.077 natural-log coefficient gives about 8%,
-with an exact decimal enclosure, rather than 20% (p. 259). -/
+with the validator's exact decimal enclosure, rather than 20% (p. 259). -/
 theorem log_points_numeric_correction :
     10800420763/10000000000 < Real.exp (77/1000) ∧
     Real.exp (77/1000) < 10800420765/10000000000 ∧
@@ -635,7 +639,7 @@ theorem exponentiated_fitted_contrast (α β d controls : ℝ) :
   ring
 
 /-- P015-T16(iii): zero log-growth OLS coefficient coexists with a 50%
-arithmetic-mean spending difference in four observations. -/
+arithmetic-mean spending difference in the validator's four observations. -/
 theorem spending_mean_arithmetic :
     (Real.log (1/2)+Real.log 2)/2 = 0 ∧
     Real.exp ((Real.log (1/2)+Real.log 2)/2) = 1 ∧
@@ -667,7 +671,10 @@ def discreteEffective {Ω B : Type*} [MeasurableSpace Ω] (P : Measure Ω) (X : 
   (ENNReal.ofReal (∫ s, discreteWeight P X D s ∂P))⁻¹ •
     P.withDensity (fun s => ENNReal.ofReal (discreteWeight P X D s))
 
-
+/-  P015-T4(i)–(iii), the complete repaired positivity theorem (p. 261).
+X is discrete and D has a finite second moment; the law can have infinitely many
+or continuously distributed treatment values. The binary effective law reverses p to 1-p.
+The three invalid converses are separately addressed by T1–T3. -/
 
 
 /-- The finite binary variance and the conditional effective-law reversal
@@ -876,7 +883,7 @@ def groupP₂ : Matrix (Fin 2) (Fin 2) ℝ := !![5/7,1/7;1/7,3/7]
 def groupHinv : Matrix (Fin 2) (Fin 2) ℝ := !![52/61,-22/61;-22/61,75/61]
 
 /-- P015-T9: both group OLS slopes vanish, but GLS pools to -10/61,
-which no scalar combination of the slopes can equal. The inverse matrices are exact. -/
+which no scalar combination of the slopes can equal. Exact inverse matrices are certified. -/
 theorem group_pooling_counterexample :
     (groupZ₁.transpose*groupZ₁).det = 2 ∧
     (groupZ₂.transpose*groupZ₂).det = 2 ∧
@@ -911,11 +918,12 @@ theorem group_pooling_counterexample :
   intro t₁ t₂
   ring
 
+/-  Full-vector random-coefficient GLS: Ω_g=S+σ_g²Q_g⁻¹ and P_g=Ω_g⁻¹,
+p. 257, correction P015-T10. -/
 
+/-  GLS pools all coordinates using matrix precision, as repaired in T10. -/
 
-
-
-
+/-  The precision quadratic sum_g (θhat_g-θ)′P_g(θhat_g-θ), whose minimizer is the corrected GLS estimator, T10, p. 257. -/
 
 /-- P015-T10(i),(ii),(iv), the complete matrix GLS repair with known covariance,
 full-rank designs and positive error variances. The row criterion is proved separately. -/
@@ -942,8 +950,7 @@ theorem corrected_matrix_pooling (G q : ℕ) (hG : 1 ≤ G) (hq : 1 ≤ q)
   exact MatrixCompletion.corrected_matrix_pooling_completed G q hG hq n Z y S σ₂ hS hσ hQ
 
 /-- P015-T10(iii): a treatment coordinate pools by scalar weights for all
-coefficient vectors iff each group's treatment row has that group's scalar in
-the treatment entry and zero in every other entry. -/
+coefficient vectors iff each treatment row has exactly that scalar in its treatment entry. -/
 theorem scalar_pooling_iff_algebra {G Q : Type*} [Fintype G] [Fintype Q]
     [DecidableEq G] [DecidableEq Q] (A : G → Matrix Q Q ℝ) (a : G → ℝ) (b : Q) :
     (∀ t : G → Q → ℝ, (∑ g, ∑ j, A g b j*t g j) = ∑ g, a g*t g b) ↔
@@ -1003,6 +1010,16 @@ theorem leverage_weight_comparison :
     Matrix.mulVec, dotProduct, ← Matrix.ext_iff, funext_iff, Fin.sum_univ_succ,
     Fin.forall_fin_succ, RoundsTo]
 
+/-- The corrected conditional binary logistic model, P015-T14, p. 257,
+matching the explicitly conditioned model in Appendix C, p. 265. The indicator's
+conditional expectation is Pr[Y=1 | D,X]; all K control coordinates are included. -/
+def LogisticModel {Ω : Type*} [MeasurableSpace Ω] (K : ℕ) (P : Measure Ω) [IsProbabilityMeasure P]
+    (Y D : Ω → ℝ) (X : Ω → Fin K → ℝ) : Prop :=
+  Measurable Y ∧ Measurable D ∧ Measurable X ∧
+  (∀ᵐ s ∂P, Y s = 0 ∨ Y s = 1) ∧ ∃ α β : ℝ, ∃ γ : Fin K → ℝ,
+    P[fun s => if Y s=1 then (1 : ℝ) else 0 |
+      MeasurableSpace.comap (fun s => (D s,X s)) inferInstance] =ᵐ[P]
+        fun s => logistic (α+β*D s+dotProduct (X s) γ)
 
 /-- P015-T14: the unconditional single-unit left side in the misprint cannot
 hold at two different treatment values at fixed controls when β≠0. -/
@@ -1155,8 +1172,8 @@ theorem spending_ols_counterexample :
 def affineTheta {Q : Type*} [DecidableEq Q] (intercept : Q) (b c : ℝ) (θ : Q → ℝ) : Q → ℝ :=
   fun j => (if j=intercept then b else 0)+c*θ j
 
-/-- P015-T21(ii): with a unit intercept, the affine coefficients give predictor
-b+c W_i θ, observation by observation. -/
+/-- P015-T21(ii): the alternative coefficients turn the linearized likelihood
+residual into the OLS residual, observation by observation. -/
 theorem affine_predictor {N Q : Type*} [Fintype Q] [DecidableEq Q]
     (W : Matrix N Q ℝ) (j₀ : Q) (hW : ∀ i, W i j₀ = 1)
     (b c : ℝ) (θ : Q → ℝ) :
@@ -1260,10 +1277,12 @@ def logisticTaylor (N : ℕ) (c a : ℝ) : ℝ := taylorWithinEval logistic N Se
 def extremeLikelihood (θ : Fin 2 → ℝ) : ℝ :=
   binomialLogLikelihood logistic 100 1 (θ 0)+binomialLogLikelihood logistic 100 99 (θ 0+θ 1)
 
+/-  P015-T11 in full: the unique finite MLE lies outside the convergence radius;
+every Taylor degree has probability error ≥49/100 at both predictors and treatment score ≥49. -/
 
 
-
-/-- P015-T11 finite evaluations and the degree-zero error. -/
+/-- P015-T11 finite evaluations and the degree-zero error, independently of
+the unproved all-degree partial-fraction argument. -/
 theorem extreme_sigmoid_arithmetic :
     logistic (Real.log 99) = 99/100 ∧ logistic (-Real.log 99) = 1/100 ∧
     logit ((1+99)/200) = 0 ∧ Real.pi < 9/2 ∧
@@ -1354,7 +1373,7 @@ def MomentLLN {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω) (Z : ℕ → Ω
   (∀ i, Integrable (Z i) P) ∧ TendstoInMeasure P
     (fun n s => (∑ i : Fin n, Z i s)/(n : ℝ)) atTop (fun _ => ∫ s, Z 0 s ∂P)
 
-/-- The exact eight moment families and nonsingularity required in a
+/-- The exact eight moment families and nonsingularity required in the target's
 sufficient reading of condition 4; no OLS limit is assumed here. -/
 def OLSRegularity {Ω : Type*} [MeasurableSpace Ω] {K : ℕ} (P : Measure Ω)
     (D Y₀ τ : ℕ → Ω → ℝ) (X : ℕ → Ω → Fin K → ℝ) : Prop :=
@@ -1369,7 +1388,9 @@ def OLSRegularity {Ω : Type*} [MeasurableSpace Ω] {K : ℕ} (P : Measure Ω)
   Integrable (populationWeight P (D 0) (X 0)) P ∧
   0 < ∫ s, populationWeight P (D 0) (X 0) s ∂P
 
-
+/-  Theorem A.1 (P015-T22) and the identical corrected Expression (7) (T15).
+All three causal assumptions and the explicit moment/LLN/nonsingularity reading
+are retained. The conclusion is convergence in probability of the actual OLS coefficient. -/
 
 
 /-- Assemble delta=(alpha,beta,gamma)' from the (alpha,gamma) control
@@ -1529,7 +1550,7 @@ theorem residual_weight_expansion {N : Type*} [Fintype N] (r e Z : N → ℝ) :
   intro i _
   ring
 
-/-- T23's regularity: all seven required moment families, including
+/-- T23's regularity: all seven moment families named in the target, including
 covariate interactions needed when replacing ω by its fitted value. -/
 def CovariateRegularity {Ω : Type*} [MeasurableSpace Ω] {K : ℕ} (P : Measure Ω)
     (D Z : ℕ → Ω → ℝ) (X : ℕ → Ω → Fin K → ℝ) (ω : Fin (K+1) → ℝ) : Prop :=
@@ -1543,7 +1564,8 @@ def CovariateRegularity {Ω : Type*} [MeasurableSpace Ω] {K : ℕ} (P : Measure
   Matrix.det (fun j k => ∫ s, controlRow (X 0 s) j*controlRow (X 0 s) k ∂P) ≠ 0 ∧
   0 < ∫ s, r 0 s^2 ∂P
 
-
+/-  P015-T23, Expression (9), pp. 255–256: the covariate mean with fitted
+squared OLS residual weights converges in probability to E[wZ]/E[w]. -/
 
 
 /-- T24 population finite-moment lemma: under common random assignment,
@@ -1563,23 +1585,34 @@ theorem randomization_weight_cancels {Ω : Type*} [MeasurableSpace Ω]
   rw [h]
   field_simp [hpos.ne']
 
+/-  P015-T24, Corollary A.1, p. 263: common-distribution treatment assignment
+independent of baseline, effects and controls makes the actual OLS estimate converge
+in probability to E[τ]. Unequal assignment probabilities are excluded as in footnote 15. -/
+
+
+/- P015-T18(B): an interior maximum-likelihood estimate for a smooth scalar
+Bernoulli inverse link is claimed in Appendix C, p. 265, to solve the substituted
+residual equation. This is an implication at an ML maximizer, with a genuine
+injective inverse link, rather than an equivalence at arbitrary parameter points.
+The printed implication is false; its proposition is retained in PrintedClaims and its negation is proved in InverseLinkMLCounterexample. -/
 
 
 
+/-  T8(iii): the corrected probit score keeps φ/[Φ(1-Φ)] and this multiplier
+is nonconstant. The normal analytic identities are proved in AnalyticCompletion. -/
 
 
+/- T17(C), the printed automatic pair-specific positivity assertion (p. 261).
+Both chosen endpoints occur in the nominal population and E[w]>0; the claim is
+nevertheless false; PositivityRefutation proves the actual measure-based counterexample, while PrintedClaims retains the proposition. -/
 
 
-
-
-
-
-
-
+/-  T17(A), the valid direction in the printed paragraph: positivity at
+both distinct endpoints implies positive variance at each represented profile. -/
 
 
 /-- T1(e): the actual population OLS coefficient equals the effective-weight
-causal average and differs from 3/2; nonsingularity follows from the Gram determinant. -/
+causal average and differs from 3/2; nonsingularity is checked by the Gram determinant. -/
 theorem rare_ols_arithmetic :
     let p := rareLaw (1/1000000)
     let W : Matrix (Fin 4) (Fin 3) ℝ := fun i => ![1,binaryD i,binaryX i]
@@ -1612,7 +1645,8 @@ theorem common_support_arithmetic :
     norm_num [fCondProb,fEffective,fWeight,fCondMean,fExpectation,fMass,multiLaw,binaryX,multiD,
       Fin.sum_univ_succ,h₀,h₁,h₂,eq_comm] <;> simp_all
 
-
+/-  T22 population identities (15) and its unnumbered residual-effect display,
+pp. 262–263. They require unconfoundedness as well as the linear treatment mean. -/
 namespace ConditionalCompletion
 noncomputable section
 open MeasureTheory ProbabilityTheory Filter
@@ -1776,7 +1810,7 @@ theorem finite_variance_pos_of_atoms {A : Type*} [Fintype A] (p D : A → ℝ)
   exact hd ((he a ha).trans (he b hb).symm)
 
 /-- P015-T11: the actual predictor log 99 is beyond 9/2, proved with
-Mathlib's bound exp(1)<2.7182818286. -/
+Mathlib's certified bound exp(1)<2.7182818286. -/
 theorem log99_lower_bound : 9/2 < Real.log 99 := by
   have he : Real.exp 1 < 11/4 := lt_trans Real.exp_one_lt_d9 (by norm_num)
   have hp : (Real.exp 1)^9 < (99 : ℝ)^2 := by
@@ -1790,8 +1824,8 @@ theorem log99_lower_bound : 9/2 < Real.log 99 := by
   rw [← hl, ← hr, Real.exp_lt_exp] at hp
   linarith
 
-/-- P015-T12(ii): increasing-degree Taylor approximation with a
-convergence-domain restriction and Cauchy bound. -/
+/-- P015-T12(ii), the validator's optional increasing-degree repair, retained
+in full with its convergence-domain restriction and Cauchy bound. -/
 theorem restricted_taylor_convergence (p r ρ : ℝ) (hp : 0 < p) (hu : p < 1)
     (hr : 0 ≤ r) (hrρ : r < ρ) (hρ : ρ < Real.sqrt ((logit p)^2+Real.pi^2)) :
     let fc := fun z : ℂ => (1+Complex.exp (-z))⁻¹
@@ -1836,7 +1870,7 @@ theorem observational_equality_no_two_limits {Ω : Type*} [MeasurableSpace Ω]
 
 /-- T7 finite population facts for the specified probability law: the outcome
 mean is 1/4 for every perturbation with |ε|≤1/16, while the actual population OLS treatment
-coefficient is ε. -/
+coefficient is ε. This supplements, rather than assumes, the drafted ML branch. -/
 theorem root_ols_arithmetic (ε : ℝ) (hε : |ε| ≤ 1/16) :
     fExpectation rootLaw (rootProbability (1/16) ε)=1/4 ∧
     populationOLS rootLaw rootZ (rootProbability (1/16) ε) 1=ε := by
@@ -1974,10 +2008,16 @@ theorem canonical_named_means :
   · intro η
     exact (Real.hasDerivAt_exp η).deriv
 
+/- T8(iv), the full matrix score expansion as requested in the correction:
+h₀ r+(-h₀ f₀ A+h₀′ B)δ with its printed quadratic remainder. The hypotheses
+retain the target's twice differentiability of m; no stronger remainder hypothesis
+is silently assumed. The division by h₀ in the derived linear system is explicitly
+restricted to h₀≠0. The zero-multiplier-derivative and Bδ=0 cancellation cases
+then give the mean-only normal equations. The overstrong C²-only quadratic draft is retained as a proposition in PrintedClaims; PaperDomains states the exact-polynomial repair expressly allowed by the target. -/
 
 
-
-
+/-  T8(iv)'s specified symmetric probit point: although the probit multiplier
+is not constant, its derivative vanishes at η₀=0, where Φ(0)=1/2. -/
 
 
 /-- U is uniform on [0,1] in T7's explicit potential-outcome construction,
@@ -2024,14 +2064,17 @@ def rootUnitD (s : (ℝ×ℝ)×ℝ) : ℝ := s.1.2
 /-- The uniform auxiliary U coordinate in T7's potential outcomes. -/
 def rootUnitU (s : (ℝ×ℝ)×ℝ) : ℝ := s.2
 /-- Y(d)=1{U≤q₀(X)+ε[d-e(X)]}, the exact potential outcomes in T7.
-Location: p. 257/Appendix C first-order counterexample. -/
+Location: p. 257/Appendix C first-order counterexample, validator construction. -/
 def rootUnitY (a ε d : ℝ) (s : (ℝ×ℝ)×ℝ) : ℝ :=
   rootPotential a ε (rootUnitX s) (rootUnitU s) d
 /-- τ=Y(1)-Y(0), the binary version of (1), p. 253, in T7's model. -/
 def rootUnitTau (a ε : ℝ) (s : (ℝ×ℝ)×ℝ) : ℝ :=
   rootUnitY a ε 1 s-rootUnitY a ε 0 s
 
-
+/-  T7's complete standing hypotheses are stated for the fixed product
+distribution: uniform X, binary D, uniform independent U, unconfoundedness,
+affine observed outcomes, linear E[D|X], the exact Bernoulli success probability,
+and the unchanged outcome mean 1/4. Both a=1/16 and a=0 models are included. -/
 
 
 /-- T7's actual expected likelihood score under its six (X,D) profiles;
@@ -2041,7 +2084,9 @@ def rootScore (a ε : ℝ) (θ : Fin 3 → ℝ) : Fin 3 → ℝ :=
     scoreMultiplier rootMean (rootZ.mulVec θ i)*
       (rootProbability a ε i-rootMean (rootZ.mulVec θ i)))
 
-
+/- T7(b),(c): the score multiplier, its derivative and the true score
+derivatives coincide with the separately computed finite matrices, connecting
+the arithmetic to the actual maximum-likelihood object. -/
 namespace RootCompletion
 open MeasureTheory ProbabilityTheory Matrix Set Filter
 open scoped BigOperators Topology
@@ -2198,9 +2243,6 @@ theorem root_score_calculus_completed :
 end
 end RootCompletion
 
-/-- T7(b),(c): the score multiplier, its derivative and the true score
-derivatives coincide with the separately computed finite matrices, connecting
-the arithmetic to the actual maximum-likelihood object. -/
 theorem root_score_calculus :
     (∀ η : ℝ, 0<η → η<1 → scoreMultiplier rootMean η=2/(η*(1-η^2))) ∧
     deriv rootMean (1/2)=1 ∧ scoreMultiplier rootMean (1/2)=16/3 ∧
@@ -2249,7 +2291,7 @@ theorem extreme_grouped_data_arithmetic :
     fin_cases j <;>
       norm_num [Fin.sum_univ_succ,hp,hn]
 
-/-- T9's estimator calculated from the raw group covariance
+/-- T9's estimator is also checked directly from the raw group covariance
 matrices V_g=Z_g I Z_g′+I, with S=I and σ_g²=1. The raw GLS treatment
 coefficient is -10/61 even though both actual within-group OLS slopes are zero;
 therefore no scalar weighting of those slopes can equal the GLS slope. -/
@@ -2317,7 +2359,9 @@ attribute [local instance] Classical.propDecidable
 open scoped BigOperators Topology
 open Finset Matrix MeasureTheory ProbabilityTheory Filter
 
-/-! Finite probability models and complete counterexamples. -/
+/-! Fidelity repairs. Calculus and arithmetic lemmas above remain available as
+supporting facts; declarations below attach the exact probability/model context
+or bundle every component of a counterexample. No additional axioms are introduced. -/
 
 /-- Conditional independence (2)/(11), pp. 253/260, for a genuine finite
 probability law when potential outcomes are deterministic functions of X. -/
@@ -2596,8 +2640,9 @@ theorem regression_decomposition (n K : ℕ) (D Y₀ τ : Fin n → ℝ) (X : Fi
 
 /-- T8(iv), corrected Appendix C: the exact first Taylor polynomial of the
 full Bernoulli score includes the multiplier derivative. Its vector sum is
-h0*r+(-h0*f0*A+h1*B)*delta. Twice differentiability of the mean alone does
-not justify a quadratic remainder. -/
+h0*r+(-h0*f0*A+h1*B)*delta. This is the exact-polynomial version expressly
+allowed by the target, without assuming a quadratic remainder from twice
+differentiability of the mean alone. -/
 theorem full_score_firstTaylor (N K : ℕ)
     (W : Matrix (Fin N) (Fin (K+2)) ℝ) (Y : Fin N → ℝ)
     (hY : ∀ i, Y i=0 ∨ Y i=1) (hW : ∀ i, W i 0=1)
@@ -2720,7 +2765,8 @@ theorem binomial_logistic_unique_max (n p η₀ : ℝ) (hn : 0<n)
     · rintro rfl; rfl
 
 /-- T11(a), p. 257 counterexample: the actual likelihood of the 200 binary
-observations has the unique finite global ML maximizer (-log 99,2 log 99). -/
+observations has the unique finite global ML maximizer (-log 99,2 log 99).
+This proves the existence/uniqueness part independently of the open all-degree bound. -/
 theorem extreme_unique_mle :
     let L := Real.log 99
     (∀ θ : Fin 2 → ℝ, extremeLikelihood θ ≤ extremeLikelihood ![-L,2*L]) ∧
@@ -2822,7 +2868,7 @@ def RareCounterexample : Prop :=
 
 /-- P015-T1, p. 261: the complete explicit law, causal assumptions, positivity,
 arbitrarily small effective-profile family, actual population OLS coefficient,
-IPW moments, every-n Chebyshev bound, and convergence in probability. -/
+IPW moments, every-n Chebyshev bound, and convergence in probability. Every component has its own retained proof obligation. -/
 theorem RareCounterexample_checked : RareCounterexample := by
   exact ⟨@rare_weight_counterexample, @rare_profile_bound, @rare_ols_arithmetic, @rare_ipw_all_n, @rare_ipw_tail_convergence⟩
 
@@ -2865,7 +2911,7 @@ def MultivaluedCounterexample : Prop :=
 
 /-- P015-T2, p. 261: positive weights with missing pair support, both
 unconfounded worlds and their different nominal/effective effects, no common
-pair, and impossibility of one observed-data estimator consistent in both worlds. -/
+pair, and impossibility of one observed-data estimator consistent in both worlds. Every component has its own retained proof obligation. -/
 theorem MultivaluedCounterexample_checked : MultivaluedCounterexample := by
   exact ⟨@multivalued_support_counterexample, @common_support_arithmetic, @no_common_consistent_estimator⟩
 
@@ -2895,7 +2941,7 @@ def FittedZeroCounterexample : Prop :=
 
 /-- P015-T3, p. 261: population positivity and variance, the positive-probability
 ordered sample, its actual treatment OLS residuals and zero estimated weights,
-and the nonsingular full regression design. -/
+and the nonsingular full regression design. Every component has its own retained proof obligation. -/
 theorem FittedZeroCounterexample_checked : FittedZeroCounterexample := by
   exact ⟨@fitted_zero_counterexample, @zero_sample_ols_arithmetic, @zero_sample_link⟩
 
@@ -2924,7 +2970,7 @@ def OddsCounterexample : Prop :=
 
 /-- P015-T5, Appendix C: the exact 72-observation Bernoulli odds-link
 counterexample, admissible fitted means, rank, zero substituted residual,
-nonzero true score, true likelihood directional derivatives and nonmaximality. -/
+nonzero true score, true likelihood directional derivatives and nonmaximality. Every component has its own retained proof obligation. -/
 theorem OddsCounterexample_checked : OddsCounterexample := by
   exact ⟨@odds_score_counterexample, @odds_not_mle_calculus, @odds_gram_determinant, @odds_model_details⟩
 
@@ -2946,7 +2992,9 @@ def ProbitCounterexample : Prop :=
       0<probitSuccess i ∧ probitSuccess i<8) ∧
     ((8:ℝ) • (probitW.transpose*probitW)).det=18432)
 
-
+/-  P015-T6, Appendix C: the fixed standard-normal quantile, all exact CDF
+values, zero substituted equation, nonzero genuine score, strict rational
+score bound and failure to maximize, with full rank and interior binary counts. Every component has its own retained proof obligation. -/
 
 
 /-- P015-T7, pp. 257/265: the specified probability law and uniform-U causal
@@ -3003,13 +3051,14 @@ def RootLinkCounterexample : Prop :=
     (∀ a ε θ v, (a=0 ∨ a=1/16) → |ε| ≤ 1/16 → rootAdmissible θ → HasDerivAt
       (fun t => rootLikelihood a ε (fun j => θ j+t*v j)) (dotProduct (rootScore a ε θ) v) 0))
 
-
+/-  P015-T7, pp. 257/265: the specified probability law and uniform-U causal
+model, actual score derivatives and finite matrices, and the actual ML branch
+derivative 120/119 versus OLS derivative 1 at the same outcome mean. Every component has its own retained proof obligation. -/
 
 
 /-- P015-T11, p. 257: the full ranked binary dataset, unique finite logistic
 MLE, predictors ±log 99 outside the exact radius pi, and the probability
-and score-error lower bounds for every Taylor degree. Every degree has
-probability error ≥49/100 at both predictors and treatment score error ≥49. -/
+and score-error lower bounds for every Taylor degree. -/
 def TaylorCounterexample : Prop :=
   (let L := Real.log 99;
     (∀ θ : Fin 2 → ℝ, extremeLikelihood θ ≤ extremeLikelihood ![-L,2*L]) ∧
@@ -3032,7 +3081,9 @@ def TaylorCounterexample : Prop :=
     |logisticTaylor 0 0 (Real.log 99)-logistic (Real.log 99)| = 49/100) ∧
   (9/2 < Real.log 99)
 
-
+/-  P015-T11, p. 257: the full ranked binary dataset, unique finite logistic
+MLE, predictors ±log 99 outside the exact radius pi, and the probability
+and score-error lower bounds for every Taylor degree. Every component has its own retained proof obligation. -/
 
 
 /-- P015-T4, p. 261: the complete discrete-X finite-second-moment correction
@@ -3064,61 +3115,81 @@ def PositivityCorrection : Prop :=
   (MultivaluedCounterexample.{0}) ∧
   (FittedZeroCounterexample)
 
+/-  P015-T4, p. 261: the complete discrete-X finite-second-moment correction
+for zero variance, two endpoints, binary variance and effective-law reversal,
+with the three explicit failures of the invalid printed converses. Every component has its own retained proof obligation. -/
 
 
-
-
+/-- Fidelity repair: rare_population_ols now certifies the whole target recorded
+by `RareCounterexample`; the earlier isolated calculation is retained as `rare_ols_arithmetic`. -/
 theorem rare_population_ols : RareCounterexample := RareCounterexample_checked
 
-
+/-- Fidelity repair: rare_ipw_consistent now certifies the whole target recorded
+by `RareCounterexample`; the earlier isolated calculation is retained as `rare_ipw_tail_convergence`. -/
 theorem rare_ipw_consistent : RareCounterexample := RareCounterexample_checked
 
-
+/-- Fidelity repair: no_common_pair now certifies the whole target recorded
+by `MultivaluedCounterexample`; the earlier isolated calculation is retained as `common_support_arithmetic`. -/
 theorem no_common_pair : MultivaluedCounterexample := MultivaluedCounterexample_checked
 
-
+/-- Fidelity repair: fitted_zero_actual_ols now certifies the whole target recorded
+by `FittedZeroCounterexample`; the earlier isolated calculation is retained as `zero_sample_ols_arithmetic`. -/
 theorem fitted_zero_actual_ols : FittedZeroCounterexample := FittedZeroCounterexample_checked
 
-
+/-- Fidelity repair: odds_not_mle now certifies the whole target recorded
+by `OddsCounterexample`; the earlier isolated calculation is retained as `odds_not_mle_calculus`. -/
 theorem odds_not_mle : OddsCounterexample := OddsCounterexample_checked
 
-
+/-- Fidelity repair: odds_design_full_rank now certifies the whole target recorded
+by `OddsCounterexample`; the earlier isolated calculation is retained as `odds_gram_determinant`. -/
 theorem odds_design_full_rank : OddsCounterexample := OddsCounterexample_checked
 
+/-  Fidelity repair: probit_residual_core now certifies the whole target recorded
+by `ProbitCounterexample`; the earlier isolated calculation is retained as `probit_residual_conditional`. -/
 
 
+/-  Fidelity repair: root_link_finite_core now certifies the whole target recorded
+by `RootLinkCounterexample`; the earlier isolated calculation is retained as `root_link_matrix_arithmetic`. -/
 
 
+/-  Fidelity repair: root_population_core now certifies the whole target recorded
+by `RootLinkCounterexample`; the earlier isolated calculation is retained as `root_ols_arithmetic`. -/
 
 
+/-  Fidelity repair: root_uniform_probability now certifies the whole target recorded
+by `RootLinkCounterexample`; the earlier isolated calculation is retained as `root_uniform_is_probability`. -/
 
 
+/-  Fidelity repair: root_unit_probability now certifies the whole target recorded
+by `RootLinkCounterexample`; the earlier isolated calculation is retained as `root_unit_is_probability`. -/
 
 
+/-  Fidelity repair: extreme_logistic_values now certifies the whole target recorded
+by `TaylorCounterexample`; the earlier isolated calculation is retained as `extreme_sigmoid_arithmetic`. -/
 
 
+/-  Fidelity repair: extreme_predictor_large now certifies the whole target recorded
+by `TaylorCounterexample`; the earlier isolated calculation is retained as `log99_lower_bound`. -/
 
 
+/-  Fidelity repair: logistic_radius_zero now certifies the whole target recorded
+by `TaylorCounterexample`; the earlier isolated calculation is retained as `logistic_power_series_radius`. -/
 
 
+/- Fidelity repair: extreme_data_properties now certifies the whole target recorded
+by `TaylorCounterexample`; the earlier isolated calculation is retained as `extreme_grouped_data_arithmetic`. -/
 
 
+/-  Fidelity repair: binary_variance_and_reversal now certifies the whole target recorded
+by `PositivityCorrection`; the earlier isolated calculation is retained as `binary_variance_reversal_arithmetic`. -/
 
 
+/-  Fidelity repair: finite_zero_variance now certifies the whole target recorded
+by `PositivityCorrection`; the earlier isolated calculation is retained as `finite_variance_zero_iff`. -/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+/-  Fidelity repair: finite_pair_positive_variance now certifies the whole target recorded
+by `PositivityCorrection`; the earlier isolated calculation is retained as `finite_variance_pos_of_atoms`. -/
 
 
 end
@@ -3250,6 +3321,11 @@ lemma normalized_density_mass {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
     ENNReal.toReal_ofReal (integral_nonneg hn)]
   ring
 
+lemma discreteWeight_measurable {Ω B : Type*} [MeasurableSpace Ω] [MeasurableSpace B]
+    [MeasurableSingletonClass B] [Countable B] (P : Measure Ω) (X : Ω → B)
+    (D : Ω → ℝ) (hX : Measurable X) (hD : Measurable D) :
+    Measurable (discreteWeight P X D) :=
+  (hD.sub ((measurable_of_countable (cellMean P X D)).comp hX)).pow_const 2
 
 lemma cell_integral {Ω B : Type*} [MeasurableSpace Ω] (P : Measure Ω)
     [IsProbabilityMeasure P] (X : Ω → B) (x : B) (hx : 0<P {s|X s=x}) (f : Ω → ℝ) :
@@ -3407,12 +3483,6 @@ open Finset Matrix MeasureTheory ProbabilityTheory Filter
 open scoped BigOperators Topology
 attribute [local instance] Classical.propDecidable
 
-/-- P015-T4(i)–(iii), the corrected positivity theorem (p. 261).
-X is discrete and D has a finite second moment; the law can have infinitely many
-or continuously distributed treatment values. The binary effective law reverses p to 1-p.
-The three invalid converses are separately addressed by T1–T3.
-T17(A): positivity at both distinct endpoints implies positive variance at
-each represented profile. -/
 theorem corrected_positivity {Ω B : Type*} [MeasurableSpace Ω] [MeasurableSpace B]
     [MeasurableSingletonClass B] [Countable B] (P : Measure Ω) [IsProbabilityMeasure P]
     (X : Ω → B) (D : Ω → ℝ) (hX : Measurable X) (hD : Measurable D)
@@ -3723,9 +3793,6 @@ open Finset Matrix MeasureTheory ProbabilityTheory Filter
 open scoped BigOperators Topology
 attribute [local instance] Classical.propDecidable
 
-/-- P015-T6, the explicitly named probit model: the substituted equation
-has a zero at (0,0,Φ⁻¹(3/4)), but the genuine score has treatment coordinate
-strictly above 13/625 and that point is not an ML maximizer. -/
 theorem probit_score_counterexample :
     0 < probitA ∧ probitA < 7/10 ∧
     normalCDF (-probitA) = 1/4 ∧ normalCDF 0 = 1/2 ∧ normalCDF probitA = 3/4 ∧
@@ -3739,8 +3806,6 @@ theorem probit_score_counterexample :
       groupedLikelihood probitW (fun _ => 8) probitSuccess normalCDF ![0,0,probitA] := by
   exact AnalyticCompletion.probit_score_counterexample_completed
 
-/-- T8(iii): the corrected probit score keeps φ/[Φ(1-Φ)] and this
-multiplier is nonconstant. -/
 theorem corrected_probit_score (N K : ℕ) (W : Matrix (Fin N) (Fin (K+2)) ℝ)
     (Y : Fin N → ℝ) (hY : ∀ i, Y i=0 ∨ Y i=1) (hW : ∀ i, W i 0=1)
     (θ v : Fin (K+2) → ℝ) :
@@ -3749,8 +3814,6 @@ theorem corrected_probit_score (N K : ℕ) (W : Matrix (Fin N) (Fin (K+2)) ℝ)
     ¬ ∃ c : ℝ, ∀ η : ℝ, probitH η = c := by
   exact AnalyticCompletion.corrected_probit_score_completed N K W Y hY hW θ v
 
-/-- T8(iv)'s specified symmetric probit point: although the probit multiplier
-is not constant, its derivative vanishes at η₀=0, where Φ(0)=1/2. -/
 theorem probit_multiplier_at_half :
     normalCDF 0=1/2 ∧ deriv probitH 0=0 := by
   exact AnalyticCompletion.probit_multiplier_at_half_completed
@@ -4117,8 +4180,6 @@ open Finset Matrix MeasureTheory ProbabilityTheory Filter
 open scoped BigOperators Topology
 attribute [local instance] Classical.propDecidable
 
-/-- P015-T7(c)–(e): the actual ML treatment derivative is 120/119, although
-the mean-only recipe gives 1; the same outcome mean with a=0 gives derivative 1. -/
 theorem root_link_first_order_counterexample :
     RootMLDerivative (1/16) (120/119) ∧ RootMLDerivative 0 1 ∧
     (∀ ε, |ε| ≤ 1/16 → fExpectation rootLaw (rootProbability (1/16) ε) = 1/4) ∧
@@ -4327,9 +4388,6 @@ lemma control_measurable {Ω : Type*} [MeasurableSpace Ω] {K : ℕ}
       (fun _ : Ω => (1 : ℝ)))
   · simpa [controlRow,Function.comp_def] using (measurable_pi_apply k).comp hX
 
-/-- T22 population identities (15) and the unnumbered residual-effect
-display, pp. 262–263. These require unconfoundedness as well as a linear
-treatment mean. -/
 lemma population_ols_identification {Ω : Type*} [MeasurableSpace Ω] [StandardBorelSpace Ω]
     (P : Measure Ω) [IsProbabilityMeasure P] (K : ℕ)
     (D Y₀ τ : ℕ → Ω → ℝ) (X : ℕ → Ω → Fin K → ℝ)
@@ -4527,8 +4585,10 @@ noncomputable section
 open MeasureTheory ProbabilityTheory Filter
 set_option backward.isDefEq.respectTransparency false
 
-/-- The population cancellation under the paper's common random
-assignment, using its conditional-mean weight. -/
+/-- The population cancellation under the paper's actual common random
+assignment, with its conditional-mean weight rather than an arbitrary centre.
+This is the population lemma; the separate actual-OLS probability limit remains
+its own original obligation. -/
 theorem randomization_population_weight_cancels {Ω : Type*} [MeasurableSpace Ω]
     (P : Measure Ω) [IsProbabilityMeasure P] (K : ℕ)
     (D Y₀ τ : Ω → ℝ) (X : Ω → Fin K → ℝ)
@@ -4950,8 +5010,6 @@ open Finset Matrix MeasureTheory ProbabilityTheory Filter
 open scoped BigOperators Topology
 attribute [local instance] Classical.propDecidable
 
-/-- P015-T23, Expression (9), pp. 255–256: the covariate mean with fitted
-squared OLS residual weights converges in probability to E[wZ]/E[w]. -/
 theorem effective_covariate_mean_limit {Ω : Type*} [MeasurableSpace Ω]
     (P : Measure Ω) [IsProbabilityMeasure P] (K : ℕ)
     (D Z : ℕ → Ω → ℝ) (X : ℕ → Ω → Fin K → ℝ)
@@ -4968,9 +5026,6 @@ theorem effective_covariate_mean_limit {Ω : Type*} [MeasurableSpace Ω]
         (∫ s, populationWeight P (D 0) (X 0) s ∂P)) := by
   exact ActualOLSCompletion.effective_covariate_mean_limit_completed (Ω := Ω) (P := P) (K := K) (D := D) (Z := Z) (X := X) (hD := hD) (hZ := hZ) (hX := hX) (hiid := hiid) (hident := hident) (ω := ω) (hlinear := hlinear) (hreg := hreg)
 
-/-- Theorem A.1 (P015-T22) and the identical corrected Expression (7) (T15).
-The three causal assumptions and the explicit moment/LLN/nonsingularity
-conditions imply convergence in probability of the OLS coefficient. -/
 theorem ols_weighted_effect_limit {Ω : Type*} [MeasurableSpace Ω] [StandardBorelSpace Ω]
     (P : Measure Ω) [IsProbabilityMeasure P] (K : ℕ)
     (D Y₀ τ : ℕ → Ω → ℝ) (X : ℕ → Ω → Fin K → ℝ)
@@ -4990,9 +5045,6 @@ theorem ols_weighted_effect_limit {Ω : Type*} [MeasurableSpace Ω] [StandardBor
         (∫ s, populationWeight P (D 0) (X 0) s ∂P)) := by
   exact WeightedOLSCompletion.ols_weighted_effect_limit_completed (Ω := Ω) (P := P) (K := K) (D := D) (Y₀ := Y₀) (τ := τ) (X := X) (hD := hD) (hY := hY) (hτ := hτ) (hX := hX) (hiid := hiid) (hident := hident) (hunconf := hunconf) (ω := ω) (hlinear := hlinear) (hreg := hreg)
 
-/-- P015-T24, Corollary A.1, p. 263: common-distribution treatment assignment
-independent of baseline, effects and controls makes the actual OLS estimate converge
-in probability to E[τ]. Unequal assignment probabilities are excluded as in footnote 15. -/
 theorem randomized_ols_limit {Ω : Type*} [MeasurableSpace Ω] [StandardBorelSpace Ω]
     (P : Measure Ω) [IsProbabilityMeasure P] (K : ℕ)
     (D Y₀ τ : ℕ → Ω → ℝ) (X : ℕ → Ω → Fin K → ℝ)
@@ -5006,10 +5058,6 @@ theorem randomized_ols_limit {Ω : Type*} [MeasurableSpace Ω] [StandardBorelSpa
     TendstoInMeasure P (betaHat D Y₀ τ X) atTop (fun _ => ∫ s, τ 0 s ∂P) := by
   exact RandomizedOLSCompletion.randomized_ols_limit_completed (Ω := Ω) (P := P) (K := K) (D := D) (Y₀ := Y₀) (τ := τ) (X := X) (hD := hD) (hY := hY) (hτ := hτ) (hX := hX) (hiid := hiid) (hident := hident) (hrandom := hrandom) (hreg := hreg)
 
-/-- T7's complete standing hypotheses are stated for the fixed product
-distribution: uniform X, binary D, uniform independent U, unconfoundedness,
-affine observed outcomes, linear E[D|X], the exact Bernoulli success probability,
-and the constant outcome mean 1/4. Both a=1/16 and a=0 models are included. -/
 theorem root_potential_model (a ε : ℝ) (ha : a=0 ∨ a=1/16) (hε : |ε|≤1/16) :
     (∀ x ∈ ({-1,0,1} : Finset ℝ), rootUnitLaw {s | rootUnitX s=x}=1/3) ∧
     (∀ᵐ s ∂rootUnitLaw, rootUnitD s=0 ∨ rootUnitD s=1) ∧
@@ -5090,3 +5138,130 @@ theorem extreme_data_properties : TaylorCounterexample := TaylorCounterexample_c
 end
 end AronowAudit.P015
 
+#print axioms AronowAudit.P015.finite_unconfounded_algebra
+#print axioms AronowAudit.P015.rare_weight_counterexample
+#print axioms AronowAudit.P015.rare_profile_ratio_bound
+#print axioms AronowAudit.P015.multivalued_support_counterexample
+#print axioms AronowAudit.P015.fitted_zero_counterexample
+#print axioms AronowAudit.P015.logistic_exp
+#print axioms AronowAudit.P015.logistic_logit
+#print axioms AronowAudit.P015.corrected_logistic_taylor
+#print axioms AronowAudit.P015.local_logistic_remainder
+#print axioms AronowAudit.P015.bernoulli_score_derivative_calculus
+#print axioms AronowAudit.P015.logistic_multiplier
+#print axioms AronowAudit.P015.canonical_score_derivative_calculus
+#print axioms AronowAudit.P015.scalar_full_score_firstTaylor
+#print axioms AronowAudit.P015.odds_multiplier
+#print axioms AronowAudit.P015.odds_score_counterexample
+#print axioms AronowAudit.P015.probit_score_counterexample
+#print axioms AronowAudit.P015.probit_residual_conditional
+#print axioms AronowAudit.P015.root_link_matrix_arithmetic
+#print axioms AronowAudit.P015.root_link_first_order_counterexample
+#print axioms AronowAudit.P015.log_points_numeric_correction
+#print axioms AronowAudit.P015.exponentiated_fitted_contrast
+#print axioms AronowAudit.P015.spending_mean_arithmetic
+#print axioms AronowAudit.P015.corrected_positivity
+#print axioms AronowAudit.P015.binary_variance_reversal_arithmetic
+#print axioms AronowAudit.P015.finite_chebyshev_algebra
+#print axioms AronowAudit.P015.iid_tensor_expectation_algebra
+#print axioms AronowAudit.P015.iid_isLaw
+#print axioms AronowAudit.P015.iid_coordinate_mean
+#print axioms AronowAudit.P015.iid_coordinate_cross
+#print axioms AronowAudit.P015.iid_average_mean
+#print axioms AronowAudit.P015.iid_average_variance
+#print axioms AronowAudit.P015.rare_ipw_all_n
+#print axioms AronowAudit.P015.group_pooling_counterexample
+#print axioms AronowAudit.P015.corrected_matrix_pooling
+#print axioms AronowAudit.P015.scalar_pooling_iff_algebra
+#print axioms AronowAudit.P015.leverage_weight_comparison
+#print axioms AronowAudit.P015.unconditional_logistic_misprint
+#print axioms AronowAudit.P015.likelihood_directional_derivative_calculus
+#print axioms AronowAudit.P015.odds_not_mle_calculus
+#print axioms AronowAudit.P015.odds_gram_determinant
+#print axioms AronowAudit.P015.ols_normal_equation
+#print axioms AronowAudit.P015.spending_ols_counterexample
+#print axioms AronowAudit.P015.affine_predictor
+#print axioms AronowAudit.P015.logistic_linearization
+#print axioms AronowAudit.P015.logistic_exact_remainder
+#print axioms AronowAudit.P015.all_degree_taylor_counterexample
+#print axioms AronowAudit.P015.extreme_sigmoid_arithmetic
+#print axioms AronowAudit.P015.conditional_weight_variance
+#print axioms AronowAudit.P015.binary_conditional_variance
+#print axioms AronowAudit.P015.ols_weighted_effect_limit
+#print axioms AronowAudit.P015.partial_regression
+#print axioms AronowAudit.P015.regression_decomposition_algebra
+#print axioms AronowAudit.P015.residual_weight_expansion
+#print axioms AronowAudit.P015.effective_covariate_mean_limit
+#print axioms AronowAudit.P015.randomization_weight_cancels
+#print axioms AronowAudit.P015.randomized_ols_limit
+#print axioms AronowAudit.P015.corrected_probit_score
+#print axioms AronowAudit.P015.positivity_implies_variance
+#print axioms AronowAudit.P015.rare_ols_arithmetic
+#print axioms AronowAudit.P015.common_support_arithmetic
+#print axioms AronowAudit.P015.unconfounded_zero_terms
+#print axioms AronowAudit.P015.finite_variance_zero_iff
+#print axioms AronowAudit.P015.finite_variance_pos_of_atoms
+#print axioms AronowAudit.P015.log99_lower_bound
+#print axioms AronowAudit.P015.restricted_taylor_convergence
+#print axioms AronowAudit.P015.observational_equality_no_two_limits
+#print axioms AronowAudit.P015.root_ols_arithmetic
+#print axioms AronowAudit.P015.zero_sample_ols_arithmetic
+#print axioms AronowAudit.P015.rare_ipw_tail_convergence
+#print axioms AronowAudit.P015.canonical_common_score_calculus
+#print axioms AronowAudit.P015.canonical_named_means
+#print axioms AronowAudit.P015.probit_multiplier_at_half
+#print axioms AronowAudit.P015.root_uniform_is_probability
+#print axioms AronowAudit.P015.root_unit_is_probability
+#print axioms AronowAudit.P015.root_potential_model
+#print axioms AronowAudit.P015.root_score_calculus
+#print axioms AronowAudit.P015.logistic_power_series_radius
+#print axioms AronowAudit.P015.extreme_grouped_data_arithmetic
+#print axioms AronowAudit.P015.group_raw_gls_counterexample
+#print axioms AronowAudit.P015.finite_unconfounded
+#print axioms AronowAudit.P015.finite_chebyshev
+#print axioms AronowAudit.P015.iid_tensor_expectation
+#print axioms AronowAudit.P015.rare_profile_bound
+#print axioms AronowAudit.P015.no_common_consistent_estimator
+#print axioms AronowAudit.P015.zero_sample_link
+#print axioms AronowAudit.P015.odds_model_details
+#print axioms AronowAudit.P015.probit_design_details
+#print axioms AronowAudit.P015.bernoulli_score_derivative
+#print axioms AronowAudit.P015.canonical_score_derivative
+#print axioms AronowAudit.P015.likelihood_directional_derivative
+#print axioms AronowAudit.P015.canonical_common_score
+#print axioms AronowAudit.P015.scalar_pooling_iff
+#print axioms AronowAudit.P015.spending_mean_counterexample
+#print axioms AronowAudit.P015.regression_decomposition
+#print axioms AronowAudit.P015.full_score_firstTaylor
+#print axioms AronowAudit.P015.RareCounterexample_checked
+#print axioms AronowAudit.P015.MultivaluedCounterexample_checked
+#print axioms AronowAudit.P015.FittedZeroCounterexample_checked
+#print axioms AronowAudit.P015.OddsCounterexample_checked
+#print axioms AronowAudit.P015.ProbitCounterexample_checked
+#print axioms AronowAudit.P015.RootLinkCounterexample_checked
+#print axioms AronowAudit.P015.TaylorCounterexample_checked
+#print axioms AronowAudit.P015.PositivityCorrection_checked
+#print axioms AronowAudit.P015.rare_population_ols
+#print axioms AronowAudit.P015.rare_ipw_consistent
+#print axioms AronowAudit.P015.no_common_pair
+#print axioms AronowAudit.P015.fitted_zero_actual_ols
+#print axioms AronowAudit.P015.odds_not_mle
+#print axioms AronowAudit.P015.odds_design_full_rank
+#print axioms AronowAudit.P015.probit_residual_core
+#print axioms AronowAudit.P015.root_link_finite_core
+#print axioms AronowAudit.P015.root_population_core
+#print axioms AronowAudit.P015.root_uniform_probability
+#print axioms AronowAudit.P015.root_unit_probability
+#print axioms AronowAudit.P015.extreme_logistic_values
+#print axioms AronowAudit.P015.extreme_predictor_large
+#print axioms AronowAudit.P015.logistic_radius_zero
+#print axioms AronowAudit.P015.extreme_data_properties
+#print axioms AronowAudit.P015.binary_variance_and_reversal
+#print axioms AronowAudit.P015.finite_zero_variance
+#print axioms AronowAudit.P015.finite_pair_positive_variance
+#print axioms AronowAudit.P015.LogisticModel
+#print axioms AronowAudit.P015.binomial_probability_unique_max
+#print axioms AronowAudit.P015.binomial_logistic_unique_max
+#print axioms AronowAudit.P015.extreme_unique_mle
+#print axioms AronowAudit.P015.combined_predictor
+#print axioms AronowAudit.P015.residual_orthogonal_predictor

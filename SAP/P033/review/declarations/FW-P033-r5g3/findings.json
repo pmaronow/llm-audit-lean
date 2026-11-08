@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P033-T11",
+    "theorem": "SAP.P033.T11",
+    "fingerprint": "7cd63dcb7c118cb5dfd48eabd6d57b0be1a1efbf5aa6c9b0f3ec820b1c4720ad",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean (definitions-only import) constructs beta=1,se=2,s=3; x=6,y=3,zeta=2; v=1/2; and n=2,k=1,y=![0,1], checking binary values, sum=1 and sample variance=1/2. It also checks 2<=568,82<=568 and the exact binary variance 123/994. These realize every local premise family without zero variances or empty samples. The interior normal quantile is positive; scratch/WitnessChecks.py independently verifies its rational enclosure and reciprocal enclosure.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P033-T12",
+    "theorem": "SAP.P033.T12",
+    "fingerprint": "50e3f30923137722affc3298a905ab6dde4fba64d0df8c524238e093434e7fe7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs the measurable identity statistic and a shifted N(0,1) realization of N(theta+b,1), verifies probability measure, sigma-finiteness, finite second moments, measurability of pseudoP, and admissible B=b=1 or 1/2 with alpha=1/5. Independent exact-rational checks in scratch/WitnessChecks.py verify both positive root brackets and all stated rejection-probability enclosures, about 0.23579196727099166 and 0.20414905632771174. Continuity and strict increase of H -> Phi(H-b)-Phi(-H-b), from zero to one, give genuine unique roots; evenness and decrease with positive bias ensure exact worst-case honesty. The witnesses satisfy the canonical affirmative counterexample conditions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P033-T13",
+    "theorem": "SAP.P033.T13",
+    "fingerprint": "b2ca912aa05c12ee98ada4a3b8436c094f91e7f867e3deb1aeb6050fb9e531c3",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs t=2,h=1; B=1,b=-1,alpha=1/5; and B=b=0, together with the same genuine Gaussian null laws, finite moments, measurable pseudoP and measurable biasAwareP. For every B>=0 the bias range contains zero and both boundary biases. The positive unique half-length exists since coverage is continuous and strictly increasing from zero to one. The explicit worst-case tail is continuous, equals one at zero, tends to zero and strictly decreases in nonnegative |t|, so every alpha in (0,1) has a genuine positive cutoff. The B=1 counterexample probability was independently certified with rational intervals.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P033-T14",
+    "theorem": "SAP.P033.T14",
+    "fingerprint": "a632e34f68268d927e14c5f59d726bec343f69ffce6c60b0338e46f4258787cd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean verifies q=49/25>0, L<U and beta<U for both recorded rows, computes the first SEs 1/40 and 1/35 and width-based absolute t=21/4, and checks both pairs of exact adjacent-bin inequalities. Every denominator is strictly positive on the recorded witnesses. All checks use definitions only.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P033-T15",
+    "theorem": "SAP.P033.T15",
+    "fingerprint": "300f3bc9bcf7d79cce09fc29253bf95f84ffbe4cf52b136a2c0e6dc44f8a2804",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean constructs beta=1,L=-5,U=7,q=2,s=3, satisfying L<U,q>0,s>0,L=beta-q*s,U=beta+q*s and checking both reconstructed SEs equal 3. The quantile branch is nonempty at alpha=1/20: Q(1-alpha/2)=Q(39/40)=z>0, whose exact rational positive enclosure is independently checked by scratch/WitnessChecks.py. The recorded-row widths and SEs are checked as for T14. beta=U is also tested to confirm that a zero upper-endpoint reconstruction is never divided by in the generic comparison clause.",
+    "confidence": "high"
+  }
+]

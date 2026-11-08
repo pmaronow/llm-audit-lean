@@ -1,6 +1,7 @@
 import AronowAudit.P053.P053_Completion
 
-/-! SRS moment consistency under bounded-fourth-moment regularity.
+/-! Discharging the SRS moment-consistency premise from the original bounded
+fourth-moment regularity. The imported sampling theorem is proved, not assumed.
 -/
 
 namespace AronowAudit.P053
@@ -65,8 +66,8 @@ theorem max_deviation_fourth_bound {U : Type*} [Fintype U] [Nonempty U]
     _ ≤ 16*(B*(Fintype.card U : ℝ)) := mul_le_mul_of_nonneg_left hMfourth (by norm_num)
     _ = _ := by ring
 
-/-- The maximal centered squared deviation divided by sample size tends to zero
-under bounded fourth moments, growing populations, and a nonzero limiting sampling fraction. -/
+/-- Vanishing maximal centered square from bounded fourth moments and a
+positive limiting sampling fraction. -/
 theorem maximal_square_rate {U : ℕ → Type*} [∀ k, Fintype (U k)]
     [∀ k, Nonempty (U k)] (y : ∀ k, U k → ℝ) (n : ℕ → ℕ)
     (hn : ∀ k, 0 < n k) (hnN : ∀ k, n k ≤ Fintype.card (U k))
@@ -118,8 +119,8 @@ theorem sample_size_diverges (N n : ℕ → ℕ) (q : ℝ) (hq : 0 < q)
   field_simp
 
 
-/-- Arm sample-variance consistency under bounded-fourth-moment regularity
-when both arm sizes are at least two at every index. -/
+/-- The actual proved SRS variance LLN specialized to this audit's original
+regularity, first on a tail where both arm sizes are at least two. -/
 theorem arm_variance_limits_all_sizes (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
     (h : Regularity E p v1 v0 vt τ)
     (hsize : ∀ k, 2 ≤ (E k).n1 ∧ 2 ≤ (E k).n0) :
@@ -177,7 +178,7 @@ theorem arm_variance_limits_all_sizes (E : ℕ → Population) (p v1 v0 vt τ : 
       CausalBridge.sampleVariance_eq] using hc) hvar0
   simpa only [treated_variance_observed, control_variance_observed] using And.intro ht' hc'
 
-/-- Regularity is preserved when an arbitrary finite prefix is removed. -/
+/-- Regularity is unchanged by removing an arbitrary finite prefix. -/
 theorem regularity_shift (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
     (h : Regularity E p v1 v0 vt τ) (K : ℕ) :
     Regularity (fun k => E (k+K)) p v1 v0 vt τ := by
@@ -189,7 +190,7 @@ theorem regularity_shift (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
   obtain ⟨B,hB,hfourth⟩ := h.fourth_moments
   exact ⟨B,hB,fun k => hfourth (k+K)⟩
 
-/-- Complete arm sample-variance consistency under bounded-fourth-moment regularity;
+/-- Complete arm sample-variance consistency from the original hypotheses;
 initial populations with small arms are allowed. -/
 theorem arm_variance_limits (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
     (h : Regularity E p v1 v0 vt τ) :
@@ -205,7 +206,7 @@ theorem arm_variance_limits (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
     exact (tendsto_add_atTop_iff_nat K).mp (hs.2 ε hε)
 
 /-- Chebyshev consistency of the actual difference in means, using its
-exact finite variance and unbiasedness. -/
+already proved exact finite variance and unbiasedness. -/
 theorem estimate_limit (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
     (h : Regularity E p v1 v0 vt τ) :
     InProbability E (fun k z => estimate (E k) z) τ := by
@@ -225,7 +226,8 @@ theorem estimate_limit (E : ℕ → Population) (p v1 v0 vt τ : ℝ)
 
 end MomentCompletion
 
-/-- The finite-population sampling theorem implies the moment LLN. -/
+/-- The moment LLN used by the completion theorems is discharged by a proved
+finite-population sampling theorem, not by an additional assumption. -/
 theorem finitePopulationMomentLLN : FinitePopulationMomentLLN := by
   intro E p v1 v0 vt τ h
   exact ⟨(MomentCompletion.arm_variance_limits E p v1 v0 vt τ h).1,
@@ -233,7 +235,8 @@ theorem finitePopulationMomentLLN : FinitePopulationMomentLLN := by
     MomentCompletion.estimate_limit E p v1 v0 vt τ h⟩
 
 /-- T5(a)–(c) and their probability-limit consequences: all three unnumbered
-variance expansions of Section 2, p. 347, under the full `Regularity` assumptions. -/
+variance expansions of Section 2, p. 347, under the full S5 regularity.
+No consistency or sampling-limit conclusion has been inserted as a hypothesis. -/
 theorem fisher_ols_asymptotics (E : ℕ → Population) (p v1 v0 vt tauInf : ℝ)
     (h : Regularity E p v1 v0 vt tauInf) :
     LittleOInvSize E (fun k z => fisherVariance (E k) z -
@@ -331,8 +334,8 @@ theorem constant_effect_limit_agreement (E : ℕ → Population) (p v1 v0 vt tau
 
 /-- T8(c), p. 348: existence of regular heterogeneous Neyman-null populations
 whose limiting actual variance (81/4) exceeds the OLS probability limit (10).
-The conclusion concerns variances and does not assert a normal-approximation
-rejection rate. -/
+This is a variance assertion, with no unproved numerical normal-approximation
+rejection rate included. -/
 theorem anticonservative_limit_exists :
     Regularity heterogeneousWitness (1/5) 4 1 1 0 ∧
     (∀ k, averageEffect (heterogeneousWitness k) = 0) ∧
@@ -347,3 +350,19 @@ theorem anticonservative_limit_exists :
 end
 end AronowAudit.P053
 
+#print axioms AronowAudit.P053.MomentCompletion.max_deviation_fourth_bound
+
+#print axioms AronowAudit.P053.MomentCompletion.maximal_square_rate
+#print axioms AronowAudit.P053.MomentCompletion.sample_size_diverges
+#print axioms AronowAudit.P053.MomentCompletion.arm_variance_limits_all_sizes
+#print axioms AronowAudit.P053.MomentCompletion.arm_variance_limits
+#print axioms AronowAudit.P053.MomentCompletion.estimate_limit
+#print axioms AronowAudit.P053.finitePopulationMomentLLN
+#print axioms AronowAudit.P053.fisher_ols_asymptotics
+#print axioms AronowAudit.P053.local_alternative_equivalence
+#print axioms AronowAudit.P053.constant_effect_asymptotics
+#print axioms AronowAudit.P053.wald_comparison_asymptotics
+#print axioms AronowAudit.P053.fisher_neyman_local_comparison
+#print axioms AronowAudit.P053.neyman_asymptotic_bound
+#print axioms AronowAudit.P053.constant_effect_limit_agreement
+#print axioms AronowAudit.P053.anticonservative_limit_exists

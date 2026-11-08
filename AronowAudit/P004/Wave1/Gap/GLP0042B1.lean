@@ -411,6 +411,20 @@ lemma T2_mle_second {k : ℕ} (O : ∀ N, Fin N → Fin k → ℝ)
       rw [← mul_div_assoc]
       exact div_le_div_of_nonneg_right (by ring_nf; linarith) (Nat.cast_nonneg N)
 
+lemma T2_mle_rate {k : ℕ} (O : ∀ N, Fin N → Fin k → ℝ)
+    (θ₀ : Fin k → ℝ) (Θ : Set (Fin k → ℝ))
+    (θhat : ∀ N, Assignment N → Fin k → ℝ)
+    (hlog : LogisticConditions O θ₀ Θ θhat) :
+    let p := fun N => propensities (O N) θ₀
+    InProb p (fun N z => ‖θhat N z-θ₀‖) ∧
+      BigOp p (fun N z => ‖θhat N z-θ₀‖) (fun N => (Real.sqrt N)⁻¹) := by
+  let p := fun N => propensities (O N) θ₀
+  have hp (N : ℕ) (i : Fin N) : 0 < p N i ∧ p N i < 1 :=
+    ⟨T2_logistic_pos _, T2_logistic_lt_one _⟩
+  obtain ⟨K, hK, hmoment⟩ := T2_mle_second O θ₀ Θ θhat hlog hp
+  have hrate := T2_bigop_of_second p hp (fun N z => ‖θhat N z-θ₀‖) K hK hmoment
+  refine ⟨T2_inprob_of_bigop p hp _ _ ?_ hrate, hrate⟩
+  exact tendsto_inv_atTop_zero.comp (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop)
 
 lemma T2_logistic_lipschitz (x y : ℝ) : |logistic y-logistic x| ≤ |y-x| := by
   have h := convex_univ.norm_image_sub_le_of_norm_hasDerivWithin_le
@@ -742,6 +756,42 @@ lemma T2_bigop_quadratic_good (p : ∀ N, Fin N → ℝ)
         prob (p N) (fun z => C*(N : ℝ)⁻¹ < A*(U N z)^2) := T2_prob_union _ (hp N) _ _
     _ < ε := by linarith
 
+lemma T2_mle_expansion {k : ℕ} (O : ∀ N, Fin N → Fin k → ℝ)
+    (θ₀ : Fin k → ℝ) (Θ : Set (Fin k → ℝ))
+    (θhat : ∀ N, Assignment N → Fin k → ℝ)
+    (hlog : LogisticConditions O θ₀ Θ θhat) (hinterior : θ₀ ∈ interior Θ)
+    (hoverlap : Overlap (fun N => propensities (O N) θ₀)) :
+    let p := fun N => propensities (O N) θ₀
+    BigOp p (fun N z => ‖θhat N z-θ₀-(information (p N) (O N))⁻¹ *ᵥ
+      logisticScore (p N) (O N) z‖) (fun N => (N : ℝ)⁻¹) := by
+  let p := fun N => propensities (O N) θ₀
+  have hp (N : ℕ) (i : Fin N) : 0 < p N i ∧ p N i < 1 :=
+    ⟨T2_logistic_pos _, T2_logistic_lt_one _⟩
+  obtain ⟨ε, hε, hε1, hπ⟩ := hoverlap
+  obtain ⟨U, hO⟩ := hlog.2.2.1
+  obtain ⟨c, hc, hgram⟩ := hlog.2.2.2.1
+  let U' := max U 0
+  let A := ((k : ℝ)/(ε^2*c))*(((k : ℝ)*U')^2*U')
+  have hA : 0 ≤ A := by dsimp [A, U']; positivity
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp (isOpen_interior.mem_nhds hinterior)
+  obtain ⟨K, hK, hmoment⟩ := T2_mle_second O θ₀ Θ θhat hlog hp
+  apply T2_bigop_quadratic_good p hp (fun N z => ‖θhat N z-θ₀‖) _ K A (r/2)
+    hK hA (by positivity) (T2_mle_rate O θ₀ Θ θhat hlog).1 hmoment
+  filter_upwards [hgram, eventually_gt_atTop 0] with N hg hN z hz
+  rw [abs_of_nonneg (norm_nonneg _)] at hz ⊢
+  have hθ : θhat N z ∈ interior Θ := by
+    apply hball
+    rw [Metric.mem_ball, dist_eq_norm]
+    have hz' : ‖θhat N z-θ₀‖ ≤ r/2 := by simpa only [abs_of_nonneg (norm_nonneg _)] using hz
+    linarith
+  have hscore := T2_interior_score (O N) z Θ (θhat N z) hθ (hlog.2.2.2.2 N z).2
+  apply T2_mle_remainder_bound (O N) θ₀ (θhat N z) z (ε^2) c U'
+    (sq_pos_of_pos hε) hc (le_max_right _ _) hN
+    (fun i j => (hO N i j).trans (le_max_left _ _)) _ hg hscore
+  intro i
+  have hp0 := (hπ N i).1.le
+  have hp1 : ε ≤ 1-p N i := by linarith [(hπ N i).2]
+  simpa only [pow_two] using mul_le_mul hp0 hp1 hε.le (hp N i).1.le
 
 lemma T2_local_depends {N : ℕ} (R : CircleTable N)
     (f : Fin N → Bool → ℝ → ℝ) (i : Fin N) :
@@ -2782,6 +2832,8 @@ theorem corrected_ipw_asymptotics_proof {k : ℕ} (P : PopulationSequence Space)
   intro hv
   exact ⟨T2_fitted_normal P O θ₀ Θ θhat d h hh hP hWD hloc hlog hinterior hoverlap hv,
     T2_fitted_intervals P O θ₀ Θ θhat d h hh hP hWD hloc hlog hinterior hoverlap hv⟩
+
+example : type_of% @AronowAudit.P004.corrected_ipw_asymptotics := corrected_ipw_asymptotics_proof
 
 end
 end AronowAudit.P004.Wave1

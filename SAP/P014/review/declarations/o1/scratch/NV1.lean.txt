@@ -1,0 +1,33 @@
+import SAP.P014.Challenge
+open SAP.P014 MeasureTheory
+open scoped ENNReal
+
+noncomputable def μB : Measure Bool := (1/2 : ℝ≥0∞) • (Measure.dirac true + Measure.dirac false)
+
+instance : IsProbabilityMeasure μB := ⟨by
+  simp [μB]
+  exact ENNReal.inv_two_add_inv_two⟩
+
+open Classical in
+lemma μB_apply (s : Set Bool) : μB s =
+    (1/2 : ℝ≥0∞) * ((if true ∈ s then 1 else 0) + (if false ∈ s then 1 else 0)) := by
+  simp only [μB, Measure.smul_apply, Measure.add_apply, smul_eq_mul]
+  rw [Measure.dirac_apply' _ (by measurability), Measure.dirac_apply' _ (by measurability)]
+  simp [Set.indicator]
+
+def ZB : Bool → TreatmentVector 2 := fun ω => ![ω, !ω]
+
+lemma ZB_meas : Measurable ZB := measurable_of_countable _
+
+lemma ZB_count : ∀ᵐ ω ∂μB, armSize (Finset.univ : Finset (Fin 2)) (ZB ω) true = ((1:ℕ):ℝ) := by
+  refine Filter.Eventually.of_forall (fun ω => ?_)
+  cases ω <;> simp [armSize, ZB] <;> decide
+
+lemma ZB_prop : ∀ i ∈ (Finset.univ : Finset (Fin 2)),
+    eventProbability μB (fun ω => ZB ω i = true) = ((1:ℕ):ℝ) / (Finset.univ : Finset (Fin 2)).card := by
+  intro i _
+  fin_cases i <;> simp [eventProbability, μB_apply, ZB, ENNReal.toReal_inv]
+
+-- nonvacuity of T2AssignmentWholePart: all hypotheses discharged, conclusion obtained
+example (y : PotentialOutcomes 2) : WeightedIdentity μB ZB Finset.univ y 1 :=
+  SAP.P014.T2.{0}.1 μB ZB ZB_meas Finset.univ y 1 (by norm_num) (by simp) ZB_count ZB_prop

@@ -736,7 +736,7 @@ lemma GP005B1b_remainder_first {n d s : ℕ} (P : Population n d)
         expectation s (fun S => |C S-expectation s C|) := by rw [t4_expectation_add, t4_expectation_add]
     _ ≤ _ := by dsimp only [r] at *; nlinarith only [hqa, hta, hca]
 
-/-- The arm remainder has stochastic order √(κ/n) on the varying finite randomization spaces. -/
+/-- Exact held contract, on the original changing finite randomization spaces. -/
 theorem corrected_arm_debiased_order_proof (d m : ℕ → ℕ)
     (P : (n : ℕ) → Population n (d n)) (h : standingAssumptions d m P) (t : Arm) :
     stochasticO m (fun n S =>
@@ -818,6 +818,8 @@ theorem corrected_arm_debiased_order_proof (d m : ℕ → ℕ)
     _ < ε := (div_lt_iff₀ (mul_pos hM hr)).mpr (by
       have hh := mul_lt_mul_of_pos_right hBM hr
       nlinarith only [hh])
+
+example : type_of% @AronowAudit.P005.corrected_arm_debiased_order := corrected_arm_debiased_order_proof
 
 end
 end AronowAudit.P005.Wave1

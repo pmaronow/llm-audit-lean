@@ -1,11 +1,3 @@
-/-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
-Local clarification: the MGF condition implies Gaussian-type exponential bounds for centered
-tails. Conversely, Gaussian-type exponential tail bounds imply a sub-Gaussian MGF bound with
-suitable constants; this does not mean pointwise tail domination by a Gaussian with the same
-variance proxy.
--/
-
 import Mathlib.Probability.Moments.SubGaussian
 
 /-!
@@ -24,15 +16,20 @@ maximal inequalities are all derived from this single MGF condition.
 
 **Reference.** Junwei Lu, *Big Data Analysis*, Springer Nature Switzerland, 2025
 (ISBN 978-3-032-03160-0), Chapter 4 (Concentration Inequalities), §4.2,
-Definition 4.1 (Sub-Gaussian). The definition uses a centered MGF with variance proxy $\sigma^2$.
+Definition 4.1 (Sub-Gaussian). The Lean statement matches the book's
+centered-MGF definition with variance proxy $\sigma^2$.
 
-**Mathematical convention.** Mathlib's `ProbabilityTheory.HasSubgaussianMGF` can be
-applied to the **centered** variable $X - \mathbb{E}[X]$. Mathlib's predicate bounds the *raw* MGF
+**Proof formalization notes.** We formalize `IsSubGaussian` as a thin bridge to
+Mathlib's `ProbabilityTheory.HasSubgaussianMGF` applied to the **centered**
+variable $X - \mathbb{E}[X]$. Mathlib's predicate bounds the *raw* MGF
 (`mgf X μ t ≤ exp (c t²/2)`, via `cgf_le`); centering by the Bochner mean
 $\int X \, d\mu$ recovers the textbook form and immediately inherits the Mathlib
 MGF / Chernoff / Hoeffding / Azuma toolkit. Edge behavior: for non-integrable
 $X$ the Bochner integral is Mathlib's junk value $0$, so the definition reduces
-to the un-centered Mathlib predicate.
+to the un-centered Mathlib predicate. `isSubGaussian_iff` records that
+`IsSubGaussian` is definitionally this centered `HasSubgaussianMGF`. The
+textbook theorems (Markov, Chernoff, tails, Hoeffding, …) live in sibling files
+and consume `IsSubGaussian`; concept files never import assembly files.
 
 **Bibliographic comments.** The notion of a sub-Gaussian random variable is
 classical folklore with no single seminal origin. The terminology and the
@@ -53,5 +50,22 @@ namespace StatLean.ConcentrationInequalities
 
 variable {Ω : Type*} {mΩ : MeasurableSpace Ω}
 
+/-- `IsSubGaussian X σ2 μ`: the random variable `X` is sub-Gaussian with variance
+proxy `σ2` under the measure `μ`, i.e. its centered moment generating function
+satisfies `E[exp(λ (X − E[X]))] ≤ exp(λ² σ2 / 2)` for every `λ ∈ ℝ`
+(Lu-BDA §4.2, Definition 4.1 (Sub-Gaussian)).
+
+Implemented as `ProbabilityTheory.HasSubgaussianMGF` of the centered variable
+`fun ω => X ω − ∫ x, X x ∂μ`. The mean `∫ x, X x ∂μ` is the Bochner integral of
+`X`; for non-integrable `X` it is `0` (Mathlib's junk value), in which case this
+reduces to the un-centered Mathlib predicate. -/
+def IsSubGaussian (X : Ω → ℝ) (σ2 : ℝ≥0) (μ : Measure Ω := by volume_tac) : Prop :=
+  HasSubgaussianMGF (fun ω => X ω - ∫ x, X x ∂μ) σ2 μ
+
+/-- Unfolding lemma: `IsSubGaussian` is definitionally the centered
+`HasSubgaussianMGF`. -/
+theorem isSubGaussian_iff {X : Ω → ℝ} {σ2 : ℝ≥0} {μ : Measure Ω} :
+    IsSubGaussian X σ2 μ ↔ HasSubgaussianMGF (fun ω => X ω - ∫ x, X x ∂μ) σ2 μ :=
+  Iff.rfl
 
 end StatLean.ConcentrationInequalities

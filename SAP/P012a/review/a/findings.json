@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P012-T1",
+    "theorem": "SAP.P012a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All four are unconditional finite witnesses, independently evaluated in scratch/audit_checks.py. (a) proposalData/proposalStart has sampled degrees (2,1), h=-1/3 and p=-1/2; its two fresh-trait outputs contain an unsampled-unsampled edge and fail compatibility. (b) proposalDataB/proposalStartB has sampled degrees (1,3,1) and the analogous two incompatible outputs. (c) cleanupData/cleanupStart has sampled degrees (1,1,0), h=-1 and p=0, and false cleanup removes sampled seed 3. (d) emptyPoolData with dyad false true has degrees (1,1), h=-1, p=0, and no unsampled vertex. Admissibility and compatibility of (a) are also compiled in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P012-T2",
+    "theorem": "SAP.P012a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled instances in scratch/Check.lean establish Admissible proposalData, Compatible proposalData proposalStart, and Proposal proposalData true proposalStart (flipTrait proposalStart (u 3 0)). Thus the quantified execution premises are jointly satisfied by an actual trait move; the relation is not empty. The graph branches also admit the concrete edge-replacement examples described by the definitions.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P012-T3",
+    "theorem": "SAP.P012a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Explicit large-count fixture checked with exact arithmetic in scratch/audit_checks.py: sampled indices 0..526, seeds 0..5, time(i)=i, and parent(j)=0 for j=6..526. The recruitment graph has 521 star edges and five isolated seeds. Report d_0=3966, d_j=1 for j=6..526, and zero at seeds 1..5; all sampled traits are false. Then sum d=4487, total spare=3445, and the opposite-trait leaf completion is compatible with 3972 vertices, 3966 edges, h=-3445/4487 and positive denominator 15457715/7932. No fixed population-size assumption is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T4",
+    "theorem": "SAP.P012a.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The first implication uses the T3 star fixture, with attained GLB L=-3445/4487. The rounded-limit converse has its own satisfiable fixture: six seeds 0..5; 260 true-trait children of true seed 0 (indices 6..265), 261 false-trait children of false seed 1 (indices 266..526), and four isolated seeds. Add 2984 to the reported degree of seed 0, so the reported degree sum is 4026. Recruitment counts are (a,b,c)=(260,261,0). Edge-count bounds and monotonicity give attained GLB L=phi(260,261,2984)=-539551/767814, whose distance from -0.7027 is 40511/3839070000 < 1/20000. A nomination state with the same forest and 3445 private leaves at seed 0 has sampled-degree total 4487. All counts, compatibility of the attaining state, and the rounding inequality were checked by exact arithmetic in scratch/audit_checks.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T5",
+    "theorem": "SAP.P012a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both arms of the regularity disjunction occur: a2Data has total spare 1, all sampled traits true, and a compatible opposite-trait leaf state with h=-1/5. emptyPoolData has zero spare, one mixed recruitment edge, and 2a+c=2b+c=1; its dyad has h=-1. For the specialization, the T3 star fixture has the prescribed 527, 6 and 4487 totals. The positive-spare regularity condition is also compiled for proposalData in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T6",
+    "theorem": "SAP.P012a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "proposalData is admissible with sampled false-trait degree sum 2 and true-trait degree sum 1; all three facts are compiled in scratch/Check.lean. Its opposite- and same-trait private-leaf completions attain h=-1 and h=-1/3, respectively, so this is a nonempty, nontrivial region. Independent small-state exhaustion checks the full homophily endpoint claim on 608 data sets satisfying the two positive sampled-trait degree conditions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T7",
+    "theorem": "SAP.P012a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "proposalData has two samples, one seed, and one nonseed recruited by sampled vertex 1 with spare degree 1. The one-child susceptible set and private-leaf completions attain p=-1/2 and p=0. The sample/seed inequality is compiled in scratch/Check.lean. Independent small-state exhaustion checks the sharp preferential endpoints on 840 data sets with at least one recruitment.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T8",
+    "theorem": "SAP.P012a.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The proposition is closed. For proofStepData, recruitment degrees are (1,2,1), reported degrees (3,2,3), and times (1,2,3). result1BadStart is compatible, with five edges including {s 1,s 3}; its prescribed output is the sampled triangle, of degrees (2,2,2), hence incompatible. Both sampled induced edge sets are that triangle. These graph calculations are independently checked in scratch/audit_checks.py, and all Result 1 data/pair premises are compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T9",
+    "theorem": "SAP.P012a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The proposition is closed. The same admissible data have compatible result2BadStart with degree vector (3,2,3,2,2), both cross edges already present and six edges. The prescribed output has degree vector (2,2,2,1,1) and four edges, so it is incompatible. Exact checks in scratch/audit_checks.py verify the graph arithmetic; the homophily denominators, although not part of this restricted target, are 35/12 and 15/8.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T10",
+    "theorem": "SAP.P012a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "proofStepData with i=1, j=3 satisfies every premise; this conjunction is compiled in scratch/Check.lean. A direct witness H consists of the path 1-2-3, one unsampled common neighbor w of 1 and 3, and one additional private leaf at each of 1 and 3. Its sampled degrees are (3,2,3). Removing both edges at w, deleting isolated w, and adding {1,3} gives compatible K with the same sampled degrees. The induced graphs are exactly the recruitment path and the triangle. Assign observed traits on the samples and any traits on these three unsampled vertices.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T11",
+    "theorem": "SAP.P012a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The exact two-sample instance in the theorem is admissible: seed 1 recruits 2, both reported degrees are 2, their traits are 0 and 1, and each has one private leaf of its own trait. The degree-preserving swap gives h=1/3 and h=-1 with denominator 3/2 at both states. These quantities and both compatibilities are independently checked in scratch/audit_checks.py. An opposite-trait positive-spare pair satisfying all general premises is additionally compiled using proofStepData in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P012-T12",
+    "theorem": "SAP.P012a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed a2Data star has seed 1 recruiting both 2 and 3, with degrees (3,1,1), sampled traits all true, and a private unsampled leaf at 1. Flipping that leaf changes p from 0 to 5/12. Susceptible counts are 3 and 2, nonseed count is 2, and the two printed RHS values are -1/6 and -1/4. Admissibility, definedness of p at both states, and both full p values are compiled in scratch/Check.lean and independently evaluated in scratch/audit_checks.py. The all-true state has undefined h, which is irrelevant to the target concerning p.",
+    "confidence": 0.99
+  }
+]

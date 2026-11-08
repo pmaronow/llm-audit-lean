@@ -14,7 +14,7 @@ import AronowAudit.P002.Wave1.E61Eigenvalue.N11
 import Mathlib.Topology.Order.Monotone
 
 /-!
-Finite algebra and order-theoretic statements for the limit-superior correction of
+Finite algebra and order-theoretic contracts for the limit-superior repair of
 P002-T21. All probabilities below use the actual finite assignment law.
 -/
 
@@ -160,8 +160,7 @@ theorem RepairT21_population_gram_det {n k} (P : CovPopulation n k)
   RepairT21_det_ne_zero_of_coercive _ (min 1 e) (lt_min zero_lt_one he)
     (RepairT21_population_gram_coercive P δ e A B r hP)
 
-/-- P002's real-valued cutoff, defined using an ENNReal CDF comparison, agrees
-with the real CDF quantile. -/
+/-- P002's ENNReal-valued cutoff definition agrees with the real CDF quantile. -/
 theorem RepairT21_normalCritical_eq (α : ℝ) :
     normalCritical α = AronowAudit.P053.normalCritical α := by
   unfold normalCritical AronowAudit.P053.normalCritical
@@ -257,6 +256,12 @@ theorem RepairT21_residual_mean_zero {n k} (P : CovPopulation n k)
   simpa only [score, groupMean, augmented, one_mul, Finset.card_univ,
     Fintype.card_fin, mean, Pi.zero_apply] using h
 
+theorem RepairT21_residual_orthogonal {n k} (P : CovPopulation n k)
+    (δ e A B r : ℝ) (he : 0 < e) (hP : Xi P δ e A B r) (a : Bool) (s : Fin k) :
+    mean (fun i => P.x i s * residual P a (late P.pop) i) = 0 := by
+  have h := congrFun (RepairT21_population_score_zero P δ e A B r he hP a) (some s)
+  simpa only [score, groupMean, augmented, Finset.card_univ,
+    Fintype.card_fin, mean, Pi.zero_apply] using h
 
 theorem RepairT21_eq_zero_of_popVar_zero {n} (hn : 2 ≤ n) (q : Fin n → ℝ)
     (hm : mean q = 0) (hv : popVar q = 0) : ∀ i, q i = 0 := by
@@ -496,7 +501,7 @@ theorem RepairT21_rank_failure_tendsto_zero (sizes : ℕ → ℕ) (hsizes : Stri
   congr 3
   ring
 
-/-- The separate all-zero-scale tail bound; no normal approximation is used. -/
+/-- The separate all-zero-scale tail contract; no normal approximation is used. -/
 theorem RepairT21_zero_scale_tail_tendsto_zero
     (sizes : ℕ → ℕ) (hsizes : StrictMono sizes) (k : ℕ)
     (P : ∀ j, CovPopulation (sizes j) k) (δ e A B r : ℝ)
@@ -663,6 +668,10 @@ theorem RepairT21_expectation_congr {n} (P : Population n)
   unfold expectation
   rw [Finset.sum_congr rfl h]
 
+theorem RepairT21_expectation_mono {n} (P : Population n)
+    {f g : Finset (Fin n) → ℝ} (h : ∀ S ∈ assignments P, f S ≤ g S) :
+    expectation P f ≤ expectation P g := by
+  exact div_le_div_of_nonneg_right (Finset.sum_le_sum h) (Nat.cast_nonneg _)
 
 theorem RepairT21_expectation_sum {n} (P : Population n) {ι : Type*} [Fintype ι]
     (f : ι → Finset (Fin n) → ℝ) :
@@ -846,7 +855,7 @@ def RepairT21_gramErrorSq {n k} (P : CovPopulation n k) (S : Finset (Fin n)) (a 
   ∑ s : Option (Fin k), ∑ t : Option (Fin k),
     (gram P.x (if a then S else Sᶜ) s t - gram P.x Finset.univ s t) ^ 2
 
-/-- An explicit Frobenius mean-square bound for each arm. -/
+/-- The referee's explicit Frobenius mean-square contract for each arm. -/
 theorem RepairT21_gramErrorSq_expectation_le {n k} (P : CovPopulation n k)
     (δ e A B r : ℝ) (hr : 0 < r) (hP : Xi P δ e A B r) (a : Bool) :
     expectation P.pop (fun S => RepairT21_gramErrorSq P S a) ≤
@@ -1135,7 +1144,7 @@ theorem RepairT21_gramGood_of_frobenius {n k} (P : CovPopulation n k)
   change Real.sqrt (RepairT21_gramErrorSq P S a) * normSq b ≤ _ at hbound
   linarith [(abs_le.mp hq).1]
 
-/-- The exact finite rank/coercivity failure constant. -/
+/-- The exact finite rank/coercivity failure constant requested by referee 1. -/
 theorem RepairT21_gramGood_failure_le {n k} (P : CovPopulation n k)
     (δ e A B r : ℝ) (he : 0 < e) (hr : 0 < r) (hP : Xi P δ e A B r) :
     probability P.pop (fun S => ¬ RepairT21_gramGood P e S) ≤
@@ -1810,7 +1819,7 @@ theorem RepairT21_q_maximum_ratio_tendsto_zero
   convert RepairT21_q_maximum_ratio_le (P j) δ e A B r hk hδ he hA hB hr (hP j) (hpos j) using 1
   field_simp <;> ring
 
-/-- The finite-population CLT hypothesis, with all its quantifiers. -/
+/-- The one external input in the approved statement, with all its quantifiers. -/
 def RepairT21_FinitePopulationCLT : Prop :=
   ∀ (sizes : ℕ → ℕ), StrictMono sizes →
   ∀ (D : ∀ j, Population (sizes j)) (q : ∀ j, Fin (sizes j) → ℝ),
@@ -1842,7 +1851,7 @@ theorem RepairT21_oracle_standardized {n k} (P : CovPopulation n k)
     RepairT21_q_mean_zero P δ e A B r he hP, sub_zero, hroot]
   field_simp [hs.2.1.ne']
 
-/-- The oracle CDF converges under the generic finite-population CLT hypothesis. -/
+/-- The oracle CDF contract uses exactly the approved generic CLT input. -/
 theorem RepairT21_oracle_cdf_tendsto
     (hFinitePopulationCLT : RepairT21_FinitePopulationCLT)
     (sizes : ℕ → ℕ) (hsizes : StrictMono sizes) (k : ℕ)
@@ -2152,6 +2161,152 @@ theorem corrected_theorem7_limsup_of_finitePopulationCLT
     exact h.mono_left nhdsWithin_le_nhds
   exact ⟨u, hu, le_of_tendsto_of_tendsto hu htail hlocal⟩
 
+theorem RepairT21_probability_or_eq_of_disjoint {n} (P : Population n)
+    (E F : Finset (Fin n) → Prop) (h : ∀ S ∈ assignments P, ¬ (E S ∧ F S)) :
+    probability P (fun S => E S ∨ F S) = probability P E + probability P F := by
+  have hd : Disjoint ((assignments P).filter E) ((assignments P).filter F) := by
+    apply Finset.disjoint_left.mpr
+    intro S hE hF
+    exact h S (Finset.mem_filter.mp hE).1
+      ⟨(Finset.mem_filter.mp hE).2, (Finset.mem_filter.mp hF).2⟩
+  unfold probability
+  rw [← add_div]
+  congr 1
+  calc
+    _ = (((assignments P).filter E ∪ (assignments P).filter F).card : ℝ) := by
+      apply congrArg (fun T : Finset (Finset (Fin n)) => (T.card : ℝ))
+      ext S
+      simp only [Finset.mem_filter, Finset.mem_union]
+      tauto
+    _ = _ := by rw [Finset.card_union_of_disjoint hd, Nat.cast_add]
+
+theorem RepairT21_abs_tail_ge_cdf {n} (P : Population n) (hD : ValidDesign P)
+    (X : Finset (Fin n) → ℝ) (t ε : ℝ) (ht : 0 < t) (hε : 0 < ε) :
+    probability P (fun S => X S ≤ -t - ε) + 1 - probability P (fun S => X S ≤ t) ≤
+      probability P (fun S => |X S| > t) := by
+  have hd : ∀ S ∈ assignments P, ¬ (X S ≤ -t - ε ∧ ¬ X S ≤ t) := by
+    intro S hS h
+    have hx : t < X S := lt_of_not_ge h.2
+    linarith [h.1]
+  calc
+    _ = probability P (fun S => X S ≤ -t - ε ∨ ¬ X S ≤ t) := by
+      rw [RepairT21_probability_or_eq_of_disjoint P _ _ hd, RepairT21_probability_not P hD]
+      ring
+    _ ≤ _ := by
+      apply RepairT21_probability_mono
+      intro S hS h
+      rcases h with h | h
+      · exact lt_abs.mpr (Or.inr (by linarith))
+      · exact lt_abs.mpr (Or.inl (lt_of_not_ge h))
+
+theorem RepairT21_normalTail_cdf_formula (t : ℝ) (ht : 0 < t) :
+    normalTail t = (ProbabilityTheory.gaussianReal 0 1 (Set.Iic (-t))).toReal + 1 -
+      (ProbabilityTheory.gaussianReal 0 1 (Set.Iic t)).toReal := by
+  have hn := AronowAudit.P053.NormalCompletion.normal_cdf_neg t
+  simp only [ProbabilityTheory.cdf_eq_real, measureReal_def] at hn
+  rw [RepairT21_normalTail_formula t ht, ProbabilityTheory.cdf_eq_real, measureReal_def]
+  linarith
+
+/-- CDF convergence to the continuous Gaussian law gives the strict absolute-tail limit. -/
+theorem RepairT21_abs_tail_tendsto_of_cdf
+    (sizes : ℕ → ℕ) (P : ∀ j, Population (sizes j))
+    (hP : ∀ j, ValidDesign (P j)) (X : ∀ j, Finset (Fin (sizes j)) → ℝ)
+    (hcdf : ∀ x : ℝ, Tendsto (fun j => probability (P j) (fun S => X j S ≤ x))
+      atTop (nhds ((ProbabilityTheory.gaussianReal 0 1 (Set.Iic x)).toReal)))
+    (t : ℝ) (ht : 0 < t) :
+    Tendsto (fun j => probability (P j) (fun S => |X j S| > t)) atTop (nhds (normalTail t)) := by
+  letI instNullSingletonRepairT21AbsTail : NullSingletonClass (ProbabilityTheory.gaussianReal 0 1) :=
+    ProbabilityTheory.nullSingletonClass_gaussianReal (by norm_num : (1 : NNReal) ≠ 0)
+  let Φ := fun x : ℝ => (ProbabilityTheory.gaussianReal 0 1 (Set.Iic x)).toReal
+  have hnormal : Φ (-t) + 1 - Φ t = normalTail t := (RepairT21_normalTail_cdf_formula t ht).symm
+  have hmajor (ε : ℝ) : Tendsto (fun j => probability (P j) (fun S => X j S ≤ -t - ε) + 1 -
+        probability (P j) (fun S => X j S ≤ t)) atTop (nhds (Φ (-t - ε) + 1 - Φ t)) := by
+    have h1 : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (nhds 1) := tendsto_const_nhds
+    exact ((hcdf (-t - ε)).add h1).sub (hcdf t)
+  apply tendsto_order.mpr
+  constructor
+  · intro l hl
+    have hlinear : Tendsto (fun ε : ℝ => -t - ε) (nhds 0) (nhds (-t)) := by
+      have hc : ContinuousAt (fun ε : ℝ => -t - ε) 0 := by fun_prop
+      simpa only [sub_zero] using hc.tendsto
+    have hPhi : Tendsto (fun ε : ℝ => Φ (-t - ε)) (nhds 0) (nhds (Φ (-t))) := by
+      simpa only [Function.comp_def, Φ, ProbabilityTheory.cdf_eq_real, measureReal_def] using
+        (AronowAudit.P053.NormalCompletion.cdf_continuousAt (ProbabilityTheory.gaussianReal 0 1) (-t)).tendsto.comp hlinear
+    have h1 : Tendsto (fun _ : ℝ => (1 : ℝ)) (nhds 0) (nhds 1) := tendsto_const_nhds
+    have hc : Tendsto (fun _ : ℝ => Φ t) (nhds 0) (nhds (Φ t)) := tendsto_const_nhds
+    have hlow : Tendsto (fun ε : ℝ => Φ (-t - ε) + 1 - Φ t) (nhds 0) (nhds (normalTail t)) := by
+      simpa only [hnormal] using (hPhi.add h1).sub hc
+    have hchoose : ∀ᶠ ε : ℝ in nhdsWithin 0 (Set.Ioi 0), 0 < ε ∧ l < Φ (-t - ε) + 1 - Φ t := by
+      filter_upwards [self_mem_nhdsWithin,
+        (hlow.mono_left nhdsWithin_le_nhds).eventually (eventually_gt_nhds hl)] with ε hε hlt
+      exact ⟨hε, hlt⟩
+    obtain ⟨ε, hε, hlt⟩ := hchoose.exists
+    filter_upwards [(hmajor ε).eventually (eventually_gt_nhds hlt)] with j hj
+    exact hj.trans_le (RepairT21_abs_tail_ge_cdf (P j) (hP j) (X j) t ε ht hε)
+  · intro b hb
+    have hlim : Tendsto (fun j => probability (P j) (fun S => X j S ≤ -t) + 1 -
+        probability (P j) (fun S => X j S ≤ t)) atTop (nhds (normalTail t)) := by
+      simpa only [sub_zero, hnormal] using hmajor 0
+    filter_upwards [hlim.eventually (eventually_lt_nhds hb)] with j hj
+    exact (RepairT21_abs_tail_le_cdf (P j) (hP j) (X j) t).trans_lt hj
+
+theorem RepairT21_oracle_abs_tail_tendsto
+    (hFinitePopulationCLT : RepairT21_FinitePopulationCLT)
+    (sizes : ℕ → ℕ) (hsizes : StrictMono sizes) (k : ℕ)
+    (P : ∀ j, CovPopulation (sizes j) k) (δ e A B r : ℝ)
+    (hk : 0 < k) (hδ : δ < 1) (he : 0 < e) (hA : 0 < A) (hB : 0 < B)
+    (hr : 0 < r ∧ r ≤ 1 / 2) (hP : ∀ j, Xi (P j) δ e A B r)
+    (hpos : ∀ j, 0 < RepairT21_totalScale (P j)) (t : ℝ) (ht : 0 < t) :
+    Tendsto (fun j => probability (P j).pop (fun S =>
+      |oracleTau (P j) (late (P j).pop) S| / Real.sqrt (RepairT21_V (P j)) > t))
+      atTop (nhds (normalTail t)) := by
+  have h := RepairT21_abs_tail_tendsto_of_cdf sizes (fun j => (P j).pop) (fun j => (hP j).1)
+    (fun j S => oracleTau (P j) (late (P j).pop) S / Real.sqrt (RepairT21_V (P j)))
+    (fun x => RepairT21_oracle_cdf_tendsto hFinitePopulationCLT sizes hsizes k P δ e A B r
+      hk hδ he hA hB hr hP hpos x) t ht
+  apply h.congr'
+  apply Eventually.of_forall
+  intro j
+  apply RepairT21_probability_congr
+  intro S hS
+  rw [abs_div, abs_of_pos (Real.sqrt_pos.mpr
+    (RepairT21_V_pos (P j) δ e A B r hk hδ he hA hB hr (hP j) (hpos j)))]
+
+theorem RepairT21_limsup_of_real_upper (f : ℕ → ℝ) (a : ℝ)
+    (h : ∀ b : ℝ, a < b → ∀ᶠ j in atTop, f j < b) :
+    Filter.limsup (fun j => ENNReal.ofReal (f j)) atTop ≤ ENNReal.ofReal a := by
+  have hbound (ε : ℝ) (hε : 0 < ε) :
+      Filter.limsup (fun j => ENNReal.ofReal (f j)) atTop ≤ ENNReal.ofReal (a + ε) := by
+    apply limsup_le_of_le (by isBoundedDefault)
+    filter_upwards [h (a + ε) (by linarith)] with j hj
+    exact ENNReal.ofReal_le_ofReal hj.le
+  have hc : Continuous (fun ε : ℝ => ENNReal.ofReal (a + ε)) :=
+    ENNReal.continuous_ofReal.comp (continuous_const.add continuous_id)
+  have hlim : Tendsto (fun ε : ℝ => ENNReal.ofReal (a + ε))
+      (nhdsWithin 0 (Set.Ioi 0)) (nhds (ENNReal.ofReal a)) := by
+    simpa only [add_zero] using (hc.tendsto 0).mono_left
+      (nhdsWithin_le_nhds : nhdsWithin (0 : ℝ) (Set.Ioi 0) ≤ nhds 0)
+  have hevent : ∀ᶠ ε : ℝ in nhdsWithin 0 (Set.Ioi 0),
+      Filter.limsup (fun j => ENNReal.ofReal (f j)) atTop ≤ ENNReal.ofReal (a + ε) := by
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    exact hbound ε hε
+  exact le_of_tendsto_of_tendsto tendsto_const_nhds hlim hevent
+
+/-- The arbitrary-sequence ENNReal limsup contract, including mixed scales. -/
+theorem RepairT21_selected_tail_limsup_le
+    (hFinitePopulationCLT : RepairT21_FinitePopulationCLT)
+    (sizes : ℕ → ℕ) (hsizes : StrictMono sizes) (k : ℕ)
+    (P : ∀ j, CovPopulation (sizes j) k) (δ e A B r : ℝ)
+    (hk : 0 < k) (hδ : δ < 1) (he : 0 < e) (hA : 0 < A) (hB : 0 < B)
+    (hr : 0 < r ∧ r ≤ 1 / 2) (hP : ∀ j, Xi (P j) δ e A B r)
+    (t : ℝ) (ht : 0 < t) :
+    Filter.limsup (fun j => ENNReal.ofReal (probability (P j).pop (fun S =>
+      adjustedAR (P j) (observedW (P j).pop (late (P j).pop) S) S > ENNReal.ofReal t))) atTop ≤
+        ENNReal.ofReal (normalTail t) := by
+  apply RepairT21_limsup_of_real_upper
+  intro b hb
+  exact RepairT21_selected_tail_eventually_lt hFinitePopulationCLT sizes hsizes k P δ e A B r
+    hk hδ he hA hB hr hP t b ht hb
 
 end
 end AronowAudit.P002.Wave1

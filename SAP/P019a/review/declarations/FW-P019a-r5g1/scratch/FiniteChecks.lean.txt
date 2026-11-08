@@ -1,0 +1,85 @@
+import SAP.P019a.Challenge
+
+open SAP.P019a
+open scoped BigOperators
+noncomputable section
+open Classical
+set_option maxRecDepth 10000
+set_option maxHeartbeats 2000000
+
+-- T1: the fixed baseline is a genuine nonempty law, and the response discrepancy is real.
+example : (∑ w : Fin 5, ceilingBaseline.mass w) = 1 := ceilingBaseline.total
+example : ∀ w : Fin 5, 0 < ceilingBaseline.mass w := by
+  intro w
+  fin_cases w <;> norm_num [ceilingBaseline]
+example : printedAffected 0 = 1 ∧ codedAffected 0 = 2 ∧
+    printedAffected 4 = 4 ∧ codedAffected 4 = 5 := by
+  norm_num [printedAffected, codedAffected]
+
+-- T2: all outer hypotheses are simultaneously satisfied, at an interior point.
+example : ∃ ρ : ℝ, 0 ≤ ρ ∧ ρ ≤ 1 ∧ 0 < ρ := by
+  exact ⟨1/5, by norm_num, by norm_num, by norm_num⟩
+example : ceilingBeta printedAffected (1/5) = 3109/3125 ∧
+    ceilingBeta codedAffected (1/5) = 3734/3125 := by
+  norm_num [ceilingBeta, FiniteLaw.mean, ceilingBaseline, printedAffected,
+    codedAffected, unaffected, Fin.sum_univ_succ]
+
+-- T3 and T5: independent checks of ALL four assumptions, without using T1–T5.
+lemma checkStanding16 : finiteSampleWitness.standing := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro ω _ hy
+    simp only [finiteSampleWitness] at hy ⊢
+    cases hx : fairBit ω 0 <;> simp_all
+  · intro ω _
+    fin_cases ω <;> norm_num [finiteSampleWitness, fairBit, bitVal]
+  · intro f z
+    cases z <;>
+      norm_num [Study.treatmentIndependent, finiteSampleWitness, FiniteLaw.mean,
+        FiniteLaw.prob, uniformFin, fairBit, Fin.sum_univ_succ] <;> ring
+  · constructor
+    · intro z y
+      cases z <;> cases y <;>
+        norm_num [Study.cell, finiteSampleWitness, FiniteLaw.cv, FiniteLaw.ce,
+          FiniteLaw.mean, FiniteLaw.prob, uniformFin, fairBit, Fin.sum_univ_succ]
+    · norm_num [FiniteLaw.variance, FiniteLaw.mean, finiteSampleWitness,
+        uniformFin, fairBit, bitVal, Fin.sum_univ_succ]
+
+lemma checkStanding8 : distributionWitness.standing := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro ω _ hy
+    exact hy
+  · intro ω _
+    fin_cases ω <;> norm_num [distributionWitness, fairBit, bitVal]
+  · intro f z
+    cases z <;>
+      norm_num [Study.treatmentIndependent, distributionWitness, FiniteLaw.mean,
+        FiniteLaw.prob, uniformFin, fairBit, Fin.sum_univ_succ] <;> ring
+  · constructor
+    · intro z y
+      cases z <;> cases y <;>
+        norm_num [Study.cell, distributionWitness, FiniteLaw.cv, FiniteLaw.ce,
+          FiniteLaw.mean, FiniteLaw.prob, uniformFin, fairBit, Fin.sum_univ_succ]
+    · norm_num [FiniteLaw.variance, FiniteLaw.mean, distributionWitness,
+        uniformFin, fairBit, bitVal, Fin.sum_univ_succ]
+
+-- T3: an explicit occupied four-observation sample has positive iid mass.
+def occupiedSample : Fin 4 → Fin 16 := ![0, 8, 0, 8]
+example : finiteSampleWitness.occupied occupiedSample ∧
+    0 < (finiteSampleWitness.law.iid 4).mass occupiedSample := by
+  constructor
+  · change 0 < finiteSampleWitness.cellCount occupiedSample true false ∧
+      0 < finiteSampleWitness.cellCount occupiedSample false false
+    norm_num [Study.cellCount, Study.cell, finiteSampleWitness, uniformFin,
+      occupiedSample, fairBit, Fin.sum_univ_succ]
+    exact ⟨⟨1, by norm_num⟩, ⟨0, by norm_num⟩⟩
+  · norm_num [FiniteLaw.iid, finiteSampleWitness, uniformFin, Fin.prod_univ_succ]
+
+-- T5: the discrepancy witness t=0 uses genuine positive conditioning events.
+example : distributionWitness.law.prob (distributionWitness.cell false true) = 1/4 ∧
+    distributionWitness.law.prob (distributionWitness.cell true true) = 1/4 ∧
+    distributionWitness.law.ce (fun ω => if (distributionWitness.V ω : ℝ) = 0 then 1 else 0)
+      (distributionWitness.cell false true) = 1/2 ∧
+    distributionWitness.law.ce (fun ω => if (distributionWitness.V ω : ℝ)+1 = 0 then 1 else 0)
+      (distributionWitness.cell true true) = 0 := by
+  norm_num [FiniteLaw.prob, FiniteLaw.mean, FiniteLaw.ce, Study.cell,
+    distributionWitness, uniformFin, fairBit, Fin.sum_univ_succ]

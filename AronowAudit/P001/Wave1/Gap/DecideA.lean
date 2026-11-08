@@ -3,8 +3,9 @@ import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.Real
 
 /-!
-P001-T100 assumes only integrability of the treatment effect and a.e. binary treatment.
-P001-T47 assumes transformations that are a.e. measurable under the marginal laws.
+Repaired P001-T100 and P001-T47 contracts, as decided on 22 October 2026.
+T100 assumes only integrability of the treatment effect and a.e. binary treatment.
+T47 retains the law-a.e. transformation scope of `DecisionT47`.
 -/
 
 namespace AronowAudit.P001.Wave1
@@ -218,8 +219,8 @@ theorem att_normalized_propensity_mean_integrable_effect {Ω E : Type*} [Measura
   apply (div_eq_div_iff (ne_of_gt hpD.1) (ne_of_gt hden_pos)).2
   rw [hnumerator, ← hweighted, hden]
 
-/-- The six-conjunct statement follows by projecting the law-a.e. version,
-which also supplies two coefficient formulas. -/
+/-- The six-conjunct contract follows by projecting the established law-a.e.
+version, which also supplies two coefficient formulas. -/
 theorem independent_functions_cef_law_scope {Ω : Type*} [MeasurableSpace Ω]
   (μ : Measure Ω) [IsProbabilityMeasure μ] (X Y : Ω → ℝ)
   (hX : Measurable X) (hY : Measurable Y) (hi : IndepFun X Y μ)

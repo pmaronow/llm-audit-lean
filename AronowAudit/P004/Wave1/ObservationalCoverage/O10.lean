@@ -4,7 +4,7 @@ import AronowAudit.P004.Wave1.DesignLimits.DL2
 import AronowAudit.P004.Wave1.DesignLimits.DL4
 import Mathlib.Analysis.SpecificLimits.Basic
 
-/-! Laws of large numbers with finite-design probabilities.
+/-! Laws of large numbers with the finite-design probabilities of the contract.
 The deterministic count errors are bounded for every incomplete last block. -/
 
 namespace AronowAudit.P004.Wave1.ObservationalCoverage

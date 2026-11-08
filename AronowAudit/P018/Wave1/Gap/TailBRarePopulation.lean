@@ -194,6 +194,84 @@ theorem tb09_rare_Q_pos : 0 < rareQ := by
   rw [he,measure_univ]
   norm_num
 
+def tb09_rare_zeroCategory (u : RareUnit) : ℝ := if u.m=0 then 1 else 0
+
+theorem tb09_rare_zeroCategory_mean : (∫ u,tb09_rare_zeroCategory u ∂rareLaw)=1/2 := by
+  have hi := tb09_rare_integrable tb09_rare_zeroCategory ⟨1,fun u => by
+    dsimp [tb09_rare_zeroCategory]
+    split_ifs <;> norm_num⟩
+  rw [tb09_rare_integral _ hi,tsum_eq_single 0]
+  · norm_num [tb09_rare_zeroCategory,TailB_rare_p]
+  · intro m hm
+    simp [tb09_rare_zeroCategory,hm]
+
+theorem tb09_rare_s_at_zero (u v : RareUnit) (hu : u.m=0) : rareS u v=1 := by
+  have hs : ¬rareSmall u v := by
+    intro hh
+    have hv : v.m=0 := hh.1.symm.trans hu
+    have huc := u.label.isLt
+    have hvc := v.label.isLt
+    have hl : u.label.val=v.label.val := by omega
+    exact hh.2 hl
+  simp [rareS,hs]
+
+/-- In fact the category-zero union alone gives q ≥ 3/4; this records the
+interval requested by the unit plan. -/
+theorem tb09_rare_Q_bounds : 2/3 ≤ rareQ ∧ rareQ ≤ 1 := by
+  let f := tb09_rare_zeroCategory
+  have hi : Integrable f rareLaw := tb09_rare_integrable f ⟨1,fun u => by
+    dsimp [f,tb09_rare_zeroCategory]
+    split_ifs <;> norm_num⟩
+  have hi1 : Integrable (fun uv : RareUnit × RareUnit => f uv.1) (rareLaw.prod rareLaw) :=
+    measurePreserving_fst.integrable_comp_of_integrable hi
+  have hi2 : Integrable (fun uv : RareUnit × RareUnit => f uv.2) (rareLaw.prod rareLaw) :=
+    measurePreserving_snd.integrable_comp_of_integrable hi
+  have hi12 : Integrable (fun uv : RareUnit × RareUnit => f uv.1*f uv.2) (rareLaw.prod rareLaw) :=
+    hi.mul_prod hi
+  have hs : Integrable (fun uv : RareUnit × RareUnit => (rareS uv.1 uv.2)^2)
+      (rareLaw.prod rareLaw) :=
+    (tb09_pair_memLp rareLaw _ (measurable_of_countable _) (B := 1)
+      (fun uv => by
+        rw [abs_of_nonneg (sq_nonneg _)]
+        exact (sq_le_one_iff_abs_le_one _).mpr (by
+          rw [abs_of_pos (TailB_rare_s_bounds _ _).1]
+          exact (TailB_rare_s_bounds _ _).2)) 2).integrable one_le_two
+  have h1 : (∫ uv : RareUnit × RareUnit,f uv.1 ∂rareLaw.prod rareLaw)=1/2 := by
+    rw [integral_prod _ hi1]
+    simp only [integral_const,probReal_univ,one_smul]
+    exact tb09_rare_zeroCategory_mean
+  have h2 : (∫ uv : RareUnit × RareUnit,f uv.2 ∂rareLaw.prod rareLaw)=1/2 := by
+    rw [integral_prod _ hi2]
+    simp only [show (∫ v,f v ∂rareLaw)=1/2 from tb09_rare_zeroCategory_mean,
+      integral_const,probReal_univ,one_smul]
+  have h12 : (∫ uv : RareUnit × RareUnit,f uv.1*f uv.2 ∂rareLaw.prod rareLaw)=1/4 := by
+    rw [integral_prod_mul,tb09_rare_zeroCategory_mean]
+    norm_num
+  have hlow : (3/4:ℝ) ≤ rareQ := by
+    have hpoint (uv : RareUnit × RareUnit) : f uv.1+f uv.2-f uv.1*f uv.2 ≤ (rareS uv.1 uv.2)^2 := by
+      by_cases hu : uv.1.m=0
+      · rw [tb09_rare_s_at_zero uv.1 uv.2 hu]
+        simp [f,tb09_rare_zeroCategory,hu]
+      · by_cases hv : uv.2.m=0
+        · rw [tb09_rare_s_symmetric,tb09_rare_s_at_zero uv.2 uv.1 hv]
+          simp [f,tb09_rare_zeroCategory,hu,hv]
+        · simpa [f,tb09_rare_zeroCategory,hu,hv] using sq_nonneg (rareS uv.1 uv.2)
+    have hui : Integrable (fun uv : RareUnit × RareUnit => f uv.1+f uv.2-f uv.1*f uv.2)
+        (rareLaw.prod rareLaw) := (hi1.add hi2).sub hi12
+    have hh := integral_mono hui hs hpoint
+    have hisum : Integrable (fun uv : RareUnit × RareUnit => f uv.1+f uv.2)
+        (rareLaw.prod rareLaw) := hi1.add hi2
+    rw [integral_sub hisum hi12,integral_add hi1 hi2,h1,h2,h12] at hh
+    norm_num at hh
+    exact hh
+  constructor
+  · linarith
+  · have hh := integral_mono hs (integrable_const (1:ℝ)) (fun uv => by
+      exact (sq_le_one_iff_abs_le_one _).mpr (by
+        rw [abs_of_pos (TailB_rare_s_bounds _ _).1]
+        exact (TailB_rare_s_bounds _ _).2))
+    change rareQ ≤ (∫ _ : RareUnit × RareUnit,(1:ℝ) ∂rareLaw.prod rareLaw) at hh
+    simpa only [integral_const,probReal_univ,one_smul] using hh
 
 theorem tb09_rare_limit_variance_pos : 0 < rareLimitSlopeVariance :=
   div_pos (mul_pos (by norm_num) tb09_rare_H_pos) (sq_pos_of_pos tb09_rare_Q_pos)

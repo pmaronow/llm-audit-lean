@@ -1,9 +1,9 @@
 import AronowAudit.P044.P044_NetworkSpillovers
 import AronowAudit.P045.P045_ExposureVariance
 
-/-! Exposure-variance calculations using an explicit equivalence of the
-P044 and P045 exposure types. The full-count table is transported from
-the P045 counterpart through this equivalence. -/
+/-! Independent kernel-checked proofs of the six GP044B3 contracts.
+The full-count table is transported from the proved P045 counterpart through
+an explicit exposure equivalence. No admitted P044 theorem is used as a proof dependency. -/
 
 namespace AronowAudit.P044.Wave1
 open Finset
@@ -354,14 +354,20 @@ theorem clique_joint_moments_proof :
   simp_rw [hM, hS, hV]
   exact clique_reduced_arithmetic_certificate
 
+example : type_of% @AronowAudit.P044.clique_joint_moments := clique_joint_moments_proof
+
 theorem clique_observation_joint_proof (t : Fin 66) (included : Bool) (i j : Fin 12) (a b : Exposure)
     (ha : a = .d01 ∨ a = .d00) (hb : b = .d01 ∨ b = .d00) :
     joint (cliqueObservationMass t included) cliqueF i j a b = cliqueObservationJoint t included i j a b := by
   exact clique_observation_joint_certificate t included i j a b ha hb
 
+example : type_of% @AronowAudit.P044.clique_observation_joint := clique_observation_joint_proof
+
 theorem clique_observation_marginal_proof (t : Fin 66) (included : Bool) (i : Fin 12) (a : Exposure) :
     marginal (cliqueObservationMass t included) cliqueF i a = cliqueObservationMarginal t included i a := by
   exact clique_observation_marginal_certificate t included i a
+
+example : type_of% @AronowAudit.P044.clique_observation_marginal := clique_observation_marginal_proof
 
 theorem clique_pairs_complete_proof :
     (∀ r, (cliquePairs r).1 < (cliquePairs r).2) ∧
@@ -371,6 +377,8 @@ theorem clique_pairs_complete_proof :
     fin_cases r <;> decide +kernel
   · intro i j
     fin_cases i <;> fin_cases j <;> decide +kernel
+
+example : type_of% @AronowAudit.P044.clique_pairs_complete := clique_pairs_complete_proof
 
 theorem clique_reduced_arithmetic_proof :
     let U := fun _ : Fin 66 => (1/66 : ℚ)
@@ -384,6 +392,8 @@ theorem clique_reduced_arithmetic_proof :
     (∀ included, V included < S included - M included ^ 2 ∧ V included < 6050/11907) := by
   exact clique_reduced_arithmetic_certificate
 
+example : type_of% @AronowAudit.P044.clique_reduced_arithmetic := clique_reduced_arithmetic_proof
+
 theorem clique_relabeling_verified_proof :
     ∀ t : Fin 66,
       (∀ i j, cliqueAdj (cliqueRelabeling t i) (cliqueRelabeling t j) = cliqueAdj i j) ∧
@@ -392,6 +402,8 @@ theorem clique_relabeling_verified_proof :
       (∀ i, cliqueF t (cliqueRelabeling t i) =
         cliqueF (if (cliquePairs t).1.val / 4 = (cliquePairs t).2.val / 4 then 0 else 3) i) := by
   exact clique_relabeling_verified_certificate
+
+example : type_of% @AronowAudit.P044.clique_relabeling_verified := clique_relabeling_verified_proof
 
 end
 end AronowAudit.P044.Wave1

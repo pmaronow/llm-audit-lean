@@ -11,7 +11,9 @@ import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.LinearAlgebra.Matrix.Adjugate
 import Mathlib.Data.Fintype.BigOperators
 
-/-! P008: exact finite-design formalizations for the tutorial, printed pp. 140–154. -/
+/-! P008: exact finite-design audit. The source is the tutorial, printed pp. 140–154.
+The target list fixes the interpretation of the later archived code. No code provenance,
+empirical reconstruction or unstaged theorem is assumed as a Lean axiom. -/
 
 namespace AronowAudit.P008
 
@@ -87,7 +89,7 @@ abbrev Plane := EuclideanSpace ℝ (Fin 2)
 
 /-- “set ... spatial field X”, nodes x(i), outcomes Y_x(z), and “suitable
 integration measure” ζ, pp. 141, 143. Nodes belong to the field; outcomes are
-defined for every binary assignment. -/
+defined for every binary assignment, as fixed by target convention S9(ii). -/
 structure SpatialModel (N : ℕ) where
   field : Set Plane
   node : Fin N → Plane
@@ -163,7 +165,7 @@ def tailP {Ω : Type*} [Fintype Ω] (Q : FiniteLaw Ω) (T : Ω → ℝ) (z : Ω)
 /-- The rejection region of the interpolated-percentile rule, p. 146. -/
 def outside (lo hi t : ℝ) : Prop := t < lo ∨ hi < t
 
-/-- R type-7 quantile; sorted observations are
+/-- R type-7 quantile, target convention S9(i); sorted observations are
 zero-indexed. At q=1 the last order statistic is returned. -/
 def quantile7 {n : ℕ} (s : Fin (n + 1) → ℝ) (q : ℝ) : ℝ :=
   let h := (n : ℝ) * q
@@ -173,7 +175,7 @@ def quantile7 {n : ℕ} (s : Fin (n + 1) → ℝ) (q : ℝ) : ℝ :=
     g * s ⟨min (j + 1) n, Nat.lt_succ_of_le (Nat.min_le_right _ _)⟩
 
 /-- Finite arithmetic mean: counting-measure specialization of the circle
-integral, p. 143. Only nonempty sets are used as averages. -/
+integral, p. 143 and S9(iii). Only nonempty sets are used as averages. -/
 def countMean {X : Type*} (C : Finset X) (f : X → ℝ) : ℝ :=
   (∑ x ∈ C, f x) / C.card
 
@@ -361,7 +363,7 @@ theorem amr_misprint (A : ℝ) : A * A = A ↔ A = 0 ∨ A = 1 := by
     · exact Or.inr (by linarith)
   · rintro (rfl | rfl) <;> norm_num
 
-/-- T14(b), exact witness: two node effects 3 and 5 average to 4,
+/-- T14(b), validator's exact witness: two node effects 3 and 5 average to 4,
 whereas the product of the two averages is 16. -/
 theorem amr_misprint_witness :
     ((3 - 0 + (7 - 2)) / 2 : ℝ) = 4 ∧ (4 : ℝ) * 4 = 16 ∧ (16 : ℝ) ≠ 4 := by
@@ -675,11 +677,11 @@ def bufferCellDistance : Fin 4 → ℝ := ![0, 19 / 8, 27 / 8, 35 / 8]
 /-- T16: all four treated-cell outcomes (the control-cell outcomes are zero). -/
 def bufferCellOutcome : Fin 4 → ℝ := ![4, 2, 0, 8]
 
-/-- Nested nonmissing-cell buffer at radius r, polygon-buffer definition (T16/T17). -/
+/-- Nested nonmissing-cell buffer at radius r, archived polygon path T16/T17. -/
 def bufferCells (r : ℝ) : Finset (Fin 4) :=
   Finset.univ.filter (fun c => bufferCellDistance c ≤ r)
 
-/-- T16: the implemented annulus, symmetric band and full buffer give 1,4,2.
+/-- T16: the archived annulus, symmetric band and full buffer give 1,4,2.
 With one treated and one control polygon these are the Hajek contrasts. -/
 theorem donut_counterexample :
     countMean (bufferCells 4 \ bufferCells 2) bufferCellOutcome = 1 ∧
@@ -706,7 +708,7 @@ Translating to [2,7]² or [12,17]×[2,7] embeds these at the required cell centr
 abbrev BlockCell := Fin 5 × Fin 5
 
 /-- Eight-neighbour inner-boundary selector for a 5×5 raster block: outer
-row or column, as in the eight-neighbour boundary-cell convention (T20(a)). -/
+row or column, as in the archived boundary-cell convention (T20(a)). -/
 def blockBoundary : Finset BlockCell :=
   Finset.univ.filter (fun c => c.1 = 0 ∨ c.1 = 4 ∨ c.2 = 0 ∨ c.2 = 4)
 
@@ -770,7 +772,7 @@ theorem circle_measurable {N : ℕ} (P : SpatialModel N) (i : Fin N) (d : ℝ)
   hfield.inter (isClosed_eq (continuous_const.dist continuous_id) continuous_const).measurableSet
 
 /-- T25(a), p. 143: finite marginalization commutes with the normalized
-circle integral, under the explicit integrability and mass conditions. -/
+circle integral, under the target's explicit integrability and mass conditions. -/
 theorem circle_marginal_identity {N : ℕ} (P : SpatialModel N)
     (Q : FiniteLaw (Assignment N)) (i : Fin N) (d : ℝ) (b : Bool)
     (hmass : 0 < P.circleMass i d)
@@ -823,7 +825,7 @@ theorem amr_integral_identity {N : ℕ} (P : SpatialModel N)
   exact circle_effect_identity P Q i d (hmass i) (hfinite i) (hint i)
 
 /-- “sharp null ... Y_x(Z) = Y_x(0)”, p. 144, universally over the full
-potential-outcome domain. -/
+potential-outcome domain required in target convention S9(ii). -/
 def SpatialModel.sharpNull {N : ℕ} (P : SpatialModel N) : Prop :=
   ∀ x ∈ P.field, ∀ z, P.Y x z = P.Y x (fun _ => false)
 
@@ -864,7 +866,7 @@ theorem sharp_null_implies_weak {N : ℕ} (P : SpatialModel N)
     simp [SpatialModel.amr, he]
 
 /-- T27's additive structural model (p. 140's attributed statement,
-explicit model): baseline plus ∑ z_k g_k(x). -/
+explicit model fixed by the target): baseline plus ∑ z_k g_k(x). -/
 def additiveOutcome {N : ℕ} (base : Plane → ℝ) (g : Fin N → Plane → ℝ)
     (x : Plane) (z : Assignment N) : ℝ := base x + ∑ k, bit (z k) * g k x
 
@@ -929,7 +931,7 @@ theorem additive_amr {N : ℕ} (P : SpatialModel N)
     rw [integral_congr_ae (he i)]
   exact ⟨hn, by simp [SpatialModel.amr, hn]⟩
 
-/-- T18 kernel, not printed as a
+/-- T18 kernel, transcribed from the staged vignette, not printed as a
 formula in Figure 2: 2 exp(-2r) - (128/3)r⁴ exp(-4r). -/
 def toyKernel (r : ℝ) : ℝ := 2 * Real.exp (-2 * r) - (128 / 3) * r ^ 4 * Real.exp (-4 * r)
 
@@ -1209,9 +1211,8 @@ theorem hac_all_pairs_zero {N : ℕ} (g : Fin N → ℝ) (D : Fin N → Fin N �
   rw [hscore]
   norm_num
 
-/-- The bandwidth rule modeled in T9: for positive cutoff, add the
-one-based grid position. The rule is an input from the archived code;
-this definition does not verify the behavior of a package release. -/
+/-- The archived bandwidth formula uses cutoff + the one-based grid
+position when cutoff is positive (T9), a premise transcribed from source. -/
 def archivedVariance {N : ℕ} (g : Fin N → ℝ) (D : Fin N → Fin N → ℝ)
     (cutoff : ℝ) (position : ℕ) : ℝ :=
   hac g D (if 0 < cutoff then cutoff + position else cutoff)
@@ -1228,7 +1229,7 @@ theorem corrected_bandwidth_invariant {N : ℕ} (g : Fin N → ℝ)
     physicalVariance g D c j = hac g D c ∧
     physicalVariance g D c j = physicalVariance g D c k := ⟨rfl, rfl⟩
 
-/-- Node distances in the exact bandwidth example (T9): 0,2,4,6. -/
+/-- Node distances in the exact archived-bandwidth example (T9): 0,2,4,6. -/
 def bandwidthExampleDistance (i j : Fin 4) : ℝ := |2 * (i : ℝ) - 2 * (j : ℝ)|
 
 /-- T9(i,ii), T10(a): the same radius and outcomes give variances 1 and
@@ -1253,7 +1254,7 @@ theorem grid_position_counterexample :
   · norm_num [univ_four, univ_five, univ_six, Finset.univ_fin2, Finset.filter_insert, Finset.filter_singleton, hajek, nTreated, nControl, bit, archivedVariance, physicalVariance,
       hac, bandwidthExampleDistance, Fin.sum_univ_succ]
 
-/-- T9(iii): squared distances at most 32 are all covered by the implemented
+/-- T9(iii): squared distances at most 32 are all covered by the archived
 sixth-position threshold 32/5. Normal equations force width zero, whereas
 the printed sixth toy interval has strictly positive width 869/250. -/
 theorem archived_sixth_row_incompatible {N : ℕ} (g : Fin N → ℝ)
@@ -1268,8 +1269,8 @@ theorem archived_sixth_row_incompatible {N : ℕ} (g : Fin N → ℝ)
   norm_num [univ_four, univ_five, univ_six, Finset.univ_fin2, Finset.filter_insert, Finset.filter_singleton, archivedVariance]
   exact hac_all_pairs_zero g D _ hall hscore
 
-/-- T6(b), exact dyadic toy coordinates,
-not asserted as exact coordinates printed in Fig. 2. -/
+/-- T6(b), exact dyadic toy coordinates, transcribed from the validator's
+vignette reconstruction, not asserted as exact coordinates printed in Fig. 2. -/
 def toyNode (i : Fin 4) : Plane :=
   WithLp.toLp 2 ((![![2028297641 / 2147483648, 4318520789 / 2147483648],
     ![7976664621 / 2147483648, 1029755657 / 268435456],
@@ -1379,14 +1380,15 @@ theorem effect_range_cutoff_counterexample :
 
 /- Binary-risk normalization counterexample (T7). -/
 
-/-- The 40000 counting-measure circle-point indices used in T7. -/
+/-- T7: 40000 counting-measure circle points, with the supplied exact
+counts. Geometry is reduced to those circle counts, as permitted by T7's note. -/
 abbrev RiskCell := Fin 40000
 
 /-- T7's heterogeneous baseline counts: 400,1000,400,1000. -/
 def riskBaseline : Fin 4 → ℕ := ![400, 1000, 400, 1000]
 
 /-- Complete binary potential-outcome rule on each node/radius circle:
-Y=1{k<B_i-321 z_i}, with zero-based k. -/
+Y=1{k≤B_i-321 z_i}, with zero-based k (so k<threshold). -/
 def riskOutcome (i : Fin 4) (_radius : Fin 4) (k : RiskCell) (z : Assignment 4) : ℝ :=
   if k.val < riskBaseline i - 321 * (if z i then 1 else 0) then 1 else 0
 
@@ -1454,7 +1456,7 @@ theorem summed_risk_counterexample (Q : FiniteLaw (Assignment 4)) :
     intro a b ha ha' hb hb'
     linarith
 
-/- Finite randomization laws and conditional tests. -/
+/- Remaining complete statements; hard parts are explicitly drafted. -/
 
 /-- Uniform finite-support mass for the two design laws of T1(A).
 Assignments are their sets of treated positions (0-based). -/
@@ -2063,10 +2065,10 @@ theorem homogeneous_additive_amr {N : ℕ} (P : SpatialModel N)
     simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     rw [← mul_assoc, inv_mul_cancel₀ (by exact_mod_cast (Nat.ne_zero_of_lt hN)), one_mul]
 
-/- T28: sufficient conditions for consistency, distinct from the cited
-theorem of Wang et al. -/
+/- Asymptotic sufficient version fixed by T28, never represented as the
+unstaged Wang et al. theorem. -/
 
-/-- Dependence on a collection of node-level pairs, for the
+/-- Dependence on a collection of node-level pairs, for the target's
 dependency-graph definition (T28). -/
 def dependsOn {N : ℕ} (P : (Fin N → Bool × ℝ) → Prop) (A : Finset (Fin N)) : Prop :=
   ∀ u v, (∀ i ∈ A, u i = v i) → (P u ↔ P v)
@@ -2086,14 +2088,14 @@ def boundedPairDependency {N : ℕ} (Q : FiniteLaw (Assignment N))
         Q.prob (fun z => P (fun i => (z i, M i z))) *
           Q.prob (fun z => R (fun i => (z i, M i z))))
 
-/-- T28, S_b=N⁻¹∑1{Z_i=b}M_i(Z): the two normalized
-numerators in the Hajek ratio. -/
+/-- T28's finite derivation, S_b=N⁻¹∑1{Z_i=b}M_i(Z): the two normalized
+numerators in the Hajek ratio (adjudication, sections 2 and 7). -/
 def normalizedNumerator {N : ℕ} (M : Fin N → Assignment N → ℝ)
     (b : Bool) (z : Assignment N) : ℝ :=
   (N : ℝ)⁻¹ * ∑ i, (if z i = b then (1 : ℝ) else 0) * M i z
 
-/-- T28, r_b=N⁻¹∑m_i(b): the mean marginalized circle
-outcome in condition b. -/
+/-- T28's finite derivation, r_b=N⁻¹∑m_i(b): the mean marginalized circle
+outcome in condition b (adjudication, sections 2 and 7). -/
 def marginalMean {N : ℕ} (Q : FiniteLaw (Assignment N))
     (M : Fin N → Assignment N → ℝ) (b : Bool) : ℝ :=
   (N : ℝ)⁻¹ * ∑ i, marginal Q (M i) i b
@@ -2179,13 +2181,18 @@ theorem ratio_deviation_bound (S U p r H : ℝ) (hp : 0 < p)
 conditional calibrated tail rule. No empirical design p-value is asserted. -/
 theorem uganda_printed_comparison : (-321 / 10000 : ℝ) < -19 / 625 := by norm_num
 
-/- T22(i), p. 146: the printed fully enumerated interpolated-percentile
-calibration claim is false; T3 gives a counterexample. -/
+/- T22(i), p. 146's fully enumerated interpolated-percentile calibration
+claim as printed. This is false (T3) and is intentionally unproved. -/
+/- The false assertion `printed_percentile_calibration` is retired.
+Its original closed contract is archived in the confidence-all campaign,
+and its checked refutation is recorded in the completion ledger. -/
 
-
-/- T24, p. 153: the printed claim that an unweighted multi-radius sum of
-probability differences is itself a probability difference is false (T7). -/
-
+/- T24's probability-change gloss as printed, p. 153: an unweighted
+multi-radius sum of probability differences is itself a probability difference.
+The statement is false (T7); it is preserved faithfully as an unproved claim. -/
+/- The false assertion `printed_sum_probability_gloss` is retired.
+Its original closed contract is archived in the confidence-all campaign,
+and its checked refutation is recorded in the completion ledger. -/
 
 /-- Finite expectation distributes over any finite sum of node variables. -/
 theorem expect_sum {Ω I : Type*} [Fintype Ω] [Fintype I]
@@ -2348,6 +2355,10 @@ type-7 interpolated quantile zero, including both reported percentile levels. -/
 theorem zero_sum_quantiles {n : ℕ} (q : ℝ) :
     quantile7 (fun _ : Fin (n + 1) => 0) q = 0 := by simp [quantile7]
 
+/-- Corrected “full disk of radius d around the intervention node”, T17(a),
+p. 145. For polygons the staged code instead uses the full polygon buffer. -/
+def SpatialModel.disk {N : ℕ} (P : SpatialModel N) (i : Fin N) (d : ℝ) : Set Plane :=
+  {x | x ∈ P.field ∧ dist (P.node i) x ≤ d}
 
 /-- T20(a): the outer-row/column selector is exactly the eight-neighbour
 boundary definition on a 5×5 block; the unselected cells form the central 3×3. -/
@@ -2663,7 +2674,7 @@ theorem cancelling_circle_masses :
     (realLineCircle {-1, 0, 1} ![0] 0 1).card = 2 := by
   norm_num [realLineCircle, Finset.filter_insert, Finset.filter_singleton]
 
-/-- T9(iii), the concrete sixth-row incompatibility at the four
+/-- T9(iii), the concrete archived sixth-row incompatibility at the four
 reconstructed toy nodes: their squared separations are at most 32, every
 normal-equation score vector therefore gives zero variance at index 6,
 and no Wald multiplier can give the printed positive interval width. -/
@@ -2691,10 +2702,9 @@ contains the closed radius-1 discs about (0,0),(10,0),(20,0),(30,0). -/
 def validatorRectangle : Set Plane :=
   {x | -1 ≤ x 0 ∧ x 0 ≤ 31 ∧ -1 ≤ x 1 ∧ x 1 ≤ 1}
 
-/-- T3's complete potential outcomes on the rectangle: outcome `i.val` in the
-closed unit disc about zero-based node `i : Fin 4`, zero outside all four discs,
-under every assignment. The discs are disjoint, so this sum gives an unambiguous
-piecewise rule. -/
+/-- T3's complete potential outcomes on the rectangle: outcome i-1 in the
+closed unit disc about node i, zero outside all four discs, under every assignment.
+The discs are disjoint, so this sum is the target's unambiguous piecewise rule. -/
 def validatorRectangleOutcome (x : Plane) (_z : Assignment 4) : ℝ :=
   ∑ i : Fin 4, if dist x (lineEmbedding (percentileNode i)) ≤ 1 then (i.val : ℝ) else 0
 
@@ -2705,7 +2715,7 @@ def validatorRectangleMeasure : Measure Plane :=
   ∑ a : Fin 4 × Fin 6,
     Measure.dirac (lineEmbedding (percentileNode a.1 + (a.2.val : ℚ) / 10))
 
-/-- The T3 rectangle, its four nodes, full sharp-null outcome
+/-- The fixed validator T3 rectangle, its four nodes, full sharp-null outcome
 schedule, and explicit finite counting measure. This is distinct from the
 additional finite-field witness above; no positive-circle assumption is hidden. -/
 def validatorRectangleModel : SpatialModel 4 where
@@ -2724,11 +2734,12 @@ def validatorRadius (j : Fin 5) : ℝ := (j.val + 1 : ℝ) / 10
 def validatorRectangleStatistic (j : Fin 5) (k : Fin 6) : ℝ :=
   hajek (fun i z => validatorRectangleModel.M i (validatorRadius j) z) (sixAssignment k)
 
-/-- T3's exact rectangle construction: the full unit discs lie in the
+/-- T3's exact fixed rectangle construction: the full unit discs lie in the
 field, all five relevant circles have positive finite mass and integrable outcomes,
 the sharp null holds, and the actual circle means are 0,1,2,3. The full-enumeration
 single-radius and five-radius-sum type-7 tests both reject with probability 1/3>.05.
-The suitable integration measure is explicitly specified. -/
+The field and outcome rule are exactly the fixed validator construction;
+the suitable integration measure is explicitly specified. -/
 theorem spatial_percentile_counterexample :
     (∀ i : Fin 4, {x : Plane | dist x (validatorRectangleModel.node i) ≤ 1} ⊆
       validatorRectangleModel.field) ∧
@@ -2904,7 +2915,7 @@ theorem boundary_hajek_counterexample :
 
 /-- T7(6)'s actual normalized sampling probability: a uniform node, radius
 and one of that circle's 40000 points, with its own node fixed to condition b.
-This is Q_b, distinct from the unweighted sum of four AMRs. -/
+This is the adjudication's Q_b, not the unweighted sum of four AMRs. -/
 def riskSamplingProbability (Q : FiniteLaw (Assignment 4)) (b : Bool) : ℝ :=
   (16 : ℝ)⁻¹ * ∑ i : Fin 4, ∑ j : Fin 4, marginal Q (riskM i j) i b
 
@@ -3058,7 +3069,8 @@ theorem hajek_ratio_decomposition {N : ℕ} (hN : 0 < N)
   ring
 
 /-- T20(a)'s boundary for any finite raster polygon R: cells with at least
-one of their eight integer-grid neighbours outside R (p. 145, corrected). -/
+one of their eight integer-grid neighbours outside R (p. 145, corrected;
+N009 derivation, sections 1 and 5). -/
 def rasterBoundary (R : Finset (ℤ × ℤ)) : Finset (ℤ × ℤ) := by
   classical
   exact R.filter (fun x => ∃ a b : Fin 3,
@@ -3192,7 +3204,7 @@ theorem polygon_raster_counterexample :
   · simp only [finiteAMR, hae]
     norm_num [bit]
 
-/-- T18's complete finite-raster outcome schedule:
+/-- T18's complete finite-raster outcome schedule from the staged vignette:
 Y_c^(a)(z)=Y_0c+a∑_j z_j f(r_jc), where r_jc are the supplied centroid distances.
 This is the finite-cell specialization of additiveOutcome, not a new effect model. -/
 def toyRasterOutcome {C : ℕ} (a : ℝ) (base : Fin C → ℝ)
@@ -3201,7 +3213,7 @@ def toyRasterOutcome {C : ℕ} (a : ℝ) (base : Fin C → ℝ)
 
 /-- T18's actual AMR with normalized raster-circle weights: average the
 marginal point response over cells and then uniformly over the four nodes.
-The weights and centroid distances are inputs. -/
+The weights and centroid distances are inputs as in the fixed target. -/
 def toyRasterAMR {C : ℕ} (Q : FiniteLaw (Assignment 4)) (a : ℝ)
     (base : Fin C → ℝ) (r w : Fin 4 → Fin C → ℝ) : ℝ :=
   (1 / 4 : ℝ) * ∑ i, ∑ c, w i c *
@@ -3529,7 +3541,7 @@ theorem dependency_numerator_variance_bound {N : ℕ} (hN : 0 < N)
 def bandwidthSpatialNode (i : Fin 4) : ℚ := 2 * i.val
 
 /-- The field in T9 is the plane; outcomes are 0,2,4,6 in the disjoint
-closed radius-3/10 discs and zero elsewhere. -/
+closed radius-3/10 discs and zero elsewhere (validator's fixed example). -/
 def bandwidthSpatialOutcome (x : Plane) (_z : Assignment 4) : ℝ :=
   ∑ i : Fin 4, if dist x (lineEmbedding (bandwidthSpatialNode i)) ≤ 3 / 10
     then 2 * (i.val : ℝ) else 0
@@ -3553,7 +3565,7 @@ def bandwidthSpatialRadius (j : Fin 3) : ℝ := (j.val + 1 : ℝ) / 10
 
 /-- T9's spatial construction has actual circle integrals 0,2,4,6 at
 all three radii, with mass one and integrable outcomes on each circle;
-the Euclidean distances between its nodes are 2|i-j|. -/
+the Euclidean distances between its nodes are the target's 2|i-j|. -/
 theorem bandwidth_spatial_realization :
     (∀ i j, dist (bandwidthSpatialModel.node i) (bandwidthSpatialModel.node j) =
       |2 * (i : ℝ) - 2 * (j : ℝ)|) ∧
@@ -3604,6 +3616,7 @@ theorem bandwidth_spatial_realization :
 def donutPolygonBoundary (a : ℝ) : Set Plane :=
   {x | a ≤ x 0 ∧ x 0 ≤ a + 1 ∧ -1 ≤ x 1 ∧ x 1 ≤ 1 ∧
     (x 0 = a ∨ x 0 = a + 1 ∨ x 1 = -1 ∨ x 1 = 1)}
+
 
 
 /-- Cell centroids just to the right of each rectangle: the closest boundary
@@ -3681,7 +3694,7 @@ theorem donut_spatial_distances :
 def donutSpatialCentered (i : Fin 2) : Finset (Fin 2 × Fin 4) :=
   Finset.univ.filter (fun ic => 3 ≤ donutSpatialDistance i ic ∧ donutSpatialDistance i ic ≤ 5)
 
-/-- T16's three averages, in order: implemented donut (2,4], centered band
+/-- T16's three averages, in order: archived donut (2,4], centered band
 [3,5], and full radius-4 buffer. The same cell outcomes are used in each. -/
 def donutSpatialMeans (mode : Fin 3) (i : Fin 2) (z : Assignment 2) : ℝ :=
   countMean (if mode = 0 then donutSpatialBuffer i 4 \ donutSpatialBuffer i 2
@@ -3690,7 +3703,7 @@ def donutSpatialMeans (mode : Fin 3) (i : Fin 2) (z : Assignment 2) : ℝ :=
 
 /-- T16's complete spatial counterexample, with two actual rectangle
 boundaries, eight nonmissing cells and the full potential-outcome schedule.
-The observed 10 assignment gives implemented donut, centered-band and disk
+The observed 10 assignment gives archived donut, centered-band and disk
 Hajek estimates 1,4,2. Hence the implemented donut is not the centered band. -/
 theorem polygon_donut_counterexample :
     (∀ i c, donutSpatialDistance i (i, c) = bufferCellDistance c) ∧
@@ -3754,17 +3767,17 @@ theorem polygon_donut_counterexample :
   · rw [hstat, hstat]; norm_num
 
 
-/-- The short grid (.2,.3) in T9(i). -/
+/-- The short grid (.2,.3) in T9(i), validator's exact example. -/
 def bandwidthShortGrid : Fin 2 → ℝ := ![1 / 5, 3 / 10]
 
-/-- The long grid (.1,.2,.3) in T9(ii). -/
+/-- The long grid (.1,.2,.3) in T9(ii), validator's exact example. -/
 def bandwidthLongGrid : Fin 3 → ℝ := ![1 / 10, 1 / 5, 3 / 10]
 
 /-- T9(i–ii), the complete spatial grid-position counterexample. The
 defined plane outcome field and counting measure give the same circle
 data at radius .2; the true Euclidean node distances and actual regression
-scores give variances 1 and 1/2 under the implemented bandwidth when that
-radius moves from grid position one to position two. Both groups contain two nodes. -/
+scores give archived variances 1 and 1/2 when that radius moves from grid
+position one to position two. Both groups contain two nodes. -/
 theorem spatial_grid_position_counterexample :
     bandwidthShortGrid 0 = bandwidthLongGrid 1 ∧
     bandwidthShortGrid 0 = (1 / 5 : ℝ) ∧
@@ -3809,9 +3822,10 @@ theorem spatial_grid_position_counterexample :
   · rw [hmeans, hg, hD]; exact grid_position_counterexample.2.2.1
   · rw [hmeans, hg, hD]; exact grid_position_counterexample.2.2.2.1
 
-/-- T2(a): under the full spatial sharp null, the actual cumulative
+/-- T2(a), and the conditional inferential content permitted by T21's
+target note: under the full spatial sharp null, the actual cumulative
 Hajek statistic has a valid inclusive-tail test under the actual conditional
-design law. This asserts calibration without specifying the Uganda p-value. -/
+design law. This asserts calibration, without inventing the Uganda p-value. -/
 theorem sharp_null_cumulative_test_valid {N : ℕ} (P : SpatialModel N)
     (Q : FiniteLaw (Assignment N)) (A : Assignment N → Prop) (hA : 0 < Q.prob A)
     (D : Finset ℝ) (hfield : MeasurableSet P.field) (hsharp : P.sharpNull)
@@ -4021,7 +4035,8 @@ theorem finite_hajek_error_bound {N : ℕ} (hN : 0 < N)
       add_le_add ha (add_le_add hb hc)
     _ = _ := by ring
 
-/-- T28: fixed common p∈(0,1), bounded outcomes and a uniformly
+/-- T28's sufficient consistency result derived by the audit, not the
+unstaged cited theorem: fixed common p∈(0,1), bounded outcomes and uniformly
 bounded dependency graph imply convergence in probability of estimator minus
 AMR to zero, with no assumption that the changing AMRs themselves converge. -/
 theorem sufficient_hajek_consistency
@@ -4284,6 +4299,7 @@ theorem replicated_spatial_cutoff_omission (M : ℕ) (hM : 0 < M) :
   exact (replicated_spatial_counterexample M hM).2.2.2.2.2.2
 
 
+
 /-- T5's separation condition in actual two-coordinate Euclidean space,
 uniformly for the entire replicated spatial family. -/
 theorem replicated_plane_separation {M : ℕ} (i j : Fin M × Fin 2) (hij : i ≠ j) :
@@ -4324,7 +4340,7 @@ theorem spatial_all_pairs_zero {N : ℕ} (node : Fin N → Plane) (z : Assignmen
   regression_all_pairs_zero z M _ c h₁ h₀ hall
 
 /-- T8(a) with integrability of every potential-outcome schedule, exactly
-the sufficient domain for binary outcomes and genuine circles. -/
+the target's sufficient domain for binary outcomes and genuine circles. -/
 theorem spatial_risk_normalization_all_assignments {N : ℕ} (P : SpatialModel N)
     (Q : FiniteLaw (Assignment N)) (d : ℝ) (hN : 0 < N)
     (hfield : MeasurableSet P.field) (hmass : ∀ i, 0 < P.circleMass i d)
@@ -4382,9 +4398,9 @@ theorem risk_sampling_probabilities_bernoulli :
     riskSamplingProbability (uniformLaw (Assignment 4)) true - riskSamplingProbability (uniformLaw (Assignment 4)) false = -321 / 40000 :=
   risk_sampling_probabilities (uniformLaw (Assignment 4))
 
-/-- T18(a–c) with actual node-to-cell-centroid Euclidean distances.
-At the supplied index `d`, the weights are arbitrary nonnegative normalized
-cell weights; no hypothesis identifies them with shares of a radius-`d` circle. -/
+/-- T18(a–c) on a common spatial raster at every evaluated radius:
+r_ic is the actual node-to-cell-centroid Euclidean distance and the
+circle weights at that radius are nonnegative and sum to one. -/
 theorem spatial_toy_raster_amr_formula {C : ℕ} (Q : FiniteLaw (Assignment 4))
     (node : Fin 4 → Plane) (cell : Fin C → Plane) (base : Fin C → ℝ)
     (w : ℝ → Fin 4 → Fin C → ℝ) (d : ℝ) (hd : 0 ≤ d)
@@ -4460,5 +4476,164 @@ theorem replicated_plane_cutoff_omission (M : ℕ) (hM : 0 < M) :
 
 
 end
+
+#print axioms uniform_bit_expect
+#print axioms replicated_spatial_marginals
+#print axioms replicated_plane_cutoff_omission
+#print axioms replicated_other_pair_far
+#print axioms replicated_local_outcome
+#print axioms replicated_spatial_counterexample
+#print axioms replicated_nodes_separated
+#print axioms replicated_circle_depends_on_pair
+#print axioms replicated_spatial_cutoff_omission
+#print axioms replicated_plane_separation
+#print axioms replicated_plane_circle
+#print axioms spatial_hac_hc0
+#print axioms spatial_all_pairs_zero
+#print axioms spatial_risk_normalization_all_assignments
+#print axioms printed_grid_empty_percentiles
+#print axioms summed_risk_counterexample_bernoulli
+#print axioms binary_companion_counterexample_bernoulli
+#print axioms risk_sampling_probabilities_bernoulli
+#print axioms spatial_toy_raster_amr_formula
+#print axioms expect_abs_bound
+#print axioms marginal_mean_abs_bound
+#print axioms prob_or_le
+#print axioms finite_hajek_error_bound
+#print axioms spatial_grid_position_counterexample
+#print axioms sharp_null_cumulative_test_valid
+#print axioms amr_display_on_valid_circles
+#print axioms positive_radius_band_geometry
+#print axioms constant_radius_effect_for_sampling
+#print axioms common_rescaling_for_percentiles
+#print axioms corrected_spatial_bandwidth_invariant
+#print axioms uniform_average_update
+#print axioms additive_vector_update
+#print axioms replicated_sign_moments
+#print axioms expect_value_fibres
+#print axioms covariance_zero_of_fibres
+#print axioms variance_le_bound_sq
+#print axioms covariance_le_bound_sq
+#print axioms bandwidth_spatial_realization
+#print axioms donut_spatial_distances
+#print axioms polygon_donut_counterexample
+#print axioms prob_as_expect
+#print axioms prob_equiv
+#print axioms univ_four
+#print axioms univ_five
+#print axioms univ_six
+#print axioms expect_const
+#print axioms expect_sub
+#print axioms prob_mono
+#print axioms design_tail_valid
+#print axioms printed_toy_sums
+#print axioms toy_sum_rounding
+#print axioms printed_grid_counterexample
+#print axioms corrected_grid
+#print axioms amr_display
+#print axioms amr_misprint
+#print axioms amr_misprint_witness
+#print axioms band_average_display
+#print axioms band_contains_no_nodes
+#print axioms nested_buffer_average
+#print axioms radial_band_geometry
+#print axioms six_support
+#print axioms blocked_support
+#print axioms contrast_is_hajek
+#print axioms complement_contrast
+#print axioms reference_laws_counterexample
+#print axioms interpolated_percentile_counterexample
+#print axioms linear_functional_complement
+#print axioms six_tail_lower_bound
+#print axioms six_no_five_percent_rejection
+#print axioms normalized_probability_effect
+#print axioms constant_radius_effect
+#print axioms common_rescaling
+#print axioms reported_values_divided_by_four
+#print axioms donut_counterexample
+#print axioms boundary_counterexample
+#print axioms boundary_hajek_counterexample
+#print axioms zero_distance_is_boundary
+#print axioms weighted_integrable
+#print axioms circle_measurable
+#print axioms circle_marginal_identity
+#print axioms circle_effect_identity
+#print axioms amr_integral_identity
+#print axioms sharp_null_implies_weak
+#print axioms additive_switch
+#print axioms additive_point_effect
+#print axioms additive_amr
+#print axioms toy_kernel_lower_bound
+#print axioms toy_amplitude_and_bound
+#print axioms matrix_hac_reduction
+#print axioms binary_regression_weights_residuals
+#print axioms hajek_weighted_contrast
+#print axioms hac_group_hc0
+#print axioms hac_equals_hc0
+#print axioms hac_all_pairs_zero
+#print axioms corrected_bandwidth_invariant
+#print axioms grid_position_counterexample
+#print axioms archived_sixth_row_incompatible
+#print axioms toy_archived_sixth_row_incompatible
+#print axioms toy_cutoff_is_hc0
+#print axioms pair_support
+#print axioms pair_circle_calculation
+#print axioms effect_range_cutoff_counterexample
+#print axioms binary_count_mean
+#print axioms risk_circle_calculation
+#print axioms summed_risk_counterexample
+#print axioms binary_companion_counterexample
+#print axioms observed_count_does_not_identify_law
+#print axioms conditional_tail_valid
+#print axioms bernoulli_given_count_uniform
+#print axioms monte_carlo_rank_valid
+#print axioms additive_score_covariance
+#print axioms circle_outside_effect_range
+#print axioms finite_far_coefficient_zero
+#print axioms distance_to_circle
+#print axioms toy_eight_assignment_mean
+#print axioms weak_not_sharp_example
+#print axioms real_rational_circle
+#print axioms cancelling_circle_masses
+#print axioms homogeneous_additive_amr
+#print axioms sufficient_hajek_consistency
+#print axioms bernoulli_numerator_identity
+#print axioms bernoulli_fraction_moments
+#print axioms dependency_numerator_variance_bound
+#print axioms ratio_deviation_bound
+#print axioms finite_chebyshev
+#print axioms uganda_printed_comparison
+#print axioms printed_toy_rule_rejects
+#print axioms expect_sum
+#print axioms expect_mul_const
+#print axioms expect_probability_bounds
+#print axioms expect_probability_bounds_on_support
+#print axioms circle_probability_bounds
+#print axioms spatial_risk_normalization
+#print axioms expect_add
+#print axioms covariance_raw
+#print axioms variance_sum_covariances
+#print axioms dependence_cutoff_identity
+#print axioms zero_sum_quantiles
+#print axioms block_boundary_is_eight_neighbour
+#print axioms cancelling_schedule_all_designs
+#print axioms integral_far_coefficient_zero
+#print axioms regression_score_sum_zero
+#print axioms regression_all_pairs_zero
+#print axioms replicated_cutoff_variance
+#print axioms variance_mul_const
+#print axioms line_embedding_distance
+#print axioms percentile_spatial_hypotheses
+#print axioms finite_field_percentile_counterexample
+#print axioms spatial_percentile_counterexample
+#print axioms risk_sampling_probabilities
+#print axioms risk_design_and_companion_estimates
+#print axioms effect_range_covariance_omission
+#print axioms bernoulli_good_denominator_bound
+#print axioms common_numerator_means
+#print axioms hajek_ratio_decomposition
+#print axioms raster_zero_summaries
+#print axioms polygon_raster_counterexample
+#print axioms toy_raster_amr_formula
 
 end AronowAudit.P008

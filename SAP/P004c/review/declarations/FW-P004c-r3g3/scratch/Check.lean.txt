@@ -1,0 +1,16 @@
+import AronowAudit.P004.Wave1.IpwBoundCoverage
+import AronowAudit.P004.Wave1.IpwProposition
+import AronowAudit.P004.Wave1.ObservationalCoverage
+import AronowAudit.P004.P004_ConfidenceCompletion
+import AronowAudit.P004.P004_VarianceCompletion
+import AronowAudit.P004.Wave1.Gap.DecideD
+
+-- Inspection only: no new declarations or proofs.
+#check @AronowAudit.P004.Wave1.printed_ipw_bound_and_literal_coverage_refuted
+#check @AronowAudit.P004.Wave1.printed_ipw_proposition_refuted
+#check @AronowAudit.P004.Wave1.printed_observational_coverage_refuted
+#check @AronowAudit.P004.ConfidenceFollowup02.printed_area_sum_refuted
+#check @AronowAudit.P004.Wave1.experimental_wald_coverage_printed_false
+#check @AronowAudit.P004.hajek_homophily_identity
+#check @AronowAudit.P004.hajek_sah_bound
+#print AronowAudit.P004.PrintedCoverage

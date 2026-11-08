@@ -12,9 +12,12 @@ set_option maxRecDepth 3000
 set_option autoImplicit false
 set_option linter.unusedSimpArgs false
 
-/-! P001-T6: the explicitly specified conditional trace.
-The matrix, gating, and conditional-expansion arguments give the diagonal
-formula for the CEF rather than choosing an existential version. -/
+/-! Record 0 (P001-T6): the explicitly specified conditional trace.
+The elementary matrix, gating, and conditional-expansion proofs below are adapted
+from `Gap/GLP0013B5.lean`, record 12. They use the proved `gram_quadratic_form`,
+`gram_unit_of_lower_bound`, and `isCEF_condExp` from `P001_Foundations`.
+The final result specifies the diagonal formula for the CEF rather than choosing
+an existential version. -/
 
 private def wlp001dB1T6_good {n K : ℕ} (c : ℝ) (P : Matrix (Fin n) (Fin K) ℝ) : Prop :=
   ∀ b : Fin K → ℝ, c*(∑ k, (b k)^2) ≤ (∑ i, (P.mulVec b i)^2)/(n : ℝ)
@@ -311,10 +314,11 @@ theorem random_design_noise_conditional_trace {Ω : Type*} [MeasurableSpace Ω] 
     have hh := hemean.le.trans hb
     convert hh using 1 <;> congr!
 
-/-! P001-T8: normalized finite averaged KL.
-The density identity includes zero-density sets and merely SFinite reference
-measures. Its proof takes the RN derivative relative to the normalized finite
-model law, so no sigma-finite reference hypothesis is needed. -/
+/-! Record 7 (P001-T8): normalized finite averaged KL.
+`averaged_kl_entropy_adapter` in `Gap/GP0014B1.lean` proves the full density
+identity, including zero-density sets and merely SFinite reference measures.
+Its proof takes the RN derivative relative to the normalized finite model law,
+so no sigma-finite reference hypothesis is needed. -/
 
 theorem normalized_averaged_kl_entropy_identity {Ω : Type*} [MeasurableSpace Ω]
   (μ : Measure Ω) [IsProbabilityMeasure μ] {K τ : ℕ}

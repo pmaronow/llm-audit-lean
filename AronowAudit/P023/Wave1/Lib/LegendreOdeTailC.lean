@@ -63,7 +63,7 @@ theorem tc08_legendre_odd_zero (m : ℕ) :
   linarith
 
 /-- Initial slope, obtained by integrating the polynomial differential equation
-and using the exact odd half moment. -/
+and using the already proved exact odd half moment. -/
 theorem tc08_legendre_odd_derivative_zero (m : ℕ) :
     (legendreRodrigues (2*m+1)).derivative.eval 0 =
       (-1 : ℝ)^m * (2*(m : ℝ)+1)*centralBinomial m := by
@@ -125,6 +125,15 @@ theorem tc08_hasDerivAt_u (m : ℕ) {t : ℝ}
   · dsimp [tc08_du, Function.comp_def]
     ring
 
+/-- Initial value and derivative, with no asymptotic input. -/
+theorem legendre_transformed_initial (m : ℕ) :
+    tc08_u m 0 = 0 ∧
+    HasDerivAt (tc08_u m) ((-1 : ℝ)^m*(2*(m:ℝ)+1)*centralBinomial m) 0 := by
+  constructor
+  · simp [tc08_u, tc08_legendre_odd_zero]
+  · have ht : (0:ℝ) ∈ Ioo (-(Real.pi/2)) (Real.pi/2) :=
+      ⟨by linarith [Real.pi_pos], by positivity⟩
+    simpa [tc08_du, tc08_legendre_odd_derivative_zero] using tc08_hasDerivAt_u m ht
 
 /-- The explicit derivative satisfies the transformed differential equation. -/
 theorem tc08_hasDerivAt_du (m : ℕ) {t : ℝ}
@@ -152,6 +161,16 @@ theorem tc08_hasDerivAt_du (m : ℕ) {t : ℝ}
     ring_nf at ho hsc hrc
     grind
 
+/-- The transformed Rodrigues polynomial satisfies the exact scalar ODE. -/
+theorem legendre_transformed_ode (m : ℕ) {t : ℝ}
+    (ht : t ∈ Ioo (-(Real.pi/2)) (Real.pi/2)) :
+    deriv (deriv (tc08_u m)) t +
+      ((tc08_frequency m)^2 + 1/(4*(Real.cos t)^2))*tc08_u m t = 0 := by
+  have heq : deriv (tc08_u m) =ᶠ[nhds t] tc08_du m := by
+    filter_upwards [isOpen_Ioo.mem_nhds ht] with s hs
+    exact (tc08_hasDerivAt_u m hs).deriv
+  rw [Filter.EventuallyEq.deriv_eq heq, (tc08_hasDerivAt_du m ht).deriv]
+  ring
 
 /-- The positive squared frequency in the transformed equation. -/
 def tc08_q (m : ℕ) (t : ℝ) : ℝ :=
@@ -498,6 +517,16 @@ theorem tc08_scaled_sine_error (m : ℕ) (hm : 1 ≤ m) {t : ℝ}
       add_le_add (herr.trans herr') hamp
     _ = _ := by ring
 
+/-- Initial value, slope, and second derivative in ordinary derivative notation. -/
+theorem legendre_transformed_initial_derivatives (m : ℕ) :
+    tc08_u m 0 = 0 ∧ deriv (tc08_u m) 0 = tc08_initial m ∧
+      deriv (deriv (tc08_u m)) 0 = 0 := by
+  have hi := legendre_transformed_initial m
+  have ht : (0:ℝ) ∈ Ioo (-(Real.pi/2)) (Real.pi/2) :=
+    ⟨by linarith [Real.pi_pos], by positivity⟩
+  refine ⟨hi.1, hi.2.deriv, ?_⟩
+  have ho := legendre_transformed_ode m ht
+  simpa only [hi.1, mul_zero, add_zero] using ho
 
 /-- An explicit uniform constant, before restricting to a moving endpoint. -/
 theorem legendre_sine_error_explicit (m : ℕ) (hm : 1 ≤ m) {t : ℝ}
@@ -520,5 +549,30 @@ theorem legendre_sine_error_explicit (m : ℕ) (hm : 1 ≤ m) {t : ℝ}
       div_le_div_of_nonneg_right (tc08_scaled_sine_error m hm ht) hr.le
     _ = _ := by ring
 
+/-- C023-ODE: the requested uniform moving-endpoint sine approximation. -/
+theorem legendre_sine_error :
+    let a := fun m : ℕ => (-1 : ℝ)^m * (4*(m : ℝ)+3) * centralBinomial m / (4*(m : ℝ)+4)
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 2 ≤ n → ∀ m : ℕ, n ≤ m →
+      ∀ t ∈ Set.Icc (0 : ℝ) (Real.pi/2 - 1/(n : ℝ)),
+        |a m * (AronowAudit.Literature.legendreRodrigues (2*m+1)).eval (Real.sin t) -
+          Real.sin ((2*(m : ℝ)+3/2)*t) / (Real.pi*(m : ℝ)*Real.sqrt (Real.cos t))| ≤
+          C * (1 + Real.tan t) / ((m : ℝ)^2 * Real.sqrt (Real.cos t)) := by
+  dsimp only
+  refine ⟨1/Real.pi, by positivity, ?_⟩
+  intro n hn m hmn t ht
+  have hnpos : (0:ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+  have ht' : t ∈ Ico (0:ℝ) (Real.pi/2) :=
+    ⟨ht.1, lt_of_le_of_lt ht.2 (sub_lt_self _ (one_div_pos.mpr hnpos))⟩
+  simpa only [tc08_coefficient, tc08_frequency] using
+    legendre_sine_error_explicit m (by omega) ht'
+
+-- The exact component type from the proof program, checked without extra premises.
+example :
+    let a := fun m : ℕ => (-1 : ℝ)^m * (4*(m : ℝ)+3) * centralBinomial m / (4*(m : ℝ)+4)
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 2 ≤ n → ∀ m : ℕ, n ≤ m →
+      ∀ t ∈ Set.Icc (0 : ℝ) (Real.pi/2 - 1/(n : ℝ)),
+        |a m * (AronowAudit.Literature.legendreRodrigues (2*m+1)).eval (Real.sin t) -
+          Real.sin ((2*(m : ℝ)+3/2)*t) / (Real.pi*(m : ℝ)*Real.sqrt (Real.cos t))| ≤
+          C * (1 + Real.tan t) / ((m : ℝ)^2 * Real.sqrt (Real.cos t)) := legendre_sine_error
 
 end AronowAudit.P023.Wave1

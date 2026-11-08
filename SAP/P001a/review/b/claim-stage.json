@@ -1,0 +1,116 @@
+[
+  {
+    "theorem": "SAP.P001a.T1",
+    "target_id": "P001-T1",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The actual geometric and shifted-mixture masses, finite moments, mean quotient, variance limit, and uniform zero-direction limit agree with the canonical counterexample. It does not separately assert the base variance, support equality, shifted-CDF identities, exact sup-norm expression, finite 1/n bound, or a generic negation of Hadamard differentiability. The retained zero-direction witness does contradict the printed differentiability implication; no hypotheses make it vacuous."
+  },
+  {
+    "theorem": "SAP.P001a.T2",
+    "target_id": "P001-T2",
+    "my_reading_vs_claim": "whole",
+    "reason": "The empirical integral identity and finite-positive-variance iid CLT are the canonical part (i). The conjunction with T1 supplies precisely the finite-variance zero-direction sequence required by canonical part (ii); an abstract Hadamard predicate is unnecessary for that explicit witness formulation. MemLp 2 enforces the standing finite-expectation convention. Standard normal iid coordinates give a positive-variance instance."
+  },
+  {
+    "theorem": "SAP.P001a.T3",
+    "target_id": "P001-T3",
+    "my_reading_vs_claim": "whole",
+    "reason": "The fixed bounded independent gap/uniform distribution, support, continuous differentiable CEF extensions, arbitrary derivative at the mean, and explicit negation of the universal printed contract match the canonical counterexample. Global CEF versions legitimately express the distribution's a.e. conditional mean, and the displayed functions agree pointwise on the specified positive-density support. There are no input premises."
+  },
+  {
+    "theorem": "SAP.P001a.T4",
+    "target_id": "P001-T4",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Equality of continuous CEF versions on U is placed under the premise that one already has a coordinate derivative at the mean. The canonical equality-on-U assertion needs no such premise. The theorem also takes global measurable integrable CEF representatives rather than just local continuous representatives. The derivative-transfer conclusion is otherwise correct and nonvacuous for one-dimensional uniform covariates and Y=0."
+  },
+  {
+    "theorem": "SAP.P001a.T5",
+    "target_id": "P001-T5",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It retains the exact three-quarter-power degree counterexample and fourth-power-subsequence local integrated-squared-error lower limit. It assumes an everywhere least-squares fit has been supplied, does not assert a measurable selection exists, and omits the separate square-root-degree endpoint probability bound. Finite-dimensional least squares supplies a measurable fit on the iid uniform/Gaussian product experiment. Polynomial integrals are finite and the liminf is of bounded probabilities."
+  },
+  {
+    "theorem": "SAP.P001a.T6",
+    "target_id": "P001-T6",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Stable-Gram integrated-L2 consistency, an envelope sufficient rate, and uniform-on-any-interval cubic-rate stability are retained. The explicit envelope and finite deviation bound are exported only for [0,1], and fit existence is not asserted. A supplied finite a.e. row envelope replaces a supremum; the first clause only needs a.e. interval containment rather than exact support, a valid generalization. Uniform covariates, Legendre polynomials, independent Gaussian noise, and degree floor(n^(1/4)) satisfy the substantive premises."
+  },
+  {
+    "theorem": "SAP.P001a.T7",
+    "target_id": "P001-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact four atoms, unique clipped Bernoulli MLE, finite probability bounds, wrong conditional targets, averaged-KL minimizer, and dependence of the limit on the covariate marginal agree. The displayed KL derivative formulas and exact positive averaged-KL gap are absent. The finite law is normalized and has strictly positive conditioning-cell probabilities at the two interior designs; all logs and divisions used as KL quantities have positive arguments."
+  },
+  {
+    "theorem": "SAP.P001a.T8",
+    "target_id": "P001-T8",
+    "my_reading_vs_claim": "different",
+    "reason": "Correction of the initial narrower verdict for a definition/quantifier misreading: Defs/Part2.lean:25 uses Real.log, whose value at zero is zero; Defs/Part3.lean:201 assumes domination separately for each fixed parameter, not positivity for all parameters on one common full-probability set. The approximate-log-maximizer branch at Part3.lean:215 therefore admits a zero-extended objective differing from ordinary log likelihood. A normalized uniform-on-[0,1] density family with a zero at y=t satisfies the formal uniform envelope (even including n=0) while its ordinary log-likelihood uniform error is infinite with probability tending to one. It can select an estimate with likelihood zero when another parameter has likelihood one. Thus the definition introduces a different objective in addition to the disclosed n=0 restriction. See Referee.log_likelihood_optimizer_mismatch in scratch/Check.lean and the full countermodel in REPORT.md. The identity and extended-KL clauses are not affected by this objection."
+  },
+  {
+    "theorem": "SAP.P001a.T9",
+    "target_id": "P001-T9",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It states unbounded likelihood along the exact specified normal-scale-collapse path on (1,2,3), and no admissible global maximum. It omits the componentwise lower bounds, explicit C/scale bound, chosen scale, and general positive-sample path and bound. The latter unboundedness conclusion is separately present in T10. Positivity of scales/rate excludes zero-division conventions in all admissible densities."
+  },
+  {
+    "theorem": "SAP.P001a.T10",
+    "target_id": "P001-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both formal clauses match: unboundedness/no maximum for every nonempty positive sample, and compactness, continuity and attainment on every nonempty displayed bounded parameter restriction with positive lower scales/rate. The second clause additionally allows the harmless empty sample, whose likelihood is one. B=S=delta=a=b=1 yields a nonempty compact restriction."
+  },
+  {
+    "theorem": "SAP.P001a.T11",
+    "target_id": "P001-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It retains the exact compact four-category model, distinct indistinguishable truths, normalized identical finite iid experiments, finite two-target bound, impossibility for every estimator, and an attained MLE selection failing at a truth. It omits the separate likelihood upper bound of one and binomial-count rewriting. All four-category sample index sets are nonempty, including the singleton empty sample, and the probabilities sum to one."
+  },
+  {
+    "theorem": "SAP.P001a.T12",
+    "target_id": "P001-T12",
+    "my_reading_vs_claim": "different",
+    "reason": "Correction of the initial narrower verdict for a definition/quantifier misreading: the standalone consistency clause assumes only forall t in Theta, almost surely positivity (Defs/Part4.lean:80), while its all-parameter sample-log maximization uses the zero-extended Real.log objective (Part2.lean:25; Part4.lean:88). The quantifiers do not yield a common full-probability set for all t. The normalized one-point-notched uniform family satisfies its compactness, unique population maximum, pointwise positivity and formal uniform-envelope premises, yet ordinary ML and formal sample-log maximizers differ. The normality/efficiency clause separately has the needed common-set positivity at Part4.lean:135; this objection concerns the independent consistency clause. The disclosed n=0/QMD/integrability restrictions remain accurate but are not a complete account of the changed consistency statement. See scratch/Check.lean and REPORT.md."
+  },
+  {
+    "theorem": "SAP.P001a.T13",
+    "target_id": "P001-T13",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The hot-deck design and exact unbiasedness, sampling-variance limit, bootstrap-variance expectation limit, strict gap, variance inconsistency, uniform scaled second-moment bound and occupancy inequalities agree. The theorem adds all-n L2 premises for the statistic and bootstrap variance, and omits separate MAR/MCAR/overlap/continuous-score assertions, root-n tightness, the UI predicate and standard-error conclusion. The bounded iid matching experiment supplies nonvacuous instances. The mathematical witness refutes the general bias-only assurance, not the empirical numbers or a literal probabilistic interpretation of the hedged footnote."
+  },
+  {
+    "theorem": "SAP.P001a.T14",
+    "target_id": "P001-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It retains the explicit hot-deck bootstrap-failure example and exact fixed-score/response weighted-sign mean and variance identities. The iid clause adds all-n L2 premises and does not separately assert the admissibility predicates, root-n tightness or interval/empirical-SE claims. Conditional variance is represented by integrating independent fair signs with scores/responses fixed. The no-responder case has statistic 50 and weights zero, so the finite identity does not exploit an undefined donor."
+  },
+  {
+    "theorem": "SAP.P001a.T15",
+    "target_id": "P001-T15",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The asymptotic failure clause concerns true-score matching, and a separate clause gives consistency of the clipped intercept estimate. It does not assert failure for the estimated-score statistic or equality of the true and estimated matching procedures, which the canonical target includes. It also adds all-n L2 premises and omits separate design admissibility, tightness, gap-decomposition and standard-error assertions. These are substantive restrictions, although T16 separately covers the estimated-score result."
+  },
+  {
+    "theorem": "SAP.P001a.T16",
+    "target_id": "P001-T16",
+    "my_reading_vs_claim": "narrower",
+    "reason": "It retains estimated-score bootstrap failure, intercept consistency, exact donor/statistic invariance under the common score translation, and the conditional weighted-control-sign variance identity. It adds all-n L2 premises and omits separate design-admissibility and root-n-tightness predicates, standard-error/interval assertions, the distinct no-root-n-guarantee result, and the first-step-adjusted parametric variance estimator. Constant translations preserve the full minimizer predicate, including ties; fixed finite control-score vectors give nonvacuous conditional instances."
+  },
+  {
+    "theorem": "SAP.P001a.T17",
+    "target_id": "P001-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The twelve-atom law, exact conditional-independence/ignorability witness, positivity, conditional placebo variance, unique risk minimizers, a.s. scaled F/Wald limits and rejection probabilities match. The displayed 240 quantities are population-risk arithmetic and do not certify an actual proportional-count sample and its OLS residuals. The separate population-moment list and pre-treatment assertion are absent. Independent exact rational calculation verifies the risks, determinant and both limit constants; the iid finite-law experiment exists."
+  },
+  {
+    "theorem": "SAP.P001a.T18",
+    "target_id": "P001-T18",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The entire exact formal-content assertion is present: conditional-mean preservation, optimality and uniqueness of (gamma,0), and failure without a linear CEF. It does not assert the corrected passage's further robust covariance consistency, asymptotic joint-test calibration or interpretation. Its finite L2, binary nondegeneracy and nonsingular moment assumptions are appropriate to the canonical population regression result. Independent binary X,W,D with K=L=1 give a concrete full-rank instance."
+  },
+  {
+    "theorem": "SAP.P001a.T19",
+    "target_id": "P001-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "After the harmless reindexing k↦k+1, the exact positive cell masses, arm totals, interior propensities and absence of a uniform margin agree. Positive masses on every index represent equal complete discrete arm supports, but no separate support/distribution predicate is asserted. The explicit 4/(k+6) rate and ceiling-selected covariate are omitted. Both totals are 1/2, so this is a genuine probability witness rather than a zero/unnormalized law."
+  }
+]

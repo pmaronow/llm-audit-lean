@@ -12,8 +12,10 @@ import Mathlib.Algebra.Polynomial.Sequence
 import Mathlib.Tactic.FunProp
 
 /-!
-Sampling bounds for regression matrices and a corrected Proposition 2,
-using polynomial projection, Legendre formulas, and Jackson approximation.
+Exact proofs for the remaining records 10 and 12. The frozen GLP023B4 import
+supplies record 13. New helpers use the GLP023B4c_ prefix. The population and
+Legendre code below restates completed same-project proofs with attribution;
+all final contracts are proved without additional hypotheses.
 -/
 
 namespace AronowAudit.P023.Wave1
@@ -24,8 +26,8 @@ open Finset MeasureTheory Set Filter
 
 local instance GLP023B4c_instDecidable (p : Prop) : Decidable p := Classical.propDecidable p
 
-/-! Almost everywhere measurability of a conditional mean descends through
-the first-coordinate marginal. -/
+/-! The arbitrary conditional mean in the matrix contract needs descent of
+almost everywhere measurability through the first-coordinate marginal. -/
 
 lemma GLP023B4c_marginal_measurable (ν : Measure (ℝ × ℝ)) [IsFiniteMeasure ν]
     (m : ℝ → ℝ) (hm : AEStronglyMeasurable (fun z : ℝ × ℝ => m z.1) ν) :
@@ -649,8 +651,8 @@ lemma GLP023B4c_sample_quad {Ω : Type*} (sample : ℕ → Ω → ℝ × ℝ)
         (fun i => party (sample i ω).1)) v i ^ 2)/(N:ℝ) := by
   let X := polynomialDesign J (fun i : Fin N => (sample i ω).1)
     (fun i => party (sample i ω).1)
-  -- The column identity is a finite-sum calculation, applied before summing against v.
-  
+  -- The column identity is the finite-sum calculation used in
+  -- GP023B1b_sample_normal, applied before summing against v.
   have he (j : Fin (J+2)) : GLP023B4c_apply J (sampleGram sample N J ω) v j =
       dot (fun i => X i j) (predict X v)/(N:ℝ) := by
     unfold GLP023B4c_apply sampleGram dot predict X
@@ -818,7 +820,11 @@ local instance GLP023B4c_T8_instDecidable (p : Prop) : Decidable p := Classical.
 set_option maxRecDepth 2048
 set_option linter.style.haveILetI false
 set_option linter.unusedSimpArgs false
-/-! Population normal equations and Legendre formulas. -/
+/-!
+The following population and Legendre helpers are restated from the completed
+sibling GLP023B3.lean in this project's lw-GLP023B3 worktree. Names have been
+prefixed for this module; its external-source attribution is retained below.
+-/
 def GLP023B4c_T8_cpb_Bounded (f : ℝ → ℝ) : Prop :=
   Measurable f ∧ ∃ B, ∀ x ∈ Icc (-1 : ℝ) 1, |f x| ≤ B
 
@@ -1312,16 +1318,16 @@ theorem GLP023B4c_T8_bias_contract (ν : Measure (ℝ × ℝ))
       exact (mul_le_mul_iff_left₀ hsv).mp (by simpa only [mul_comm] using hlow.trans htinf)
 
 
-/-! Analytic Legendre formulas. -/
+
+/-! Record 9: a local port of the analytic Legendre machinery. -/
 /-
 Copyright (c) 2026 Wouter Deconinck. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Wouter Deconinck
 
 Source: EpsilonEridani, commit bfe8fdb3279de1c45eb1f5b9713f44f0c016f84c,
-`Mathematics.Calculus.Polynomial` and `SpecialFunctions.Legendre.Basic`.
-Adapted to a local namespace.
-See NOTICE at the repository root.
+Mathematics/Calculus/Polynomial.lean and SpecialFunctions/Legendre/Basic.lean.
+Changes: unique record prefixes, local namespace, and Lean 4.34.1 compatibility.
 -/
 open Polynomial
 section GLP023B4c_T8_urcPort
@@ -1342,6 +1348,7 @@ theorem GLP023B4c_T8_urc_integral_derivative_mul_derivative_mul_comm (w p q : �
     (fun x _ => Polynomial.differentiableAt _) (Polynomial.continuous _).continuousOn]
   -- the leading coefficient `w` vanishes at both endpoints, so the boundary term drops
   simp only [eval_mul, ha, hb, zero_mul, sub_self]
+
 
 
 noncomputable def GLP023B4c_T8_urc_legendre : ℕ → ℝ[X]
@@ -1375,6 +1382,26 @@ theorem GLP023B4c_T8_urc_add_two_mul_legendre_add_two_eval (n : ℕ) (x : ℝ) :
   simpa using congrArg (eval x) (GLP023B4c_T8_urc_add_two_mul_legendre_add_two n)
 
 
+theorem GLP023B4c_T8_urc_legendre_add_two_eval (n : ℕ) (x : ℝ) : (GLP023B4c_T8_urc_legendre (n + 2)).eval x =
+    ((2 * n + 3) * x * (GLP023B4c_T8_urc_legendre (n + 1)).eval x - (n + 1) * (GLP023B4c_T8_urc_legendre n).eval x) / (n + 2) := by
+  rw [eq_div_iff (by positivity), mul_comm]
+  exact GLP023B4c_T8_urc_add_two_mul_legendre_add_two_eval n x
+
+
+theorem GLP023B4c_T8_urc_legendre_two : GLP023B4c_T8_urc_legendre 2 = C 2⁻¹ * (3 * X ^ 2 - 1) := by
+  rw [GLP023B4c_T8_urc_legendre_add_two]
+  simp only [Nat.cast_zero, zero_add, mul_zero, GLP023B4c_T8_urc_legendre_one, GLP023B4c_T8_urc_legendre_zero]
+  ring
+
+
+theorem GLP023B4c_T8_urc_legendre_three : GLP023B4c_T8_urc_legendre 3 = C 2⁻¹ * (5 * X ^ 3 - 3 * X) := by
+  refine Polynomial.funext fun x => ?_
+  rw [GLP023B4c_T8_urc_legendre_add_two_eval, GLP023B4c_T8_urc_legendre_two]
+  simp only [Nat.cast_one, GLP023B4c_T8_urc_legendre_one, eval_mul, eval_sub, eval_C, eval_X, eval_pow, eval_ofNat,
+    eval_one]
+  ring
+
+
 @[simp] theorem GLP023B4c_T8_urc_legendre_eval_one (n : ℕ) : (GLP023B4c_T8_urc_legendre n).eval 1 = 1 := by
   induction n using Nat.twoStepInduction with
   | zero => simp
@@ -1401,6 +1428,10 @@ theorem GLP023B4c_T8_urc_legendre_comp_neg_X (n : ℕ) : (GLP023B4c_T8_urc_legen
 @[simp] theorem GLP023B4c_T8_urc_legendre_eval_neg (n : ℕ) (x : ℝ) :
     (GLP023B4c_T8_urc_legendre n).eval (-x) = (-1) ^ n * (GLP023B4c_T8_urc_legendre n).eval x := by
   simpa using congrArg (eval x) (GLP023B4c_T8_urc_legendre_comp_neg_X n)
+
+
+theorem GLP023B4c_T8_urc_legendre_eval_neg_one (n : ℕ) : (GLP023B4c_T8_urc_legendre n).eval (-1) = (-1) ^ n := by
+  simp [GLP023B4c_T8_urc_legendre_eval_neg]
 
 
 theorem GLP023B4c_T8_urc_add_two_mul_coeff_legendre_add_two (n k : ℕ) :
@@ -1595,6 +1626,12 @@ theorem GLP023B4c_T8_urc_integral_legendre_mul_legendre (m n : ℕ) :
     exact GLP023B4c_T8_urc_integral_legendre_mul_self m
   · exact GLP023B4c_T8_urc_integral_legendre_mul_legendre_of_ne h
 
+
+theorem GLP023B4c_T8_urc_setIntegral_Icc_legendre_mul_legendre (m n : ℕ) :
+    ∫ x in Set.Icc (-1 : ℝ) 1, (GLP023B4c_T8_urc_legendre m).eval x * (GLP023B4c_T8_urc_legendre n).eval x =
+      if m = n then (2 / (2 * n + 1) : ℝ) else 0 := by
+  rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by norm_num),
+    GLP023B4c_T8_urc_integral_legendre_mul_legendre]
 
 end Orthogonality
 
@@ -1949,7 +1986,9 @@ lemma GLP023B4c_T8_urc_variance (J : ℕ) : residualVariance uniformMargins J =
     ring
 
 
-/-! Local density and projection comparison. -/
+
+/-! Local density and projection comparison, adapted from the same-project
+FullRankTailC and DensityComparisonTailC drafts in dx-tc09. -/
 /-- A polynomial version of a design column with the party value fixed. -/
 def GLP023B4c_T8_column_polynomial (J : ℕ) (j : Fin (J+2)) (d : ℝ) : Polynomial ℝ :=
   if j.val=0 then 1 else if j.val=1 then C d else X^(j.val-1)
@@ -2090,6 +2129,7 @@ theorem GLP023B4c_T8_density_integral_domination (μ : Measure ℝ) (c δ : ℝ)
   have hi := integral_mono_measure (GLP023B4c_T8_density_measure_domination μ c δ hdom)
     (Filter.Eventually.of_forall hn) hf
   simpa only [integral_smul_measure, ENNReal.toReal_ofReal hc, smul_eq_mul] using hi
+
 
 
 lemma GLP023B4c_T8_projection_minimum (μ : Measure ℝ) (hprob : ProbabilityLaw μ)
@@ -2860,6 +2900,7 @@ lemma GLP023B4c_T8_side_bound {Ω : Type*} (sample : ℕ → Ω → ℝ × ℝ)
   exact (div_le_iff₀ hc).mpr hH
 
 
+
 lemma GLP023B4c_T8_rd_limit {Ω : Type*} [MeasurableSpace Ω]
     (P : Measure Ω) (ν : Measure (ℝ × ℝ)) (sample : ℕ → Ω → ℝ × ℝ)
     (α β : ℝ) (h : ℝ → ℝ) (c δ L σ2 : ℝ)
@@ -3061,6 +3102,8 @@ theorem corrected_proposition2_proof {Ω : Type*} [MeasurableSpace Ω]
   · exact GLP023B4c_T8_slow_degree (smallestMomentEigenvalue μ) (fun J hJ =>
       (GLP023B4c_rayleigh μ hpμ hs J (hpd J hJ)).1)
 
+example : type_of% @AronowAudit.P023.corrected_proposition2 := corrected_proposition2_proof
+
 end
 
 theorem iid_regression_matrix_bounds_proof {Ω : Type*} [MeasurableSpace Ω]
@@ -3086,6 +3129,8 @@ theorem iid_regression_matrix_bounds_proof {Ω : Type*} [MeasurableSpace Ω]
       (2/ell)*(Real.sqrt (vectorSquared J (Δt ω))+
         matrixOperatorNorm J (ΔG ω)*Real.sqrt (M/ell))) := by
   exact GLP023B4c_matrix_contract P ν sample hiid hprob hsupport hsq m hmean J hJ hpd N hN
+
+example : type_of% @AronowAudit.P023.iid_regression_matrix_bounds := iid_regression_matrix_bounds_proof
 
 end
 end AronowAudit.P023.Wave1

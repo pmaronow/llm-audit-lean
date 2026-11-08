@@ -1,0 +1,98 @@
+[
+  {
+    "theorem": "SAP.P017.T1",
+    "target_id": "P017-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "The explicit independent uniform/Rademacher/Bernoulli population, potential outcomes, observed IPW summand, exact moments, IID CLT, both positive-probability endpoint events and obstruction for every admissible full-data weight match (a)-(f). The product w*tau is integrable under the weight hypotheses because 0<tau<1 almost surely, so the weighted integral is genuine. Both bad events have mass 4^(-n)>0 for each n>=1."
+  },
+  {
+    "theorem": "SAP.P017.T2",
+    "target_id": "P017-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The atom-or-positive-mass-on-both-sides characterization and all three extended-support consequences are exact for measurable integrable effects. It omits the specified normalized atom indicator and its bound, the specified two-region mixture, the conditional means, mixture coefficient and inequalities, boundedness and explicit normalized moments of those constructions. An unspecified normalized atom witness remains. These omissions are listed in the Challenge docstring. A fair law on {-1,1} with tau=id and w=1 gives an interior instance, and w=2*1_{tau=1} gives an endpoint instance."
+  },
+  {
+    "theorem": "SAP.P017.T3",
+    "target_id": "P017-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The support-hull bound, exact interior-or-endpoint-atom criterion, strict-inside identity and representation, endpoint-mass sufficient condition, infinite-radius case, and both probability limits match the canonical correction. The explicit comparisons L<=mu-c and mu+c<=U and the finite-valued-effects sufficient case are not separately stated; the docstring discloses both omissions. Positive-radius hypotheses are consistent, for example a fair {-1,1} effect and a centered normal estimate divided by sqrt(n)."
+  },
+  {
+    "theorem": "SAP.P017.T4",
+    "target_id": "P017-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "It quantifies every positive finite d below the population radius, all real estimates without a sampling or normality assumption, and the representation and repaired finite companions. Existence, c/2 for finite c, arbitrary finite d for infinite c, support characterization, and the original-radius endpoint condition are retained. The larger-radius obstruction supplies a value fixed by the larger clip but changed by d, so the larger support condition cannot ensure equality for the repaired target. Fair {-1,1} effects with d=1/2 are a nonempty instance."
+  },
+  {
+    "theorem": "SAP.P017.T5",
+    "target_id": "P017-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "The specified normal/Rademacher IID model and shifted estimator M_n+1/n are retained, with mean zero, support {-1,1}, radius one, exact normal law and decomposition. The three pieces of D_n, its unique zero M_n=1, probability-one nonzero intermediate error, normal tail and Chebyshev bound, central event and actual zero clipping error, n*D_n->-1, and failure of o_p(1/n) all match. They refute the intermediate claim printed in the proof, not Proposition 3 itself. All finite-sample divisions use n>=1."
+  },
+  {
+    "theorem": "SAP.P017.T6",
+    "target_id": "P017-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "The same shifted normal witness satisfies the stipulated mean-square remainder hypothesis. At n=25 the central event has probability at least 21/25, intermediate squared error 1/625 and the stated bounds on the shifted estimator. Its mean square is at least 21/15625; the genuine Gaussian tail integral is at most the sixth moment 15/15625, leaving a positive gap at least 6/15625. Both actual and intermediate true o(1/n) mean-square conclusions remain. Thus the refutation addresses precisely the printed zero-region and tail-bound errors."
+  },
+  {
+    "theorem": "SAP.P017.T7",
+    "target_id": "P017-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Under root-n asymptotic normality it states all the claimed pointwise zero/error-event bounds, tightness, consistency, error o_p(a_n) for every positive deterministic sequence, the root-n error limit, and the infinite-radius identity. RootNNormal is an outer hypothesis for every conclusion; no separate consistency-only formulation is present. The canonical final assertion that consistency alone yields all of (a)-(c), including root-n tightness in (b), is false: deterministic estimates mu+n^(-1/4) are consistent but their root-n errors are unbounded. The docstring explicitly drops that assertion and the standalone consistency-only formulation. Positive-radius fair effects and an exact centered normal/sqrt(n) estimate satisfy the retained hypotheses."
+  },
+  {
+    "theorem": "SAP.P017.T8",
+    "target_id": "P017-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "All finite Lipschitz and residual inequalities, fourth moment, mean-square bounds for the actual and intermediate errors, both limits, auxiliary clipped-normal tail interpretation, and infinite-radius actual zero error are present. The radius and mean are generalized to arbitrary positive real c and real mu, which includes the canonical population values and imposes no extra population condition. No independence is assumed. NormalRemainder ensures the square integrals are finite for n>=1. An exact normal component with zero remainder is a concrete consistent instance. The infinite-radius clause legitimately integrates an identically zero function, even for an arbitrary measure."
+  },
+  {
+    "theorem": "SAP.P017.T9",
+    "target_id": "P017-T9",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem explicitly NEGATES the printed universal representation assertion rather than asserting its positive content. This is an advertised refutation. It retains measurable integrable effects, positive radius, empirical-observation factorization, and root-n asymptotic normality, and negates the all-n/all-realization representation conclusion. The universal has no IID data-law constraint and no positive-probability requirement for the bad realization; the canonical literal all-realization assertion likewise gives no sampling scheme. Crucially a genuine IID witness exists: T1's IPW estimator is a function of the empirical observed measure and its unattainable endpoint events have probability 4^(-n). Hence the refutation also defeats the sampling-induced and positive-probability readings, without depending on an artificial data law or null outlier."
+  },
+  {
+    "theorem": "SAP.P017.T10",
+    "target_id": "P017-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The support-containment condition gives exactly support inclusion, probability one in the clipping interval, equality of zero-error and inside events, and probability-one equality. The conditional probability-zero consequence is scoped under that condition, so its antecedent is impossible there; this matches the canonical (c), explicitly described as a contradiction check on the printed numeral, and does not make the corollary's hypotheses inconsistent. Full real effect support yields infinite radius and the identity clip; support [0,infinity) and positive negative-estimate probability give radius mu, failure of the support condition, and the strict loss bound. Instances: fair {-1,1} effects and a constant-zero estimator; Gaussian effects for full support; an exponential effect law and a constant negative estimator for the one-sided case."
+  },
+  {
+    "theorem": "SAP.P017.T11",
+    "target_id": "P017-T11",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The Lebesgue tail integral and exact displayed closed form have the correct coefficients and normal variance convention, with n>=1,c>0,sigma>0. The o(1/n) and every-positive-real-power limits are retained. The truncated Gaussian second-moment interpretation, standardized integral identity, and scale-s density/CDF expression are omitted as explicitly disclosed. The parameter hypotheses are nonempty, for instance n=c=sigma=1, and the integrand is integrable under them."
+  },
+  {
+    "theorem": "SAP.P017.T12",
+    "target_id": "P017-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact IID four-component model, any positive vanishing p_n<=1, uniform fractional sum, independence, Gaussian-plus-small-probability remainder, all exact rare-outlier/error/support events, logarithmic values and slow rates, squared-error bounds, failure of the mean-square remainder condition and Proposition 3 limit are preserved. The continuous effect component is one quarter times length measure on [-1,1], correctly giving total mass one half. The only missing canonical construction is the eventual formula p_n=sqrt(r_n) for the comparison-rate witness: only existence and p_n/r_n->infinity are stated, and the docstring declares this. For example p_n=1/(n+1) satisfies all sequence hypotheses; the special logarithmic p_n is another nonempty instance."
+  },
+  {
+    "theorem": "SAP.P017.T13",
+    "target_id": "P017-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "It states the exact clipping-interval/zero-error event equality for all n, the probability-one limit under the canonical hypotheses, an explicit fixed population and estimator family realizing every positive vanishing failure sequence, and the finite normal-plus-remainder union bound with the uncontrolled remainder probability retained. The explicit fixed slow population supplies the existential law required by (c). No independence or tail-rate assumption is added to (d). Fair effects/exact-normal estimates and p_n=1/(n+1) are concrete instances."
+  },
+  {
+    "theorem": "SAP.P017.T14",
+    "target_id": "P017-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is Proposition 3's actual root-n-scaled estimator-minus-clipped-target error limit under finite-mean effects, positive extended radius and nondegenerate root-n asymptotic normality. It does not substitute the normal intermediate error, restrict the sampling law to IID, or exclude infinite radius. RootNNormal supplies AE measurability for all relevant positive n. A fair {-1,1} effect and an exact centered normal/sqrt(n) estimate satisfy the hypotheses."
+  },
+  {
+    "theorem": "SAP.P017.T15",
+    "target_id": "P017-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is exactly Proposition 4's n*E[(hat-target)^2]->0 under the Gaussian-plus-square-integrable-remainder decomposition with sqrt(n)*E[epsilon_n^2]->0 and positive population radius. GaussianReal's parameter v is the positive finite variance. All positive-n square integrals are genuinely finite by the decomposition. There is no independence hypothesis and infinite radius is permitted. Exact normal/sqrt(n) estimates with zero remainder over fair {-1,1} effects jointly satisfy every hypothesis."
+  },
+  {
+    "theorem": "SAP.P017.T16",
+    "target_id": "P017-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "It gives exactly Proposition 2's bounded-in-probability root-n target-minus-population-mean conclusion and its printed pointwise contraction inequality. It deliberately does not impose positive radius, so constant effects (radius zero) and support unbounded both ways (infinite radius) are included. The definitions use an integrable effect and extended support bounds, so nonnegative-radius conversion is harmless. Concrete populations include a Dirac effect, a fair {-1,1} effect, and a standard Gaussian effect, with exact centered normal/sqrt(n) estimates."
+  }
+]

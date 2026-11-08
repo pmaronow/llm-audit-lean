@@ -1,12 +1,15 @@
 import AronowAudit.P002.Wave1.AlgorithmSupportBlueprint
 
 /-!
-# P002-T23: corrected (H.1) on every Algorithm 1 gap
+# Blueprint: P002-T23, corrected (H.1) on every Algorithm 1 gap
 
-Supplement p. 45, display (H.1), with the corrected square on the absolute critical value,
-for the paper's data-generated AR coefficients under Assumptions 6/7.
-`Algorithm1Run` contains the complete sorted intersection list and the prescribed gap
-samples; no interval-wide validity is assumed.
+Record P002-T23 (`AronowAudit.P002.corrected_H1`, resolution `repair_and_prove`).
+Supplement p. 45, display (H.1) with the corrected square on the absolute critical value,
+for the paper's data-generated AR coefficients under Assumptions 6/7. The frozen draft is
+admitted and is not used. `Algorithm1Run` already contains the complete sorted
+intersection list and the prescribed gap samples; no interval-wide validity is assumed.
+
+Nodes: shared `AlgorithmSupport.N2`-`N6`.
 -/
 
 namespace AronowAudit.P002.Wave1.H1
@@ -15,7 +18,7 @@ open scoped BigOperators ENNReal Matrix Topology
 open Filter MeasureTheory
 attribute [local instance] Classical.propDecidable
 
-/-- Corrected (H.1) on every recorded Algorithm 1 gap. -/
+/-- Frozen final statement of `AronowAudit.P002.Wave1.H1_paper`. -/
 def Target : Prop :=
   ∀ (M : ℕ) (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR) (α : ℝ),
     0 < M → (0 < α ∧ α < 1) → DataGeneratedCoefficients Qf Qg →
@@ -30,7 +33,7 @@ def Target : Prop :=
         g p.index β = (mcCritical g α β) ^ 2) ∧
       pieceSet f g p = mcSet f g α ∩ closedInterval p.left p.right
 
-/-- The Algorithm 1 support statements imply the corrected gap formula. -/
+/-- The nodes suffice. -/
 theorem assemble (h2 : AlgorithmSupport.N2) (h3 : AlgorithmSupport.N3)
     (h4 : AlgorithmSupport.N4) (h5 : AlgorithmSupport.N5) (h6 : AlgorithmSupport.N6) :
     Target := by

@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -191,6 +190,49 @@ private theorem halfLine_gridCover
             · by_cases hxu : x < q j.succ <;>
                 simp [hi, hjump, openHalfLineIndicator, halfLineIndicator, hx, hxu]
 
+/-- Finite `L¹(P)` bracketing at every positive scale, with strict bracket
+width `< ε` as required by `IsEpsBracket`. -/
+theorem halfLine_hasFiniteBracketingCover_L1
+    (P : Measure ℝ) [IsProbabilityMeasure P] {ε : ℝ} (hε : 0 < ε) :
+    HasFiniteBracketingCover halfLineIndicatorClass ε 1 P := by
+  let n : ℕ := ⌈2 / ε⌉₊
+  have hn : 2 / ε ≤ (n : ℝ) := Nat.le_ceil _
+  have htwo : 2 ≤ ε * n := by
+    rw [div_le_iff₀ hε] at hn
+    simpa [mul_comm] using hn
+  have hgrid : 1 / (n + 2 : ℝ) ≤ ε / 2 := by
+    rw [div_le_iff₀ (by positivity : (0 : ℝ) < n + 2)]
+    nlinarith
+  have hstrict : (ENNReal.ofReal (ε / 2)) ^ (1 / (1 : ℝ≥0∞).toReal) <
+      ENNReal.ofReal ε := by
+    norm_num
+    exact ENNReal.ofReal_lt_ofReal_iff hε |>.2 (half_lt_self hε)
+  obtain ⟨l, u, hbr, hcov⟩ := halfLine_gridCover P n 1 ε (by norm_num) (by norm_num)
+    hgrid hstrict
+  exact ⟨2 * n + 3, l, u, hbr, hcov⟩
+
+/-- Finite `L²(P)` bracketing at every positive scale. The grid mesh is
+chosen strictly below `δ²`, not merely at most `δ²`. -/
+theorem halfLine_hasFiniteBracketingCover_L2
+    (P : Measure ℝ) [IsProbabilityMeasure P] {δ : ℝ} (hδ : 0 < δ) :
+    HasFiniteBracketingCover halfLineIndicatorClass δ 2 P := by
+  let n : ℕ := ⌈2 / δ ^ 2⌉₊
+  have hδsq : 0 < δ ^ 2 := sq_pos_of_pos hδ
+  have hn : 2 / δ ^ 2 ≤ (n : ℝ) := Nat.le_ceil _
+  have htwo : 2 ≤ δ ^ 2 * n := by
+    rw [div_le_iff₀ hδsq] at hn
+    simpa [mul_comm] using hn
+  have hgrid : 1 / (n + 2 : ℝ) ≤ δ ^ 2 / 2 := by
+    rw [div_le_iff₀ (by positivity : (0 : ℝ) < n + 2)]
+    nlinarith
+  have hstrict : (ENNReal.ofReal (δ ^ 2 / 2)) ^ (1 / (2 : ℝ≥0∞).toReal) <
+      ENNReal.ofReal δ := by
+    rw [show 1 / (2 : ℝ≥0∞).toReal = (1 / 2 : ℝ) by norm_num,
+      ENNReal.ofReal_rpow_of_pos (by positivity), ← Real.sqrt_eq_rpow]
+    exact ENNReal.ofReal_lt_ofReal_iff hδ |>.2 <| (Real.sqrt_lt' hδ).2 (by nlinarith)
+  obtain ⟨l, u, hbr, hcov⟩ := halfLine_gridCover P n 2 δ (by norm_num) (by norm_num)
+    hgrid hstrict
+  exact ⟨2 * n + 3, l, u, hbr, hcov⟩
 
 /-- Coarse polynomial bracketing count for `0 < δ ≤ 1`. The constant `8`
 absorbs the open-gap brackets, singleton jump brackets, and strict-scale

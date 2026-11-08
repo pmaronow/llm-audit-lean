@@ -233,3 +233,5 @@ theorem helper_witness_law :
 
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.helper_witness_scaling
+#print axioms AronowAudit.P011.helper_witness_law

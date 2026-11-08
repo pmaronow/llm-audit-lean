@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P001-T58",
+    "theorem": "SAP.P001d.T58",
+    "fingerprint": "437586da276779e042b3260d454b8f4f2b4b47873c3fa039e106bbe85945ecc4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Checks.lean constructs the actual probability space (ℝ^ℕ, wholeTriangleLaw^ℕ) and its coordinate IID sequence with exactly the required common law; it also checks n=3 with every observation 3/2 in [5/4,7/4]. Population normalization is taken from the certified unconditional T58 conjunct, not assumed as an unproved premise of the sampling assertion. The explicit triangular density is continuous, nonnegative, has base 1/2 and height 4 and hence mass one. The displayed negative values and CDF failure are genuine, without Real.sqrt at negative arguments.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T59",
+    "theorem": "SAP.P001d.T59",
+    "fingerprint": "90d31e93ec9e84ca22b7117a0a83bad17d960657b9275951a1085a9cf461f1af",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Checks.lean independently proves that rectangleKernel is the indicator of [-1,1] divided by two, is integrable, has integral one, is nonnegative and even; it compiles all kernel/size/bandwidth hypotheses with n=2 and h=1. The data may be the explicit tuple (0,2), since there is no constraint on X. Thus normalization and positivity are jointly satisfiable and do not assume any conclusion about the estimated density or CDF.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T60",
+    "theorem": "SAP.P001d.T60",
+    "fingerprint": "c81f19d562f9cd2ad66d8547418ce1daf7910c51309572972254af8bfd289735",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Checks.lean compiles n=2, X=(0,2), h=1/2, x=1, integrable nonzero rectangleKernel, and the exclusions X_i != x-h. It additionally checks the one-observation endpoint countertest: X=0, h=1, x=1 gives rectangular density 1/2 but the unqualified empirical-CDF difference is zero. The proviso excludes exactly that discrepancy.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T61",
+    "theorem": "SAP.P001d.T61",
+    "fingerprint": "6cd7079f82f8d563112c805883deb9372fd79a04c4e59500d57653f3faa6ece8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Checks.lean constructs the actual countable product of heavyBootstrapLaw with measurable, mutually independent, identically distributed coordinate variables and the required pushforward. It uses only the certified unconditional normalization conjunct of T61 for the component law. The mixture weights sum to one, the transformed-uniform maps are Borel, and the u=0 endpoint is null. It independently checks the even-size upper/lower median choices and the exact probability 1/4 of one constant label map for n=2. The fixed T0 is locally affine with the asserted derivative; all finite conditional variances exist despite infinite unconditional estimator moments. The canonical marginal and conditional weak limits and the variance obstruction are assertions about this realized IID sample, not premises smuggled into its construction.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T62",
+    "theorem": "SAP.P001d.T62",
+    "fingerprint": "d2be3a69f5c5031679c4ddd6970e9a8a8d55b0c11e2e928673215a1a753813cf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Checks.lean compiles an IID standard-Gaussian coordinate sample on its countable product probability space, MemLp(X_0,2), population variance 1>0, and WholeResampleMeasurable for the sample mean. It checks the finite/bootstrap normalizations and the two median conventions separately. For the general criterion take T=sample mean, theta=0, phi=1: the marginal standardized mean has exactly N(0,1) law for every n. Conditional empirical variances tend to 1, and the empirical centered fourth moments are bounded almost surely, so the conditional Lindeberg remainder is at most the empirical centered fourth moment divided by epsilon^2*n and tends to zero. This supplies (W), and bounded conditional fourth moments also imply (M). These asymptotic facts are argued here rather than reproved as Lean CLTs. The same Gaussian population supplies the median branch: unique median zero, smooth strictly positive local density and a finite second absolute moment (eta=2). No branch is vacuous.",
+    "confidence": 0.98,
+    "resolved": [
+      {
+        "issue": "Earlier issue 1: Challenge/Part1.lean:44 ambiguously attributed scaled standard-deviation consistency to weak convergence alone.",
+        "status": "fixed",
+        "reason": "SAP/P001d/Challenge/Part1.lean:42-46 now states the marginal root-n normal premise and explicitly says: If these equivalent conditions hold, the scaled bootstrap standard deviation converges to phi. This matches the variance-convergence antecedent at SAP/P001d/Defs/WholeW2.lean:219."
+      },
+      {
+        "issue": "Earlier issue 2: Defs/WholeW2.lean:202 repeated the ambiguous antecedent in the definition docstring.",
+        "status": "fixed",
+        "reason": "SAP/P001d/Defs/WholeW2.lean:200-205 now explicitly requires the equivalent square-tail/variance-consistency conditions for the standard-deviation conclusion, and states the root-n normal premise. The two current docstrings agree and do not assert that weak convergence alone gives variance consistency."
+      }
+    ]
+  }
+]

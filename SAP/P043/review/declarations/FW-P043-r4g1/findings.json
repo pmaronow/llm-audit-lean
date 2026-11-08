@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P043-T1",
+    "theorem": "SAP.P043.T1",
+    "fingerprint": "9bd787f273eb4a143f0e5d8cf3403a998c5d0f69c966614b16810743d5871798",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:10, :29, :33, :43, :49 and :57: normalized nonempty finite populations, all joint masses 1/8 and 1/1000, independence from every latent event, the linear values M=3/50, D=-3/50, tau=0, and pointwise positive integer knowledge changes. python3 scratch/check_witnesses.py independently confirms both canonical witnesses, including all three integer nested means and both support laws, with exact rational arithmetic. The declaration has no external hypotheses; its witnesses are genuine independent product laws.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P043-T2",
+    "theorem": "SAP.P043.T2",
+    "fingerprint": "c8ac1fc299e3a1fd1446914fa074945ef486632b4dc80add111ab1464f94f963",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:66, :72, :74, :77, :80, :84, :89 and :91: probability measure dirac(()) on Unit; Bernoulli parameter 1/2; K(t)=t and S(t,k)=k+t; all five potential composites integrable; M=D=1; the linear disturbances integrable; and channel vector (-1,2) has positive sum without componentwise nonnegativity. These instantiate every outer hypothesis and the linear-specialization hypotheses together.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P043-T4",
+    "theorem": "SAP.P043.T4",
+    "fingerprint": "93c98665250c8d2198a2b7d63595b33f672d294497bdfa28dcc5233f175df061",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:10 and :25 verify fair independent assignment and exclusion/consistency for the instantiated finite models. Checks at :100, :107, :112 and :117 establish first stage 1/3 and increaser effect 1 for the two-type witness, positive increaser masses 2/5 and 3/5 and unequal effects 1 and 4/3 for the five-type witnesses, and equality of their complete observable mass functions. Checks at :129 and :138 construct a normalized finite average and the qualifying probability law dirac((true,9)). Exact rational enumeration in scratch/check_witnesses.py additionally checks the first stages and complete conditional laws of both five-type models. All conditioning events used have positive probability.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P043-T5",
+    "theorem": "SAP.P043.T5",
+    "fingerprint": "a82319be5aea05723c30a5e65e2997414683a167e45a26dfa64a098467a23740",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:146 and :151 instantiate every hypothesis simultaneously: uniform population on Bool, p=1/2, J=10, both K(0)=8, and K(1)=9 or 10. All scores are bounded and monotone; mean knowledge increase is 3/2>0. The independent check at :158 gives IV=4/3, margin weights 2/3 and 1/3, and conditional increments 3/2 and 1. No empty-population or zero-stage premise is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P043-T6",
+    "theorem": "SAP.P043.T6",
+    "fingerprint": "6ade45f5b88603c85aa4089cc89f483311edb4a4d3c2d313593807b212045edb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:169 constructs n=2, q=1, s=id and gamma=3, checking the selected nonreference offset, zero reference offset and both indicator sums. The legitimate single-stratum case q=0, n=1 is checked at :178. At :186, binary treatment X=id, beta0=2, beta1=5, u=0 and Y=(5,7) satisfy the corrected regression equation for both observations. Thus positive observation counts and the equation antecedent are inhabited.",
+    "confidence": 0.99
+  }
+]

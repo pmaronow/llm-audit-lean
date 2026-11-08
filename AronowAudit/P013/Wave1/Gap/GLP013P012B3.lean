@@ -11,8 +11,7 @@ open scoped BigOperators Topology NNReal ENNReal
 
 noncomputable section
 
-/-!
-Finite calculations for the block counterexample. -/
+/-! Finite calculations for record 7, also used in record 5. -/
 
 lemma block_finite_end_even (r : ℕ) : blockEnd r % 2 = 0 := by
   by_cases h : r = 0
@@ -271,8 +270,7 @@ lemma block_finite_moments (N : ℕ) (hN : 1 ≤ N) :
     rw [hid]
     linarith
 
-/-!
-Changing finite laws and endpoint subsequences. -/
+/-! Record 5: changing finite laws and endpoint subsequences. -/
 
 set_option maxHeartbeats 2000000 in
 lemma block_asymptotic_sign_clt (M : ℕ → ℕ) (hM : Tendsto M atTop atTop) :
@@ -528,6 +526,12 @@ lemma block_asymptotic_probability_unique {L : ℕ → Type*} [∀ n, Fintype (L
   have hh := ge_of_tendsto hl (Eventually.of_forall hall)
   norm_num at hh
 
+lemma block_asymptotic_subsequence {L : ℕ → Type*} [∀ n, Fintype (L n)]
+    (P : ∀ n, Design (L n)) (X : ∀ n, L n → ℝ) (a : ℝ) (k : ℕ → ℕ)
+    (hk : Tendsto k atTop atTop) (hX : ConvergesInProbability P X a) :
+    ConvergesInProbability (fun n => P (k n)) (fun n => X (k n)) a := by
+  intro ε hε
+  exact (hX ε hε).comp hk
 
 lemma block_asymptotic_index_cofinal (a : ℕ) (ha : 1 ≤ a) :
     Tendsto (fun n => blockEnd (2*n+a)-1) atTop atTop := by
@@ -723,6 +727,8 @@ theorem block_asymptotic_counterexample_proof :
       (fun N z => (htEffect (blockPopulation N) 1 0 z-causalEffect (blockPopulation N) 1 0) /
         Real.sqrt (effectVariance (blockPopulation N) 1 0 z)) hot het
 
+example : type_of% @AronowAudit.P013.block_asymptotic_counterexample := block_asymptotic_counterexample_proof
+
 theorem block_finite_identities_proof (N : ℕ) (hN : 1 ≤ N) :
     let F := blockPopulation N
     let P := blockDesign N
@@ -748,6 +754,8 @@ theorem block_finite_identities_proof (N : ℕ) (hN : 1 ≤ N) :
     exact ⟨block_pi N i d, (block_outcome_properties (i.val+1)).1 d⟩
   · intro i j d e hij
     exact block_joint N i j hij d e
+
+example : type_of% @AronowAudit.P013.block_finite_identities := block_finite_identities_proof
 
 end
 

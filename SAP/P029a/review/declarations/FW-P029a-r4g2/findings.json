@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P029-T6",
+    "theorem": "SAP.P029a.T6",
+    "fingerprint": "eea48fd19e76c154b9f0155d8cc87c96ae4d95ae06afed1bcdfb1fa4bd9149d7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:15-81 with sap-lean, importing definitions only. It constructs the n=1 product probability space of three independent measurable uniform(-1,1) coordinates with the required pushforward laws; a Dirac probability space with a positive measurable conditioning event and L2 functions satisfying E(B)=5; a normalized finite law with mean-five benchmark; and a positive-size RMSE example. It independently checks the benchmark-six input, both constant-effect outcome arrays, covariate support bounds and latent compliance indices. The two outcome arrays are admissible finite input realizations: latent coefficients can be zero, the two latent normal residuals zero, and baseline residuals zero or the assignment indicator; all normal values are in support. Their distinct estimator values are certified by the nonsingular design identities in the reviewed statement. No independence across repeated copies of an input is assumed or used.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T7",
+    "theorem": "SAP.P029a.T7",
+    "fingerprint": "d44dc9f4e2ea30aa2526f42cbad4cde3652705f2a757d98232110b699746300a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:85-118 and 132-146 with sap-lean, importing definitions only. Checks include the uniform sixteen-atom probability law, the actual treated-cell success totals (9,27) and failure totals (3,1), positive perturbation weights and interior perturbed scores for every t>0, nonempty positive-likelihood/positive-weight and zero-weight domains, and positive success/failure totals for all two-sided cells. In the one-sided witness, assignment is the independent Boolean coordinate and potential responses depend only on the other coordinates. Every proposed one-sided probability and every ordered two-sided raw array is genuinely realizable by finite Gaussian-probit coefficients: the standard-normal CDF has range (0,1), and the nested inversion uses a=q_x1 and b=q_x0/q_x1. Both concrete two-sided arrays lie strictly inside the clipping bounds. The realized-minimum predicates put existence and optimality in the conclusion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T8",
+    "theorem": "SAP.P029a.T8",
+    "fingerprint": "0c62788ff461344a845026ac5906fdb79057907270748d7ddbee9a1f16a92ad1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:88-146 with sap-lean, importing definitions only. The general free-cell hypotheses hold simultaneously for two cells, each with one success and one failure and unit weights, with interior comparison array q=1/2. The concrete treated-cell totals are positive, the perturbation has positive weights and positive success/failure totals for every t>0, and all four two-sided cells have positive success/failure totals. The positive S,F concavity domain is nonempty, for example S=F=1; the constant-weight parameter domain is nonempty with parameter type Unit, likelihood 1/2 and weight 2. The certified fits concern free interior probabilities, as the restriction expressly states.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P029-T9",
+    "theorem": "SAP.P029a.T9",
+    "fingerprint": "5a0d5ea5de1b204eac596afc3db79b3ddbe267ef9bcd80aa8c5422fedb32ecdc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:149-184 with sap-lean, importing definitions only. It verifies the actual sigma-type cardinality 18933; constructs a nontrivial compatible raw-code map using W/B on recorded labels and none on missing labels; proves both completions preserve all recorded Boolean labels; verifies receipt, arbitrary observed outcomes and no defiers; exhibits a cell-six record on which the two completions differ; and proves positive product-Bernoulli probability for the fixed assignment vector for every 0<e<1. All race/contact conditioning events and complements have positive mass by the exported counts. Thus fixed potential populations can be assigned independently of their potential values and completed race, with the recorded assignment vector in support. The claimed non-identification does not require empirical independence of the already realized record arrays.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P029-T10",
+    "theorem": "SAP.P029a.T10",
+    "fingerprint": "118e04d863ccc66361bdbe9bc48a87a7e8040134e8d4a1dbf2be6542309ec74d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:149-213 with sap-lean, importing definitions only. Besides the genuine distinct label-preserving no-defier completions and assignment support, it constructs C=W on Fin 2 with one true observation, satisfying all four strict count hypotheses and joint count one. For the grouped formula it uses four observations, groups {0,1} and {2,3}, s=(0,1,2,3) and A=(0,1,2,2); the distinguished first group has positive probability, A is constant in the other group, and the within-group term is independently computed as 1/8. No null conditioning event is used. The two Raleigh statements are explicitly restricted to the rational calculations, without certification of empirical exclusions.",
+    "confidence": 0.99
+  }
+]

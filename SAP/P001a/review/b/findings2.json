@@ -1,0 +1,192 @@
+[
+  {
+    "target_id": "P001-T1",
+    "theorem": "SAP.P001a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional explicit witness. q_k=2^(-(k+1)) is a probability mass function with mean 1 and second moment 3. For every n>=2, (1-n^(-3))q plus n^(-3) times its n-shift has strictly positive masses, total one, and finite first and second moments. In particular n=2 is a concrete nontrivial perturbation. All relevant infinite sums are absolutely convergent, and the quotient denominator is positive on the quantified n>=2 range.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T2",
+    "theorem": "SAP.P001a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: on Omega=R^N with the infinite product of N(0,1), coordinate observations are IID, X_0 is in L2, and its variance is strictly positive (equal to one). The unconditional T1 conjunct has the concrete geometric witness described for T1. Empirical measures are used only for n>0 in the mean identity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T3",
+    "theorem": "SAP.P001a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional fixed probability law: density 1/2 on each of [-2,-1] and [1,2], independently of uniform[-1,1]. Each marginal integrates to one and all variables are bounded. Both the zero CEF and a*x*(1-x^2)^2*1_{|x|<1} are globally measurable integrable CEF versions; they vanish pointwise on the positive-density support, are C1, and have derivatives zero and a at the covariate mean zero. This instantiates and contradicts the printed universal contract without any failed differentiability premise.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T4",
+    "theorem": "SAP.P001a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take K=1, X uniform[-1,1] embedded as a one-coordinate vector, Y=0, U=(-1/2,1/2), and both global CEF representatives equal to zero. The coordinate mean is zero in U, the density is 1/2 throughout U, and coordinate k=0 has derivative a=0. All integrability and continuity hypotheses hold. Thus the derivative premise and positive-density open-neighborhood condition are jointly satisfiable in positive dimension.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T5",
+    "theorem": "SAP.P001a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the infinite iid product of uniform[0,1] times N(0,1). For every finite sample a minimizing coefficient vector exists by finite-dimensional least squares, including singular designs; a measurable selection can be obtained by the Moore-Penrose solution on each rank stratum. Choose the corresponding polynomial for every n and sample, and zero at n=0. This meets the supplied-fit premise without assuming the lower-limit conclusion. Squared-polynomial integrals on [0,delta] are finite, and the real liminf is applied to numbers in [0,1].",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T6",
+    "theorem": "SAP.P001a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take iid X uniform[0,1], independent Y~N(0,1), m=0, V=1, and normalized shifted Legendre polynomials p_k(x)=sqrt(2k+1)*L_k(2x-1). Use J_n=floor(n^(1/4)), c=1/2, and a finite-dimensional least-squares selection. The conditional residual bound holds with V=1; J_n tends to infinity, (J_n+1)/n and (J_n+1)^3/n tend to zero. The row envelope is (J_n+1)^2. The elementary Frobenius-variance/Markov estimate gives Gram stability for this experiment. The finite clause has nonempty unit spheres because it assumes K>0; e.g. K=2,n=10 is a genuine instance.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P001-T7",
+    "theorem": "SAP.P001a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four specified masses 3/8,1/8,1/8,3/8 are positive and sum to one; use their infinite iid product. In the changed-marginal clause take q=1/4, giving masses 9/16,3/16,1/16,3/16, again positive and normalized. The conditioning events have positive probability. The parameter interval [1/10,9/10] contains both conditional targets and each marginal target; all KL logs and conditional-mean divisions have their ordinary meanings.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T8",
+    "theorem": "SAP.P001a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fixed earlier finding. Take K=tau=1, X an independent fair sign, kappa=delta_0+delta_1, true Y Bernoulli(1/2), and the Bernoulli(t) family with Theta=[1/4,3/4]. Choose commonS=R^1 times {0,1}; it is measurable, has true joint probability one, and every fitted density is at least 1/4 there. Use the clipped sample mean as the estimate and e_n=0. For n>0, Delta_n=log(3)*|sampleMean(Y,n)-1/2| is a uniform likelihood-error envelope; set Delta_0=log(4). The envelopes are finite for every n and converge in probability to zero; entropy and cross entropy are integrable, and the population maximum is unique and separated. scratch/DeltaCheck.lean compiles common-set measurability/positivity in positive dimension, transfer from the true law to all iid observations, and the resulting positive-likelihood/log-likelihood identity. The old diagonal-zero family cannot satisfy the new common-set premise, because commonS would have to exclude all outcomes in [1/4,3/4], of true probability 1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T9",
+    "theorem": "SAP.P001a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional nonempty positive sample (1,2,3). The fixed weights are 1/2,1/4,1/4 and the remaining scales/rate are one. For any real bound B, sigma=C/(|B|+1)>0 with C=exp(-5)/(32*sqrt(2*pi)) gives likelihood at least |B|+1>B by the normal contribution at 1 and exponential contributions at 2 and 3. Thus the quantifier over positive scales contains actual witnesses and does not use a zero scale.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T10",
+    "theorem": "SAP.P001a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The first clause includes n=1,y_0=1. For the compact clause take B=S=delta=a=b=1 and the positive sample (1,2,3). The parameter (1/2,1/4,1,1,0,1,1) belongs to the restriction; its admissibility was compiled in scratch/Check.lean. Positive lower scales/rate exclude singular densities, and nonemptiness supplies a genuine compact domain. The additional n=0 case of the compact clause has constant likelihood one and is harmless.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T11",
+    "theorem": "SAP.P001a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: theta_A=(1,1/3,1/4) and theta_B=(1,1/3,3/4) are distinct members of the nonempty parameter box and give identical four-category masses. Those masses are (2/3,1/3,0,0), a normalized probability law with two positive categories. Every finite sample space (Fin n -> Fin 4) is nonempty. Continuity on the compact box supplies an actual maximizer for every sample, so the inconsistent-MLE-selection conclusion is not based on nonexistence of MLEs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T12",
+    "theorem": "SAP.P001a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fixed earlier finding in the standalone consistency clause. Use M=K=tau=1, an independent fair-sign covariate, kappa=delta_0+delta_1, one component of weight one, Bernoulli(t) densities on Theta=[1/4,3/4], and truth t=1/2. The same measurable commonS=R^1 times {0,1} has true joint probability one and simultaneous positivity for every fitted mixture. The clipped sample mean is an everywhere MLE; finite uniform log-error envelopes include a separately assigned finite n=0 value. This positive-dimensional common-set instance, including its one-component mixture form, is checked in scratch/DeltaCheck.lean. For the unchanged normality/efficiency clause, score=4Y-2 has mean zero, I=4, and H(1/2)=-4. Choose a neighborhood strictly inside Theta; Hessians have finite uniform envelopes, with a finite separate zero-sample envelope, and square-root densities are smooth with finite-sum QMD integrals. Extend outside Theta by clipping so every local-alternative law is normalized. The ordinary sample mean has regular asymptotically linear influence Y-1/2 and covariance 1/4=I^(-1), giving a nonempty competing-estimator class. For the independent nonidentification clause use the two-component four-category model of T11 and its distinct zero-weight parameters. No empty index type or assumed conclusion supplies any of these instances.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P001-T13",
+    "theorem": "SAP.P001a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take iid units with P uniform[1/4,3/4], R conditional Bernoulli(P), and an independent fair sign. The defining density relative to dp times the two counting measures has total mass 2*(3/4-1/4)=1. Coordinate IID on an infinite product of any probability observation law is compiled in scratch/Check.lean. HotDeck is always in [49,51], and its exact bootstrap variance is in [0,1], including their defined zero-sample values. They are a.e. measurable: distinct continuous scores have no nontrivial equidistance ties a.s.; resample duplicates share outcomes and response flags, so choices between identical donors do not change the statistic. Consequently both all-n L2 premises hold; the asymptotic moment bound is a conclusion, not a premise. The displayed constants give V about 3.04584 and V_B about 2.64708.",
+    "confidence": 0.93
+  },
+  {
+    "target_id": "P001-T14",
+    "theorem": "SAP.P001a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The iid matching-unit experiment and bounded a.e.-measurable statistics described for T13 satisfy both L2 premises. For the independent conditional-variance clause take n=2, scores (1/3,2/3), and response flags (true,false). The first unit is the unique donor, its reuse weight is two, and the hot-deck statistic is 50 plus its fair sign, with variance one. Thus the weighted-sign identity has a nonzero-variance instance. With no responders, all weights are zero and the explicitly defined statistic is 50, so that edge case is meaningful as well.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T15",
+    "theorem": "SAP.P001a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the normalized iid matching-unit experiment of T13, now reading R as treatment D and taking X=P-1/4, Y(0)=the fair sign and Y(1)=0. The true-score matching statistic lies in [-1,1] and its bootstrap variance in [0,1]; the same a.e. measurability argument gives both all-n L2 premises. The intercept's untruncated summand has expectation E[D-(P-1/4)]=1/4, strictly inside the clipping interval [1/8,3/8]. This is a positive-dimensional covariate design with both treatment probabilities positive. The theorem deliberately stops short of asserting the estimated-score statistic's failure.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T16",
+    "theorem": "SAP.P001a.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the iid design described for T15. Estimated scores differ from true scores by the same random translation at every unit; their entire minimizing-donor predicates coincide, including ties, and the equality applies after every resample. The estimated statistic is bounded in [-1,1] and its bootstrap variance in [0,1], and both are a.e. measurable, giving the all-n L2 premises. For the finite conditional clause take n=2, distinct scores and treatment flags (true,false); the sole control has reuse weight two, so the statistic is minus its fair sign and has variance one. The empty-control case is explicitly zero.",
+    "confidence": 0.94
+  },
+  {
+    "target_id": "P001-T17",
+    "theorem": "SAP.P001a.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: finiteLawMeasure placeboLaw is a probability, and its infinite coordinate product supplies the required IID sequence and exact observation law. All twelve masses are positive. Conditioning denominators are P(X=x)=1/3; propensities are 1/4 or 3/4. Exact rational arithmetic gives moment determinant 17/54, risks 35/144 and 59/272, asymptotic robust W variance 135315/334084, F/n limit 64/531, and Wald/n limit 18496/135315. Ordinary F(1,n-3) critical values exist for every n>3 and each alpha in (0,1), so the critical-value premise is satisfiable. Singular finite-sample OLS defaults occur only before eventual full rank a.s. and do not supply the positive asymptotic limits.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T18",
+    "theorem": "SAP.P001a.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take eight equiprobable atoms carrying independent X,W in {-1,+1} and D in {0,1}, with K=L=1. All variables are measurable and bounded, P(D=1)=1/2, conditional independence holds, and the treatment CEF is the linear predictor gamma=(1/2,0). The regressor moment matrix for (1,X,W) is the 3-by-3 identity, hence nonsingular. This supplies every premise in positive covariate and placebo dimensions. The separate failure-without-linearity witness is the nondegenerate twelve-atom placebo law with full coefficient 4/17.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T19",
+    "theorem": "SAP.P001a.T19",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the nonempty countable space N times {0,1}, assign mass 3^(-(k+1)) to (k,1) and 2^(-(k+2)) to (k,0). Their geometric-series totals are 1/2 each, so the combined mass is one. With paper covariate X=k+1, both conditional arm supports are all positive integers and every conditioning cell has positive mass. The propensity is 2/((3/2)^(k+1)+2), strictly interior at every finite k and tending to zero, which precludes a uniform margin without any zero-probability cells.",
+    "confidence": 0.99
+  }
+]

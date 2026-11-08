@@ -1,0 +1,153 @@
+[
+ {
+  "target_id": "P030-T1",
+  "decision": "whole",
+  "theorem": "SAP.P030.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.five_correlations",
+   "AronowAudit.P030.five_distances",
+   "AronowAudit.P030.five_rank_certificate",
+   "AronowAudit.P030.five_unit_counterexample"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P030.five_design",
+    "reason": "All design components are already exported by five_unit_counterexample; no separate invocation is needed."
+   },
+   {
+    "lean_name": "AronowAudit.P030.five_no_effects",
+    "reason": "The no-effect component is already exported by five_unit_counterexample."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P030.uniform_point_probability"
+  ],
+  "row_usage_note": "five_correlations is used only for its exact rank-square sums and statistic values; five_rank_certificate supplies the pointwise rank vectors and centered cross products.",
+  "statement_definition": "SAP.P030.T1Statement"
+ },
+ {
+  "target_id": "P030-T2",
+  "decision": "whole",
+  "theorem": "SAP.P030.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.table_tail_probabilities",
+   "AronowAudit.P030.ten_actual_conditional_size",
+   "AronowAudit.P030.ten_null_reference_value",
+   "AronowAudit.P030.ten_null_statistic_value",
+   "AronowAudit.P030.ten_unit_counterexample",
+   "AronowAudit.P030.average_rank_weight",
+   "AronowAudit.P030.statistic_invariance_counterexample",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_enumeration_probability",
+   "AronowAudit.P030.table_rounding",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.ten_assignment_probabilities",
+   "AronowAudit.P030.ten_design",
+   "AronowAudit.P030.worked_table_result"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P030.table_rejection_probabilities",
+    "reason": "Use ten_actual_conditional_size, which connects these row-indexed sizes directly to the actual conditional experiment."
+   }
+  ],
+  "supporting_declarations": [
+   "AronowAudit.P030.ten_design",
+   "AronowAudit.P030.ten_assignment_probabilities",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.worked_table_result",
+   "AronowAudit.P030.table_rounding"
+  ],
+  "statement_definition": "SAP.P030.T2WholeStatement"
+ },
+ {
+  "target_id": "P030-T3",
+  "decision": "whole",
+  "theorem": "SAP.P030.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.conventional_two_tailed_valid",
+   "AronowAudit.P030.corrected_reject_subset_printed",
+   "AronowAudit.P030.corrected_two_tailed_valid",
+   "AronowAudit.P030.lower_tail_valid",
+   "AronowAudit.P030.probability_mono",
+   "AronowAudit.P030.probability_nonneg",
+   "AronowAudit.P030.probability_union_le",
+   "AronowAudit.P030.tail_identity",
+   "AronowAudit.P030.twoTailP_event",
+   "AronowAudit.P030.upper_tail_valid"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P030.lowerTail_mono",
+    "reason": "Auxiliary monotonicity is already absorbed into the exported lower-tail validity result."
+   },
+   {
+    "lean_name": "AronowAudit.P030.probability_le_one",
+    "reason": "A helper bound not needed separately for any stated clause."
+   },
+   {
+    "lean_name": "AronowAudit.P030.probability_true",
+    "reason": "Normalization is already part of FiniteLaw and the selected validity results."
+   }
+  ],
+  "supporting_declarations": [
+   "SAP.P030.T1"
+  ],
+  "statement_definition": "SAP.P030.T3Statement"
+ },
+ {
+  "target_id": "P030-T4",
+  "decision": "refuted",
+  "theorem": "SAP.P030.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.printed_two_tailed_claim_false"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P030.T4Statement"
+ },
+ {
+  "target_id": "P030-T5",
+  "decision": "whole",
+  "theorem": "SAP.P030.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P030.constant_statistic_p_one",
+   "AronowAudit.P030.statistic_invariance_counterexample",
+   "AronowAudit.P030.average_rank_weight",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_enumeration_probability",
+   "AronowAudit.P030.table_rounding",
+   "AronowAudit.P030.table_tail_probabilities",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.ten_assignment_probabilities",
+   "AronowAudit.P030.ten_design",
+   "AronowAudit.P030.ten_null_reference_value",
+   "AronowAudit.P030.ten_null_statistic_value",
+   "AronowAudit.P030.worked_table_result"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P030.ten_design",
+   "AronowAudit.P030.ten_assignment_probabilities",
+   "AronowAudit.P030.table_y_vector",
+   "AronowAudit.P030.table_distances",
+   "AronowAudit.P030.table_correlations",
+   "AronowAudit.P030.table_value_order",
+   "AronowAudit.P030.worked_table_result",
+   "AronowAudit.P030.table_rounding",
+   "AronowAudit.P030.ten_null_statistic_value"
+  ],
+  "statement_definition": "SAP.P030.T5WholeStatement"
+ }
+]

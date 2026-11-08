@@ -1,0 +1,187 @@
+import SAP.P017.Challenge
+
+open SAP.P017 MeasureTheory ProbabilityTheory Filter Set
+open scoped Topology ENNReal NNReal BigOperators
+
+namespace AuditP017
+noncomputable section
+
+theorem pair_integrable (f : ℝ → ℝ) : Integrable f (fairPair (-1) 1) := by
+  unfold fairPair
+  apply Integrable.add_measure
+  all_goals
+    apply Integrable.smul_measure
+    · exact integrable_dirac (by finiteness)
+    · norm_num
+
+theorem pair_integral (f : ℝ → ℝ) :
+    (∫ x, f x ∂fairPair (-1) 1) = (f (-1) + f 1) / 2 := by
+  have h1 : Integrable f ((1 / 2 : ℝ≥0∞) • Measure.dirac (-1)) :=
+    (integrable_dirac (by finiteness)).smul_measure (by norm_num)
+  have h2 : Integrable f ((1 / 2 : ℝ≥0∞) • Measure.dirac 1) :=
+    (integrable_dirac (by finiteness)).smul_measure (by norm_num)
+  rw [fairPair, integral_add_measure h1 h2]
+  simp only [integral_smul_measure, integral_dirac, ENNReal.toReal_div,
+    ENNReal.toReal_one, ENNReal.toReal_ofNat, smul_eq_mul]
+  ring
+
+theorem pair_support : effectSupport (fairPair (-1) 1) id = {(-1 : ℝ), 1} := by
+  unfold effectSupport
+  rw [Measure.map_id]
+  apply Subset.antisymm
+  · apply Measure.support_subset_of_isClosed
+      (show IsClosed ({(-1 : ℝ), 1} : Set ℝ) from
+        isClosed_singleton.union isClosed_singleton)
+    change ∀ᵐ x ∂fairPair (-1) 1, x ∈ ({(-1 : ℝ), 1} : Set ℝ)
+    simp [fairPair, ae_add_measure_iff]
+  · intro x hx
+    simp only [mem_insert_iff, mem_singleton_iff] at hx
+    rcases hx with rfl | rfl
+    all_goals
+      rw [Measure.mem_support_iff_forall]
+      intro U hU
+      have hxU := mem_of_mem_nhds hU
+      simp only [fairPair, Measure.add_apply, Measure.smul_apply, smul_eq_mul]
+    · have h : 0 < (1 / 2 : ℝ≥0∞) * Measure.dirac (-1 : ℝ) U := by
+        rw [Measure.dirac_apply_of_mem hxU]
+        norm_num
+      exact lt_of_lt_of_le h le_self_add
+    · have h : 0 < (1 / 2 : ℝ≥0∞) * Measure.dirac (1 : ℝ) U := by
+        rw [Measure.dirac_apply_of_mem hxU]
+        norm_num
+      exact lt_of_lt_of_le h le_add_self
+
+theorem pair_mean : populationMean (fairPair (-1) 1) id = 0 := by
+  rw [populationMean, pair_integral]
+  norm_num
+
+theorem pair_radius : effectRadius (fairPair (-1) 1) id = 1 := by
+  have he : (-1 : EReal) ≤ 1 := by
+    change ((-1 : ℝ) : EReal) ≤ ((1 : ℝ) : EReal)
+    exact EReal.coe_le_coe_iff.mpr (by norm_num)
+  have htop : (1 : EReal) ≠ ⊤ := EReal.coe_ne_top 1
+  rw [effectRadius, pair_support, pair_mean]
+  norm_num [supportInf, supportSup, Set.image_insert_eq, Set.image_singleton,
+    max_eq_right he, min_eq_left he, EReal.toENNReal, htop]
+
+-- All universal population hypotheses of T2, T3 and T4 hold together.
+example : Measurable (id : ℝ → ℝ) ∧ Integrable id (fairPair (-1) 1) ∧
+    0 < effectRadius (fairPair (-1) 1) id ∧
+    0 < (1 / 2 : ℝ) ∧ ENNReal.ofReal (1 / 2) < effectRadius (fairPair (-1) 1) id := by
+  rw [pair_radius]
+  exact ⟨measurable_id, pair_integrable _, by norm_num, by norm_num, by norm_num⟩
+
+-- T2's atom and two-sided branches are both populated.
+example : 0 < pr (fairPair (-1) 1) {x : ℝ | id x = 1} ∧
+    0 < pr (fairPair (-1) 1) {x : ℝ | id x < 0} ∧
+    0 < pr (fairPair (-1) 1) {x : ℝ | 0 < id x} := by
+  norm_num [pr, Measure.real, fairPair, Measure.add_apply, Measure.smul_apply,
+    Measure.dirac_apply, Set.indicator, id]
+
+-- The finite-valued and binding-atom branches of T3 are populated.
+example : ∃ S : Finset ℝ, ∀ᵐ x ∂fairPair (-1) 1, id x ∈ S := by
+  refine ⟨{(-1 : ℝ), 1}, ?_⟩
+  simp [fairPair, ae_add_measure_iff]
+
+def exactNormal (n : ℕ) (z : ℝ) : ℝ := z / sqrtN n
+
+theorem exactNormal_scaled (n : ℕ) (hn : 1 ≤ n) (z : ℝ) :
+    sqrtN n * (exactNormal n z - 0) = z := by
+  have hn' : 0 < sqrtN n := Real.sqrt_pos.2 (by exact_mod_cast hn)
+  unfold exactNormal
+  field_simp
+  simp
+
+theorem exactNormal_rootN : RootNNormal (gaussianReal 0 1) exactNormal 0 := by
+  refine ⟨1, by norm_num, ?_⟩
+  have h := tendstoInDistribution_const (μ' := gaussianReal 0 1)
+    (l := (atTop : Filter ℕ)) (Z := fun z : ℝ => z) measurable_id.aemeasurable
+  refine ⟨?_, measurable_id.aemeasurable, ?_⟩
+  · intro n
+    exact (measurable_const.mul ((measurable_id.div_const _).sub measurable_const)).aemeasurable
+  · apply h.tendsto.congr'
+    filter_upwards [eventually_ge_atTop 1] with n hn
+    congr 1
+    congr 1
+    funext z
+    exact (exactNormal_scaled n hn z).symm
+
+example : RootNNormal (gaussianReal 0 1) exactNormal
+    (populationMean (fairPair (-1) 1) id) := by
+  rw [pair_mean]
+  exact exactNormal_rootN
+
+theorem ipw_draws_independent :
+    iIndepFun (fun i (s : ℕ → ℝ × (ℝ × ℝ)) => s i) (iidSamples ipwPopulation) := by
+  exact iIndepFun_infinitePi (X := fun _ x => x) (fun _ => measurable_id)
+
+theorem normal_draws_independent :
+    iIndepFun (fun i (s : ℕ → ℝ × ℝ) => s i) (iidSamples normalPopulation) := by
+  exact iIndepFun_infinitePi (X := fun _ x => x) (fun _ => measurable_id)
+
+-- A rate defined at n=0 can be made everywhere positive without changing LittleOp.
+theorem reciprocal_extended_pos (n : ℕ) :
+    0 < (if n = 0 then 1 else 1 / (n : ℝ)) := by
+  split_ifs with h
+  · norm_num
+  · positivity
+
+theorem littleOp_reciprocal_extension {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) (V : ℕ → Ω → ℝ) :
+    LittleOp P V (fun n => if n = 0 then 1 else 1 / (n : ℝ)) ↔
+      LittleOp P V (fun n => 1 / (n : ℝ)) := by
+  unfold LittleOp
+  constructor <;> intro h η hη
+  all_goals apply (h η hη).congr'
+  all_goals filter_upwards [eventually_ge_atTop 1] with n hn
+  all_goals have hn0 : n ≠ 0 := by omega
+  all_goals simp [hn0]
+
+-- The unconditioned admissibility premise has ordinary witnesses.
+example : AdmissibleWeight (fairPair (-1) 1) id (fun _ => 1) ∧
+    weightedMean (fairPair (-1) 1) id (fun _ => 1) = 0 := by
+  constructor
+  · refine ⟨measurable_const, by simp, pair_integrable _, ?_, ?_⟩
+    · rw [pair_integral]
+      norm_num
+    · exact pair_integrable _
+  · unfold weightedMean
+    rw [pair_integral, pair_integral]
+    norm_num
+
+-- Each fixed IPW bad event contains an explicit admissible record sequence.
+example (n : ℕ) :
+    (fun _ : ℕ => ((1 / 2 : ℝ), ((-1 : ℝ), (0 : ℝ)))) ∈ ipwBadEvent (-1) n := by
+  simp [ipwBadEvent]
+
+example (n : ℕ) :
+    (fun _ : ℕ => ((1 / 2 : ℝ), ((1 : ℝ), (0 : ℝ)))) ∈ ipwBadEvent 1 n := by
+  simp [ipwBadEvent]
+
+example : ipwSummand ((1 / 2 : ℝ), ((-1 : ℝ), (0 : ℝ))) = 2 ∧
+    ipwSummand ((1 / 2 : ℝ), ((1 : ℝ), (0 : ℝ))) = -2 := by
+  norm_num [ipwSummand, ipwObserved, ipwY0, ipwY1]
+
+-- A central normal observation gives the specified nonzero intermediate error.
+example : shiftedDifference 2 (fun _ => ((0 : ℝ), (1 : ℝ))) = -(1 / 2 : ℝ) ∧
+    shiftedNormalMean 2 (fun _ => ((0 : ℝ), (1 : ℝ))) -
+      clipReal 0 1 (shiftedNormalMean 2 (fun _ => ((0 : ℝ), (1 : ℝ)))) = 0 := by
+  norm_num [shiftedDifference, shiftedNormalMean, normalMean, sampleMean, clipReal]
+
+-- Population laws and their IID products are probability measures.
+example : IsProbabilityMeasure ipwPopulation := inferInstance
+example : IsProbabilityMeasure (iidSamples ipwPopulation) := inferInstance
+example : IsProbabilityMeasure normalPopulation := inferInstance
+example : IsProbabilityMeasure (iidSamples normalPopulation) := inferInstance
+
+#print axioms AuditP017.pair_integrable
+#print axioms AuditP017.pair_integral
+#print axioms AuditP017.pair_support
+#print axioms AuditP017.pair_radius
+#print axioms AuditP017.exactNormal_rootN
+#print axioms AuditP017.ipw_draws_independent
+#print axioms AuditP017.normal_draws_independent
+#print axioms AuditP017.littleOp_reciprocal_extension
+
+end
+end AuditP017

@@ -1,0 +1,74 @@
+[
+  {
+    "theorem": "SAP.P011c.T29",
+    "target_id": "P011-T29",
+    "my_reading_vs_claim": "whole",
+    "reason": "The two conjuncts cover the OLS representation and unbiasedness for a fixed invertible design with ordinary finite coordinate expectations, and the covariance-sum identity for arbitrary deterministic weights with finite second moments. Integrability in MeanModel and L2 membership in the second conjunct prevent totalized non-integrable Bochner integrals from doing work. Positive n is the ordinary sample-size requirement. A positive-dimensional identity-design Dirac model gives a concrete mean-model instance; an independent bounded product law gives nonzero variances."
+  },
+  {
+    "theorem": "SAP.P011c.T31",
+    "target_id": "P011-T31",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem negates, rather than asserts, the canonical printed universal oracle-consistency claim. This is an accurate refutation of that printed claim, whose canonical note identifies it as false; no equal-individual-means condition is inserted. A family of disjoint C4 graphs, alternating means +/-1, independent noise +/-1/4, and unit weights satisfies Scaling with (c1,c2,c3,c4)=(2,2,1/16,2). Its n-scaled V1 is at most -5/16 on every supported outcome while n*true variance is 1/16. Thus the absolute error exceeds 1/4 with probability one."
+  },
+  {
+    "theorem": "SAP.P011c.T32",
+    "target_id": "P011-T32",
+    "my_reading_vs_claim": "different",
+    "reason": "This negates the combined printed conservativeness contract; it does not positively assert the printed claim. The homoskedastic implication repeats the general conclusion, so the negation alone does not separately credit failure under homoskedasticity, as the Challenge docstring explicitly states. The C4 family used for T31 is in fact homoskedastic. Taking R=G and d=2 forces the compatible set to be the singleton G at every row, so the everywhere-maximizing premise is satisfiable and underestimation by more than epsilon=1/4 has probability one."
+  },
+  {
+    "theorem": "SAP.P011c.T33",
+    "target_id": "P011-T33",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem is the negation of the canonical universal printed-interval coverage claim. printedCoverage counts V1<0 as undefined and uncovered, exactly as the supplied reading convention (S10)(d) requires. The bounded C4 family with R=G, d=2, and noise +/-1/4 has negative V1 on every supported outcome for all rows; coverage is zero for every 0<alpha<1. This refutes the printed interval without exploiting Mathlib's square root on negative reals or an unbounded real liminf."
+  },
+  {
+    "theorem": "SAP.P011c.T34",
+    "target_id": "P011-T34",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The canonical target lists proof steps P1-P5; the theorem states only P3, the degree-factor bounds at every sample size. P1, P2, P4, and P5 are absent. The Challenge docstring identifies exactly those omissions and says homoskedasticity is unnecessary for P3. The retained assertion is the correct ordered-degree-sum inequality following from degree_i<=c2 and positive n. The independent Rademacher family with empty graphs, unit weights, and constants (1,1,1,2) satisfies all Scaling hypotheses."
+  },
+  {
+    "theorem": "SAP.P011c.T35",
+    "target_id": "P011-T35",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem negates the combined canonical OLS variance-and-coverage guarantee. It has a fixed nonempty coefficient space and coefficient index, correct integrable linear means, invertible Gram matrices, and exactly the corresponding OLS weights. For n=4(k+1), use independent outcomes Y_i=s_i+epsilon_i, C4 alternating signs s_i, epsilon_i=+/-1/4, two-column design (1,s), fixed coefficient vector (0,1), and the intercept coefficient. The Gram matrix is n I_2, intercept weights are all 1, and with R=G,d=2 the unique maximizing V1 is negative on the full support. Thus this is a real refutation of the stated generic OLS contract, not one using a singular design, empty Fin p, or non-integrable means."
+  },
+  {
+    "theorem": "SAP.P011c.T36",
+    "target_id": "P011-T36",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem states the full displayed one-sided n-scaled underestimation limit under Assumptions 2 and 3, allowing unequal individual means. It omits the canonical introductory existential assertion that V2 need not be consistent. The docstring discloses precisely that omission. The homoskedasticity definition concerns weighted outcomes, as required. For truth, covariance domination gives n*true variance<=sigma_n^2*g_n and sample variance differs in probability from sigma_n^2 plus the nonnegative dispersion of means by o(1), with bounded g_n. The independent Rademacher family is a nondegenerate instance."
+  },
+  {
+    "theorem": "SAP.P011c.T37",
+    "target_id": "P011-T37",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both canonical probability limits are present under the same scaling, weighted-homoskedasticity, validity, and V2-maximization assumptions. No uniform bound on supplied degree caps is added. For every raw outcome the true compatible graph is dominated by the maximum, which is dominated by V2prime using min(d_i,n-1); all factors multiplying these degree sums are nonnegative. The optimizer need not itself be a measurable graph selection because its objective value is the maximum of finitely many continuous functions over a fixed nonempty feasible set. Empty graphs and d=0 in the independent Rademacher family give an explicit everywhere-maximizing selector."
+  },
+  {
+    "theorem": "SAP.P011c.T38",
+    "target_id": "P011-T38",
+    "my_reading_vs_claim": "whole",
+    "reason": "Cdf convergence at every real threshold is equivalent to the printed convergence in distribution to the continuous standard normal law. The extra eventual-positive-variance conclusion follows from n>0 and n*variance->c3>0; it guards standardization against a zero denominator. Scaling preserves full dependency-graph independence and bounded degrees. Centering weighted coordinates at their own expectations yields a bounded dependency-graph array with variance of the sum asymptotic to c3*n, so the usual CLT applies without a common-mean assumption. Independent Rademacher coordinates satisfy every hypothesis with n*variance=1."
+  },
+  {
+    "theorem": "SAP.P011c.T39",
+    "target_id": "P011-T39",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Both canonical conditional coverage implications, including every epsilon>0 and every 0<alpha<1, are present with the stipulated nonnegative clipping. The additional hypothesis requires each statistic to be Borel measurable as a function of the raw coordinate vector, excluding statistics measurable only in the completion of the law; the Challenge docstring discloses that restriction and does not assert an a.e.-version reduction. The normal quantile is well defined on the stated alpha range and coverage probabilities lie in [0,1], so the liminf is not a junk totalized value. On the independent Rademacher family V_k=1/n_k is a Borel statistic equal to the true variance, satisfying both antecedents."
+  },
+  {
+    "theorem": "SAP.P011c.T40",
+    "target_id": "P011-T40",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both printed homoskedastic intervals and their limiting-inferior coverage assertions are included with all canonical hypotheses and no cap bound. V2 and V2prime are everywhere nonnegative for positive n, so the explicit nonnegative-estimate clause in printedCoverage does not alter either canonical interval. The maximal statistic is measurable as a finite maximum even for a nonmeasurable maximizing selector. The independent Rademacher empty-graph family supplies nonzero limiting variance, valid constraints, and an everywhere maximizer."
+  },
+  {
+    "theorem": "SAP.P011c.T41",
+    "target_id": "P011-T41",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem retains positive semidefiniteness under h_i>=2*r_i-1, normalized quadratic-form nonnegativity, and exact equivalence of maximizers under a graph-independent additive constant. It omits the canonical displayed exact matrix decomposition; the docstring says so and also discloses positive sample size for the normalized expression. Both subtractions are real, not truncated natural subtraction. The sufficient-condition proof is the signless-Laplacian decomposition plus a nonnegative diagonal. C4 with every h_i=3 is a nonempty capacity instance, and compatible C4 with d=2 witnesses a nonempty optimization domain. No asymptotic repair or residual condition is smuggled into this finite target."
+  }
+]

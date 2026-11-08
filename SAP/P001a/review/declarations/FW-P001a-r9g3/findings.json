@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P001-T11",
+    "theorem": "SAP.P001a.T11",
+    "fingerprint": "8e88ba5fbcc3ef2931f3128a4fed25e5dcb851d196afe850d3584511daf050ca",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean: both exact truths belong to the rectangle, are distinct, have identical nonnegative four masses summing to one. For any n the sample laws are their genuine iid products. An explicit MLE is p=(c0+c1)/n, a=c1/(c0+c1) when that count is nonzero, and b=clip_[1/4,3/4](c3/(c2+c3)) when the second count is nonzero, with b=1/4 otherwise; complete the zero-size sample arbitrarily in the rectangle. The binomial likelihood factors show attainment, and under the truth b=3/4 this MLE always has b=1/4 and is inconsistent. Details are in scratch/claim-audit.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T12",
+    "theorem": "SAP.P001a.T12",
+    "fingerprint": "78e11d8b379d155fad8d02b8aa701330b71de83fbd10b06ff1cb0a88c41ce08f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean constructs every field of Review.onePointProblem: a Dirac probability experiment, one-dimensional singleton compact parameter space, genuine normalized positive criterion g=1 and constant measurable maximizer. T11 supplies a genuine distinct-vector zero-weight mixture for nonidentification. Positive-dimensional normality and information-bound premises are jointly realized by the scalar Gaussian location model at zero with compact interval [-1,1] and clipped sample mean: centered score Y, information 1, Hessian -1, uniform log errors controlled by the first two sample moments, and QMD residual integral 2+t^2/4-(2+t^2/2)exp(-t^2/8)=O(t^4). The unrestricted sample mean with influence Y is regular and exactly asymptotically linear under all local mean alternatives. The Gaussian and QMD verifications are mathematical arguments in scratch/claim-audit.md, not compiled constructions.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P001-T13",
+    "theorem": "SAP.P001a.T13",
+    "fingerprint": "314917bb156165454e325c4daa5bb5bc0a2874b0bec109240ee83549e98d2795",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/MatchingNonvacuity.lean proves matchingUnitLaw is a probability and constructs its infinite iid coordinate experiment with exactly the required marginal; the named proofs have no sorryAx dependency. For every n the hot-deck statistic is a Borel function with values in [49,51], and its exact bootstrap variance is Borel with values in [0,4], so all hT2 and hB2 hypotheses in both branches hold jointly. Measurability follows by factoring the finite classical donor selection through the finite Borel partition recording respondent and minimizer predicates. These last measurability and L2 steps are argued in scratch/claim-audit.md rather than fully formalized. The law gives independent fair noise, MAR/MCAR, overlap, and a continuous true score.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T14",
+    "theorem": "SAP.P001a.T14",
+    "fingerprint": "15523583b56a104ecb51f016917336240aa32d1005aa13ee6771977166157b75",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The normalized infinite iid matching experiment is compiled in scratch/MatchingNonvacuity.lean. Hot-deck values in [49,51] and bootstrap variance in [0,4] are Borel by the finite minimizer-predicate partition, giving every moment hypothesis; that final measurability/L2 argument is in scratch/claim-audit.md. The independent finite branch is instantiated in scratch/Check.lean at n=1, where signProductLaw is a probability. Any real score and Boolean respondent indicator are permitted. Holding scores and respondents fixed leaves the product of independent fair signs under the specified design, exactly the noise law used for the conditional variance identity.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T15",
+    "theorem": "SAP.P001a.T15",
+    "fingerprint": "1432f76d7f18600f3a1c2b853a7dd4df0322fa5db9630b919f6c6105cb1911d5",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/MatchingNonvacuity.lean constructs the normalized infinite iid experiment. Its coordinate change X=P-1/4 gives the canonical uniform covariate, true propensity 1/4+X and independent fair potential-control noise; Y(1)=0 and Y(0)=noise give ATE zero and strong ignorability. At each n the true-score causal statistic is Borel with values in [-1,1], and the bootstrap variance is Borel in [0,4], satisfying every hT2/hB2 assumption. The finite-partition measurability/L2 argument is provided mathematically in scratch/claim-audit.md. The intercept branch has no L2 premises and is satisfied by the same iid experiment; D-X is bounded with mean 1/4, and clipping is continuous at 1/4. Empty-size values are compiled in scratch/Check.lean.",
+    "confidence": 0.98
+  }
+]

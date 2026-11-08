@@ -1,0 +1,98 @@
+[
+  {
+    "theorem": "SAP.P009c.T35",
+    "target_id": "P009-T35",
+    "my_reading_vs_claim": "whole",
+    "reason": "All four finite-population components match: no-interference reduction, unconditional EATE formula, conditional ADSE formula for interior marginals, and Bernoulli equality. Potential outcomes are defined on the full cube; every conditioning denominator used by a conclusion is positive."
+  },
+  {
+    "theorem": "SAP.P009c.T36",
+    "target_id": "P009-T36",
+    "my_reading_vs_claim": "whole",
+    "reason": "The full max(C1,Cinf^2/n) <= dAvg <= C2^2 <= Cinf^2 chain is present for every positive population. Interference includes the mandatory diagonal and common-source dependence has the correct orientation. Finite nonempty maxima have their ordinary meaning."
+  },
+  {
+    "theorem": "SAP.P009c.T37",
+    "target_id": "P009-T37",
+    "my_reading_vs_claim": "whole",
+    "reason": "The two designs share the complete outcome schedule, the effect bound is uniform over units and all cube assignments, and finite half-L1 total variation equals the paper's event supremum. No regularity assumption is added."
+  },
+  {
+    "theorem": "SAP.P009c.T38",
+    "target_id": "P009-T38",
+    "my_reading_vs_claim": "whole",
+    "reason": "The exact Lipschitz constant and ground L_r distance are present for every finite real r>=1 and all ordered pairs of cube assignments, with Cinf at r=1. Positive population size and r>=1 avoid zero-denominator and invalid-power conventions."
+  },
+  {
+    "theorem": "SAP.P009c.T39",
+    "target_id": "P009-T39",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement uses the paper's first-order transport cost with L_r ground metric, not the order-r Wasserstein cost. Couplings are genuine probability laws with both marginals; product couplings make the nonnegative cost set nonempty. The bound otherwise matches Proposition 13."
+  },
+  {
+    "theorem": "SAP.P009c.T41",
+    "target_id": "P009-T41",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Only HT consistency and its full sqrt(dAvg/n) stochastic rate are asserted. The canonical claim also asserts Hájek consistency and the same rate. The Lean Hájek zero extension is not used in this theorem. The retained HT assertion has the stated regularity, Bernoulli, and restricted-interference assumptions."
+  },
+  {
+    "theorem": "SAP.P009c.T42",
+    "target_id": "P009-T42",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both estimators, EATE centering, consistency, and both terms of the printed rate are present. The fixed-p complete design has m=floor(p*n), with positive treatment and control counts, so the Hájek zero extension never operates on supported assignments. All structural and moment hypotheses match."
+  },
+  {
+    "theorem": "SAP.P009c.T43",
+    "target_id": "P009-T43",
+    "my_reading_vs_claim": "narrower",
+    "reason": "HT root-n order and consistency are retained in both design regimes, while Hájek conclusions are conditional on complete randomization. The Bernoulli Hájek conclusion of the canonical corollary is missing. Bounded dAvg supplies the intended interference assumption."
+  },
+  {
+    "theorem": "SAP.P009c.T44",
+    "target_id": "P009-T44",
+    "my_reading_vs_claim": "whole",
+    "reason": "The involutive fixed-point-free pairing, pair-induced dependence, within-pair interference, all three little-o assumptions, both estimators, and all three stochastic-rate terms match. Paired support has exactly half of the units in each arm, so no empty-arm convention contributes."
+  },
+  {
+    "theorem": "SAP.P009c.T45",
+    "target_id": "P009-T45",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem additionally requires attained greatest observed and potential moment exponents over bounds whose constants may vary with the exponent (MaximalMoments), excluding common-fixed-k cases without those global maxima. It also makes Hájek consistency and the full three-term rate conditional on nonempty arms at every supported assignment. HT retains the complete rate and centering. Mixing uses the paper's explicit 0^0=0 convention, full structural masks, and correct infinity exponents."
+  },
+  {
+    "theorem": "SAP.P009c.T46",
+    "target_id": "P009-T46",
+    "my_reading_vs_claim": "narrower",
+    "reason": "HT retains ADSE consistency and the entire two-term rate, but the Hájek conclusions require nonempty arms at every supported assignment. The observed maximality condition is at the same common k, as in the printed moment convention; an arbitrary admissible potential exponent is harmless because the conclusion uses no internal-mixing term."
+  },
+  {
+    "theorem": "SAP.P009c.T47",
+    "target_id": "P009-T47",
+    "my_reading_vs_claim": "whole",
+    "reason": "The moving-bias expression, B1 and B2 with both ordered off-diagonal sums, MSQ, and no-interference specialization match exactly. The q>=4 Bernoulli hypotheses make pairwise conditioning events positive. Restricted interference is unnecessary here: the variance of the centered scaled error is bounded by a constant/(n*dAvg), and dAvg>=1."
+  },
+  {
+    "theorem": "SAP.P009c.T48",
+    "target_id": "P009-T48",
+    "my_reading_vs_claim": "whole",
+    "reason": "AVG inflation, q>=4, Bernoulli design, restricted interference, and SDsigma=o(dAvg/dRMS) all match. Conservative spells out the printed iterated limit including inner-limit existence; the one-sided probability actually tends to zero for each fixed positive threshold under these assumptions."
+  },
+  {
+    "theorem": "SAP.P009c.T49",
+    "target_id": "P009-T49",
+    "my_reading_vs_claim": "whole",
+    "reason": "MAX inflation has exactly the two printed alternatives: dMax=o(sqrt(n*dAvg)), or restricted interference and MSQ eventually bounded away from zero. Regularity with q>=4 is common to both. The conservative conclusion is the printed scaled one-sided variance-error property."
+  },
+  {
+    "theorem": "SAP.P009c.T50",
+    "target_id": "P009-T50",
+    "my_reading_vs_claim": "whole",
+    "reason": "SR inflation and both alternatives match Proposition 10; the entire dAvg<=lambdaMax<=dMax bound is also included independently for every finite experiment. The maximum Rayleigh value equals the largest eigenvalue and the spectral radius for the symmetric nonnegative dependence matrix. Its optimization set is nonempty and bounded."
+  },
+  {
+    "theorem": "SAP.P009c.T51",
+    "target_id": "P009-T51",
+    "my_reading_vs_claim": "whole",
+    "reason": "For every uniformly interior Bernoulli design sequence, alpha in (0,1), and x in [0,1), outcomes are existentially chosen with output regularity, dAvg=O(n^x), restricted interference, and the additional dMax=O(sqrt(n)) when x=0. The normalized centered HT law converges weakly to the exact three-point law, whose finite mean, variance, and Chebyshev equality are separately asserted. This matches the canonical reading, which does not assert convergence of tails at discontinuity cutoffs."
+  }
+]

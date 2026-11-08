@@ -3,7 +3,11 @@ import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
-/-! Exact Gaussian tail identities and decay faster than every inverse positive power. -/
+/-!
+Draft for dd-GP017B1. No Lean process was run.
+The original held declarations are used only by the three `type_of%` checks.
+See the run report for the outstanding companion-proof dependency of record 4.
+-/
 
 namespace AronowAudit.P017.Wave1
 
@@ -12,7 +16,7 @@ open scoped BigOperators Topology ENNReal NNReal
 
 noncomputable section
 
-/-! ## Exact Gaussian tail -/
+/-! ## Record 1: exact Gaussian tail -/
 
 private theorem normal_tail_identity_density (x : ℝ) :
     gaussianPDFReal 0 1 x =
@@ -174,7 +178,9 @@ theorem normal_tail_identity_proof (n : ℕ) (hn : 1 ≤ n) (c σ : ℝ)
   field_simp [ne_of_gt hσ, ne_of_gt hsqrt, ne_of_gt hπ]
   <;> ring
 
-/-! ## Every positive power times the tail tends to zero -/
+example : type_of% @AronowAudit.P017.normal_tail_identity := normal_tail_identity_proof
+
+/-! ## Record 2: every positive power times the tail tends to zero -/
 
 private theorem normal_tail_limits_even_integrable (j : ℕ) :
     Integrable (fun z : ℝ => z ^ (2 * j + 2) * gaussianPDFReal 0 1 z) := by
@@ -294,10 +300,187 @@ theorem normal_tail_limits_proof (c σ : ℝ) (hc : 0 < c) (hσ : 0 < σ) :
       normal_tail_limits_all_powers c σ hc hσ 1 (by norm_num)
   · exact normal_tail_limits_all_powers c σ hc hσ
 
+example : type_of% @AronowAudit.P017.normal_tail_limits := normal_tail_limits_proof
 
+/-! ## Record 4: arbitrarily slow outlier probabilities -/
 
+private theorem slow_outlier_counterexample_dyadic_cofinal :
+    Tendsto (fun k : ℕ => 2 ^ k) atTop atTop := by
+  exact tendsto_atTop_mono (fun k => (Nat.lt_two_pow_self (n := k)).le) tendsto_id
 
+private theorem slow_outlier_counterexample_dyadic_growth (α : ℝ) (hα : 0 < α) :
+    Tendsto (fun k : ℕ => ((2 ^ k : ℕ) : ℝ) ^ α * slowP (2 ^ k)) atTop atTop := by
+  let d : ℝ := α * Real.log 2
+  have hd : 0 < d := mul_pos hα (Real.log_pos (by norm_num))
+  have hx : Tendsto (fun k : ℕ => (k : ℝ) + 1) atTop atTop :=
+    tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
+  have hg : Tendsto (fun k : ℕ => Real.exp (d * ((k : ℝ) + 1)) / ((k : ℝ) + 1))
+      atTop atTop := by
+    simpa only [Real.rpow_one, Function.comp_def] using
+      (tendsto_exp_mul_div_rpow_atTop 1 d hd).comp hx
+  have hh := Tendsto.const_mul_atTop (Real.exp_pos (-d)) hg
+  apply hh.congr'
+  filter_upwards [] with k
+  rw [slow_probability_numbers.2.2 k]
+  push_cast
+  rw [Real.rpow_def_of_pos (by positivity : 0 < (2 : ℝ) ^ k), Real.log_pow]
+  have he : (k : ℝ) * Real.log 2 * α = -d + d * ((k : ℝ) + 1) := by dsimp [d]; ring
+  rw [he, Real.exp_add]
+  ring
 
+private theorem slow_outlier_counterexample_no_polynomial (α : ℝ) (hα : 0 < α) :
+    ¬ ∃ C : ℝ, 0 < C ∧ ∀ᶠ n in atTop, slowP n ≤ C / (n : ℝ) ^ α := by
+  rintro ⟨C, hC, hbound⟩
+  have hsub := slow_outlier_counterexample_dyadic_cofinal.eventually hbound
+  have hgrowth := (slow_outlier_counterexample_dyadic_growth α hα).eventually
+    (eventually_gt_atTop C)
+  obtain ⟨k, hk, hkg⟩ := (hsub.and hgrowth).exists
+  have hpos : 0 < ((2 ^ k : ℕ) : ℝ) ^ α := by positivity
+  have hupper : ((2 ^ k : ℕ) : ℝ) ^ α * slowP (2 ^ k) ≤ C := by
+    have hb := (le_div_iff₀ hpos).mp hk
+    nlinarith
+  linarith
+
+/-- Only the indicated second-moment lower bound is needed from the companion
+witness; the contradiction already works with dyadic exponent one. -/
+private theorem slow_outlier_counterexample_not_small
+    (hlower : ∀ n : ℕ, 4 ≤ n →
+      100 * ((n : ℝ) - 4) * slowP n ≤
+        ∫ s, rareRemainder slowP n s ^ 2 ∂iidSamples slowPopulation) :
+    ¬ SmallRemainderMS (iidSamples slowPopulation) (rareRemainder slowP) := by
+  intro hsmall
+  let E : ℕ → ℝ := fun n => ∫ s, rareRemainder slowP n s ^ 2 ∂iidSamples slowPopulation
+  have hE (n : ℕ) : 0 ≤ E n := integral_nonneg (fun s => sq_nonneg _)
+  change Tendsto (fun n => sqrtN n * E n) atTop (𝓝 0) at hsmall
+  have hlow : ∀ᶠ n : ℕ in atTop,
+      50 * (n : ℝ) * slowP n ≤ sqrtN n * E n := by
+    filter_upwards [eventually_ge_atTop (8 : ℕ)] with n hn
+    have hnreal : (8 : ℝ) ≤ n := by exact_mod_cast hn
+    have hroot : 1 ≤ sqrtN n := Real.one_le_sqrt.mpr (by linarith)
+    have hp := (slow_probability_positive_limit.1 n).1
+    have hb := hlower n (by omega)
+    have hmul : E n ≤ sqrtN n * E n := by
+      simpa only [one_mul] using mul_le_mul_of_nonneg_right hroot (hE n)
+    have hgap := mul_nonneg (show 0 ≤ (n : ℝ) - 8 by linarith) hp.le
+    dsimp only [E] at hmul ⊢
+    nlinarith
+  have hdyadic : Tendsto (fun k : ℕ =>
+      50 * ((2 ^ k : ℕ) : ℝ) * slowP (2 ^ k)) atTop atTop := by
+    have h := Tendsto.const_mul_atTop (by norm_num : (0 : ℝ) < 50)
+      (slow_outlier_counterexample_dyadic_growth 1 (by norm_num))
+    simpa only [Real.rpow_one, mul_assoc] using h
+  have hlarge := hdyadic.eventually (eventually_gt_atTop (1 : ℝ))
+  have hupper := (hsmall.comp slow_outlier_counterexample_dyadic_cofinal).eventually
+    (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1))
+  have hlower' := slow_outlier_counterexample_dyadic_cofinal.eventually hlow
+  obtain ⟨k, hk₁, hk₂, hk₃⟩ := (hlarge.and (hupper.and hlower')).exists
+  change sqrtN (2 ^ k) * E (2 ^ k) < 1 at hk₂
+  linarith
+
+/-- A concrete positive sequence that is slower than any specified positive null
+sequence. The value at zero does not require positivity of the specified rate. -/
+private theorem slow_outlier_counterexample_slower_rate (r : ℕ → ℝ)
+    (hr : ∀ n : ℕ, 1 ≤ n → 0 < r n) (hrlim : Tendsto r atTop (𝓝 0)) :
+    ∃ p : ℕ → ℝ, (∀ n : ℕ, 1 ≤ n → 0 < p n ∧ p n ≤ 1) ∧
+      Tendsto p atTop (𝓝 0) ∧ Tendsto (fun n => p n / r n) atTop atTop := by
+  let p : ℕ → ℝ := fun n => min 1 (Real.sqrt (r n))
+  have hp (n : ℕ) (hn : 1 ≤ n) : 0 < p n ∧ p n ≤ 1 := by
+    exact ⟨lt_min (by norm_num) (Real.sqrt_pos.mpr (hr n hn)), min_le_left _ _⟩
+  have hsqrt : Tendsto (fun n => Real.sqrt (r n)) atTop (𝓝 0) := by
+    simpa only [Real.sqrt_zero] using hrlim.sqrt
+  have hplim : Tendsto p atTop (𝓝 0) := by
+    simpa only [min_eq_right (by norm_num : (0 : ℝ) ≤ 1)] using
+      (tendsto_const_nhds (x := (1 : ℝ))).min hsqrt
+  have hsqrt' : Tendsto (fun n => Real.sqrt (r n)) atTop (𝓝[>] 0) := by
+    apply tendsto_nhdsWithin_iff.mpr
+    refine ⟨hsqrt, ?_⟩
+    filter_upwards [eventually_ge_atTop (1 : ℕ)] with n hn
+    exact Real.sqrt_pos.mpr (hr n hn)
+  have hinv := tendsto_inv_nhdsGT_zero.comp hsqrt'
+  have hratio : Tendsto (fun n => p n / r n) atTop atTop := by
+    apply hinv.congr'
+    filter_upwards [eventually_ge_atTop (1 : ℕ),
+      hrlim.eventually (eventually_lt_nhds (by norm_num : (0 : ℝ) < 1))] with n hn hsmall
+    have hrpos := hr n hn
+    have hspos : 0 < Real.sqrt (r n) := Real.sqrt_pos.mpr hrpos
+    have hpval : p n = Real.sqrt (r n) :=
+      min_eq_right (Real.sqrt_le_one.mpr hsmall.le)
+    rw [hpval]
+    simp only [Function.comp_apply]
+    have hsquare := Real.sq_sqrt hrpos.le
+    rw [eq_div_iff (ne_of_gt hrpos), inv_mul_eq_div, div_eq_iff (ne_of_gt hspos)]
+    nlinarith [hsquare]
+  exact ⟨p, hp, hplim, hratio⟩
+
+/-
+The companion `arbitrary_outlier_sequence` has no proof in this worktree.
+The next helper is an explicit dependency interface, not a replacement proof of
+that companion and not the requested final theorem. Its assumption is exactly
+the companion's frozen proposition, read by `type_of%`, never its held proof.
+Once a genuine companion proof has been imported, the assembly below discharges
+all remaining clauses of record 4 with no extra assumptions on the final node.
+-/
+private theorem slow_outlier_counterexample_assemble
+    (hw : type_of% @AronowAudit.P017.arbitrary_outlier_sequence) :
+    type_of% @AronowAudit.P017.slow_outlier_counterexample := by
+  have hp : ∀ n : ℕ, 1 ≤ n → 0 < slowP n ∧ slowP n ≤ 1 :=
+    fun n _ => slow_probability_positive_limit.1 n
+  have hlim := slow_probability_positive_limit.2
+  rcases hw slowP hp hlim with
+    ⟨hm, hi, hmean, hsupp, hrad, hroot, hfinite, hlower, hrest⟩
+  have hfailure (n : ℕ) (hn : 1 ≤ n) :
+      pr (iidSamples slowPopulation)
+        {s | rareEstimator slowP n s ≠ clipReal 0 1 (rareEstimator slowP n s)} = slowP n := by
+    rcases hfinite n hn with
+      ⟨h₁, h₂, h₃, h₄, h₅, h₆, h₇, h₈, h₉, h₁₀, htail⟩
+    exact h₁₀
+  refine ⟨hp, hlim, hroot, hm, hi, hmean, hsupp, hrad, hfailure,
+    slow_probability_numbers.1, slow_probability_numbers.2.1,
+    slow_probability_numbers.2.2, slow_outlier_counterexample_dyadic_growth,
+    slow_outlier_counterexample_no_polynomial,
+    slow_outlier_counterexample_not_small hlower, ?_⟩
+  intro r hr hrlim
+  obtain ⟨p, hp', hplim, hratio⟩ := slow_outlier_counterexample_slower_rate r hr hrlim
+  rcases hw p hp' hplim with
+    ⟨hm', hi', hmean', hsupp', hrad', hroot', hfinite', htail⟩
+  refine ⟨p, hp', hplim, hroot', ?_, hratio⟩
+  intro n hn
+  rcases hfinite' n hn with
+    ⟨h₁, h₂, h₃, h₄, h₅, h₆, h₇, h₈, h₉, h₁₀, htail⟩
+  exact h₁₀
+
+/-
+FINAL ASSEMBLY TEMPLATE — blocked on a genuine companion proof.
+This block is deliberately a comment: no missing theorem is declared or assumed
+in the live module. Import the module proving `arbitrary_outlier_sequence_proof`,
+then uncomment these declarations. That name is the expected new Wave1 proof,
+not the held `AronowAudit.P017.arbitrary_outlier_sequence`.
+
+theorem slow_outlier_counterexample_proof :
+    (∀ n : ℕ, 1 ≤ n → 0 < slowP n ∧ slowP n ≤ 1) ∧ Tendsto slowP atTop (𝓝 0) ∧
+    RootNNormal (iidSamples slowPopulation) (rareEstimator slowP) 0 ∧
+    Measurable slowEffect ∧ Integrable slowEffect slowPopulation ∧
+    populationMean slowPopulation slowEffect = 0 ∧
+    effectSupport slowPopulation slowEffect = Icc (-1) 1 ∧ effectRadius slowPopulation slowEffect = 1 ∧
+    (∀ n : ℕ, 1 ≤ n → pr (iidSamples slowPopulation)
+      {s | rareEstimator slowP n s ≠ clipReal 0 1 (rareEstimator slowP n s)} = slowP n) ∧
+    slowP 1000 = 1 / 10 ∧ slowP (10 ^ 12) = 1 / 40 ∧
+    (∀ k : ℕ, slowP (2 ^ k) = 1 / ((k + 1 : ℕ) : ℝ)) ∧
+    (∀ α : ℝ, 0 < α → Tendsto
+      (fun k : ℕ => ((2 ^ k : ℕ) : ℝ) ^ α * slowP (2 ^ k)) atTop atTop) ∧
+    (∀ α : ℝ, 0 < α → ¬ ∃ C : ℝ, 0 < C ∧ ∀ᶠ n in atTop, slowP n ≤ C / (n : ℝ) ^ α) ∧
+    ¬ SmallRemainderMS (iidSamples slowPopulation) (rareRemainder slowP) ∧
+    (∀ r : ℕ → ℝ, (∀ n : ℕ, 1 ≤ n → 0 < r n) → Tendsto r atTop (𝓝 0) →
+      ∃ p : ℕ → ℝ, (∀ n : ℕ, 1 ≤ n → 0 < p n ∧ p n ≤ 1) ∧ Tendsto p atTop (𝓝 0) ∧
+        RootNNormal (iidSamples slowPopulation) (rareEstimator p) 0 ∧
+        (∀ n : ℕ, 1 ≤ n → pr (iidSamples slowPopulation)
+          {s | rareEstimator p n s ≠ clipReal 0 1 (rareEstimator p n s)} = p n) ∧
+        Tendsto (fun n => p n / r n) atTop atTop) := by
+  exact slow_outlier_counterexample_assemble arbitrary_outlier_sequence_proof
+
+example : type_of% @AronowAudit.P017.slow_outlier_counterexample :=
+  slow_outlier_counterexample_proof
+-/
 
 end
 end AronowAudit.P017.Wave1

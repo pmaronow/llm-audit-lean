@@ -229,7 +229,7 @@ private theorem GP037B4b_event_measurable (n : ℕ) :
   exact measurableSet_lt ((measurable_pi_apply 0).div
     ((measurable_pi_apply 0).add (measurable_pi_apply 1))) measurable_const
 
-/-- Swapping the second mass with the final mass turns the ratio event into `GP037B4b_headCut`.
+/-- Swapping the second mass with the final mass turns the ratio event into `headCut`.
 With only two masses the event already has that form. -/
 private theorem GP037B4b_simplex_event_set (n : ℕ) :
     volume ((completeSimplex (n+1)) ⁻¹' bootstrapWitnessEvent n ∩
@@ -412,5 +412,7 @@ theorem uniform_weights_not_bayesian_bootstrap_proof (n : ℕ) :
     (μ (bootstrapWitnessEvent n)).toReal) heq
   rw [hu,hb] at hp
   norm_num at hp
+
+example : type_of% @AronowAudit.P037.uniform_weights_not_bayesian_bootstrap := uniform_weights_not_bayesian_bootstrap_proof
 
 end AronowAudit.P037.Wave1

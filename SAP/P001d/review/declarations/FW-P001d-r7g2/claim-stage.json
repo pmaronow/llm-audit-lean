@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P001d.T63",
+    "target_id": "P001-T63",
+    "my_reading_vs_claim": "broader",
+    "reason": "All corrected cluster-average, expectation, variance, covariance-sum and weak-law clauses are covered. IID gives the common cluster-average distribution and moments; finite coordinate second moments are the standing existence conditions for the asserted covariances. The weak law also permits zero coordinate variances, strengthening the printed strictly-positive-variance case. This is a valid extension, not a restriction. Sample sizes n+1 cover every positive cluster count. scratch/ClusterChecks.lean compiles a genuine infinite IID sequence of two-coordinate Gaussian clusters with variance one in both coordinates."
+  },
+  {
+    "theorem": "SAP.P001d.T64",
+    "target_id": "P001-T64",
+    "my_reading_vs_claim": "whole",
+    "reason": "The common-correlation hypotheses apply exactly to distinct pairs and require the positive standard deviations in the definition of correlation; this does not exclude zero-variance singleton clusters. All diagonal/off-diagonal identities, the covariance count, design effect, and rho=0 and rho=1 endpoints are stated. The finite product law draws l intact clusters independently and uniformly, retains lm slots, evaluates the statistic, and its B-fold product gives independent repetitions. The standard error is the standard deviation of this conditional bootstrap distribution; the canonical claim specifies no finite-B convergence rate or guarantee. L2 and measurability are ordinary existence conditions. scratch/ClusterChecks.lean compiles all population premises at m=2, l=3, s=rho=1 with nonconstant Gaussian coordinates, as well as nontrivial intact-block resampling."
+  },
+  {
+    "theorem": "SAP.P001d.T65",
+    "target_id": "P001-T65",
+    "my_reading_vs_claim": "broader",
+    "reason": "Every corrected scalar/stacked residual, sum-of-squares, normalized argmin, inverse-solution and residual-moment clause is present. The theorem is pointwise in arbitrary realized data and therefore includes every IID sample. It also proves existence and the normal equations and residual properties for every minimizer of a singular design, extending the printed invertible branch. The totalized inverse is used only under invertibility. scratch/OlsChecks.lean compiles full-rank intercept data with nonzero residuals and an independently checked minimizer for a singular duplicated-intercept design."
+  },
+  {
+    "theorem": "SAP.P001d.T66",
+    "target_id": "P001-T66",
+    "my_reading_vs_claim": "broader",
+    "reason": "Both covariance definitions and their normalized outer-product/matrix equalities are present, with actual OLS residuals and sigma-hat squared equal to the book's n/(n-1) empirical variance. The guards n>=2 and invertible Gram ensure the quantities in these definitions exist; no extra statistical assumption is introduced. Fin index k denotes the coefficient beta_k, whose ordinal matrix position is k+1. Nonnegative diagonals exclude negative-sqrt defaults. Deterministic validity for every realized sample strengthens the IID setting. scratch/OlsChecks.lean checks a full-rank n=3, K=1 example with residuals (1,-2,1), empirical residual variance 3, robust diagonal (2/3,1/2), and classical diagonal (1,3/2)."
+  },
+  {
+    "theorem": "SAP.P001d.T67",
+    "target_id": "P001-T67",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exact conditional-second-moment, weighted-moment factorization and population sandwich identity are faithfully rendered, assuming conditional mean zero, constant conditional variance, integrable entries and invertible population Gram. Event-integral CEF versions implement the standing almost-sure interpretation. Centering by zero is justified by the separately assumed zero conditional mean. General finite-dimensional X and arbitrary epsilon cover the intercept/BLP special case. The canonical statement also includes the large-sample OLS covariance approximation and the equivalence of a linear response CEF with conditional BLP residual mean zero; neither is asserted. The docstring expressly discloses both omissions and the absence of asymptotic normality. scratch/PopulationChecks.lean compiles every premise with a one-dimensional intercept, symmetric +/-1 error, sigma2=1 and population Gram equal to 1."
+  }
+]

@@ -1,7 +1,7 @@
 import AronowAudit.P011.P011_BlockOLSCompletion
 import AronowAudit.P011.P011_ExpectationCompletion
 
-/-! The all-block path counterexample. -/
+/-! The all-block path counterexample. The held declaration is used only for its type. -/
 namespace AronowAudit.P011.Wave1
 open MeasureTheory ProbabilityTheory Filter Finset
 open scoped BigOperators Topology Classical Matrix NNReal ENNReal
@@ -19,7 +19,7 @@ set_option backward.isDefEq.respectTransparency false
 local instance instNullSingletonGLP011B6 : NullSingletonClass (gaussianReal 0 1) :=
   nullSingletonClass_gaussianReal (by norm_num : (1:NNReal) ≠ 0)
 
--- Block transport uses the blockEquiv lemmas in P011_StarCompletion.
+-- Block transport follows the proved blockEquiv lemmas in P011_StarCompletion.
 lemma path_ce_blockIndex (m : ℕ) (b : Fin m) (r : Fin 3) :
     blockIndex (by decide) (StarCompletion.blockEquiv 3 m (b,r)) = b := by
   apply Fin.ext
@@ -232,7 +232,7 @@ lemma path_ce_covariance (t : ℝ) (m : ℕ) :
     · have hv : i.val / 3 ≠ j.val / 3 := fun h => hb (Fin.ext h)
       simp [pathModel,blockGraph,hv]
 
--- Block-matrix transport by finite reindexing.
+-- The block-matrix transport is the same finite reindexing used in GP011B1's cycle proof.
 lemma path_ce_lift_mul (m : ℕ) (M N : Matrix (Fin 3) (Fin 3) ℝ) :
     path_ce_lift m M * path_ce_lift m N = path_ce_lift m (M*N) := by
   ext i j
@@ -664,6 +664,8 @@ theorem path_counterexample_proof (t : ℝ) (ht : t = 1 ∨ t = 2) :
   · intro h
     subst t
     exact ⟨path_ce_negative,path_ce_coverage_two⟩
+
+example : type_of% @AronowAudit.P011.path_counterexample := path_counterexample_proof
 
 end
 end AronowAudit.P011.Wave1

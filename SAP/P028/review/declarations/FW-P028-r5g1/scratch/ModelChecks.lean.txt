@@ -1,0 +1,269 @@
+import SAP.P028.Defs
+import SAP.P028.Defs.WholeW1
+
+open SAP.P028 MeasureTheory ProbabilityTheory
+open scoped ENNReal
+noncomputable section
+open Classical
+namespace Review
+
+def half : unitInterval := ⟨1/2, by constructor <;> norm_num⟩
+def fair : Measure Bool := bernoulliMeasure true false half
+instance : IsProbabilityMeasure fair := by unfold fair; infer_instance
+def four : Measure (Bool × Bool) := fair.prod fair
+instance : IsProbabilityMeasure four := by unfold four; infer_instance
+
+lemma integral_four (f : Bool × Bool → ℝ) :
+    (∫ w, f w ∂four) =
+      (f (true,true)+f (true,false)+f (false,true)+f (false,false))/4 := by
+  rw [four, integral_prod _ Integrable.of_finite]
+  simp only [fair, integral_bernoulliMeasure, half, smul_eq_mul]
+  ring
+
+lemma real_four (E : Set (Bool × Bool)) :
+    four.real E =
+      ((if (true,true) ∈ E then (1:ℝ) else 0) +
+       (if (true,false) ∈ E then (1:ℝ) else 0) +
+       (if (false,true) ∈ E then (1:ℝ) else 0) +
+       (if (false,false) ∈ E then (1:ℝ) else 0))/4 := by
+  classical
+  rw [← integral_indicator_one (Set.toFinite E).measurableSet, integral_four]
+  rfl
+
+lemma eventMean_four (f : Bool × Bool → ℝ) (E : Set (Bool × Bool)) :
+    eventMean four f E =
+      ((if (true,true) ∈ E then f (true,true) else 0) +
+       (if (true,false) ∈ E then f (true,false) else 0) +
+       (if (false,true) ∈ E then f (false,true) else 0) +
+       (if (false,false) ∈ E then f (false,false) else 0)) /
+      ((if (true,true) ∈ E then (1:ℝ) else 0) +
+       (if (true,false) ∈ E then (1:ℝ) else 0) +
+       (if (false,true) ∈ E then (1:ℝ) else 0) +
+       (if (false,false) ∈ E then (1:ℝ) else 0)) := by
+  classical
+  unfold eventMean
+  rw [← integral_indicator (Set.toFinite E).measurableSet, integral_four, real_four]
+  simp only [Set.indicator_apply]
+  simp only [div_eq_mul_inv, mul_inv_rev, inv_inv]
+  ring
+
+def misprintModel : CausalModel (Bool × Bool) where
+  μ := four
+  probability := inferInstance
+  S := fun w => if w.1 then 2 else 1
+  Y := fun _ w => if w.1 then 1 else 1/2
+  Z := Prod.snd
+  measurableS := measurable_of_finite _
+  measurableY := fun _ => measurable_of_finite _
+  integrableY := fun _ => Integrable.of_finite
+  measurableZ := measurable_snd
+  randomAssignment := by
+    exact indepFun_prod (μ := fair) (ν := fair)
+      (X := fun s : Bool => ((if s then 2 else 1 : Fin 3),
+         (if s then 1 else 1/2 : ℝ), (if s then 1 else 1/2 : ℝ)))
+      (Y := id) (measurable_of_finite _) measurable_id
+  armPositive := by
+    intro z
+    rw [real_four]
+    cases z <;> norm_num
+  nonzeroFirstStage := by
+    rw [integral_four]
+    norm_num [treatment, realBit]
+
+example : wholeMisprintRealization := by
+  refine ⟨misprintModel, rfl, rfl, rfl, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro d w
+    rcases w with ⟨s,z⟩
+    cases s <;> norm_num [misprintModel]
+  · norm_num [complierProbability, complierEvent, misprintModel, real_four]
+  · norm_num [neverEvent, misprintModel, real_four]
+  · intro z
+    cases z <;> norm_num [armEvent, misprintModel, real_four]
+  · norm_num [armMean, observedY, observedD, armEvent, misprintModel, eventMean_four]
+  · norm_num [armMean, observedY, observedD, armEvent, misprintModel, eventMean_four]
+  · norm_num [complierMean, complierEvent, misprintModel, eventMean_four]
+  · norm_num [complierMean, complierEvent, misprintModel, eventMean_four]
+
+def fullModel : CausalModel (Bool × Bool) where
+  μ := four
+  probability := inferInstance
+  S := fun _ => 2
+  Y := fun d _ => realBit d
+  Z := Prod.snd
+  measurableS := measurable_const
+  measurableY := fun _ => measurable_const
+  integrableY := fun _ => integrable_const _
+  measurableZ := measurable_snd
+  randomAssignment := indepFun_const_left _ _
+  armPositive := by
+    intro z
+    rw [real_four]
+    cases z <;> norm_num
+  nonzeroFirstStage := by
+    rw [integral_four]
+    norm_num [treatment, realBit]
+
+example : boundedOutcomes fullModel ∧ complierProbability fullModel = 1 ∧
+    complierMean fullModel false = 0 ∧ complierMean fullModel true = 1 ∧
+    (∀ z, fullModel.μ.real (armEvent fullModel z) = 1/2) := by
+  constructor
+  · intro d w; cases d <;> norm_num [fullModel, realBit]
+  constructor
+  · norm_num [complierProbability, complierEvent, fullModel, real_four]
+  constructor
+  · norm_num [complierMean, complierEvent, fullModel, realBit, eventMean_four]
+  constructor
+  · norm_num [complierMean, complierEvent, fullModel, realBit, eventMean_four]
+  · intro z; cases z <;> norm_num [armEvent, fullModel, real_four]
+
+def triple : Measure (Fin 3) :=
+  (1/3 : ℝ≥0∞) • (Measure.dirac 0 + Measure.dirac 1 + Measure.dirac 2)
+instance : IsProbabilityMeasure triple := by
+  constructor
+  norm_num [triple]
+  calc
+    (3 : ℝ≥0∞)⁻¹ + 3⁻¹ + 3⁻¹ = 3 * 3⁻¹ := by ring
+    _ = 1 := ENNReal.mul_inv_cancel (by norm_num) (by norm_num)
+
+lemma integral_triple (f : Fin 3 → ℝ) :
+    (∫ s, f s ∂triple) = (f 0 + f 1 + f 2)/3 := by
+  simp only [triple, integral_smul_measure]
+  rw [integral_add_measure Integrable.of_finite Integrable.of_finite,
+    integral_add_measure Integrable.of_finite Integrable.of_finite]
+  norm_num
+  ring
+
+def twelve : Measure (Fin 3 × Bool × Bool) := triple.prod four
+instance : IsProbabilityMeasure twelve := by unfold twelve; infer_instance
+
+lemma integral_twelve (f : Fin 3 × Bool × Bool → ℝ) :
+    (∫ w, f w ∂twelve) =
+      (∑ s : Fin 3, (f (s,true,true)+f (s,true,false)+
+        f (s,false,true)+f (s,false,false)))/12 := by
+  rw [twelve, integral_prod _ Integrable.of_finite, integral_triple]
+  simp_rw [integral_four]
+  norm_num [Fin.sum_univ_succ]
+  ring
+
+lemma real_twelve (E : Set (Fin 3 × Bool × Bool)) :
+    twelve.real E =
+      (∑ s : Fin 3, ((if (s,true,true) ∈ E then (1:ℝ) else 0) +
+       (if (s,true,false) ∈ E then (1:ℝ) else 0) +
+       (if (s,false,true) ∈ E then (1:ℝ) else 0) +
+       (if (s,false,false) ∈ E then (1:ℝ) else 0)))/12 := by
+  rw [← integral_indicator_one (Set.toFinite E).measurableSet, integral_twelve]
+  rfl
+
+lemma eventMean_twelve (f : Fin 3 × Bool × Bool → ℝ) (E : Set (Fin 3 × Bool × Bool)) :
+    eventMean twelve f E =
+      (∑ s : Fin 3, ((if (s,true,true) ∈ E then f (s,true,true) else 0) +
+       (if (s,true,false) ∈ E then f (s,true,false) else 0) +
+       (if (s,false,true) ∈ E then f (s,false,true) else 0) +
+       (if (s,false,false) ∈ E then f (s,false,false) else 0))) /
+      (∑ s : Fin 3, ((if (s,true,true) ∈ E then (1:ℝ) else 0) +
+       (if (s,true,false) ∈ E then (1:ℝ) else 0) +
+       (if (s,false,true) ∈ E then (1:ℝ) else 0) +
+       (if (s,false,false) ∈ E then (1:ℝ) else 0))) := by
+  unfold eventMean
+  rw [← integral_indicator (Set.toFinite E).measurableSet, integral_twelve, real_twelve]
+  simp only [Set.indicator_apply, div_eq_mul_inv, mul_inv_rev, inv_inv]
+  ring
+
+def latentY (d : Bool) (s : Fin 3) : ℝ :=
+  if s = 0 then 1 else if s = 1 then 0 else realBit d
+
+def cellModel : CausalModel (Fin 3 × Bool × Bool) where
+  μ := twelve
+  probability := inferInstance
+  S := Prod.fst
+  Y := fun d w => latentY d w.1
+  Z := fun w => w.2.1
+  measurableS := measurable_fst
+  measurableY := fun _ => measurable_of_finite _
+  integrableY := fun _ => Integrable.of_finite
+  measurableZ := measurable_fst.comp measurable_snd
+  randomAssignment := by
+    exact indepFun_prod (μ := triple) (ν := four)
+      (X := fun s : Fin 3 => (s, latentY false s, latentY true s))
+      (Y := Prod.fst) (measurable_of_finite _) measurable_fst
+  armPositive := by
+    intro z
+    rw [real_twelve]
+    cases z <;> norm_num [Fin.sum_univ_succ]
+  nonzeroFirstStage := by
+    rw [integral_twelve]
+    norm_num [Fin.sum_univ_succ, treatment, realBit]
+
+def biasedResponse : Response (Fin 3 × Bool × Bool) where
+  R := fun w => observedD cellModel w || w.2.2
+  measurableR := measurable_of_finite _
+
+lemma cellModel_bounded : boundedOutcomes cellModel := by
+  intro d w
+  rcases w with ⟨s,z,b⟩
+  fin_cases s <;> cases d <;> norm_num [cellModel, latentY, realBit]
+
+lemma cellModel_ignorable : wholeCellIgnorable cellModel biasedResponse := by
+  intro d z _
+  cases d <;> cases z <;>
+    norm_num [cellModel, biasedResponse, cellEvent, responseEvent, observedD,
+      responseCellMean, cellMean, observedY, armEvent, eventMean_twelve,
+      real_twelve, Fin.sum_univ_succ, treatment, latentY, realBit]
+  all_goals exact ⟨1, by norm_num⟩
+
+example : wholeCellCounterexample := by
+  refine ⟨cellModel, biasedResponse, cellModel_bounded, cellModel_ignorable, ?_⟩
+  constructor
+  · constructor
+    · intro z; cases z <;>
+        norm_num [cellModel, biasedResponse, mixedResponsePositive, responseEvent,
+          armEvent, observedD, real_twelve, Fin.sum_univ_succ, treatment]
+    constructor <;>
+      norm_num [cellModel, biasedResponse, cellEvent, responseEvent,
+        observedD, real_twelve, Fin.sum_univ_succ, treatment]
+    all_goals exact ⟨1, by norm_num⟩
+  norm_num [cellProbability, complierProbability, complierEvent, armMean,
+    responseArmMean, complierMean, mixedIdentification, responseCellMean,
+    cellModel, biasedResponse, cellEvent, responseEvent, observedD, observedY,
+    armEvent, real_twelve, eventMean_twelve, Fin.sum_univ_succ, treatment, latentY, realBit]
+
+-- A second response on the same randomized model makes all the mixed and
+-- conditional-independence premises jointly satisfiable, with all cells positive.
+def completeResponse : Response (Fin 3 × Bool × Bool) where
+  R := fun _ => true
+  measurableR := measurable_const
+
+example : boundedOutcomes cellModel ∧
+    0 < cellProbability cellModel true false ∧
+    0 < cellProbability cellModel false true ∧
+    mixedResponsePositive cellModel completeResponse ∧
+    mixedMeanEqualities cellModel completeResponse ∧
+    (∀ z, IndepFun completeResponse.R
+      (fun w => (observedY cellModel w, observedD cellModel w))
+      (assignmentConditionalLaw cellModel z)) := by
+  refine ⟨cellModel_bounded, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num [cellProbability, cellModel, cellEvent, armEvent, observedD,
+      real_twelve, Fin.sum_univ_succ, treatment]
+  · norm_num [cellProbability, cellModel, cellEvent, armEvent, observedD,
+      real_twelve, Fin.sum_univ_succ, treatment]
+  · constructor
+    · intro z; cases z <;>
+        norm_num [completeResponse, responseEvent, cellModel, armEvent,
+          real_twelve, Fin.sum_univ_succ]
+    constructor <;>
+      norm_num [completeResponse, responseEvent, cellModel, cellEvent, observedD,
+        real_twelve, Fin.sum_univ_succ, treatment]
+  · simp [mixedMeanEqualities, responseArmMean, responseCellMean, completeResponse,
+      responseEvent, armMean, cellMean]
+  · intro z
+    have hprob : IsProbabilityMeasure (assignmentConditionalLaw cellModel z) := by
+      apply cond_isProbabilityMeasure
+      intro he
+      have hp := cellModel.armPositive z
+      change 0 < (cellModel.μ (armEvent cellModel z)).toReal at hp
+      rw [he] at hp
+      simpa using hp
+    letI := hprob
+    exact indepFun_const_left _ _
+
+end Review

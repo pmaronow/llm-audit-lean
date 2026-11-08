@@ -13,7 +13,8 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 set_option linter.style.haveILetI false
 
-/-! Corrected inference and the multivariate Gaussian limit. -/
+/-! Record 9: corrected inference, reusing the proved scalar theory in
+`GP0182B2b.lean` and assembling its multivariate Gaussian limit. -/
 
 lemma inferenceB3_limitingTarget_psd {U : Type*} [MeasurableSpace U] {k : ℕ}
     (K : Kernel U k) (hK : Standing K) : (limitingTarget K).PosSemidef := by
@@ -213,7 +214,9 @@ theorem inference_corrected_proof {U : Type*} [MeasurableSpace U] {k : ℕ}
   · intro c hc
     exact ⟨GP0182B2b_pivot_weak K hK c hc, GP0182B2b_variance_bad K hK c hc⟩
 
-/-! Exact score projection decomposition. -/
+example : type_of% @AronowAudit.P018.inference_corrected := inference_corrected_proof
+
+/-! Record 10: exact score projection decomposition. -/
 
 /-! Population normal equations and the first-order projection. -/
 
@@ -380,7 +383,8 @@ lemma spdB3_remainder_centered {U : Type*} [MeasurableSpace U] {k : ℕ}
     fun u hu => congrFun hu a)
 
 /-! Product-coordinate transport. The pair/triple construction and the
-L² argument for shared products follow earlier code by P. M. Aronow and Patrick Lopatto.
+L² argument for shared products follow NearlyMinimax/PairUStatistic.lean,
+pmaronow/ccv-palomar, commit f3ef2ef312d44bbc693c1d5bea9cee654a29b598.
 Copyright (c) 2026 P. M. Aronow and Patrick Lopatto.
 MIT licensed. The cancellation below
 allows two different kernels and almost-everywhere section centering.
@@ -401,7 +405,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -/
-/- See NOTICE at the repository root for this adapted section. -/
 
 lemma spdB3_pair_preserving {U : Type*} [MeasurableSpace U]
     (μ : Measure U) [IsProbabilityMeasure μ] {N : ℕ} {i j : Fin N} (hij : i ≠ j) :
@@ -805,5 +808,7 @@ theorem score_projection_decomposition_proof {U : Type*} [MeasurableSpace U] {k 
   exact ⟨spdB3_projection_centered K hK, spdB3_remainder_degenerate K hK,
     fun N hN ω => spdB3_score_sum_decomposition K hK hN ω,
     spdB3_score_average_variance K hK⟩
+
+example : type_of% @AronowAudit.P018.score_projection_decomposition := score_projection_decomposition_proof
 
 end AronowAudit.P018.Wave1

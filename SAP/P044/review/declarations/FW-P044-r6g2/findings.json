@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P044-T6",
+    "theorem": "SAP.P044.T6",
+    "fingerprint": "0250f555b8a267e8531854fa4fe5daa3d5150fd745e2a64abea65ea31c5cca9c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). Constructs the loopless three-vertex clique with positive degree at every vertex, proves normalPopulation 3 is a probability measure, and constructs B(g,i)=|g| on gaussianReal 0 1 satisfying every comparison HasLaw hypothesis. Taking a=8 satisfies the scalar nonnegativity guard; arbitrary-real B clauses have no additional hypotheses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T7",
+    "theorem": "SAP.P044.T7",
+    "fingerprint": "9eb862ae61fcf77e8a5876c92f8fad7b150bde5c93f94d6d5fc9e46e8b2f9202",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). Directly verifies normalization of the uniform eight-row mass, injectivity of cycle8Assignments, symmetry/false diagonal/no isolates, three treated vertices in every profile, a nonempty group for every exposure in every profile, and strictly positive exact marginals at every unit and exposure. This is the actual canonical exhaustive witness, not a replacement random-bank construction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T8",
+    "theorem": "SAP.P044.T8",
+    "fingerprint": "d50d0a5b2ec603af837275605b19e6af5bedc738e9a5c541138f552102ccc7a7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). Constructs R=N=2, D=Bool, f(r,i)=decide(r=i), y(i,a)=1 (unrestricted), and w(i,a)=1/2, with distinct rows, positive exact and fixed weights, positive R,N and two labels. Separately constructs the product measure Bernoulli(1/2) x Binomial(3,1/2) on Bool x Nat; the coordinate projections satisfy both HasLaw hypotheses, IndepFun, the probability-measure condition and 0<p<1.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P044-T9",
+    "theorem": "SAP.P044.T9",
+    "fingerprint": "1ddcf7f51f73fb81e6ce2836a6fc51a0c2e10ec530d25a93e294cd8c7f129369",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). On two vertices y_i(z)=1[z_i] satisfies NoInterference. The schedule y_i(z)=1[z_1] (zero-based vertex 1), with i=0, own treatment false, and all-false versus all-true other-coordinate vectors, satisfies Interference. A loopless two-vertex network and profiles differing only at own treatment satisfy the network guards simultaneously. Ordered deletion/insertion also reconstructs an arbitrary singleton profile.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "Earlier issue 1: Challenge docstring jointly described no interference and interference as equivalent to fixed-own-treatment invariance.",
+        "status": "fixed",
+        "reason": "SAP/P044/Challenge/Part1.lean:69 states that interference is the negation of no interference, and line 70 assigns fixed-own-treatment invariance only to no interference. This correctly describes the unchanged formal equivalences."
+      },
+      {
+        "earlier_issue": "Earlier issue 2: T9WholeStatement docstring repeated the same misleading joint equivalence.",
+        "status": "fixed",
+        "reason": "SAP/P044/Defs/WholeW1.lean:260 states that interference is the negation of no interference, and line 261 assigns fixed-own-treatment invariance only to no interference. The definition body at lines 273-276 agrees with this wording."
+      }
+    ]
+  },
+  {
+    "target_id": "P044-T10",
+    "theorem": "SAP.P044.T10",
+    "fingerprint": "6f0ea675a3168ba68aba8ce65651aa849862500b1cdbfc3c95826f4ffe8e3359",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean with sap-lean (exit 0). Constructs a normalized mass-one law on Fin 1, the complete simple graph on Fin 2, and a constant one-community assignment. Proves N>0, positive degree at every vertex for every law outcome, within-community adjacency, and zero crossing marginals together. A separate identity community assignment on Fin 2 with s=t_i=1 realizes distinct communities and a zero block cross probability. All share denominators are positive in the graph-law instance.",
+    "confidence": 0.98
+  }
+]

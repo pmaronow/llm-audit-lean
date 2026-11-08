@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P009-T1",
+    "theorem": "SAP.P009a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The displayed fair Bernoulli sequence exists for every n=t+1>=1. It has HT=2Z_0/n and true variance 1/n^2, hence two genuine atoms and coverage 1/2. Exact rational checks passed for n=1,...,8; the positive-size regularity/product domain was also checked directly in Lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T2",
+    "theorem": "SAP.P009a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take S=identitySequence, k=2,q=4,s=1 and Vhat_t equal to the true variance 1/N_t. Then d_AVG=1, N_t Var(HT)=1, Vhat>=0 and the scaled estimation error is identically zero, so VarianceConservative holds. For the general measure component take a fair two-point probability space, T=+/-1, theta=0, V=Vhat=1 and delta_t=t+1; all measurability, integrability, positivity and lower-bound hypotheses hold.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T3",
+    "theorem": "SAP.P009a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The three explicitly prescribed two-unit distributions have normalized nonnegative masses and both marginals 1/4 or 3/4. Exact rational enumeration verified regularity and all numerical covariance/variance violations: 13/48>0, 1/3>0 and 367/9>39.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T4",
+    "theorem": "SAP.P009a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The retained full-regularity component has positive-size instances: identityPopulation 1 satisfies Regularity at k=2,q=4,s=1 and ProductDesign, as freshly checked in scratch/Check.lean against the revised Defs. The general weighted component also has ordinary nonempty instances on a fair two-point space with two variables, weights 1,2 and K=2. The same Lean file checks that the observed fourth-moment condition holds at k=1 while full regularity at k=1 fails; this strict additional premise is now explicitly disclosed in both the docstring and record2.json.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T5",
+    "theorem": "SAP.P009a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "At every n>=1 the fair assignment mass 2^(-n) is normalized and the displayed cluster outcomes lie in [0,1]. Exact rational full-cube checks for n=1,...,10 verify k=3,q=2,s=1 regularity, density and the complete threshold characterization. In particular n=5 has density 1/5<1/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T6",
+    "theorem": "SAP.P009a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the limsup component take a_t=1/2, L=1/2, c=1/4. For the finite construction take n=2, fair independent assignment, identity outcomes, k=2,q=4,s=1 and L=1/4: M=1, HT_F=Z_0, theta_F=1/2 and the absolute error is 1/2. Original outcome moments satisfy the now-disclosed full regularity. Earlier exact rational construction checks for n=1,...,5 and every M=1,...,n still apply because the formulas are unchanged. The freshly recompiled Lean checks confirm the positive-size regularity domain, and also that a fair one-unit original outcome constantly 3 satisfies the k=2 assignment bounds but fails the k=2 fourth-moment bound, illustrating the restriction now accurately disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T7",
+    "theorem": "SAP.P009a.T7",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The sparse sequence has n>=1 and variance 1/n^2>0; its standardized estimator is a fair +/-1 variable. No hypothesis is assumed to force a contradiction. Exact checks passed for n=1,...,8.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T8",
+    "theorem": "SAP.P009a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "identitySequence satisfies sequence regularity with k=2,q=4,s=1, product assignment and d_MAX=1; Var(HT)=1/N_t>0 and N_t Var(HT)=1 at every index. Thus the added positivity and eventual variance lower bound hold together. Lean checks the n=1 regularity/product/variance instance, and exact rational checks cover n=1,...,7.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P009-T9",
+    "theorem": "SAP.P009a.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every r>=1 there are binomial(4r+2,2r+1) positive-mass assignments, each of reciprocal mass. The two averaging groups are disjoint and have odd size. Exact checks at r=1,2 verify all aggregate formulas and the coincident probability-1/2 majority events, which attain mixing 1/4.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T10",
+    "theorem": "SAP.P009a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let N_t=2(t+1), use uniform complete randomization with m=t+1 and identity outcomes. Then d_AVG=1 and |{(i,j):d_ij=0}|=N_t(N_t-1)>0 for every t. Distinct-coordinate mixing is 1/[4(N_t-1)] and the exceptional sets can be empty. Exact checks for N=2,4,6,8 verify the finite design, regularity, nondependent-pair cardinalities and assignment covariances.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P009-T11",
+    "theorem": "SAP.P009a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicitly defined fair block-star experiment exists at every m>=2, with n=m^2 positive, outcomes in [0,2], d_AVG=m and C1=2. Exact rational checks for m=2,3 verify regularity, both biases and all aggregate identities. Along m=t+2 the ratio is m/2 and diverges.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T12",
+    "theorem": "SAP.P009a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The finite component applies to fair identity outcomes with k=2,q=4,s=1. The ratio hypotheses are realized by the additive star sequence. The final nonzero-B2 hypotheses also have nontrivial instances: for m>=3 take m fair independent blocks of size m, hub response Z_h and each leaf response Z_i Z_h. Then n=m^2, d_AVG=m, C1=2-1/m, B1=(m-1)/m^2, B2=(m-1)(m-2)/(4m^2)->1/4 and tau_MS=(m+3)/(4m). Thus d_AVG/C1->infinity and C1/(d_AVG*|B2|)->0 with B2>0. The m=3 bias formulas were checked by exact rational enumeration.",
+    "confidence": 0.95
+  },
+  {
+    "target_id": "P009-T13",
+    "theorem": "SAP.P009a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified fair three-unit experiment has eight assignments of mass 1/8 and bounded outcomes. Exact enumeration verifies regularity, the genuine 0->1 interference and the two zero expected spillovers; neither empty indices nor conditioning on a null event is involved.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T14",
+    "theorem": "SAP.P009a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the no-interference implications use fair identity outcomes on two units, whose marginal arm probabilities are both 1/2. The specified three-unit cancelling example supplies the converse failure. These are ordinary finite distributions and all expectations exist.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T15",
+    "theorem": "SAP.P009a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The identity sequence exists at every n=t+1>=1, with all positive-mass outcomes bounded by 1, so both maximal orders are infinity. Each full covariance sum is n/4>0 and all distinct-coordinate mixing coefficients vanish. Exact rational covariance and variance checks passed for n=1,...,7.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T16",
+    "theorem": "SAP.P009a.T16",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example use n=1, the fair identity experiment, either arm and any k>0. The covariance and mixing sums are both 1/4, so the first bound is nontrivial and attained. The theorem involves no inverse arm probabilities, and its positive-size domain is nonempty.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T17",
+    "theorem": "SAP.P009a.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six assignments with two treated units have mass 1/6, with marginal probabilities 1/2. Exact enumeration verifies regularity, the incoming causes {0,1}, true probabilities 1/2 and 2/3, printed masses 1/6 and 1/3 and the strict likelihood-ratio discrepancy. All ratios have positive denominators.",
+    "confidence": 0.99
+  }
+]

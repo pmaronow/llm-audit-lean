@@ -1,0 +1,58 @@
+import SAP.P017.Defs
+
+open MeasureTheory ProbabilityTheory Filter Set
+open scoped Topology ENNReal NNReal BigOperators
+
+noncomputable section
+namespace P017Review
+
+def observedSummand (d : ℝ × ℝ) : ℝ :=
+  2 * d.1 * d.2 - 2 * (1 - d.1) * d.2
+
+def empiricalFunctional (_n : ℕ) (ν : Measure (ℝ × ℝ)) : ℝ :=
+  ∫ d, observedSummand d ∂ν
+
+-- In particular, the new premise on H is satisfiable by the IPW witness.
+example : ∀ n : ℕ, Measurable (empiricalFunctional n) := by
+  intro n
+  let κ : Kernel (Measure (ℝ × ℝ)) (ℝ × ℝ) := ⟨id, measurable_id⟩
+  have hf : StronglyMeasurable observedSummand := by
+    apply Measurable.stronglyMeasurable
+    unfold observedSummand
+    fun_prop
+  exact (hf.integral_kernel (κ := κ)).measurable
+
+example : ∀ n : ℕ, 1 ≤ n → ∀ s : ℕ → ℝ × (ℝ × ℝ),
+    empiricalFunctional n (SAP.P017.empiricalObserved SAP.P017.ipwObserved n s) =
+      SAP.P017.sampleMean SAP.P017.ipwSummand n s := by
+  intro n hn s
+  unfold empiricalFunctional SAP.P017.empiricalObserved
+  rw [integral_smul_measure, integral_finsetSum_measure]
+  · simp only [integral_dirac, smul_eq_mul, ENNReal.toReal_div,
+      ENNReal.toReal_one, ENNReal.toReal_natCast]
+    unfold SAP.P017.sampleMean
+    have hf : (fun i => observedSummand (SAP.P017.ipwObserved (s i))) =
+        (fun i => SAP.P017.ipwSummand (s i)) := rfl
+    rw [hf]
+    ring
+  · intro i hi
+    simp [integrable_dirac]
+
+-- The sample is itself the IID sequence, so its joint law is exactly the
+-- required population product, without a repeated-draw construction.
+example : (SAP.P017.iidSamples SAP.P017.ipwPopulation).map
+    (id : (ℕ → ℝ × (ℝ × ℝ)) → (ℕ → ℝ × (ℝ × ℝ))) =
+      SAP.P017.iidSamples SAP.P017.ipwPopulation := Measure.map_id
+
+def allControl : ℕ → ℝ × (ℝ × ℝ) := fun _ => (1 / 2, (-1, 0))
+
+-- This record has a legitimate effect 1/2, control assignment, and control
+-- potential outcome -1. Its observed IPW estimate clips to the upper endpoint.
+example : SAP.P017.ipwObserved (allControl 0) = (0, -1) ∧
+    SAP.P017.sampleMean SAP.P017.ipwSummand 1 allControl = 2 ∧
+    SAP.P017.clipReal (1 / 2) (1 / 2)
+      (SAP.P017.sampleMean SAP.P017.ipwSummand 1 allControl) = 1 := by
+  norm_num [SAP.P017.ipwObserved, SAP.P017.ipwY0, SAP.P017.ipwY1,
+    SAP.P017.sampleMean, SAP.P017.ipwSummand, SAP.P017.clipReal, allControl]
+
+end P017Review

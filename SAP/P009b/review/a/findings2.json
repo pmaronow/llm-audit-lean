@@ -1,0 +1,172 @@
+[
+  {
+    "target_id": "P009-T18",
+    "theorem": "SAP.P009b.T18",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The uniform law on the two assignments (true,false) and (false,true), with zero outcomes, satisfies Complete(E,1), incoming(E,i)=1 and the required count bound. This is compiled in scratch/DeltaNonvacuity.lean. A positive-r instance is n=4,m=2 with Y_0=z_0+z_1, all other Y_i=z_i: incoming(E,0)=2 and r=1. Exact count and supported-vector ratios were also checked for every admissible incoming count with 2<=n<=10.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T19",
+    "theorem": "SAP.P009b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem supplies the genuine fair six-unit experiment rather than assuming its interference indicators. Independent enumeration of all 64 assignments yields incoming sets {0,2,4} and {1,3,5}, d_01=0, e_01=1 and witness count 3. These quantities depend on the full-cube schedules, so the same counterexample is available with the paired assignment law if desired. The revised refuted label targets the printed indicator-equals-witness-count equality; the fixed experiment yields the explicit contradiction 1=3 if that equality is imposed.",
+    "confidence": 0.995
+  },
+  {
+    "target_id": "P009-T20",
+    "theorem": "SAP.P009b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=2, the compiled two-unit law, zero outcomes and the swap pairing. The mandatory diagonal indicators give I=d=identity, eAVG=1 and C2^2=1. More generally, each diagonal-one binary indicator array is realized by Y_j(z)=sum_i I_ij z_i. Both pointwise inequalities and the final bound were checked on all 4096 four-unit arrays with a fixed pairing.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T21",
+    "theorem": "SAP.P009b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified fair six-unit one-source experiment exists, has every marginal equal to 1/2, and has finite moments. Exact rational enumeration gives dAVG=3, MSQ=1, B1=1/6, B2=1/3, E BER=229/144, Var HT=241/144 and normalized expected gap -1/6. The source baseline -1/4 is part of the canonical illustration; a sampling-support condition is not imposed on this fixed-population example. Relevant denominators are ordinary positive values: marginal probabilities 1/2, distinct-pair conditioning probabilities 1/4, and n*dAVG=18. The revised refuted label addresses the exact B2 and centre evaluations, with convergence expressly excluded.",
+    "confidence": 0.995
+  },
+  {
+    "target_id": "P009-T22",
+    "theorem": "SAP.P009b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the finite clauses choose n=2,h=2 and any real baselines. For the limit choose N_t=t+2, fair designs, h_t=N_t, source baseline -1/4 and every other baseline zero. All observed and forced potential outcomes have absolute value at most 2, so the same k=2,q=4,s=1 satisfies RegularSequence at every t. A study with h_t=1 also works. Exact aggregate formulas and spillovers were checked in 42 finite instances; the uniform moment premise does not assume convergence.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T23",
+    "theorem": "SAP.P009b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "At n=2 take P uniform on the two balanced assignments, rho(x) the constant swap, and Q(x)=P. Sorting the two covariates supplies AdjacentRanks for every x, including ties. The twelve integrands reduce to constants and quadratic polynomials in x+u on the compact sampling box, hence are integrable. Both variance integrals equal 29/3, agreeing with both stated formulas at n=2. For general n the complete-design constant follows from Var(X_i+u_i)=29/6; paired rank gaps have squared expectation 18/[(n+1)(n+2)], giving the stated paired formula. At the printed sample size n=100, sort covariates with index-based tie-breaking and pair adjacent ranks. This gives a Borel paired-law family; on the compact uniform-baseline box all twelve integrands are bounded piecewise polynomials, hence integrable. The complete-design integrated variance is 29/150, and squared bias divided by that variance is 150/29>1. The model also gives design mean zero at every fixed baseline, so total variance identifies this integrated variance with the joint sampling-and-assignment variance for this concrete construction. This supplies a counterexample to the printed negligibility summary while the theorem still omits a separate formal joint-space identification and asymptotic-divergence clause, as disclosed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P009-T24",
+    "theorem": "SAP.P009b.T24",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use n=2, the compiled balanced law, fullOutcome with baselines (0,1), and the swap pairing. The law is both complete with m=1 and paired; each arm is nonempty. EATE=1, both estimators take values -1 and 1 with equal probability, their signed bias is -1 and their MSE is 2. Independent exact checks verified the support identities and bias/MSE formulas for n=2,4,6,8 under both designs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T25",
+    "theorem": "SAP.P009b.T25",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The revised definition is the ordinary mean of estimate-minus-one for every positive R. scratch/DeltaBias.lean proves its exact summand by rfl and, for arbitrary R>0, empiricalBias=(sum estimates)/R-1. It proves both empiricalBias and reportedBias are zero for constant-one samples at R=2 and R=50000, and that constant-zero and constant-two samples have signed errors -1 and +1 with equal reported magnitudes for every positive R. A heterogeneous two-observation sample (0,2) also gives zero. The population clause retains the genuine n=2 balanced fullOutcome experiment with baselines (0,1); its design construction is recompiled in scratch/DeltaNonvacuity.lean.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P009-T26",
+    "theorem": "SAP.P009b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take N_t=t+2, zero outcome schedules, and put mass 1/3 on the all-treated assignment and 2/3 on the all-control assignment. The designs are genuine finite probability laws, NoInterference holds, and even the standing regularity conditions hold with k=3,q=2,s=1. The distinct-unit masks encode the same nondegenerate Bernoulli variable, so alpha=p(1-p)=2/9 and the normalized exponent-one limit is positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T27",
+    "theorem": "SAP.P009b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use fair zero-outcome studies with N_t=b_t=t+2, k=2,q=2,s=1 and alpha=1/2. Let f_t be +1 when the first two bits are both false, -1 when both are true, and zero otherwise. Its outer masses are exactly 1/4, so its approximation error is zero and it satisfies minimality against every competing map. Nonempty-coordinate atom bounds are also realized. For the standalone finite-law clause sharpLaw(1/2), sharpValue and delta=1/2 give an instance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T28",
+    "theorem": "SAP.P009b.T28",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Omega=Fin 3, P=sharpLaw(1/2), F=sharpValue and x=1/2. The three-point support and mean zero are compiled in scratch/DeltaNonvacuity.lean; dist3(x)=1/2>0 and the shift condition holds. The constant sequence of these laws/maps satisfies all sequence hypotheses. A real law supported on these three values is completely represented by its three masses, so this finite-law presentation preserves the canonical formal content.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T29",
+    "theorem": "SAP.P009b.T29",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use fair n=2, Y_0=z_0+z_1, Y_1=z_1, k=2,q=4 and b=true. The observed fourth moments are 9/2 and 1/2, each at most 16. Taking a=1 gives covariance 1/8; a=2 gives covariance 3/8. Both satisfy 2a<=q. At a=0 the arm variables are indicators, and the ordinary zeroth-power convention makes each moment-chain link valid.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T30",
+    "theorem": "SAP.P009b.T30",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use fair n=3 with Y_0=z_0+z_1, Y_1=z_1, Y_2=z_2. All treatment marginals are 1/2, D is the block diagonal matrix with blocks J_2 and (1), dAVG=5/3 and dMAX=lambdaMax=2. At the all-treated assignment BER=8/3>0, so the printed AVG equalities actually fail and the equality-or-zero alternatives are substantive. Positive finite dimension ensures both real suprema have nonempty bounded domains.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T31",
+    "theorem": "SAP.P009b.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Set alpha=1/2, Omega_t=Fin 3, P_t=sharpLaw(1/2), F_t=sharpValue for every t. Both outer masses equal 1/4, so their required limits hold. The law is a normalized three-atom law with all masses positive, and the CDF cases include the thresholds -1,0,1. Fixed three-point support makes the pointwise convergence at jumps valid.",
+    "confidence": 0.995
+  },
+  {
+    "target_id": "P009-T32",
+    "theorem": "SAP.P009b.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For an upward flip take n=2,G={0},z=(false,true),i=0. Balance increases from -1 to 1. With j=1 the simultaneous upward/downward flip still changes this G-balance by 2; taking G={0,1} instead gives change zero. Every subset, assignment and permitted one/two-coordinate flip on four units was independently checked. The multiplier crossings are also nonempty: for example M(-1+2) differs from M(-1).",
+    "confidence": 0.995
+  },
+  {
+    "target_id": "P009-T33",
+    "theorem": "SAP.P009b.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take fair n=2,h=2 and both baselines zero. Then Y_0=z_0,Y_1=2z_0z_1, xi_10(false)=0, xi_10(true)=2, yBreve_0=1/2 and B1=1/2. The distinct-unit domain contains this nonzero spillover. General spillover and aggregate formulas were checked throughout the 42-instance grid used for T22.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T34",
+    "theorem": "SAP.P009b.T34",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled n=2 zero-outcome experiment is Paired under the swap and Regular with k=2,q=4,s=1. A nonzero-gap example uses the same balanced law with Y_0=z_0+z_1,Y_1=z_1: observed fourth moments are at most 1, forced potential absolute first moments at most 3/2, and marginals 1/2, so these same regularity constants work. Here rSUM=1, EATE=1, ADSE=1/2 and the two conditional-versus-unconditional potential-mean differences for unit 0 are each 1/2.",
+    "confidence": 0.99
+  }
+]

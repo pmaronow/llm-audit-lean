@@ -4,7 +4,11 @@ import Mathlib.Data.Sym.Card
 import Mathlib.Data.Fintype.EquivFin
 import Mathlib.Order.ConditionallyCompleteLattice.Finset
 
-
+/-!
+Draft dd-GP0031B2. No Lean process was run while preparing this file.
+The report distinguishes complete proof terms from the remaining completion
+transport work. In particular, none of the held proofs is used below.
+-/
 
 namespace AronowAudit.P003.Wave1
 
@@ -13,7 +17,7 @@ attribute [local instance 0] Classical.propDecidable
 set_option maxRecDepth 100000
 set_option maxHeartbeats 1200000
 
-/-! Fixed-stratum counts. -/
+/-! ## Record 6: fixed-stratum counts -/
 
 lemma corrected_stratum_count_randomStates_iff (v q : Counts) (m : ℕ) :
     q ∈ randomStates v m ↔
@@ -235,9 +239,13 @@ theorem corrected_stratum_count_proof (N₀ N₁ : ℕ) :
       _ ≤ (((↑(N₀+N₁) : ℝ)+3)^3/6)^2 := by simpa only [pow_two] using hprod
       _ = _ := by push_cast; ring
 
-/-! Guarded outcome complementation.
+example : type_of% @AronowAudit.P003.corrected_stratum_count :=
+  corrected_stratum_count_proof
 
-The outcome-complementation p-value identity requires equality of the table totals.
+/-! ## Record 7: guarded outcome complementation
+
+These helpers repair the unguarded S2 assertions identified by referee 2.
+They do not use a held completion or coupling theorem.
 -/
 
 def balanced_completion_inclusion_reverse (v : Counts) : Counts :=
@@ -258,6 +266,10 @@ lemma balanced_completion_inclusion_reverse_total (v : Counts) :
   dsimp [balanced_completion_inclusion_reverse, Counts.total]
   omega
 
+lemma balanced_completion_inclusion_complement_total (o : Counts) :
+    (complementObserved o).total = o.total := by
+  dsimp [complementObserved, Counts.total]
+  omega
 
 lemma balanced_completion_inclusion_reverse_effect (v : Counts) :
     (balanced_completion_inclusion_reverse v).effect = -v.effect := by
@@ -274,6 +286,20 @@ lemma balanced_completion_inclusion_reverse_tau (v : Counts) :
     ring
   simpa only [tau, Rat.cast_neg] using congrArg (fun x : ℚ => (x : ℝ)) hQ
 
+/-- Positive arms are necessary here because rational division is total. -/
+lemma balanced_completion_inclusion_complement_estimate (o : Counts)
+    (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) :
+    estimate (complementObserved o) = -estimate o := by
+  have h₀ : (o.a : ℚ)+o.b ≠ 0 := by
+    exact ne_of_gt (by exact_mod_cast ho.1)
+  have h₁ : (o.c : ℚ)+o.d ≠ 0 := by
+    exact ne_of_gt (by exact_mod_cast ho.2)
+  have hQ : estimateQ (complementObserved o) = -estimateQ o := by
+    dsimp [estimateQ, complementObserved]
+    rw [add_comm (o.b : ℚ) (o.a : ℚ), add_comm (o.d : ℚ) (o.c : ℚ)]
+    field_simp [h₀, h₁]
+    ring
+  simpa only [estimate, Rat.cast_neg] using congrArg (fun x : ℚ => (x : ℝ)) hQ
 
 lemma balanced_completion_inclusion_possible_forward (o v : Counts)
     (hv : Possible o v) :
@@ -286,6 +312,15 @@ lemma balanced_completion_inclusion_possible_forward (o v : Counts)
     o.d-l, by omega, o.c-k, by omega, ?_⟩
   ext <;> dsimp [balanced_completion_inclusion_reverse] <;> omega
 
+lemma balanced_completion_inclusion_possible_iff (o v : Counts) :
+    Possible (complementObserved o) (balanced_completion_inclusion_reverse v) ↔
+      Possible o v := by
+  constructor
+  · intro h
+    have hh := balanced_completion_inclusion_possible_forward _ _ h
+    simpa only [balanced_completion_inclusion_complement_complement,
+      balanced_completion_inclusion_reverse_reverse] using hh
+  · exact balanced_completion_inclusion_possible_forward o v
 
 /-- A generic disjointness argument used only to certify that the concrete
 random-state list contains each state once. -/
@@ -377,8 +412,8 @@ lemma balanced_completion_inclusion_complement_deviation (v o : Counts)
   rw [hZ]
   ring
 
-/-- The outcome-complementation p-value identity requires equal table totals,
-even when both observed arms are positive. -/
+/-- The total equality is indispensable even when the observed arms are
+positive. This is the precise corrected S2 p-value identity. -/
 lemma balanced_completion_inclusion_complement_pValue (v o : Counts)
     (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) (hn : v.total = o.total) :
     pValue (⟨v.d,v.c,v.b,v.a⟩ : Counts) (complementObserved o) = pValue v o := by
@@ -465,6 +500,73 @@ lemma balanced_completion_inclusion_complement_accepted (α : ℝ) (o : Counts)
     rw [balanced_completion_inclusion_complement_pValue v o ho hn]
     exact hp
 
+lemma balanced_completion_inclusion_completion_arms (o r c : Counts)
+    (hr : r ∈ missingMasks o) (hc : c ∈ completions o r) :
+    c.a+c.b = o.a+o.b ∧ c.c+c.d = o.c+o.d := by
+  obtain ⟨ha,hb,hc',hd⟩ := missing_mask_facts o r hr
+  simp only [completions, List.mem_flatMap, List.mem_map, List.mem_range] at hc
+  obtain ⟨t,ht,s,hs,rfl⟩ := hc
+  dsimp
+  constructor <;> omega
+
+/-- Explicitly packages every guard needed for complementation in the
+lower-endpoint argument, without changing any frozen Wave1 statement. -/
+lemma balanced_completion_inclusion_completion_guards (o r c v : Counts)
+    (ho : 0 < o.a+o.b ∧ o.a+o.b = o.c+o.d)
+    (hr : r ∈ missingMasks o) (hc : c ∈ completions o r) (hv : Possible c v) :
+    c.a+c.b = o.a+o.b ∧ c.c+c.d = o.a+o.b ∧
+      (0 < c.a+c.b ∧ 0 < c.c+c.d) ∧ v.total = c.total := by
+  obtain ⟨ht,hc⟩ := balanced_completion_inclusion_completion_arms o r c hr hc
+  refine ⟨ht, hc.trans ho.2.symm, ?_, (possible_table_facts c v hv).1⟩
+  constructor <;> omega
+
+lemma balanced_completion_inclusion_complement_mask (o r : Counts)
+    (hr : r ∈ missingMasks o) :
+    complementObserved r ∈ missingMasks (complementObserved o) := by
+  obtain ⟨ha,hb,hc,hd⟩ := missing_mask_facts o r hr
+  simp only [missingMasks, List.mem_flatMap, List.mem_map, List.mem_range]
+  dsimp [complementObserved]
+  exact ⟨r.b, by omega, r.a, by omega, r.d, by omega, r.c, by omega, rfl⟩
+
+lemma balanced_completion_inclusion_complement_completion (o r c : Counts)
+    (hr : r ∈ missingMasks o) (hc : c ∈ completions o r) :
+    complementObserved c ∈ completions (complementObserved o) (complementObserved r) := by
+  obtain ⟨ha,hb,hc',hd⟩ := missing_mask_facts o r hr
+  simp only [completions, List.mem_flatMap, List.mem_map, List.mem_range] at hc ⊢
+  obtain ⟨t,ht,s,hs,rfl⟩ := hc
+  dsimp [complementObserved]
+  refine ⟨r.a+r.b-t, by omega, r.c+r.d-s, by omega, ?_⟩
+  ext <;> dsimp <;> omega
+
+lemma balanced_completion_inclusion_plus_mem (o r : Counts)
+    (hr : r ∈ missingMasks o) : plusCompletion o r ∈ completions o r := by
+  obtain ⟨ha,hb,hc,hd⟩ := missing_mask_facts o r hr
+  simp only [completions, List.mem_flatMap, List.mem_map, List.mem_range]
+  refine ⟨r.a+r.b, by omega, 0, by omega, ?_⟩
+  ext <;> dsimp [plusCompletion] <;> omega
+
+lemma balanced_completion_inclusion_minus_mem (o r : Counts)
+    (hr : r ∈ missingMasks o) : minusCompletion o r ∈ completions o r := by
+  obtain ⟨ha,hb,hc,hd⟩ := missing_mask_facts o r hr
+  simp only [completions, List.mem_flatMap, List.mem_map, List.mem_range]
+  refine ⟨0, by omega, r.c+r.d, by omega, ?_⟩
+  ext <;> dsimp [minusCompletion] <;> omega
+
+lemma balanced_completion_inclusion_complement_plus (o r : Counts) :
+    plusCompletion (complementObserved o) (complementObserved r) =
+      complementObserved (minusCompletion o r) := by
+  ext <;> rfl
+
+lemma balanced_completion_inclusion_complement_minus (o r : Counts) :
+    minusCompletion (complementObserved o) (complementObserved r) =
+      complementObserved (plusCompletion o r) := by
+  ext <;> rfl
+
+lemma balanced_completion_inclusion_complement_nonempty (α : ℝ) (o : Counts)
+    (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) :
+    (accepted α (complementObserved o)).Nonempty ↔ (accepted α o).Nonempty := by
+  rw [balanced_completion_inclusion_complement_accepted α o ho]
+  exact Finset.image_nonempty
 
 lemma balanced_completion_inclusion_complement_upper (α : ℝ) (o : Counts)
     (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) (hne : (accepted α o).Nonempty) :
@@ -480,8 +582,32 @@ lemma balanced_completion_inclusion_complement_upper (α : ℝ) (o : Counts)
     apply neg_le_neg
     exact csInf_le (accepted α o).finite_toSet.bddBelow hs
 
+/-- The whole endpoint, including its empty-accepted-set fallback, negates.
+This avoids any use of an unjustified extremum of an empty set. -/
+lemma balanced_completion_inclusion_complement_endpoint (α : ℝ) (o : Counts)
+    (ho : 0 < o.a+o.b ∧ 0 < o.c+o.d) :
+    (if (accepted α (complementObserved o)).Nonempty then
+        max (upper α (complementObserved o)) (estimate (complementObserved o))
+      else estimate (complementObserved o)) =
+    -(if (accepted α o).Nonempty then min (lower α o) (estimate o) else estimate o) := by
+  by_cases hne : (accepted α o).Nonempty
+  · have hneC := (balanced_completion_inclusion_complement_nonempty α o ho).mpr hne
+    rw [if_pos hneC, if_pos hne,
+      balanced_completion_inclusion_complement_upper α o ho hne,
+      balanced_completion_inclusion_complement_estimate o ho]
+    by_cases hle : lower α o ≤ estimate o
+    · rw [min_eq_left hle, max_eq_left (neg_le_neg hle)]
+    · have hge : estimate o ≤ lower α o := le_of_not_ge hle
+      rw [min_eq_right hge, max_eq_right (neg_le_neg hge)]
+  · have hneC := mt (balanced_completion_inclusion_complement_nonempty α o ho).mp hne
+    rw [if_neg hneC, if_neg hne,
+      balanced_completion_inclusion_complement_estimate o ho]
 
-/-! Balanced design arms. -/
+/-! ## Record 8: balanced design arms
+
+The final coverage wrapper needs the as-yet unproved completion inclusion;
+it is recorded in the report rather than declared using the held proof.
+-/
 
 lemma balanced_missing_coverage_observed_arms (v : Counts) (m : ℕ)
     (hn : v.total = 2*m) (q : Counts) (hq : q ∈ randomStates v m) :
@@ -492,7 +618,7 @@ lemma balanced_missing_coverage_observed_arms (v : Counts) (m : ℕ)
   dsimp [Counts.total] at hn ht
   constructor <;> omega
 
-/-! Relabelling leaves the distribution unchanged. -/
+/-! ## Record 10: relabelling leaves the distribution unchanged -/
 
 lemma count_distribution_invariance_fiber_card {n : ℕ}
     (w w' : PotentialTable n) (hc : tableCounts w = tableCounts w')
@@ -576,5 +702,8 @@ theorem count_distribution_invariance_proof {n : ℕ} (m : ℕ)
       Fintype.card (Assignment n m) := by
   intro t
   rw [count_distribution_invariance_level_card m w w' hc t]
+
+example : type_of% @AronowAudit.P003.count_distribution_invariance :=
+  count_distribution_invariance_proof
 
 end AronowAudit.P003.Wave1

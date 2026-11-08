@@ -1,0 +1,166 @@
+[
+  {
+    "target_id": "P011-T1",
+    "theorem": "SAP.P011a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every K>=1 take independent uniform signs on 4K edge shocks and the displayed cycle observations. Incident-shock sets give vector dependency independence; |Y_i|<=7/2 at a=3/2 and <=5 at a=3. The covariance block 2I+A has entry sum 16, so n Var(bHat)=4>0. R=G and caps 2 give a genuine singleton compatible set. Independent exact enumeration at K=1,2,3 confirms both families' beta, scaled variance and expectation, and the a=3/2 variance formula; the negative V1 realization is compiled in scratch/Check.lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T2",
+    "theorem": "SAP.P011a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For t=1 or 2, K>=1, use 2K independent uniform signs in the stated path blocks. Disjoint unconnected vertex sets use disjoint shocks, |Y_i|<=27/5<6, degrees <=2, theta=1<2, and independent block sums have variance 29/5, giving n Var(bHat)=29/15>0. Forced paths exhaust the caps. D^T D=diag(3K,6Kt^2), so the OLS design is nonsingular. Exact enumeration at K=1,2,3 confirms beta, scaled variance and oracle expectation; compatible maximizer existence and a negative finite path form are compiled.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T3",
+    "theorem": "SAP.P011a.T3",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "SAP/P011a/Defs/Part1.lean:119-130 makes Scaling require an induced embedding of every observed graph G_k into G_(k+1), together with nondecreasing observed sizes. In claims.json S2/S5 the nested graphs are the full graphs G, and the observed subset V_S need not be nested. Full-graph nesting does not imply this added observed-graph condition. For example, use nested full matchings and independent signs, observe one endpoint from n distinct edges at odd n and both endpoints of one edge plus one endpoint from n-2 other edges at even n. The observed graphs alternate between edgeless and one-edge graphs, so an even graph cannot embed into the next odd graph; all printed scaling bounds hold with (c1,c2,c3,c4)=(1,1,1,2), and true full degrees d_i=1.",
+      "record.json marks P011-T3 whole and supplies no restriction; the theorem docstring also does not disclose the added observed-graph nesting premise. The affected general statements are therefore narrower than the canonical claim."
+    ],
+    "fix": "Add this exact paragraph to the theorem docstring and set the record decision to restricted: \"Restriction: The general assertions under Scaling additionally require the observed sample sizes n_k to be nondecreasing and, for every k, an injection e_k from the n_k observed vertices to the n_(k+1) observed vertices such that G_k(i,j)=G_(k+1)(e_k(i),e_k(j)) for every i,j. This is induced nesting of the observed dependency graphs, an additional condition not implied by nesting of the full graphs when the observed subsets may change.\"",
+    "nonvacuity": "Take signFamily: n=k+1, independent uniform Rademacher Y_i, theta=1, G=R empty, d=0. Then beta=0, covariance=I, |X_i-beta|=1, n Var(bHat)=1, the empty graphs have their natural induced embeddings, and Scaling holds with (1,1,1,2). The laws and limiting variance are nondegenerate. No conclusion is assumed as a hypothesis.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P011-T4",
+    "theorem": "SAP.P011a.T4",
+    "verdict": "restriction_inaccurate",
+    "severity": "major",
+    "issues": [
+      "SAP/P011a/Defs/Part1.lean:119-130 makes Scaling require an induced embedding of every observed graph G_k into G_(k+1), together with nondecreasing observed sizes. In claims.json S2/S5 the nested graphs are the full graphs G, and the observed subset V_S need not be nested. Full-graph nesting does not imply this added observed-graph condition. For example, use nested full matchings and independent signs, observe one endpoint from n distinct edges at odd n and both endpoints of one edge plus one endpoint from n-2 other edges at even n. The observed graphs alternate between edgeless and one-edge graphs, so an even graph cannot embed into the next odd graph; all printed scaling bounds hold with (c1,c2,c3,c4)=(1,1,1,2), and true full degrees d_i=1.",
+      "The existing restriction for P011-T4 accurately lists its named omitted conclusions, but neither that restriction nor the docstring reports the additional observed-graph nesting premise. The restriction is incomplete."
+    ],
+    "fix": "Keep the existing restriction and append: \"Additionally, the general assertions under Scaling additionally require the observed sample sizes n_k to be nondecreasing and, for every k, an injection e_k from the n_k observed vertices to the n_(k+1) observed vertices such that G_k(i,j)=G_(k+1)(e_k(i),e_k(j)) for every i,j. This is induced nesting of the observed dependency graphs, an additional condition not implied by nesting of the full graphs when the observed subsets may change.\"",
+    "nonvacuity": "Use signFamily with constants (1,1,1,2), deterministic M_k=I and K=1; M_k and M_k-H_G=0 satisfy the PSD conditions. For the separate failure clause, D(Y)=YY^T/n has norm one on the actual independent-sign support. Thus both deterministic and data-dependent branches have real instances, with positive true scaled variance 1.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P011-T5",
+    "theorem": "SAP.P011a.T5",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "SAP/P011a/Defs/Part1.lean:119-130 makes Scaling require an induced embedding of every observed graph G_k into G_(k+1), together with nondecreasing observed sizes. In claims.json S2/S5 the nested graphs are the full graphs G, and the observed subset V_S need not be nested. Full-graph nesting does not imply this added observed-graph condition. For example, use nested full matchings and independent signs, observe one endpoint from n distinct edges at odd n and both endpoints of one edge plus one endpoint from n-2 other edges at even n. The observed graphs alternate between edgeless and one-edge graphs, so an even graph cannot embed into the next odd graph; all printed scaling bounds hold with (c1,c2,c3,c4)=(1,1,1,2), and true full degrees d_i=1.",
+      "record.json marks P011-T5 whole and supplies no restriction; the theorem docstring also does not disclose the added observed-graph nesting premise. The affected general statements are therefore narrower than the canonical claim."
+    ],
+    "fix": "Add this exact paragraph to the theorem docstring and set the record decision to restricted: \"Restriction: The general assertions under Scaling additionally require the observed sample sizes n_k to be nondecreasing and, for every k, an injection e_k from the n_k observed vertices to the n_(k+1) observed vertices such that G_k(i,j)=G_(k+1)(e_k(i),e_k(j)) for every i,j. This is induced nesting of the observed dependency graphs, an additional condition not implied by nesting of the full graphs when the observed subsets may change.\"",
+    "nonvacuity": "Use pathFamily 1 and constants (6,2,29/15,2). Its supplied caps (1,2,1) repeat and all forced edges are the true edges, so selecting A_k(y)=G_k is a maximizer for every y. The supplied caps are positive and the middle-vertex correction is nonzero. The dependency, bound, variance and nesting hypotheses follow from independent path shocks. Finite maximizer existence is independently compiled in scratch/Check.lean.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P011-T6",
+    "theorem": "SAP.P011a.T6",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "SAP/P011a/Defs/Part1.lean:119-130 makes Scaling require an induced embedding of every observed graph G_k into G_(k+1), together with nondecreasing observed sizes. In claims.json S2/S5 the nested graphs are the full graphs G, and the observed subset V_S need not be nested. Full-graph nesting does not imply this added observed-graph condition. For example, use nested full matchings and independent signs, observe one endpoint from n distinct edges at odd n and both endpoints of one edge plus one endpoint from n-2 other edges at even n. The observed graphs alternate between edgeless and one-edge graphs, so an even graph cannot embed into the next odd graph; all printed scaling bounds hold with (c1,c2,c3,c4)=(1,1,1,2), and true full degrees d_i=1.",
+      "record.json marks P011-T6 whole and supplies no restriction; the theorem docstring also does not disclose the added observed-graph nesting premise. The affected general statements are therefore narrower than the canonical claim."
+    ],
+    "fix": "Add this exact paragraph to the theorem docstring and set the record decision to restricted: \"Restriction: The general assertions under Scaling additionally require the observed sample sizes n_k to be nondecreasing and, for every k, an injection e_k from the n_k observed vertices to the n_(k+1) observed vertices such that G_k(i,j)=G_(k+1)(e_k(i),e_k(j)) for every i,j. This is induced nesting of the observed dependency graphs, an additional condition not implied by nesting of the full graphs when the observed subsets may change.\"",
+    "nonvacuity": "Use cycleFamily (3/2), constants (7/2,2,4,2). The cycle oracle matrix has a genuine negative eigenvalue -1, so clipping is substantive. Independent exact checks confirm positive semidefiniteness of the displayed alternative majorant and its difference, and the quadratic value 3/5. n>=4 throughout this family, and its true scaled variance is 4.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P011-T7",
+    "theorem": "SAP.P011a.T7",
+    "verdict": "restriction_inaccurate",
+    "severity": "major",
+    "issues": [
+      "SAP/P011a/Defs/Part1.lean:119-130 makes Scaling require an induced embedding of every observed graph G_k into G_(k+1), together with nondecreasing observed sizes. In claims.json S2/S5 the nested graphs are the full graphs G, and the observed subset V_S need not be nested. Full-graph nesting does not imply this added observed-graph condition. For example, use nested full matchings and independent signs, observe one endpoint from n distinct edges at odd n and both endpoints of one edge plus one endpoint from n-2 other edges at even n. The observed graphs alternate between edgeless and one-edge graphs, so an even graph cannot embed into the next odd graph; all printed scaling bounds hold with (c1,c2,c3,c4)=(1,1,1,2), and true full degrees d_i=1.",
+      "The existing restriction for P011-T7 accurately lists its named omitted conclusions, but neither that restriction nor the docstring reports the additional observed-graph nesting premise. The restriction is incomplete."
+    ],
+    "fix": "Keep the existing restriction and append: \"Additionally, the general assertions under Scaling additionally require the observed sample sizes n_k to be nondecreasing and, for every k, an injection e_k from the n_k observed vertices to the n_(k+1) observed vertices such that G_k(i,j)=G_(k+1)(e_k(i),e_k(j)) for every i,j. This is induced nesting of the observed dependency graphs, an additional condition not implied by nesting of the full graphs when the observed subsets may change.\"",
+    "nonvacuity": "Use independent signs at n=k+1, theta=1, G=R empty, and supplied caps d_i=k. This changes only the d field of signFamily, leaving Scaling (1,1,1,2) intact; validity holds because true degrees are zero. The caps are unbounded. A maximizer exists in the finite nonempty graph set, as independently compiled; connecting pairs with positive products of centered residuals realizes the unrestricted optimum. The actual variance is 1/n, so these assertions are not about a zero-variance law.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P011-T8",
+    "theorem": "SAP.P011a.T8",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "SAP/P011a/Defs/Part1.lean:119-130 makes Scaling require an induced embedding of every observed graph G_k into G_(k+1), together with nondecreasing observed sizes. In claims.json S2/S5 the nested graphs are the full graphs G, and the observed subset V_S need not be nested. Full-graph nesting does not imply this added observed-graph condition. For example, use nested full matchings and independent signs, observe one endpoint from n distinct edges at odd n and both endpoints of one edge plus one endpoint from n-2 other edges at even n. The observed graphs alternate between edgeless and one-edge graphs, so an even graph cannot embed into the next odd graph; all printed scaling bounds hold with (c1,c2,c3,c4)=(1,1,1,2), and true full degrees d_i=1.",
+      "record.json marks P011-T8 whole and supplies no restriction; the theorem docstring also does not disclose the added observed-graph nesting premise. The affected general statements are therefore narrower than the canonical claim."
+    ],
+    "fix": "Add this exact paragraph to the theorem docstring and set the record decision to restricted: \"Restriction: The general assertions under Scaling additionally require the observed sample sizes n_k to be nondecreasing and, for every k, an injection e_k from the n_k observed vertices to the n_(k+1) observed vertices such that G_k(i,j)=G_(k+1)(e_k(i),e_k(j)) for every i,j. This is induced nesting of the observed dependency graphs, an additional condition not implied by nesting of the full graphs when the observed subsets may change.\"",
+    "nonvacuity": "Take signFamily, constants (1,1,1,2), and V_k=VYoung(d=0,X)=sampleVariance(X)/n. Valid holds, and this is explicitly the Young member of CorrectedClass. The observations are independent nonconstant signs and n Var(bHat)=1. The graph condition has its natural empty-graph induced embeddings. Other substantive class instances are the path correction and cycle positive part described for T5/T6.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P011-T9",
+    "theorem": "SAP.P011a.T9",
+    "verdict": "restriction_inaccurate",
+    "severity": "major",
+    "issues": [
+      "SAP/P011a/Defs/Part1.lean:119-130 makes Scaling require an induced embedding of every observed graph G_k into G_(k+1), together with nondecreasing observed sizes. In claims.json S2/S5 the nested graphs are the full graphs G, and the observed subset V_S need not be nested. Full-graph nesting does not imply this added observed-graph condition. For example, use nested full matchings and independent signs, observe one endpoint from n distinct edges at odd n and both endpoints of one edge plus one endpoint from n-2 other edges at even n. The observed graphs alternate between edgeless and one-edge graphs, so an even graph cannot embed into the next odd graph; all printed scaling bounds hold with (c1,c2,c3,c4)=(1,1,1,2), and true full degrees d_i=1.",
+      "The existing restriction for P011-T9 accurately lists its named omitted conclusions, but neither that restriction nor the docstring reports the additional observed-graph nesting premise. The restriction is incomplete."
+    ],
+    "fix": "Keep the existing restriction and append: \"Additionally, the general assertions under Scaling additionally require the observed sample sizes n_k to be nondecreasing and, for every k, an injection e_k from the n_k observed vertices to the n_(k+1) observed vertices such that G_k(i,j)=G_(k+1)(e_k(i),e_k(j)) for every i,j. This is induced nesting of the observed dependency graphs, an additional condition not implied by nesting of the full graphs when the observed subsets may change.\"",
+    "nonvacuity": "Take signFamily, p=1, design D_i0=1, gamma=0 and measurable gammaHat identically 0. All raw means are zero, row norms are 1, coefficient and weighted prediction errors vanish, |z_i|=1, and A=emptyGraph is a genuine maximizer with d=0. For a nonzero misspecification term choose gammaStar=gammaHat=1: eta_i=-1, |z_i|<=2 and eta^T H_G eta/n=1. For the separate unstable OLS example, D^T D=diag(n,n/2) at n=4K, so its inverse is nonsingular; independent exact checks at n=4,8 verify the intercept variance, scaled true slope variance 2, and residual expectation n+2-7/n.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P011-T10",
+    "theorem": "SAP.P011a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Choose a=b=1 and any infinite sign pattern s. The fixed-mean law is a product of two-point laws with covariance I, |X_i-beta_n|<=3 and n Var(bHat)=1. The mixture has independent coordinates of mean zero, bound 2 and variance 2, hence n Var(bHat)=2. Empty graph nesting and theta=1<2 hold in both families. There are many measurable statistics; the negated simultaneous-consistency property is the asserted conclusion, not a premise.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T11",
+    "theorem": "SAP.P011a.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the explicit alternating family at every n>=1. Raw coordinates are independent signs plus alternating means, t_n is in [1/2,1], weighted means average to 1, and each variance is t_n^2>0. Then |X_i-1|<=2, true degrees zero, t_n^2->1 and weights <2. Empty graph embeddings exist. Independent exact enumeration at n=1,2,3,4,5,8 confirms the finite means, scaled variances and remainder moments.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T12",
+    "theorem": "SAP.P011a.T12",
+    "verdict": "not_faithful",
+    "severity": "major",
+    "issues": [
+      "SAP/P011a/Defs/Part1.lean:119-130 makes Scaling require an induced embedding of every observed graph G_k into G_(k+1), together with nondecreasing observed sizes. In claims.json S2/S5 the nested graphs are the full graphs G, and the observed subset V_S need not be nested. Full-graph nesting does not imply this added observed-graph condition. For example, use nested full matchings and independent signs, observe one endpoint from n distinct edges at odd n and both endpoints of one edge plus one endpoint from n-2 other edges at even n. The observed graphs alternate between edgeless and one-edge graphs, so an even graph cannot embed into the next odd graph; all printed scaling bounds hold with (c1,c2,c3,c4)=(1,1,1,2), and true full degrees d_i=1.",
+      "record.json marks P011-T12 whole and supplies no restriction; the theorem docstring also does not disclose the added observed-graph nesting premise. The affected general statements are therefore narrower than the canonical claim."
+    ],
+    "fix": "Add this exact paragraph to the theorem docstring and set the record decision to restricted: \"Restriction: The general assertions under Scaling additionally require the observed sample sizes n_k to be nondecreasing and, for every k, an injection e_k from the n_k observed vertices to the n_(k+1) observed vertices such that G_k(i,j)=G_(k+1)(e_k(i),e_k(j)) for every i,j. This is induced nesting of the observed dependency graphs, an additional condition not implied by nesting of the full graphs when the observed subsets may change.\"",
+    "nonvacuity": "SignFamily satisfies Scaling (1,1,1,2), has covariance I and is homoskedastic with strictly positive common variance 1. Thus all finite moment and tail assertions, and the one-sided limit, apply to genuine nonconstant observations at n=k+1. AlternatingFamily supplies a further instance with unequal means and positive mean spread.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P011-T13",
+    "theorem": "SAP.P011a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both displayed four-vertex instances have feasible nonempty forced sets, and their explicit solutions are certified feasible by the compiled scratch file. Exact subset enumeration gives original optima 3/4 and -3/4; an independent maximum-matching dynamic program gives gadget optima 166 and 200. All denominators are 4, L=4 and M=10. Generally a maximum matching exists because the gadget edge set is finite and the empty matching is allowed, so the supplied-maximum premise is satisfiable.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P011-T14",
+    "theorem": "SAP.P011a.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For six vertices, the two selected edges {01,34} have all degrees <=1 and V1=5/18, both compiled in scratch/Check.lean. The half-valued edges within the two sign triples give degree one at every vertex and relaxed objective 3. For three vertices, assigning 1/2 to each edge gives degree one and objective 3/2; a single integer edge is feasible. For the final strictly inferior fractional feasible value choose the zero vector, whose objective 0 is below the integer witness objective 2.",
+    "confidence": 0.98
+  }
+]

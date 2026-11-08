@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P009c.T35",
+    "target_id": "P009-T35",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every clause of the canonical assertion is present: for every positive finite population and arbitrary design, no interference implies assignment-conditional ATE constancy and EATE=ATE; the unconditional displayed EATE formula always holds; the conditional ADSE formula is asserted under exactly the stated interior marginals; and EATE=ADSE under Bernoulli randomization. The finite real mass law represents the complete distribution of the binary assignment; Function.update represents holding all other treatments fixed. ATE at all-false is used as conventional ATE only under no interference. Bernoulli is the product of its interior marginal probabilities. All conditional denominators in asserted conclusions are positive. scratch/Check.lean constructs a fair one-unit Bernoulli experiment with Y(z)=bit(z), jointly satisfies every antecedent, and proves ATE=EATE=ADSE=1."
+  },
+  {
+    "theorem": "SAP.P009c.T36",
+    "target_id": "P009-T36",
+    "my_reading_vs_claim": "whole",
+    "reason": "The complete chain max(C1,Cinf^2/n) <= dAvg <= C2^2 <= Cinf^2 is stated for every positive finite experiment, without an interference or design restriction. The structural indicator is the full-cube potential-outcome relation with the mandatory diagonal, in the correct outgoing orientation. Shared-influencer dependence, row sums, average dependence and outgoing counts match the canonical definitions. C2 is the square root of a nonnegative second moment and Cinf is the true maximum of a finite nonempty range. scratch/Check.lean constructs a genuine two-unit experiment with Y0(z)=bit(z0)*bit(z1) and Y1(z)=0, with a normalized point-mass design and positive population size."
+  },
+  {
+    "theorem": "SAP.P009c.T37",
+    "target_id": "P009-T37",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both designs are arbitrary laws on the same full binary cube and keep exactly the same outcome table. BoundedEffects is exactly Assumption 7 on every individual effect at every assignment; the constant is the bound K itself. The conclusion has exactly factor 2*K times total variation. On the finite discrete assignment space, the half-sum of absolute mass differences equals the canonical supremum over events. No extra substantive hypothesis occurs. scratch/Check.lean constructs distinct point-mass designs on a bounded two-unit interaction table, proves their EATE difference is 1/2, and proves their total variation is 1."
+  },
+  {
+    "theorem": "SAP.P009c.T38",
+    "target_id": "P009-T38",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universally quantified inequality has exactly the canonical constant 2*K*n^(-1/r)*C_(r/(r-1)), with Assumption 7 and every real r>=1, for every pair of assignments. Cp is the population-normalized power mean of outgoing structural counts, lrDistance is the unnormalized L_r distance, and the r=1 branch is exactly Cinf as required by definitions_needed. That branch avoids a spurious division by r-1; all other power bases and exponents lie in the ordinary domains. scratch/Check.lean constructs data satisfying the hypotheses for every admissible real r, explicitly including r=1 and r=2, and proves the assignment-conditional ATE is nonconstant."
+  },
+  {
+    "theorem": "SAP.P009c.T39",
+    "target_id": "P009-T39",
+    "my_reading_vs_claim": "whole",
+    "reason": "The statement compares arbitrary designs for exactly the same potential outcomes under Assumption 7 and real r>=1, with the printed factor 2*K*n^(-1/r)*C_(r/(r-1)). Coupling imposes both correct marginals on a genuine probability law; wasserstein is precisely the infimum of expected L_r ground distance, a first-order transport cost as specified in definitions_needed. It does not substitute the usual order-r Wasserstein cost. scratch/Check.lean proves generally that product laws are couplings and that every transport cost set is nonempty and bounded below by zero, and constructs the two-unit bounded-effect witness with distinct designs and EATE difference 1/2."
+  }
+]

@@ -1,6 +1,3 @@
-/-
-Local file of llm-audit-lean, not taken from Causalean; it builds on the vendored Causalean code in this directory tree.
--/
 import AronowAudit.External.Causalean.Mathlib.Probability.SteinMethod.DepGraphCLT
 
 /-! Local a.e.-bounded adapter for the licensed CausalSmith neighborhood-product variance
@@ -51,5 +48,6 @@ theorem DepGraph.var_nbhd_prod_le_ae
   rw [←variance_congr hs]
   exact DY.var_nbhd_prod_le hB hYbound hdeg
 
+#print axioms DepGraph.var_nbhd_prod_le_ae
 end
 end Causalean.Mathlib.Probability.SteinMethod

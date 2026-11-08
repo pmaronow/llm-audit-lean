@@ -1,7 +1,7 @@
 import AronowAudit.P001.Wave1.Lib.TailA.MarkedCellDirectTruncated
 
-/-! Limits of the original, unresampled donor-avoidance kernels, including
-one-recipient queries in scaled coordinates. -/
+/-! The original, unresampled avoidance kernels and their bounded-window
+recipient integrals, alongside the marked multinomial kernels. -/
 
 noncomputable section
 open MeasureTheory ProbabilityTheory Filter
@@ -63,5 +63,33 @@ theorem marked_direct_original_recipient_kernel_limit (p t : ℝ)
   have he : -(rate : ℝ) = -4*p*|t| := by change -(4*p*|t|) = _; ring
   simpa only [he] using hh
 
+/-- Bounded-window original recipient integral with its actual score-density
+and support cutoff.  No cell-moment limit is an input. -/
+theorem marked_direct_truncated_original_integral (p R : ℝ)
+    (hp : p ∈ Set.Ioo (1/4 : ℝ) (3/4)) (m : ℕ → ℕ) (hm : Tendsto m atTop atTop) :
+    Tendsto (fun n => ∫ t in Set.Icc (-R) R,
+      markedScaledRecipientDensity (m n) p t * mean (MatchProduct (m n)) (fun z =>
+        if markedWindowCount (markedCloserDonors p (p+t/(m n : ℝ))) z = 0 then 1 else 0))
+      atTop (𝓝 (∫ t in Set.Icc (-R) R, 2*(1-p)*Real.exp (-4*p*|t|))) := by
+  have hf (c : ℕ) : |(if c = 0 then (1 : ℝ) else 0)| ≤ 1 := by
+    split_ifs <;> norm_num
+  have hb (n : ℕ) (t : ℝ) :
+      |markedScaledRecipientDensity (m n) p t * mean (MatchProduct (m n)) (fun z =>
+        if markedWindowCount (markedCloserDonors p (p+t/(m n : ℝ))) z = 0 then 1 else 0)| ≤ 2 := by
+    rw [abs_mul]
+    have hk := marked_direct_count_kernel_bound (m n) p t (fun c => if c = 0 then 1 else 0) hf
+    have hh := mul_le_mul (marked_scaled_recipient_density_bound (m n) p t) hk
+      (abs_nonneg _) (by norm_num : (0 : ℝ) ≤ 2)
+    simpa only [mul_one] using hh
+  apply tendsto_integral_of_dominated_convergence (fun _ => (2 : ℝ))
+  · intro n
+    exact ((marked_scaled_recipient_density_measurable (m n) p).mul
+      (marked_direct_count_kernel_measurable (m n) p
+        (fun c => if c = 0 then 1 else 0))).aestronglyMeasurable
+  · exact integrable_const _
+  · intro n
+    exact ae_of_all _ (hb n)
+  · exact ae_of_all _ (fun t => (marked_scaled_recipient_density_limit p t hp m hm).mul
+      (marked_direct_original_recipient_kernel_limit p t hp m hm))
 
 end AronowAudit.P001.TailA

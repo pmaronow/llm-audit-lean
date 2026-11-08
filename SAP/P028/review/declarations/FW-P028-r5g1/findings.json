@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P028-T1",
+    "theorem": "SAP.P028.T1",
+    "fingerprint": "0a00d2447de4391374e7a4efcb6b73698a044b7e5ea59863a4671ef2b276ae5a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteChecks.lean (exit 0, no Challenge import): finiteValid and finiteMeanDomain for both lowerLaw and upperLaw; equality of all 16 observed-law masses; and the four exact, differing complier means. Their joint weights are w_i*pi_z by definition, giving independent assignment including both response potentials; positivity and normalization yield genuine probability witnesses. The conditional Bernoulli factorization uses the canonical completions and positive completed counts.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P028-T2",
+    "theorem": "SAP.P028.T2",
+    "fingerprint": "47cefa73bd69d7a665a1a364685a539ece30af059e2303f276d1bd12575366f1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ModelChecks.lean (exit 0, no Challenge import): an independent uniform stratum/fair-assignment/fair-Boolean model on Fin 3 x Bool x Bool, with Y equal to D on observed cells. Response D OR B satisfies the entire wholeCellCounterexample, including boundedness, cellwise mean ignorability, positive respondent events, q=r=p=1/3, full arm means (1/3,2/3), respondent arm means (1/2,4/5), c=(0,1), and failure of mixedIdentification. Constant-true response on the same model satisfies all mixedMeanEqualities, mixedResponsePositive and conditional-independence premises with positive pure cells. The independently checked T1 tables realize the source endpoints by the finite product construction explained in REPORT.md.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P028-T4",
+    "theorem": "SAP.P028.T4",
+    "fingerprint": "65ae44e9e0205a7134a8c2c1db40a5b9f77d15824b8d0f5506a0eaba6d49e14c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteChecks.lean (exit 0): 0<(1/2)<1 and mixtureSystem (1/2) (3/4) (3/4) 1 1 with n=1/2. Separately compiled that printedSystem holds at candidate x0=x1=0 while mixtureSystem and correctedSystem fail. Thus the quantified hypotheses admit feasible models and the strict-weakening witness is genuine.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P028-T5",
+    "theorem": "SAP.P028.T5",
+    "fingerprint": "6e6f8f24757582640f1eec32fb7cf3907963c8f459de8636e7837fdfbb3a678f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/FiniteChecks.lean (exit 0) verifies the printed candidate and failure of the mixture/corrected systems. Compiled scratch/ModelChecks.lean (exit 0) constructs wholeMisprintRealization independently: four equally weighted Boolean pairs, S=2 or 1 according to the first bit, both potential outcomes 1 or 1/2 accordingly, assignment the independent second bit; p=1/2, both arm means 3/4, both complier means 1. This is the exact canonical realization of the input triple.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P028-T6",
+    "theorem": "SAP.P028.T6",
+    "fingerprint": "81ca15bd23767f6beb90f7137c920575b1572f42f72481c52fe3af1256c275b1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/ModelChecks.lean (exit 0): a model on Bool x Bool with the uniform four-point probability law, constant complier stratum, potential outcomes 0 and 1, independent fair assignment, boundedness, p=1 and complier means (0,1). Its constructor proves every measurability, integrability, randomization, arm-positivity and nonzero-first-stage requirement. The same file also constructs the p=1/2 bounded T5 model, showing the partial-compliance case is satisfiable.",
+    "confidence": "high"
+  }
+]

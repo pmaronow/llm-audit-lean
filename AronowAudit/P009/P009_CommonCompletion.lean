@@ -105,6 +105,8 @@ theorem common_assignment_mixing_sequence (S : Study) (p : ℝ) (hp : 0 < p ∧ 
   have heq := tendsto_nhds_unique hlim hzero
   have hp0 : 0 < p*(1-p) := mul_pos hp.1 (by linarith)
   linarith
+#print axioms common_assignment_mixing_completed
+#print axioms common_assignment_mixing_sequence
 end
 end AronowAudit.P009.CommonCompletion
 
@@ -120,5 +122,6 @@ theorem common_assignment_mixing {n : ℕ} (hn : 0 < n) (E : Experiment n)
     alphaExt E θ = ((n:ℝ)-1)*Real.rpow (p*(1-p)) θ ∧
     alphaExt E 1 = ((n:ℝ)-1)*p*(1-p) := by
   exact CommonCompletion.common_assignment_mixing_completed hn E p θ hp hNo hCommon
+#print axioms common_assignment_mixing
 end
 end AronowAudit.P009

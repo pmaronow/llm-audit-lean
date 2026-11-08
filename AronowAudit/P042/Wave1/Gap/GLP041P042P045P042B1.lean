@@ -461,5 +461,7 @@ theorem finite_population_shared_control_proof {N : ℕ} (hN : 2 ≤ N)
   rw [hmain, hz₁, hz₂]
   simp [populationCovariance, populationMean]
 
+example : type_of% @AronowAudit.P042.finite_population_shared_control := finite_population_shared_control_proof
+
 end
 end AronowAudit.P042.Wave1

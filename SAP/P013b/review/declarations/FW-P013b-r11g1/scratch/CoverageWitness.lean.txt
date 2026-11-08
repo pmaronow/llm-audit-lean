@@ -1,0 +1,258 @@
+import SAP.P013b.Defs
+
+open SAP.P013b Finset
+open scoped BigOperators Topology
+noncomputable section
+namespace CoverageAudit
+
+def law : Design (Fin 2) where
+  weight _ := 1/2
+  positive _ := by norm_num
+  total := by norm_num [Fin.sum_univ_two]
+
+def increment (i : ℕ) : ℝ := Real.sqrt (i+1 : ℕ) - Real.sqrt i
+
+lemma increment_bounds (i : ℕ) : 0 ≤ increment i ∧ |increment i| ≤ 1 := by
+  have h0 := Real.sqrt_nonneg (i : ℝ)
+  have h1 := Real.sqrt_nonneg (i+1 : ℕ)
+  have h2 := Real.sq_sqrt (show 0 ≤ (i : ℝ) by positivity)
+  have h3 := Real.sq_sqrt (show (0 : ℝ) ≤ ((i+1 : ℕ) : ℝ) by positivity)
+  have h4 : Real.sqrt (i : ℝ) ≤ Real.sqrt (i+1 : ℕ) := by
+    apply Real.sqrt_le_sqrt
+    norm_cast
+    omega
+  have h5 : 0 ≤ increment i := sub_nonneg.mpr h4
+  refine ⟨h5, ?_⟩
+  rw [abs_of_nonneg h5]
+  dsimp [increment]
+  simp only [Nat.cast_add, Nat.cast_one] at *
+  nlinarith
+
+lemma sum_increment (N : ℕ) : ∑ i : Fin N, increment i.val = Real.sqrt N := by
+  induction N with
+  | zero => simp
+  | succ N ih =>
+    rw [Fin.sum_univ_castSucc]
+    simpa [increment] using congrArg (fun x : ℝ => x + increment N) ih
+
+def population (N : ℕ) : Population law N 2 where
+  exposure z _ := z
+  outcome i d := if d = 1 then increment i.val else 0
+
+lemma marginal (N : ℕ) (i : Fin N) (d : Fin 2) :
+    SAP.P013b.pi (population N) i d = 1/2 := by
+  fin_cases d <;>
+    norm_num [SAP.P013b.pi, expectation, indicator, population, law, Fin.sum_univ_two]
+
+lemma positive (N : ℕ) (d : Fin 2) : Positivity (population N) d := by
+  intro i
+  rw [marginal]
+  norm_num
+
+abbrev experiment (n : ℕ) : Experiment (n+1) where
+  supportSize := 2
+  exposureSize := 2
+  design := law
+  population := population (n+1)
+
+abbrev sequence : ExperimentSequence where
+  experiment := experiment
+  treated _ := 1
+  control _ := 0
+  distinct _ := by change (1 : Fin 2) ≠ 0; decide
+  positiveTreated n := positive (n+1) 1
+  positiveControl n := positive (n+1) 0
+
+lemma nested : NestedPopulationSetup sequence := by
+  refine ⟨(fun _ => ⟨Fin.val, Fin.val_injective⟩), 1, 0,
+    (fun i d => if d = 1 then increment i else 0), by decide, ?_, ?_⟩
+  · intro n; exact ⟨rfl, rfl⟩
+  · intro n i d
+    change (if d = 1 then increment i.val else 0) =
+      (if d.val = 1 then increment i.val else 0)
+    have h : d = 1 ↔ d.val = 1 := by exact Fin.ext_iff
+    simp only [h]
+
+lemma standing : StandingPositivity sequence := by
+  intro n d
+  exact positive (n+1) d
+
+lemma condition3 : Condition3 sequence := by
+  refine ⟨1, 2, by norm_num, by norm_num, ?_⟩
+  intro n i d
+  constructor
+  · change |if d = 1 then increment i.val else 0| ≤ 1
+    split_ifs
+    · exact (increment_bounds i.val).2
+    · norm_num
+  · change |1 / SAP.P013b.pi (population (n+1)) i d| ≤ 2
+    rw [marginal]
+    norm_num
+
+-- The literal printed no-edge predicate, checked without assuming its conclusion.
+lemma diagonal_noedge_empty {N : ℕ} (A B : Finset (Fin N))
+    (hd : Disjoint A B)
+    (h : PrintedNoEdge (fun i j => decide (i = j)) A B) : A = ∅ ∧ B = ∅ := by
+  classical
+  constructor
+  · apply Finset.eq_empty_iff_forall_notMem.mpr
+    intro i hi
+    apply h
+    exact ⟨i, i, by simp, Or.inl ⟨hi, fun hib => Finset.disjoint_left.mp hd hi hib⟩⟩
+  · apply Finset.eq_empty_iff_forall_notMem.mpr
+    intro i hi
+    apply h
+    exact ⟨i, i, by simp, Or.inr (Or.inr (Or.inl
+      ⟨(fun hia => Finset.disjoint_left.mp hd hia hi), hi⟩))⟩
+
+lemma condition5 : Condition5Printed sequence := by
+  classical
+  refine ⟨1, (fun _ i j => decide (i = j)), ?_⟩
+  intro n
+  constructor
+  · intro A B hd he
+    obtain ⟨rfl, rfl⟩ := diagonal_noedge_empty A B hd he
+    intro a b
+    norm_num [probability, seqLaw, sequence, experiment, law, Fin.sum_univ_two]
+  · intro i
+    simp
+
+lemma total (N : ℕ) (d z : Fin 2) :
+    htTotal (population N) d z =
+      if z = d ∧ d = 1 then 2 * Real.sqrt N else 0 := by
+  classical
+  simp only [htTotal, marginal]
+  by_cases hz : z = d
+  · subst z
+    by_cases hd : d = 1
+    · subst d
+      simp [indicator, population, div_eq_mul_inv, ← Finset.sum_mul,
+        sum_increment, mul_comm]
+    · simp [indicator, population, hd]
+  · simp [indicator, population, hz]
+
+lemma target (n : ℕ) : seqTarget sequence n = Real.sqrt (n+1 : ℕ) / (n+1 : ℝ) := by
+  change causalEffect (population (n+1)) 1 0 = _
+  simp [causalEffect, potentialMean, potentialTotal, population, sum_increment]
+
+lemma estimate (n : ℕ) (z : Fin 2) :
+    seqEstimate sequence n z = if z = 1 then
+      2 * Real.sqrt (n+1 : ℕ) / (n+1 : ℝ) else 0 := by
+  change htEffect (population (n+1)) 1 0 z = _
+  by_cases h : z = 1 <;> simp [htEffect, total, h]
+
+lemma variance_formula (n : ℕ) :
+    (n+1 : ℝ) * seqTrueVariance sequence n = 1 := by
+  have hn : (0 : ℝ) < n+1 := by positivity
+  have hs := Real.sq_sqrt (show (0 : ℝ) ≤ ((n+1 : ℕ) : ℝ) by positivity)
+  simp only [Nat.cast_add, Nat.cast_one] at hs
+  change (n+1 : ℝ) * variance law (seqEstimate sequence n) = 1
+  simp [variance, covariance, expectation, law, estimate]
+  field_simp
+  nlinarith
+
+lemma condition6 : Condition6 sequence := by
+  refine ⟨1, by norm_num, ?_⟩
+  simpa only [variance_formula] using
+    (tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => (1 : ℝ)) Filter.atTop (𝓝 1))
+
+-- All T18 hypotheses are jointly satisfied by this one explicit sequence.
+example : NestedPopulationSetup sequence ∧ StandingPositivity sequence ∧
+    Condition3 sequence ∧ Condition5Printed sequence ∧ Condition6 sequence :=
+  ⟨nested, standing, condition3, condition5, condition6⟩
+
+lemma zero_variance (N : ℕ) : effectVariance (population N) 1 0 0 = 0 := by
+  classical
+  unfold effectVariance varianceHT correctionA2 covarianceA pairTerm
+  simp only [marginal]
+  simp [indicator, population]
+
+lemma joint (N : ℕ) (i j : Fin N) (d e : Fin 2) :
+    jointPi (population N) i j d e = if d = e then 1/2 else 0 := by
+  fin_cases d <;> fin_cases e <;>
+    norm_num [jointPi, expectation, indicator, population, law, Fin.sum_univ_two]
+
+-- Both possible interval widths are real: no negative variance event is used.
+lemma variance_nonneg (N : ℕ) (z : Fin 2) :
+    0 ≤ effectVariance (population N) 1 0 z := by
+  classical
+  fin_cases z
+  · change 0 ≤ effectVariance (population N) 1 0 0
+    rw [zero_variance]
+  · change 0 ≤ effectVariance (population N) 1 0 1
+    have hv : 0 ≤ varianceHT (population N) 1 1 := by
+      unfold varianceHT
+      apply add_nonneg
+      · apply Finset.sum_nonneg
+        intro i hi
+        simp only [marginal]
+        norm_num [indicator, population]
+        positivity
+      · apply Finset.sum_nonneg
+        intro i hi
+        apply Finset.sum_nonneg
+        intro j hj
+        have hi0 := (increment_bounds i.val).1
+        have hj0 := (increment_bounds j.val).1
+        unfold pairTerm
+        rw [joint, marginal, marginal]
+        norm_num [indicator, population]
+        positivity
+    have hv0 : varianceHT (population N) 0 1 = 0 := by
+      simp [varianceHT, pairTerm, indicator, population]
+    have ha (d : Fin 2) : correctionA2 (population N) d 1 = 0 := by
+      simp [correctionA2, joint]
+    have hc : covarianceA (population N) 1 0 1 ≤ 0 := by
+      unfold covarianceA
+      simp only [joint, marginal]
+      norm_num [indicator, population]
+      positivity
+    unfold effectVariance
+    apply div_nonneg
+    · rw [hv0, ha, ha]
+      linarith
+    · positivity
+
+lemma coverage_bound (α : ℝ) (n : ℕ) : seqCoverage sequence α n ≤ 1/2 := by
+  classical
+  have ht : 0 < seqTarget sequence n := by
+    rw [target]
+    apply div_pos
+    · apply Real.sqrt_pos.mpr
+      positivity
+    · positivity
+  unfold seqCoverage
+  change probability law (fun z => 0 ≤ effectVariance (population (n+1)) 1 0 z ∧
+    |seqEstimate sequence n z - seqTarget sequence n| ≤
+      normalCritical α * Real.sqrt (effectVariance (population (n+1)) 1 0 z)) ≤ _
+  simp only [probability, Fin.sum_univ_two, zero_variance, estimate]
+  simp only [Fin.zero_ne_one, ite_false, zero_sub, abs_neg, abs_of_pos ht,
+    Real.sqrt_zero, mul_zero, not_le.mpr ht, and_false, zero_add]
+  split_ifs <;> norm_num [law]
+
+lemma coverage_nonneg (α : ℝ) (n : ℕ) : 0 ≤ seqCoverage sequence α n := by
+  unfold seqCoverage probability
+  apply Finset.sum_nonneg
+  intro z hz
+  split_ifs
+  · exact le_of_lt ((seqLaw sequence n).positive z)
+  · rfl
+
+-- A genuine refutation with no undefined interval: one zero-width interval
+-- misses the strictly positive target, giving coverage at most one half.
+example : ∃ S : ExperimentSequence, NestedPopulationSetup S ∧ StandingPositivity S ∧
+    Condition3 S ∧ Condition5Printed S ∧ Condition6 S ∧
+    ∃ α : ℝ, 0 < α ∧ α < 1 ∧
+      Filter.liminf (seqCoverage S α) Filter.atTop < 1 - α := by
+  refine ⟨sequence, nested, standing, condition3, condition5, condition6,
+    1/4, by norm_num, by norm_num, ?_⟩
+  have hb : Filter.IsBoundedUnder (fun x y : ℝ => y ≤ x)
+      Filter.atTop (seqCoverage sequence (1/4)) := by
+    change ∃ a : ℝ, ∀ᶠ n : ℕ in Filter.atTop, a ≤ seqCoverage sequence (1/4) n
+    exact ⟨0, Filter.Eventually.of_forall (coverage_nonneg (1/4))⟩
+  have hu : Filter.liminf (seqCoverage sequence (1/4)) Filter.atTop ≤ 1/2 :=
+    Filter.liminf_le_of_frequently_le
+      (Filter.Eventually.frequently (Filter.Eventually.of_forall (coverage_bound (1/4)))) hb
+  linarith
+
+end CoverageAudit

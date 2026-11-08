@@ -1,0 +1,191 @@
+{
+ "unit_id": "P012b",
+ "work_id": "P012",
+ "targets": [
+  {
+   "target_id": "P012-T13",
+   "decision": "whole",
+   "theorem": "SAP.P012b.T13",
+   "restriction": null,
+   "rows_used": ["AronowAudit.P012.result3", "AronowAudit.P012.private_trait_flip_difference"],
+   "rows_not_used": [
+    {"lean_name": "AronowAudit.P012.child_reciprocal_sum", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.flip_false_filter", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.flip_susceptible", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.flip_true_filter", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.private_flip_event_difference", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.private_flip_full_sum", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.private_leaf_member", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.private_susceptible_iff", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.unsampled_not_yet", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.unsampled_trait_update_preserves", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."}
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T14",
+   "decision": "whole",
+   "theorem": "SAP.P012b.T14",
+   "restriction": null,
+   "statement_definition": "SAP.P012b.T14WholeStatement",
+   "rows_used": ["AronowAudit.P012.domain_counterexamples", "SAP.P012b.WH.W1.T14_whole", "SAP.P012b.WH.W1.T14_assembly", "SAP.P012b.WH.W1.T14_L1_proof", "SAP.P012b.WH.W1.T14_L2_proof", "AronowAudit.P012.zero_spare_compatible_unique", "AronowAudit.P012.degree_eq_neighbor_card", "AronowAudit.P012.numerator_edge_identity", "AronowAudit.P012.denominator_sum_identity"],
+   "rows_not_used": [
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T15",
+   "decision": "whole",
+   "theorem": "SAP.P012b.T15",
+   "restriction": null,
+   "statement_definition": "SAP.P012b.T15WholeStatement",
+   "rows_used": ["AronowAudit.P012.homophily_domain", "AronowAudit.P012.degreeTraitSum_eq", "AronowAudit.P012.trait_degree_partition", "AronowAudit.P012.degree_sum_twice_edges", "AronowAudit.P012.full_domain_conditions", "AronowAudit.P012.full_p_domain_conditions", "AronowAudit.P012.recruit_is_susceptible", "AronowAudit.P012.result_domain_conditions", "SAP.P012b.WH.W1.T15_whole", "SAP.P012b.WH.W1.T15_assembly", "AronowAudit.P012.domain_counterexamples", "AronowAudit.P012.zero_spare_compatible_unique", "AronowAudit.P012.leafCompletion_compatible", "AronowAudit.P012.exact_h_region", "AronowAudit.P012.exact_p_region"],
+   "rows_not_used": [
+    {"lean_name": "AronowAudit.P012.adjacency_row_sum", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.boundary_numerator_zero", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.degree_eq_neighbor_card", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.denominator_domain_criterion", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.denominator_sum_identity", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.leaf_same_zero_trait", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.sampled_trait_positive_transfer", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.zero_degree_no_edge", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.zero_trait_degree", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."}
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T16",
+   "decision": "whole",
+   "theorem": "SAP.P012b.T16",
+   "restriction": null,
+   "rows_used": ["AronowAudit.P012.no_positive_nondecreasing_zero_limit", "AronowAudit.P012.printed_first_temperature_undefined", "AronowAudit.P012.cooling_properties", "AronowAudit.P012.cooling_term_bound", "AronowAudit.P012.cooling_series_diverges"],
+   "rows_not_used": [
+    {"lean_name": "AronowAudit.P012.harmonic_tail_log_bound", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."}
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T17",
+   "decision": "whole",
+   "theorem": "SAP.P012b.T17",
+   "restriction": null,
+   "statement_definition": "SAP.P012b.T17WholeStatement",
+   "rows_used": ["AronowAudit.P012.induced_compatibility", "SAP.P012b.WH.W1.T17_whole", "SAP.P012b.WH.W1.T17_assembly", "SAP.P012b.WH.W1.t17_example"],
+   "rows_not_used": [
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T18",
+   "decision": "whole",
+   "theorem": "SAP.P012b.T18",
+   "restriction": null,
+   "statement_definition": "SAP.P012b.T18WholeStatement",
+   "rows_used": ["AronowAudit.P012.homophily_arguments", "SAP.P012b.WH.W1.T18_whole", "SAP.P012b.WH.W1.T18_assembly", "SAP.P012b.WH.W1.pair_h_statistics", "SAP.P012b.WH.W1.history_examples"],
+   "rows_not_used": [
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T19",
+   "decision": "refuted",
+   "theorem": "SAP.P012b.T19",
+   "restriction": null,
+   "rows_used": ["AronowAudit.P012.printed_proposal_preserves_refuted"],
+   "rows_not_used": [
+    {"lean_name": "AronowAudit.P012.pair_edge_eq", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."}
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T20",
+   "decision": "refuted",
+   "theorem": "SAP.P012b.T20",
+   "restriction": null,
+   "rows_used": ["AronowAudit.P012.Wave1.printed_table_intervals_refuted"],
+   "rows_not_used": [
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T21",
+   "decision": "omitted",
+   "theorem": null,
+   "restriction": "No Lean declarations are credited to this target; neither the nonexistence of general closed forms nor the claimed speed/global optimization guarantee is established.",
+   "rows_used": [],
+   "rows_not_used": [
+   ],
+   "proof_status": null,
+   "proof_plan": null,
+   "axioms": []
+  },
+  {
+   "target_id": "P012-T22",
+   "decision": "whole",
+   "theorem": "SAP.P012b.T22",
+   "restriction": null,
+   "statement_definition": "SAP.P012b.T22WholeStatement",
+   "rows_used": ["AronowAudit.P012.joint_identification", "AronowAudit.P012.joint_leaf_flip_witness", "AronowAudit.P012.preferential_identification", "SAP.P012b.WH.W1.T22_whole", "SAP.P012b.WH.W1.T22_assembly", "SAP.P012b.WH.W1.T14_L1_proof", "SAP.P012b.WH.W1.T22_L1_proof", "SAP.P012b.WH.W1.T22_L2_proof", "AronowAudit.P012.degree_eq_neighbor_card", "AronowAudit.P012.full_domain_conditions", "AronowAudit.P012.private_leaf_member", "AronowAudit.P012.private_edge_incidence", "AronowAudit.P012.leaf_flip_edge_counts", "AronowAudit.P012.sampled_trait_positive_transfer", "AronowAudit.P012.graph_homophily_formula", "AronowAudit.P012.binary_edge_counts"],
+   "rows_not_used": [
+    {"lean_name": "AronowAudit.P012.homophily_endpoints_strict", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.phi_strict_anti_c", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.point_identified_iff_equal_extrema", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.preferential_endpoint_gap", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.preferential_endpoints_equal_iff", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.trait_spare_partition", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."},
+    {"lean_name": "AronowAudit.P012.zero_spare_compatible_unique", "reason": "Supporting declaration is already used inside the selected aggregate rows and is not separately invoked."}
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T23",
+   "decision": "whole",
+   "theorem": "SAP.P012b.T23",
+   "restriction": null,
+   "statement_definition": "SAP.P012b.T23WholeStatement",
+   "rows_used": ["AronowAudit.P012.figure1_extrema", "SAP.P012b.WH.W2.T23_whole", "SAP.P012b.WH.W2.T23_assembly", "SAP.P012b.WH.W2.T23_L1_proof", "AronowAudit.P012.figure1_endpoint_arithmetic", "AronowAudit.P012.leafCompletion_compatible", "AronowAudit.P012.leaf_preferential_endpoints", "AronowAudit.P012.homophily_domain", "AronowAudit.P012.graph_homophily_formula"],
+   "rows_not_used": [
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  {
+   "target_id": "P012-T24",
+   "decision": "restricted",
+   "theorem": "SAP.P012b.T24",
+   "restriction": "Retains only display (1)'s positive scalar objective bound and sharp maximum 1/epsilon on [-1,1]^2, attained at (-1,0), and the resulting objective and homophily range estimates for finite simple binary-trait graphs with positive all-vertex degree totals in both trait classes. Omits annealing convergence, certification of the printed proposals and cooling schedule, all communication-depth assertions (including existence of D*, its bound by the compatible-space maximum and D*epsilon<=1), existence or attainment of a maximum on an arbitrary compatible space, the cited convergence implication, and display (2)'s divergence assertion for D*. The graph estimate evaluates the inactive second argument at zero; it asserts no defined preferential recruitment value or attainment of 1/epsilon by a compatible graph.",
+   "rows_used": ["AronowAudit.P012.objective_bounds", "AronowAudit.P012.homophily_global_range"],
+   "rows_not_used": [
+    {"lean_name": "AronowAudit.P012.Wave1.annealing_convergence_proof", "reason": "Excluded: proves convergence for a materially repaired proposal process, not the canonical printed process."},
+    {"lean_name": "AronowAudit.P012.Wave1.compatible_finite_up_to_names_proof", "reason": "Quotient finiteness is not part of the retained objective estimate."},
+    {"lean_name": "AronowAudit.P012.compatible_objective_bounds", "reason": "Not needed: the two ok rows give the graph estimate using all-vertex trait-degree positivity, without its stronger sampled-trait positivity premises."},
+    {"lean_name": "AronowAudit.P012.critical_depth_bound", "reason": "Communication-depth assertions are omitted from the retained objective estimate."},
+    {"lean_name": "AronowAudit.P012.critical_depth_singleton", "reason": "Communication-depth assertions are omitted from the retained objective estimate."},
+    {"lean_name": "AronowAudit.P012.optimum_exact_zero_depth", "reason": "Communication-depth assertions are omitted from the retained objective estimate."},
+    {"lean_name": "AronowAudit.P012.unsampled_card_bound", "reason": "The incidence bound is not part of the retained objective estimate."}
+   ],
+   "proof_status": "proved",
+   "proof_plan": null,
+   "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  }
+ ]
+}

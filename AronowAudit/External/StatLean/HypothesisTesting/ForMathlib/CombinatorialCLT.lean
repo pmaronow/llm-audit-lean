@@ -1,14 +1,8 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.PermutationMarginals
 import AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.SteinMethod
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Probability.Distributions.Gaussian.Real
 import Mathlib.Probability.CDF
-
-
 
 /-!
 # The combinatorial central limit theorem
@@ -18,10 +12,12 @@ Let `d : Fin N → ℝ` be a deterministic coefficient vector and let `a : Fin m
 and the **block sum**
 $$ B_\sigma \;=\; \sum_{i < m} d\bigl(\sigma(a_i)\bigr) $$
 is the sum of a *simple random sample of size `m` without replacement* from the finite
-population `{d(1), …, d(N)}`. The two-sample permutation statistic is an affine function of such a block sum.
+population `{d(1), …, d(N)}`. Every linear permutation statistic — in particular the
+two-sample permutation statistic of `Randomization/TwoSamplePermutation` — is an affine
+function of such a block sum.
 
-The first two moments follow from the one- and two-coordinate marginals of a uniform
-permutation: for a **centred** population (`∑ d = 0`),
+The first two moments are elementary and are proved here from the one- and two-coordinate
+marginals of `ForMathlib/PermutationMarginals`: for a **centred** population (`∑ d = 0`),
 $$ \mathbb E\, B_\sigma = 0, \qquad
    \mathbb E\, B_\sigma^2 = \frac{m(N-m)}{N(N-1)} \sum_l d(l)^2 . $$
 The **combinatorial central limit theorem** of Wald–Wolfowitz, Noether, Hoeffding, Erdős–Rényi
@@ -31,8 +27,17 @@ that is `tendsto_perm_cdf_blockSum` below.
 
 ## Main results
 
+* `sum_perm_inv` — a group average is unchanged by inverting the permutation. (The
+  randomization action of `Randomization/TwoSamplePermutation` is `(σ • x) i = x (σ⁻¹ i)`,
+  whereas the marginal bricks are written with `σ`; this is the bridge.)
+* `avg_perm_blockSum` — the exact first moment of a block sum.
 * `avg_perm_blockSum_sq` — the exact second moment of a **centred** block sum, i.e. the
   finite-population variance `m(N-m)/(N(N-1)) · ∑ d²`.
+* `perm_avg_indicator_blockAvg_sub_mean_le` and its inverse-convention twin
+  `perm_avg_indicator_blockAvg_inv_sub_mean_le` — the Chebyshev step for a block average of
+  **uncentred** coefficients against the population mean.
+* `avg_measureReal_eq_integral_avg_indicator` — Fubini for a finite group: the group average
+  of deviation *probabilities* is the integral of the group average of the *indicators*.
 * `blockSumScale` — the asymptotic standard deviation `√(m(N-m)/N)` used to standardize.
 * `blockSet`, `SwapIndex`, `stdBlockSum`, `stdBlockSumSwap` — the **exchangeable pair** of
   Stein's method: swap one sampled position with one unsampled position.
@@ -40,11 +45,13 @@ that is `tendsto_perm_cdf_blockSum` below.
 * `sum_swap_exchangeable` — the pair is exchangeable.
 * `sum_swapIndex_increment` and `sum_swapIndex_increment'` — the linearity condition, exactly,
   with `λ = N/(m(N-m))`.
-* `sum_sq_swapIndex_increment` — the exact **sum of squared swap increments**:
-  `∑ₖ (W' − W)² = u²(m ∑ d² + (N − 2m) A₂(σ) + 2 B(σ)²)`. For `0 < m < N`,
-  dividing by the number `m(N−m)` of swaps gives the conditional second moment used
-  in Stein's variance-regression term. Its bound uses the block sum of squares `A₂`
-  and the second moment of the block sum supplied by `avg_perm_blockSet_sq`.
+* `sum_sq_swapIndex_increment` — the **conditional variance** of the pair, exactly:
+  `∑ₖ (W' − W)² = u²(m ∑ d² + (N − 2m) A₂(σ) + 2 B(σ)²)`, which reduces the
+  variance-regression defect of Stein's method to the concentration of the block sum of
+  squares `A₂`; `avg_perm_blockSumSq` and `avg_perm_blockSet_sq` are the two moments that
+  identity needs, and `avg_perm_sum_sq_swapIndex_increment` is its group average,
+  `u² · 2m(N−m)/(N−1) · ∑ d²` — so at the Stein normalisation the variance-regression term
+  is *exactly* centred at `(N−1)⁻¹ ∑ d² → 1`.
 * `abs_avg_blockSum_sub_stdGaussianExpect_le` — a **Berry–Esseen-type bound at a fixed
   stage**: the group average of a bounded Lipschitz test function at a standardized block sum
   differs from its Gaussian expectation by an explicit finite-population quantity, a
@@ -58,7 +65,7 @@ that is `tendsto_perm_cdf_blockSum` below.
 **Reference.** E.L. Lehmann and J.P. Romano, *Testing Statistical Hypotheses*, 4th ed.,
 Springer Nature Switzerland AG, 2022 (ISBN 978-3-030-70577-0), Chapter 12 (Extensions of the
 CLT to Sums of Dependent Random Variables), §12.2 (Random Sampling Without Replacement from a
-Finite Population), **Theorem 12.2.2** (Hájek's criterion), and
+Finite Population), **Theorem 12.2.2** (Hájek's necessary and sufficient condition), and
 Chapter 17 (Permutation and Randomization Tests), §17.3, where the theorem is applied to the
 two-sample statistic. (`TSH4 §12.2 Thm 12.2.2`, `TSH4 §17.3`.) The fixed-stage Berry–Esseen
 bound `abs_avg_blockSum_sub_stdGaussianExpect_le` is not in Lehmann–Romano: it specializes the
@@ -68,32 +75,37 @@ classical origin of combinatorial Berry–Esseen estimates being E. Bolthausen, 
 Gebiete* **66** (1984), 379–386.
 
 **Proof formalization notes.**
-* *Which model.* Sampling without replacement is represented by a uniform permutation
-  on `Equiv.Perm (Fin N)`, with expectations written as explicit normalized sums.
+* *Which model.* Sampling without replacement has two equivalent carriers in this
+  repository: the **subset** model of `ForMathlib/HypergeometricMoments` (uniform on
+  `SubsetsOfCard N m`, average written `expect`) and the **permutation** model of
+  `ForMathlib/PermutationMarginals` (uniform on `Equiv.Perm (Fin N)`, average written as an
+  explicit normalized sum). This file uses the permutation model, because `randDist` and
+  `randPairLaw` are *defined* as averages over the acting group, so no transfer lemma is
+  needed at the point of use. The two moment computations below are the permutation-model
+  twins of `HypergeometricMoments.expect_weight` and `HypergeometricMoments.var_linear`.
 * *No factorial.* As in `PermutationMarginals`, the cardinality of the symmetric group is
   never computed; it cancels against itself through `avg_perm_apply` and
   `avg_perm_apply_pair`.
 * *Standardization.* `blockSumScale N m = √(m(N-m)/N)` is the asymptotic standard deviation
   of a block sum whose population is normalized to `N⁻¹ ∑ d² → 1`; the exact standard
-  deviation carries the extra factor `√(N/(N-1) · (N⁻¹ ∑ d²))`, which tends
+  deviation carries the extra finite-population factor `N/(N-1) · (N⁻¹ ∑ d²)`, which tends
   to `1` under the hypotheses of `tendsto_perm_cdf_blockSum` and would only clutter the
-  statement. Both `m` and `N - m` are required to tend to infinity in this theorem.
-  Bounded sample sizes can also have normal limits: even one draw can converge to a
-  normal law when the empirical distributions of the finite populations do. The
-  problem is symmetric under `m ↦ N - m` because `∑ d = 0` makes the two blocks
-  negatives of each other.
+  statement. Both `m` and `N - m` are required to tend to infinity, which is necessary: for
+  `m` bounded the block sum is a sum of boundedly many terms and has no normal limit, and the
+  problem is symmetric under `m ↦ N - m` because `∑ d = 0` makes the two blocks negatives of
+  each other.
 * *Which Lindeberg condition.* The threshold is `ε √(min m (N-m))`, i.e. Hájek's condition,
-  not `ε √N`. The two agree when `m/N` stays bounded away from `0` and `1`, as in the
-  two-sample regime `m/n → λ ∈ (0, ∞)`, with `n = N - m`. This file proves sufficiency of Hájek's
-  condition in the stated growing-block regime.
+  not `ε √N`. The two agree when `m/N` stays bounded away from `0` and `1` — which is the
+  two-sample regime `m/n → λ ∈ (0, ∞)` — but Hájek's is the one that is also *necessary*, so
+  it is the honest hypothesis to record.
 
 **Bibliographic comments.** The theorem originates with A. Wald and J. Wolfowitz,
 "Statistical tests based on permutations of the observations," *Ann. Math. Statist.* **15**
 (1944), 358–372, who assumed all moments; G. E. Noether, "On a theorem of Pitman," *Ann.
 Math. Statist.* **20** (1949), 455–458, and W. Hoeffding, "A combinatorial central limit
 theorem," *Ann. Math. Statist.* **22** (1951), 558–566, reduced the hypotheses to conditions
-on the fourth and second moments respectively. The Lindeberg criterion for simple random
-sampling from a finite population in the growing-block regime
+on the fourth and second moments respectively. The definitive form — a Lindeberg condition
+that is both necessary and sufficient for simple random sampling from a finite population —
 is due to P. Erdős and A. Rényi, "On the central limit theorem for samples from a finite
 population," *Publ. Math. Inst. Hungar. Acad. Sci.* **4** (1959), 49–61, and J. Hájek,
 "Limiting distributions in simple random sampling from a finite population," *Publ. Math.
@@ -109,11 +121,30 @@ open scoped ENNReal NNReal
 
 namespace StatLean.HypothesisTesting
 
+/-! ### Inverting the permutation inside a group average -/
 
+/-- A sum over a finite group is unchanged by inversion. The randomization action used by
+`Randomization/TwoSamplePermutation` is `(σ • x) i = x (σ⁻¹ i)`, while the marginal bricks of
+`ForMathlib/PermutationMarginals` are stated with `σ`; this lemma is the bridge, and it costs
+nothing because inversion is a bijection of the group. -/
+theorem sum_perm_inv {G : Type*} [Group G] [Fintype G] {M : Type*} [AddCommMonoid M]
+    (f : G → M) : ∑ g : G, f g⁻¹ = ∑ g : G, f g :=
+  Equiv.sum_comp (Equiv.inv G) f
 
+/-! ### The first two moments of a block sum -/
 
-/-! ### The second moment of a block sum -/
-
+/-- **First moment of a block sum.** Under a uniform random permutation each of the `m`
+sampled positions is uniform on the `N` items, so the block sum has mean `m · N⁻¹ ∑ d`. No
+injectivity of the block is needed: the first moment is additive. -/
+theorem avg_perm_blockSum {N m : ℕ} (a : Fin m → Fin N) (d : Fin N → ℝ) :
+    (Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹ *
+        ∑ σ : Equiv.Perm (Fin N), ∑ i, d (σ (a i))
+      = (m : ℝ) * ((N : ℝ)⁻¹ * ∑ l, d l) := by
+  classical
+  rw [Finset.sum_comm, Finset.mul_sum]
+  rw [Finset.sum_congr rfl fun i (_ : i ∈ (Finset.univ : Finset (Fin m))) =>
+    avg_perm_apply (a i) d]
+  rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, Fintype.card_fin]
 
 /-- **Second moment of a centred block sum** — the finite-population variance
 $$ \frac1{|\mathbf S_N|}\sum_\sigma \Bigl(\sum_{i<m} d(\sigma(a_i))\Bigr)^2
@@ -212,11 +243,99 @@ theorem avg_perm_blockSum_sq {N m : ℕ}
   field_simp
   ring
 
+/-! ### Chebyshev for a block average, with uncentred coefficients
 
+`PermutationMarginals.perm_avg_indicator_blockAvg_le` is stated for an already-centred
+coefficient vector, which is the form in which the variance identity is cleanest. Consumers,
+however, arrive with a raw vector `c` — the pooled data, or a function of it — and want to
+compare its block average against its *population* average `c̄ = N⁻¹ ∑ c`. Recentring is a
+one-line shift, recorded here once so that the studentized-scale arguments do not each
+repeat it. -/
 
+/-- **Chebyshev for a block average against the population mean.** Under a uniform random
+permutation, the fraction of permutations whose block average of `c` deviates from
+`c̄ = N⁻¹ ∑ c` by `ε` is at most `ε⁻² (1/m) (N⁻¹ ∑ (c - c̄)²)` — the population dispersion
+divided by the block size, exactly as for sampling with replacement, the finite-population
+correction having been discarded. -/
+theorem perm_avg_indicator_blockAvg_sub_mean_le {N m : ℕ}
+    -- USER-INPUT: a nonempty block (the average divides by `m`)
+    (hm : 0 < m)
+    -- USER-INPUT: at least two items (the factor `N - 1` is a denominator upstream)
+    (hN : 2 ≤ N)
+    -- USER-INPUT: the block is a set of `m` distinct positions
+    (a : Fin m → Fin N) (ha : Function.Injective a) (c : Fin N → ℝ) {ε : ℝ}
+    -- USER-INPUT: a positive deviation
+    (hε : 0 < ε) :
+    (Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹ *
+        ∑ σ : Equiv.Perm (Fin N),
+          (if ε ≤ |(m : ℝ)⁻¹ * (∑ i, c (σ (a i))) - (N : ℝ)⁻¹ * ∑ l, c l|
+            then (1 : ℝ) else 0)
+      ≤ ε⁻¹ ^ 2 * ((m : ℝ)⁻¹ *
+          ((N : ℝ)⁻¹ * ∑ l, (c l - (N : ℝ)⁻¹ * ∑ l', c l') ^ 2)) := by
+  have hmR : (0 : ℝ) < m := by exact_mod_cast hm
+  have hNR : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hN0 : (N : ℝ) ≠ 0 := by linarith
+  have hd : ∑ l, (c l - (N : ℝ)⁻¹ * ∑ l', c l') = 0 := by
+    rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hN0, one_mul, sub_self]
+  have hshift : ∀ σ : Equiv.Perm (Fin N),
+      (m : ℝ)⁻¹ * ∑ i, (c (σ (a i)) - (N : ℝ)⁻¹ * ∑ l', c l')
+        = (m : ℝ)⁻¹ * (∑ i, c (σ (a i))) - (N : ℝ)⁻¹ * ∑ l, c l := by
+    intro σ
+    rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul, mul_sub, ← mul_assoc, inv_mul_cancel₀ hmR.ne', one_mul]
+  have h := perm_avg_indicator_blockAvg_le hm hN a ha
+    (fun l => c l - (N : ℝ)⁻¹ * ∑ l', c l') hd hε
+  simp only [hshift] at h
+  exact h
 
+/-- The same bound for the *inverse* convention `x ∘ σ⁻¹`, which is how the randomization
+action of `Randomization/TwoSamplePermutation` relabels coordinates. -/
+theorem perm_avg_indicator_blockAvg_inv_sub_mean_le {N m : ℕ} (hm : 0 < m) (hN : 2 ≤ N)
+    (a : Fin m → Fin N) (ha : Function.Injective a) (c : Fin N → ℝ) {ε : ℝ} (hε : 0 < ε) :
+    (Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹ *
+        ∑ σ : Equiv.Perm (Fin N),
+          (if ε ≤ |(m : ℝ)⁻¹ * (∑ i, c (σ⁻¹ (a i))) - (N : ℝ)⁻¹ * ∑ l, c l|
+            then (1 : ℝ) else 0)
+      ≤ ε⁻¹ ^ 2 * ((m : ℝ)⁻¹ *
+          ((N : ℝ)⁻¹ * ∑ l, (c l - (N : ℝ)⁻¹ * ∑ l', c l') ^ 2)) := by
+  rw [sum_perm_inv (G := Equiv.Perm (Fin N))
+    (f := fun σ : Equiv.Perm (Fin N) =>
+      if ε ≤ |(m : ℝ)⁻¹ * (∑ i, c (σ (a i))) - (N : ℝ)⁻¹ * ∑ l, c l| then (1 : ℝ) else 0)]
+  exact perm_avg_indicator_blockAvg_sub_mean_le hm hN a ha c hε
 
+/-! ### From permutation averages to randomization probabilities
 
+The bounds above are pointwise in the data: they control the group average of an *indicator*
+at a fixed data vector. The hypotheses consumed by the randomization theory
+(`TendstoInProbRandomized`, and the `hrem` hypotheses of the Slutsky transfers) are group
+averages of *probabilities*. The two are exchanged by Fubini for a finite group, which is
+the following identity — the only step needed to turn `perm_avg_indicator_blockAvg_..._le`
+into a statement about the data law. -/
+
+/-- **Fubini for a finite group average of deviation probabilities.** The group average of
+`P{ε ≤ A g}` is the `P`-integral of the group average of the indicators. Only measurability
+of each `A g` is required; the group being finite, the sum is a finite one and no product
+measure is involved. -/
+theorem avg_measureReal_eq_integral_avg_indicator {𝓨 : Type*} [MeasurableSpace 𝓨]
+    (P : Measure 𝓨) [IsProbabilityMeasure P] {G : Type*} [Fintype G]
+    (A : G → 𝓨 → ℝ) (hA : ∀ g, Measurable (A g)) (ε : ℝ) :
+    (Fintype.card G : ℝ)⁻¹ * ∑ g : G, P.real {x | ε ≤ A g x}
+      = ∫ x, (Fintype.card G : ℝ)⁻¹ * ∑ g : G, (if ε ≤ A g x then (1 : ℝ) else 0) ∂P := by
+  classical
+  have hset : ∀ g : G, MeasurableSet {x : 𝓨 | ε ≤ A g x} :=
+    fun g => measurableSet_le measurable_const (hA g)
+  have hind : ∀ g : G, (fun x => if ε ≤ A g x then (1 : ℝ) else 0)
+      = Set.indicator {x | ε ≤ A g x} 1 := by
+    intro g; funext x; simp [Set.indicator_apply]
+  have hint : ∀ g : G, Integrable (fun x => if ε ≤ A g x then (1 : ℝ) else 0) P := by
+    intro g
+    rw [hind g]
+    exact (integrable_const (1 : ℝ)).indicator (hset g)
+  rw [integral_const_mul, integral_finsetSum Finset.univ (fun g _ => hint g)]
+  congr 1
+  refine Finset.sum_congr rfl fun g _ => ?_
+  rw [hind g, integral_indicator_one (hset g)]
 
 /-! ### The exchangeable pair of Stein's method
 
@@ -328,13 +447,15 @@ theorem sum_swap_exchangeable (a : Fin m → Fin N) (d : Fin N → ℝ) (u : ℝ
         Finset.sum_congr rfl fun k _ => main k
     _ = _ := Finset.sum_comm
 
-/-- **The linearity condition, exactly.** For a *centred* population,
-`∑ₖ (W' σ k − W σ) = -N · W σ`. When `0 < m < N`, averaging uniformly over
-the swap index gives the conditional drift `𝔼[W' − W ∣ σ] = -λ W σ` with
+/-- **The linearity condition, exactly.** For a *centred* population the conditional drift of
+the swap pair is proportional to the current value:
+`∑ₖ (W' σ k − W σ) = -N · W σ`, i.e. `𝔼[W' − W ∣ σ] = -λ W σ` with
 
 `λ = N / (m (N − m))`,
 
-since there are `m (N − m)` elementary swaps. -/
+since there are `m (N − m)` elementary swaps. (The wave-6 status note of
+`tendsto_perm_cdf_blockSum` recorded `λ = 1/(m(N-m))`; the correct value carries the extra
+factor `N`, as the computation below shows.) -/
 theorem sum_swapIndex_increment (a : Fin m → Fin N) (ha : Function.Injective a)
     (d : Fin N → ℝ) (hd : ∑ l, d l = 0) (u : ℝ) (σ : Equiv.Perm (Fin N)) :
     ∑ k : SwapIndex a, (stdBlockSumSwap a d u σ k - stdBlockSum a d u σ)
@@ -369,23 +490,21 @@ theorem sum_swapIndex_increment (a : Fin m → Fin N) (ha : Function.Injective a
   rw [hlast, stdBlockSum]
   ring
 
-/-- **The sum of squared swap increments, exactly.** For a *centred* population,
+/-- **The conditional variance of the swap pair, exactly.** For a *centred* population,
 $$ \sum_k \bigl(W'(\sigma,k) - W(\sigma)\bigr)^2
    \;=\; u^2\Bigl( m\sum_l d_l^2 \;+\; (N - 2m)\,A_2(\sigma) \;+\; 2\,B(\sigma)^2 \Bigr), $$
 where `A₂(σ) = ∑_{r ∈ blockSet a} d(σ r)²` is the block sum of squares and
-`B(σ) = ∑_{r ∈ blockSet a} d(σ r)` is the block sum itself, with `W(σ) = u B(σ)`.
-Expanding the square
+`B(σ) = ∑_{r ∈ blockSet a} d(σ r) = u⁻¹ W(σ)` is the block sum itself. Expanding the square
 of the increment `u(d(σq) − d(σp))` produces the three terms: the `m(N−m)` cross terms of
 `∑_q d(σq)²` and `∑_p d(σp)²` are counted with multiplicities `m` and `N−m`, and the
 `-2 ∑_p ∑_q d(σp)d(σq)` term collapses to `+2B(σ)²` because the complement of the block sums
 to `-B(σ)`.
 
-For `0 < m < N`, the conditional second moment `𝔼ₖ[(W'−W)² ∣ σ]` is this sum
-divided by the `m(N−m)` possible swaps. With `u² = λ = N/(m(N−m))`,
-`(2λ)⁻¹ 𝔼ₖ[(W'−W)² ∣ σ] = (m ∑d² + (N−2m) A₂(σ) + 2 B(σ)²)/(2m(N−m))`.
-Stein's variance-regression defect is the permutation average of the absolute
-difference between this ratio and `1`. The bound `avg_abs_one_sub_condSq_le`
-controls it using the fluctuation of `A₂` and the second moment of `B`. -/
+This is the identity that turns the variance-regression defect
+`𝔼|1 − (2λ)⁻¹ ∑_k (W' − W)²|` of `SteinMethod.abs_avg_sub_le` into a statement about the
+concentration of `A₂` alone: with `λ = N/(m(N−m))` and `u² = N/(m(N−m))` one gets
+`(2λ)⁻¹∑_k (W' − W)² = ½(m N⁻¹ ∑ d² + (1 − 2m/N) A₂(σ) + 2N⁻¹ B(σ)²)`, and both `B(σ)²/N`
+and the deviation of `A₂` from its mean `(m/N)∑d²` are second-order. -/
 theorem sum_sq_swapIndex_increment (a : Fin m → Fin N) (ha : Function.Injective a)
     (d : Fin N → ℝ) (hd : ∑ l, d l = 0) (u : ℝ) (σ : Equiv.Perm (Fin N)) :
     ∑ k : SwapIndex a, (stdBlockSumSwap a d u σ k - stdBlockSum a d u σ) ^ 2
@@ -433,6 +552,14 @@ theorem sum_sq_swapIndex_increment (a : Fin m → Fin N) (ha : Function.Injectiv
     Finset.sum_coe_sort (blockSet a) fun r => d (σ r) ^ 2]
   ring
 
+/-- The mean of the block sum of squares `A₂(σ) = ∑_{r ∈ blockSet a} d(σ r)²`, from the
+one-coordinate marginal: each sampled position is uniform on the population. -/
+theorem avg_perm_blockSumSq (a : Fin m → Fin N) (ha : Function.Injective a) (d : Fin N → ℝ) :
+    (Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹ *
+        ∑ σ : Equiv.Perm (Fin N), ∑ r ∈ blockSet a, d (σ r) ^ 2
+      = (m : ℝ) * ((N : ℝ)⁻¹ * ∑ l, d l ^ 2) := by
+  rw [Finset.sum_congr rfl fun σ _ => sum_blockSet a ha fun r => d (σ r) ^ 2]
+  exact avg_perm_blockSum a fun l => d l ^ 2
 
 /-- The second moment of the block sum, written over the sampled *set* rather than the block
 *index* — the shape in which `sum_sq_swapIndex_increment` produces it. -/
@@ -444,6 +571,58 @@ theorem avg_perm_blockSet_sq (hN : 2 ≤ N) (a : Fin m → Fin N) (ha : Function
   rw [Finset.sum_congr rfl fun σ _ => by rw [sum_blockSet a ha fun r => d (σ r)]]
   exact avg_perm_blockSum_sq hN a ha d hd
 
+/-- **The mean of the conditional variance of the swap pair, exactly.** Averaging
+`sum_sq_swapIndex_increment` over the group and feeding in the two moment computations
+`avg_perm_blockSumSq` and `avg_perm_blockSet_sq` collapses the three terms to a single one:
+$$ \frac1{|\mathbf S_N|}\sum_\sigma \sum_k \bigl(W'(\sigma,k) - W(\sigma)\bigr)^2
+   \;=\; u^2\,\frac{2m(N-m)}{N-1}\sum_l d_l^2 . $$
+Consequently, with the Stein normalisation `λ = N/(m(N−m))` and `u² = N/(m(N−m))` the
+variance-regression *centring* is exact:
+`avg_σ (2λ)⁻¹ ∑ₖ (W' − W)² = (N − 1)⁻¹ ∑_l d_l²`, which tends to `1` precisely under the
+hypothesis `N⁻¹ ∑ d² → 1` of `tendsto_perm_avg_lipschitz`. What is left of the
+variance-regression term is therefore purely a *concentration* statement about `A₂`, i.e. a
+fourth-moment computation, and not a centring one. -/
+theorem avg_perm_sum_sq_swapIndex_increment (hN : 2 ≤ N) (a : Fin m → Fin N)
+    (ha : Function.Injective a) (d : Fin N → ℝ) (hd : ∑ l, d l = 0) (u : ℝ) :
+    (Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹ *
+        ∑ σ : Equiv.Perm (Fin N),
+          ∑ k : SwapIndex a, (stdBlockSumSwap a d u σ k - stdBlockSum a d u σ) ^ 2
+      = u ^ 2 * (2 * (m : ℝ) * ((N : ℝ) - m) / ((N : ℝ) - 1)) * ∑ l, d l ^ 2 := by
+  classical
+  have hNR : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hN0 : (0 : ℝ) < (N : ℝ) := by linarith
+  have hN1 : (0 : ℝ) < (N : ℝ) - 1 := by linarith
+  have hc : (0 : ℝ) < (Fintype.card (Equiv.Perm (Fin N)) : ℝ) := by
+    exact_mod_cast Fintype.card_pos
+  have hexp : ∑ σ : Equiv.Perm (Fin N),
+      ∑ k : SwapIndex a, (stdBlockSumSwap a d u σ k - stdBlockSum a d u σ) ^ 2
+      = ∑ σ : Equiv.Perm (Fin N), (u ^ 2 * ((m : ℝ) * ∑ l, d l ^ 2)
+          + (u ^ 2 * ((N : ℝ) - 2 * (m : ℝ))) * ∑ r ∈ blockSet a, d (σ r) ^ 2
+          + (2 * u ^ 2) * (∑ r ∈ blockSet a, d (σ r)) ^ 2) :=
+    Finset.sum_congr rfl fun σ _ => by
+      rw [sum_sq_swapIndex_increment a ha d hd u σ]; ring
+  have hconst : (Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹ *
+      ∑ _σ : Equiv.Perm (Fin N), u ^ 2 * ((m : ℝ) * ∑ l, d l ^ 2)
+      = u ^ 2 * ((m : ℝ) * ∑ l, d l ^ 2) := by
+    rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, ← mul_assoc,
+      inv_mul_cancel₀ hc.ne', one_mul]
+  have hA := avg_perm_blockSumSq a ha d
+  have hB := avg_perm_blockSet_sq hN a ha d hd
+  rw [hexp, Finset.sum_add_distrib, Finset.sum_add_distrib, mul_add, mul_add, hconst,
+    ← Finset.mul_sum, ← Finset.mul_sum,
+    show (Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹ *
+        ((u ^ 2 * ((N : ℝ) - 2 * (m : ℝ)))
+          * ∑ σ : Equiv.Perm (Fin N), ∑ r ∈ blockSet a, d (σ r) ^ 2)
+      = (u ^ 2 * ((N : ℝ) - 2 * (m : ℝ)))
+          * ((Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹
+            * ∑ σ : Equiv.Perm (Fin N), ∑ r ∈ blockSet a, d (σ r) ^ 2) from by ring,
+    show (Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹ *
+        ((2 * u ^ 2) * ∑ σ : Equiv.Perm (Fin N), (∑ r ∈ blockSet a, d (σ r)) ^ 2)
+      = (2 * u ^ 2) * ((Fintype.card (Equiv.Perm (Fin N)) : ℝ)⁻¹
+            * ∑ σ : Equiv.Perm (Fin N), (∑ r ∈ blockSet a, d (σ r)) ^ 2) from by ring,
+    hA, hB]
+  field_simp
+  ring
 
 /-- The linearity condition in the exact shape consumed by
 `ForMathlib/SteinMethod.abs_avg_sub_le`, with `λ = N / (m (N − m))`. -/
@@ -605,15 +784,13 @@ private lemma avg_cube_increment_le {N m : ℕ} (a : Fin m → Fin N) (ha : Func
 /-! ### The variance-regression term of the swap pair -/
 
 /-- **The variance-regression term of the swap pair.** With the Stein normalisation
-`u² = λ = N/(m(N−m))`, averaging the sum in `sum_sq_swapIndex_increment` over the
-`m(N−m)` swaps gives
+`u² = λ = N/(m(N−m))`, the exact conditional variance `sum_sq_swapIndex_increment` gives
 `(2λ)⁻¹ 𝔼[(W'−W)² ∣ σ] = (2m(N−m))⁻¹ (m ∑d² + (N−2m) A₂(σ) + 2 B(σ)²)`, whose group average is
-`(N−1)⁻¹ ∑ d²`. Subtracting the exact mean leaves two
+`(N−1)⁻¹ ∑ d²` (`avg_perm_sum_sq_swapIndex_increment`). Subtracting the exact mean leaves two
 fluctuations: that of the block sum of squares `A₂`, controlled by Cauchy–Schwarz and the
 finite-population variance `avg_perm_blockSum_sq` applied to the *centred squares*
-`d² − N⁻¹∑d²` — this is the fourth-moment input `∑ d⁴` — and that of `B²`.
-The latter contributes at most `2∑d²/(N(N−1))` to the mean absolute defect, which
-is `O(1/N)` when `N⁻¹∑d²` stays bounded. -/
+`d² − N⁻¹∑d²` — this is the fourth-moment input `∑ d⁴` — and that of `B²`, which is `O(1/N)`
+in mean because `B` is the block sum itself. -/
 private lemma avg_abs_one_sub_condSq_le {N m : ℕ} (hN : 2 ≤ N) (hm : 0 < m) (hmN : m < N)
     (a : Fin m → Fin N) (ha : Function.Injective a) (d : Fin N → ℝ) (hd : ∑ l, d l = 0)
     {u : ℝ} (hu2 : u ^ 2 = (N : ℝ) / ((m : ℝ) * ((N : ℝ) - m))) :
@@ -1409,7 +1586,7 @@ core analytic brick. Under the hypotheses of `tendsto_perm_cdf_blockSum`, the gr
 of `h` evaluated at the standardized block sum converges to the standard normal expectation
 of `h`, for every bounded Lipschitz `h`.
 
-The proof uses Stein's method for exchangeable pairs
+STATUS (wave 9): PROVED, axiom-clean. Route: Stein's method for exchangeable pairs
 (`ForMathlib/SteinMethod`) applied to the **truncated** population, plus a diagonal argument
 in the truncation level `ε`.
 
@@ -1420,8 +1597,8 @@ in the truncation level `ε`.
 * the pair is the swap pair of the section above: `Ω = Equiv.Perm (Fin (N k))`,
   `K = SwapIndex (a k)`, `W = stdBlockSum`, `W' = stdBlockSumSwap`, with exchangeability
   (`sum_swap_exchangeable`), the linearity condition with `λ = N/(m(N−m))`
-  (`sum_swapIndex_increment'`) and the exact sum of squared increments
-  (`sum_sq_swapIndex_increment`), divided by `m(N−m)` for the conditional second moment;
+  (`sum_swapIndex_increment'`) and the exact conditional variance
+  (`sum_sq_swapIndex_increment`);
 * the two moment estimates for this pair are `avg_cube_increment_le` (third moment, from the
   one-coordinate marginal only) and `avg_abs_one_sub_condSq_le` (variance regression, from
   Cauchy–Schwarz and the exact second moment `avg_perm_blockSum_sq` applied to the *centred
@@ -1437,7 +1614,7 @@ in the truncation level `ε`.
   `min_div_two_le_mul_div` — `min(m,N−m)/2 ≤ m(N−m)/N ≤ min(m,N−m)` — are what convert the
   Stein scale `√(m(N−m)/N)` into Hájek's scale `√(min (m, N−m))` at both error terms.
 
-**Why truncation is needed.** It is not merely that a naive bound on
+WARNING (wave 8, and the reason for the truncation). It is not merely that a naive bound on
 the third moment fails: the raw third-moment error term of `abs_avg_sub_le`, applied to the
 *untruncated* pair, can itself **diverge** under the hypotheses of this theorem, so any
 reduction of this statement to "the two error terms of the raw swap pair tend to `0`" is a
@@ -1601,8 +1778,9 @@ condition at scale `√(min (m k) (N k - m k))`, then the block sum standardized
 `blockSumScale` is asymptotically standard normal — stated here in the group-average
 c.d.f. form in which randomization distributions are defined.
 
-The proof applies `tendsto_perm_avg_lipschitz`, which tests against Lipschitz functions
-instead of a half-line indicator. The de-smoothing step is elementary: the indicator of `Iic t` is squeezed
+STATUS (wave 7): DISCHARGED to the single core brick `tendsto_perm_avg_lipschitz` below —
+the same theorem tested against *Lipschitz* functions instead of a half-line indicator. The
+de-smoothing step performed here is the elementary one: the indicator of `Iic t` is squeezed
 between two ramps of width `ε` (`ForMathlib/EsseenSmoothing.ramp`), the ramps are `ε⁻¹`-
 Lipschitz and bounded by `1`, their Gaussian expectations bracket `Φ(t ∓ ε)`, and `Φ` is
 1-Lipschitz (`ForMathlib/SteinMethod.lipschitzWith_cdf_gaussianReal`), hence continuous, so

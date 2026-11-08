@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.Core.NondominatedQMDProductComparison
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.IidWLLN
 import AronowAudit.External.StatLean.AsymptoticStatistics.LowerBounds.T6_FinDimLAN.Abstract1DLAN
@@ -1176,5 +1172,242 @@ theorem log_acProductLikelihood_lan_tendstoInMeasure
         (Filter.Eventually.of_forall hbound)
     simpa only [Z, u] using hZ
 
+/-- Full nondominated form of vdV Lemma 25.14: a measurable bare right-QMD
+score is mean zero and square integrable, and generates the literal actual-RN
+LAN expansion at `1/sqrt n`.
+
+Proof idea: construct a `NondominatedQMDPath` from the bare score, invoke the
+actual-likelihood LAN theorem, and transport all terms across the `P`-a.e.
+representative. -/
+theorem qmd_score_mean_integrable_and_lan_nondominated
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (curve : ℝ → Measure Ω)
+    -- USER-INPUT: a one-sided probability path through `P`; vdV Lemma 25.14.
+    (hprob : ∀ t, 0 ≤ t → IsProbabilityMeasure (curve t))
+    (hzero : curve 0 = P)
+    (g : Ω → ℝ)
+    -- LEAN-ONLY: measurability of the score representative.
+    (hg : Measurable g)
+    -- USER-INPUT: right differentiability in quadratic mean with score `g`;
+    -- vdV Lemma 25.14.
+    (hqmd : IsRightQMD P curve g)
+    (P' : Measure Ω') [IsProbabilityMeasure P']
+    (X : ℕ → Ω' → Ω)
+    -- LEAN-ONLY: measurability of each sample coordinate.
+    (hX_meas : ∀ i, Measurable (X i))
+    -- USER-INPUT: iid observations with common law `P`; vdV Lemma 25.14.
+    (hindep : ProbabilityTheory.iIndepFun X P')
+    (hident : ∀ i, IdentDistrib (X i) (X 0) P' P')
+    (hlaw : Measure.map (X 0) P' = P) :
+    (∫ ω, g ω ∂P = 0) ∧ Integrable (fun ω => g ω ^ 2) P ∧
+      TendstoInMeasure P'
+        (fun n ω =>
+          (∑ i ∈ Finset.range n,
+            Real.log (((curve ((Real.sqrt n)⁻¹)).rnDeriv P (X i ω)).toReal))
+            - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)
+            + (1 / 2 : ℝ) * ∫ x, g x ^ 2 ∂P)
+        atTop (fun _ => (0 : ℝ)) := by
+  classical
+  obtain ⟨γ, hγcurve, hgscore⟩ :=
+    exists_nondominatedQMDPath_of_bare_qmd P curve hprob hzero g hg hqmd
+  have hscoreMean : ∫ ω, (γ.score : Ω → ℝ) ω ∂P = 0 := by
+    have hmem : (γ.score : Lp ℝ 2 P) ∈ L2ZeroMean P := γ.score.2
+    change (γ.score : Lp ℝ 2 P) ∈
+      LinearMap.ker (integralL2 P).toLinearMap at hmem
+    rw [LinearMap.mem_ker] at hmem
+    have hinner : ⟪oneL2 P, (γ.score : Lp ℝ 2 P)⟫_ℝ = 0 := hmem
+    rw [MeasureTheory.L2.inner_def] at hinner
+    have hone : (oneL2 P : Ω → ℝ) =ᵐ[P] fun _ => (1 : ℝ) :=
+      MemLp.coeFn_toLp (memLp_const (1 : ℝ))
+    have heq : ∫ ω, ⟪((oneL2 P : Lp ℝ 2 P) : Ω → ℝ) ω,
+          ((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω⟫_ℝ ∂P =
+        ∫ ω, (γ.score : Ω → ℝ) ω ∂P := by
+      apply integral_congr_ae
+      filter_upwards [hone] with ω hω
+      rw [show ⟪((oneL2 P : Lp ℝ 2 P) : Ω → ℝ) ω,
+          ((γ.score : Lp ℝ 2 P) : Ω → ℝ) ω⟫_ℝ =
+            (γ.score : Ω → ℝ) ω * (oneL2 P : Ω → ℝ) ω by rfl,
+        hω, mul_one]
+    rw [heq] at hinner
+    exact hinner
+  have hmean : ∫ ω, g ω ∂P = 0 := by
+    rw [integral_congr_ae hgscore]
+    exact hscoreMean
+  have hgmem : MemLp g 2 P :=
+    (memLp_congr_ae hgscore).mpr (Lp.memLp (γ.score : Lp ℝ 2 P))
+  have hgsq : Integrable (fun ω => g ω ^ 2) P := hgmem.integrable_sq
+  refine ⟨hmean, hgsq, ?_⟩
+  have hI : ∫ ω, g ω ^ 2 ∂P = ‖γ.score‖ ^ 2 := by
+    have hpow : (fun ω => g ω ^ 2) =ᵐ[P]
+        fun ω => (γ.score : Ω → ℝ) ω ^ 2 := by
+      filter_upwards [hgscore] with ω hω
+      rw [hω]
+    rw [integral_congr_ae hpow]
+    exact integral_score_sq_eq_norm_sq γ
+  let T : ∀ n : ℕ, (Fin n → Ω) → ℝ := fun n Y =>
+    Real.log (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n Y).toReal -
+      ((Real.sqrt n)⁻¹ * ∑ i : Fin n, (γ.score : Ω → ℝ) (Y i) -
+        (1 / 2 : ℝ) * ‖γ.score‖ ^ 2)
+  let S : ∀ n : ℕ, (Fin n → Ω) → ℝ := fun n Y =>
+    (∑ i : Fin n,
+      Real.log (((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal)) -
+      (Real.sqrt n)⁻¹ * ∑ i : Fin n, g (Y i) +
+      (1 / 2 : ℝ) * ∫ x, g x ^ 2 ∂P
+  have hLAN : ∀ ε > 0, Tendsto
+      (fun n : ℕ => (Measure.pi (fun _ : Fin n => P)) {Y | ε ≤ |T n Y|})
+      atTop (nhds 0) := by
+    intro ε hε
+    simpa only [T, one_mul, one_pow] using
+      log_acProductLikelihood_lan_tendstoInMeasure γ 1 zero_le_one ε hε
+  have hzeroProd : Tendsto
+      (fun n : ℕ => (Measure.pi (fun _ : Fin n => P))
+        (⋃ i ∈ (Finset.univ : Finset (Fin n)),
+          {Y | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal = 0}))
+      atTop (nhds 0) := by
+    have hlocal := γ.base_zeroLikelihood_localScale_tendsto 1 zero_le_one
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      tendsto_const_nhds hlocal (Filter.Eventually.of_forall fun _ => bot_le) ?_
+    filter_upwards with n
+    have hset : MeasurableSet
+        {ω | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P ω).toReal = 0} :=
+      (Measure.measurable_rnDeriv (γ.curve ((Real.sqrt n)⁻¹)) P).ennreal_toReal
+        (measurableSet_singleton 0)
+    have heach : ∀ i : Fin n,
+        (Measure.pi (fun _ : Fin n => P))
+            {Y | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal = 0} =
+          γ.baseZeroLikelihoodMass ((Real.sqrt n)⁻¹) := by
+      intro i
+      rw [show {Y : Fin n → Ω |
+          ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal = 0} =
+          (fun Y : Fin n → Ω => Y i) ⁻¹'
+            {ω | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P ω).toReal = 0} by rfl,
+        ← Measure.map_apply (measurable_pi_apply i) hset,
+        (measurePreserving_eval (fun _ : Fin n => P) i).map_eq]
+      rfl
+    calc
+      (Measure.pi (fun _ : Fin n => P))
+          (⋃ i ∈ (Finset.univ : Finset (Fin n)),
+            {Y | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal = 0}) ≤
+          ∑ i ∈ (Finset.univ : Finset (Fin n)),
+            (Measure.pi (fun _ : Fin n => P))
+              {Y | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal = 0} :=
+        measure_biUnion_finset_le _ _
+      _ = (n : ℕ) • γ.baseZeroLikelihoodMass ((Real.sqrt n)⁻¹) := by
+        simp only [heach, Finset.sum_const, Finset.card_univ, Fintype.card_fin]
+      _ = (n : ℝ≥0∞) * γ.baseZeroLikelihoodMass
+          (1 * (Real.sqrt n)⁻¹) := by rw [nsmul_eq_mul, one_mul]
+  have hsumLAN : ∀ ε > 0, Tendsto
+      (fun n : ℕ => (Measure.pi (fun _ : Fin n => P)) {Y | ε ≤ |S n Y|})
+      atTop (nhds 0) := by
+    intro ε hε
+    have hupper : Tendsto (fun n : ℕ =>
+        (Measure.pi (fun _ : Fin n => P))
+            (⋃ i ∈ (Finset.univ : Finset (Fin n)),
+              {Y | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal = 0}) +
+          (Measure.pi (fun _ : Fin n => P)) {Y | ε ≤ |T n Y|})
+        atTop (nhds 0) := by
+      simpa using hzeroProd.add (hLAN ε hε)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      tendsto_const_nhds hupper (Filter.Eventually.of_forall fun _ => bot_le) ?_
+    filter_upwards with n
+    have hgpi : (fun (Y : Fin n → Ω) i => g (Y i)) =ᵐ[
+        Measure.pi (fun _ : Fin n => P)]
+          fun Y i => (γ.score : Ω → ℝ) (Y i) :=
+      Measure.ae_eq_pi (μ := fun _ : Fin n => P)
+        (f := fun _ ω => g ω)
+        (f' := fun _ ω => (γ.score : Ω → ℝ) ω) (fun _ => hgscore)
+    have hincl : ∀ᵐ Y ∂(Measure.pi (fun _ : Fin n => P)),
+        Y ∈ {Y : Fin n → Ω | ε ≤ |S n Y|} →
+          Y ∈ ((⋃ i ∈ (Finset.univ : Finset (Fin n)),
+            {Y | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal = 0}) ∪
+            {Y | ε ≤ |T n Y|}) := by
+      filter_upwards [hgpi] with Y hY
+      intro hbad
+      by_cases hz : Y ∈ (⋃ i ∈ (Finset.univ : Finset (Fin n)),
+          {Y | ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal = 0})
+      · exact Or.inl hz
+      · apply Or.inr
+        have hfac : ∀ i : Fin n,
+            ((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal ≠ 0 := by
+          intro i hi
+          exact hz (Set.mem_biUnion (Finset.mem_univ i) hi)
+        have hlog : Real.log
+              (γ.acProductLikelihood ((Real.sqrt n)⁻¹) n Y).toReal =
+            ∑ i : Fin n,
+              Real.log (((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal) := by
+          simp only [acProductLikelihood, ENNReal.toReal_prod]
+          exact Real.log_prod fun i _ => hfac i
+        have hsumg : ∑ i : Fin n, g (Y i) =
+            ∑ i : Fin n, (γ.score : Ω → ℝ) (Y i) := by
+          rw [hY]
+        have hST : S n Y = T n Y := by
+          dsimp only [S, T]
+          rw [hlog, hsumg, hI]
+          ring
+        rwa [hST] at hbad
+    exact (measure_mono_ae hincl).trans (measure_union_le _ _)
+  let Y : ∀ n : ℕ, Ω' → (Fin n → Ω) := fun n ω i => X i.val ω
+  have hYmeas : ∀ n, Measurable (Y n) := by
+    intro n
+    exact Measurable.of_eval fun i => hX_meas i.val
+  have hjoint : ∀ n, Measure.map (Y n) P' =
+      Measure.pi (fun _ : Fin n => P) := by
+    intro n
+    have hfin : iIndepFun (fun i : Fin n => X i.val) P' :=
+      ProbabilityTheory.iIndepFun.precomp Fin.val_injective hindep
+    have hmap := (ProbabilityTheory.iIndepFun_iff_map_fun_eq_pi_map
+      (fun i : Fin n => (hX_meas i.val).aemeasurable)).mp hfin
+    calc
+      Measure.map (Y n) P' =
+          Measure.pi (fun i : Fin n => Measure.map (X i.val) P') := hmap
+      _ = Measure.pi (fun _ : Fin n => P) := by
+        congr 1
+        funext i
+        rw [(hident i.val).map_eq, hlaw]
+  have hSmeas : ∀ n, Measurable (S n) := by
+    intro n
+    dsimp only [S]
+    have hlogmeas : Measurable (fun Y : Fin n → Ω =>
+        ∑ i : Fin n,
+          Real.log (((γ.curve ((Real.sqrt n)⁻¹)).rnDeriv P (Y i)).toReal)) :=
+      Finset.measurable_sum _ fun i _ =>
+        ((Measure.measurable_rnDeriv (γ.curve ((Real.sqrt n)⁻¹)) P).comp
+          (measurable_pi_apply i)).ennreal_toReal.log
+    have hgmeas : Measurable (fun Y : Fin n → Ω =>
+        ∑ i : Fin n, g (Y i)) :=
+      Finset.measurable_sum _ fun i _ => hg.comp (measurable_pi_apply i)
+    exact (hlogmeas.sub (hgmeas.const_mul _)).add_const _
+  rw [MeasureTheory.tendstoInMeasure_iff_norm]
+  intro ε hε
+  have hp := hsumLAN ε hε
+  convert! hp using 1
+  funext n
+  have hset : MeasurableSet {Z : Fin n → Ω | ε ≤ |S n Z|} :=
+    measurableSet_le measurable_const (hSmeas n).abs
+  have hstat : ∀ ω : Ω',
+      ((∑ i ∈ Finset.range n,
+          Real.log (((curve ((Real.sqrt n)⁻¹)).rnDeriv P (X i ω)).toReal))
+        - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)
+        + (1 / 2 : ℝ) * ∫ x, g x ^ 2 ∂P) = S n (Y n ω) := by
+    intro ω
+    dsimp only [S, Y]
+    rw [hγcurve]
+    rw [← Fin.sum_univ_eq_sum_range, ← Fin.sum_univ_eq_sum_range]
+  calc
+    P' {ω |
+        ε ≤
+          ‖((∑ i ∈ Finset.range n,
+              Real.log (((curve ((Real.sqrt n)⁻¹)).rnDeriv P (X i ω)).toReal))
+            - (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n, g (X i ω)
+            + (1 / 2 : ℝ) * ∫ x, g x ^ 2 ∂P) - 0‖} =
+        P' ((Y n) ⁻¹' {Z : Fin n → Ω | ε ≤ |S n Z|}) := by
+      congr 1
+      ext ω
+      simp only [Set.mem_ofPred_eq, Set.mem_preimage, sub_zero, Real.norm_eq_abs]
+      rw [hstat]
+    _ = Measure.map (Y n) P' {Z : Fin n → Ω | ε ≤ |S n Z|} := by
+      rw [Measure.map_apply (hYmeas n) hset]
+    _ = (Measure.pi (fun _ : Fin n => P)) {Z : Fin n → Ω | ε ≤ |S n Z|} := by
+      rw [hjoint]
 
 end AsymptoticStatistics.LowerBounds.T6_FinDimLAN.NondominatedQMDLAN

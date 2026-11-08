@@ -1,0 +1,82 @@
+import SAP.P001a.Challenge
+set_option maxRecDepth 2048
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators ENNReal NNReal Topology Classical
+noncomputable section
+open SAP.P001a
+
+theorem matching_probability : IsProbabilityMeasure matchingUnitLaw := by
+  constructor
+  rw [matchingUnitLaw, withDensity_apply _ MeasurableSet.univ,
+    Measure.restrict_univ]
+  have hm : Measurable (fun u : ℝ × Bool × Bool => ENNReal.ofReal
+      (if u.1 ∈ Set.Icc (1/4 : ℝ) (3/4) then
+        (if u.2.1 then u.1 else 1-u.1) else 0)) := by
+    apply Measurable.ennreal_ofReal
+    apply Measurable.ite (measurableSet_Icc.preimage measurable_fst)
+    · exact Measurable.ite
+        ((measurableSet_singleton true).preimage measurable_snd.fst)
+        measurable_fst (measurable_const.sub measurable_fst)
+    · exact measurable_const
+  rw [lintegral_prod _ hm.aemeasurable]
+  have hinner (p : ℝ) :
+      (∫⁻ b : Bool × Bool, ENNReal.ofReal
+        (if p ∈ Set.Icc (1/4 : ℝ) (3/4) then (if b.1 then p else 1-p) else 0)
+          ∂(Measure.count.prod Measure.count)) =
+      (if p ∈ Set.Icc (1/4 : ℝ) (3/4) then
+        (ENNReal.ofReal p + ENNReal.ofReal (1-p)) +
+          (ENNReal.ofReal p + ENNReal.ofReal (1-p)) else 0) := by
+    rw [lintegral_prod _ (measurable_of_finite _).aemeasurable]
+    simp_rw [lintegral_count, tsum_fintype]
+    by_cases hp : p ∈ Set.Icc (1/4 : ℝ) (3/4)
+    · simp only [hp, ite_true, Fintype.sum_bool, Bool.false_eq_true, ite_false]
+      ac_rfl
+    · simp only [hp, ite_false, ENNReal.ofReal_zero,
+        Fintype.sum_bool, Bool.false_eq_true, ite_true, add_zero]
+  have hadd : ∀ p ∈ Set.Icc (1/4 : ℝ) (3/4),
+      ENNReal.ofReal p + ENNReal.ofReal (1-p) = 1 := by
+    intro p hp
+    rw [← ENNReal.ofReal_add (by linarith [hp.1]) (by linarith [hp.2])]
+    norm_num
+  calc
+    _ = ∫⁻ p : ℝ, (Set.Icc (1/4 : ℝ) (3/4)).indicator
+        (fun _ => (2 : ℝ≥0∞)) p := by
+      apply lintegral_congr
+      intro p
+      rw [hinner]
+      by_cases hp : p ∈ Set.Icc (1/4 : ℝ) (3/4)
+      · simp only [hp, ite_true, Set.indicator_of_mem hp, hadd p hp]
+        norm_num
+      · simp only [hp, ite_false, Set.indicator_of_notMem hp]
+    _ = 1 := by
+      rw [lintegral_indicator measurableSet_Icc]
+      norm_num [lintegral_const, Real.volume_Icc]
+      calc
+        _ = ENNReal.ofReal ((2 : ℝ)*(1/2)) := by
+          rw [ENNReal.ofReal_mul (by norm_num)]
+          norm_num
+        _ = 1 := by norm_num
+
+local instance : IsProbabilityMeasure matchingUnitLaw := matching_probability
+
+def matchingExperiment : Measure (ℕ → ℝ × Bool × Bool) :=
+  Measure.infinitePi (fun _ : ℕ => matchingUnitLaw)
+
+theorem matching_iid_data :
+    IsProbabilityMeasure matchingExperiment ∧
+    IID matchingExperiment (fun n ω => ω n) ∧
+    matchingExperiment.map (fun ω => ω 0) = matchingUnitLaw := by
+  have hmap (i : ℕ) : matchingExperiment.map (fun ω => ω i) = matchingUnitLaw :=
+    Measure.infinitePi_map_eval (fun _ : ℕ => matchingUnitLaw) i
+  refine ⟨inferInstanceAs (IsProbabilityMeasure
+    (Measure.infinitePi (fun _ : ℕ => matchingUnitLaw))), ?_, hmap 0⟩
+  refine ⟨fun i => measurable_pi_apply i,
+    iIndepFun_infinitePi (X := fun (_ : ℕ) (u : ℝ × Bool × Bool) => u)
+      (fun _ => measurable_id), ?_⟩
+  intro i
+  exact ⟨(measurable_pi_apply i).aemeasurable,
+    (measurable_pi_apply 0).aemeasurable, (hmap i).trans (hmap 0).symm⟩
+
+#print axioms matching_probability
+#print axioms matching_iid_data

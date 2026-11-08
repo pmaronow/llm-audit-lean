@@ -24,5 +24,7 @@ theorem total_probability_complete_correction
     (0 ≤ prob μ (∅ : Set Ω) ∧ ¬ 0 < prob μ (∅ : Set Ω)) :=
   TotalProbabilityCountable.assemble TotalProbabilityCountable.n1_proof μ A hA hne hdis hcover B hB
 
+example : TotalProbabilityCountable.Target := total_probability_complete_correction
+
 end
 end AronowAudit.P001.Wave1

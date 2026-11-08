@@ -1,12 +1,20 @@
 import AronowAudit.P031.Wave1.FootnoteThreeProbabilityBlueprint
 
 /-!
-# P031-T11: the complete corrected footnote 3
+# Blueprint: P031-T11 (limits declaration), the complete corrected footnote 3
 
-The complete corrected footnote 3 (p. 369) combines deterministic
-and expectation limits with stochastic limits under an additional sample
-condition, positivity of the leading true variance for the ratio, and exact
-first-moment shift invariance for every row and every assignment.
+Record P031-T11 / `AronowAudit.P031.corrected_footnote_three_limits` (resolution
+`bridge`, with new Lean). The existing proved declaration supplies only the four
+deterministic and expectation limits. The complete corrected footnote (p. 369, E003)
+adds the stochastic clauses, under exactly their extra sample condition (and `D > 0` for
+the ratio only), and exact first-moment shift invariance for every row and every
+assignment. This bridge assembles
+
+* the proved `AronowAudit.P031.corrected_footnote_three_limits`,
+* the probability record's target (`FootnoteThreeProbability.Target`, Node 1 here), and
+* the proved `AronowAudit.P031.population_shift_invariance`.
+
+The frozen admitted `corrected_footnote_three_probability` is not used.
 -/
 
 namespace AronowAudit.P031.Wave1.FootnoteThreeComplete
@@ -14,7 +22,7 @@ noncomputable section
 open scoped BigOperators Matrix Topology
 open Filter
 
-/-- Deterministic and stochastic limits, and exact shift invariance, for corrected footnote 3. -/
+/-- Frozen final statement of `AronowAudit.P031.Wave1.footnote_three_complete`. -/
 def Target : Prop :=
   ∀ (P : ℕ → Population), GrowingPopulations P →
     ∀ (p v1 v0 c : ℝ), 0 < p → p < 1 →
@@ -46,10 +54,11 @@ def Target : Prop :=
       ∀ s ∈ (Finset.univ : Finset (Fin (P n).N)).powersetCard (P n).M,
         olsEstimator Q s = olsEstimator (P n) s)
 
-/-- The stochastic clauses of corrected footnote 3. -/
+/-- Node 1: the probability record's frozen target (proved by
+`AronowAudit.P031.Wave1.footnote_three_probability_complete`). -/
 def N1 : Prop := FootnoteThreeProbability.Target
 
-/-- The auxiliary statements imply the target. -/
+/-- The nodes suffice. -/
 theorem assemble (h1 : N1) : Target := by
   intro P hN p v1 v0 c hp hp1 hAlloc hV1 hV0 hCov
   obtain ⟨ht, he, hd, hv⟩ :=

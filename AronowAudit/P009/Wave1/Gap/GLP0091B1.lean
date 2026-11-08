@@ -291,5 +291,7 @@ theorem sparse_coverage_counterexample_proof :
       exact ⟨(sparse_estimators_finite t z).1, (sparse_estimators_finite t z).2,
         sparseCoverage_inflations t z⟩
 
+example : type_of% @AronowAudit.P009.sparse_coverage_counterexample := sparse_coverage_counterexample_proof
+
 end
 end AronowAudit.P009.Wave1

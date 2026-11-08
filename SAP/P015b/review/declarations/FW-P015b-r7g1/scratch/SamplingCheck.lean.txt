@@ -1,0 +1,171 @@
+import SAP.P015b.Challenge
+
+set_option autoImplicit false
+set_option maxHeartbeats 800000
+set_option maxRecDepth 2000
+
+open SAP.P015b MeasureTheory ProbabilityTheory Matrix Filter
+open scoped ENNReal NNReal Topology BigOperators
+
+noncomputable section
+
+namespace AuditSampling
+
+def fair : Measure (Fin 2) :=
+  (1/2 : ℝ≥0) • Measure.dirac 0 + (1/2 : ℝ≥0) • Measure.dirac 1
+
+instance : IsProbabilityMeasure fair := by
+  constructor
+  change (1/2 : ℝ≥0) • ((Measure.dirac (0 : Fin 2)) Set.univ) +
+    (1/2 : ℝ≥0) • ((Measure.dirac (1 : Fin 2)) Set.univ) = 1
+  simp only [measure_univ]
+  rw [← add_smul]
+  norm_num
+
+abbrev Ω := ℕ → Fin 2
+def P : Measure Ω := Measure.infinitePi (fun _ : ℕ => fair)
+instance : IsProbabilityMeasure P := by unfold P; infer_instance
+
+def bit (s : Fin 2) : ℝ := if s = 1 then 1 else 0
+def D (i : ℕ) (s : Ω) : ℝ := bit (s i)
+def X (_i : ℕ) (_s : Ω) : Fin 0 → ℝ := 0
+def Y0 (_i : ℕ) (_s : Ω) : ℝ := 0
+def tau (_i : ℕ) (_s : Ω) : ℝ := 1
+
+lemma mp (i : ℕ) : MeasurePreserving (fun s : Ω => s i) P fair :=
+  measurePreserving_eval_infinitePi (fun _ : ℕ => fair) i
+
+lemma ident (f : Fin 2 → ℝ) (i : ℕ) :
+    IdentDistrib (fun s : Ω => f (s i)) (fun s : Ω => f (s 0)) P P := by
+  have he : IdentDistrib (fun s : Ω => s i) (fun s : Ω => s 0) P P :=
+    ⟨(mp i).measurable.aemeasurable, (mp 0).measurable.aemeasurable,
+      (mp i).map_eq.trans (mp 0).map_eq.symm⟩
+  exact he.comp Measurable.of_discrete
+
+lemma moments (f : Fin 2 → ℝ) :
+    MomentConvergence P (fun i (s : Ω) => f (s i)) := by
+  have hi : ∀ i, Integrable (fun s : Ω => f (s i)) P :=
+    fun i => (mp i).integrable_comp_of_integrable (Integrable.of_finite)
+  have hd : iIndepFun (fun i (s : Ω) => f (s i)) P :=
+    iIndepFun_infinitePi (fun _ : ℕ => Measurable.of_discrete)
+  refine ⟨hi, ?_⟩
+  have ha := strong_law_ae_real (fun i (s : Ω) => f (s i)) (hi 0)
+    (fun i j hij => hd.indepFun hij) (ident f)
+  apply tendstoInMeasure_of_tendsto_ae
+  · intro n
+    exact (by fun_prop : Measurable
+      (fun s : Ω => (∑ i : Fin n, f (s i)) / (n : ℝ))).aestronglyMeasurable
+  · convert ha using 1
+    congr 2
+    funext s
+    congr 1
+    funext n
+    change (∑ i : Fin n, f (s i)) / (n : ℝ) =
+      (∑ i ∈ Finset.range n, f (s i)) / (n : ℝ)
+    rw [Fin.sum_univ_eq_sum_range (fun i => f (s i))]
+
+lemma conditionalMean :
+    P[D 0 | MeasurableSpace.comap (X 0) inferInstance] =ᵐ[P]
+      (fun _ => (1/2 : ℝ)) := by
+  have hm : MeasurableSpace.comap (X 0) inferInstance = ⊥ :=
+    MeasurableSpace.comap_const _
+  rw [hm, condExp_bot]
+  have hi : (∫ s, D 0 s ∂P) = 1/2 := by
+    change (∫ s, bit (s 0) ∂P) = 1/2
+    rw [← integral_map (mp 0).measurable.aemeasurable
+      (Measurable.of_discrete : Measurable bit).aestronglyMeasurable,
+      (mp 0).map_eq]
+    rw [fair, integral_add_measure]
+    · norm_num [bit, NNReal.smul_def]
+    · exact Integrable.of_finite
+    · exact Integrable.of_finite
+  rw [hi]
+
+lemma weight : squaredPopulationResidual P (D 0) (X 0) =ᵐ[P]
+    (fun _ => (1/4 : ℝ)) := by
+  filter_upwards [conditionalMean] with s hs
+  simp only [squaredPopulationResidual, hs, D]
+  unfold bit
+  split_ifs <;> norm_num
+
+lemma regular : RegressionRegularity P D Y0 tau X := by
+  have hD : MomentConvergence P D := moments bit
+  have h1 := moments (fun _ => (1 : ℝ))
+  have h0 := moments (fun _ => (0 : ℝ))
+  have hsq : (fun i s => D i s ^ 2) = D := by
+    funext i s
+    simp only [D, bit]
+    split_ifs <;> norm_num
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro j k
+    fin_cases j; fin_cases k
+    simpa [controlVector, X] using h1
+  · intro j
+    fin_cases j
+    simpa [controlVector, X] using hD
+  · simpa only [hsq] using hD
+  · simpa [Y0] using h0
+  · intro j
+    simpa [Y0] using h0
+  · simpa only [tau, mul_one, hsq] using hD
+  · intro j
+    fin_cases j
+    simpa [controlVector, X, tau] using hD
+  · intro j k
+    fin_cases j; fin_cases k
+    simpa [controlVector, X, tau] using h1
+  · have hg : (fun j k : Fin 1 => ∫ s,
+          controlVector (X 0 s) j * controlVector (X 0 s) k ∂P) =
+        (1 : Matrix (Fin 1) (Fin 1) ℝ) := by
+      ext j k
+      fin_cases j; fin_cases k
+      norm_num [controlVector, X]
+    rw [hg]
+    norm_num [Matrix.det_one]
+  · exact (integrable_const (1/4 : ℝ)).congr weight.symm
+  · rw [integral_congr_ae weight]
+    norm_num
+
+lemma unconfounded : ConditionalIndependentW3 P (X 0)
+    (fun s => (Y0 0 s, tau 0 s)) (D 0) := by
+  intro C J hC hJ
+  have hm : MeasurableSpace.comap (X 0) inferInstance = ⊥ :=
+    MeasurableSpace.comap_const _
+  rw [hm]
+  by_cases hc : ((0, 1) : ℝ × ℝ) ∈ C
+  · have hy : (fun s : Ω => (Y0 0 s, tau 0 s)) ⁻¹' C = Set.univ := by
+      ext s; simp [Y0, tau, hc]
+    simp [hy, condExp_const bot_le]
+  · have hy : (fun s : Ω => (Y0 0 s, tau 0 s)) ⁻¹' C = ∅ := by
+      ext s; simp [Y0, tau, hc]
+    simp [hy, condExp_const bot_le]
+
+-- One instance satisfying every premise of WithinGroupExpression7W3.
+example :
+    (∀ i, Measurable (D i)) ∧ (∀ i, Measurable (Y0 i)) ∧
+    (∀ i, Measurable (tau i)) ∧ (∀ i, Measurable (X i)) ∧
+    iIndepFun (fun i s => (D i s, Y0 i s, tau i s, X i s)) P ∧
+    (∀ i, IdentDistrib (fun s => (D i s, Y0 i s, tau i s, X i s))
+      (fun s => (D 0 s, Y0 0 s, tau 0 s, X 0 s)) P P) ∧
+    ConditionalIndependentW3 P (X 0) (fun s => (Y0 0 s, tau 0 s)) (D 0) ∧
+    (P[D 0 | MeasurableSpace.comap (X 0) inferInstance] =ᵐ[P]
+      fun s => dotProduct (controlVector (X 0 s)) (fun _ => (1/2 : ℝ))) ∧
+    RegressionRegularity P D Y0 tau X := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, unconfounded, ?_, regular⟩
+  · intro i
+    exact (Measurable.of_discrete : Measurable bit).comp (mp i).measurable
+  · intro i; exact measurable_const
+  · intro i; exact measurable_const
+  · intro i; exact measurable_const
+  · exact iIndepFun_infinitePi (X := fun _ (z : Fin 2) =>
+      (bit z, (0 : ℝ), (1 : ℝ), (0 : Fin 0 → ℝ)))
+      (fun _ => Measurable.of_discrete)
+  · intro i
+    have he : IdentDistrib (fun s : Ω => s i) (fun s : Ω => s 0) P P :=
+      ⟨(mp i).measurable.aemeasurable, (mp 0).measurable.aemeasurable,
+        (mp i).map_eq.trans (mp 0).map_eq.symm⟩
+    exact he.comp (u := fun z : Fin 2 =>
+      (bit z, (0 : ℝ), (1 : ℝ), (0 : Fin 0 → ℝ))) Measurable.of_discrete
+  · simpa [dotProduct, controlVector, X, Fin.sum_univ_succ] using conditionalMean
+
+end AuditSampling

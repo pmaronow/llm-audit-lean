@@ -8,12 +8,12 @@ P002-T5: uniform coverage for the unadjusted Anderson--Rubin randomization inter
 
 The finite-population CLT is applied to the fixed mixture of adjusted potential
 responses. Finite second moments control observed studentization. A normalized
-fourth-moment tail estimate controls the fixed response's first two moments,
+fourth-moment tail estimate controls the frozen response's first two moments,
 and then the same CLT controls its reassignment cutoff. Sequential uniformization
 passes from increasing arrays to the nested class infimum. Zero-variance rows
 have coverage one and are retained throughout.
 
-The normalization and fixed-response calculations adapt the helpers in
+The normalization and frozen-response calculations adapt the proved helpers in
 `DecisionLemma12.lean`; the contrast variance bound is reused from `GLP0021B1.lean`.
 -/
 
@@ -1148,7 +1148,7 @@ private lemma CT1_uniform_coverage (δ r A α : ℝ)
     rw [CT1_zero_coverage P δ r A α hP hz]
     linarith [hα.1]
 
-/-- Uniform marginal coverage with both beta and model infima. -/
+/-- Uniform marginal coverage, retaining all the hypotheses and both infima of the held target. -/
 theorem corrected_theorem1_proof (δ r A α : ℝ) (hδ : δ < 1)
     (hr : 0 < r ∧ r ≤ 1/2) (hA : 0 < A) (hα : 0 < α ∧ α < 1) :
     ENNReal.ofReal (1-α) ≤ Filter.liminf (fun n => infCoverageTheta n δ r A α)
@@ -1171,6 +1171,8 @@ theorem corrected_theorem1_proof (δ r A α : ℝ) (hδ : δ < 1)
     apply ENNReal.ofReal_le_ofReal
     simpa only [P.property.2] using hn P.val P.property.1
   exact ((ENNReal.lt_ofReal_iff_toReal_lt hyn).mpr hyx).trans_le hbound
+
+example : type_of% @AronowAudit.P002.corrected_theorem1 := corrected_theorem1_proof
 
 end
 end AronowAudit.P002.Wave1

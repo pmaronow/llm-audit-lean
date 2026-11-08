@@ -1,0 +1,32 @@
+[
+  {
+    "target_id": "P047-T1",
+    "theorem": "SAP.P047.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lean-checked in scratch/Nonvacuity.lean, importing only SAP.P047.Defs: Referee.law has W uniform on (0,1], A an independent fair Boolean, Y(0)=0, Y(1)=1, and e=1/2. Referee.bounded proves BoundedOverlap law 1 (1/2); Referee.treated proves TreatedMeanModel law (1/2). Thus both universally quantified model components have instances, for n=1 and alpha=1/4 in particular. More generally, zero potential outcomes and fair independent treatment give a model for every B>0 and 0<epsilon<=1/2. The positive-size and positive-overlap hypotheses prevent relevant zero division, and the required outcomes and scores are integrable.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P047-T2",
+    "theorem": "SAP.P047.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lean-checked Referee.law and Referee.bounded in scratch/Nonvacuity.lean witness B=1 and epsilon=1/2 with a continuous covariate. In this population the score equals 2 for treatment and 0 for control, each with probability 1/2, so ate=1 and variance=1; the normal limit is nondegenerate. Taking both potential outcomes to be zero also supplies the permitted variance-zero case, and witnesses nonempty models for every allowed B and epsilon. All probabilities in knownRootRisk are in [0,1], so its nonempty inserted-zero supremum is bounded and the uniform-tightness limit has its ordinary meaning.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P047-T3",
+    "theorem": "SAP.P047.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Referee.unknown in scratch/Nonvacuity.lean proves UnknownModel Referee.law, with independent uniform W and fair A, deterministic Y(0)=0 and Y(1)=1, and e=1/2. The named baselineLaw is also mathematically a member when equipped with constant propensity 1/2: its defining product construction makes W, A and the fair binary Y(1) independent, with Y(0)=0. This membership fact is checked as mathematics here, rather than claimed to be a conclusion of T3. The honesty premise is satisfiable: take seed type Unit, Q=dirac (), and constant interval [-1,1]; every law in UnknownModel has integrable Y(1)-Y(0) in [-1,1], so coverage is one for every n. For example alpha=1/4 is allowed. Risk, strict risk, coverage and width probabilities are all bounded in [0,1].",
+    "confidence": 0.98
+  }
+]

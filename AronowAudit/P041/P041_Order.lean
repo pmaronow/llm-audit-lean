@@ -8,9 +8,9 @@ namespace AronowAudit.P041
 open scoped BigOperators
 
 /-- "Uniformly distributed over ... sequences with m C's and m U's",
-P041-T5, P041-N011. A finite set records the cited ranks; ranks use zero-based
-Fin(2m). This is the type-sequence law induced by a uniform permutation,
-conditional on any balanced assignment. -/
+P041-T5, validator N011 "A complete exact counterexample". A finite set
+records the cited ranks; ranks use zero-based Fin(2m). This is the type-sequence
+law induced by a uniform permutation, conditional on any balanced assignment. -/
 def balancedSequences (m : ℕ) : Finset (Finset (Fin (2*m))) :=
   Finset.univ.powersetCard m
 
@@ -105,13 +105,16 @@ theorem random_order_block_counterexample :
   norm_num [balancedExpectation, block_two_sequences, citationContrast,
     h1,h2,h3,h4,h5,h6, Finset.sum_insert, Finset.ext_iff, Fin.forall_fin_succ, Fin.sum_univ_succ]
 
-/-- P041-T5(vi) / P041-T6(a), fixed calendar outcomes:
+/-- P041-T5(vi) / P041-T6(a), the validator's fixed calendar boundary check:
 rank outcomes (0,0,1,1), independent of every treatment, give expectation zero. -/
 theorem fixed_calendar_block_unbiased :
     balancedExpectation 2 (fun z => citationContrast 2 z ![0,0,1,1]) = 0 := by
   norm_num [balancedExpectation, block_two_sequences, citationContrast,
     Finset.sum_insert, Finset.ext_iff, Fin.forall_fin_succ, Fin.sum_univ_succ]
 
+/-- The four zero-based ranks of one block, used to enumerate the independent
+citation boundary in P041-T5(vii). -/
+theorem univ_four : (Finset.univ : Finset (Fin 4)) = {0,1,2,3} := by decide
 
 /-- All sixteen fair independent citation assignments for P041-T5(vii). -/
 theorem all_four_sequences :
@@ -134,10 +137,27 @@ theorem independent_citation_boundary : independentCitationExpectation = 0 := by
   norm_num [independentCitationExpectation, scrutinyOutcome, Fin.exists_fin_succ,
     all_four_sequences, Finset.powerset_insert, Finset.sum_insert, Finset.ext_iff, Fin.forall_fin_succ, Fin.sum_univ_succ]
 
+/-- P041-T5(iv)-(v), general m and Study 1 size m=50. This faithfully
+states the counting identity on the actual balanced sample space, its expected
+leading run, and the scrutiny contrasts; it is NOT yet proved. No enumeration
+of choose(100,50) orders is attempted. -/
+theorem balanced_scrutiny_general (m : ℕ) (hm : 1 ≤ m) :
+    (∀ k ≤ m, leadingCitedProbability m k =
+      (((2*m-k-1).choose (m-1) : ℝ) / ((2*m).choose m : ℝ))) ∧
+    balancedExpectation m (fun z => (leadingCited z : ℝ)) = (m:ℝ)/(m+1) ∧
+    (∀ z ∈ balancedSequences m,
+      (∑ r ∈ z, scrutinyOutcome z r) = (m:ℝ) - leadingCited z ∧
+      (∑ r ∈ Finset.univ \ z, scrutinyOutcome z r) = (m:ℝ)-1) ∧
+    balancedExpectation m (fun z => (∑ r ∈ z, scrutinyOutcome z r) / m) =
+      (m:ℝ)/(m+1) ∧
+    balancedExpectation m (fun z => citationContrast m z (scrutinyOutcome z)) =
+      1/((m:ℝ)*(m+1)) ∧
+    0 < balancedExpectation m (fun z => citationContrast m z (scrutinyOutcome z)) := by
+  sorry
 
 /-- Exact 51-cell certificate for the binomial-count formula in P041-T5(v).
-This avoids enumerating choose(100,50) type sequences and certifies the
-compressed formula's arithmetic. -/
+This avoids enumerating choose(100,50) type sequences. It certifies the
+compressed formula, not the still-unproved identification with the actual K law. -/
 def scrutinyCounts50 : Fin 51 → ℕ := ![50445672272782096667406248628,25477612258980856902730428600,12738806129490428451365214300,6303739115624129542943611200,3086205608690980088732809650,1494373242103000885070623620,715391445687606806682745350,338464770002738704236997800,158195490327367003067292450,73013303228015539877211900,33261615914984857055174310,14949040860667351485471600,6625143108704848953788550,2893740668169934025792700,1244981450259157662259650,527286261286231480486440,219702608869263116869350,89998659054878867151300,36218972546475641658450,14308729894903957198400,5544632834275283414380,2105556772509601296600,782835210292031251300,284667349197102273200,101131821425286333900,35059031427432595752,11844267374132633700,3894005712043605600,1243918491347262900,385439532530137800,115631859759041340,33516481089577200,9364899127970100,2515943049305400,648045936942300,159518999862720,37387265592825,8308281242850,1742058970275,342700125300,62828356305,10648873950,1652411475,231917400,28989675,3162510,292825,22100,1275,50,1]
 
 /-- Each compressed cell is exactly choose(99-k,49), P041-T5(v). -/
@@ -157,14 +177,15 @@ theorem scrutiny_counts50_moments :
   norm_num [scrutinyCounts50, Fin.sum_univ_succ, Nat.choose_eq_descFactorial_div_factorial,
     Nat.descFactorial, Nat.factorial]
 
-/-- The compressed K-mass for m=50:
-choose(99-k,49)/choose(100,50), P041-T5(v). -/
+/-- The proposed K-mass in the validator's m=50 calculation,
+choose(99-k,49)/choose(100,50), P041-T5(v). Its equality to the full
+permutation law is deliberately left in balanced_scrutiny_general. -/
 def compressedScrutinyMass50 (k : Fin 51) : ℝ :=
   ((99-k.val).choose 49 : ℝ) / ((100).choose 50 : ℝ)
 
 /-- P041-T5(v), the compressed finite certificate: mass 1, mean K=50/51,
 and weighted accelerated contrast 1/2550. This proves the arithmetic of
-the compressed law. -/
+the proposed law, without silently assuming its unproved counting bridge. -/
 theorem compressed_scrutiny50_certificate :
     (∑ k : Fin 51, compressedScrutinyMass50 k) = 1 ∧
     (∑ k : Fin 51, (k.val:ℝ)*compressedScrutinyMass50 k) = 50/51 ∧
@@ -189,6 +210,23 @@ theorem compressed_scrutiny50_certificate :
   rw [Finset.sum_sub_distrib, ← Finset.sum_div, ← Finset.sum_div, mass, moment]
   norm_num
 
+/-- P041-T5(v): specialization to m=50, on the full balanced sample space.
+This inherits the unproved general counting result and is drafted only. -/
+theorem study_one_size_scrutiny :
+    balancedExpectation 50 (fun z => (leadingCited z : ℝ)) = 50/51 ∧
+    balancedExpectation 50 (fun z => (∑ r ∈ z, scrutinyOutcome z r) / 50) = 50/51 ∧
+    (∀ z ∈ balancedSequences 50,
+      (∑ r ∈ Finset.univ \ z, scrutinyOutcome z r) / 50 = 49/50) ∧
+    balancedExpectation 50 (fun z => citationContrast 50 z (scrutinyOutcome z)) = 1/2550 ∧
+    balancedExpectation 50 (fun z => citationContrast 50 z (scrutinyOutcome z)) ≠ 0 := by
+  obtain ⟨_,hk,hs,hc,hd,hpos⟩ := balanced_scrutiny_general 50 (by omega)
+  refine ⟨?_, ?_, ?_, ?_, ne_of_gt hpos⟩
+  · norm_num at hk ⊢; exact hk
+  · norm_num at hc ⊢; exact hc
+  · intro z hz
+    rw [(hs z hz).2]
+    norm_num
+  · norm_num at hd ⊢; exact hd
 
 /-- P041-T6(a) counting lemma: exactly half the balanced assignments
 cite any specified rank, because choose(2m-1,m-1) is half of choose(2m,m). -/
@@ -229,8 +267,8 @@ theorem contrast_as_rank_sum (m : ℕ) (z : Finset (Fin (2*m)))
 
 /-- P041-T6(a), the corrected sufficient condition. Outcomes depend only
 on rank and own citation status. The expected cited-minus-uncited contrast
-equals the average direct effect over all ranks for every m≥1;
-no calendar restrictions are imposed. -/
+equals the average direct effect over all ranks; no calendar restrictions
+are imposed. This is stated for every m≥1, and is NOT yet proved. -/
 theorem random_order_without_interference (m : ℕ) (hm : 1 ≤ m)
     (g : Fin (2*m) → Bool → ℝ) :
     balancedExpectation m (fun z => citationContrast m z
@@ -289,6 +327,43 @@ theorem slow_expectation_zero (m : ℕ) :
     balancedExpectation m (fun z => citationContrast m z (fun _ => 0)) = 0 := by
   simp [balancedExpectation, slow_schedule_zero]
 
+/-- P041-T6(b)-(c), for all m≥1: every controlled direct effect is zero,
+the planned-protocol expectation is zero and the implemented-protocol
+expectation is 1/(m(m+1))>0. The last part depends on the still-drafted
+general scrutiny counting theorem, so this corollary is drafted as well. -/
+theorem adaptive_protocol_estimands_general (m : ℕ) (hm : 1 ≤ m) :
+    (∀ z z' : Finset (Fin (2*m)), ∀ r : Fin (2*m),
+      (∀ s, s ≠ r → (s ∈ z ↔ s ∈ z')) → scrutinyOutcome z r - scrutinyOutcome z' r = 0) ∧
+    balancedExpectation m (fun z => citationContrast m z (fun _ => 0)) = 0 ∧
+    balancedExpectation m (fun z => citationContrast m z (scrutinyOutcome z)) = 1/((m:ℝ)*(m+1)) ∧
+    0 < balancedExpectation m (fun z => citationContrast m z (scrutinyOutcome z)) := by
+  obtain ⟨_,_,_,_,he,hp⟩ := balanced_scrutiny_general m hm
+  refine ⟨?_,slow_expectation_zero m,he,hp⟩
+  intro z z' r h
+  rw [scrutiny_no_direct_effect z z' r (fun s hs => h s (ne_of_lt hs))]
+  ring
 
 end AronowAudit.P041
 
+#print axioms AronowAudit.P041.balanced_sequence_card
+#print axioms AronowAudit.P041.scrutiny_no_direct_effect
+#print axioms AronowAudit.P041.slow_schedule_zero
+#print axioms AronowAudit.P041.block_two_sequences
+#print axioms AronowAudit.P041.block_two_outcomes
+#print axioms AronowAudit.P041.random_order_block_counterexample
+#print axioms AronowAudit.P041.fixed_calendar_block_unbiased
+#print axioms AronowAudit.P041.univ_four
+#print axioms AronowAudit.P041.all_four_sequences
+#print axioms AronowAudit.P041.independent_citation_boundary
+#print axioms AronowAudit.P041.balanced_scrutiny_general
+#print axioms AronowAudit.P041.scrutiny_counts50_exact
+#print axioms AronowAudit.P041.scrutiny_counts50_moments
+#print axioms AronowAudit.P041.compressed_scrutiny50_certificate
+#print axioms AronowAudit.P041.study_one_size_scrutiny
+#print axioms AronowAudit.P041.balanced_rank_half
+#print axioms AronowAudit.P041.contrast_as_rank_sum
+#print axioms AronowAudit.P041.random_order_without_interference
+#print axioms AronowAudit.P041.block_without_interference
+#print axioms AronowAudit.P041.adaptive_protocol_estimands_differ
+#print axioms AronowAudit.P041.slow_expectation_zero
+#print axioms AronowAudit.P041.adaptive_protocol_estimands_general

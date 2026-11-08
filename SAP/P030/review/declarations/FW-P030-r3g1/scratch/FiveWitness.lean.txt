@@ -1,0 +1,115 @@
+import SAP.P030.Challenge
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxRecDepth 2000
+
+open SAP.P030
+open scoped BigOperators
+
+namespace ReviewFiveWitness
+noncomputable section
+
+lemma treated (a : Fin 2) :
+    Finset.univ.filter (fun j => fiveS j = false ∧ fiveAssignment a j = true) =
+      {⟨a.val + 3, by omega⟩} := by
+  classical
+  ext i
+  fin_cases a <;> fin_cases i <;> norm_num [fiveS, fiveAssignment]
+
+lemma distances (a : Fin 2) :
+    fiveDistances a = if a = 0 then ![1,5,9] else ![2,6,10] := by
+  classical
+  funext i
+  simp only [fiveDistances, nearestDistance, treated]
+  fin_cases a <;> fin_cases i <;> norm_num [fiveX, fiveFixed]
+
+lemma outcomes : fiveOutcomes = ![0,1,2] := by
+  funext i
+  fin_cases i <;> norm_num [fiveOutcomes, fiveY, fiveFixed]
+
+lemma correlations (a : Fin 2) : fiveStatistic a = 1 := by
+  classical
+  unfold fiveStatistic
+  rw [distances, outcomes]
+  fin_cases a <;>
+    norm_num [spearman, rankCross, rankSquares, centeredRanks, averageRank,
+      Fin.sum_univ_succ, Fin.card_filter_univ_succ]
+
+def fiveG (y : {i // fiveS i = true} → ℝ) (z : Assignment 5) : ℝ :=
+  spearman (fun i : Fin 3 => nearestDistance fiveX fiveS z (fiveFixed i))
+    (fun i : Fin 3 => y ⟨fiveFixed i, by
+      fin_cases i <;> norm_num [fiveS, fiveFixed]⟩)
+
+lemma actual (a : Fin 2) :
+    statistic fiveS fiveY fiveG (fiveAssignment a) = 1 := by
+  change fiveStatistic a = 1
+  exact correlations a
+
+lemma reference (obs : Assignment 5) (a : Fin 2) :
+    referenceStatistic fiveS fiveY fiveG obs (fiveAssignment a) = 1 := by
+  change fiveStatistic a = 1
+  exact correlations a
+
+lemma conditional : conditionalAssignments fiveΩ fiveS (fiveAssignment 0) = fiveΩ := by
+  classical
+  apply Finset.filter_eq_self.mpr
+  intro z hz i hi
+  rcases Finset.mem_image.mp hz with ⟨a, ha, rfl⟩
+  fin_cases a <;> fin_cases i <;> simp_all [fiveS, fiveAssignment]
+
+lemma support_nonempty : fiveΩ.Nonempty :=
+  ⟨fiveAssignment 0, Finset.mem_image.mpr ⟨0, Finset.mem_univ _, rfl⟩⟩
+
+lemma uniform_all {A : Type*} (Ω : Finset A) (hΩ : Ω.Nonempty)
+    (P : A → Prop) (hP : ∀ z ∈ Ω, P z) : uniformProbability Ω P = 1 := by
+  classical
+  unfold uniformProbability
+  rw [Finset.filter_eq_self.mpr hP]
+  exact div_self (by exact_mod_cast Finset.card_ne_zero.mpr hΩ)
+
+lemma lower_one (z : Assignment 5) (hz : z ∈ fiveΩ) :
+    uniformProbability fiveΩ (fun w =>
+      referenceStatistic fiveS fiveY fiveG z w ≤ statistic fiveS fiveY fiveG z) = 1 := by
+  classical
+  rcases Finset.mem_image.mp hz with ⟨a, ha, rfl⟩
+  apply uniform_all _ support_nonempty
+  intro w hw
+  rcases Finset.mem_image.mp hw with ⟨b, hb, rfl⟩
+  rw [actual, reference]
+
+lemma printed_size (α : ℝ) (hα : 0 < α) :
+    uniformProbability fiveΩ (fun z => printedReject α
+      (uniformProbability fiveΩ (fun w =>
+        referenceStatistic fiveS fiveY fiveG z w ≤ statistic fiveS fiveY fiveG z))) = 1 := by
+  apply uniform_all _ support_nonempty
+  intro z hz
+  rw [lower_one z hz]
+  right
+  linarith
+
+-- An independent refutation using the genuine five-unit distance/rank statistic.
+theorem genuine_refutation : ¬ PrintedTwoTailedExactness := by
+  intro h
+  have hE : (conditionalAssignments fiveΩ fiveS (fiveAssignment 0)).Nonempty := by
+    rw [conditional]
+    exact support_nonempty
+  have hN : NoInterference fiveΩ fiveY := by
+    intro i z hz z' hz' heq
+    rfl
+  have hb := h 5 fiveΩ fiveS (fiveAssignment 0) hE fiveY fiveG hN (1/20)
+    (by norm_num) (by norm_num)
+  rw [conditional, printed_size (1/20) (by norm_num)] at hb
+  norm_num at hb
+
+example (a : Fin 2) : rankSquares (fiveDistances a) = 2 := by
+  classical
+  rw [distances]
+  fin_cases a <;>
+    norm_num [rankSquares, centeredRanks, averageRank,
+      Fin.sum_univ_succ, Fin.card_filter_univ_succ]
+
+#print axioms genuine_refutation
+
+end
+end ReviewFiveWitness

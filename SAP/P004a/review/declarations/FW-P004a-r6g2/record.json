@@ -1,0 +1,151 @@
+[
+ {
+  "target_id": "P004-T6",
+  "decision": "restricted",
+  "theorem": "SAP.P004a.T6",
+  "restriction": "Retain the actual integral union identity, marginal means, node effects, node-average area effect, range bounds, equal-mass mean formula, and positive-scale comparison and exact p-value invariance. Omit the two negative assertions in (b): an unweighted sum outside the bin-effect range, and non-identifiability from bin AMEs when node masses differ. Do not assert the application numbers, reported Monte Carlo p-value or substantive beneficial-effects conclusion.",
+  "rows_used": [
+   "AronowAudit.P004.area_partition_identity",
+   "AronowAudit.P004.bin_effect_aggregation",
+   "AronowAudit.P004.marginal_bin_average",
+   "AronowAudit.P004.randomization_scaling",
+   "AronowAudit.P004.weighted_effect_bounds"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P004-T7",
+  "decision": "restricted",
+  "theorem": "SAP.P004a.T7",
+  "restriction": "Retain the full finite twenty-node adjusted-order reversal and spatial, homophily, nondegeneracy, cutoff-kernel and exact linearized-variance guards for the repeated-star witness. Replace the exact limiting coverage equality by an eventual upper bound with the same explicit value, strictly below 19/20, counting only realizations with positive treatment and control counts, positive adjustment trace and positive trace-square parameter. Omit the separate W1 spectral eigenvalue/trace/diagonal certificates, W2 block moments, W3 raw-variance, trace, variance-ratio and degrees-of-freedom limits, and the fitted-estimator Gaussian law. The guarded upper bound is not a conditional-on-validity coverage probability.",
+  "rows_used": [
+   "AronowAudit.P004.Wave1.adjusted_pd_asymptotic_counterexample_proof",
+   "AronowAudit.P004.adjusted_pd_constants",
+   "AronowAudit.P004.adjusted_pd_finite_counterexample"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P004-T8",
+  "decision": "whole",
+  "theorem": "SAP.P004a.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.Wave1.capped_pd_coverage_proof",
+   "AronowAudit.P004.capped_pd_interval",
+   "SAP.P004a.WH.W2.T8_whole",
+   "SAP.P004a.WH.W2.T8_assembly",
+   "SAP.P004a.WH.W2.T8_L1_proof",
+   "SAP.P004a.WH.W2.T8_L2_proof",
+   "SAP.P004a.WH.W2.T8_L3_proof",
+   "SAP.P004a.WH.W2.T8_L4_proof",
+   "SAP.P004a.WH.W2.T8_L5_proof",
+   "SAP.P004a.WH.W2.T8_L6_proof",
+   "SAP.P004a.WH.W2.T8_L7_proof",
+   "AronowAudit.P004.CLTCompletion.nodeSeparation_symm",
+   "AronowAudit.P004.MatrixCompletion.sandwich_treatment",
+   "AronowAudit.P004.Wave1.DesignLimits.NF._proof_1",
+   "AronowAudit.P004.Wave1.DesignLimits.nf_proof",
+   "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_normalCDF_neg",
+   "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_difference",
+   "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_mono",
+   "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_nonneg",
+   "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_two_upper",
+   "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_quantile",
+   "AronowAudit.P004.Wave1.adjusted_pd_asymptotic_counterexample_proof",
+   "AronowAudit.P004.Wave1.t7_Converges._proof_1",
+   "AronowAudit.P004.Wave1.t7_block_kernel_symmetric",
+   "AronowAudit.P004.Wave1.t7_coverage_limit",
+   "AronowAudit.P004.Wave1.t7_fixed_marginal",
+   "AronowAudit.P004.Wave1.t7_good_counts",
+   "AronowAudit.P004.Wave1.t7_good_probability",
+   "AronowAudit.P004.Wave1.t7_mu_limit",
+   "AronowAudit.P004.Wave1.t7_nu_pos",
+   "AronowAudit.P004.Wave1.t7_oracle._proof_1",
+   "AronowAudit.P004.Wave1.t7_star_circleAverage",
+   "AronowAudit.P004.Wave1.t7_star_kernel",
+   "AronowAudit.P004.Wave1.t7_star_local",
+   "AronowAudit.P004.Wave1.t7_star_wellDefined",
+   "AronowAudit.P004.Wave1.t7_student_prefactor_pos",
+   "AronowAudit.P004.adjustmentNu._proof_1",
+   "AronowAudit.P004.studentDensity.eq_1",
+   "AronowAudit.P053.NormalCompletion.cdf_continuousAt"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P004.capped_variance_ge",
+    "reason": "The scalar cap inequality is incorporated in capped_pd_interval."
+   }
+  ],
+  "statement_definition": "SAP.P004a.T8WholeStatement",
+  "statement_universe_parameters": [
+   "u"
+  ]
+ },
+ {
+  "target_id": "P004-T9",
+  "decision": "whole",
+  "theorem": "SAP.P004a.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.Wave1.boundary_mle_counterexample_proof",
+   "SAP.P004a.WH.W2.T9_whole",
+   "SAP.P004a.WH.W2.T9_assembly",
+   "SAP.P004a.WH.W2.T9_L1_proof",
+   "SAP.P004a.WH.W2.T9_L2_proof",
+   "SAP.P004a.WH.W2.T9_L3_proof",
+   "SAP.P004a.WH.W2.T9_L4_proof",
+   "AronowAudit.P004.CLTCompletion.designMeasure.congr_simp",
+   "AronowAudit.P004.CLTCompletion.designMeasure_apply",
+   "AronowAudit.P004.CLTCompletion.designMeasure_integral",
+   "AronowAudit.P004.CLTCompletion.designMeasure_probability",
+   "AronowAudit.P004.CLTCompletion.finiteGraph_to_measureGraph",
+   "AronowAudit.P004.Wave1.GP0042B2b_capped_pd_prob_mono",
+   "AronowAudit.P004.Wave1.ObservationalCoverage.own_expect",
+   "AronowAudit.P004.Wave1.ObservationalCoverage.own_finiteDependencyGraph",
+   "AronowAudit.P004.Wave1.corrected_mle_proof",
+   "AronowAudit.P004.Wave1.t9b6_choice._proof_1",
+   "AronowAudit.P004.Wave1.t9b6_choice_bounds",
+   "AronowAudit.P004.Wave1.t9b6_choice_max",
+   "AronowAudit.P004.Wave1.t9b6_conditions",
+   "AronowAudit.P004.Wave1.t9b6_count_eq",
+   "AronowAudit.P004.Wave1.t9b6_likelihood_deriv",
+   "AronowAudit.P004.Wave1.t9b6_likelihood_sum",
+   "AronowAudit.P004.Wave1.t9b6_logistic_logit",
+   "AronowAudit.P004.Wave1.t9b6_logistic_lt_one",
+   "AronowAudit.P004.Wave1.t9b6_logit_bounds",
+   "AronowAudit.P004.Wave1.t9b6_moments",
+   "AronowAudit.P004.Wave1.t9b6_not_littleOp",
+   "AronowAudit.P004.Wave1.t9b6_prob_flip",
+   "AronowAudit.P004.Wave1.t9b6_signsum_count",
+   "AronowAudit.P004.Wave1.t9b6_signsum_flip",
+   "AronowAudit.P004.Wave1.t9b6_tail_inclusion",
+   "AronowAudit.P004.corrected_dependency_clt",
+   "AronowAudit.P004.design_weight_nonneg",
+   "AronowAudit.P004.expect_add",
+   "AronowAudit.P004.expect_const",
+   "AronowAudit.P004.expect_mono"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P004a.T9WholeStatement",
+  "declaration_review_round1": {
+   "reviewer": "r3g2",
+   "status": "addressed",
+   "change_kind": "docstring_only",
+   "finding": "The existing finite tail lower bounds are not claimed or proved optimal.",
+   "resolution": "Both docstrings now say exact moments and explicit finite tail lower bounds.",
+   "theorem_statement_changed": false,
+   "definition_expressions_changed": false
+  }
+ },
+ {
+  "target_id": "P004-T10",
+  "decision": "whole",
+  "theorem": "SAP.P004a.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P004.Wave1.corrected_mle_proof"
+  ],
+  "rows_not_used": []
+ }
+]

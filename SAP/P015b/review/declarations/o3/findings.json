@@ -1,0 +1,24 @@
+[
+ {
+  "target_id": "P015-T18",
+  "theorem": "SAP.P015b.T18",
+  "fingerprint": "37f5d93851b9d61adf73d5d9d84c6a669ad8a2b38708d2951fefcee24254c231",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": "",
+  "nonvacuity": "T18Statement has no outer hypotheses. SquareLinkFailure (Defs/Part6.lean:67) is a closed existential/concrete statement. The inner hypotheses of LogisticMLStationarity (Defs/Part6.lean:101) are jointly satisfiable, as compiled in scratch/Nonvac.lean (first example): N=2, K=0, W=!![1,0;1,0], Y=![0,1] (binary), θ=0 is a global maximizer of the logit log-likelihood (log s + log(1-s) ≤ 2 log(1/2) because s(1-s) ≤ 1/4). The witness was also checked numerically: the population square-link ML derivative of θ₁ is 1.008403 ≈ 120/119 at a=1/16 and 1.000000 at a=0; the population OLS coefficient is ε and E[Y]=1/4 for both.",
+  "confidence": "high"
+ },
+ {
+  "target_id": "P015-T17",
+  "theorem": "SAP.P015b.T17",
+  "fingerprint": "93c6191a693f85d91da01ffa1365aea70b303273c866b6c8bb016e2f2224944d",
+  "verdict": "faithful",
+  "severity": "none",
+  "issues": [],
+  "fix": "",
+  "nonvacuity": "Compiled in scratch/Nonvac.lean (second example): DiscretePositivityImplications (Defs/Part7.lean:84) has jointly satisfiable hypotheses. Take Ω=Fin 2, P=(1/2)(δ0+δ1) (an IsProbabilityMeasure instance is proved), B=Unit, X constant, D=cast; X and D are measurable, D ∈ L², P{X=()}=1>0, d=0≠d'=1, and profileProbability P X D () 0 = profileProbability P X D () 1 = 1/2 (proved exactly). The SmallWeightFamily hypothesis 0<ε<1/2 is satisfiable (ε=1/4). SmallWeightConsistency, FittedZeroFailure and MissingPairFailure are closed concrete statements. They were checked by hand against the printed reading: positivity holds in the populations; Q(X=0) = ε(1−ε)/(ε(1−ε)+1/4); the sample draw (0,0,2,3) has probability 1/256; the effective law has Q(X=1) = 4/5 and Q(D=1|X=1) = 0 because {X=1, D=1} = ∅, not because of a toReal-∞ junk value.",
+  "confidence": "high"
+ }
+]

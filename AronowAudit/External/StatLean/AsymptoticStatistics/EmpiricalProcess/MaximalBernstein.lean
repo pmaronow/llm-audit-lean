@@ -1,8 +1,3 @@
-/-
-Documentation corrected for llm-audit-lean.
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.EmpiricalProcess.EmpiricalProcess
 import Mathlib.Probability.Moments.Basic
 import Mathlib.Probability.IdentDistrib
@@ -31,7 +26,7 @@ The right-tail (one-sided) version replaces the leading factor $2$ by $1$:
 $P(\mathbb{G}_n f > x) \le \exp\bigl(-x^2 / (4(\sigma^2 + xM/\sqrt n))\bigr)$.
 
 *Deviations from the book.* van der Vaart states the denominator with the
-second moment $Pf^2$ of the (centred) summand; here it is exposed through the
+second moment $Pf^2$ of the (centred) summand; here we expose it through the
 caller-supplied variance proxy $\sigma^2 \ge \int f^2 \, dP$, and the centring by
 $Pf$ is performed internally rather than assumed. The provable constant is
 $1/4$ in the exponent (matching the book), together with the factor $2$ from the
@@ -57,14 +52,14 @@ the following named steps:
   $\mathbb{E}[e^{tY}] \le \exp\bigl(\sigma^2 t^2 / (2(1 - 2Mt))\bigr)$, obtained by
   summing the geometric tail of the MGF series and upgrading via $1 + u \le e^u$.
 * `bernstein_one_sided` — the right-tail bound, assembled via Markov on the MGF,
-  i.i.d. factorisation (`iIndepFun.mgf_sum`), the per-sample bound, the
-  choice $\lambda = (x/2)/(\sigma^2 + xM/\sqrt n)$, and the exponential
-  power identity $(e^a)^n = e^{na}$.
+  i.i.d. factorisation (`iIndepFun.mgf_sum`), the per-sample bound, the optimal
+  choice $\lambda = (x/2)/(\sigma^2 + xM/\sqrt n)$, and $(1 + a/n)^n \le e^a$.
   Includes the degenerate edge cases $M = 0$ (then $f \equiv 0$) and $\sigma = 0$
   (then $f = 0$ a.e. $P$, so $\mathbb{G}_n f = 0$ a.e.).
 * `bernstein_two_sided` — combines `bernstein_one_sided` applied to $f$ and to
   $-f$ (using `empiricalProcess_neg`: $\mathbb{G}_n(-f) = -\mathbb{G}_n f$) through
-  a union bound. Exposed publicly as `bernstein_inequality_aux`.
+  a union bound. Exposed publicly as `bernstein_inequality_aux`, which is the body
+  of `bernstein_inequality` (stated in `Maximal.lean` for import-DAG reasons).
 
 **Bibliographic comments.** The scalar exponential inequality underlying this
 result originates with S. N. Bernstein, *On a modification of Chebyshev's
@@ -516,16 +511,15 @@ Proof outline (vdV §19.6):
 * iid factorisation via `iIndepFun.mgf_sum`:
   `μ[exp(λ G_n f)] = (μ[exp((λ/√n) Y_1)])^n`.
 * Power-series expansion (`mgf_bounded_taylor`):
-  `μ[exp((λ/√n) Y_1)] = 1 + Σ_{k≥2} (λ/√n)^k/k! · P(f-Pf)^k`
+  `μ[exp((λ/√n) Y_1)] = 1 + (1/n) · Σ_{k≥2} (λ/√n)^k/k! · P(f-Pf)^k`
   (the k=1 term vanishes since `P(f-Pf) = 0`).
 * Centered-moment bound (`centered_moment_bound_pow`): for `k ≥ 2`,
   `|P(f-Pf)^k| ≤ σ² · (2M)^{k-2}`.
-* Choose `D = σ² + x M / √n` and `λ = x / (2D)`. The per-sample MGF
-  bound at `t = λ/√n`, raised to the `n`th power, gives
-  `μ[exp(λ G_n f)] ≤ exp(x²/(8D))` via `(exp a)^n = exp(n a)`.
-* Combine: the Chernoff exponent is `-λx + x²/(8D) = -3x²/(8D)`,
-  which is at most `-x²/(4D)`. The cases `M = 0` and `σ = 0` are handled
-  separately before this positive-variance calculation. -/
+* Optimal-λ choice: `λ = (x/2) / (σ² + x M / √n)`. Telescoping the geometric
+  series and using `(1 + a/n)^n ≤ exp(a)` gives
+  `μ[exp(λ G_n f)] ≤ exp(λ x / 2)`.
+* Combine: `μ(G_n f > x) ≤ exp(-λ x + λ x / 2) = exp(-λ x / 2) =
+  exp(-x²/(4(σ² + xM/√n)))`. -/
 private lemma bernstein_one_sided
     (P : Measure Ω) [IsProbabilityMeasure P]
     (f : Ω → ℝ) (hf_meas : Measurable f)
@@ -556,7 +550,7 @@ private lemma bernstein_one_sided
         = ∅ := by
       ext ω; simp [hG_zero ω, not_lt.mpr hx.le]
     rw [hset_eq]; simp
-  · -- Main case: M > 0. Split further on σ = 0.
+  · -- Main case: M > 0. We further split on σ = 0.
     have hM_pos : 0 < M := lt_of_le_of_ne hM (Ne.symm hM_zero)
     -- Setup mean.
     set Pf : ℝ := ∫ ω, f ω ∂P with hPf_def
@@ -675,7 +669,7 @@ private lemma bernstein_one_sided
       have hxM_nn : 0 ≤ x * M / Real.sqrt n := by positivity
       have hD_pos : 0 < σ ^ 2 + x * M / Real.sqrt n := by positivity
       have hD_ne : σ ^ 2 + x * M / Real.sqrt n ≠ 0 := ne_of_gt hD_pos
-      -- The chosen λ.
+      -- The optimal λ.
       set lam : ℝ := x / (2 * (σ ^ 2 + x * M / Real.sqrt n)) with hlam_def
       have hlam_pos : 0 < lam := by rw [hlam_def]; positivity
       have hlam_nn : 0 ≤ lam := hlam_pos.le
@@ -885,7 +879,7 @@ private lemma bernstein_one_sided
                 + n * (σ ^ 2 * tparam ^ 2 / (2 * (1 - 2 * M * tparam)))) :=
         h_chernoff.trans h_combined
       -- ============================================================
-      -- Step D: algebra for the chosen λ: the exponent ≤ -x²/(4 D).
+      -- Step D: optimal-λ algebra: the exponent ≤ -x²/(4 D).
       -- ============================================================
       -- Recall: 1 - 2M tparam = σ²/D, tparam = lam/√n, lam = x/(2D).
       -- So:
@@ -965,7 +959,9 @@ private lemma bernstein_one_sided
 /-! ### Step 5: assembly — two-sided Bernstein from one-sided. -/
 
 /-- Bernstein's inequality assembled from `bernstein_one_sided` + `empiricalProcess_neg`.
-The result is exposed as `bernstein_inequality_aux` below. -/
+The analytic proof lives in this lower-level module, which `Maximal.lean` imports;
+the public `bernstein_inequality` wrapper is grouped there with the finite-class and
+bracketing maximal inequalities and delegates to `bernstein_inequality_aux` below. -/
 private lemma bernstein_two_sided
     (P : Measure Ω) [IsProbabilityMeasure P]
     (f : Ω → ℝ) (hf_meas : Measurable f)
@@ -1037,7 +1033,9 @@ private lemma bernstein_two_sided
     _ = ENNReal.ofReal
           (2 * Real.exp (-(x ^ 2) / (4 * (σ ^ 2 + x * M / Real.sqrt n)))) := h_two_exp
 
-/-- Bernstein's two-sided inequality, obtained from `bernstein_two_sided`.
+/-- Public assembly of `bernstein_inequality` body — invoked from
+`Maximal.lean`. Identical statement; routes through the private
+`bernstein_two_sided`.
 
 **Reference.** van der Vaart, *Asymptotic Statistics* (1998), §19.6, Lemma 19.32. -/
 lemma bernstein_inequality_aux

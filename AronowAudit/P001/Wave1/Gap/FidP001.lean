@@ -6,9 +6,9 @@ import AronowAudit.P001.Wave1.GapLaw.N5
 import AronowAudit.P001.Wave1.PdaMeanNotIdentified.N5
 
 /-!
-# P001-T37 and P001-T102: marginal densities and CEF derivatives
+# P001 fidelity repairs
 
-The marginal-density correction covers every finite nonnegative almost-everywhere version.
+The marginal repair covers every finite nonnegative almost-everywhere version.
 The PDA witness retains the joint PDF, the common response and CEF relationship,
 and actual derivatives at the covariate mean.
 -/
@@ -66,8 +66,8 @@ theorem marginal_pdf_ae_correction_all_versions
     · simpa [Set.indicator, hBy] using hy.symm
     · simp [Set.indicator, hBy]
 
-/-- P001-T102: the pair is the identity on the gap-law sample space.
-The density proof uses measurable integrable factors and the density of a product measure. -/
+/-- P001-T102: the exported pair is the identity on the gap-law sample space.
+The reused density proof uses measurable integrable factors and `prod_withDensity`. -/
 lemma fidT102_joint_pdf :
     HasJointPDF
       (gapJointLaw.map (fun ω => (GapLaw.gapX ω 0, Prod.snd ω)))

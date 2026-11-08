@@ -279,7 +279,10 @@ theorem universal_consistency_impossible_proof (a b : ℝ) (ha : 0 < a) (hb : 0 
   · intro T hT hl hs
     exact uci_incompatible_lower_tail a b ha T (uci_consistency_mixes a b T hT hs) hl
 
-/-! T11: parity and deterministic means. -/
+example : type_of% @AronowAudit.P011.universal_consistency_impossible := universal_consistency_impossible_proof
+
+/-! T11: parity and deterministic means. The elementary mean proof patterns below
+are adapted from the internal draft dd-GP011B1; they are checked here independently. -/
 def afm_mu (n : ℕ) (i : Fin n) : ℝ := if i.val % 2 = 0 then 2 else 0
 
 lemma afm_sum_mu (n : ℕ) :
@@ -730,6 +733,8 @@ theorem alternating_finite_moments_proof (k : ℕ) :
   intro i
   refine ⟨afm_diag _ i, ?_⟩
   simp only [delta, afm_mean, afm_beta _ hn, afm_mu]
+
+example : type_of% @AronowAudit.P011.alternating_finite_moments := alternating_finite_moments_proof
 
 end
 end AronowAudit.P011.Wave1

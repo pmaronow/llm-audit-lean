@@ -3,7 +3,7 @@ import AronowAudit.P018.Wave1.Gap.GP0181B1
 /-!
 P018-T3: the fair-sign Appendix B counterexample. All expectations below
 are under the actual finite product law. The sign fit and its scalar
-probability limit are those of P018-T11.
+probability limit are reused from the proved P018-T11 module.
 -/
 
 noncomputable section
@@ -365,5 +365,7 @@ theorem appendixB_counterexample_proof :
   · intro N hN
     exact ⟨appendixB_trueTarget hN, appendixB_meat_mean hN, appendixB_variance_mean hN⟩
   · simpa using appendixB_variance_mean_limit.sub_const 4
+
+example : type_of% @AronowAudit.P018.appendixB_counterexample := appendixB_counterexample_proof
 
 end AronowAudit.P018.Wave1

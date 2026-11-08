@@ -1,0 +1,136 @@
+{
+ "work": "P016a",
+ "control": false,
+ "stamp": "20261104T104233Z",
+ "source_worktree": "/home/ubuntu/sap/wt/ARCH-P016a",
+ "steps": [
+  {
+   "step": "rebuild-from-snapshot",
+   "rc": 0,
+   "out": "rebuilt 11 modules of SAP/P016a; token scan clean\n"
+  },
+  {
+   "step": "export-challenge",
+   "rc": 0,
+   "seconds": 5.6,
+   "bytes": 53110186,
+   "sha256": "44314dbcd734e217529b87050f1348ecf2369bb1c339596f57297ebc0915af71"
+  },
+  {
+   "step": "export-solution",
+   "rc": 0,
+   "seconds": 11.3,
+   "bytes": 175894241,
+   "sha256": "75fdae47e1381ba0587dbd26880d3de3c8245310f402b1b7e1c84f52d5bd2888"
+  },
+  {
+   "step": "comparator",
+   "rc": 0,
+   "seconds": 72.7
+  }
+ ],
+ "snapshot_sha256": {
+  "SAP/P016a/Bridge.lean": "2a1766dbd510d68be4c7233c542a2d648d58ea9b15ff437e01ef4e0e9ddad6e9",
+  "SAP/P016a/Challenge/Part1.lean": "94e9b3af033cc9f1898ba1ba0626a023f5f89f9b1d980e0a5cd0024263fcfe83",
+  "SAP/P016a/Challenge.lean": "0473a4c5a13e180e9f996348ba819544f9e364fa5140b24c554b1e45ef82d21e",
+  "SAP/P016a/Defs/Part1.lean": "ba7cac14f105d3370daca294a2a145298565cce8f6432ba3b992d3adf2f69156",
+  "SAP/P016a/Defs/Part2.lean": "779d00486301d8304fa017a2d10fc9476125cd1ebfa7066adc0cc65b03083d3b",
+  "SAP/P016a/Defs/Part3.lean": "30b6e8848087e74c3945592fca7df25a6a91c227f6381a66a99084945a31f9f0",
+  "SAP/P016a/Defs/Part4.lean": "d13e0a399a5bd6cafe22d1bbdc53cf7ab5f51669512794df2e8c2b8834828c59",
+  "SAP/P016a/Defs/Part5.lean": "830dcddf14d6036503357e368232af9b3da43351d501409c3384e80c2cde1172",
+  "SAP/P016a/Defs/Part6.lean": "9f379abf321faa6811d2985ddecfb3f8fb78554ebd33356e62e4588516ea3c0a",
+  "SAP/P016a/Defs.lean": "7116bc192d1082be96ca48c9304ea5c5bb4cfe1eb6854488dc0852702729ee02",
+  "SAP/P016a/Solution.lean": "253cddffbcd2ada88d056380adbb09a13ccfc0e2a61ea275a06bb847678f7e9d",
+  "SAP/P016a/comparator.json": "b4236ddda0b85e9d96708d8e6800fc7ce795ee683bc62c5e061d95a5b99cfff8",
+  "SAP/P016a/manifest.json": "9d31af34e6c2e1a15f79aa429739d4eb11b6b77ce542816b1ac8760a2fb70cae"
+ },
+ "base": {
+  "repo2_head": "e5f65537d7cf736a6381967285fc8e63c834f754",
+  "lean_path_sha256": "106b6c29e452ac414675c33d9be3b3ca08fda5aa00dd817881bd77da11dd963f",
+  "toolchain_434": "/home/ubuntu/.elan/toolchains/leanprover--lean4---v4.34.1",
+  "toolchain_435": "/home/ubuntu/.elan/toolchains/leanprover--lean4---v4.35.0-rc2"
+ },
+ "cert_worktree": "/home/ubuntu/sap/wt/CERT-P016a-20261104T104233Z",
+ "olean_sha256": {
+  "Bridge.olean": "aedb6275e1e6874c1d5dccb1f81719a8801b2b18d098964e9599ae33f839c6ac",
+  "Challenge/Part1.olean": "94f22abc459d799469ea825bfcef366c7b14e2f59eaaa3cce29ca32d625aab1b",
+  "Challenge.olean": "df048b9d32f110b62092f7fb7264032ac943e27d16e6f7cc5e9a1b5d6cc6b181",
+  "Defs/Part1.olean": "eb7096c6cf18cc9c2864d607e3df0703e9d3dedb3d1daa25b3a078ed33c121e0",
+  "Defs/Part2.olean": "643125fd2d571af8a1566acce7de5ed783a04476e0de8c902ae6400e73e813d6",
+  "Defs/Part3.olean": "a76b2413e3be03527e0511638d2c7b8df03b4e8b6b95e014762990dc7e99e0b2",
+  "Defs/Part4.olean": "cd1d8e1602f632e3aedf23b106bfa073487bc8a1cff5d0205cfc23a5fb6a5c22",
+  "Defs/Part5.olean": "05cb970579f19f6f124d0bd966dba6523d004d2d23f3986c2e2b284acfa17886",
+  "Defs/Part6.olean": "4f46fed211d7dc375f2f615eb224dc4c010e8ca9923a895f8b4b60615f4fe053",
+  "Defs.olean": "33b4fb1ce4f071161f54d640714e8d96133a7a932e7bde3d890c723119612d49",
+  "Solution.olean": "44c669746ff2cc71de44584be8df1e7457b2399bb439e11fc3da29eebc8e8864"
+ },
+ "config": {
+  "challenge_module": "SAP.P016a.Challenge",
+  "solution_module": "SAP.P016a.Solution",
+  "theorem_names": [
+   "SAP.P016a.T1",
+   "SAP.P016a.T2",
+   "SAP.P016a.T3",
+   "SAP.P016a.T4",
+   "SAP.P016a.T6",
+   "SAP.P016a.T7",
+   "SAP.P016a.T8",
+   "SAP.P016a.T9",
+   "SAP.P016a.T10",
+   "SAP.P016a.T11"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+   "propext",
+   "Quot.sound",
+   "Classical.choice"
+  ],
+  "external_kernels": {
+   "con-ron": [
+    "con-ron",
+    "--verified",
+    "--jobs=2"
+   ],
+   "nanoda": [
+    "nanoda_bin"
+   ]
+  }
+ },
+ "config_sha256": "b4236ddda0b85e9d96708d8e6800fc7ce795ee683bc62c5e061d95a5b99cfff8",
+ "manifest_sha256": "9d31af34e6c2e1a15f79aa429739d4eb11b6b77ce542816b1ac8760a2fb70cae",
+ "targets": {
+  "listed": 11,
+  "certified": 10,
+  "omitted": 1
+ },
+ "closures": {
+  "solution": 10757,
+  "challenge": 10753,
+  "solution_sap": [
+   "SAP.P016a.Bridge",
+   "SAP.P016a.Defs",
+   "SAP.P016a.Defs.Part1",
+   "SAP.P016a.Defs.Part2",
+   "SAP.P016a.Defs.Part3",
+   "SAP.P016a.Defs.Part4",
+   "SAP.P016a.Defs.Part5",
+   "SAP.P016a.Defs.Part6",
+   "SAP.P016a.Solution"
+  ]
+ },
+ "exporter": {
+  "path": "/home/ubuntu/sap/deps/lean4export/.lake/build/bin/lean4export",
+  "sha256": "8c5d64ba68f4d3a68b3bcb7e1c5f188e35ae573b29470b8d4530a62324c9ddd1",
+  "version": "lean4export v4.34.0 built with Lean 4.34.1"
+ },
+ "comparator_log": "/home/ubuntu/sap/cert/P016a-20261104T104233Z/comparator.log",
+ "markers": {
+  "con-ron kernel accepts the solution": true,
+  "nanoda kernel accepts the solution": true,
+  "Lean default kernel accepts the solution": true,
+  "Your solution is okay!": true
+ },
+ "challenge_export_sha256": "44314dbcd734e217529b87050f1348ecf2369bb1c339596f57297ebc0915af71",
+ "solution_export_sha256": "75fdae47e1381ba0587dbd26880d3de3c8245310f402b1b7e1c84f52d5bd2888",
+ "accepted": true
+}

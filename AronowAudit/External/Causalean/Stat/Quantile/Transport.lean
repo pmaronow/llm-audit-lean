@@ -1,7 +1,3 @@
-/-
-Upstream project: Causalean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 module
 public import AronowAudit.External.Causalean.Stat.Coupling.Monotone.ProductLoss.Coupling
 public import AronowAudit.External.Causalean.Stat.Coupling.Monotone.ProductLoss.PIT
@@ -11,9 +7,11 @@ public import Mathlib.MeasureTheory.Measure.Support
 /-!
 # One-dimensional quantile transport and CDF distance
 
-This module provides integrability, threshold-kernel, and integral-swap facts
-for quantile transport and the integrated absolute difference of two CDFs on a
-common compact interval.
+This module proves the atom-valid one-dimensional identity between the
+absolute-distance cost of the shared-uniform quantile coupling and the
+integrated absolute difference of two CDFs on a common compact interval. It
+also exposes the support, integrability, threshold-kernel, and Tonelli facts
+used by that identity.
 -/
 
 public section
@@ -22,6 +20,65 @@ open MeasureTheory ProbabilityTheory Set Causalean.Stat
 
 namespace Causalean.Stat.Quantile.Transport
 
+/-- A [probability law](hyp:μ) [concentrated on a closed interval](hyp:hμ) has
+[a quantile in that interval at almost every interior level](goal). -/
+lemma quantile_mem_Icc_ae (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {a b : ℝ} (hμ : μ (Icc a b)ᶜ = 0) :
+    ∀ᵐ u ∂unifOI, quantile μ u ∈ Icc a b := by
+  /- Pull back the conull interval along `quantile_map_uniform μ`; use
+     `aemeasurable_quantile_unifOI` to identify the preimage measure. -/
+  have h : ∀ᵐ x ∂μ, x ∈ Icc a b := by
+    rw [ae_iff]
+    exact hμ
+  rw [← quantile_map_uniform μ] at h
+  exact (ae_map_iff (aemeasurable_quantile_unifOI μ) measurableSet_Icc).mp h
+
+/-- [Two probability laws](hyp:μ,ν) have [an absolute CDF difference
+integrable over the given finite interval](goal). -/
+lemma intervalIntegrable_abs_cdf_sub (μ ν : Measure ℝ)
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    (a b : ℝ) :
+    IntervalIntegrable (fun t : ℝ => |cdf μ t - cdf ν t|) volume a b := by
+  /- Monotonicity gives measurability of each CDF; `cdf_nonneg` and
+     `cdf_le_one` bound the integrand by one on the finite interval. -/
+  apply (intervalIntegrable_iff).2
+  apply Measure.integrableOn_of_bounded (M := 1) (by simp only [uIoc]; exact measure_Ioc_lt_top.ne)
+  · simpa only [Real.norm_eq_abs, Pi.sub_apply] using
+      (((monotone_cdf μ).measurable.sub (monotone_cdf ν).measurable).norm).aestronglyMeasurable
+  · filter_upwards with t
+    rw [Real.norm_eq_abs, abs_abs]
+    have hμ := cdf_nonneg μ t
+    have hν := cdf_nonneg ν t
+    have hμ' := cdf_le_one μ t
+    have hν' := cdf_le_one ν t
+    exact abs_le.mpr ⟨by linarith, by linarith⟩
+
+/-- [Two probability laws](hyp:μ,ν) [concentrated on one closed interval](hyp:hμ,hν)
+have [an integrable absolute quantile difference over the unit interval](goal). -/
+lemma intervalIntegrable_abs_quantile_sub (μ ν : Measure ℝ)
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {a b : ℝ} (hμ : μ (Icc a b)ᶜ = 0) (hν : ν (Icc a b)ᶜ = 0) :
+    IntervalIntegrable (fun u : ℝ => |quantile μ u - quantile ν u|)
+      volume 0 1 := by
+  /- Combine `aemeasurable_quantile_unifOI` with `quantile_mem_Icc_ae`;
+     the distance is bounded by `b-a` almost everywhere. -/
+  have hmeas : AEStronglyMeasurable
+      (fun u : ℝ => |quantile μ u - quantile ν u|) unifOI :=
+    by simpa only [Real.norm_eq_abs, Pi.sub_apply] using
+      (((aemeasurable_quantile_unifOI μ).sub
+        (aemeasurable_quantile_unifOI ν)).norm).aestronglyMeasurable
+  have hbound : ∀ᵐ u ∂unifOI,
+      ‖|quantile μ u - quantile ν u|‖ ≤ b - a := by
+    filter_upwards [quantile_mem_Icc_ae μ hμ, quantile_mem_Icc_ae ν hν] with u hu hv
+    rw [Real.norm_eq_abs, abs_abs]
+    exact abs_le.mpr ⟨by linarith [hu.1, hv.2], by linarith [hu.2, hv.1]⟩
+  have hrest : volume.restrict (Ioc (0 : ℝ) 1) = unifOI := by
+    rw [unifOI, restrict_Ioo_eq_restrict_Ioc]
+  apply (intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num : (0 : ℝ) ≤ 1)).2
+  change Integrable (fun u : ℝ => |quantile μ u - quantile ν u|)
+    (volume.restrict (Ioc (0 : ℝ) 1))
+  rw [hrest]
+  exact Integrable.of_bound hmeas (b - a) hbound
 
 private lemma integral_abs_cut_indicators (p q : ℝ)
     (hp0 : 0 ≤ p) (hp1 : p ≤ 1) (hq0 : 0 ≤ q) (hq1 : q ≤ 1) :
@@ -236,6 +293,27 @@ lemma abs_sub_eq_integral_Icc_indicator {a b x y : ℝ}
     simp [measureReal_def, Real.volume_Ioc, ENNReal.toReal_ofReal
       (sub_nonneg.mpr hyx), abs_of_nonneg (sub_nonneg.mpr hyx)]
 
+/-- [Two probability laws](hyp:μ,ν) [concentrated on one closed interval](hyp:hμ,hν)
+have [a quantile cost equal to the iterated lower-ray indicator integral](goal). -/
+lemma quantile_cost_eq_indicator_integral (μ ν : Measure ℝ)
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {a b : ℝ} (hμ : μ (Icc a b)ᶜ = 0) (hν : ν (Icc a b)ᶜ = 0) :
+    (∫ u in (0 : ℝ)..1, |quantile μ u - quantile ν u|) =
+      ∫ u in (0 : ℝ)..1, ∫ t in a..b,
+        |(if quantile μ u ≤ t then (1 : ℝ) else 0) -
+          (if quantile ν u ≤ t then 1 else 0)| := by
+  /- Apply the preceding pointwise identity on the intersection of
+     `quantile_mem_Icc_ae μ hμ` and `quantile_mem_Icc_ae ν hν`. Convert
+     `unifOI` to the interval restriction on `Ioc 0 1` as in
+     `intervalIntegrable_abs_quantile_sub`, then use
+     `intervalIntegral.integral_congr_ae`. -/
+  have hrest : volume.restrict (Ioc (0 : ℝ) 1) = unifOI := by
+    rw [unifOI, restrict_Ioo_eq_restrict_Ioc]
+  apply intervalIntegral.integral_congr_ae_restrict
+  simp only [uIoc_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+  rw [hrest]
+  filter_upwards [quantile_mem_Icc_ae μ hμ, quantile_mem_Icc_ae ν hν] with u hu hv
+  exact abs_sub_eq_integral_Icc_indicator hu hv
 
 /-- [Two probability laws](hyp:μ,ν) and [an ordered closed interval](hyp:hab) give [an iterated
 quantile-indicator integral equal to their integrated CDF distance](goal). -/
@@ -256,5 +334,16 @@ lemma indicator_integral_eq_cdf_distance (μ ν : Measure ℝ)
       intro t _
       exact threshold_indicator_integral_eq_cdf_distance μ ν t
 
+/-- [Two probability laws](hyp:μ,ν), [an ordered common compact interval](hyp:hab),
+and [concentration of both laws on that interval](hyp:hμ,hν) give [the identity
+between shared-uniform quantile transport cost and integrated CDF distance](goal). -/
+theorem quantile_transport_eq_cdf_distance (μ ν : Measure ℝ)
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {a b : ℝ} (hab : a ≤ b)
+    (hμ : μ (Icc a b)ᶜ = 0) (hν : ν (Icc a b)ᶜ = 0) :
+    (∫ u in (0 : ℝ)..1, |quantile μ u - quantile ν u|) =
+      ∫ t in a..b, |cdf μ t - cdf ν t| := by
+  exact (quantile_cost_eq_indicator_integral μ ν hμ hν).trans
+    (indicator_integral_eq_cdf_distance μ ν hab)
 
 end Causalean.Stat.Quantile.Transport

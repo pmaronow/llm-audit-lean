@@ -1,6 +1,4 @@
 /-
-Documentation corrected for llm-audit-lean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -23,9 +21,9 @@ which concentrates on the uniformly-`distL2 P`-continuous (UC) paths.
 The predicate `ProbabilityTheory.IsGaussianProcess` specifies finite-dimensional
 marginals. A Brownian bridge additionally requires a tight Borel path-space law
 on `ℓ∞(F)` with almost surely uniformly continuous sample paths. The structure
-below records these properties of `G_P` in six fields. This file proves five
-field lemmas for the candidate law `gpBridgeMeasure`, including the mean-zero
-property; `PBridgeTight.lean` supplies tightness and assembles all six fields.
+below records these properties of `G_P`; four of its five fields hold for the
+candidate law `gpBridgeMeasure`, while tightness is proved in
+`PBridgeTight.lean`.
 
 ## Main definitions
 
@@ -35,9 +33,8 @@ property; `PBridgeTight.lean` supplies tightness and assembles all six fields.
 
 ## Main results
 
-* `pBridge_isProbabilityMeasure`, `pBridge_cov`, `pBridge_mean`,
-  `pBridge_isGaussian_fdd`, `pBridge_ucPaths` — five of the six
-  `IsPBrownianBridge` properties for the
+* `pBridge_isProbabilityMeasure`, `pBridge_cov`, `pBridge_isGaussian_fdd`,
+  `pBridge_ucPaths` — four of the five `IsPBrownianBridge` properties for the
   candidate law `ν = gpBridgeMeasure`. Tightness (`pBridge_tight`) and the
   existence theorem `exists_pBrownianBridge`, with witness `gaussianPBridge`,
   are proved in `PBridgeTight.lean`.
@@ -59,9 +56,8 @@ covariance `cov(z f, z g) = P(fg) − Pf·Pg = marginalCovEntry P ![f,g] 0 1`
 paths.
 
 This is the **`G_P`** target specification, with the full vdV §19.2 field set:
-probability measure (`isProbabilityMeasure`), Brownian-bridge covariance (`cov`),
-mean-zero coordinates (`mean`), Gaussian finite-dimensional marginals
-(`isGaussian_fdd`), tightness of the Borel law
+probability measure, Brownian-bridge covariance, centred Gaussian
+finite-dimensional marginals (`isGaussian_fdd`), tightness of the Borel law
 (`tight`), and concentration on the `distL2 P`-uniformly-continuous sample paths
 (`ucPaths`). -/
 structure IsPBrownianBridge (F : Set (Ω → ℝ)) (P : Measure Ω)
@@ -95,11 +91,12 @@ structure IsPBrownianBridge (F : Set (Ω → ℝ)) (P : Measure Ω)
   process, hence not *the* `P`-Brownian bridge. -/
   isGaussian_fdd : ∀ (m : ℕ) (φ : Fin m → ↥F),
     ProbabilityTheory.HasGaussianLaw (fun z : LinfF F => (fun k => z (φ k))) ν
-  /-- Constitutive (vdV §19.2 p.269): **tightness of the Borel law `ν`.**
-  Compact subsets of `ℓ∞(F)` capture arbitrarily much of the mass of `ν`.
-  The type `ν : Measure (LinfF F)` already makes `ν` a countably additive Borel
-  measure; tightness is an additional compact-mass concentration property,
-  not a source of countable additivity. -/
+  /-- Constitutive (vdV §19.2 p.269): **tightness of the Borel law `ν`.** The
+  Brownian-bridge law is a *tight* (Radon) Borel measure on `ℓ∞(F)` — vdV's
+  weak limit `G_P` is by construction tight (this is the content of the
+  Donsker/Prohorov side of §18). Without tightness the object is a finitely-
+  additive Gaussian "process" with no genuine path-space law; tightness is what
+  makes `ν` a bona fide measure-theoretic limit. -/
   tight : MeasureTheory.IsTightMeasureSet ({ν} : Set (Measure (LinfF F)))
   /-- Constitutive (vdV §19.2 p.269): **uniformly-continuous sample paths.**
   `ν`-almost every path `z` is uniformly continuous as a function `↥F → ℝ` in the
@@ -114,11 +111,9 @@ structure IsPBrownianBridge (F : Set (Ω → ℝ)) (P : Measure Ω)
 /-! ## `IsPBrownianBridge` fields for the candidate law `ν = gpBridgeMeasure`
 
 The candidate `P`-Brownian-bridge law is `ν = gpBridgeMeasure … = iidStdGaussian.map gpPath`
-(`GPProcess.lean`). The five field lemmas below discharge
-`isProbabilityMeasure`, `cov`, `mean`, `isGaussian_fdd`, and `ucPaths` for this `ν`
-from the building blocks already established for `gpPath` and `gpX`. The auxiliary
-lemma `pBridge_ucPaths_measurableSet` establishes measurability of the UC-path
-predicate used to transport the almost-everywhere path property. -/
+(`GPProcess.lean`).  The three lemmas below discharge the
+`isProbabilityMeasure` / `cov` / `ucPaths` fields of `IsPBrownianBridge` for this `ν`
+from the building blocks already established for `gpPath` and `gpX`. -/
 
 section GpBridgeFields
 
@@ -423,8 +418,8 @@ theorem pBridge_isGaussian_fdd (m : ℕ) (φ : Fin m → ↥F) :
 end GpBridgeFields
 
 /-! The existence lemma `exists_pBrownianBridge` and the chosen witness
-`gaussianPBridge` are assembled in `PBridgeTight.lean` from the five field lemmas
-in this file and `pBridge_tight`, completing all six `IsPBrownianBridge` fields.
-`PBridgeTight` imports `BrownianBridge` to obtain these lemmas. -/
+`gaussianPBridge` are assembled from the five `IsPBrownianBridge` field lemmas in
+`PBridgeTight.lean` (which has `pBridge_tight` in scope, closing the import cycle:
+`PBridgeTight` imports `BrownianBridge`). -/
 
 end AsymptoticStatistics.EmpiricalProcess

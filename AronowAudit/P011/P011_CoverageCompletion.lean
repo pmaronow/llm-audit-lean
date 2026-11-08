@@ -2,12 +2,9 @@ import AronowAudit.P011.P011_ProbabilityCompletion
 import AronowAudit.P011.P011_StarCompletion
 import AronowAudit.P053.P053_NormalQuantiles
 
-/- The CDF squeeze adapts the P001 random-width interval argument to
-row-specific probability spaces and closed intervals. The coverage argument
-uses the P011 central limit theorem.
-The adapted squeeze originates in StatLean's `SteinMethod` module
-(Apache-2.0); see NOTICE at the repository root.
--/
+/- The CDF squeeze below adapts the already proved P001 random-width interval
+argument to row-specific probability spaces and closed intervals. It uses the
+actual original P011 CLT, rather than assuming an additional limiting law. -/
 namespace AronowAudit.P011.CoverageCompletion
 open MeasureTheory ProbabilityTheory Filter Finset
 open scoped BigOperators Topology ENNReal
@@ -133,6 +130,7 @@ theorem row_random_width_interval {Ω : ℕ → Type*} [∀ n, MeasurableSpace (
     dsimp [Ψ]
     linarith
   simpa [Ψ] using hg
+
 
 
 lemma rowCP_det {Ω : ℕ → Type*} [∀ n, MeasurableSpace (Ω n)]
@@ -357,3 +355,4 @@ theorem conditional_wald_coverage (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling 
   exact CoverageCompletion.conditional_wald_coverage_completed F c1 c2 c3 c4 h V hV
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.conditional_wald_coverage

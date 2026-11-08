@@ -1,0 +1,69 @@
+[
+  {
+    "target_id": "P003-T29",
+    "theorem": "SAP.P003a.T29",
+    "fingerprint": "bef88aefa88b1996cf45661dbab2a8bef57a1016f004942bccc26de3be978c29",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:13: v=(1,0,0,1), m=1, alpha=1/2 jointly satisfy all hypotheses. The same experiment's two randomization states and normalized, nonnegative joint masses are checked at scratch/Check.lean:41. All count vectors are realizable by their canonical labeled binary population, and these states have positive multiplicities and binomial denominator. The empty-accepted-set convention agrees with the canonical noncoverage convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T1",
+    "theorem": "SAP.P003a.T1",
+    "fingerprint": "0c6c0e9d05f0c5e8c721efe8cca255d2d2929fa05e62fecf73b3c96167bf5e99",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed counterexample conjunction. Compiled scratch/Check.lean:18 independently checks the binary population counts, the labeled size-three critical assignment, its actual nonempty missing set, and both completed observations. Lines 26-29 check both rational inversion intervals, coverage 297/380 and its strict deficit 1/2375. The printed reading allows arbitrary allocation and missingness depending on the assignment; the witness has fixed binary potential outcomes, uniform randomization, 0<3<20, 0<109/500<1, and valid missingness on every assignment. T1WholeStatement additionally asserts the real intervals, both actual D.7 tails, the failed D.3 inclusion, all ten labeled group multiplicities and coverage bits, the constrained p-value maximum, and actual labeled coverage, matching every canonical clause. No undefined interval or dependent-replicate loophole is used.",
+    "confidence": 0.99,
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, T1 issue 1: the Challenge docstring asserted the maximum p-value without the effect constraint.",
+        "status": "fixed",
+        "reason": "SAP/P003a/Challenge/Part1.lean:19 now says 'Among tables possible for the upper completion with effect at least -3/20', and line 20 identifies both maximizers. This matches the hypothesis in SAP/P003a/Defs/WholeW1/Part3.lean:152. The earlier out-of-region table (0,0,12,8) is independently checked at scratch/Check.lean:31 to have effect -3/5 and p-value 1; it is correctly excluded by the current wording."
+      },
+      {
+        "earlier_issue": "earlier.json, T1 issue 2: the duplicated definition docstring made the same unqualified maximum assertion.",
+        "status": "fixed",
+        "reason": "SAP/P003a/Defs/WholeW1/Part3.lean:145 now includes the same 'possible for the upper completion with effect at least -3/20' condition, followed by both maximizers at line 146. The file split does not change the meaning of the declaration, and the repeated description agrees with the actual constrained bound at lines 152-158."
+      }
+    ]
+  },
+  {
+    "target_id": "P003-T2",
+    "theorem": "SAP.P003a.T2",
+    "fingerprint": "ea6fb14f9db9b56e67c1ab55f10f21d81797aa100929184740c74a8128425bf0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:41 and :56 construct all coverage hypotheses for v=(1,0,0,1), m=1, alpha=1/2, with mass 1/2 on each state and a deterministic missing mask that differs between the two assignments; missingness is genuinely assignment-dependent. Line 63 supplies a positive balanced observed table and nonzero valid mask for the completion-inclusion component. Lines 69-122 jointly instantiate every coupling hypothesis with n=4, m=2, z={0,1}, missing set {0}, y'=y=(0,0,1,1), and diagonal potential outcomes w_i=(y_i,y_i). Here d=1, tau(w)=0, the favorable estimate is -1/2, and the directly enumerated labeled p-value is 1/3, accepting alpha=1/4. Thus neither the coupling nor its strict estimate and acceptance hypotheses are vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T3",
+    "theorem": "SAP.P003a.T3",
+    "fingerprint": "2415aa3cb82e6a7b9bd99918711d860a1c0544154088e2bd4018cce594e2d2df",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:129 and :142 construct a valid unbalanced experiment v=(0,0,0,3), m=1, alpha=1/2, with a normalized nonnegative joint law that hides every outcome. Line 146 checks a valid nonzero mask with one treated and two control missing outcomes and exactly six count completions, satisfying the deterministic clauses' arm and mask hypotheses. Line 151 independently checks the canonical repaired example's exact coverage 892/1140. Arbitrary labeled missingness induces exactly such finite joint masses after aggregation, and every enumerated count completion is realized by a binary completion, so the representation does not impose an extra allocation or missingness restriction.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P003-T4",
+    "theorem": "SAP.P003a.T4",
+    "fingerprint": "5913bf90572766322a21fe273cf1e690e87d06bcc2802e285fd9079a0fd33c04",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is a closed counterexample conjunction. The legal abstract bounds are k1=1, k2=2; constant acceptance has threshold r=2, and constant rejection has threshold r=0=k1-1, both allowed. All queried points remain in the input domain. Compiled scratch/Check.lean:154 checks the accepting input and exact [1,1] trace, and :159 checks ten repeated rejecting queries. The definition's self-loop at (1,1), and the statement's universal quantification over fuel, establish the nontermination assertion rather than merely exhaustion at one fuel. Lines 162-170 construct a genuine size-eight labeled assignment in the sixteen-unit canonical population yielding observation (7,1,0,8), check both p-values equal 1, the exact interval [1/2,15/16], and the incorrect returned numerator 14. The statement also contains the complete lattice, first tests, cardinalities, two-atom labeled law and three separately identified call-domain failures required by the canonical claim.",
+    "confidence": 0.99
+  }
+]

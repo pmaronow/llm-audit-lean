@@ -17,7 +17,8 @@ set_option maxRecDepth 3000
 set_option autoImplicit false
 set_option linter.unusedSimpArgs false
 
-/-! Frobenius second moments and Markov's inequality. -/
+/-! Record 9. Frobenius second moments and Markov's inequality.
+Adapted from the proof draft in Gap/GP0013B1.lean; checked independently here. -/
 
 private def p001t6gram_frob {K : ℕ} (G : Matrix (Fin K) (Fin K) ℝ) : ℝ :=
   ∑ j, ∑ k, (G j k - if j = k then 1 else 0)^2
@@ -35,6 +36,44 @@ private lemma p001t6gram_product_bound {K : ℕ} (z : Fin K → ℝ)
   rw [abs_mul]
   nlinarith [sq_nonneg (|z j| - |z k|), sq_abs (z j), sq_abs (z k)]
 
+private lemma p001t6gram_quadratic_identity {K : ℕ} {Ω : Type*}
+    (p : Fin K → Polynomial ℝ) (X : ℕ → Ω → ℝ) (n : ℕ) (ω : Ω)
+    (v : Fin K → ℝ) :
+    (∑ j, ∑ k, v j * sampleGram p X n ω j k * v k) =
+      (∑ i ∈ Finset.range n, (∑ k, v k * (p k).eval (X i ω))^2)/(n : ℝ) := by
+  classical
+  simp only [sampleGram, div_eq_mul_inv]
+  calc
+    (∑ j, ∑ k, v j * ((∑ i ∈ Finset.range n,
+        (p j).eval (X i ω) * (p k).eval (X i ω)) * (n : ℝ)⁻¹) * v k) =
+      ∑ j, ∑ k, ∑ i ∈ Finset.range n,
+        (v j * (p j).eval (X i ω)) *
+          (v k * (p k).eval (X i ω)) * (n : ℝ)⁻¹ := by
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro k _
+          rw [Finset.sum_mul, Finset.mul_sum, Finset.sum_mul]
+          apply Finset.sum_congr rfl
+          intro i _
+          ring
+    _ = ∑ i ∈ Finset.range n, ∑ j, ∑ k,
+        (v j * (p j).eval (X i ω)) *
+          (v k * (p k).eval (X i ω)) * (n : ℝ)⁻¹ := by
+          calc
+            _ = ∑ j, ∑ i ∈ Finset.range n, ∑ k,
+                (v j * (p j).eval (X i ω)) *
+                  (v k * (p k).eval (X i ω)) * (n : ℝ)⁻¹ := by
+              apply Finset.sum_congr rfl
+              intro j _
+              rw [Finset.sum_comm]
+            _ = _ := by rw [Finset.sum_comm]
+    _ = (∑ i ∈ Finset.range n,
+        (∑ k, v k * (p k).eval (X i ω))^2) * (n : ℝ)⁻¹ := by
+          rw [Finset.sum_mul]
+          apply Finset.sum_congr rfl
+          intro i _
+          simp only [← Finset.sum_mul, ← Finset.mul_sum, pow_two]
 
 private lemma p001t6gram_frob_controls_quadratic {K : ℕ}
     (G : Matrix (Fin K) (Fin K) ℝ) (hG : p001t6gram_frob G ≤ 1/4)
@@ -225,7 +264,9 @@ private lemma p001t6gram_deviation_le_half {K : ℕ} (hK : 0 < K)
   · rintro r ⟨v, hv, rfl⟩
     exact hunit v hv
 
-/-- The fixed-n probability bound follows from the same elementary moment calculation. -/
+/-- The sharp fixed-n estimate is proved here from the same elementary moment
+calculation.  This is a helper for record 14, not an application of its held
+general-polynomial counterpart. -/
 theorem general_polynomial_gram_probability_bound_proof {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
    {K : ℕ} (hK : 0 < K) (X : ℕ → Ω → ℝ) (hiid : IID μ X)
    (p : Fin K → Polynomial ℝ)
@@ -256,7 +297,9 @@ theorem general_polynomial_gram_probability_bound_proof {Ω : Type*} [Measurable
       prob μ {ω | (1/4 : ℝ) ≤ F ω} := measureReal_mono hsub
   exact hm.trans hbad
 
-/-! Compact support, conditional moments, and least-squares bounds. -/
+example : type_of% @AronowAudit.P001.general_polynomial_gram_probability_bound := general_polynomial_gram_probability_bound_proof
+
+/-! Record 11: compact support, conditional moments, and least-squares bounds. -/
 
 private lemma p001t6consistent_compact_lp {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (X : Ω → ℝ) (hX : Measurable X)
@@ -710,7 +753,9 @@ theorem sieve_consistency_stable_gram_proof {Ω : Type*} [MeasurableSpace Ω] (�
   exact squeeze_zero' (Eventually.of_forall (fun n => ENNReal.toReal_nonneg)) hbound
     (by simpa using hbad.add (hTtail δ hδ))
 
-/-! Stopped inverse weights and conditional trace bound. -/
+example : type_of% @AronowAudit.P001.sieve_consistency_stable_gram := sieve_consistency_stable_gram_proof
+
+/-! Record 12: stopped inverse weights and conditional trace bound. -/
 
 private def p001t6trace_good {n K : ℕ} (c : ℝ) (P : Matrix (Fin n) (Fin K) ℝ) : Prop :=
   ∀ b : Fin K → ℝ, c*(∑ k, (b k)^2) ≤ (∑ i, (P.mulVec b i)^2)/(n : ℝ)
@@ -988,6 +1033,8 @@ theorem sieve_finite_sampling_noise_trace_bound_proof {Ω : Type*} [MeasurableSp
           (hqbound.mono (fun _ h => h.1))
     have hh := hemean.le.trans hb
     convert hh using 1 <;> congr!
+
+example : type_of% @AronowAudit.P001.sieve_finite_sampling_noise_trace_bound := sieve_finite_sampling_noise_trace_bound_proof
 
 end
 end AronowAudit.P001.Wave1

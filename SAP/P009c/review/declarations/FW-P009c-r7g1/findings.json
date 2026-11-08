@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P009-T35",
+    "theorem": "SAP.P009c.T35",
+    "fingerprint": "df03a7e9a6b278da482a43d8c17b4257d5af206c52ba3ef56e2abdb8cbe04510",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:49 and :55. Review.directOne has n=1, probability 1/2 on each assignment, and Y(z)=bit(z). The example jointly proves positive population size, NoInterference, interior marginals, and Bernoulli, and independently computes ATE=EATE=ADSE=1. Both conditional events have probability 1/2. The file imports only Defs and does not invoke the Challenge stubs.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T36",
+    "theorem": "SAP.P009c.T36",
+    "fingerprint": "c8875d1124d702eb099111df000a391c63f121fd43a6e9a5fb98f95b56ccd7c1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:89. Review.interaction has n=2, a normalized point-mass design, Y0(z)=bit(z0)*bit(z1), and Y1(z)=0. The example proves positive population size and that the outcome table is nonconstant. These are valid data for the theorem's sole hypothesis n>0. Review.countSup_valid at :165 also proves generally that the outgoing-count range is nonempty and bounded above whenever n>0.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T37",
+    "theorem": "SAP.P009c.T37",
+    "fingerprint": "c6499b8e240abbabb9e88c286653f4dd580e2f96287c5bbfef497e0011b35772",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:95 and :102. For n=2, Y0(z)=bit(z0)*bit(z1) and Y1(z)=0 satisfy BoundedEffects with K=1 on the full assignment cube. P is the point mass at all-false and Q the point mass at all-true. The checks prove the EATE difference is 1/2 and total variation is 1, so the comparison is substantive and the two designs are distinct.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T38",
+    "theorem": "SAP.P009c.T38",
+    "fingerprint": "1c10b109a1fe9986e453fc45c88ca093047df9124e346f00abb86795514b661c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:120. The two-unit interaction table satisfies all hypotheses with K=1 for every real r>=1; :126 explicitly supplies admissible exponents r=1 and r=2. The example proves its assignment-conditional ATE takes different values at all-false and all-true. Review.countSup_valid proves the maximum-count supremum has its ordinary nonempty bounded domain; r>=1 and the r=1 branch avoid all zero-denominator power conventions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P009-T39",
+    "theorem": "SAP.P009c.T39",
+    "fingerprint": "59875f69459ac61fbcaca09bf01c5dd3c4e1101bd907b1350652b8e0e8290393",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:170. The two-unit interaction table, K=1, and distinct point-mass designs satisfy every hypothesis for every real r>=1, admit an explicitly constructed product coupling, and have EATE difference 1/2. Review.productLaw_couples at :137 proves both marginal identities for arbitrary finite laws, and Review.costSet_valid at :152 proves the infimum's cost set is nonempty and bounded below by zero for arbitrary designs. Thus wasserstein uses a genuine coupling infimum.",
+    "confidence": 0.99
+  }
+]

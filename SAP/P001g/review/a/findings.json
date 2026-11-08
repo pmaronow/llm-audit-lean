@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P001-T115",
+    "theorem": "SAP.P001g.T115",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Fair binary D with Y0=0 and Y1=1 satisfies the independence implication and gives ATE=1. For the unrestricted decomposition, fair D with Y0=D and Y1=2D+1 gives observed arm difference 3, ATT 2 and selection bias 1. All variables are bounded, both arms have probability 1/2, and the conditional means have positive denominators.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T116",
+    "theorem": "SAP.P001g.T116",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take a fair binary D, constant covariate X=0 in a nonempty one-point discrete space (or the zero vector in R), Y0=0, Y1=1, p=1/2, epsilon=1/4, m0=0 and m1=1. This satisfies each identification and propensity-score domain, including the moment-free score domain. The arm-CEF integrability assumptions are implied in general by uniform overlap and restricted-measure integrability. scratch/Check.lean compiles a fair binary law, its positive arm probabilities and its genuine propensity CEF.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T117",
+    "theorem": "SAP.P001g.T117",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use fair D, constant X in R^1, Y0=0, Y1=1 and p=1/2. The correct-outcome branch permits m0=0,m1=1,q=1/3; the correct-propensity branch permits q=1/2,m0=10,m1=-7. All are measurable and integrable and both yield ATE=1. Strictness of the disclosed restriction: with nonintegrable nonnegative X independent of fair D, Y0=Y1=0, q=p=1/2, m0(x)=x and m1(x)=-x, the combined augmented score is identically zero although both nuisance regressions are nonintegrable.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T118",
+    "theorem": "SAP.P001g.T118",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the first negation, use any probability space with X_i=0 and T identically zero; its exact CDFHadamard property is compiled in scratch/Check.lean. The scaled plug-in is always zero and its CDF at zero is 1, whereas every positive-variance centered normal has CDF 1/2 there. For the second, let nu=N(0,1), t_n=1/(n+2), and nu_n=(1-t_n^2)nu+t_n^2*delta_(1/t_n). Each nu_n has finite second moment 2-t_n^2. Its CDF F_n satisfies ||F_n-F||_infinity<=t_n^2, so h_n=(F_n-F)/t_n tends to zero, but (mean(nu_n)-mean(nu))/t_n=1. This contradicts any linear derivative at tangent zero. The base distribution has positive finite variance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T119",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No retained theorem has hypotheses to instantiate. The printed nonsquared criterion is unbounded below in the intercept for every positive sample size; the canonical claim expressly discusses the squared repair. Smooth-CEF squared examples exist, for example X uniform on [-1,1] and Y=0. The supplied text does not define regional consistency, so it does not establish that the rejected integrated-risk interpretation is the printed claim.",
+    "confidence": 0.87
+  },
+  {
+    "target_id": "P001-T120",
+    "theorem": "SAP.P001g.T120",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Let K=tau=1, P(X=0)=P(X=1)=1/2, P(Y=1|X=0)=1/4 and P(Y=1|X=1)=3/4; use the iid sequence of these four possible pairs and kappa=delta_0+delta_1. Fit the shared, x-independent Bernoulli probability t in Theta=[1/4,3/4]. All true and model probabilities on kappa-support are strictly positive, normalized, and all KL integrands are integrable. At x=0, an atom of mass 1/2, the unique conditional KL minimizer is 1/4. The clipped empirical success proportion is a product MLE for every sample and tends to 1/2. No zero log or division by zero supplies the failure.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T121",
+    "theorem": "SAP.P001g.T121",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use iid observations with four-outcome law (2/3,1/3,0,0) and declare b0=3/4. A product MLE is obtained from empirical group and within-group proportions, with b clipped to [1/4,3/4] and chosen as 1/4 whenever the second group is absent; choose valid arbitrary values for empty groups and n=0. This maximizes the likelihood for every possible sample. Under the true law the second group is absent almost surely, so b_hat=1/4 at every positive n and its error from b0 is 1/2. The finite mixture law is checked in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T124",
+    "theorem": "SAP.P001g.T124",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Choose X uniform on {-1,0,1}, Z independent fair on {-1,1}, and D conditionally Bernoulli(1/4+X^2/2), independently of Z given X; let W=X^2+Z/2 and take the iid product law on the twelve cells in the definitions. Every cell has positive probability 1/24 or 1/8, and W is conditionally independent of D given X. Exact rational checks in scratch/population_check.py give restricted/full Gram determinants 2/3 and 17/54, residual risks 35/144 and 59/272, and F_n/(n-3) tending to 64/531>0. The strong law and continuity of the nonsingular regressions make the guards hold eventually almost surely. Actual F(1,n-3) medians exist and are bounded for large n, yielding guarded rejection probability tending to one.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T125",
+    "theorem": "SAP.P001g.T125",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The iid constant sequence X_i=2 on the Dirac probability space satisfies the finite-second-moment hypothesis, has variance zero, and has sample mean exactly 2 at every positive n. Nondegenerate iid N(0,1) data also satisfy the hypotheses. Both iid constructions and finite-moment instances are compiled in scratch/Check.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T126",
+    "theorem": "SAP.P001g.T126",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the coordinate sequence on the infinite product of N(0,1) probability laws. It is iid, has second moment 1 and variance 1>0. Choose any positive sample size for the finite identities. scratch/Check.lean compiles this exact iid sequence, its MemLp hypothesis and strictly positive variance without importing the Challenge.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T127",
+    "theorem": "SAP.P001g.T127",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take iid N(0,1), its usual everywhere continuous nonnegative integrable Gaussian density, and h_n=1/sqrt(n+1). These bandwidths are positive for every n, tend to zero, and satisfy n*h_n tending to infinity. This is a nondegenerate absolutely continuous example; the iid Gaussian construction is compiled in scratch/Check.lean.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P001-T128",
+    "theorem": "SAP.P001g.T128",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "On the N(0,1) probability space with coordinate Z, choose theta=0, phi=1, theta_hat_n=Z/sqrt(n+1), v_hat_n=1/(n+1), alpha=1/2 and the genuine 3/4 standard-normal quantile z. The scaled estimator tends in law to N(0,1), n*v_hat_n tends to 1 and all variance estimates are positive. The displayed coverage event is |Z|<z for every n and has probability 1/2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T129",
+    "theorem": "SAP.P001g.T129",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For both independent domains use K=tau=1, X=0, Y=0 surely, nu_X=delta_0, kappa=delta_0+delta_1, Theta=[0,1/2], and the Bernoulli model g(0,x,t)=1-t, g(1,x,t)=t, with zero density elsewhere. The true parameter theta=0 generates the data. Observed densities are at least 1/2 for every parameter, M(t)=log(1-t) is continuous and uniquely maximized at zero, and theta_hat_n=0 is always a product MLE. Let Delta_0=log(2) and Delta_n=0 for n>0; this finite envelope controls every n, sample point and parameter and converges to zero. The expected-log lemma also satisfies support domination and integrability. This uses a nontrivial continuum parameter set and finite ordinary logs, not an empty parameter space.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P001-T130",
+    "theorem": "SAP.P001g.T130",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take Y_i=1/2 and iid fair binary R_i with a=0,b=1. Then the observable pairs are iid and both response probabilities are 1/2. The lower and upper transformed observations are respectively {0,1/2} and {1/2,1}, and the displayed endpoints are 1/4 and 3/4. Both estimators are nondegenerate, bounded, and use positive-denominator conditional means.",
+    "confidence": 0.99
+  }
+]

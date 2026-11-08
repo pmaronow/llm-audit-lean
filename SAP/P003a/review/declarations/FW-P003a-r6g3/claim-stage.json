@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P003a.T9",
+    "target_id": "P003-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "Printed reading: for positive m, an X1 that is SD on (1/m)Z and an X2 uniform on {0,1/m} have an SD sum, with no independence condition. Conditions checked before accepting the refutation: positive m; integer-rescaled supports; normalized nonnegative joint law; corrected SD and finite mean of X1; specified fair marginal of X2; existence of every mean. Both canonical witnesses use m=1 and finite probability spaces, so all measurability and moment conditions hold. The Boolean witness has identical fair marginals, mean 1/2 for X1, and sum masses 1/2 at 0 and 2 with mean 1 and failure of SD. The four-atom witness has the exact positive weights, marginals, means, reflection identity and SD failure claimed. Dependence is permitted by this printed lemma, rather than introduced by dropping a condition. The theorem includes both counterexamples in full, and its SD definition matches the corrected Definition A.1. Independent scratch proofs verify the SD inputs, the second joint marginal identities, and both failures of SD; this assessment uses the canonical statement and definitions, not its audit-history note."
+  },
+  {
+    "theorem": "SAP.P003a.T10",
+    "target_id": "P003-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The first conjunct is the normalized integer-pmf form of the corrected independent convolution lemma. For every positive m, taking f as the law of mX1 makes the displayed smoothMass precisely the law of m(X1+X2); no additional distributional assumption is hidden in that formula. The shape conjunct permits every integer doubled center, hence includes half-integer centers, proves the center shift, and its all-pairs decrease assertion includes the B.43 neighboring inequalities. The third conjunct proves the full parity-lattice auxiliary statement for both p=0 and p=1, including the exact equal masses on consecutive pairs. Integer division in paritySmooth is floor division by positive 2, which implements exactly these two residue classes even at negative indices. IsSD imposes the corrected normalization, finite mean, symmetry and decrease conditions, with no extra moment restriction. The SD input and both allowed parity values are jointly realizable by the independently compiled fairMass instance."
+  },
+  {
+    "theorem": "SAP.P003a.T15",
+    "target_id": "P003-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "The main quantifiers are exactly positive m, population total 2m, and at least one discordant subject; IsSD of the law of mT is equivalent to SD of T on the physical lattice (1/m)Z. The weighted legal treated-state enumeration, binomial multiplicities and observed-count formula implement uniform labeled complete randomization with two positive arms. All seven two-subject populations have the complete claimed two-point or constant laws. The d=1 and d=2 cases, removal totals, discordant bounds, d>=3 case coverage, and every feasible balanced positive residual law are present. The four proof-gap witnesses include the printed doubled-c case split, failure to cover one-sided discordant counts, the residual arithmetic, and the complete sampling laws including zero elsewhere. Feasibility prevents natural-subtraction truncation, and balance prevents zero probability or estimator denominators. Compiled examples inhabit the main, base, d=2 and d>=3 feasible-removal hypotheses."
+  },
+  {
+    "theorem": "SAP.P003a.T16",
+    "target_id": "P003-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The signed estimator identity, corrected integer pair contribution to mT, pair-plus-residual identity, normalized remaining sum under every relabeling, and (m-1)/m residual-estimator relation match all the corrected displays. The theorem also explicitly realizes the sampling setting: uniform partner from all other labels, a fair orientation independent of the uniform residual assignment conditional on the partner, and the resulting uniform size-m assignment law. It proves nonemptiness instead of assuming it. WholeFairLaw states complete probability laws with coincident atoms combined and zero mass away from them, and all six corrected and all six printed plus-sign laws agree with the canonical lists. The source rectangle law transfers these Boolean laws to the partner-conditional experiment. Positive m and balance are the standing assumptions; the extra opposite-assignment premise is exactly the paired setting. Compiled m=1 and m=2 sources, residual assignments and relabeling equivalences show all branches are inhabited, including the empty residual case."
+  },
+  {
+    "theorem": "SAP.P003a.T17",
+    "target_id": "P003-T17",
+    "my_reading_vs_claim": "whole",
+    "reason": "The unsimplified Q and printed variance definitions match (5.9)-(5.11); their simplifications, nonnegativity and the exact zero-standard-error criterion are stated for both observed arms positive. One C is universally fixed before data and samples, and the piecewise statistic agrees with the quotient at positive standard error and with C at zero. The arbitrary-input rank identity covers the same function on observed, fresh and reused vectors without asserting independence for reuse. Both five-subject populations, the ten assignments, four-versus-six split, observations, effects, zero variances, nonzero numerator and positive variance 2/27 match every canonical example clause. The null validity block quantifies over every fixed table, every positive K, all legal designs and all alpha in [0,1]; the uniform function space supplies independent observed and simulated assignments. The two exact p-values for C=0 and C=10^6 are both present. The totalized behavior of unused invalid count inputs adds no claim restriction. Compiled positive-arm examples exercise both branches of the statistic and legal validity parameters."
+  }
+]

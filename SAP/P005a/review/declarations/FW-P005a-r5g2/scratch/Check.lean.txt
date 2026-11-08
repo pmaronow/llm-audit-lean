@@ -1,0 +1,73 @@
+import SAP.P005a.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 4000
+set_option maxHeartbeats 800000
+set_option linter.unusedVariables false
+open SAP.P005a Finset Filter
+open scoped BigOperators Matrix Topology
+
+-- A nonzero, centered, positive-dimensional T6 instance, independent of T6.
+example : ∃ P : Population 6 1,
+    (3 : ℕ) ≤ 6 ∧ (0 : ℕ) < 2 ∧ (2 : ℕ) < 6 ∧ xMean P univ = 0 := by
+  refine ⟨signPopulation, by norm_num, by norm_num, by norm_num, ?_⟩
+  funext k
+  fin_cases k
+  norm_num [xMean, mean, signPopulation, signX, Fin.sum_univ_succ]
+
+-- Check the real/natural subtraction convention used in the coefficients.
+example : NTTT 6 2 = (1/10 : ℝ) ∧ NCCC 6 2 = -(1/80 : ℝ) := by
+  norm_num [NTTT, NCCC]
+
+-- T11's cancelling coefficient is meaningful, and the singleton case is real.
+example : armBiasCoefficient 6 2 (1/2) = 0 ∧
+    armBiasCoefficient 6 2 (1/8) = -(9/40 : ℝ) ∧
+    (∀ c : ℝ, armBiasCoefficient 6 1 c = 0) := by
+  norm_num [armBiasCoefficient, NTTT]
+
+-- These totalized definitions are harmless only when their guards are checked.
+example : mean (∅ : Finset (Fin 6)) weightY = 0 := by simp [mean]
+example : Real.sqrt (-1) = 0 := by norm_num
+example : Real.log (0 : ℝ) = 0 := Real.log_zero
+example : (sSup (∅ : Set ℝ)) = 0 := by simp
+
+-- Standardization of the actual T10 witness, including its irrational scale.
+example : standardized weightPopulation := by
+  have hs : weightScale ^ 2 = (3/20 : ℝ) := by
+    exact Real.sq_sqrt (by norm_num)
+  constructor
+  · funext k
+    fin_cases k
+    norm_num [xMean, mean, weightPopulation, scalarPopulation, weightA,
+      Fin.sum_univ_succ]
+    ring
+  · ext k l
+    fin_cases k
+    fin_cases l
+    norm_num [gram, popMean, mean, weightPopulation, scalarPopulation, weightA,
+      Fin.sum_univ_succ, Matrix.one_apply]
+    nlinarith [hs]
+
+example : popMean (fun i => weightY i ^ 2) ≤ 121 ∧
+    (1/4 : ℝ) < pT 6 2 ∧ pT 6 2 < (3/4 : ℝ) := by
+  norm_num [popMean, mean, weightY, weightA, pT, Fin.sum_univ_succ]
+
+-- One arm satisfying all hypotheses of T11's inverse-cancellation clause.
+example : ∃ (P : Population 6 1) (A : Finset (Fin 6)) (y : Fin 6 → ℝ) (c : ℝ),
+    (3 : ℕ) ≤ 6 ∧ A.Nonempty ∧ (armL P A).det ≠ 0 := by
+  refine ⟨signPopulation, {0,1}, signPopulation.yT, 1/2, by norm_num, by simp, ?_⟩
+  norm_num [armL, xMean, mean, signPopulation, signX, Matrix.det_fin_one]
+
+-- A nontrivial T9 logarithmic input (the expansion's full sequence is discussed
+-- in the written nonvacuity argument).
+example : ∃ (d : ℕ → ℕ) (k : ℕ → ℝ),
+    (∀ᶠ n in atTop, 1 ≤ d n) ∧ (∀ᶠ n in atTop, 0 ≤ k n) ∧
+    Tendsto (fun n => k n * Real.log (2*d n : ℕ)) atTop (nhds 0) := by
+  refine ⟨fun _ => 1, fun n => ((n : ℝ)+1)⁻¹, ?_, ?_, ?_⟩
+  · exact Eventually.of_forall (by intro n; norm_num)
+  · exact Eventually.of_forall (by intro n; positivity)
+  · have ht : Tendsto (fun n : ℕ => ((n : ℝ)+1)⁻¹) atTop (nhds 0) := by
+      have hc : Tendsto (fun n : ℕ => ((n+1 : ℕ) : ℝ)) atTop atTop :=
+        tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1)
+      simpa only [Function.comp_def, Nat.cast_add, Nat.cast_one] using tendsto_inv_atTop_zero.comp hc
+    simpa using ht.mul_const (Real.log (2 : ℝ))

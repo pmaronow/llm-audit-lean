@@ -1,0 +1,114 @@
+{
+  "repository": "https://github.com/StatLean/Stat-Lean",
+  "revision": "e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2",
+  "license": "Apache-2.0",
+  "reused_source": "StatLean/AsymptoticStatistics/ForMathlib/Slutsky.lean",
+  "adapted_in": "runs/P061/lean/P061_Foundations.lean",
+  "note": "Varying-base Slutsky-by-distance proof adapted; see runs/_lean_completion/2026-10-18/p061/README.md",
+  "vendored_closure": {
+    "purpose": "P053 finite-population CLT via proved CombinatorialCLT",
+    "changes": "Only local StatLean import path rewrites; all theorem bodies and copyright headers preserved.",
+    "files": [
+      {
+        "upstream_path": "StatLean/HypothesisTesting/ForMathlib/PermutationMarginals.lean",
+        "local_path": "lean/AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/PermutationMarginals.lean",
+        "upstream_sha256": "3e002ff2d064f2e01e3fa101b28f7c4810c9613398682d332f9c1d4a28792f39",
+        "local_sha256": "3e002ff2d064f2e01e3fa101b28f7c4810c9613398682d332f9c1d4a28792f39"
+      },
+      {
+        "upstream_path": "StatLean/HypothesisTesting/ForMathlib/BerryEsseen.lean",
+        "local_path": "lean/AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/BerryEsseen.lean",
+        "upstream_sha256": "1c6c13f5d5b3b13364dfebbfe33d2271bd2ab3087422899e4d2f0052de787d4a",
+        "local_sha256": "1c6c13f5d5b3b13364dfebbfe33d2271bd2ab3087422899e4d2f0052de787d4a"
+      },
+      {
+        "upstream_path": "StatLean/HypothesisTesting/ForMathlib/EsseenSmoothing.lean",
+        "local_path": "lean/AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/EsseenSmoothing.lean",
+        "upstream_sha256": "83cec61fecc4b83db28ab299e09dfb1fe3676cabe2a8a04984a25df9cb48e7e1",
+        "local_sha256": "5697d91827144dd6236ca1e2ddc4f6a479101320190369b73df91e65a7c8c6a4"
+      },
+      {
+        "upstream_path": "StatLean/HypothesisTesting/ForMathlib/SteinMethod.lean",
+        "local_path": "lean/AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/SteinMethod.lean",
+        "upstream_sha256": "e6b0cdd06b5d414f2ee69c707e045837aad17f3b3ebaa4b957dbfe1a8c05ca34",
+        "local_sha256": "efa54ecf718bd33b33247a1f946d857a8bceb65c8d58b8529885877cd603802e"
+      },
+      {
+        "upstream_path": "StatLean/HypothesisTesting/ForMathlib/CombinatorialCLT.lean",
+        "local_path": "lean/AronowAudit/External/StatLean/HypothesisTesting/ForMathlib/CombinatorialCLT.lean",
+        "upstream_sha256": "636752c4099a9263b9ebbde1bcf867e225a696e4ffe737b80540f4bdece29d53",
+        "local_sha256": "f6b5cacf53a085a15104c7e156ec7c4c4b78b595e565d4e67aa0295ecc0e0732"
+      }
+    ]
+  },
+  "additional_adaptations": [
+    {
+      "upstream_path": "StatLean/HypothesisTesting/Randomization/SignChange.lean",
+      "adapted_in": "runs/P053/lean/P053_NormalQuantiles.lean",
+      "upstream_private_helpers": [
+        "continuousAt_cdf_of_noAtoms",
+        "strictMono_cdf_gaussianReal",
+        "exists_cdf_eq"
+      ],
+      "changes": "Public local helper names; standard-normal specialization of strict monotonicity. Symmetry, sInf quantile characterization and interval-mass consequences proved locally."
+    },
+    {
+      "upstream_path": "StatLean/MultipleTesting/ForMathlib/GammaMoments.lean",
+      "adapted_in": "lean/AronowAudit/External/StatLean/MultipleTesting/ForMathlib/ChiSquaredInverseMoment.lean",
+      "upstream_private_helpers": [
+        "integral_gammaMeasure_eq_setIntegral"
+      ],
+      "changes": "Density reduction adapted with local helper name; new inverse gamma integrability/mean and Gaussian sum-of-squares inverse moments proved locally.",
+      "campaign": "2026-10-19-two-hour",
+      "local_sha256": "f6967da33a793f5dce533501bac697659bd1aa1d85556abcce304c6126786daa"
+    },
+    {
+      "upstream_path": "StatLean/HypothesisTesting/Randomization/ExactLevel.lean",
+      "adapted_in": "lean/AronowAudit/P004/P004_MCCompletion.lean",
+      "upstream_proof_fragment": "Finite minimum-image rank counting argument inside superUniform_randPValue, lines 550-578.",
+      "upstream_url": "https://github.com/StatLean/Stat-Lean/blob/e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2/StatLean/HypothesisTesting/Randomization/ExactLevel.lean",
+      "changes": "Specialized the finite rank argument to an arbitrary finite real array. New local product-weight normalization, coordinate-permutation invariance, finite Monte Carlo self-plus-count bridge and floor bounds prove the original P004 mc_exact_level without additional hypotheses.",
+      "campaign": "2026-10-19-two-hour",
+      "local_sha256": "f9dbcd1cce5232d7b2dac123d0dd25487c7894528dfaef3d35f2246ef363fc5d"
+    }
+  ],
+  "additional_vendored_closures": [
+    {
+      "purpose": "Exact Gaussian sum-of-squares Gamma law for inverse chi-square moment bridge",
+      "campaign": "2026-10-19-two-hour",
+      "repository": "https://github.com/StatLean/Stat-Lean",
+      "revision": "e436d8a184421c2a0ed8db0b2688c6cd26a7f5a2",
+      "license": "Apache-2.0",
+      "changes": "Only local StatLean import paths rewritten; all theorem bodies retained.",
+      "files": [
+        {
+          "upstream_path": "StatLean/MultipleTesting/ForMathlib/GammaMoments.lean",
+          "local_path": "lean/AronowAudit/External/StatLean/MultipleTesting/ForMathlib/GammaMoments.lean",
+          "upstream_sha256": "e8aabfffbe0dbfe289487035e68ed2a263635de64414d7c31d87218ce4af4e73",
+          "local_sha256": "e8aabfffbe0dbfe289487035e68ed2a263635de64414d7c31d87218ce4af4e73"
+        },
+        {
+          "upstream_path": "StatLean/MultipleTesting/ForMathlib/GaussianSquareMGF.lean",
+          "local_path": "lean/AronowAudit/External/StatLean/MultipleTesting/ForMathlib/GaussianSquareMGF.lean",
+          "upstream_sha256": "91650ae3edf883733f70f94151b8dda13bc3cb2d26801e930b847efbe8ed78fd",
+          "local_sha256": "91650ae3edf883733f70f94151b8dda13bc3cb2d26801e930b847efbe8ed78fd"
+        },
+        {
+          "upstream_path": "StatLean/MultipleTesting/ForMathlib/ChiSquared.lean",
+          "local_path": "lean/AronowAudit/External/StatLean/MultipleTesting/ForMathlib/ChiSquared.lean",
+          "upstream_sha256": "7ad31affc38c47d9a9432fd02128fdf5c5d30061d106f7534d8fed2b63bed1b0",
+          "local_sha256": "a63621396820b2d8ec563a5521bd2c713149ed9dd868fa0fe365f119cc0aa93e"
+        }
+      ]
+    }
+  ],
+  "local_extensions": [
+    {
+      "module": "AronowAudit.External.StatLean.MultipleTesting.ForMathlib.GaussianRatioMoments",
+      "local_file": "lean/AronowAudit/External/StatLean/MultipleTesting/ForMathlib/GaussianRatioMoments.lean",
+      "local_sha256": "e1eb1b2e8b77d5d5ecc744b19b3dad0bb650710109b8faf83eed4f19ad13c027",
+      "origin": "New local proof; not copied from upstream.",
+      "purpose": "Exact Student ratio second moment for independent standard Gaussian numerator and sum-of-squares denominator, with the actual Fin(\u03bd+1) product measure and erase-0 convention."
+    }
+  ]
+}

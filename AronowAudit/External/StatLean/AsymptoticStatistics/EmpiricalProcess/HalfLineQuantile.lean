@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -92,6 +91,19 @@ theorem cdfQuantile_openGap_measure_le (P : Measure ℝ) [IsProbabilityMeasure P
     _ ≤ ENNReal.ofReal (v - u) := ENNReal.ofReal_le_ofReal
       (sub_le_sub (by rw [cdf_leftLim_eq_real_Iio P]; exact hv.2) hu.1)
 
+/-- The discrepancy between open- and closed-right half-line endpoints at a
+quantile is exactly its singleton. This is the atom-isolation step. -/
+theorem halfLine_quantile_jump_support (P : Measure ℝ) (u : ℝ) :
+    {x | openHalfLineIndicator (cdfQuantile P u) x ≠
+      halfLineIndicator (cdfQuantile P u) x} = {cdfQuantile P u} := by
+  ext x
+  by_cases hx : x = cdfQuantile P u
+  · subst x
+    simp [openHalfLineIndicator, halfLineIndicator]
+  · rcases lt_or_gt_of_ne hx with hlt | hgt
+    · simp [openHalfLineIndicator, halfLineIndicator, hlt, hlt.le, hx]
+    · simp [openHalfLineIndicator, halfLineIndicator, not_lt_of_ge hgt.le,
+        not_le_of_gt hgt, hx]
 
 private lemma cdfQuantile_mono_of_le (P : Measure ℝ) [IsProbabilityMeasure P]
     {u v : ℝ} (hu0 : 0 < u) (huv : u ≤ v) (hv1 : v < 1) :

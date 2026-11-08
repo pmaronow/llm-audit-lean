@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P027-T14",
+    "theorem": "SAP.P027b.T14",
+    "fingerprint": "9096accfc0b86c06989f934e3d64cec2b3a5d985d01a081b8511c9a4e40a913e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean successfully (exit 0, no diagnostics). normal_product_witness constructs independent standard-normal evaluation coordinates on the product probability measure for every finite index type; the examples at lines 21 and 24 instantiate exactly Fin 5 x Fin 2 and Fin 500 x Fin 2. The example at line 149 checks the fixed deviations have sum 0 and sum of squares 5. Finite designs have positive weights and no additional premise.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P027-T15",
+    "theorem": "SAP.P027b.T15",
+    "fingerprint": "d61a7e22ef0228d7dccb072c9b0a48a52f0bb99241b18bc44232d2194627a16c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean successfully (exit 0, no diagnostics). normal_noise_moments at line 64 proves every integrability, zero-mean, unit-second-moment and zero-cross-moment clause of NoiseMoments on an actual standard-normal product probability space. The example at line 75 supplies M=2 and its required M>=2 proof. The fixed-population clause accepts any real outcome array, and the limits have no data premise.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P027-T16",
+    "theorem": "SAP.P027b.T16",
+    "fingerprint": "f93d8b652a1b3d1cbe4426af6ce39b30e0c44b721fc007c74f7426402b210af4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean successfully (exit 0, no diagnostics). gaussian_pair_witness at line 87 proves WholeGaussianPair for the evaluation coordinates of the product of the fair sign law and two standard Gaussian laws. Each factor and their product are probability measures, the evaluations are measurable, the laws are exact, and the three coordinates are jointly independent. The two errors represent distinct units; alpha is the actual fixed value 1/2. The sign support, first and second moments are independently checked at lines 95-110.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P027-T17",
+    "theorem": "SAP.P027b.T17",
+    "fingerprint": "d03ce2409dfd08da1a03d05829a43654c51734da6a7e2a21becc2dcb78625308",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean successfully (exit 0, no diagnostics). pair_moments_witness at line 114 proves the entire PairMoments predicate, including sign support and all integrability and orthogonality clauses, for the same genuine independent sign/Gaussian product as T16. This works for every real alpha since alpha does not occur in the hypothesis. No audited theorem is used in this witness proof.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P027-T18",
+    "theorem": "SAP.P027b.T18",
+    "fingerprint": "b0a448dfb741c63c37d826fe465747c96643089a7ea2413338f4aafe623b9bfc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean successfully (exit 0, no diagnostics). The example at line 155 constructs M=2, its positivity proof, k=(0,0), l=(1,0), j=(0,1), with k and l distinct in the same stratum, j in the other stratum, and a positive-probability sample. Thus the diagonal, distinct same-stratum, and cross-stratum cases have genuine instances. M=1 is also legitimate by the stated uniform design.",
+    "confidence": "high"
+  }
+]

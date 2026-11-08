@@ -554,6 +554,8 @@ theorem contrast_deterministic_correction_proof (r m : ℕ) (hr : 0 < r) (hm : 2
       tdc_diagonal hr hm z hz d]
     rfl
 
+example : type_of% @AronowAudit.P027.contrast_deterministic_correction := contrast_deterministic_correction_proof
+
 /-! Gaussian laws are transported through the genuine Euclidean norm. -/
 
 def tgc_equi (I : Type) [Fintype I] : (I → ℝ) ≃ₗ[ℝ] EuclideanSpace ℝ I :=
@@ -878,6 +880,8 @@ theorem contrast_gaussian_law_proof {Ξ : Type} [MeasurableSpace Ξ]
   have ha : 0 < a := by dsimp [a]; exact div_pos (mul_pos hNm hσ) (sq_pos_of_pos (by dsimp [N]; positivity))
   exact ⟨⟨X, hdist.1, hlaw0, hlaw1, hlaw2, ae_of_all _ hrep⟩,
     hmean, hmean.symm ▸ mul_pos ha hNq⟩
+
+example : type_of% @AronowAudit.P027.contrast_gaussian_law := contrast_gaussian_law_proof
 
 end
 end AronowAudit.P027.Wave1

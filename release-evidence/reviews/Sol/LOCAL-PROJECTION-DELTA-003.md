@@ -1,0 +1,21 @@
+# Actual local projection delta
+
+No required copy-metadata finding was identified in sealed local projection002 (seal114d6541, COPY-RECEIPTc863ac4d/COPY-RESULT43eded39). LOCAL-PROJECTION-JOINS-003.json records only new receipt, closed-map, baseline, role and history joins. Parent/author source-payload, destination, mode, single-link and exact-membership checks are reused. This review did not reopen payload trees, archives, Git, runtime sources or validators.
+
+The actual formal-stage map210bfc1f has8,502 files/100,445,982 bytes:1,608 retained non-SAP Git baseline blobs,6,413 exact candidate files,480 Works files and one v9 changelog. The exact union and role map agree without collisions. Baseline commit a255a43af7e60ec8ab86852ffa3a9a38e30d921e and Git tree e81ad60ae2d3191de6621add5e2e27dada7dba16 remain baseline identities, not a new release. Its6,606 tracked entries exclude4,998 old SAP entries before adding the accepted new set. Git-object/mode metadata and the before/after branch/index observations retain the reported source scope; no worktree or patched GEN/project is substituted as baseline.
+
+Actual site-admission mapced9b303 has10,213 files/666,009,558 bytes and exactly matches the prepared consumer-view rows. The unchanged contract bytes use contract-inventory.json; only admission-check/routes are excluded from this view. Original native evidence remains untouched. The separate site unit input reuses parent-final-candidate-export-001/intake/SAP rather than creating another candidate copy. The operation reports0 exit and independently copied single-link files; it expressly does not issue semantic/package/publication acceptance. Recorded postcopy free space10,613,501,952 bytes describes that copy, not future admission.
+
+History is preserved. Local001 failed preflight with zero copied payloads after Finder added a6,148-byte .DS_Store beside SAP. The parent relocated and retained that file outside strict intake, recording SAP_payload_modified=false and prior_copy_receipt_unchanged=true. Fresh002 began afterward and completed. The original transport receipt and checkpoints001/002 are unchanged; there was no proof/export retry. Incidental Finder metadata at the002 operation root is outside both payload maps and the selected16-file metadata seal. This review makes no exact-file-count claim about that entire operation root.
+
+A separate final-selection note remains: the tracked baseline itself contains an8,196-byte .DS_Store, SHA e117b67a820053c349647dbd18f4cc5b470dc7a77ad9fdcdbc73369d5cb83117. Its unchanged_tracked_baseline role is honestly represented in the partial formal map. It is distinct from both other Finder files. Prepared final projection rules exclude .DS_Store; the final release derivation should therefore record its exclusion or an explicit intentional baseline exception. This does not invalidate or rewrite the partial copy receipt and requires no payload or audit rerun.
+
+The precise remaining bindings are:
+
+- Genuine sole final-all native/readback and canonical GEN/replay/replay-summary.json; no summary hash is supplied by this delta.
+- Current A11fd actual config/native/RECONCILIATION.json/REPORT.md, bound to that summary, selectionec6a, historical8652, execution394/context074b and the ten fixed inputs; the existing452/416 row/status joins remain to be inspected on actual output.
+- Completed A7 successor preserving draft138b/73b and incorporating those genuine outputs; the same combined final Sol review and once-only completed-trust-report Opus decision remain unissued here.
+- A final package derivation from these source copies plus selected genuine release evidence, explicit Finder selection, exact final SHA256 file map and actual new40-hex Git commit/tree. The current8502-file source map is a partial source/changelog base, not that final package.
+- Actual current site contract/release/input-lock/evidence bindings and existing changed-input intake/publication receipts, using the already separated unit/admission/formal roots and the authorized sap/self-audit-palomar destination. Existing publication authorization persists; exact finding/certificate gates remain.
+
+No final REVIEW, A1/A3/release acceptance or new permission request is issued. Later closure of this same review inspects only genuinely new outputs and selections.

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P007-T11",
+    "theorem": "SAP.P007.T11",
+    "fingerprint": "46a894b30e52c70278d42b18914e85ac82d1a20c4b226f7e593fa9e1a2f24dd6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean, importing only SAP.P007.Defs. The full existential conjunct is constructed as unequalLaw: independent rows on a 2-by-1 array with observation probabilities 1/4 and 1/2, all four state weights positive (3/8, 3/8, 1/8, 1/8), observationBound at q=1/2, unequal row laws, deletion probability 3/8, and lower bound 1/4. The same law also satisfies the universal product identity's premises.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T12",
+    "theorem": "SAP.P007.T12",
+    "fingerprint": "e2c5c1145b561adb06bf621596c9c9d09308510066d7d5a2b8b4fe9c8525f712",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Counts.lean, importing only SAP.P007.Defs. fullMask has 8580 rows, 1205 retained columns, and 19 wholly missing removed columns. Retained column j has 5689 + indicator(j<1122) missing cells; every retained column has an observed cell. Lean verifies retained count 6856367, full count 7019387, both exact averages, and 0.6675 <= missingAverage fullMask < 0.6685. Thus both numerical antecedents hold, as do positive dimensions and the removal premise. A separate 2-row, 1-retained-column, 1-removed-column example checks the general antecedents.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T14",
+    "theorem": "SAP.P007.T14",
+    "fingerprint": "a663f58b2c1b40a26ecad66d470a660c69b5132cdabf15c85430dfaae3de3bbf",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean. A separate example verifies n=2>0, k=1>0, normalized unequalLaw, full mutual row independence, observationBound with q=1/2, and the stated inequality 1/4 <= 3/8. This distribution has positive probabilities of both survival and deletion for each row. Conditional ratios at null prefixes are guarded in the definition, rather than assumed to exist.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T15",
+    "theorem": "SAP.P007.T15",
+    "fingerprint": "1dd0696c21b81199e4fba20711140e74d76568692bb931454eb872c48f0a55e8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean. A separate existential example constructs unequalLaw for n=2 rows and g=1 singleton group (realizable with k=g=1), checks positive dimensions, mutual row independence, observationBound at q=1/2, and the bound 1/4 <= 3/8. One indicator represents the singleton group exactly, and every group-indicator state has positive probability.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P007-T16",
+    "theorem": "SAP.P007.T16",
+    "fingerprint": "3fea4f8a5647054916404aad686ff2283c2aa097b784a5091a54e06c222409ab",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean. The explicit dimensions are k(n)=ceil_nat((n:Real)*log n)+1; Lean proves positivity and k(n)/log n -> +infinity, using k(n)/log n >= n eventually. L_n is the normalized point mass at the all-missing n-by-k(n) array. For every fixed q in [0,1), including q=0 and q=1/2, the file constructs this family and verifies every positive-index row-independence and observation-bound premise together with superlogarithmic growth. No Challenge theorem is imported or used.",
+    "confidence": "high"
+  }
+]

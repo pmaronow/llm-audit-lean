@@ -1,0 +1,39 @@
+import SAP.P005a.Defs
+
+open SAP.P005a Finset
+open scoped BigOperators
+
+-- Rational-coordinate arithmetic, after the scale cancels as in the canonical
+-- coordinate identities. This does not invoke any Challenge theorem.
+def qa : Fin 6 → ℚ := ![-3, -2, -1, 0, 1, 5]
+def qy : Fin 6 → ℚ := fun i => qa i ^ 2
+
+def qmean (A : Finset (Fin 6)) (y : Fin 6 → ℚ) : ℚ :=
+  (∑ i ∈ A, y i) / A.card
+
+def qcov (A : Finset (Fin 6)) (u v : Fin 6 → ℚ) : ℚ :=
+  qmean A (fun i => u i * v i) - qmean A u * qmean A v
+
+def qexpect (f : Finset (Fin 6) → ℚ) : ℚ :=
+  (∑ S ∈ design 6 2, f S) / (design 6 2).card
+
+example : qexpect (fun S =>
+    qmean (SAP.P005a.control S) qa * qcov (SAP.P005a.control S) qa qy /
+      qcov (SAP.P005a.control S) qa qa) =
+    (31085815448171 / 17062566567774 : ℚ) := by native_decide
+
+example : qexpect (fun S =>
+    (1/8 : ℚ)*(3/20)*qcov (SAP.P005a.control S) qy qy +
+    qmean (SAP.P005a.control S) qa * qcov (SAP.P005a.control S) qa qy /
+      qcov S qa qa -
+    (3/20 : ℚ)*qmean (SAP.P005a.control S) qa * qcov (SAP.P005a.control S) qa qy) =
+    (12010469 / 846720 : ℚ) := by native_decide
+
+example : qexpect (fun S =>
+    (1/8 : ℚ)*(3/20)*qcov (SAP.P005a.control S) qy qy +
+    qmean (SAP.P005a.control S) qa * qcov (SAP.P005a.control S) qa qy /
+      qcov (SAP.P005a.control S) qa qa -
+    (3/20 : ℚ)*qmean (SAP.P005a.control S) qa * qcov (SAP.P005a.control S) qa qy) =
+    (31085815448171 / 17062566567774 : ℚ) := by native_decide
+
+example : (31085815448171 / 17062566567774 : ℚ) ≠ 12010469 / 846720 := by norm_num

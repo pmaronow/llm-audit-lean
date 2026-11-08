@@ -1,0 +1,55 @@
+import SAP.P018b.Challenge
+open SAP.P018b Finset Matrix MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology ENNReal Matrix.Norms.Elementwise
+noncomputable section
+set_option maxRecDepth 3000
+set_option maxHeartbeats 1000000
+
+example : (∀ d : Fin 6, (sixMembers d).card = 2) ∧ Function.Injective sixMembers := by
+  decide
+
+lemma positive_meat : individualMeat (fun _ : Fin 6 => 1) (fun d _ => orderedWitness d) = !![91] := by
+  ext a b
+  fin_cases a
+  fin_cases b
+  norm_num [individualMeat, outer, orderedWitness, Fin.sum_univ_succ]
+
+example : 3 ≤ Fintype.card (Fin 4) ∧
+    sandwich (1 : Mat 1) (individualMeat (fun _ : Fin 6 => 1)
+      (fun d _ => orderedWitness d)) ≠ 0 := by
+  rw [positive_meat]
+  constructor
+  · norm_num
+  · intro h
+    have he := congrArg (fun M : Mat 1 => M 0 0) h
+    norm_num [sandwich] at he
+
+example : (sampleGram negativeX).det = 20 := by
+  norm_num [sampleGram, outer, negativeX, Fin.sum_univ_succ, Matrix.det_fin_two]
+
+example : sampleOLS negativeX negativeY = ![3,2/5] := by
+  ext a
+  fin_cases a <;> norm_num [sampleOLS, sampleGram, outer, negativeX, negativeY, score,
+    Fin.sum_univ_succ, Matrix.inv_def, Matrix.det_fin_two, Matrix.adjugate_fin_two,
+    Matrix.mulVec, dotProduct]
+
+example : ∀ d, fittedResidual negativeX negativeY d = negativeE d := by
+  intro d
+  fin_cases d <;> norm_num [fittedResidual, sampleOLS, sampleGram, outer, negativeX,
+    negativeY, negativeE, score, dot, Fin.sum_univ_succ, Matrix.inv_def,
+    Matrix.det_fin_two, Matrix.adjugate_fin_two, Matrix.mulVec, dotProduct]
+
+-- A nonzero, positive-target instance of both convergence hypotheses in T18.
+example :
+    (∃ c : ℝ, 0 < c ∧ ∀ᶠ N : ℕ in atTop, c ≤ (1 : ℝ)) ∧
+    inProbability (fun _ : ℕ => Measure.dirac ())
+      (fun N (_ : Unit) => (N : ℝ) * (1 / (N : ℝ)) - 1) := by
+  constructor
+  · exact ⟨1, by norm_num, Filter.Eventually.of_forall (fun _ => le_rfl)⟩
+  · intro ε hε
+    have heq : ∀ᶠ N : ℕ in atTop,
+        ((Measure.dirac ()) {ω : Unit | ε ≤ ‖(N : ℝ) * (1 / (N : ℝ)) - 1‖}).toReal = 0 := by
+      filter_upwards [eventually_ge_atTop 1] with N hN
+      have hNr : (N : ℝ) ≠ 0 := by exact_mod_cast (show N ≠ 0 by omega)
+      simp [hNr, not_le.mpr hε]
+    exact (tendsto_congr' heq).mpr tendsto_const_nhds

@@ -1,0 +1,112 @@
+[
+  {
+    "target_id": "P027-T1",
+    "theorem": "SAP.P027a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The concrete design has four atoms with weights (1/12,5/12,1/12,5/12), selects two units on each atom, and has strictly positive inclusion probabilities. scratch/Check.lean compiles validity and positivity. Exact arithmetic verifies the mean variance 9/5, HT expectation 31/20, C2 expectation 23/10 and A=-16. The family includes r=m=1, and independent checks cover r=1,2,3 and m=1,2,3,4 with nonzero variance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T2",
+    "theorem": "SAP.P027a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take r=m=1, the one-point outcome probability space, epsilon=0, beta=1 and sigma2=0. All moment and integrability antecedents hold; q=N=2 and L=16>0, so the ratio conclusion is substantive. For the calibrated component use rho=1, beta=sqrt(225/8), epsilon=0; the beta-squared equality and moment predicates compile in scratch/Check.lean. The uniform-start interval has length 12r>0. Integrability additions follow from finite sums of second-moment expressions and do not assume any requested equality.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P027-T3",
+    "theorem": "SAP.P027a.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both fixed designs have two atoms of weight 1/2 and all marginal probabilities 1/2. Exact enumeration on outcomes (1,1,1) and (1,1,-1/4), and their two grouped outcomes, verifies every retained moment and the bias increases 8 to 9 and 9/8 to 49/16. These are exceptions to a heuristic, as the docstring states, without a claim that a printed universal theorem is false.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T4",
+    "theorem": "SAP.P027a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use the valid positive two-group one-draw design cluster2, group sizes n=(2,1), the exactly lifted selections and constant outcome v=1. The within-group disagreement probability is zero, and the strict-increase antecedent has the distinct zero-joint pair (0,1) with unequal group sizes; its existence compiles in scratch/Check.lean. Taking n=(2,2) gives a nonempty instance of the equal-size consequence. Zero-weight atoms are correctly excluded from the general samplewise preservation conclusion, and the more restrictive exact-fiber bias statements are disclosed.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P027-T5",
+    "theorem": "SAP.P027a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Each rounding rectangle contains its printed center; exact rational endpoint checks show the violation persists over the entire rectangle. The 120-unit witness has four positive-probability atoms, original total variance 414720, original HT expectation 357120, original C2 expectation 3766320, and grouped C2 expectation 529920. The statement and restriction deliberately stop short of identifying the simulation implementation or proving the finite-collection interpretation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T6",
+    "theorem": "SAP.P027a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The fixed grouped vector (1,0,-1,0) has S=2, V=24, expected C2=28 and ratio 1/6, with no zero denominator. For the model take r=m=1, beta=1, sigma2=0 and zero errors on the one-point probability space; all integrability conditions hold and L=16>0. The finite original/grouped correction identities were independently checked on twelve nontrivial centered vectors. Continuous-start identification and simulation provenance are explicitly excluded in the restriction.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P027-T9",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No theorem to instantiate. The canonical statement includes both a conditional reading of reported table values and an assertion about how the simulations were implemented. The supplied package has neither the generated populations nor simulation code. Its mathematical incompatibility checks and estimator comparisons are assigned, with explicit limitations, to T5 and T6. A separate assertion about the actual implementation is therefore reasonably omitted; that part of the canonical claim remains uncertified. This judgment does not delete its formal reading by appealing to the audit-history note or claim that a literal printed sentence has been refuted.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P027-T10",
+    "theorem": "SAP.P027a.T10",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The earlier disclosure finding is fixed in the revised T10 docstring and record2.json: both explicitly omit the continuous uniform-start measure on [0,8) and its induced four-atom law. The mathematical statement is unchanged. random8 has four atoms of positive weights (1/8,3/8,1/8,3/8); validity and positive marginals are checked by scratch/Check.lean. The original exact enumeration still gives A=-16, total variance 256/3, HT expectation 208/3, C2 expectation 352/3 and mean-scale bias -1/4. The open-box estimate -16+48(2/8+1/64)=-13/4 is unchanged. No new hypothesis, denominator or integral was introduced.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P027-T11",
+    "theorem": "SAP.P027a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use D=random8, x=randomSize8, beta=1 and identically zero errors on the one-point probability space. The finite-variance, uncorrelated, mean-zero error and extra integrability hypotheses all hold; the averaged total-scale bias is the strictly positive value A(x)=176. The noise predicate compiles, and 176 and the specialization (3/2)^2*176=396 are independently verified by exact arithmetic. The theorem averages conditional sampling variances as required.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P027-T12",
+    "theorem": "SAP.P027a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "All negative-binomial coefficients are strictly positive, and the generalized binomial series gives sum_j a_j=(3/8)^(18/5)*(1-5/8)^(-18/5)=1. The probability generating function [p/(1-(1-p)s)]^r has mean r(1-p)/p=6 and variance r(1-p)/p^2=16. Its finite product law assigns strictly positive mass a_29*a_0^7 to the eight-unit witness, and positive mass to each of the six displayed finite vectors. Probability normalization and finite-moment integrability are explicit conclusions, so neither toReal(infinity)=0 nor nonintegrable-integral=0 can provide fake witnesses. Exact arithmetic checks all floor-based L values and printed probabilities above one. The impossible design-probability equality is the conclusion, not an antecedent used to obtain unrelated results.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P027-T13",
+    "theorem": "SAP.P027a.T13",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general construction use N=2, m=1 and pi=(1/2,1/2); scratch/Check.lean compiles all its antecedents. The same file proves integrability of every systematic inclusion indicator for arbitrary finite real size vectors, by expressing its support as a finite union of measurable intervals and using boundedness on [0,1). Thus the added premise is redundant and noncircular. The repaired eight-unit law has seven atoms of weight 1/7 and always selects exactly two units; exact arithmetic checks its capped marginal sum 2 and the naive-capping sum 51/37.",
+    "confidence": 0.99
+  }
+]

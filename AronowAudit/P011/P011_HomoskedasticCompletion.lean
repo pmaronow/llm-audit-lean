@@ -1,4 +1,4 @@
-/- P011 T12 finite rate bounds and T36 Proposition 2, with exact constants, heterogeneous means, zero early variances and the conservative probability limit. -/
+/- Original P011 T12 complete finite rate repair and T36 Proposition2, with unchanged hypotheses, all exact constants, heterogeneous means, zero early variances and the conservative probability limit retained. -/
 import AronowAudit.P011.P011_SampleCompletion
 import AronowAudit.P011.P011_CorrelationCompletion
 
@@ -286,3 +286,5 @@ theorem proposition_two (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1 c2 c3
   exact (homoskedastic_repair F c1 c2 c3 c4 h hs).2
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.homoskedastic_repair
+#print axioms AronowAudit.P011.proposition_two

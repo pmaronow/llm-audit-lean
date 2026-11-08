@@ -1,0 +1,65 @@
+import SAP.P045b.Defs
+
+open Finset
+open scoped BigOperators
+namespace ReviewP045b
+open SAP.P045b
+noncomputable section
+
+def twoNetwork : Network 2 where
+  adj i j := decide (i ≠ j)
+  symmetric i j := by simp [ne_comm]
+  loopless i := by simp
+
+def mixed : Assignment 2 := fun i => decide (i = 0)
+
+example : badAllControl twoNetwork.adj mixed 0 ∧
+    ¬ (∀ j ∈ neighborhood twoNetwork.adj 0, mixed j = false) := by
+  unfold badAllControl
+  decide
+
+lemma sum_assignment_one (g : Assignment 1 → ℝ) :
+    (∑ z, g z) = g (fun _ => false) + g (fun _ => true) := by
+  classical
+  have h := Fintype.sum_equiv (Equiv.funUnique (Fin 1) Bool).symm
+    (fun b => g (fun _ => b)) g (fun _ => rfl)
+  simpa only [Fintype.sum_bool, add_comm] using h.symm
+
+def fairOne : Design (Assignment 1) where
+  mass _ := 1/2
+  nonneg _ := by norm_num
+  total := by norm_num [Finset.sum_const, Fintype.card_fun]
+
+def ownExposure : Assignment 1 → Fin 1 → Bool := fun z i => z i
+
+example : 0 < (1 : ℕ) ∧ ∀ i : Fin 1,
+    0 < exposureProb fairOne.mass ownExposure i true ∧
+    0 < exposureProb fairOne.mass ownExposure i false := by
+  norm_num [exposureProb, prob, SAP.P045b.expect, sum_assignment_one, fairOne, ownExposure,
+    Fintype.sum_unique]
+
+def oneOutcome : Fin 1 → Bool → ℝ := fun _ b => if b then 5 else 2
+
+example : SAP.P045b.expect fairOne.mass (htTotal fairOne.mass ownExposure oneOutcome true) = 5 ∧
+    SAP.P045b.expect fairOne.mass (htContrast fairOne.mass ownExposure oneOutcome true false) = 3 := by
+  norm_num [SAP.P045b.expect, sum_assignment_one, htTotal, htContrast, exposureProb, prob, observed,
+    fairOne, ownExposure, oneOutcome, Fintype.sum_unique]
+
+def mediator : Fin 2 → Bool → Bool := fun i z => if i = 0 then z else false
+def householdOutcome : Fin 2 → Bool → Bool → ℝ :=
+  fun _ z m => (if z then 2 else 0) + (if m then 3 else 0)
+
+example : 0 < (2 : ℕ) ∧
+    indirectHousehold mediator householdOutcome = 7/2 ∧
+    contagion mediator householdOutcome true = 3/2 ∧
+    otherMechanisms mediator householdOutcome false = 2 ∧
+    contagion mediator householdOutcome false = 3/2 ∧
+    otherMechanisms mediator householdOutcome true = 2 ∧
+    (mediator 1 true = mediator 1 false) ∧
+    (∀ z, householdOutcome 1 z (mediator 1 true) -
+      householdOutcome 1 z (mediator 1 false) = 0) := by
+  norm_num [indirectHousehold, contagion, otherMechanisms, mean,
+    mediator, householdOutcome, Fin.sum_univ_succ]
+
+end
+end ReviewP045b

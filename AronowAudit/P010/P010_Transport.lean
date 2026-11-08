@@ -30,7 +30,7 @@ noncomputable def reweighted {n : ℕ} (f w : Fin n → ℝ) (x : Fin n) : ℝ :
 X=(0,1,1,1). The two conditional covariate distributions on {0,1} are
 (3/4,1/4) and (1/4,3/4); study sizes are equal. -/
 noncomputable def originalMass : Fin 2 → ℝ := ![3/4,1/4]
-/-- T11 replication sample “X=(0,1,1,1)”, giving these two
+/-- T11 validator's replication sample “X=(0,1,1,1)”, giving these two
 cell masses; it instantiates the footnote 7 claim on p. 578. -/
 noncomputable def replicationMass : Fin 2 → ℝ := ![1/4,3/4]
 /-- Footnote 7, p. 578: “p_i=Pr[R_i=1|X_i]”, evaluated with the true
@@ -42,7 +42,7 @@ noncomputable def examplePropensity (x : Fin 2) : ℝ :=
 all cells have overlap and the true propensities are 1/4 and 3/4. Printed
 odds return 27/28 at X=1 instead of the original 1/4. Reciprocal odds return
 the original distribution at both cells. The input cell counts encode the
-eight-subject population. -/
+eight subjects described by the validator. -/
 theorem transport_odds_counterexample :
     (∀ x : Fin 2, 0 < originalMass x ∧ 0 < replicationMass x ∧
       0 < examplePropensity x ∧ examplePropensity x < 1) ∧
@@ -57,7 +57,7 @@ theorem transport_odds_counterexample :
   norm_num [Fin.forall_fin_succ, originalMass, replicationMass, examplePropensity,
     studyPropensity, printedOdds, correctedOdds, reweighted, Fin.sum_univ_succ]
 
-/-- Saturated binary logistic fitting in T11: each cell's
+/-- Saturated binary logistic fitting in the T11 validator: each cell's
 binomial log likelihood has its unique maximum at the observed cell share.
 The statement is for interior probabilities, so neither separation nor a
 boundary supremum substitutes for the finite fitted probabilities. -/
@@ -383,5 +383,15 @@ theorem transport_corrected_density {Ω : Type*} [MeasurableSpace Ω]
       exact hnorm.2.mp (hform.symm.trans he)
     · intro he
       exact hform.trans (hnorm.2.mpr he)
+
+#print axioms bernoulli_cell_mle
+#print axioms transport_logistic_certificate
+#print axioms transport_mass_factors
+#print axioms square_density_normalization
+#print axioms transport_odds_counterexample
+#print axioms transport_bayes
+#print axioms transport_corrected_finite
+#print axioms transport_printed_finite
+#print axioms transport_corrected_density
 
 end AronowAudit.P010

@@ -1,0 +1,152 @@
+[
+  {
+    "target_id": "P002-T1",
+    "theorem": "SAP.P002a.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The actual 12-unit negativeDeltaModel 1 has all units compliers, n1=2, 66 assignments, zero population OLS coefficients, and genuine nonzero raw/oracle variances 5/396 and 36/55. Exact rational enumeration verifies admissibility, both printed-bound failures, and the repeated-block formulas at m=1,2 (n=12,24); see scratch/checks.json. The bound failure is not caused by zero division or an empty population.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T2",
+    "theorem": "SAP.P002a.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For both bounds, negativeDeltaModel 1 satisfies the hypotheses at delta=-1/2, r=1/6, A=B=2, k=1, e=1/2 and has positive outcome/residual variances. These conditions and finite values are independently checked with exact fractions. scratch/Check.lean additionally compiles a Theta instance and a k=1 Xi instance (covZeroTwo, delta=0,e=1/2,A=B=2,r=1/4).",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T3",
+    "theorem": "SAP.P002a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This accepts the record's explicit refuted decision: the theorem negates both accurately rendered printed universal statements. The admissible negativeDeltaModel 1 has 5/396 < 65/4752 in the raw comparison and 36/55 < 39/55 in the oracle comparison. Both strict failures were independently enumerated. The step-2 different classification of logical polarity is preserved.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T4",
+    "theorem": "SAP.P002a.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every n>=2 and real beta, the stated all-complier degenerateModel has W_0=W_1=0 and floor(n/2) treated units, satisfying the specified Theta class. The covariate version has centered grid x with second moment (n^2-1)/(3n^2)>=1/4 and fourth moment <1, satisfying the specified Xi class. Thus both infima have actual populations at every sufficiently large size and every beta. Exact grid/balance checks cover n=2..20; a zero-outcome Theta instance is compiled in scratch/Check.lean. Degeneracy is the substantive counterexample, not a vacuous domain.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P002-T5",
+    "theorem": "SAP.P002a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For raw sharpness take sizes(j)=2(j+2), P_j=signModel(j+2), delta=0,r=1/2,A=1 and any 0<alpha<1. All units comply, effects are constantly zero, V(Y(0))=n/(n-1)>0, and F4=1<=sqrt(n/(n-1)). This also supplies arbitrarily large nonempty Theta classes. For the adjusted lower bound use centered balanced +/-1 covariates, zero outcomes and all compliers at increasing even sizes, with k=1,delta=0,e=1/2,A=B=2,r=1/4; these give nonempty Xi classes and a nontrivial restricted filter. The class hypothesis does not assume the coverage conclusion.",
+    "confidence": 0.92
+  },
+  {
+    "target_id": "P002-T6",
+    "theorem": "SAP.P002a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Exact rational enumeration at m=4,5,6 (n=8,10,12; 70,252,924 assignments) verifies Xi with the stated constants, distinct covariates and full-rank fits in both arms for every reassignment, the exploding feasible-variance lower bound, estimator<5/n and error probability 1. The actual variances are positive; eta=2^(-n^2) is a nonzero exact real, with no floating-point underflow. Odd n=9,11,13 satisfy the stated Xi conditions. The grid's real subtraction is checked in Lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P002-T7",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Xi is nonempty, for example at negativeDeltaModel 1 with the stated positive-dimensional constants. The omission is not justified by emptiness: record.json excludes the sole four-limit row for final wrong_credit and identifies the remaining usable rows as finite OLS/oracle-variance helpers. Those finite facts alone do not certify any of the four target asymptotic limits. On the supplied evidence, omission is justified; the underlying credit adjudication is not independently available in this audit.",
+    "confidence": 0.9
+  },
+  {
+    "target_id": "P002-T8",
+    "theorem": "SAP.P002a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit n=2,k=1 covariate vector (2,-2) is centered, has fourth moment 16 and covariate Gram [4]>=2I. Its augmented Gram is diag(1,4), and the nonzero intercept unit vector has Rayleigh quotient 1<2. This is a genuine finite counterexample to the stated eigenvalue implication; it does not purport to refute Lemma 19.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T9",
+    "theorem": "SAP.P002a.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The finite assertions apply to x=(2,-2),n=2,k=1,e=2; both unit spheres in the spectral assertion are nonempty and their Rayleigh sets are bounded below by zero. For the sequence assertion take sizes(j)=12(j+1), P_j=negativeDeltaModel(j+1), delta=0,e=1/2,A=B=2,r=1/6. The repeated balanced blocks give Xi and positive residual variance. On the countable product of the finite uniform assignment spaces, coordinate maps give the required measurable marginals and independence; any fixed strict subsequence is permitted. There is no convergence hypothesis assuming the asserted inequality.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P002-T10",
+    "theorem": "SAP.P002a.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "centringModel is a valid four-unit all-complier design with LATE=2 and S1^2=1/12>0, checked in Lean. Enumerating its six assignments gives printed expected bracket square 49/3 versus corrected 1/3, and at S={0,1} the printed variance-identity RHS is -24 versus the true 0. Since S1^2 is positive, these unnormalized values refute exactly the printed normalized equality as well.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T11",
+    "theorem": "SAP.P002a.T11",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The finite identities and normalized equality have the concrete centringModel,beta=2 instance, with S1^2=1/12>0 and exact expected corrected bracket square 1/3. For the rate take P_j=signModel(j+2),sizes(j)=2(j+2),delta=0,r=1/2,A=1. Every S1^2 is positive, and the normalized expectation is exactly 16/sizes(j), so it is O(n0/(n1*n)) and tends to zero. The canonical positivity convention is respected.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T12",
+    "theorem": "SAP.P002a.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "signModel 4 has eight units, four treated, all compliers, zero LATE and the canonical Theta parameters (0,1/2,1). S={0,1,2,3} is an actual assignment among 70. Exact enumeration gives fixed-vector reassignment variance 1/28, arm contrast -2, printed RHS 1/14 and corrected RHS 1/28. All relevant denominators are positive.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T13",
+    "theorem": "SAP.P002a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The eight-unit sign population, its fixed outcome vector, S={0,1,2,3}, and r=1/2 satisfy every hypothesis and attain the first bound at 1/28. The theorem covers arbitrary fixed real vectors q, a true strengthening of the canonical observed-outcome case. Every valid design admits a positive balance constant, so enclosing the first inequality in balance hypotheses does not lose any valid-design case. The step-2 broader classification is preserved.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T14",
+    "theorem": "SAP.P002a.T14",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The balanced sign populations have genuine positive reassignment variance 1/[4(n-1)] for every even n>=4, independent of the original assignment. Exhaustive exact checks for n=4,6,...,16 give the printed square-root-over-variance ratio either zero or at least three and hence error probability 1. The corrected variance ratio lies in [0,1] and has expected deficit 2/n, yielding the retained finite tail bound by Markov's inequality. These facts provide actual nondegenerate counterexample sequences.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P002-T15",
+    "theorem": "SAP.P002a.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take sizes(j)=2(j+2), P_j=signModel(j+2),delta=0,r=1/2,A=1, and a countable product of uniform complete-randomization spaces with Z_j its coordinate maps. Both W_a population variances are n/(n-1)>0. For EVERY original assignment the observed q is the same balanced sign vector, so every conditional reassignment variance is 1/[4(n-1)]>0. Thus the stronger pointwise positivity requirement is satisfiable, and the corrected tail probabilities are bounded by 2/(n*kappa)->0. The statement explicitly discloses positivity restrictions and its extension to arbitrary marginal couplings; the step-2 mixed-scope different classification is preserved.",
+    "confidence": 0.95
+  }
+]

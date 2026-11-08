@@ -1,0 +1,107 @@
+import SAP.P026a.Defs
+
+open Finset
+open scoped BigOperators
+open SAP.P026a
+
+set_option maxHeartbeats 4000000
+
+-- Concrete finite witnesses; none of these checks uses a Challenge theorem.
+example : isProbability twoOfFourLaw ∧ hasPositiveMarginals twoOfFourLaw ∧
+    directedSupport twoOfFourLaw := by
+  unfold isProbability hasPositiveMarginals directedSupport
+  decide +kernel
+
+example : ∀ i j : Fin 4, i ≠ j →
+    disagreementProbability twoOfFourLaw i j = 2/3 := by
+  decide +kernel
+
+example : (∀ w, appendixDisplay twoOfFourLaw appendixNullOutcomes appendixNullOutcomes w =
+    (![-68,-52,2,-62,-20,-52] : Fin 6 → ℚ) w) ∧
+    mean twoOfFourLaw (appendixDisplay twoOfFourLaw appendixNullOutcomes appendixNullOutcomes) = -42 ∧
+    populationCovarianceBound twoOfFourLaw appendixNullOutcomes appendixNullOutcomes = -28 := by
+  decide +kernel
+
+lemma sum_vectors (f : (Fin 2 → Bool) → ℝ) :
+    ∑ w, f w = f ![true,true] + f ![true,false] + f ![false,true] + f ![false,false] := by
+  calc
+    ∑ w, f w = ∑ p : Bool × Bool, f ![p.1,p.2] :=
+      (Fintype.sum_equiv (finTwoArrowEquiv Bool).symm _ _ (fun _ => rfl)).symm
+    _ = _ := by simp [Fintype.sum_prod_type, add_assoc]
+
+noncomputable def fairTwo : UnitLaw (Fin 2) where
+  weight := fun _ => 1/4
+  nonnegative := by norm_num
+  normalized := by norm_num [sum_vectors]
+  positive := by
+    intro i
+    fin_cases i <;> norm_num [sum_vectors]
+
+noncomputable def singletonTwo : ClusterLaw (Fin 2) (Fin 2) where
+  cluster := id
+  covers := Function.surjective_id
+  assignment := fairTwo
+
+lemma singletonTwo_totals (y : Fin 2 → ℝ) (c : Fin 2) :
+    singletonTwo.totals y c = y c := by
+  change (∑ i ∈ (univ : Finset (Fin 2)).filter (fun i => i = c), y i) = y c
+  apply Finset.sum_eq_single c
+  · intro b hb hbc
+    exact (hbc (Finset.mem_filter.mp hb).2).elim
+  · intro hc
+    exact (hc (Finset.mem_filter.mpr ⟨Finset.mem_univ c,rfl⟩)).elim
+
+example : (∀ c d : Fin 2, c ≠ d →
+      0 < disagreementProbability singletonTwo.clusterAssignmentDesign c d) ∧
+    directedSupport singletonTwo.clusterAssignmentDesign := by
+  constructor
+  · intro c d h
+    fin_cases c <;> fin_cases d <;>
+      norm_num [disagreementProbability, mean, singletonTwo,
+        ClusterLaw.clusterAssignmentDesign, UnitLaw.assignmentDesign, fairTwo,
+        sum_vectors, Fin.sum_univ_two] at *
+  · intro c d h
+    fin_cases c <;> fin_cases d <;>
+      norm_num [jointInclusion, inclusion, armIndicator, mean, singletonTwo,
+        ClusterLaw.clusterAssignmentDesign, UnitLaw.assignmentDesign, fairTwo,
+        sum_vectors, Fin.sum_univ_two] at *
+
+-- Non-null outcomes make the lower-bound gap substantive.
+example : (∑ c : Fin 2,
+    (singletonTwo.totals (fun i => if i = 0 then 2 else 3) c -
+     singletonTwo.totals (fun i => if i = 0 then 0 else 1) c)^2) / 2 = (4 : ℝ) := by
+  norm_num [singletonTwo_totals, Fin.sum_univ_two]
+
+example : (Fintype.card (Fin 2) : ℝ) ≠ 0 := by norm_num
+
+-- A second partition has a genuine two-unit cluster.
+noncomputable def tripleTwo : ClusterLaw (Fin 3) (Fin 2) where
+  cluster := ![0,0,1]
+  covers := by
+    intro c
+    fin_cases c
+    · exact ⟨0,rfl⟩
+    · exact ⟨2,rfl⟩
+  assignment := fairTwo
+
+example : tripleTwo.totals ![2,3,7] 0 = 5 ∧ tripleTwo.totals ![2,3,7] 1 = 7 := by
+  have h0 : (univ : Finset (Fin 3)).filter (fun i => tripleTwo.cluster i = 0) = {0,1} := by
+    decide +kernel
+  have h1 : (univ : Finset (Fin 3)).filter (fun i => tripleTwo.cluster i = 1) = {2} := by
+    decide +kernel
+  norm_num [ClusterLaw.totals, h0, h1]
+
+example : hasPositiveMarginals tripleTwo.unitAssignmentDesign := by
+  intro i
+  fin_cases i <;>
+    norm_num [inclusion, mean, armIndicator, ClusterLaw.unitAssignmentDesign,
+      tripleTwo, fairTwo, sum_vectors]
+
+example : ∀ a : Bool, ∀ w : Fin 2 → Bool,
+    htSum tripleTwo.unitAssignmentDesign a ![2,3,7] w =
+    htSum tripleTwo.clusterAssignmentDesign a ![5,7] w := by
+  intro a w
+  cases a <;> cases h0 : w 0 <;> cases h1 : w 1 <;>
+    norm_num [htSum, inclusion, mean, armIndicator, ClusterLaw.unitAssignmentDesign,
+      ClusterLaw.clusterAssignmentDesign, UnitLaw.assignmentDesign, tripleTwo,
+      fairTwo, sum_vectors, Fin.sum_univ_succ, h0, h1]

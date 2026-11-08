@@ -1,10 +1,10 @@
 import AronowAudit.P053.P053_Audit
 import AronowAudit.External.Causalean.Experimentation.DesignBased.FinitePopulationVariance
 
-/-! Exact bridges from the Causalean finite-population sampling theorems to
-the complete-randomization definitions.
-The imported Causalean proofs are by Jiyuan Tan, Apache-2.0; see NOTICE at the
-repository root. -/
+/-! Exact bridges from the independently proved Causalean finite-population
+sampling theorems to the audit's original complete-randomization definitions.
+The imported Causalean proofs are by Jiyuan Tan, Apache-2.0; see
+AronowAudit/External/Causalean/provenance.json. -/
 
 namespace AronowAudit.P053
 open scoped BigOperators Topology
@@ -147,7 +147,7 @@ namespace CausalBridge
     have hn' : |X k (f k w) - a k| < ε/2 := lt_of_not_ge hn
     linarith
 
-/-- Chebyshev consistency under complete randomization, with no
+/-- Chebyshev consistency in the original audit probability model, with no
 asymptotic sampling theorem assumed. The premises are actual finite expectation
 and variance limits. -/
  theorem chebyshev_limit (E : ℕ → Population)
@@ -256,7 +256,7 @@ def witnessVariance (b : Bool) : ℝ := if b then 4 else 1
       Tendsto (fun k => witnessVariance b * (n k : ℝ)⁻¹) atTop (𝓝 (witnessVariance b * 0)))
 
 /-- Actual treated and control sample variances of the heterogeneous witness
-converge under the full complete-randomization law. No sampling LLN
+converge under the original full complete-randomization law. No sampling LLN
 or variance-estimator limit is assumed. -/
  theorem witness_arm_variance_limits :
     InProbability heterogeneousWitness

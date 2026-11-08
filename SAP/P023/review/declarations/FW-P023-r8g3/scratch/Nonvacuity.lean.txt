@@ -1,0 +1,105 @@
+import SAP.P023.Defs
+
+open SAP.P023
+open scoped BigOperators
+
+noncomputable section
+namespace Review
+
+def x : Fin 2 → ℝ := ![-1/4, 1/4]
+def d : Fin 2 → ℝ := ![0, 1]
+def y : Fin 2 → ℝ := ![3, 5]
+def c : Fin (binCount (1/2 : ℝ)+2) → ℝ :=
+  fun j => if j.val = 0 then 3 else if j.val = 1 then 2 else 0
+def c' : Fin (binCount (1/2 : ℝ)+2) → ℝ :=
+  fun j => if j.val = 0 then 2 else if j.val = 1 then 2 else
+    if j.val = 2 then 1 else 17
+
+@[simp] theorem close_x : close (1/2 : ℝ) x = Finset.univ := by
+  ext i
+  fin_cases i <;> norm_num [close, x]
+
+example : (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 := by norm_num
+
+example : TwoParty x d := by
+  constructor
+  · intro i; fin_cases i <;> norm_num [x]
+  constructor
+  · intro i; fin_cases i <;> norm_num [d]
+  constructor
+  · intro i; fin_cases i <;> norm_num [x, d]
+  · intro i; fin_cases i <;> norm_num [x, d]
+
+example : Condition1 (1/2) x := by
+  constructor
+  · exact ⟨1, by norm_num [x]⟩
+  · exact ⟨0, by norm_num [x]⟩
+
+example : binCount (1/2 : ℝ) = 2 := by norm_num [binCount]
+
+example : (0 : ℝ) < ∑ i ∈ close (1/2) x, d i := by
+  norm_num [d, Fin.sum_univ_two]
+
+example : (0 : ℝ) < ∑ i ∈ close (1/2) x, (1-d i) := by
+  norm_num [d, Fin.sum_univ_two]
+
+example : IsOLS (coarsenedDesign (1/2) x d) y c := by
+  intro j
+  have hj : j.val = 0 ∨ j.val = 1 ∨ j.val = 2 ∨ j.val = 3 := by
+    have h := j.isLt
+    norm_num [binCount] at h
+    omega
+  rcases hj with hj | hj | hj | hj <;>
+    norm_num [dot, predict, coarsenedDesign, binCount, binIndicator,
+      inBin, x, d, y, c, Fin.sum_univ_two, Fin.sum_univ_succ, hj]
+
+-- An explicitly different nuisance vector solves the same equations.
+example : IsOLS (coarsenedDesign (1/2) x d) y c' := by
+  have hpred : ∀ i, predict (coarsenedDesign (1/2) x d) c' i = y i := by
+    intro i
+    unfold predict
+    rw [← Fin.sum_congr' _ (show 4 = binCount (1/2 : ℝ)+2 by norm_num [binCount])]
+    fin_cases i <;>
+      norm_num [Fin.sum_univ_four, coarsenedDesign, binIndicator, inBin,
+        binCount, x, d, y, c']
+  intro j
+  simp [dot, hpred]
+
+example : c ≠ c' := by
+  intro h
+  have h0 := congrFun h ⟨0, by omega⟩
+  norm_num [c, c'] at h0
+
+example : rd (1/2) x d y = 2 := by
+  norm_num [rd, d, y, Fin.sum_univ_two]
+
+-- Check the disclosed necessity omission at an ordinary endpoint.
+def boundaryX : Fin 2 → ℝ := ![-1/4, 1/2]
+
+@[simp] theorem close_boundary : close (1/2 : ℝ) boundaryX = Finset.univ := by
+  ext i
+  fin_cases i <;> norm_num [close, boundaryX]
+
+example : ¬ Condition1 (1/2) boundaryX := by
+  rintro ⟨⟨i, hi⟩, _⟩
+  fin_cases i <;> norm_num [boundaryX] at hi
+
+example : TwoParty boundaryX d := by
+  constructor
+  · intro i; fin_cases i <;> norm_num [boundaryX]
+  constructor
+  · intro i; fin_cases i <;> norm_num [d]
+  constructor
+  · intro i; fin_cases i <;> norm_num [boundaryX, d]
+  · intro i; fin_cases i <;> norm_num [boundaryX, d]
+
+example : (0 : ℝ) < ∑ i ∈ close (1/2) boundaryX, d i := by
+  norm_num [d, Fin.sum_univ_two]
+
+example : (0 : ℝ) < ∑ i ∈ close (1/2) boundaryX, (1-d i) := by
+  norm_num [d, Fin.sum_univ_two]
+
+example : rd (1/2) boundaryX d y = 2 := by
+  norm_num [rd, d, y, Fin.sum_univ_two]
+
+end Review

@@ -63,6 +63,8 @@ theorem blocked_school_exposure_formula_proof {b : ℕ} (n t : Fin b → ℕ)
           (if Disjoint s.val (peers h) then 1 else 0))
     _ = _ := by simp_rw [blockedExposure_local_sum]
 
+example : type_of% @AronowAudit.P037.blocked_school_exposure_formula := blocked_school_exposure_formula_proof
+
 lemma monteCarlo_chebyshev_ge {Ω : Type*} [Fintype Ω]
     (d : FiniteDesign Ω) (X : Ω → ℝ) (ε : ℝ) (hε : 0<ε) :
     designProbability d (fun z => ε ≤ |X z-designMean d X|) ≤
@@ -142,6 +144,8 @@ theorem monte_carlo_simultaneous_bound_proof {Ω : Type*} [Fintype Ω]
       intro k _
       exact monteCarlo_single P J hJ (E k) ε hε
     _ = (m:ℝ)/(4*J*ε^2) := by simp [div_eq_mul_inv]
+
+example : type_of% @AronowAudit.P037.monte_carlo_simultaneous_bound := monte_carlo_simultaneous_bound_proof
 
 lemma schoolSampler_subset_card (n t : ℕ) :
     Fintype.card {s : Finset (Fin n) // s.card=t} = Nat.choose n t := by
@@ -447,6 +451,8 @@ theorem school_sampler_counterexample_proof :
         apply_ite (fun q : ℚ => (q:ℝ))] at hc ⊢ <;> exact hc
 
 
+example : type_of% @AronowAudit.P037.school_sampler_counterexample := school_sampler_counterexample_proof
+
 lemma schoolVariance_signed_mean {Ω : Type*} [Fintype Ω]
     (p : Ω → ℝ) (htotal : ∑ z, p z=1)
     (S : Ω → Bool) (half : (∑ z, p z*(if S z then 1 else 0))=1/2) :
@@ -526,5 +532,7 @@ theorem school_statistic_variance_proof {Ω : Type*} [Fintype Ω] {n : ℕ}
         rw [Finset.sum_comm]
         simp_rw [← Finset.mul_sum]
       _ = _ := by simp_rw [schoolVariance_signed_pair p htotal S half]
+
+example : type_of% @AronowAudit.P037.school_statistic_variance := school_statistic_variance_proof
 
 end AronowAudit.P037.Wave1

@@ -11,7 +11,7 @@ open scoped BigOperators Topology unitInterval
 local instance tc11_lipschitz_uniform_probability : IsProbabilityMeasure uniformMargins :=
   ⟨uniform_law_normalized.1⟩
 
-/-- A polynomial of degree at most `J` using the finite Bernstein weights. -/
+/-- A degree `J` polynomial using the actual finite Bernstein weights. -/
 def tc11_bernstein (h : ℝ → ℝ) (J : ℕ) : Polynomial ℝ :=
   (∑ k : Fin (J+1), Polynomial.C (h (2*(bernstein.z k : ℝ)-1)) *
     bernsteinPolynomial ℝ J k).comp (Polynomial.C (1/2) * Polynomial.X + Polynomial.C (1/2))
@@ -192,7 +192,7 @@ theorem tc11_bias_approximation_bound (h : ℝ → ℝ)
     _ ≤ (A*Real.sqrt v)/v := div_le_div_of_nonneg_right hbound hv.le
     _ = A / Real.sqrt v := by field_simp; nlinarith
 
-/-- A fixed Lipschitz function has uniformly bounded bias at every positive degree. -/
+/-- C023-LIPSCHITZ: a fixed Lipschitz function has uniformly bounded bias at every positive degree. -/
 theorem lipschitz_bias_bounded (h : ℝ → ℝ) (L : ℝ) (hL : 0 ≤ L)
     (hlip : ∀ x ∈ Set.Icc (-1) 1, ∀ y ∈ Set.Icc (-1) 1,
       |h x-h y| ≤ L*|x-y|) (J : ℕ) (hJ : 1 ≤ J) :

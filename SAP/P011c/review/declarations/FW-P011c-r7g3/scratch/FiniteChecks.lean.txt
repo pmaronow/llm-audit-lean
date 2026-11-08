@@ -1,0 +1,100 @@
+import SAP.P011c.Defs.WholeW1
+
+open SAP.P011c
+open scoped BigOperators Matrix
+
+namespace ReviewFinite
+noncomputable section
+
+def zeroGraph (n : ℕ) : Graph n := ⟨fun _ _ => false, by simp⟩
+
+def edgeTwo : Graph 2 :=
+  ⟨fun i j => decide (i ≠ j), by
+    constructor
+    · intro i j
+      simp [ne_comm]
+    · intro i
+      simp⟩
+
+lemma edgeDegree (i : Fin 2) : degree edgeTwo i = 1 := by
+  fin_cases i <;> decide
+
+lemma capacityTwo : ∀ i, 2 * (degree edgeTwo i : ℝ) - 1 ≤ ((1 : ℕ) : ℝ) := by
+  intro i
+  rw [edgeDegree]
+  norm_num
+
+lemma capacityMatrixTwo : recruitmentCapacityMatrix edgeTwo (fun _ => 1) =
+    (fun _ _ => (1 : ℝ)) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [recruitmentCapacityMatrix, oracleMatrix, adjacency, edgeTwo,
+      degree, Fin.sum_univ_two, Matrix.one_apply, Matrix.diagonal_apply]
+
+lemma positiveTwo : PSD (recruitmentCapacityMatrix edgeTwo (fun _ => 1)) := by
+  rw [capacityMatrixTwo]
+  constructor
+  · intro i j
+    rfl
+  · intro x
+    simp only [quadratic, Fin.sum_univ_two]
+    nlinarith [sq_nonneg (x 0 + x 1)]
+
+example : ∃ (R : Graph 2) (h : Fin 2 → ℕ),
+    (∀ i, 2 * (degree R i : ℝ) - 1 ≤ (h i : ℝ)) ∧
+    PSD (recruitmentCapacityMatrix R h) ∧
+    ∀ x, 0 ≤ quadratic (recruitmentCapacityMatrix R h) x / (2 : ℝ) := by
+  refine ⟨edgeTwo, (fun _ => 1), capacityTwo, positiveTwo, ?_⟩
+  intro x
+  exact div_nonneg (positiveTwo.2 x) (by norm_num)
+
+-- This would change if the subtraction in the capacity matrix were natural subtraction.
+example : recruitmentCapacityMatrix edgeTwo (fun _ => 0) 0 0 = 0 := by
+  norm_num [recruitmentCapacityMatrix, oracleMatrix, adjacency, edgeTwo,
+    degree, Fin.sum_univ_two, Matrix.one_apply, Matrix.diagonal_apply]
+
+-- The capacity hypothesis has actual content: removing it permits a negative quadratic form.
+example : quadratic (recruitmentCapacityMatrix edgeTwo (fun _ => 0)) ![1, -1] = -2 := by
+  norm_num [quadratic, recruitmentCapacityMatrix, oracleMatrix, adjacency, edgeTwo,
+    degree, Fin.sum_univ_two, Matrix.one_apply, Matrix.diagonal_apply]
+
+-- A fixed correction keeps two distinct tied maximizers, including for negative corrections.
+example : edgeTwo ≠ zeroGraph 2 := by
+  intro h
+  have hh := congrArg (fun A : Graph 2 => A.val 0 1) h
+  norm_num [edgeTwo, zeroGraph] at hh
+
+example :
+    Maximizes (zeroGraph 2) (fun _ => 1) (fun _ => (-7 : ℝ)) (zeroGraph 2) ∧
+    Maximizes (zeroGraph 2) (fun _ => 1) (fun _ => (-7 : ℝ)) edgeTwo := by
+  constructor
+  · constructor
+    · simp [Compatible, zeroGraph, degree]
+    · intro B _
+      exact le_refl _
+  · constructor
+    · simp [Compatible, zeroGraph, edgeDegree]
+    · intro B _
+      exact le_refl _
+
+example (n : ℕ) (R : Graph n) (d : Fin n → ℕ) (f : Graph n → ℝ)
+    (c : ℝ) (A : Graph n) :
+    Maximizes R d (fun B => f B + c) A ↔ Maximizes R d f A := by
+  constructor
+  · intro h
+    exact ⟨h.1, fun B hb => (add_le_add_iff_right c).mp (h.2 B hb)⟩
+  · intro h
+    exact ⟨h.1, fun B hb => (add_le_add_iff_right c).mpr (h.2 B hb)⟩
+
+-- The finite positivity assertion really includes the empty vertex type.
+example (R : Graph 0) (h : Fin 0 → ℕ) : PSD (recruitmentCapacityMatrix R h) := by
+  constructor
+  · intro i
+    exact Fin.elim0 i
+  · intro x
+    simp [quadratic]
+
+#print axioms positiveTwo
+
+end
+end ReviewFinite

@@ -1,0 +1,150 @@
+import SAP.P018a.Challenge
+
+set_option autoImplicit false
+set_option maxHeartbeats 3000000
+set_option maxRecDepth 10000
+
+open Finset Matrix MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology Matrix.Norms.Elementwise ENNReal
+open SAP.P018a
+
+namespace Review
+
+local instance : IsProbabilityMeasure fairLaw := by
+  unfold fairLaw
+  infer_instance
+
+lemma fair_integral (f : Bool → ℝ) :
+    (∫ b, f b ∂fairLaw) = (f false + f true)/2 := by
+  rw [fairLaw, PMF.integral_eq_sum]
+  simp [PMF.uniformOfFintype_apply]
+  ring
+
+lemma fair_prod_integral (f : Bool × Bool → ℝ) :
+    (∫ b, f b ∂fairLaw.prod fairLaw) =
+      (f (false,false)+f (false,true)+f (true,false)+f (true,true))/4 := by
+  rw [integral_prod f Integrable.of_finite]
+  simp only [fair_integral]
+  ring
+
+lemma sign_gram : populationGram signKernel = (1 : Mat 1) := by
+  ext a b
+  fin_cases a
+  fin_cases b
+  norm_num [populationGram, meanMat, signKernel, outer]
+
+lemma sign_standing : Standing signKernel := by
+  refine ⟨by change IsProbabilityMeasure fairLaw; infer_instance,
+    measurable_of_countable _, measurable_of_countable _, ?_, ?_, ?_, ?_⟩
+  · intro u v
+    simp [signKernel, add_comm]
+  · refine ⟨2, by norm_num, Filter.Eventually.of_forall ?_⟩
+    rintro ⟨u,v⟩
+    have hx : signKernel.X u v = (1 : Vec 1) := by
+      ext a
+      fin_cases a
+      rfl
+    constructor
+    · rw [hx]
+      norm_num
+    · cases u <;> cases v <;> norm_num [signKernel, signValue]
+  · exact ⟨0, fun _ _ => rfl⟩
+  · rw [sign_gram]
+    simp
+
+lemma sign_beta : populationBeta signKernel = 0 := by
+  have hm : meanVec (signKernel.μ.prod signKernel.μ)
+      (fun uv => score (signKernel.X uv.1 uv.2) (signKernel.Y uv.1 uv.2)) = 0 := by
+    ext a
+    fin_cases a
+    norm_num [meanVec, score, signKernel, fair_prod_integral, signValue]
+  simp [populationBeta, hm]
+
+lemma sign_gamma : projectionGamma signKernel = (1 : Mat 1) := by
+  ext a b
+  fin_cases a
+  fin_cases b
+  simp only [projectionGamma, meanMat, outer, projection, meanVec, populationScore,
+    populationResidual, sign_beta]
+  norm_num [signKernel, dot, score, outer, fair_integral, signValue]
+
+-- T8: the general model has an actual contrast with strictly positive limiting variance.
+example : Standing signKernel ∧
+    0 < dot (![1] : Vec 1) ((limitingTarget signKernel).mulVec ![1]) := by
+  refine ⟨sign_standing, ?_⟩
+  norm_num [limitingTarget, sign_gram, sign_gamma, sandwich, dot,
+    Matrix.mulVec, Matrix.one_apply, Matrix.vecHead, Fin.sum_univ_one]
+
+-- T6: both stochastic hypotheses can hold in nonempty dimensions.
+example : ∃ (μ : Measure Unit) (a ν : Unit → Vec 1) (τ σ : ℝ),
+    IsProbabilityMeasure μ ∧
+    (∀ i, MemLp (fun ω => a ω i) 2 μ) ∧
+    (∀ i, MemLp (fun ω => ν ω i) 2 μ) ∧ IndepFun a ν μ ∧
+    varMat μ a = τ • 1 ∧ varMat μ ν = σ • 1 := by
+  refine ⟨Measure.dirac (), fun _ => 0, fun _ => 0, 0, 0, inferInstance,
+    fun _ => memLp_const 0, fun _ => memLp_const 0, indepFun_const_left _ _, ?_, ?_⟩ <;>
+    ext a b <;> simp [varMat, covMat, ProbabilityTheory.covariance]
+
+-- T6: ordinary GLS inverses exist for positive definite C and full-rank F.
+example : ∃ (C : Mat 1) (F : Matrix (Fin 1) (Fin 1) ℝ),
+    C.PosDef ∧ IsUnit C.det ∧ C.transpose = C ∧
+    IsUnit (F.transpose * C⁻¹ * F).det := by
+  refine ⟨1, 1, Matrix.PosDef.one, ?_, ?_, ?_⟩ <;> simp
+
+-- T7: exact arithmetic checks the genuinely nonsingular negative-variance witness.
+lemma atom_gram : sampleGram degeneracyX = !![28,24;24,48] := by
+  ext a b
+  fin_cases a <;> fin_cases b <;>
+    norm_num [sampleGram, outer, degeneracyX, degeneracyZ, eightMembers,
+      Fin.sum_univ_succ]
+
+example : (sampleGram degeneracyX).det = 768 := by
+  rw [atom_gram]
+  norm_num [Matrix.det_fin_two]
+
+lemma atom_fit : sampleOLS degeneracyX degeneracyY = 0 := by
+  have hs : (∑ d : Fin 28, score (degeneracyX d) (degeneracyY d)) = 0 := by
+    ext a
+    fin_cases a <;>
+      norm_num [score, degeneracyX, degeneracyY, degeneracyZ, degeneracyW,
+        eightMembers, Fin.sum_univ_succ]
+  rw [sampleOLS, hs]
+  simp
+
+lemma atom_meat : meat eightMembers (fun d => score (degeneracyX d)
+    (fittedResidual degeneracyX degeneracyY d)) = !![240,160;160,64] := by
+  simp only [fittedResidual, atom_fit, dot, mul_zero, Finset.sum_const_zero, sub_zero]
+  ext a b
+  fin_cases a <;> fin_cases b <;>
+    norm_num [meat, Matrix.sum_apply, score, outer, degeneracyX, degeneracyY,
+      degeneracyZ, degeneracyW, eightMembers, Fin.sum_univ_succ]
+
+example : sampleVariance eightMembers degeneracyX degeneracyY 1 1 < 0 := by
+  simp only [sampleVariance, atom_gram, atom_meat, sandwich]
+  norm_num [Matrix.inv_def, Ring.inverse_eq_inv, Matrix.adjugate_fin_two,
+    Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
+
+example : unitSampleLaw signPairKernel 8 {wholeDegeneracyAtom} =
+    ENNReal.ofReal ((4 : ℝ)⁻¹^8) := by
+  change (Measure.pi (fun _ : Fin 8 => fairLaw.prod fairLaw)) {wholeDegeneracyAtom} = _
+  rw [Measure.pi_singleton]
+  have hp (u : Bool × Bool) : (fairLaw.prod fairLaw) {u} = (4 : ℝ≥0∞)⁻¹ := by
+    rw [← Set.singleton_prod_singleton, Measure.prod_prod]
+    simp [fairLaw, PMF.uniformOfFintype_apply]
+    have hfour : (2 : ℝ≥0∞)*2 = 4 := by norm_num
+    simpa only [hfour] using (ENNReal.mul_inv (a := (2 : ℝ≥0∞)) (b := 2)
+      (by norm_num) (by norm_num)).symm
+  simp only [hp, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+  rw [ENNReal.ofReal_pow (by positivity), ENNReal.ofReal_inv_of_pos (by norm_num)]
+  norm_num
+
+-- T9: the all-N formula really encounters zero dyad mass at N=1.
+example : W1W 1 = 0 ∧ W1c (0 : Fin 1) = 0 := by
+  have he : dyads 1 = ∅ := by decide
+  have hi : IsEmpty (Dyad 1) := ⟨fun d => by
+    have hd := d.property
+    simpa only [he, Finset.notMem_empty] using hd⟩
+  letI := hi
+  simp [W1W, W1c]
+
+end Review

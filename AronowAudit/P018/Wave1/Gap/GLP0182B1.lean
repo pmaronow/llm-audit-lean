@@ -217,7 +217,7 @@ lemma inverse_gram_sample_rank : SampleRank inverseKernel := by
     rw [inverse_gram_Q, Matrix.det_smul, hz, mul_zero]
   exact hpos.ne' he
 
-/-- The set in the Euclidean operator supremum is bounded above. -/
+/-- The set in the source's Euclidean operator supremum is bounded above. -/
 lemma inverse_gram_operator_bdd (M : Mat 2) :
     BddAbove {r : ℝ | ∃ x : Vec 2, euclideanSq x ≤ 1 ∧
       r = Real.sqrt (euclideanSq (M.mulVec x))} := by
@@ -317,7 +317,7 @@ lemma inverse_gram_pointwise_lower {N : ℕ} (hN : 3 ≤ N) (ω : Fin N → ℝ)
       mul_le_mul_of_nonneg_left hu (by positivity)
     _ = 1 := by nlinarith [he]
 
-/-- Bounded two-coordinate kernels satisfy the dyadic weak law. -/
+/-- Bounded two-coordinate kernels satisfy the already proved dyadic weak law. -/
 lemma inverse_gram_probability_limit :
     inProbability (unitSampleLaw inverseKernel) (fun N ω =>
       (inverse_gram_Q ω)⁻¹ - (populationGram inverseKernel)⁻¹) := by
@@ -453,5 +453,7 @@ theorem inverse_gram_counterexample_proof :
         (((Dreal N)⁻¹ • sampleGram (design inverseKernel ω))⁻¹)) ∂ unitSampleLaw inverseKernel N) = ∞) := by
   exact ⟨inverse_gram_standing, inverse_gram_sample_rank, inverse_gram_probability_limit,
     inverse_gram_integral_lower, inverse_gram_integral_top⟩
+
+example : type_of% @AronowAudit.P018.inverse_gram_counterexample := inverse_gram_counterexample_proof
 
 end AronowAudit.P018.Wave1

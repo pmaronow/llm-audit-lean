@@ -9,9 +9,9 @@ attribute [local instance] Classical.propDecidable
 set_option maxHeartbeats 1500000
 set_option maxRecDepth 4000
 
-
-
-/-- Apply the one-coordinate Bernoulli identity to an arbitrary
+-- The next four product-law identities adapt the finite-law argument in
+-- AronowAudit/P009/Wave1/Gap/GP0092B1.lean.
+/-- Reuse the proved one-coordinate Bernoulli identity with an arbitrary
 outcome function by putting that function at every unit of an experiment. -/
 private lemma correctedBias_one_numerator {n : ℕ} (E : Experiment n)
     (hb : Bernoulli E) (i : Fin n) (a : Bool) (f : Assignment n → ℝ) :
@@ -475,6 +475,8 @@ theorem corrected_bias_term_bounds_proof {n : ℕ} (hn : 0 < n) (E : Experiment 
   apply hB2.trans
   apply (div_le_iff₀ hd).2
   nlinarith [pow_nonneg (sq_nonneg k) 2]
+
+example : type_of% @AronowAudit.P009.corrected_bias_term_bounds := corrected_bias_term_bounds_proof
 
 end
 end AronowAudit.P009.Wave1

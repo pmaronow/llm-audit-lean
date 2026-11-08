@@ -1,37 +1,41 @@
-/-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
-
 import AronowAudit.External.StatLean.AsymptoticStatistics.Core.Hilbert
 
 /-!
 # Candidate influence function (a.e. mean-zero L² representative)
 
-This file packages a *candidate influence function*: a real-valued function
-$\tilde\psi : \Omega \to \mathbb{R}$ that belongs to $L^2(P)$ and satisfies
-$\int \tilde\psi \, dP = 0$. Its equivalence class lies in the mean-zero subspace
+An *influence function* for an estimator of a parameter on a model with
+distribution $P$ on the observation space $\Omega$ is, in the working
+definition of semiparametric efficiency theory, a real-valued function
+$\tilde\psi : \Omega \to \mathbb{R}$ that is square-integrable and
+centered, i.e. $\tilde\psi \in L^2(P)$ with $\int \tilde\psi \, dP = 0$.
+Such a function therefore lives in the mean-zero subspace
 $L^2_0(P) = \{ g \in L^2(P) : \int g \, dP = 0 \}$, the closed subspace
-of $L^2(P)$ orthogonal to the constants. These conditions alone do not establish
-that the function is an influence function for an estimator or parameter.
-That requires a separate asymptotic-linear representation or the appropriate
-pathwise derivative identity.
+of $L^2(P)$ orthogonal to the constants.
 
-The bundle retains a raw representative on the observation space.
-`MemLp raw 2 P` supplies a.e. strong measurability and square-integrability;
-it does not require the raw representative to be pointwise measurable.
-The `CandidateIF.toL2ZeroMean` constructor turns the candidate into an element
-of $L^2_0(P)$, and its representative agrees with `raw` almost everywhere.
-The construction works for finite measures $P$, including probability laws.
+This file packages that data model-agnostically. A *candidate influence
+function* bundles a raw measurable representative $\Omega \to \mathbb{R}$
+together with square-integrability under $P$ and the mean-zero
+constraint, into a single object that lifts cleanly into $L^2_0(P)$.
+Concrete examples specify the influence function pointwise as a raw
+function on the observation space; comparing two such formulas as
+*almost-everywhere* equalities is much easier than comparing them as
+elements of the quotient $L^2(P)$. The `CandidateIF.toL2ZeroMean`
+constructor turns a candidate into an element of the target Hilbert
+space $L^2_0(P)$, and `CandidateIF.toL2ZeroMean_eq_of_aeEq` says two
+candidates that agree almost everywhere land at the same $L^2_0(P)$
+element.
 
 **Reference.** A. W. van der Vaart, *Asymptotic Statistics*, Cambridge
 Series in Statistical and Probabilistic Mathematics, Cambridge
 University Press, 1998. Chapter 25 (Semiparametric Models), §25.3
-(Efficient Influence Functions), for the role of mean-zero square-integrable
-functions in semiparametric efficiency. The structure here packages only
-candidate functions, without a model, parameter or estimator.
+(Efficient Influence Functions): an influence function is an a.e.
+defined real function on $\Omega$ with mean zero and finite second
+moment, i.e. an element of $L^2_0(P)$. The structure here formalizes
+this working definition rather than a single numbered theorem.
 
 **Proof formalization notes.** The bundle has exactly three fields:
-`raw` (a pointwise representative); `memLp2` (square-integrability under $P$, which
+`raw` (the raw measurable representative — without it the object is not
+a candidate function); `memLp2` (square-integrability under $P$, which
 bundles `AEStronglyMeasurable` via `MemLp.aestronglyMeasurable`, so a
 separate measurability field is unnecessary and is intentionally
 absent); and `mean_zero` (centering, required to land in the kernel of
@@ -41,7 +45,9 @@ $L^2_0(P) = \ker(\text{integralL2}\,P)$ is discharged by
 `integralL2_toLp_eq_integral` (which identifies the abstract functional
 on an L² lift with the ordinary integral, via `L2.inner_def` and the
 real inner-product reduction `⟪a,b⟫_ℝ = b * a`) composed with the
-`mean_zero` field.
+`mean_zero` field. The a.e.-equality interface
+`toL2ZeroMean_eq_of_aeEq` reduces equality of $L^2_0(P)$ elements to
+equality of underlying `Lp` elements via `MemLp.toLp_congr`.
 
 **Bibliographic comments.** The notion of an influence function
 originates in robust statistics: F. R. Hampel, "The Influence Curve and
@@ -49,8 +55,8 @@ Its Role in Robust Estimation," *Journal of the American Statistical
 Association* 69 (1974), 383–393, introduced the *influence curve*. Its
 reinterpretation as the mean-zero, square-integrable element of $L^2(P)$
 representing the first-order behavior of an asymptotically linear
-estimator is part of the semiparametric efficiency literature
-(cf. J. Pfanzagl, *Contributions to
+estimator — the form used here and in §25.3 — is folklore of the
+semiparametric efficiency literature (cf. J. Pfanzagl, *Contributions to
 a General Asymptotic Statistical Theory*, Springer, 1982; P. J. Bickel,
 C. A. J. Klaassen, Y. Ritov, J. A. Wellner, *Efficient and Adaptive
 Estimation for Semiparametric Models*, Johns Hopkins University Press,
@@ -72,15 +78,15 @@ function packaged with the data needed to lift it into `L2ZeroMean P`.
 
 Fields, in order:
 
-- `raw` — a pointwise representative, not required to be measurable.
+- `raw` — the raw measurable representative; without it, the object
+  is not a candidate function.
 - `memLp2` — square-integrability under `P`. Bundles
   `AEStronglyMeasurable` via `MemLp.aestronglyMeasurable`, so a separate
   measurability field is unnecessary and is intentionally absent.
 - `mean_zero` — mean-zero, required to land in `L2ZeroMean P`
   (the kernel of `integralL2 P`).
 
-The bundle does not assert an estimator expansion or a parameter's pathwise
-derivative identity. Reference: vdV §25.3 (efficient influence functions). -/
+Reference: vdV §25.3 (definition of influence function). -/
 structure CandidateIF (P : Measure Ω) [IsFiniteMeasure P] where
   /-- The raw pointwise representative `Ω → ℝ` of the candidate influence function. -/
   raw : Ω → ℝ
@@ -134,6 +140,20 @@ with the raw representative `φ.raw`. -/
     ((φ.toL2ZeroMean : Lp ℝ 2 P) : Ω → ℝ) =ᵐ[P] φ.raw :=
   MemLp.coeFn_toLp φ.memLp2
 
+/-- Two candidates whose raw representatives agree almost everywhere
+land at the same element of `L2ZeroMean P`.
+
+This is the practical interface for concrete examples: the user
+supplies a raw formula `φraw`, proves `φraw =ᵐ[P] canonicalFormula`,
+and this lemma collapses the comparison to a one-line rewrite at the
+L²₀ level. -/
+theorem toL2ZeroMean_eq_of_aeEq
+    {φ ψ : CandidateIF P} (h : φ.raw =ᵐ[P] ψ.raw) :
+    φ.toL2ZeroMean = ψ.toL2ZeroMean := by
+  apply Subtype.ext
+  -- reduce equality of L²₀ elements to equality of underlying Lp elements
+  change φ.memLp2.toLp φ.raw = ψ.memLp2.toLp ψ.raw
+  exact MemLp.toLp_congr φ.memLp2 ψ.memLp2 h
 
 end CandidateIF
 

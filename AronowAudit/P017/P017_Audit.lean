@@ -7,11 +7,12 @@ import Mathlib.Probability.Distributions.Gaussian.Real
 import Mathlib.Probability.ProductMeasure
 import Mathlib.Probability.CDF
 
-/-! Formalization of *Data-Adaptive Causal Effects and Superefficiency*, PDF pp. 1–3.
+/-! Audit of *Data-Adaptive Causal Effects and Superefficiency*, PDF pp. 1–3.
 The paper leaves the sampling design unspecified. Population and sampling measures
 are separate genuine probability measures. Sample sizes use `ℕ`; assertions at a
 fixed size require `1 ≤ n`, and changing the value at zero does not change a limit.
-The extended radius includes the case `c = +∞`.
+No axioms are introduced. A `sorry` is an unproved statement, including false
+Proposition 1. The extended radius includes the case `c = +∞`.
 -/
 
 namespace AronowAudit.P017
@@ -58,7 +59,7 @@ def residual (μ c x : ℝ) : ℝ := x - clipReal μ c x
 /-- Definition 2's event `|hatθ − μ| ≤ c`, including infinite c. -/
 def inside (μ : ℝ) (c : ℝ≥0∞) (x : ℝ) : Prop := ENNReal.ofReal |x - μ| ≤ c
 
-/-- Proposition 1, PDF p. 2: “a nonnegative weighting … w_Fn”. The
+/-- Proposition 1, PDF p. 2: “a nonnegative weighting … w_Fn”. The validator's
 ordinary finite-ratio reading requires measurability, nonnegativity, integrable
 weight and weighted effect, and a strictly positive denominator. Weights may
 depend on every full-data variable and on the realized empirical distribution. -/
@@ -84,7 +85,7 @@ def pr {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω) (A : Set Ω) : ℝ := 
 /-- “sqrt(n)” in Definition 1, PDF p. 2. -/
 def sqrtN (n : ℕ) : ℝ := Real.sqrt (n : ℝ)
 
-/-- The standard `o_p(a_n)` reading: every positive
+/-- The standard `o_p(a_n)` reading specified by the audit: every positive
 threshold has exceedance probability tending to zero (PDF p. 2, proofs). -/
 def LittleOp {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
     (V : ℕ → Ω → ℝ) (a : ℕ → ℝ) : Prop :=
@@ -98,13 +99,13 @@ def BoundedInProbability {Ω : Type*} [MeasurableSpace Ω]
     pr P {ω | |V n ω| > M} < ε
 
 /-- Ordinary consistency for the finite population mean, used by corrected
-Proposition 3's proof (P017-E002). -/
+Proposition 3's proof (P017-E002, derivation §7). -/
 def Consistent {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
     (hat : ℕ → Ω → ℝ) (μ : ℝ) : Prop :=
   ∀ b : ℝ, 0 < b → Tendsto (fun n => pr P {ω | |hat n ω - μ| > b}) atTop (𝓝 0)
 
 /-- Definition 1, PDF p. 2: “sqrt(n)(hatθ − θ₀) = N(0, σ²) + o_p(1),
-for some 0 < σ² < ∞”. The weak-convergence reading uses Mathlib's
+for some 0 < σ² < ∞”. The audit's weak-convergence reading uses Mathlib's
 convergence in distribution to the actual Gaussian probability law. -/
 def RootNNormal {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
     [IsProbabilityMeasure P] (hat : ℕ → Ω → ℝ) (μ : ℝ) : Prop :=
@@ -200,8 +201,8 @@ theorem infinite_radius_facts {Ξ : Type*} [MeasurableSpace Ξ]
     simp only [clipTarget, ↓reduceIte, sub_self, zero_pow (by decide : 2 ≠ 0), integral_zero, mul_zero]
     exact tendsto_const_nhds
 
-/-- Corrected Proposition 4, P017-T8(a): for ordered arguments the change of
-the clip lies between zero and the argument change. -/
+/-- Corrected Proposition 4, P017-T8(a): for ordered arguments the changes of
+both the clip and its residual lie between zero and the argument change. -/
 theorem ordered_clip_changes (μ c x y : ℝ) (hc : 0 ≤ c) (hxy : x ≤ y) :
     0 ≤ clipReal μ c y - clipReal μ c x ∧
     clipReal μ c y - clipReal μ c x ≤ y - x := by
@@ -429,7 +430,7 @@ theorem strictly_one_sided_not_representable {Ω : Type*} [MeasurableSpace Ω]
 
 /-- P017-T2 sufficiency for straddling values: a bounded two-region simple
 weight balances the positive and negative centered first moments. It is an
-equivalent unnormalized version of the displayed mixture weight in P017-E001. -/
+equivalent unnormalized version of the validator's displayed mixture weight. -/
 theorem straddling_weight_representation {Ω : Type*} [MeasurableSpace Ω]
     (G : Measure Ω) [IsProbabilityMeasure G] (τ : Ω → ℝ)
     (hτm : Measurable τ) (hτi : Integrable τ G) (t : ℝ)
@@ -510,7 +511,7 @@ theorem straddling_weight_representation {Ω : Type*} [MeasurableSpace Ω]
     split_ifs <;> positivity
   · exact (div_eq_iff hdp.ne').mpr hnum
 
-/-- Full corrected weighted-mean fact, P017-T2, PDF p. 2 and P017-E001:
+/-- Full corrected weighted-mean fact, P017-T2, PDF p. 2 and P017-E001 §2:
 the target is attained exactly when it is an atom or has positive mass on both sides. -/
 theorem weighted_mean_characterization {Ω : Type*} [MeasurableSpace Ω]
     (G : Measure Ω) [IsProbabilityMeasure G] (τ : Ω → ℝ)
@@ -701,6 +702,35 @@ theorem interior_radius_support {Ω : Type*} [MeasurableSpace Ω]
   exact ⟨hLower.trans_le (EReal.coe_le_coe_iff.mpr hb.1),
     (EReal.coe_le_coe_iff.mpr hb.2).trans_lt hUpper⟩
 
+/-- P017-T3, corrected Proposition 1 with Definition 2 unchanged:
+the representation is exactly interior-or-atomic-endpoint, holds whenever
+the estimate is strictly inside the clipping interval, and under Definition 1
+holds with sampling probability tending to one. Binding endpoint atoms give
+an all-realizations representation; infinite c also gives one. -/
+theorem corrected_proposition1 {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ξ]
+    (G : Measure Ω) [IsProbabilityMeasure G] (τ : Ω → ℝ)
+    (hτm : Measurable τ) (hτi : Integrable τ G)
+    (hc : 0 < effectRadius G τ) (P : Measure Ξ) [IsProbabilityMeasure P]
+    (hat : ℕ → Ξ → ℝ) (hhm : ∀ n, Measurable (hat n)) :
+    (∀ x : ℝ,
+      supportInf (effectSupport G τ) ≤ (clipTarget (populationMean G τ) (effectRadius G τ) x : EReal) ∧
+      (clipTarget (populationMean G τ) (effectRadius G τ) x : EReal) ≤ supportSup (effectSupport G τ) ∧
+      (Representable G τ (clipTarget (populationMean G τ) (effectRadius G τ) x) ↔
+        InteriorOrEndpointAtom G τ (clipTarget (populationMean G τ) (effectRadius G τ) x))) ∧
+    (∀ x : ℝ, ENNReal.ofReal |x - populationMean G τ| < effectRadius G τ →
+      Representable G τ (clipTarget (populationMean G τ) (effectRadius G τ) x)) ∧
+    ((effectRadius G τ = ⊤ ∨
+      (∀ t : ℝ, (t = populationMean G τ - (effectRadius G τ).toReal ∨
+        t = populationMean G τ + (effectRadius G τ).toReal) →
+        ((t : EReal) = supportInf (effectSupport G τ) ∨
+          (t : EReal) = supportSup (effectSupport G τ)) → 0 < pr G {ω | τ ω = t})) →
+      ∀ x, Representable G τ (clipTarget (populationMean G τ) (effectRadius G τ) x)) ∧
+    (RootNNormal P hat (populationMean G τ) →
+      Tendsto (fun n => pr P {ω | ENNReal.ofReal |hat n ω - populationMean G τ| < effectRadius G τ})
+        atTop (𝓝 1) ∧
+      Tendsto (fun n => pr P {ω | Representable G τ
+        (clipTarget (populationMean G τ) (effectRadius G τ) (hat n ω))}) atTop (𝓝 1)) := by
+  sorry
 
 /-- P017-T4, corrected Definition 2 / Proposition 1 using a fixed finite
 radius 0 < d < c: every realized target is a nonnegative weighted full-data
@@ -857,6 +887,58 @@ theorem corrected_proposition3 {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableS
   · intro hInfinity n ω
     simp [clipTarget, hInfinity]
 
+/-- P017-T8, corrected finite mean-square proof of Proposition 4.
+For each fixed n the fourth-moment bound controls both the actual error and
+the printed intermediate difference; the Gaussian calculation concerns only
+the separately clipped normal part. No independence assumption is added. -/
+theorem corrected_proposition4_finite {Ξ : Type*} [MeasurableSpace Ξ]
+    (P : Measure Ξ) [IsProbabilityMeasure P] (hat Z ε : ℕ → Ξ → ℝ)
+    (μ c : ℝ) (v : ℝ≥0) (hc : 0 < c) (hv : 0 < v)
+    (hhm : ∀ n, Measurable (hat n)) (hr : NormalRemainder P hat Z ε μ v)
+    (n : ℕ) (hn : 1 ≤ n) :
+    let tilde := fun ω => μ + Z n ω / sqrtN n
+    (∀ x y, |clipReal μ c x - clipReal μ c y| ≤ |x - y| ∧
+      |residual μ c x - residual μ c y| ≤ |x - y|) ∧
+    (∀ᵐ ω ∂P, |residual μ c (hat n ω)| ≤ |residual μ c (tilde ω)| + |ε n ω| / sqrtN n) ∧
+    ((∫ ω, residual μ c (hat n ω) ^ 2 ∂P) ≤
+      2 * (∫ ω, residual μ c (tilde ω) ^ 2 ∂P) + 2 * (∫ ω, ε n ω ^ 2 ∂P) / (n : ℝ)) ∧
+    (∀ x, residual μ c x ^ 2 = max (|x - μ| - c) 0 ^ 2 ∧
+      residual μ c x ^ 2 ≤ (if |x - μ| > c then (x - μ) ^ 2 else 0) ∧
+      (if |x - μ| > c then (x - μ) ^ 2 else 0) ≤ (x - μ) ^ 4 / c ^ 2) ∧
+    ((∫ ω, (tilde ω - μ) ^ 4 ∂P) = 3 * (v : ℝ) ^ 2 / (n : ℝ) ^ 2) ∧
+    ((∫ ω, residual μ c (hat n ω) ^ 2 ∂P) ≤
+      6 * (v : ℝ) ^ 2 / (c ^ 2 * (n : ℝ) ^ 2) + 2 * (∫ ω, ε n ω ^ 2 ∂P) / (n : ℝ)) ∧
+    (∀ᵐ ω ∂P, |tilde ω - clipReal μ c (hat n ω)| ≤
+      |residual μ c (tilde ω)| + |ε n ω| / sqrtN n) ∧
+    ((∫ ω, (tilde ω - clipReal μ c (hat n ω)) ^ 2 ∂P) ≤
+      6 * (v : ℝ) ^ 2 / (c ^ 2 * (n : ℝ) ^ 2) + 2 * (∫ ω, ε n ω ^ 2 ∂P) / (n : ℝ)) ∧
+    ((∫ ω, residual μ c (tilde ω) ^ 2 ∂P) ≤
+      (∫ ω, if |tilde ω - μ| > c then (tilde ω - μ) ^ 2 else 0 ∂P)) ∧
+    ((∫ ω, if |tilde ω - μ| > c then (tilde ω - μ) ^ 2 else 0 ∂P) = normalTail n c (Real.sqrt v)) := by
+  sorry
+
+/-- P017-T8's asymptotic correction: the exact bounds give o(n^(-1)) MSE
+for both differences under Proposition 4's printed remainder assumption. -/
+theorem corrected_proposition4_limits {Ξ : Type*} [MeasurableSpace Ξ]
+    (P : Measure Ξ) [IsProbabilityMeasure P] (hat Z ε : ℕ → Ξ → ℝ)
+    (μ c : ℝ) (v : ℝ≥0) (hc : 0 < c) (hv : 0 < v)
+    (hhm : ∀ n, Measurable (hat n)) (hr : NormalRemainder P hat Z ε μ v)
+    (he : SmallRemainderMS P ε) :
+    SmallMSE P (fun n ω => residual μ c (hat n ω)) ∧
+    SmallMSE P (fun n ω => μ + Z n ω / sqrtN n - clipReal μ c (hat n ω)) := by
+  sorry
+
+/-- P017-T9, Proposition 1 as printed, PDF p. 2. Every realized empirical
+target has a nonnegative weighting. This statement is false at atomless
+support endpoints; it is deliberately left unproved, not silently repaired. -/
+theorem proposition1_printed {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ξ]
+    (G : Measure Ω) [IsProbabilityMeasure G] (τ : Ω → ℝ)
+    (hτm : Measurable τ) (hτi : Integrable τ G) (P : Measure Ξ)
+    [IsProbabilityMeasure P] (hat : ℕ → Ξ → ℝ)
+    (hh : RootNNormal P hat (populationMean G τ)) :
+    ∀ n, 1 ≤ n → ∀ ω, Representable G τ
+      (clipTarget (populationMean G τ) (effectRadius G τ) (hat n ω)) := by
+  sorry
 
 /-- Exact support-bound step in Corollary 1 and P017-T4(iii): the printed
 maximum condition forces every supported estimate into the stated interval. -/
@@ -1026,6 +1108,22 @@ theorem positive_support_negative_estimates {Ω Ξ : Type*}
   have hp := (corollary1_corrected G τ hτm hτi P hat hhm hcond).2.2.2.1
   linarith
 
+/-- P017-T11, the correctly evaluated normal-tail integral in Proposition 4,
+PDF p. 3, with dx restored. This says nothing about the false upper bound
+for the target clipped from the perturbed estimate. -/
+theorem normal_tail_identity (n : ℕ) (hn : 1 ≤ n) (c σ : ℝ)
+    (hc : 0 < c) (hσ : 0 < σ) :
+    normalTail n c σ =
+      c * σ * Real.sqrt (2 / Real.pi) * Real.exp (-(c ^ 2 * (n : ℝ)) / (2 * σ ^ 2)) / sqrtN n +
+      2 * σ ^ 2 * normalCDF (-c * sqrtN n / σ) / (n : ℝ) := by
+  sorry
+
+/-- P017-T11's limit: the common normal-tail value is o(n^(-1)), and indeed
+o(n^(-k)) for every fixed positive real k. -/
+theorem normal_tail_limits (c σ : ℝ) (hc : 0 < c) (hσ : 0 < σ) :
+    Tendsto (fun n : ℕ => (n : ℝ) * normalTail n c σ) atTop (𝓝 0) ∧
+    ∀ k : ℝ, 0 < k → Tendsto (fun n : ℕ => (n : ℝ) ^ k * normalTail n c σ) atTop (𝓝 0) := by
+  sorry
 
 /-- P017-T13(a)–(b), repaired sentence after Proposition 3: the clipping
 interval is exactly the zero-error event, and its probability tends to one.
@@ -1065,6 +1163,17 @@ theorem corrected_zero_error_sentence {Ω Ξ : Type*} [MeasurableSpace Ω] [Meas
       simp only [heq]
       simpa using tendsto_const_nhds.sub (hcon _ hcR)
 
+/-- P017-T13(d), a valid exact bound: clipping failure is at most a Gaussian
+tail at half the clipping radius plus the remainder tail. No rate for the
+second probability is inferred from convergence in probability. -/
+theorem normal_plus_remainder_failure_bound {Ξ : Type*} [MeasurableSpace Ξ]
+    (P : Measure Ξ) [IsProbabilityMeasure P] (tilde u : Ξ → ℝ)
+    (htm : Measurable tilde) (hum : Measurable u) (μ c σ : ℝ)
+    (hc : 0 < c) (hσ : 0 < σ) (n : ℕ) (hn : 1 ≤ n)
+    (hlaw : P.map tilde = gaussianReal μ ⟨σ ^ 2 / (n : ℝ), by positivity⟩) :
+    pr P {ω | |tilde ω + u ω - μ| > c} ≤
+      2 * normalCDF (-c * sqrtN n / (2 * σ)) + pr P {ω | |u ω| > c / 2} := by
+  sorry
 
 /-- P017-T14, Proposition 3 as printed, PDF p. 2: under Assumption 1 and
 Definition 1, the root-n-scaled error for the actual data-adaptive target
@@ -1097,6 +1206,17 @@ theorem proposition3 {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ξ]
     rw [heq, sub_self, mul_zero, abs_zero, mul_one] at hω
     exact (not_lt_of_ge hη.le) hω
 
+/-- P017-T15, Proposition 4 as printed, PDF p. 3: with its exact normal-plus-
+remainder condition and E[ε²] = o(n^(-1/2)), the actual target has o(n^(-1))
+MSE. The radius may be infinite; normal and remainder may be dependent. -/
+theorem proposition4 {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ξ]
+    (G : Measure Ω) [IsProbabilityMeasure G] (τ : Ω → ℝ)
+    (hτm : Measurable τ) (hτi : Integrable τ G) (hc : 0 < effectRadius G τ)
+    (P : Measure Ξ) [IsProbabilityMeasure P] (hat Z ε : ℕ → Ξ → ℝ)
+    (hhm : ∀ n, Measurable (hat n)) (v : ℝ≥0) (hv : 0 < v)
+    (hr : NormalRemainder P hat Z ε (populationMean G τ) v) (he : SmallRemainderMS P ε) :
+    SmallMSE P (fun n ω => hat n ω - clipTarget (populationMean G τ) (effectRadius G τ) (hat n ω)) := by
+  sorry
 
 /-- P017-T16, Proposition 2 as printed, PDF p. 2: the data-adaptive target
 is within root-n stochastic order of the population mean. No positive-radius
@@ -1126,8 +1246,8 @@ theorem proposition2 {Ω Ξ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ξ]
   simpa only [abs_mul, abs_of_nonneg (Real.sqrt_nonneg (n : ℝ)), sqrtN] using
     lt_of_lt_of_le hω' hmul
 
-/-- The equiprobable two-point law; not a definition
-in the paper. P017-E001, P017-E002, P017-N001. -/
+/-- Validator constructions: the equiprobable two-point law; not a definition
+in the paper. P017-E001 §3, P017-E002 §2, P017-N001 §2. -/
 def fairPair (a b : ℝ) : Measure ℝ :=
   (1 / 2 : ℝ≥0∞) • Measure.dirac a + (1 / 2 : ℝ≥0∞) • Measure.dirac b
 
@@ -1136,7 +1256,7 @@ instance fairPair_probability (a b : ℝ) : IsProbabilityMeasure (fairPair a b) 
   norm_num [fairPair, Measure.add_apply, Measure.smul_apply]
   exact ENNReal.inv_two_add_inv_two
 
-/-- P017-T1's Uniform(0,1) effect law, P017-E001.
+/-- P017-T1's Uniform(0,1) effect law, P017-E001 v1 derivation §3.
 Restriction of Lebesgue measure to (0,1) has total mass one. -/
 def uniform01 : Measure ℝ := volume.restrict (Ioo 0 1)
 
@@ -1153,9 +1273,9 @@ instance ipwPopulation_probability : IsProbabilityMeasure ipwPopulation := by
   unfold ipwPopulation
   infer_instance
 
-/-- P017-T1: “Y(0)=B and Y(1)=B+τ” (P017-E001). -/
+/-- P017-T1: “Y(0)=B and Y(1)=B+τ” (validator, §3). -/
 def ipwY0 (ω : ℝ × (ℝ × ℝ)) : ℝ := ω.2.1
-/-- P017-T1: “Y(1)=B+τ”, P017-E001. -/
+/-- P017-T1: “Y(1)=B+τ”, validator P017-E001 v1 §3. -/
 def ipwY1 (ω : ℝ × (ℝ × ℝ)) : ℝ := ω.2.1 + ω.1
 
 /-- P017-T1: the unit effect is Y(1)−Y(0), not a new unrelated random variable. -/
@@ -1166,12 +1286,12 @@ def ipwObserved (ω : ℝ × (ℝ × ℝ)) : ℝ × ℝ :=
   (ω.2.2, ω.2.2 * ipwY1 ω + (1 - ω.2.2) * ipwY0 ω)
 
 /-- P017-T1: inverse-probability summand X=2TY−2(1−T)Y, defined even
-when a sample has no treated units (P017-E001). -/
+when a sample has no treated units (validator, §3). -/
 def ipwSummand (ω : ℝ × (ℝ × ℝ)) : ℝ :=
   2 * (ipwObserved ω).1 * (ipwObserved ω).2 -
     2 * (1 - (ipwObserved ω).1) * (ipwObserved ω).2
 
-/-- IID units in the counterexamples; the infinite product is an actual
+/-- IID units in the validator examples; the infinite product is an actual
 probability measure. Index i represents printed unit i+1. -/
 def iidSamples {Ω : Type*} [MeasurableSpace Ω] (G : Measure Ω) : Measure (ℕ → Ω) :=
   Measure.infinitePi (fun _ : ℕ => G)
@@ -1187,7 +1307,7 @@ def empiricalObserved {Ω D : Type*} [MeasurableSpace D]
     (O : Ω → D) (n : ℕ) (s : ℕ → Ω) : Measure D :=
   (1 / (n : ℝ≥0∞)) • ∑ i ∈ Finset.range n, Measure.dirac (O (s i))
 
-/-- Estimators: the arithmetic mean of the first n summands. -/
+/-- Validator estimators: the arithmetic mean of the first n summands. -/
 def sampleMean {Ω : Type*} (X : Ω → ℝ) (n : ℕ) (s : ℕ → Ω) : ℝ :=
   (∑ i ∈ Finset.range n, X (s i)) / (n : ℝ)
 
@@ -1243,23 +1363,71 @@ theorem ipw_bad_events_disjoint (n : ℕ) (hn : 1 ≤ n) :
   have hb := (hl 0 h0).1
   linarith
 
+/-- P017-T1 complete specified counterexample, P017-E001 v1 derivation §3.
+Includes population support/atoms, summand and estimator moments, the CLT
+with variance 53/12, both positive-probability bad events, their realized
+empirical laws, and obstruction for all full-data weights. This full statement
+is stronger than the separately proved endpoint-obstruction lemma. -/
+theorem uniform_ipw_counterexample :
+    Measurable ipwEffect ∧ Integrable ipwEffect ipwPopulation ∧
+    populationMean ipwPopulation ipwEffect = 1 / 2 ∧
+    effectSupport ipwPopulation ipwEffect = Icc 0 1 ∧
+    effectRadius ipwPopulation ipwEffect = (1 / 2 : ℝ≥0∞) ∧
+    0 < effectRadius ipwPopulation ipwEffect ∧
+    pr ipwPopulation {ω | ipwEffect ω = 0} = 0 ∧
+    pr ipwPopulation {ω | ipwEffect ω = 1} = 0 ∧
+    (∀ᵐ ω ∂ipwPopulation, 0 < ipwEffect ω ∧ ipwEffect ω < 1 ∧ |ipwSummand ω| < 4) ∧
+    populationMean ipwPopulation ipwSummand = 1 / 2 ∧
+    (∫ ω, ipwSummand ω ^ 2 ∂ipwPopulation) = 14 / 3 ∧
+    (∫ ω, (ipwSummand ω - 1 / 2) ^ 2 ∂ipwPopulation) = 53 / 12 ∧
+    (∀ n : ℕ, 1 ≤ n →
+      populationMean (iidSamples ipwPopulation) (sampleMean ipwSummand n) = 1 / 2 ∧
+      (∫ s, (sampleMean ipwSummand n s - 1 / 2) ^ 2 ∂iidSamples ipwPopulation) =
+        53 / (12 * (n : ℝ))) ∧
+    TendstoInDistribution (fun n s => sqrtN n * (sampleMean ipwSummand n s - 1 / 2))
+      atTop (fun x : ℝ => x) (fun _ => iidSamples ipwPopulation)
+      (gaussianReal 0 (53 / 12)) ∧
+    (∀ w : (ℝ × (ℝ × ℝ)) → ℝ, Measurable w → (∀ ω, 0 ≤ w ω) →
+      Integrable w ipwPopulation → 0 < (∫ ω, w ω ∂ipwPopulation) →
+      0 < weightedMean ipwPopulation ipwEffect w ∧ weightedMean ipwPopulation ipwEffect w < 1) ∧
+    (∀ n : ℕ, 1 ≤ n →
+      pr (iidSamples ipwPopulation) (ipwBadEvent (-1) n) = (1 / 4 : ℝ) ^ n ∧
+      pr (iidSamples ipwPopulation) (ipwBadEvent 1 n) = (1 / 4 : ℝ) ^ n ∧
+      0 < (1 / 4 : ℝ) ^ n ∧ Disjoint (ipwBadEvent (-1) n) (ipwBadEvent 1 n) ∧
+      (∀ s ∈ ipwBadEvent (-1) n,
+        (∀ i ∈ Finset.range n, ipwSummand (s i) = 2) ∧ sampleMean ipwSummand n s = 2 ∧
+        clipTarget (populationMean ipwPopulation ipwEffect) (effectRadius ipwPopulation ipwEffect)
+          (sampleMean ipwSummand n s) = 1 ∧
+        empiricalObserved ipwObserved n s = Measure.dirac (0, -1) ∧
+        ¬ Representable ipwPopulation ipwEffect
+          (clipTarget (populationMean ipwPopulation ipwEffect) (effectRadius ipwPopulation ipwEffect)
+            (sampleMean ipwSummand n s))) ∧
+      (∀ s ∈ ipwBadEvent 1 n,
+        (∀ i ∈ Finset.range n, ipwSummand (s i) = -2) ∧ sampleMean ipwSummand n s = -2 ∧
+        clipTarget (populationMean ipwPopulation ipwEffect) (effectRadius ipwPopulation ipwEffect)
+          (sampleMean ipwSummand n s) = 0 ∧
+        empiricalObserved ipwObserved n s = Measure.dirac (0, 1) ∧
+        ¬ Representable ipwPopulation ipwEffect
+          (clipTarget (populationMean ipwPopulation ipwEffect) (effectRadius ipwPopulation ipwEffect)
+            (sampleMean ipwSummand n s)))) := by
+  sorry
 
 /-- P017-T5/T6's full-data law at μ=0: independent X~N(0,1) and R=±1,
-with Y(0)=0, Y(1)=R, effect R, and observed X. P017-E002. -/
+with Y(0)=0, Y(1)=R, effect R, and observed X. P017-E002 §2. -/
 def normalPopulation : Measure (ℝ × ℝ) := (gaussianReal 0 1).prod (fairPair (-1) 1)
 
 instance normalPopulation_probability : IsProbabilityMeasure normalPopulation := by
   unfold normalPopulation
   infer_instance
 
-/-- P017-T5/T6: “Y_i(0)=0”, P017-E002. -/
+/-- P017-T5/T6: “Y_i(0)=0”, validator P017-E002 §2. -/
 def normalY0 (_ : ℝ × ℝ) : ℝ := 0
-/-- P017-T5/T6: “Y_i(1)=μ+R_i”, evaluated at μ=0, P017-E002. -/
+/-- P017-T5/T6: “Y_i(1)=μ+R_i”, evaluated at μ=0, P017-E002 §2. -/
 def normalY1 (ω : ℝ × ℝ) : ℝ := ω.2
-/-- P017-T5/T6: the effect Y(1)−Y(0), P017-E002. -/
+/-- P017-T5/T6: the effect Y(1)−Y(0), P017-E002 §2. -/
 def normalEffect (ω : ℝ × ℝ) : ℝ := normalY1 ω - normalY0 ω
 
-/-- P017-T5/T6: “tildeθ_n = bar X_n”, P017-E002. -/
+/-- P017-T5/T6: “tildeθ_n = bar X_n”, validator P017-E002 §2. -/
 def normalMean (n : ℕ) (s : ℕ → ℝ × ℝ) : ℝ := sampleMean Prod.fst n s
 
 /-- P017-T5/T6: “hatθ_n = bar X_n + 1/n”, a statistic of the observed X sample. -/
@@ -1271,7 +1439,7 @@ def shiftedDifference (n : ℕ) (s : ℕ → ℝ × ℝ) : ℝ :=
 
 /-- P017-T5/T6: the exactly normal Z_n and the deterministic ε_n=n^(-1/2). -/
 def normalZ (n : ℕ) (s : ℕ → ℝ × ℝ) : ℝ := sqrtN n * normalMean n s
-/-- P017-T5/T6: “ε_n=n^(-1/2)”, P017-E002. -/
+/-- P017-T5/T6: “ε_n=n^(-1/2)”, validator P017-E002 §2. -/
 def normalEpsilon (n : ℕ) (_ : ℕ → ℝ × ℝ) : ℝ := 1 / sqrtN n
 
 /-- P017-T6's remainder hypothesis, verified without assuming any normal-tail
@@ -1316,8 +1484,57 @@ theorem shifted_25_central (x : ℝ) (hx : |x| ≤ 1 / 2) :
   rw [ht]
   ring
 
+/-- P017-T5 complete counterexample to the printed proof of Proposition 3:
+all estimator assumptions hold, the printed nonzero-event probability is 1
+instead of the Gaussian tail, nD_n → −1, and D_n is not o_p(1/n). -/
+theorem normal_shift_probability_counterexample :
+    Measurable normalEffect ∧ Integrable normalEffect normalPopulation ∧
+    populationMean normalPopulation normalEffect = 0 ∧
+    effectSupport normalPopulation normalEffect = {-1, 1} ∧ effectRadius normalPopulation normalEffect = 1 ∧
+    RootNNormal (iidSamples normalPopulation) shiftedNormalMean 0 ∧
+    NormalRemainder (iidSamples normalPopulation) shiftedNormalMean normalZ normalEpsilon 0 1 ∧
+    LittleOp (iidSamples normalPopulation) (fun n (_ : ℕ → ℝ × ℝ) => sqrtN n / (n : ℝ)) (fun _ => 1) ∧
+    (∀ n : ℕ, 1 ≤ n →
+      (iidSamples normalPopulation).map (normalMean n) = gaussianReal 0 ⟨1 / (n : ℝ), by positivity⟩ ∧
+      (∀ s, shiftedDifference n s =
+        if normalMean n s < -1 - 1 / (n : ℝ) then normalMean n s + 1
+        else if normalMean n s ≤ 1 - 1 / (n : ℝ) then -1 / (n : ℝ) else normalMean n s - 1) ∧
+      (∀ s, shiftedDifference n s = 0 ↔ normalMean n s = 1) ∧
+      pr (iidSamples normalPopulation) {s | shiftedDifference n s ≠ 0} = 1 ∧
+      pr (iidSamples normalPopulation) {s | |normalMean n s| > 1} = 2 * normalCDF (-sqrtN n) ∧
+      2 * normalCDF (-sqrtN n) < 1 ∧ 2 * normalCDF (-sqrtN n) ≤ 1 / (n : ℝ)) ∧
+    (∀ n : ℕ, 2 ≤ n →
+      (∀ s, |normalMean n s| ≤ 1 / 2 → shiftedDifference n s = -1 / (n : ℝ) ∧
+        shiftedNormalMean n s - clipReal 0 1 (shiftedNormalMean n s) = 0) ∧
+      pr (iidSamples normalPopulation) {s | |normalMean n s| ≤ 1 / 2} ≥ 1 - 4 / (n : ℝ) ∧
+      pr (iidSamples normalPopulation) {s | |shiftedDifference n s| / (1 / (n : ℝ)) ≥ 1 / 2} ≥ 1 - 4 / (n : ℝ)) ∧
+    LittleOp (iidSamples normalPopulation) (fun n s => (n : ℝ) * shiftedDifference n s + 1) (fun _ => 1) ∧
+    ¬ LittleOp (iidSamples normalPopulation) shiftedDifference (fun n => 1 / (n : ℝ)) := by
+  sorry
 
-/-- P017-T12's independent Uniform[0,1) component, P017-N001. -/
+/-- P017-T6 full counterexample to the printed Proposition 4 proof:
+its stronger remainder condition holds, but at n=25 the intermediate MSE
+exceeds the displayed tail integral by at least 6/15625 > 0. -/
+theorem normal_shift_mse_counterexample :
+    Measurable normalEffect ∧ Integrable normalEffect normalPopulation ∧
+    populationMean normalPopulation normalEffect = 0 ∧
+    effectSupport normalPopulation normalEffect = {-1, 1} ∧ effectRadius normalPopulation normalEffect = 1 ∧
+    NormalRemainder (iidSamples normalPopulation) shiftedNormalMean normalZ normalEpsilon 0 1 ∧
+    SmallRemainderMS (iidSamples normalPopulation) normalEpsilon ∧
+    (∀ n : ℕ, 1 ≤ n → (∫ s, normalEpsilon n s ^ 2 ∂iidSamples normalPopulation) = 1 / (n : ℝ)) ∧
+    (∀ s, |normalMean 25 s| ≤ 1 / 2 →
+      clipReal 0 1 (shiftedNormalMean 25 s) = shiftedNormalMean 25 s ∧ shiftedDifference 25 s ^ 2 = 1 / 625) ∧
+    pr (iidSamples normalPopulation) {s | |normalMean 25 s| ≤ 1 / 2} ≥ 21 / 25 ∧
+    (∫ s, shiftedDifference 25 s ^ 2 ∂iidSamples normalPopulation) ≥ 21 / 15625 ∧
+    normalTail 25 1 1 =
+      (∫ s, if |normalMean 25 s| > 1 then normalMean 25 s ^ 2 else 0 ∂iidSamples normalPopulation) ∧
+    normalTail 25 1 1 ≤ (∫ s, normalMean 25 s ^ 6 ∂iidSamples normalPopulation) ∧
+    (∫ s, normalMean 25 s ^ 6 ∂iidSamples normalPopulation) = 15 / 15625 ∧
+    (∫ s, shiftedDifference 25 s ^ 2 ∂iidSamples normalPopulation) - normalTail 25 1 1 ≥ 6 / 15625 ∧
+    (0 : ℝ) < 6 / 15625 := by
+  sorry
+
+/-- P017-T12's independent Uniform[0,1) component, P017-N001 §2. -/
 def uniformHalfOpen01 : Measure ℝ := volume.restrict (Ico 0 1)
 
 instance uniformHalfOpen01_probability : IsProbabilityMeasure uniformHalfOpen01 := by
@@ -1347,26 +1564,29 @@ instance slowPopulation_probability : IsProbabilityMeasure slowPopulation := by
   unfold slowPopulation
   infer_instance
 
-/-- P017-T12: “Y_i(0)=0”, P017-N001. -/
+/-- P017-T12: “Y_i(0)=0”, validator P017-N001 §2. -/
 def slowY0 (_ : ℝ × (ℝ × (ℝ × ℝ))) : ℝ := 0
-/-- P017-T12: “Y_i(1)=μ+V_i”, evaluated at μ=0, P017-N001. -/
+/-- P017-T12: “Y_i(1)=μ+V_i”, evaluated at μ=0, P017-N001 §2. -/
 def slowY1 (ω : ℝ × (ℝ × (ℝ × ℝ))) : ℝ := ω.2.2.1
-/-- P017-T12: the effect Y(1)−Y(0), P017-N001. -/
+/-- P017-T12: the effect Y(1)−Y(0), P017-N001 §2. -/
 def slowEffect (ω : ℝ × (ℝ × (ℝ × ℝ))) : ℝ := slowY1 ω - slowY0 ω
 
+/-- P017-T12: O_i=(X_i,U_i,D_i,Y_i(D_i)), whose empirical law is F_n. -/
+def slowObserved (ω : ℝ × (ℝ × (ℝ × ℝ))) : ℝ × (ℝ × (ℝ × ℝ)) :=
+  (ω.1, (ω.2.1, (ω.2.2.2, ω.2.2.2 * slowY1 ω + (1 - ω.2.2.2) * slowY0 ω)))
 
 /-- P017-T12: “W_n = {sum U_i}”, the fractional part (not a single chosen unit). -/
 def rareUniform (n : ℕ) (s : ℕ → ℝ × (ℝ × (ℝ × ℝ))) : ℝ :=
   Int.fract (∑ i ∈ Finset.range n, (s i).2.1)
 
-/-- P017-T12: “B_n = 1{W_n < p_n}”, symmetric in the first n unit records. -/
+/-- P017-T12: “B_n = 1{W_n < p_n}”, a symmetric statistic of F_n. -/
 def rareFlag (p : ℕ → ℝ) (n : ℕ) (s : ℕ → ℝ × (ℝ × (ℝ × ℝ))) : ℝ :=
   if rareUniform n s < p n then 1 else 0
 
-/-- P017-T12: “bar X_n”, the untruncated arithmetic mean of the normal coordinates. -/
+/-- P017-T12: “A_n = max(-1/2,min(bar X_n,1/2))”. -/
 def smallNormalMean (n : ℕ) (s : ℕ → ℝ × (ℝ × (ℝ × ℝ))) : ℝ :=
   sampleMean Prod.fst n s
-/-- P017-T12: “A_n=max(-1/2,min(bar X_n,1/2))”, P017-N001. -/
+/-- P017-T12: “A_n=max(-1/2,min(bar X_n,1/2))”, P017-N001 §3. -/
 def smallNormalClip (n : ℕ) (s : ℕ → ℝ × (ℝ × (ℝ × ℝ))) : ℝ :=
   clipReal 0 (1 / 2) (smallNormalMean n s)
 
@@ -1436,9 +1656,135 @@ theorem rare_estimator_finite (x : ℝ) :
   exact ⟨hid, by linarith [hb.1], by linarith [hb.2], htop,
     by linarith [hb.1], by linarith [hb.2]⟩
 
+/-- P017-T12(a)–(d),(g) and P017-T13(c): for every prescribed positive
+failure sequence tending to zero, this one IID causal model and its
+observed-data estimator satisfy Definition 1 and have exactly that failure
+probability at every n≥1. The remainder has no imposed tail rate. -/
+theorem arbitrary_outlier_sequence (p : ℕ → ℝ)
+    (hp : ∀ n : ℕ, 1 ≤ n → 0 < p n ∧ p n ≤ 1) (hplim : Tendsto p atTop (𝓝 0)) :
+    Measurable slowEffect ∧ Integrable slowEffect slowPopulation ∧
+    populationMean slowPopulation slowEffect = 0 ∧
+    effectSupport slowPopulation slowEffect = Icc (-1) 1 ∧ effectRadius slowPopulation slowEffect = 1 ∧
+    RootNNormal (iidSamples slowPopulation) (rareEstimator p) 0 ∧
+    (∀ n : ℕ, 1 ≤ n →
+      (iidSamples slowPopulation).map (rareUniform n) = uniformHalfOpen01 ∧
+      pr (iidSamples slowPopulation) {s | rareFlag p n s = 1} = p n ∧
+      IndepFun (rareFlag p n) (smallNormalMean n) (iidSamples slowPopulation) ∧
+      (iidSamples slowPopulation).map (fun s => sqrtN n * smallNormalMean n s) = gaussianReal 0 1 ∧
+      (∀ s, sqrtN n * rareEstimator p n s = sqrtN n * smallNormalMean n s + rareRemainder p n s) ∧
+      (∀ δ : ℝ, 0 < δ → pr (iidSamples slowPopulation) {s | |rareRemainder p n s| > δ} ≤ 4 / (n : ℝ) + p n) ∧
+      {s | rareEstimator p n s ∉ effectSupport slowPopulation slowEffect} = {s | rareFlag p n s = 1} ∧
+      {s | |rareEstimator p n s| > 1} = {s | rareFlag p n s = 1} ∧
+      {s | rareEstimator p n s ≠ clipReal 0 1 (rareEstimator p n s)} = {s | rareFlag p n s = 1} ∧
+      pr (iidSamples slowPopulation) {s | rareEstimator p n s ≠ clipReal 0 1 (rareEstimator p n s)} = p n ∧
+      pr (iidSamples slowPopulation) {s | rareEstimator p n s ∈ effectSupport slowPopulation slowEffect} = 1 - p n ∧
+      (∀ s, rareFlag p n s = 0 → rareEstimator p n s = smallNormalClip n s ∧
+        rareEstimator p n s - clipReal 0 1 (rareEstimator p n s) = 0) ∧
+      (∀ s, rareFlag p n s = 1 → (19 / 2 : ℝ) ≤ rareEstimator p n s ∧
+        rareEstimator p n s ≤ 21 / 2 ∧ clipReal 0 1 (rareEstimator p n s) = 1 ∧
+        rareEstimator p n s - clipReal 0 1 (rareEstimator p n s) = smallNormalClip n s + 9) ∧
+      (289 / 4 : ℝ) * p n ≤
+        (∫ s, (rareEstimator p n s - clipReal 0 1 (rareEstimator p n s)) ^ 2 ∂iidSamples slowPopulation) ∧
+      (∫ s, (rareEstimator p n s - clipReal 0 1 (rareEstimator p n s)) ^ 2 ∂iidSamples slowPopulation) ≤
+        (361 / 4 : ℝ) * p n) ∧
+    (∀ n : ℕ, 4 ≤ n → (∫ s, rareRemainder p n s ^ 2 ∂iidSamples slowPopulation) ≥
+      100 * ((n : ℝ) - 4) * p n) ∧
+    LittleOp (iidSamples slowPopulation) (rareRemainder p) (fun _ => 1) ∧
+    LittleOp (iidSamples slowPopulation)
+      (fun n s => sqrtN n * (rareEstimator p n s - clipReal 0 1 (rareEstimator p n s))) (fun _ => 1) := by
+  sorry
+
+/-- P017-T12(e)–(f), concrete arbitrarily slow counterexample: the logarithmic
+sequence gives failure 1/10 at 1000 and 1/40 at 10^12, defeats every polynomial
+rate, and the same model realizes any slower sequence needed to defeat a
+proposed universal positive rate. -/
+theorem slow_outlier_counterexample :
+    (∀ n : ℕ, 1 ≤ n → 0 < slowP n ∧ slowP n ≤ 1) ∧ Tendsto slowP atTop (𝓝 0) ∧
+    RootNNormal (iidSamples slowPopulation) (rareEstimator slowP) 0 ∧
+    Measurable slowEffect ∧ Integrable slowEffect slowPopulation ∧
+    populationMean slowPopulation slowEffect = 0 ∧
+    effectSupport slowPopulation slowEffect = Icc (-1) 1 ∧ effectRadius slowPopulation slowEffect = 1 ∧
+    (∀ n : ℕ, 1 ≤ n → pr (iidSamples slowPopulation)
+      {s | rareEstimator slowP n s ≠ clipReal 0 1 (rareEstimator slowP n s)} = slowP n) ∧
+    slowP 1000 = 1 / 10 ∧ slowP (10 ^ 12) = 1 / 40 ∧
+    (∀ k : ℕ, slowP (2 ^ k) = 1 / ((k + 1 : ℕ) : ℝ)) ∧
+    (∀ α : ℝ, 0 < α → Tendsto
+      (fun k : ℕ => ((2 ^ k : ℕ) : ℝ) ^ α * slowP (2 ^ k)) atTop atTop) ∧
+    (∀ α : ℝ, 0 < α → ¬ ∃ C : ℝ, 0 < C ∧ ∀ᶠ n in atTop, slowP n ≤ C / (n : ℝ) ^ α) ∧
+    ¬ SmallRemainderMS (iidSamples slowPopulation) (rareRemainder slowP) ∧
+    (∀ r : ℕ → ℝ, (∀ n : ℕ, 1 ≤ n → 0 < r n) → Tendsto r atTop (𝓝 0) →
+      ∃ p : ℕ → ℝ, (∀ n : ℕ, 1 ≤ n → 0 < p n ∧ p n ≤ 1) ∧ Tendsto p atTop (𝓝 0) ∧
+        RootNNormal (iidSamples slowPopulation) (rareEstimator p) 0 ∧
+        (∀ n : ℕ, 1 ≤ n → pr (iidSamples slowPopulation)
+          {s | rareEstimator p n s ≠ clipReal 0 1 (rareEstimator p n s)} = p n) ∧
+        Tendsto (fun n => p n / r n) atTop atTop) := by
+  sorry
 
 end
 end AronowAudit.P017
 
 
 
+
+
+
+#print axioms AronowAudit.P017.clipReal_bounds
+#print axioms AronowAudit.P017.clipReal_eq_self_iff
+#print axioms AronowAudit.P017.clipReal_distance
+#print axioms AronowAudit.P017.clipTarget_eq_self_iff
+#print axioms AronowAudit.P017.clipTarget_distance
+#print axioms AronowAudit.P017.infinite_radius_facts
+#print axioms AronowAudit.P017.ordered_clip_changes
+#print axioms AronowAudit.P017.clip_and_residual_lipschitz
+#print axioms AronowAudit.P017.residual_tail_fourth_bound
+#print axioms AronowAudit.P017.perturbation_square_bounds
+#print axioms AronowAudit.P017.sum_failure_union_bound
+#print axioms AronowAudit.P017.clipping_event_bound
+#print axioms AronowAudit.P017.consistency_event_bound
+#print axioms AronowAudit.P017.unattainable_upper_endpoint
+#print axioms AronowAudit.P017.atom_weight_representation
+#print axioms AronowAudit.P017.strictly_one_sided_not_representable
+#print axioms AronowAudit.P017.straddling_weight_representation
+#print axioms AronowAudit.P017.weighted_mean_characterization
+#print axioms AronowAudit.P017.support_interior_straddles
+#print axioms AronowAudit.P017.positive_event_meets_support
+#print axioms AronowAudit.P017.representable_support_bounds
+#print axioms AronowAudit.P017.weighted_support_consequences
+#print axioms AronowAudit.P017.interior_radius_support
+#print axioms AronowAudit.P017.corrected_proposition1
+#print axioms AronowAudit.P017.interior_radius_representation
+#print axioms AronowAudit.P017.interior_radius_finite_companions
+#print axioms AronowAudit.P017.smaller_radius_changes_target
+#print axioms AronowAudit.P017.consistent_clipping_all_rates
+#print axioms AronowAudit.P017.root_normal_tight_and_consistent
+#print axioms AronowAudit.P017.corrected_proposition3
+#print axioms AronowAudit.P017.corrected_proposition4_finite
+#print axioms AronowAudit.P017.corrected_proposition4_limits
+#print axioms AronowAudit.P017.proposition1_printed
+#print axioms AronowAudit.P017.support_interval_of_condition
+#print axioms AronowAudit.P017.support_interval_probability
+#print axioms AronowAudit.P017.corollary1_corrected
+#print axioms AronowAudit.P017.interior_radius_corollary
+#print axioms AronowAudit.P017.full_real_support
+#print axioms AronowAudit.P017.positive_support_negative_estimates
+#print axioms AronowAudit.P017.normal_tail_identity
+#print axioms AronowAudit.P017.normal_tail_limits
+#print axioms AronowAudit.P017.corrected_zero_error_sentence
+#print axioms AronowAudit.P017.normal_plus_remainder_failure_bound
+#print axioms AronowAudit.P017.proposition3
+#print axioms AronowAudit.P017.proposition4
+#print axioms AronowAudit.P017.proposition2
+#print axioms AronowAudit.P017.ipw_bad_event_probability
+#print axioms AronowAudit.P017.ipw_bad_event_estimator
+#print axioms AronowAudit.P017.ipw_bad_events_disjoint
+#print axioms AronowAudit.P017.uniform_ipw_counterexample
+#print axioms AronowAudit.P017.normal_shift_remainder_ms
+#print axioms AronowAudit.P017.shifted_clip_zero_iff
+#print axioms AronowAudit.P017.shifted_25_central
+#print axioms AronowAudit.P017.normal_shift_probability_counterexample
+#print axioms AronowAudit.P017.normal_shift_mse_counterexample
+#print axioms AronowAudit.P017.slow_probability_numbers
+#print axioms AronowAudit.P017.slow_probability_positive_limit
+#print axioms AronowAudit.P017.rare_estimator_finite
+#print axioms AronowAudit.P017.arbitrary_outlier_sequence
+#print axioms AronowAudit.P017.slow_outlier_counterexample

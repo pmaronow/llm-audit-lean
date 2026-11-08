@@ -844,5 +844,7 @@ theorem ned_coverage_counterexample_proof :
   simp only [T27_circle]
   rfl
 
+example : type_of% @AronowAudit.P004.ned_coverage_counterexample := ned_coverage_counterexample_proof
+
 end
 end AronowAudit.P004.Wave1

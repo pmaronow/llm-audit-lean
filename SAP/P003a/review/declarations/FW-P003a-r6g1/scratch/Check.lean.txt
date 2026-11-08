@@ -1,0 +1,170 @@
+import SAP.P003a.Defs
+import SAP.P003a.Defs.WholeW1
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxRecDepth 4096
+set_option maxHeartbeats 4000000
+
+open SAP.P003a
+open scoped BigOperators
+
+-- T29: genuine positive-arm experiment and an interior real level.
+example : let v : Counts := ⟨1,0,0,1⟩; let m := 1; let α : ℝ := 1/2;
+    0 < m ∧ m < v.total ∧ 0 < α ∧ α < 1 := by
+  norm_num [Counts.total]
+
+-- T1: the concrete labeled realization and its nonzero missing mask.
+example : tableCounts w1BadTable = badPopulation := by native_decide
+example : w1CriticalAssignment.val = ({11,12,13} : Finset (Fin 20)) := by decide
+example : w1BadMissing w1CriticalAssignment.val = ({0} : Finset (Fin 20)) := by decide
+example : unitObserved (w1BadOutcomes w1CriticalAssignment.val)
+    w1CriticalAssignment.val = ⟨0,3,11,6⟩ := by native_decide
+example : unitObserved (unitPlus (w1BadOutcomes w1CriticalAssignment.val)
+    w1CriticalAssignment.val (w1BadMissing w1CriticalAssignment.val))
+    w1CriticalAssignment.val = ⟨0,3,10,7⟩ := by native_decide
+example : intervalQ (109/500) ⟨0,3,11,6⟩ = some (-7/10,-3/20) := by native_decide
+example : intervalQ (109/500) ⟨0,3,10,7⟩ = some (-13/20,-1/5) := by native_decide
+example : badCoverage = 297/380 := by native_decide
+example : (1-(109/500 : ℚ))-(297/380 : ℚ) = 1/2375 := by norm_num
+-- The earlier review's out-of-region p=1 table is still excluded by the current wording.
+example : Possible ⟨0,3,10,7⟩ ⟨0,0,12,8⟩ ∧
+    tauQ ⟨0,0,12,8⟩ = -3/5 ∧ pValue ⟨0,0,12,8⟩ ⟨0,3,10,7⟩ = 1 := by native_decide
+
+-- T2: a balanced law with assignment-dependent nonempty missingness.
+def balancedV : Counts := ⟨1,0,0,1⟩
+def dependentMask (q : Counts) : Counts :=
+  if q.a = 1 then observed balancedV q else ⟨0,0,0,0⟩
+noncomputable def dependentLaw (q r : Counts) : ℝ :=
+  if r = dependentMask q then 1/2 else 0
+
+lemma dependentLawValid : IsMissingLaw balancedV 1 dependentLaw := by
+  constructor
+  · intro q _ r _
+    unfold dependentLaw
+    split <;> norm_num
+  · intro q hq
+    have hs : randomStates balancedV 1 = [⟨0,0,0,1⟩,⟨1,0,0,0⟩] := by decide
+    rw [hs] at hq
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
+    rcases hq with rfl | rfl
+    all_goals norm_num [dependentLaw, dependentMask, balancedV, observed, missingMasks,
+      List.range_succ, SAP.P003a.multiplicity, binomial, Counts.total, Nat.fast_choose]
+
+example : dependentMask ⟨1,0,0,0⟩ ≠ dependentMask ⟨0,0,0,1⟩ := by decide
+
+example : let v := balancedV; let m := 1; let α : ℝ := 1/2;
+    0 < m ∧ v.total = 2*m ∧ 0 < α ∧ α < 1 ∧
+      IsMissingLaw v m dependentLaw := by
+  norm_num [Counts.total, balancedV]
+  exact dependentLawValid
+
+-- T2 clause 2: a valid nonzero missing mask and positive balanced arms.
+example : let o : Counts := ⟨1,0,0,1⟩; let r : Counts := ⟨1,0,0,0⟩;
+    let α : ℝ := 1/2;
+    (0 < α ∧ α < 1) ∧ (0 < o.a+o.b ∧ o.a+o.b = o.c+o.d) ∧
+      r ∈ missingMasks o := by
+  norm_num [missingMasks]
+
+-- T2 clause 3: d=1, strict estimate inequality, and positive acceptance.
+def coupleZ : Finset (Fin 4) := {0,1}
+def coupleR : Finset (Fin 4) := {0}
+def coupleY (i : Fin 4) : Bool := decide (2 ≤ i.val)
+def coupleW (i : Fin 4) : Bool × Bool := (coupleY i,coupleY i)
+
+example : coupleZ.card = 2 ∧
+    (∀ i, i ∉ coupleR → coupleY i = coupleY i) ∧
+    PossibleTable coupleY coupleZ coupleW := by
+  constructor
+  · decide
+  constructor
+  · intro i _; rfl
+  · funext i
+    simp [unitOutcomes, coupleW]
+
+lemma coupleStrict : outcomeEstimator (unitPlus coupleY coupleZ coupleR) coupleZ <
+    tableTau coupleW := by
+  simp only [outcomeEstimator, tableTau, coupleW, sub_self, Finset.sum_const_zero,
+    zero_div, Fin.sum_univ_four]
+  norm_num [unitPlus, coupleZ, coupleR, coupleY, bit]
+
+example : (Finset.univ.filter fun i => coupleY i ≠
+    unitPlus coupleY coupleZ coupleR i).card = 1 := by native_decide
+
+lemma couplePValue : unitPValue coupleW coupleY coupleZ = (1/3 : ℝ) := by
+  let s : Finset (Assignment 4 2) :=
+    {⟨{0,1},by decide⟩,⟨{0,2},by decide⟩,⟨{0,3},by decide⟩,
+     ⟨{1,2},by decide⟩,⟨{1,3},by decide⟩,⟨{2,3},by decide⟩}
+  have hs : (Finset.univ : Finset (Assignment 4 2)) = s := by native_decide
+  unfold unitPValue uniformProb
+  change ((Finset.univ.filter fun q : Assignment 4 2 =>
+    |tableEstimator coupleW q.val-tableTau coupleW| ≥
+    |outcomeEstimator coupleY coupleZ-tableTau coupleW|).card : ℝ) /
+      Fintype.card (Assignment 4 2) = 1/3
+  rw [hs]
+  simp only [tableEstimator, tableTau, outcomeEstimator, coupleW, sub_self,
+    Finset.sum_const_zero, zero_div, Fin.sum_univ_four]
+  norm_num [s, Finset.filter_insert, Finset.filter_singleton, coupleY, coupleZ,
+    bit, Assignment, Nat.choose]
+  have hc : ({(⟨{0,1},by decide⟩ : Assignment 4 2),⟨{2,3},by decide⟩} :
+      Finset (Assignment 4 2)).card = 2 := by decide
+  norm_num only [hc]
+
+example : (0 : ℕ) < 2 ∧ 4 = 2*2 ∧ coupleZ.card = 2 ∧
+    (∀ i, i ∉ coupleR → coupleY i = coupleY i) ∧
+    PossibleTable coupleY coupleZ coupleW ∧
+    (0 : ℝ) < 1/4 ∧ (1/4 : ℝ) < 1 ∧
+    (1/4 : ℝ) ≤ unitPValue coupleW coupleY coupleZ ∧
+    outcomeEstimator (unitPlus coupleY coupleZ coupleR) coupleZ < tableTau coupleW := by
+  norm_num [couplePValue, coupleStrict, PossibleTable]
+  constructor
+  · decide
+  · funext i; simp [unitOutcomes, coupleW]
+
+-- T3: an unbalanced positive-arm law that always hides all observed entries.
+def unbalancedV : Counts := ⟨0,0,0,3⟩
+noncomputable def unbalancedLaw (q r : Counts) : ℝ :=
+  if r = observed unbalancedV q then 1 else 0
+
+example : IsMissingLaw unbalancedV 1 unbalancedLaw := by
+  constructor
+  · intro q _ r _
+    unfold unbalancedLaw
+    split <;> norm_num
+  · intro q hq
+    have hs : randomStates unbalancedV 1 = [⟨0,0,0,1⟩] := by decide
+    rw [hs] at hq
+    simp only [List.mem_singleton] at hq
+    subst q
+    norm_num [unbalancedLaw, unbalancedV, observed, missingMasks, List.range_succ,
+      SAP.P003a.multiplicity, binomial, Counts.total, Nat.fast_choose]
+
+example : let v := unbalancedV; let m := 1; let α : ℝ := 1/2;
+    (0 < m ∧ m < v.total) ∧ (0 < α ∧ α < 1) := by
+  norm_num [unbalancedV, Counts.total]
+
+example : let o : Counts := ⟨0,1,0,2⟩; let r := o;
+    (0 < o.a+o.b ∧ 0 < o.c+o.d) ∧ r ∈ missingMasks o ∧
+    (completions o r).length = 6 := by
+  norm_num [missingMasks, completions]
+
+example : badHullCoverage = 892/1140 := by native_decide
+
+-- T4: legal abstract input, plus a legal labeled balanced observation.
+example : (0 : ℤ) < 1 ∧ (1 : ℤ) < 2 ∧
+    (∀ x : ℤ, 1 ≤ x → x ≤ 2 → (false = false ↔ x ≤ 2)) := by
+  norm_num
+example : w1PrintedRun 1 1 2 (fun _ => false) 1 2 =
+    ⟨some 1,[1,1],(1,2)⟩ := by native_decide
+example : w1PrintedRun 10 1 2 (fun _ => true) 1 2 =
+    ⟨none,List.replicate 10 1,(1,1)⟩ := by native_decide
+
+def searchZ : Assignment 16 8 := ⟨{0,1,2,3,4,5,6,15}, by decide⟩
+def searchW : PotentialTable 16 := fun i => canonicalPair ⟨0,15,0,1⟩ i.val
+example : unitObserved (unitOutcomes searchW searchZ.val) searchZ.val =
+    ⟨7,1,0,8⟩ := by native_decide
+example : pValue ⟨0,14,0,2⟩ ⟨7,1,0,8⟩ = 1 ∧
+    pValue ⟨0,15,0,1⟩ ⟨7,1,0,8⟩ = 1 := by native_decide
+example : intervalQ (1/20) ⟨7,1,0,8⟩ = some (1/2,15/16) := by native_decide
+example : (upperRun false ⟨7,1,0,8⟩ (exactRejectQ (1/20) ⟨7,1,0,8⟩)).value =
+    some 14 := by native_decide

@@ -177,8 +177,8 @@ theorem pooled_and_separate_mean_identities {I : Type*} [Fintype I]
     field_simp
     ring
 
-/-- Finite WLS lemma for T28(d): positive weights and
-full-rank designs make these stationary points the unique WLS minima.
+/-- Finite WLS lemma for T28(d), N033 v1 §3: "Positive weights and
+full-rank designs make these stationary points the unique WLS minima."
 Zero masked weights are allowed if equality of fits on positive-weight
 rows still determines the coefficients. -/
 theorem regression_unique_of_normal {I K : Type*} [Fintype I] [Fintype K]
@@ -239,7 +239,7 @@ theorem regression_unique_of_normal {I K : Type*} [Fintype I] [Fintype K]
   · rintro rfl
     exact minimum
 
-/-- T28(d),(e), correcting SI p. 19:
+/-- T28(d),(e), N033 v1 derivation §§1--2, correcting SI p. 19:
 with one covariate and positive within-exposure Sxx, every separate WLS
 minimizer and every joint WLS minimizer equals the displayed coefficient
 formula. The equivalences also assert existence and uniqueness. Their
@@ -582,8 +582,7 @@ end RegressionCompletion
 
 /-- T27, full comparison of the actual argmin estimators for both the
 equal-probability and school/seed weights. Separate fits are exact potential
-outcome lines; the pooled I-minus-NI contrasts are 15/4 and 42/11, respectively,
-rather than the separate-fit contrast 5/2. -/
+outcome lines; pooled fitted means give 15/4 or 42/11 rather than 5/2. -/
 theorem separate_pooled_regression_counterexample :
     (∑ i : Fin 4 × Fin 3, regression12X i)/12=5/2 ∧
     (∀ weights ∈ ({(![4,4,4,4] : Fin 4 → ℝ),![2,8,8,4]} : Set (Fin 4 → ℝ)),
@@ -795,10 +794,28 @@ noncomputable def controlFullVarianceCertificate : ℝ :=
   171796363313262196427951740421954806512514436622177625713808591915692887084446808987770465290240000
 noncomputable def controlCollapsedVarianceCertificate : ℝ := 1453114769225810453/621302156766720000
 
+/-- T33, full 96-assignment counterexample with actual WLS refits and
+design variances. The enormous rational certificate is a conclusion, never
+used as the definition of the variance of a refitted statistic. -/
+theorem collapsed_controls_variance_counterexample :
+    Fintype.card (Fin 6 × (Fin 4 → Bool))=96 ∧
+    (∑ z, controlMass z)=1 ∧ (∀ z, 0<controlMass z) ∧
+    (∀ z k, (Finset.univ.filter (fun i => controlExposure z i=k)).card=2) ∧
+    (∀ i k, (∑ z, controlMass z*(if controlExposure z i=k then (1:ℝ) else 0))=controlPi i k) ∧
+    (∀ z, Function.Injective (controlFullRow (controlExposure z)).mulVec) ∧
+    controlPoint=![1/13,-2,-14/3,-23/39,180/13] ∧
+    (∀ k, controlPointMean k=(![46/13,19/13,-47/39,112/39] : Fin 4 → ℝ) k) ∧
+    (∀ z,
+      controlContrast z true (fun i => controlY i+controlPointMean (controlExposure z i)-controlPointMean (controlObserved i))=
+        controlContrast z true controlResidual+controlPointMean 3-controlPointMean 2) ∧
+    controlVariance (fun z => controlContrast z true controlResidual)=controlFullVarianceCertificate ∧
+    controlVariance (fun z => controlContrast z false controlResidual)=controlCollapsedVarianceCertificate ∧
+    9<controlFullVarianceCertificate ∧ controlFullVarianceCertificate<37/4 ∧
+    2<controlCollapsedVarianceCertificate ∧ controlCollapsedVarianceCertificate<5/2 := by
+  sorry
 
-/-- T33(v): exact comparison of the rational variance certificates.
-The theorem bounds and distinguishes these constants; it does not identify
-them with variances computed from the actual refits. -/
+/-- T33(v): exact comparison of the saved rational variance certificates.
+The separate theorem above must still connect them to the actual refits. -/
 theorem collapsed_controls_certificate_inequalities :
     9<controlFullVarianceCertificate ∧ controlFullVarianceCertificate<37/4 ∧
     2<controlCollapsedVarianceCertificate ∧ controlCollapsedVarianceCertificate<5/2 ∧
@@ -817,7 +834,7 @@ def regression12HierarchicalExposure (schools : Finset (Fin 6))
     if (seeds (regression12School i)).1 then 3 else
     if (seeds (regression12School i)).2 then 2 else 1
 
-/-- T27(E2): "The first three have one focal
+/-- T27(E2), N033 v1 derivation §3: "The first three have one focal
 student each ... the last three have three focal students each"; every
 school also has R,r,N,n and two noneligible helpers. -/
 def regression12SchoolSize (s : Fin 6) : ℕ := if s.val<3 then 7 else 9
@@ -827,7 +844,7 @@ student indexed by its school and local roster position. Positions 0,1,2,3
 are R,r,N,n; 4,5 are helpers; positions at least 6 are focal students. -/
 abbrev Regression12Student := Σ s : Fin 6, Fin (regression12SchoolSize s)
 
-/-- T27(E2): "Each focal student nominates R and N.
+/-- T27(E2), N033 v1 §3: "Each focal student nominates R and N.
 Both helpers nominate R. No other nominations occur." This is the directed
 nomination graph; the exposure graph takes either nomination direction. -/
 noncomputable def regression12Nomination (s : Fin 6)
@@ -840,7 +857,7 @@ noncomputable def regression12Nomination (s : Fin 6)
 noncomputable def regression12Indegree (s : Fin 6) (j : Fin (regression12SchoolSize s)) : ℕ :=
   (Finset.univ.filter (fun i => regression12Nomination s i j=true)).card
 
-/-- T27(E2): "the interpolated 90th percentile lies
+/-- T27(E2), N033 v1 §3: "the interpolated 90th percentile lies
 strictly between the indegrees of N and R". Type-7 interpolation uses
 h=9(n-1)/10 in the sorted roster, as in the released referent classifier. -/
 noncomputable def regression12Ninety (s : Fin 6) : ℝ :=
@@ -887,7 +904,7 @@ noncomputable def regression12StudentProb (u : Regression12Student) (k : Fin 5) 
     ∑ seeds : Fin 6 → Bool × Bool,
       (1/(20*4^6):ℝ)*(if regression12StudentExposure schools seeds u=k then 1 else 0)
 
-/-- T27(E2): "R has indegree two greater than N" and the "interpolated 90th percentile lies strictly between" them. This certificate computes the indegrees and percentile from the actual directed graph. -/
+/-- T27(E2), N033 v1 derivation §3: "R has indegree two greater than N" and the "interpolated 90th percentile lies strictly between" them. This certificate computes the indegrees and percentile from the actual directed graph. -/
 theorem regression12_graph_certificate :
     (∀ s j, regression12Indegree s j=
       if j.val=0 then regression12SchoolSize s-4 else
@@ -945,7 +962,7 @@ theorem regression12_graph_certificate :
   rw [hs]
   fin_cases s <;> norm_num [regression12SchoolSize]
 
-/-- T27(E2)(iv): "R alone is a top-decile referent." The two-element seed sets choose one from each pair; focal students embed injectively, and their graph-derived exposures equal the projected school/seed exposure mapping. -/
+/-- T27(E2)(iv), N033 v1 §3: "R alone is a top-decile referent." The two-element seed sets choose one from each pair; focal students embed injectively, and their graph-derived exposures equal the projected school/seed exposure mapping. -/
 theorem regression12_graph_exposures :
     (∀ s j, regression12Ninety s<(regression12Indegree s j:ℝ) ↔ j.val=0) ∧
     (∀ s b, (regression12SeedSet s b).card=2 ∧
@@ -1031,7 +1048,7 @@ theorem regression12_seed_marginal (s : Fin 6) (f : Bool × Bool → ℝ) :
       norm_num
     _ = _ := (Finset.mul_sum _ _ _).symm
 
-/-- T27(E2): "exactly three of the six schools" are treated uniformly. Exactly ten of the twenty supported treated-school sets contain any specified school. -/
+/-- T27(E2), N033 v1 §3: "exactly three of the six schools" are treated uniformly. Exactly ten of the twenty supported treated-school sets contain any specified school. -/
 theorem regression12_treated_school_count (s : Fin 6) :
     (((Finset.univ : Finset (Fin 6)).powersetCard 3).filter (fun schools => s∈schools)).card=10 := by
   have h := Finset.card_filter_powersetCard_subset {s}
@@ -1039,7 +1056,7 @@ theorem regression12_treated_school_count (s : Fin 6) :
   norm_num at h
   exact h
 
-/-- T27(E2)(iv): focal "marginal exposure probabilities" are (1/2,1/8,1/8,1/4). Proved for the existing projected mapping by counting school subsets and one-coordinate fibers, without enumerating all seed schedules. -/
+/-- T27(E2)(iv), N033 v1 §3: focal "marginal exposure probabilities" are (1/2,1/8,1/8,1/4). Proved for the existing projected mapping by counting school subsets and one-coordinate fibers, without enumerating all seed schedules. -/
 theorem regression12_focal_probabilities :
     ∀ i : Fin 4 × Fin 3, ∀ k : Fin 4,
       (∑ schools ∈ (Finset.univ : Finset (Fin 6)).powersetCard 3,
@@ -1074,7 +1091,7 @@ theorem regression12_focal_probabilities :
   simp only [Finset.sum_const, nsmul_eq_mul, hc, hn]
   fin_cases k <;> norm_num
 
-/-- T27(E2)(iv): the displayed school/exposure realization has probability "(1/20)(1/4)(1/4)(1/2)=1/640". Its seed schedules form an explicitly counted product set. -/
+/-- T27(E2)(iv), N033 v1 §3: the displayed school/exposure realization has probability "(1/20)(1/4)(1/4)(1/2)=1/640". Its seed schedules form an explicitly counted product set. -/
 theorem regression12_realization_probability :
     (∑ seeds : Fin 6 → Bool × Bool,
       (1/(20*4^6):ℝ)*(if (∀ i : Fin 4 × Fin 3,
@@ -1126,7 +1143,7 @@ theorem regression12_realization_probability :
   simp only [Finset.sum_const, nsmul_eq_mul, hc]
   norm_num
 
-/-- T27(E2)(iv): the complete nomination graph
+/-- T27(E2)(iv), N033 v1 derivation §3: the complete nomination graph
 has R as its sole referent in each school; the actual pair draws give the
 four focal probabilities (1/2,1/8,1/8,1/4). Precisely the twelve focal
 students have positive probability of all four exposures. The displayed
@@ -1238,3 +1255,21 @@ theorem regression12_hierarchical_design :
 
 end AronowAudit.P037
 
+#print axioms AronowAudit.P037.pooled_and_separate_mean_identities
+#print axioms AronowAudit.P037.one_covariate_regression_formulas
+#print axioms AronowAudit.P037.separate_pooled_prediction_difference
+#print axioms AronowAudit.P037.separate_pooled_regression_counterexample
+#print axioms AronowAudit.P037.regression12_normal_certificates
+#print axioms AronowAudit.P037.linear_residual_refit_shift
+#print axioms AronowAudit.P037.same_controls_residual_imputation
+#print axioms AronowAudit.P037.collapsed_controls_variance_counterexample
+#print axioms AronowAudit.P037.collapsed_controls_certificate_inequalities
+#print axioms AronowAudit.P037.regression12_hierarchical_design
+#print axioms AronowAudit.P037.regression_unique_of_normal
+
+#print axioms AronowAudit.P037.regression12_graph_certificate
+#print axioms AronowAudit.P037.regression12_graph_exposures
+#print axioms AronowAudit.P037.regression12_seed_marginal
+#print axioms AronowAudit.P037.regression12_treated_school_count
+#print axioms AronowAudit.P037.regression12_focal_probabilities
+#print axioms AronowAudit.P037.regression12_realization_probability

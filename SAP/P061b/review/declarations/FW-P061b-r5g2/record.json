@@ -1,0 +1,186 @@
+[
+ {
+  "target_id": "P061-T17",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.PaperDomains.difference_in_means_CR_general_T17",
+   "AronowAudit.P061.ht_sample_mean",
+   "SAP.P061b.WH.W1.T17_whole",
+   "SAP.P061b.WH.W1.T17_assembly",
+   "SAP.P061b.WH.W1.T17_L1_proof",
+   "SAP.P061b.WH.W1.srs_factsW1",
+   "SAP.P061b.Bridge.toAudit",
+   "AronowAudit.P061.SamplingCompletion.support_mask",
+   "AronowAudit.P061.SamplingCompletion.mask_pi",
+   "AronowAudit.P061.SamplingCompletion.canonical_treatment_marginal",
+   "AronowAudit.P061.ht_integrable",
+   "AronowAudit.P061.ht_unbiased",
+   "AronowAudit.P061.finite_support_targeted_moment",
+   "AronowAudit.P061.finite_support_integrable"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P061.PaperDomains.sample_mean_SRS_general_T17",
+    "reason": "Final status wrong_credit: its finite raw-support premise misses allowed survey assignments; no survey unbiasedness is asserted here."
+   },
+   {
+    "lean_name": "AronowAudit.P061.complete_randomization_marginals",
+    "reason": "The selected general experiment row already exports both required marginals."
+   },
+   {
+    "lean_name": "AronowAudit.P061.complete_randomization_unbiased",
+    "reason": "Final status wrong_credit for T17: the survey conclusion loses within-mask variation; the usable general experiment row supplies the retained experiment."
+   },
+   {
+    "lean_name": "AronowAudit.P061.permuted_treated_count",
+    "reason": "Permutation-count helper; the selected experiment row directly exports the claimed unbiasedness and marginals."
+   }
+  ],
+  "statement_definition": "SAP.P061b.T17WholeStatement"
+ },
+ {
+  "target_id": "P061-T18",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.centered_cross_expectation",
+   "AronowAudit.P061.nurva_exact_variances"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P061.PaperDomains.centered_ht_on_support_T18",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.PaperDomains.centered_ht_product_T18",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.PaperDomains.nurva_covariance_formula_T18",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.PaperDomains.nurva_second_moment_T18",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.PaperDomains.variance_eq_covariance_T18",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.PaperDomains.variance_mul_T18",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.centered_cross_integrable",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.finite_variance_moment",
+    "reason": "Final status narrower: requires a finite assignment type; the unrestricted NURVA variance row makes this helper unnecessary."
+   },
+   {
+    "lean_name": "AronowAudit.P061.nurva_revealed_outcome",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.variance_difference",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   }
+  ]
+ },
+ {
+  "target_id": "P061-T19",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T19",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.nurva_variance_estimators",
+   "AronowAudit.P061.young_missing_pair",
+   "SAP.P061b.WH.W1.T19_whole",
+   "SAP.P061b.WH.W1.T19_assembly",
+   "SAP.P061b.WH.W1.T19_L1_proof",
+   "SAP.P061b.WH.W1.T19_L2_proof",
+   "SAP.P061b.WH.W1.T19_L3_proof",
+   "SAP.P061b.Bridge.toAudit",
+   "SAP.P061b.Bridge.exposure_correspondence",
+   "SAP.P061b.Bridge.mean_correspondence",
+   "SAP.P061b.Bridge.moment_correspondence",
+   "SAP.P061b.Bridge.probability_correspondence",
+   "AronowAudit.P061.global_nurva_targeted_moment",
+   "AronowAudit.P061.ht_integrable",
+   "AronowAudit.P061.nurva_exact_variances",
+   "AronowAudit.P061.nurva_second_moment",
+   "AronowAudit.P061.nurva_epo",
+   "AronowAudit.P061.integrable_support_congr",
+   "AronowAudit.P061.integrable_event",
+   "AronowAudit.P061.integrable_add",
+   "AronowAudit.P061.integrable_sum",
+   "AronowAudit.P061.integrable_mul",
+   "AronowAudit.P061.integrable_sub",
+   "AronowAudit.P061.probability_nonneg",
+   "AronowAudit.P061.expectation_support_congr",
+   "AronowAudit.P061.expectation_event",
+   "AronowAudit.P061.expectation_add",
+   "AronowAudit.P061.expectation_sub",
+   "AronowAudit.P061.constant_cell",
+   "AronowAudit.P061.event_atom_le"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P061.missing_pair_slack",
+    "reason": "The selected variance-estimator theorem supplies conservativeness and the Young row supplies the printed bound; exact slack is not a separate target clause."
+   }
+  ],
+  "statement_definition": "SAP.P061b.T19WholeStatement"
+ },
+ {
+  "target_id": "P061-T20",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.PaperDomains.covariate_adjustment_T20"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P061.covariate_adjustment",
+    "reason": "The selected PaperDomains wrapper supplies the same complete moment-qualified adjustment result."
+   }
+  ]
+ },
+ {
+  "target_id": "P061-T21",
+  "decision": "whole",
+  "theorem": "SAP.P061b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P061.ht_consistency"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P061.design_chebyshev",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.event_atom_le",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.nurva_chebyshev_bound",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.nurva_reweighted_bound",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P061.nurva_variance_bound",
+    "reason": "Supporting identity or bound already incorporated in the selected aggregate theorem; not separately invoked."
+   }
+  ]
+ }
+]

@@ -134,6 +134,9 @@ lemma printed_sign_counterexample_completed :
     let : IsProbabilityMeasure (signFamily.model k).law:=(signFamily.model k).probability
     simpa only [probability,probReal_univ] using measureReal_mono (μ:=(signFamily.model k).law)
       (Set.subset_univ {y | |(k+1:ℝ)*V2 (signFamily.model k).G (weighted (signFamily.model k) y)-1| <ε}) (measure_ne_top _ _)
+#print axioms scaling_valid
+#print axioms finite_lower
+#print axioms printed_sign_counterexample_completed
 end
 end AronowAudit.P011.SignCompletion
 
@@ -153,5 +156,6 @@ theorem printed_sign_counterexample :
         {y | |(k+1 : ℝ)*V2 (signFamily.model k).G (weighted (signFamily.model k) y)-1| < ε})
         atTop (𝓝 1)) := by
   exact SignCompletion.printed_sign_counterexample_completed
+#print axioms printed_sign_counterexample
 end
 end AronowAudit.P011

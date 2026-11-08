@@ -1,0 +1,62 @@
+import SAP.P038.Defs
+
+set_option autoImplicit false
+
+namespace P038Review
+
+open SAP.P038
+
+def witnessRR (w : ℤ) : ℝ := if w = -14 ∨ w = 7 then 3 else 1
+
+lemma witness_positive (w : ℤ) : 0 < witnessRR w := by
+  unfold witnessRR
+  split_ifs <;> norm_num
+
+lemma witness_extreme (w : ℤ) :
+    moreExtreme 2 (witnessRR w) ↔ w = -14 ∨ w = 7 := by
+  unfold witnessRR moreExtreme
+  split_ifs with h <;> norm_num [h]
+
+lemma witness_tail25 : tailWeeks 2 witnessRR 25 = {-14, 7} := by
+  ext w
+  simp only [tailWeeks, Finset.mem_filter, referenceWeeks, Finset.mem_erase,
+    Finset.mem_Icc, witness_extreme, Finset.mem_insert, Finset.mem_singleton]
+  norm_num
+  omega
+
+lemma witness_tail12 : tailWeeks 2 witnessRR 12 = {7} := by
+  ext w
+  simp only [tailWeeks, Finset.mem_filter, referenceWeeks, Finset.mem_erase,
+    Finset.mem_Icc, witness_extreme, Finset.mem_singleton]
+  norm_num
+  omega
+
+-- All data-dependent antecedents in T1 hold for the same actual family.
+example : ∃ (R : ℝ) (r : ℤ → ℝ),
+    0 < R ∧
+    (∀ w ∈ referenceWeeks 100, 0 < r w) ∧
+    (∀ w ∈ referenceWeeks 25, 0 < r w) ∧
+    tailCount R r 25 = 2 ∧
+    tailWeeks R r 25 = {-14, 7} := by
+  refine ⟨2, witnessRR, by norm_num, ?_, ?_, ?_, witness_tail25⟩
+  · intro w _
+    exact witness_positive w
+  · intro w _
+    exact witness_positive w
+  · norm_num [tailCount, witness_tail25]
+
+-- Evaluate the actual constructed family's probabilities, using only Defs.
+example : empiricalP 2 witnessRR 12 = (1 : ℝ) / 24 ∧
+    empiricalP 2 witnessRR 25 = (4 : ℝ) / 100 ∧
+    electionDayAdjustedP 2 witnessRR 12 = (8 : ℝ) / 100 ∧
+    electionDayAdjustedP 2 witnessRR 25 = (1 : ℝ) / 17 := by
+  norm_num [empiricalP, electionDayAdjustedP, tailCount,
+    witness_tail12, witness_tail25]
+
+-- Neither the integer bounds nor the nested-window bounds are inconsistent.
+example : ∃ k : ℤ, 0 ≤ k ∧ k ≤ 50 ∧ k = 2 := ⟨2, by norm_num⟩
+example : ∃ k : ℤ, 0 ≤ k ∧ k ≤ 50 ∧ k = 3 := ⟨3, by norm_num⟩
+example : ∃ m n : ℕ, 1 ≤ m ∧ m ≤ n ∧ n ≤ 100 ∧ m = 12 ∧ n = 25 :=
+  ⟨12, 25, by norm_num⟩
+
+end P038Review

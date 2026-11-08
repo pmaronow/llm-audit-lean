@@ -1,0 +1,87 @@
+import SAP.P010.Defs
+
+open MeasureTheory ProbabilityTheory Set Filter SAP.P010
+open scoped ENNReal NNReal Classical Topology BigOperators
+
+namespace Audit
+
+-- The two arms are equally likely. Potential outcomes are 0 and 1;
+-- the binary check is the same under both arms.
+def goodAtoms (pass : Bool) : Fin 2 → Population 2 0 :=
+  ![(![0,1], (fun _ => pass), 0, (fun _ => 0)),
+    (![0,1], (fun _ => pass), 1, (fun _ => 0))]
+
+noncomputable def goodPop (pass : Bool) : Measure (Population 2 0) :=
+  finitePopulation (goodAtoms pass) (fun _ => 1/2)
+
+lemma good_mass (pass : Bool) (E : Set (Population 2 0)) :
+    goodPop pass E = ∑ i : Fin 2, (1/2 : ℝ≥0∞) *
+      (if goodAtoms pass i ∈ E then 1 else 0) := by
+  simp [goodPop, finitePopulation, Measure.dirac_apply, Set.indicator_apply]
+
+instance good_probability (pass : Bool) : IsProbabilityMeasure (goodPop pass) := by
+  constructor
+  norm_num [good_mass, Fin.sum_univ_succ, ENNReal.mul_inv_cancel]
+
+lemma good_random (pass : Bool) : randomAssignment (goodPop pass) := by
+  constructor
+  · intro a
+    rw [indepFun_iff_measure_inter_preimage_eq_mul]
+    intro U V hU hV
+    have half : (2 : ℝ≥0∞)⁻¹ + 2⁻¹ = 1 := by
+      simpa using ENNReal.add_halves 1
+    by_cases hu : ((![0,1] : Fin 2 → ℝ) a, pass) ∈ U <;>
+      by_cases hv0 : (0 : Fin 2) ∈ V <;>
+      by_cases hv1 : (1 : Fin 2) ∈ V <;>
+      simp [good_mass, Fin.sum_univ_succ, goodAtoms, potentialOutcome,
+        potentialCheck, arm, hu, hv0, hv1, half]
+  · intro a
+    fin_cases a <;> norm_num [good_mass, Fin.sum_univ_succ, goodAtoms, assigned, arm]
+
+lemma good_common (pass : Bool) : goodPop pass sameCheck = 1 := by
+  simpa [good_mass, Fin.sum_univ_succ, goodAtoms, sameCheck]
+    using ENNReal.add_halves 1
+
+lemma good_integrable (pass : Bool) (f : Population 2 0 → ℝ) :
+    Integrable f (goodPop pass) := by
+  apply integrable_sum_dirac (by norm_num)
+  exact (hasSum_fintype _).summable
+
+lemma good_assumptions : populationAssumptions (goodPop true) := by
+  refine ⟨inferInstance, good_random true, ?_⟩
+  intro a
+  fin_cases a <;>
+    norm_num [passRate, good_mass, Fin.sum_univ_succ, goodAtoms, passed, assigned, arm, check]
+
+-- Every hypothesis of T18 is witnessed, for distinct arms and a nonzero effect.
+example : ∃ μ : Measure (Population 2 0), populationAssumptions μ ∧
+    μ sameCheck = 1 ∧ Integrable (potentialOutcome 1) μ ∧
+    Integrable (potentialOutcome 0) μ := by
+  exact ⟨goodPop true, good_assumptions, good_common true,
+    good_integrable true _, good_integrable true _⟩
+
+-- Every hypothesis of T19; it also allows a population where nobody passes.
+example : ∃ μ : Measure (Population 2 0), IsProbabilityMeasure μ ∧
+    randomAssignment μ ∧ Integrable (potentialOutcome 1) μ ∧
+    Integrable (potentialOutcome 0) μ := by
+  exact ⟨goodPop false, inferInstance, good_random false,
+    good_integrable false _, good_integrable false _⟩
+
+-- Every hypothesis of T20, including common checks, with no positive-pass premise.
+example : ∃ μ : Measure (Population 2 0), IsProbabilityMeasure μ ∧
+    randomAssignment μ ∧ μ sameCheck = 1 := by
+  exact ⟨goodPop false, inferInstance, good_random false, good_common false⟩
+
+-- T17's outer hypotheses and its positive-passing branch have an instance.
+example : ∃ μ : Measure (Population 2 0), IsProbabilityMeasure μ ∧
+    randomAssignment μ ∧ populationAssumptions μ := by
+  exact ⟨goodPop true, inferInstance, good_random true, good_assumptions⟩
+
+-- The positivity requirement is substantive: the same valid design can fail it.
+example : ¬ positivePassRates (goodPop false) := by
+  intro h
+  have h0 := h 0
+  norm_num [passRate, good_mass, Fin.sum_univ_succ, goodAtoms,
+    passed, assigned, arm, check] at h0
+
+end Audit

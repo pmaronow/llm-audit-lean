@@ -1,0 +1,35 @@
+[
+  {
+    "target_id": "P001-T128",
+    "theorem": "SAP.P001g.T128",
+    "fingerprint": "939e14a50b04c43035d49bc5e0ea1e02fb1efd25c1138b0b02a109f6d46578ca",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity128.lean using only SAP.P001g.Defs. On the standard Gaussian probability space take theta = 0, phi = 1, alpha = 1/2, T_n(x) = x/sqrt(n), and V_n(x) = 0 for n <= 1 and 1/n otherwise. The file proves every hypothesis, including existence of the required Gaussian quantile, asymptotic normality and n-scale variance consistency. It also proves that the two endpoints coincide at n = 1, confirming that the omitted finite-sample random-interval property is not covertly supplied by the premises. The record and docstring explicitly disclose that omission, while retaining the canonical coverage lower bound.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T129",
+    "theorem": "SAP.P001g.T129",
+    "fingerprint": "c5d601bd064ff3f9386cf0e488c8f9ed58ed58f5d77d52c0472b5fbf841863d2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity129.lean using only SAP.P001g.Defs. Set K = tau = 1, kappa = dirac 0, nuX = dirac of the zero covariate vector, and mu to the countable product of kappa. Use zero covariates, coordinate outcomes, g identically 1, Theta = {zero vector}, the constant zero-vector estimator and Delta identically 0. A single example constructs all premises of both independently quantified conjuncts, including the genuine normalized true joint law, iid sampling, compactness, population identification on Theta, actual-product maximization, the uniform error bound, convergence of Delta, and support domination. Probability and SFinite instances are available. This establishes satisfiability; the theorem itself universally quantifies over arbitrary finite dimensions and compact parameter sets.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T130",
+    "theorem": "SAP.P001g.T130",
+    "fingerprint": "42af40584ef1d9c1fb56cbac4a8c8e915d1611b06a05d55daad69f290cc68e1b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity130.lean using only SAP.P001g.Defs. Let mu be the countable product of fair measures on Bool, take Y_i identically 1/2, R_i the real 0/1 encoding of coordinate i, and a = 0, b = 1. The file constructs every hypothesis, proves both response probabilities equal 1/2, and proves iid of the observable pairs from genuine product independence. The conditional observed-response atom therefore has positive probability, the conditionalMeanAt denominator is nonzero, and boundedness ensures integrability of all means. No dependent-replicate or undefined-quantity witness is used.",
+    "confidence": 0.99
+  }
+]

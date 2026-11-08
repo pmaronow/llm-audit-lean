@@ -1,0 +1,149 @@
+import SAP.P013b.Defs
+
+open SAP.P013b MeasureTheory ProbabilityTheory
+open scoped BigOperators ENNReal
+
+set_option maxRecDepth 4096
+set_option maxHeartbeats 1000000
+
+noncomputable section
+namespace ReviewChecks
+
+-- T20: a nondegenerate infinite IID sequence under the exact two-point law.
+local instance : MeasurableSpace (Fin 2) := ⊤
+local instance : MeasurableSingletonClass (Fin 2) := ⟨fun _ => trivial⟩
+
+def fairLaw : Measure (Fin 2) := designMeasure calibrationDesign
+
+instance : IsProbabilityMeasure fairLaw := by
+  constructor
+  norm_num [fairLaw, designMeasure, calibrationDesign, Fin.sum_univ_two]
+  rw [← ENNReal.ofReal_add (by norm_num) (by norm_num)]
+  norm_num
+
+def iidLaw : Measure (ℕ → Fin 2) := Measure.infinitePi (fun _ : ℕ => fairLaw)
+
+instance : IsProbabilityMeasure iidLaw := by
+  unfold iidLaw
+  infer_instance
+
+example :
+    (∀ r : ℕ, Measurable (fun a : ℕ → Fin 2 => a r)) ∧
+    iIndepFun (fun r (a : ℕ → Fin 2) => a r) iidLaw ∧
+    (∀ r : ℕ, Measure.map (fun a : ℕ → Fin 2 => a r) iidLaw =
+      designMeasure calibrationDesign) := by
+  refine ⟨fun r => measurable_pi_apply r, ?_, ?_⟩
+  · exact iIndepFun_infinitePi (P := fun _ : ℕ => fairLaw)
+      (X := fun _ => id) (fun _ => measurable_id)
+  · intro r
+    exact Measure.infinitePi_map_eval (fun _ : ℕ => fairLaw) r
+
+example : fairLaw {0} = 1/2 ∧ fairLaw {1} = 1/2 := by
+  norm_num [fairLaw, designMeasure, calibrationDesign, Fin.sum_univ_two]
+  rw [ENNReal.ofReal_div_of_pos (by norm_num)]
+  norm_num
+
+-- T21: all hypotheses of the three-unit witness, with genuine noninvariance.
+example :
+    (∀ d, Positivity locationPopulation d) ∧
+    (∀ i d, locationPopulation.outcome i d = locationPrediction i) ∧
+    (∀ i, covariance locationDesign (fun _ => locationPrediction i)
+      (fun z => indicator locationPopulation.exposure i 1 z) = 0) ∧
+    (∀ z, (∑ i, indicator locationPopulation.exposure i 1 z) = 1 ∧
+      (∑ i, indicator locationPopulation.exposure i 0 z) = 2) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro d i
+    fin_cases d <;> fin_cases i <;>
+      norm_num [Positivity, pi, expectation, indicator, locationPopulation,
+        locationDesign, Fin.sum_univ_succ]
+  · intro i d
+    rfl
+  · intro i
+    fin_cases i <;>
+      norm_num [SAP.P013b.covariance, expectation, indicator, locationPopulation,
+        locationDesign, locationPrediction, Fin.sum_univ_succ]
+  · intro z
+    fin_cases z <;>
+      norm_num [indicator, locationPopulation, Fin.sum_univ_succ]
+
+example :
+    differenceTotal (shiftPopulation locationPopulation 1) 1 locationPrediction 0 = 14 ∧
+    differenceTotal locationPopulation 1 locationPrediction 0 = 10 ∧
+    differenceEffect (shiftPopulation locationPopulation 1) 1 0
+      locationPrediction locationPrediction 0 = 2/9 ∧
+    differenceEffect locationPopulation 1 0 locationPrediction locationPrediction 0 = 0 := by
+  norm_num [differenceEffect, differenceTotal, htTotal, pi, expectation, indicator,
+    shiftPopulation, locationPopulation, locationDesign, locationPrediction, Fin.sum_univ_succ]
+
+-- T22: one instance satisfies all hypotheses, including the calibration premises.
+example :
+    0 < (2 : ℕ) ∧ (1 : Fin 2) ≠ 0 ∧
+    (∀ d, Positivity calibrationPopulation d) ∧
+    (∀ z, ∑ i, indicator calibrationPopulation.exposure i 1 z = (1 : ℝ)) ∧
+    (∀ i, pi calibrationPopulation i 1 = (1 : ℝ)/2) ∧
+    (∀ z, htCount calibrationPopulation 1 z = 2) := by
+  norm_num [Positivity, pi, expectation, htCount, indicator, calibrationPopulation,
+    calibrationDesign, Fin.sum_univ_two]
+
+-- T23: actual binary worlds, recording, positivity, and consistency.
+example : ∀ world : Fin 3,
+    (∀ i d, (twoWearPopulation world).outcome i d = 0 ∨
+      (twoWearPopulation world).outcome i d = 1) ∧
+    (∀ i d, 0 < pi (twoWearPopulation world) i d ∧
+      pi (twoWearPopulation world) i d < 1) ∧
+    (∀ z i, observed (recordedPopulation (twoWearPopulation world) twoRecording) z i =
+      ∑ d, indicator (twoWearPopulation world).exposure i d z *
+        (recordedPopulation (twoWearPopulation world) twoRecording).outcome i d) := by
+  intro world
+  fin_cases world
+  all_goals norm_num [twoWearPopulation, twoRecording, recordedPopulation,
+    observed, pi, expectation, indicator, twoReportDesign,
+    Fintype.sum_prod_type, Fin.sum_univ_two]
+
+example :
+    recordedData (twoWearPopulation 1) twoRecording =
+      recordedData (twoWearPopulation 2) twoRecording ∧
+    causalEffect (twoWearPopulation 1) 1 0 = 1 ∧
+    causalEffect (twoWearPopulation 2) 1 0 = 0 ∧
+    expectation twoReportDesign
+      (htEffect (recordedPopulation (twoWearPopulation 1) twoRecording) 1 0) = 1/2 := by
+  constructor
+  · funext z i
+    fin_cases i <;> simp [recordedData, observed, recordedPopulation,
+      twoRecording, twoWearPopulation]
+  · norm_num [causalEffect, potentialMean, potentialTotal, htEffect, htTotal,
+      recordedPopulation, twoWearPopulation, twoRecording, pi, expectation,
+      indicator, twoReportDesign, Fintype.sum_prod_type, Fin.sum_univ_two]
+
+-- T24: its probabilistic sufficient condition has a nonzero-outcome instance.
+example :
+    (∀ i, 0 < pi (twoWearPopulation 0) i 1) ∧
+    (∀ i, 0 < pi (twoWearPopulation 0) i 0) ∧
+    (∀ i d, 0 ≤ (twoWearPopulation 0).outcome i d) ∧
+    (∀ i d, twoRecording i d = false → (twoWearPopulation 0).outcome i d = 0) := by
+  norm_num [pi, expectation, indicator, twoWearPopulation, twoReportDesign,
+    twoRecording, Fintype.sum_prod_type, Fin.sum_univ_two]
+
+-- T24: nontrivial deletion with every Hajek denominator strictly positive.
+example :
+    let D : Fin 3 → Fin 2 := fun i => if i = 2 then 0 else 1
+    let w : Fin 3 → ℝ := fun _ => 2
+    let G : Fin 3 → ℝ := fun i => if i = 1 then 0 else 1
+    let S : Finset (Fin 3) := Finset.univ
+    let SR : Finset (Fin 3) := {0,2}
+    SR ⊆ S ∧ 0 < S.card ∧ 0 < SR.card ∧
+    (∀ i ∈ S, 0 < w i) ∧
+    (∀ i ∈ S, G i ≠ 0 → i ∈ SR) ∧
+    recordedDenominator D w 1 S = 4 ∧
+    recordedDenominator D w 0 S = 2 ∧
+    recordedDenominator D w 1 SR = 2 ∧
+    recordedDenominator D w 0 SR = 2 ∧
+    recordedNumerator D w G 1 S / recordedDenominator D w 1 S -
+      recordedNumerator D w G 0 S / recordedDenominator D w 0 S = -(1/2) ∧
+    recordedNumerator D w G 1 SR / recordedDenominator D w 1 SR -
+      recordedNumerator D w G 0 SR / recordedDenominator D w 0 SR = 0 := by
+  norm_num [recordedDenominator, recordedNumerator, Fin.sum_univ_succ]
+  intro i hi
+  fin_cases i <;> simp_all
+
+end ReviewChecks

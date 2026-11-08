@@ -53,5 +53,6 @@ theorem variance_difference_bound {Ω I : Type*} [Fintype Ω] [Fintype I] [Decid
   rw [hid]
   exact (abs_sub _ _).trans (by linarith)
 
+#print axioms variance_difference_bound
 end
 end AronowAudit.P026.VarianceStability

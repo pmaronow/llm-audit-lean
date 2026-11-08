@@ -5,7 +5,7 @@ import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 /-!
-P030: finite randomization tests and interference. Printed page numbers are used throughout (PDF page + 2).
+Formal audit of P030. Printed page numbers are used throughout (PDF page + 2).
 Finite probabilities count assignments, retaining multiplicity of tied statistics.
 All arithmetic is over fixed potential outcomes and a finite randomization design.
 -/
@@ -112,13 +112,13 @@ an alternative correction to the rule on p. 7. -/
 def twoTailP (pL pU : ℝ) : ℝ := min 1 (2 * min pL pU)
 
 /-- "Whenever values are tied, the average rank is used" (p. 8).
-The rank is # strictly smaller + (# equal + 1)/2. -/
+The rank is # strictly smaller + (# equal + 1)/2, as specified in targets S8f. -/
 def averageRank {n : ℕ} (a : Fin n → ℝ) (k : Fin n) : ℝ := by
   classical
   exact ((Finset.univ.filter (fun l => a l < a k)).card : ℝ) +
     (((Finset.univ.filter (fun l => a l = a k)).card : ℝ) + 1) / 2
 
-/-- Average ranks centred at their mean (n+1)/2 (p. 8). -/
+/-- Average ranks centred at their mean (n+1)/2 (p. 8, reading S8f). -/
 def centeredRanks {n : ℕ} (a : Fin n → ℝ) (k : Fin n) : ℝ :=
   averageRank a k - ((n : ℝ) + 1) / 2
 
@@ -151,25 +151,27 @@ def nearestDistance {N : ℕ} (x : Fin N → ℝ) (S : FixedIndicator N)
   let V := Finset.univ.filter (fun j => S j = false ∧ z j = true)
   exact if h : V.Nonempty then V.inf' h (fun j => |x i - x j|) else 0
 
-/-- P030-T1's explicit five positions. -/
+/-- P030-T1's explicit five positions, from E001 adjudication §3. -/
 def fiveX : Fin 5 → ℝ := ![0, 4, 8, -1, -2]
 /-- P030-T1's nonexperimental fixed units 1,2,3 (p. 6 allows this choice). -/
 def fiveS : FixedIndicator 5 := ![true, true, true, false, false]
-/-- P030-T1's fixed outcome schedule, under every binary assignment. -/
+/-- P030-T1's fixed outcome schedule, under EVERY binary assignment
+(E001 adjudication §3). -/
 def fiveY (i : Fin 5) (_z : Assignment 5) : ℝ := (![0, 1, 2, 0, 0] : Fin 5 → ℝ) i
-/-- P030-T1 treats exactly one of units 4 and 5. -/
+/-- P030-T1 treats exactly one of units 4 and 5 (E001 adjudication §3). -/
 def fiveAssignment (a : Fin 2) : Assignment 5 := fun i => decide (i.val = a.val + 3)
-/-- P030-T1's two equally likely assignments. -/
+/-- P030-T1's two equally likely assignments (E001 adjudication §3). -/
 def fiveΩ : Finset (Assignment 5) := Finset.univ.image fiveAssignment
-/-- Enumeration of P030-T1's three fixed units, in the target's order. -/
+/-- Enumeration of P030-T1's three fixed units, in the target's order
+(E001 adjudication §3). -/
 def fiveFixed (i : Fin 3) : Fin 5 := ⟨i.val, by omega⟩
-/-- P030-T1's outcome subvector. -/
+/-- P030-T1's outcome subvector (E001 adjudication §3). -/
 def fiveOutcomes : Fin 3 → ℝ := fun i => fiveY (fiveFixed i) (fiveAssignment 0)
 /-- P030-T1's exposure subvector computed with the actual nearest distance
-(p. 7 distance definition). -/
+(E001 adjudication §3; p. 7 distance definition). -/
 def fiveDistances (a : Fin 2) : Fin 3 → ℝ :=
   fun i => nearestDistance fiveX fiveS (fiveAssignment a) (fiveFixed i)
-/-- P030-T1 uses the paper's Spearman statistic (p. 8). -/
+/-- P030-T1 uses the paper's Spearman statistic (p. 8; E001 adjudication §3). -/
 def fiveStatistic (a : Fin 2) : ℝ := spearman (fiveDistances a) fiveOutcomes
 
 /-- The five-unit counterexample has no treatment effect of any kind (T1, p. 7 claim). -/
@@ -611,7 +613,7 @@ def tenAssignment (j : Fin 10) : Assignment 10 := fun i => decide (i = j)
 /-- Full one-treated-unit design in the ten-unit example (p. 9). -/
 def tenΩ : Finset (Assignment 10) := Finset.univ.image tenAssignment
 /-- Fixed outcome schedule in the null counterexamples T2/T5, distinct from
-the paper's DGP. -/
+the paper's DGP (E001 v1 derivation §5; E002 v1 derivation §§2-4). -/
 def tenYnull (i : Fin 10) (_z : Assignment 10) : ℝ :=
   (![1,2,2,2,2,3,2,3,2,1] : Fin 10 → ℝ) i
 /-- Enumeration of fixed units (1,8,9,10), p. 9. -/
@@ -869,7 +871,8 @@ def PrintedTwoTailedExactness : Prop :=
           (fun w => referenceStatistic S Y g z w ≤ statistic S Y g z))) ≤ α
 
 /-- The actual five-unit Spearman statistic as a function of observed Y_fixed
-and the assignment, for instantiating the full P030-T4 claim (p. 7). -/
+and the assignment, for instantiating the full P030-T4 claim (p. 7;
+E001 adjudication §3). -/
 def fiveG (y : {i // fiveS i = true} → ℝ) (z : Assignment 5) : ℝ :=
   spearman (fun i : Fin 3 => nearestDistance fiveX fiveS z (fiveFixed i))
     (fun i : Fin 3 => y ⟨fiveFixed i, by fin_cases i <;> norm_num [fiveS, fiveFixed]⟩)
@@ -1314,6 +1317,14 @@ theorem inverse_square_self_term_undefined {N : ℕ} (d : Fin N → Fin N → �
 The printed self summand is undefined, as inverse_square_self_term_undefined
 states using ordinary partial division; the corrected sums exclude self. -/
 def inverseSquare (d : ℝ) : ℝ := 1 / (((3/2 : ℝ)*d)^2)
+/-- Corrected indirect effect Θ_i = ∑_{j≠i} Z_j k(d_ij), p. 10. -/
+def inverseSquareIndirect {N : ℕ} (d : Fin N → Fin N → ℝ) (z : Assignment N)
+    (i : Fin N) : ℝ := ∑ j ∈ Finset.univ.erase i, treatment z j * inverseSquare (d i j)
+/-- Corrected spatial effect Ψ_i = ∑_{j≠i} k(d_ij), p. 10.
+The target explicitly leaves the paper's subsequent mean normalization outside
+its formal content; these are the pre-normalization effects. -/
+def inverseSquareSpatial {N : ℕ} (d : Fin N → Fin N → ℝ) (i : Fin N) : ℝ :=
+  ∑ j ∈ Finset.univ.erase i, inverseSquare (d i j)
 
 /-- P030-T10(i): positive off-diagonal distances give nonzero denominators in
 every corrected summand; a metric on distinct positions has this property. -/
@@ -1795,7 +1806,7 @@ theorem example_observed_statistic_and_p :
   exact table_tail_probabilities.1 5
 
 /-- T1's rank and centred-product certificates, derived from its data (p. 8
-statistic). -/
+statistic; E001 adjudication §3 counterexample). -/
 theorem five_rank_certificate :
     averageRank fiveOutcomes = ![1,2,3] ∧ centeredRanks fiveOutcomes = ![-1,0,1] ∧
     (∀ r : Fin 2, averageRank (fiveDistances r) = ![1,2,3] ∧
@@ -1817,3 +1828,96 @@ theorem five_rank_certificate :
 end
 end AronowAudit.P030
 
+#print axioms AronowAudit.P030.five_no_effects
+#print axioms AronowAudit.P030.five_distances
+#print axioms AronowAudit.P030.five_correlations
+#print axioms AronowAudit.P030.no_effects_implies_no_interference
+#print axioms AronowAudit.P030.five_design
+#print axioms AronowAudit.P030.five_unit_counterexample
+#print axioms AronowAudit.P030.probability_nonneg
+#print axioms AronowAudit.P030.probability_mono
+#print axioms AronowAudit.P030.probability_true
+#print axioms AronowAudit.P030.probability_le_one
+#print axioms AronowAudit.P030.tail_identity
+#print axioms AronowAudit.P030.lowerTail_mono
+#print axioms AronowAudit.P030.lower_tail_valid
+#print axioms AronowAudit.P030.upper_tail_valid
+#print axioms AronowAudit.P030.probability_union_le
+#print axioms AronowAudit.P030.corrected_two_tailed_valid
+#print axioms AronowAudit.P030.corrected_reject_subset_printed
+#print axioms AronowAudit.P030.twoTailP_event
+#print axioms AronowAudit.P030.conventional_two_tailed_valid
+#print axioms AronowAudit.P030.uniformLaw_probability
+#print axioms AronowAudit.P030.conditional_preserves_treatments
+#print axioms AronowAudit.P030.no_interference_fixed
+#print axioms AronowAudit.P030.fixed_dependence_implies_interference
+#print axioms AronowAudit.P030.direct_effects_no_interference
+#print axioms AronowAudit.P030.corrected_outcome_null
+#print axioms AronowAudit.P030.attainable_exactness
+#print axioms AronowAudit.P030.exact_rejection_max
+#print axioms AronowAudit.P030.one_tailed_randomization_valid
+#print axioms AronowAudit.P030.nearest_single_treated
+#print axioms AronowAudit.P030.table_y_vector
+#print axioms AronowAudit.P030.table_distances
+#print axioms AronowAudit.P030.table_value_order
+#print axioms AronowAudit.P030.table_correlations
+#print axioms AronowAudit.P030.table_tail_probabilities
+#print axioms AronowAudit.P030.table_rejection_probabilities
+#print axioms AronowAudit.P030.ten_design
+#print axioms AronowAudit.P030.uniformProbability_image
+#print axioms AronowAudit.P030.ten_unit_counterexample
+#print axioms AronowAudit.P030.constant_statistic_p_one
+#print axioms AronowAudit.P030.statistic_invariance_counterexample
+#print axioms AronowAudit.P030.printed_two_tailed_claim_false
+#print axioms AronowAudit.P030.example_observed_outcomes
+#print axioms AronowAudit.P030.table_rounding
+#print axioms AronowAudit.P030.worked_table_result
+#print axioms AronowAudit.P030.printed_formula_counterexample
+#print axioms AronowAudit.P030.printed_ordering_counterexample
+#print axioms AronowAudit.P030.weak_monotonicity_counterexample
+#print axioms AronowAudit.P030.average_rank_weight
+#print axioms AronowAudit.P030.rank_weight_pair
+#print axioms AronowAudit.P030.average_rank_sum
+#print axioms AronowAudit.P030.average_rank_strict
+#print axioms AronowAudit.P030.nonconstant_rank_variance
+#print axioms AronowAudit.P030.spearman_bounds
+#print axioms AronowAudit.P030.spearman_divisor
+#print axioms AronowAudit.P030.rank_residual_squares
+#print axioms AronowAudit.P030.spearman_perfect_implies_proportional
+#print axioms AronowAudit.P030.spearman_proportional
+#print axioms AronowAudit.P030.rank_order_preserving
+#print axioms AronowAudit.P030.rank_order_reversing
+#print axioms AronowAudit.P030.corrected_spearman
+#print axioms AronowAudit.P030.inverse_square_self_term_undefined
+#print axioms AronowAudit.P030.inverse_square_sums_defined
+#print axioms AronowAudit.P030.inverse_square_decay
+#print axioms AronowAudit.P030.inverse_square_not_exponential
+#print axioms AronowAudit.P030.inverse_square_unbounded
+#print axioms AronowAudit.P030.exponential_finite_at_zero
+#print axioms AronowAudit.P030.sample_partition_count
+#print axioms AronowAudit.P030.printed_sample_counts_inconsistent
+#print axioms AronowAudit.P030.sample_count_reconciliations
+#print axioms AronowAudit.P030.sample_count_arithmetic
+#print axioms AronowAudit.P030.exposure_mean_linearity
+#print axioms AronowAudit.P030.exposure_mean_from_marginals
+#print axioms AronowAudit.P030.swap_units_involution
+#print axioms AronowAudit.P030.treatment_total
+#print axioms AronowAudit.P030.complete_swap_mem
+#print axioms AronowAudit.P030.complete_nonempty
+#print axioms AronowAudit.P030.uniform_mean_involution
+#print axioms AronowAudit.P030.symmetric_treatment_mean
+#print axioms AronowAudit.P030.complete_treatment_mean
+#print axioms AronowAudit.P030.conditioned_complete_nonempty
+#print axioms AronowAudit.P030.conditioned_treatment_mean
+#print axioms AronowAudit.P030.proximal_exposure_expectations
+#print axioms AronowAudit.P030.half_controls_square
+#print axioms AronowAudit.P030.half_controls_maximizers
+#print axioms AronowAudit.P030.uniform_point_probability
+#print axioms AronowAudit.P030.table_enumeration_probability
+#print axioms AronowAudit.P030.ten_assignment_probabilities
+#print axioms AronowAudit.P030.ten_null_statistic_value
+#print axioms AronowAudit.P030.ten_null_reference_value
+#print axioms AronowAudit.P030.ten_actual_conditional_size
+#print axioms AronowAudit.P030.example_reference_rho
+#print axioms AronowAudit.P030.example_observed_statistic_and_p
+#print axioms AronowAudit.P030.five_rank_certificate

@@ -1,0 +1,148 @@
+import SAP.P027a.Challenge
+
+open scoped BigOperators
+open MeasureTheory
+open SAP.P027a
+
+noncomputable section
+
+def auditPoint : Measure Unit := Measure.dirac ()
+
+instance : IsProbabilityMeasure auditPoint := by
+  dsimp [auditPoint]
+  infer_instance
+
+def auditZeroNoise {K : Type} : K → Unit → ℝ := fun _ _ => 0
+
+-- The common-second-moment and uncorrelated hypotheses are jointly satisfiable.
+example {K : Type} : NoiseMoments auditPoint (auditZeroNoise (K := K)) 0 := by
+  classical
+  constructor
+  · intro k
+    simp [auditZeroNoise, outcomeE]
+  · intro k l
+    simp [auditZeroNoise, outcomeE]
+
+example {K : Type} : UncorrelatedNoise auditPoint (auditZeroNoise (K := K)) := by
+  constructor
+  · intro k
+    simp [auditZeroNoise, outcomeE]
+  · intro k l
+    simp [auditZeroNoise, outcomeE]
+
+-- T6: r=2, m=2, beta=1 gives L=64>0, so even its ratio branch is live.
+example :
+    (0 < (2 : ℕ)) ∧ (0 < (2 : ℕ)) ∧ (0 : ℝ) ≤ 0 ∧
+    NoiseMoments auditPoint
+      (auditZeroNoise (K := Σ _ : Fin 2 × Fin 2, Fin 2)) 0 ∧
+    0 < (16*(2:ℝ)^2*1^2+(2:ℝ)*0*(1-1/(2*2))) := by
+  classical
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_, by norm_num⟩
+  constructor
+  · intro k
+    simp [auditZeroNoise, outcomeE]
+  · intro k l
+    simp [auditZeroNoise, outcomeE]
+
+example :
+    let z := centeredOutcomes
+      (phaseSize (r := 2) (m := 2)) 1
+      (auditZeroNoise (K := Σ _ : Fin 2 × Fin 2, Fin 2))
+    let Y := fun ξ => groupTotal (fun _ : Fin 2 × Fin 2 => 2) (z ξ)
+    let D := phaseOriginal 2 2 (by norm_num)
+    let Dc := phaseGrouped 2 (by norm_num)
+    Integrable (fun ξ => variance D (htTotal D (z ξ))) auditPoint ∧
+    Integrable (fun ξ => expect Dc (c2Estimator Dc (Y ξ))) auditPoint ∧
+    (∀ g, Integrable (fun ξ => Y ξ g^2) auditPoint) := by
+  dsimp
+  exact ⟨Integrable.of_finite, Integrable.of_finite, fun _ => Integrable.of_finite⟩
+
+-- T10: direct finite enumeration, without invoking its Challenge theorem.
+example : Valid random8 ∧ Positive random8 ∧
+    (∀ k, 1 ≤ randomSize8 k) ∧
+    biasA random8 randomOutcome8 = -16 ∧
+    variance random8 (htMean random8 randomOutcome8) = 4/3 := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · constructor
+    · intro g
+      fin_cases g <;> norm_num [random8, fourPhase]
+    · norm_num [random8, fourPhase, Fin.sum_univ_succ]
+  · intro k
+    fin_cases k <;> norm_num [pi, expect, indicator, random8, fourPhase,
+      Fin.sum_univ_succ]
+  · intro k
+    fin_cases k <;> norm_num [randomSize8]
+  all_goals norm_num [random8, fourPhase, expect, pi, indicator,
+    biasA, joint, randomOutcome8, alternating8, variance,
+    htMean, htTotal, Fin.sum_univ_succ]
+
+-- T11: a fixed positive design/size vector with genuine probability space.
+example : Valid random8 ∧ Positive random8 ∧ 0 < Fintype.card (Fin 8) ∧
+    (∀ k, 1 ≤ randomSize8 k) ∧
+    UncorrelatedNoise auditPoint (auditZeroNoise (K := Fin 8)) := by
+  classical
+  refine ⟨?_, ?_, by norm_num, ?_, ?_⟩
+  · constructor
+    · intro g
+      fin_cases g <;> norm_num [random8, fourPhase]
+    · norm_num [random8, fourPhase, Fin.sum_univ_succ]
+  · intro k
+    fin_cases k <;> norm_num [pi, expect, indicator, random8, fourPhase,
+      Fin.sum_univ_succ]
+  · intro k
+    fin_cases k <;> norm_num [randomSize8]
+  · constructor
+    · intro k
+      simp [auditZeroNoise, outcomeE]
+    · intro k l
+      simp [auditZeroNoise, outcomeE]
+
+-- T12: the displayed counts produce the exact strictly infeasible vector.
+example : (∀ k, 1+(nbWitness k:ℝ) = invalidSize8 k) ∧
+    (∑ k, invalidSize8 k) = 37 ∧
+    printedPPS 2 invalidSize8 0 = 60/37 ∧
+    1 < printedPPS 2 invalidSize8 0 := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro k
+    fin_cases k <;> norm_num [nbWitness, invalidSize8]
+  all_goals norm_num [printedPPS, invalidSize8, Fin.sum_univ_succ]
+
+-- T13: both a feasible printed vector and an infeasible vector needing caps.
+example : (∀ k : Fin 8, 0 < randomSize8 k) ∧
+    (∀ k : Fin 8, (2:ℝ)*randomSize8 k ≤ ∑ a, randomSize8 a) := by
+  constructor <;> intro k <;> fin_cases k <;>
+    norm_num [randomSize8, Fin.sum_univ_succ]
+
+example : (∀ k : Fin 8, 0 < invalidSize8 k) ∧
+    0 < (1/7:ℝ) ∧ (∑ k : Fin 8, min 1 ((1/7:ℝ)*invalidSize8 k)) = 2 ∧
+    Valid certainty8 ∧ Positive certainty8 := by
+  classical
+  refine ⟨?_, by norm_num, ?_, ?_, ?_⟩
+  · intro k
+    fin_cases k <;> norm_num [invalidSize8]
+  · norm_num [invalidSize8, Fin.sum_univ_succ]
+  · norm_num [Valid, certainty8, Fin.sum_univ_succ]
+  · intro k
+    fin_cases k <;> norm_num [pi, expect, indicator, certainty8,
+      Fin.sum_univ_succ]
+
+-- Acceptance contains the all-zero count vector, and first acceptance wins.
+example : (fun _ : Fin 8 => 0) ∈ feasibleSizeVectors 8 2 := by
+  norm_num [feasibleSizeVectors]
+
+example : redrawSizeOutput 8 2 (fun _ _ => 0) = (fun _ => 0) := by
+  unfold redrawSizeOutput
+  split <;> rfl
+
+-- T6's finite zero-sum formulas and positive-variance guard are also live.
+example :
+    let D := phaseOriginal 2 2 (by norm_num)
+    let z : (Σ _ : Fin 2 × Fin 2, Fin 2) → ℝ :=
+      fun k => if k.1.2 = 0 then -1 else 1
+    (∑ k, z k) = 0 ∧ 0 < variance D (htTotal D z) := by
+  classical
+  norm_num [variance, htTotal, pi, expect, indicator,
+    phaseOriginal, liftDesign, phaseGrouped, oneDraw, phaseProb,
+    Fintype.sum_sigma, Fintype.sum_prod_type, Fin.sum_univ_succ]

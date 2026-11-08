@@ -3,8 +3,9 @@ import AronowAudit.External.Causalean.Experimentation.FinitePopulationMoments
 import Mathlib.Algebra.BigOperators.Fin
 
 /-!
-P002-T14 and P002-T2: the balanced-sign counterexample and corrected (E.10).
-The finite-sampling results use the Causalean development.
+Draft for records P002-T14 and P002-T2.  This file has deliberately not been run
+through Lean.  The finite-sampling facts below come from the independently proved
+Causalean development, rather than the held P002 moment declarations.
 -/
 namespace AronowAudit.P002.Wave1
 noncomputable section
@@ -19,7 +20,7 @@ set_option linter.unnecessarySeqFocus false
 
 open Causalean.Experimentation.DesignBased
 
-/-! ## The balanced-sign counterexample -/
+/-! ## Record 6: the balanced-sign counterexample -/
 
 private theorem missing_square_expectation_congr {n} (P : Population n)
     {f g : Finset (Fin n) → ℝ}
@@ -529,7 +530,7 @@ private theorem missing_square_probabilities (m : ℕ) (hm : 2 ≤ m) :
     rw [missing_square_ratio_mean_error m hm] at H
     simpa only [div_div] using H
 
-/-- Statement of P002-T14. -/
+/-- Exact frozen T14 statement. -/
 theorem missing_square_counterexample_proof :
     (∀ m, 2 ≤ m →
       let P := signModel m
@@ -561,7 +562,10 @@ theorem missing_square_counterexample_proof :
     simp_rw [hf]
     exact tendsto_const_nhds
 
-/-! ## Corrected (E.10) -/
+example : type_of% @AronowAudit.P002.missing_square_counterexample :=
+  missing_square_counterexample_proof
+
+/-! ## Record 7: corrected E10 -/
 
 private theorem corrected_E10_mean_add_mul {n} (u v : Fin n → ℝ) (a : ℝ) :
     mean (fun i => u i + a*v i) = mean u + a*mean v := by
@@ -590,7 +594,7 @@ private theorem corrected_E10_popVar_sub {n} (u v : Fin n → ℝ) :
   ring
 
 /-- The actual finite two-arm variance.  Expressing the contrast as a treated
-sample mean plus a constant reduces it to the sample moment.
+sample mean plus a constant reduces it to the independently proved sample moment.
 This also covers either population variance being zero. -/
 private theorem corrected_E10_two_arm_variance {n} (P : Population n)
     (hP : ValidDesign P) (u v : Fin n → ℝ) :
@@ -637,7 +641,7 @@ private theorem corrected_E10_two_arm_variance {n} (P : Population n)
   <;> ring
 
 /-- Positive augmented-Gram coercivity gives a trivial kernel, hence a nonzero
-finite-dimensional determinant. -/
+finite-dimensional determinant.  No admitted oracle or OLS result is used. -/
 private theorem corrected_E10_population_full_rank {n k}
     (P : CovPopulation n k) (hn : 0 < n) (e : ℝ) (he : 0 < e)
     (hx : ∀ s, ∑ i, P.x i s = 0)
@@ -676,7 +680,7 @@ private theorem corrected_E10_popVar_nonneg {n} (hn : 2 ≤ n) (u : Fin n → �
   have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
   exact div_nonneg (Finset.sum_nonneg (fun _ _ => sq_nonneg _)) (by linarith)
 
-/-- Corrected (E.10). -/
+/-- Exact frozen corrected E10 statement. -/
 theorem corrected_E10_proof {n k} (P : CovPopulation n k) (δ e A B r : ℝ)
     (hk : 0 < k) (hδ : δ < 1) (he : 0 < e) (hA : 0 < A) (hB : 0 < B)
     (hr : 0 < r ∧ r ≤ 1/2) (hP : Xi P δ e A B r) :
@@ -712,6 +716,8 @@ theorem corrected_E10_proof {n k} (P : CovPopulation n k) (δ e A B r : ℝ)
   rw [horacle, corrected_E10_two_arm_variance P.pop hD,
     corrected_E10_popVar_sub]
   exact H
+
+example : type_of% @AronowAudit.P002.corrected_E10 := corrected_E10_proof
 
 end
 end AronowAudit.P002.Wave1

@@ -1,6 +1,6 @@
 import Mathlib
 /-! Finite linear moment identities and rank of a left-inverse complement.
-These are generic algebra and integration lemmas, with no distributional hypotheses beyond the displayed moments. -/
+These are generic checked algebra/integration lemmas, with no distributional hypotheses beyond the displayed moments. -/
 namespace AronowAudit.P039.LinearMoments
 open MeasureTheory Matrix
 open scoped BigOperators
@@ -17,6 +17,11 @@ lemma integral_linear_zero {Ω I J : Type*} [MeasurableSpace Ω] [Fintype I] [Fi
   simp_rw [integral_const_mul,he,mul_zero]
   simp
 
+lemma integrable_linear {Ω I J : Type*} [MeasurableSpace Ω] [Fintype I] [Fintype J]
+    (μ : Measure Ω) (ε : Ω → I → ℝ) (A : Matrix J I ℝ)
+    (hi : ∀ i, Integrable (fun ω => ε ω i) μ) (j : J) :
+    Integrable (fun ω => (A*ᵥ ε ω) j) μ := by
+  exact integrable_finset_sum _ (fun i _ => (hi i).const_mul (A j i))
 
 lemma integral_linear_product {Ω I J : Type*} [MeasurableSpace Ω] [Fintype I] [Fintype J]
     (μ : Measure Ω) (ε : Ω → I → ℝ) (A : Matrix J I ℝ)
@@ -80,3 +85,10 @@ lemma rank_complement_left_inverse {n k : ℕ}
 end
 end AronowAudit.P039.LinearMoments
 
+#print axioms AronowAudit.P039.LinearMoments.integral_linear_zero
+
+#print axioms AronowAudit.P039.LinearMoments.integrable_linear
+
+#print axioms AronowAudit.P039.LinearMoments.integral_linear_product
+
+#print axioms AronowAudit.P039.LinearMoments.rank_complement_left_inverse

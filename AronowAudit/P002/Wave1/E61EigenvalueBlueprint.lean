@@ -1,23 +1,26 @@
 import AronowAudit.P002.P002_Audit
 
 /-!
-# P002-T9: corrected eigenvalue display in the proof of Lemma 19
+# Blueprint: P002-T9, corrected eigenvalue display in the proof of Lemma 19
 
-Supplement p. 42, first display in the proof of Lemma 19, with the corrected
-constant `min(1, e)`. The statement uses the fitted-minus-pooled coefficient error,
-one common vanishing error for both arms, and every strict subsequence. It includes
-the Supplement p. 27 independent coupling as an explicit finite-event
-factorization; `RandomizationSequence` specifies only marginal laws. The proof
-below uses only the marginals.
+Record P002-T9 (`AronowAudit.P002.corrected_E61_eigenvalue`, resolution
+`repair_and_prove`). Supplement p. 42, first display in the proof of Lemma 19, with the
+corrected constant `min(1, e)`. The final statement keeps the actual fitted-minus-pooled
+coefficient error, one common vanishing error for both arms, every strict subsequence,
+and adds the Supplement p. 27 independent coupling as the explicit finite-event
+factorization `hIndependent` (the frozen `RandomizationSequence` is marginal-only). The
+proof below uses only the marginals.
 
-The argument combines a without-replacement exponential bound (S), obtained from
-independent Bernoulli sampling by conditioning on the count (the binomial mode has
-mass at least `1/(N+1)`) and Hoeffding's inequality; entrywise tail bounds for both
-arm Gram matrices; first Borel–Cantelli along strictly increasing sizes; and a
-uniform entrywise quadratic perturbation bound around the population Gram matrix.
-The population Rayleigh bound is `min(1,e)`.
+Paper proof (map §8): a without-replacement exponential bound (S) obtained from
+independent Bernoulli sampling by conditioning on the count (the binomial mode has mass at
+least `1/(N+1)`) and Hoeffding; entrywise tail bounds for both arm Gram matrices;
+first Borel–Cantelli along the strictly increasing sizes; then a uniform entrywise
+quadratic perturbation bound around the population Gram matrix, whose Rayleigh bound
+`min(1,e)` is the proved `corrected_augmented_gram`.
 
-The sampling bound (S) includes the explicit hypothesis `0 < r`.
+Referee fix applied (ref2, record 8): the standalone sampling lemma (S) carries the
+explicit hypothesis `0 < r` (statement `SamplingBound`). The primary signature is
+unchanged.
 -/
 
 namespace AronowAudit.P002.Wave1.E61Eigenvalue
@@ -28,7 +31,7 @@ attribute [local instance] Classical.propDecidable
 
 universe u
 
-/-- Corrected eigenvalue bound in the proof of Lemma 19, Supplement p. 42. -/
+/-- Frozen final statement of `AronowAudit.P002.Wave1.corrected_E61_eigenvalue_paper`. -/
 def Target : Prop :=
   ∀ {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
     (sizes : ℕ → ℕ), StrictMono sizes →
@@ -51,9 +54,9 @@ def Target : Prop :=
 
 /-! ## Statements used by the nodes -/
 
-/-- Bernoulli conditioning: for
+/-- Bernoulli conditioning (map node `bernoulli_conditioning_uniform_subset`): for
 `0 < m < N` and `p = m/N`, the uniform `m`-subset probability of any event is at most
-`N+1` times its probability under independent Bernoulli(`p`) inclusion. Every
+`N+1` times its probability under independent Bernoulli(`p`) inclusion. Route: every
 `m`-subset has Bernoulli weight `p^m(1-p)^(N-m)`, and `m` is a mode of
 Binomial(`N`,`p`), so that weight times `choose N m` is at least `1/(N+1)`. -/
 def BinomialConditioning : Prop :=
@@ -62,15 +65,16 @@ def BinomialConditioning : Prop :=
       ((N : ℝ) + 1) * ∑ B : Finset (Fin N),
         if E B then ((m : ℝ) / N) ^ B.card * (1 - (m : ℝ) / N) ^ (N - B.card) else 0
 
-/-- Hoeffding's lemma for a centred Bernoulli variable (two-point form).
-Hoeffding 1963, Lemma 1, applied to a two-point law through Mathlib's
-`ProbabilityTheory.hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`. -/
+/-- Hoeffding's lemma for a centred Bernoulli variable (two-point form). Standard input
+(Hoeffding 1963, Lemma 1); available through Mathlib's
+`ProbabilityTheory.hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero` /
+`ProbabilityTheory.mgf_le_of_mem_Icc_of_integral_eq_zero` applied to a two-point law. -/
 def TwoPointHoeffding : Prop :=
   ∀ (p c : ℝ), 0 ≤ p → p ≤ 1 →
     p * Real.exp (c * (1 - p)) + (1 - p) * Real.exp (-(c * p)) ≤ Real.exp (c ^ 2 / 8)
 
 /-- Exact factorization of the weighted Bernoulli moment generating function over units
-by expansion over subsets (`Fintype.prod_add`). -/
+(`Finset.prod_add`, `Finset.sum_pow_mul_eq_add_pow`). -/
 def BernoulliMGF : Prop :=
   ∀ (N : ℕ) (p θ : ℝ) (a : Fin N → ℝ),
     ∑ B : Finset (Fin N), p ^ B.card * (1 - p) ^ (N - B.card) *
@@ -78,9 +82,9 @@ def BernoulliMGF : Prop :=
       ∏ i, (p * Real.exp (θ * (a i * (1 - p))) + (1 - p) * Real.exp (-(θ * (a i * p))))
 
 /-- Two-sided Hoeffding inequality for an independent Bernoulli(`p`) inclusion vector,
-written with the explicit finite product weights. Each factor in `BernoulliMGF` is
-bounded by `TwoPointHoeffding` at `c = θ a_i`; Chernoff at `θ = 4s/∑a²` and a union
-with `-a` give the two-sided bound. -/
+written with the explicit finite product weights. Route: `BernoulliMGF`, each factor
+bounded by `TwoPointHoeffding` at `c = θ a_i`, Chernoff at `θ = 4s/∑a²`, and a union
+with `-a`. -/
 def BernoulliHoeffding : Prop :=
   ∀ (N : ℕ) (p : ℝ) (a : Fin N → ℝ) (s : ℝ), 0 ≤ p → p ≤ 1 → 0 ≤ s →
     0 < ∑ i, a i ^ 2 →
@@ -88,8 +92,8 @@ def BernoulliHoeffding : Prop :=
         (if s ≤ |∑ i ∈ B, a i - p * ∑ i, a i| then p ^ B.card * (1 - p) ^ (N - B.card) else 0) ≤
       2 * Real.exp (-2 * s ^ 2 / ∑ i, a i ^ 2)
 
-/-- The without-replacement exponential bound (S), with the explicit hypothesis `0 < r`. The
-zero-sum-of-squares case is included (the event is then empty). -/
+/-- The without-replacement exponential bound (S), with the explicit `0 < r` required by
+referee 2. The zero-sum-of-squares case is included (the event is then empty). -/
 def SamplingBound : Prop :=
   ∀ (N m : ℕ) (r C t : ℝ) (a : Fin N → ℝ), 1 ≤ m → m < N → 0 < r → r * N ≤ m → 0 < C →
     (∑ i, a i ^ 2) / N ≤ C → 0 < t →
@@ -149,7 +153,7 @@ def EntrywiseQuadraticBound : Prop :=
     ∀ b : Option (Fin k) → ℝ,
       |dotProduct b (H *ᵥ b) - dotProduct b (G *ᵥ b)| ≤ ((k : ℝ) + 1) * D * normSq b
 
-/-- Uniform quadratic-form transfer:
+/-- Uniform quadratic-form transfer (map node `entrywise_quadratic_uniform_bound`):
 with `D_j` the maximal entry error over both arms and `d = k+1`,
 `|b'(H-G)b| ≤ d D_j ‖b‖²`; put `err j = -d D_j`. -/
 def QuadraticFromEntrywise : Prop :=
@@ -170,27 +174,28 @@ def N2 : Prop := TwoPointHoeffding
 def N3 : Prop := BernoulliMGF
 /-- Node 4 (finite Bernoulli Hoeffding inequality, Chernoff step). -/
 def N4 : Prop := TwoPointHoeffding → BernoulliMGF → BernoulliHoeffding
-/-- Node 5 (without-replacement exponential bound (S) with `0 < r`). -/
+/-- Node 5 (map node `finite_sampling_exponential_bound`, (S) with `0 < r`). -/
 def N5 : Prop := BinomialConditioning → BernoulliHoeffding → SamplingBound
 /-- Node 6 (augmented Gram entry mean squares under Xi). -/
 def N6 : Prop := EntryMeanSquare
-/-- Node 7 (finite tail bound for sampled Gram entries). -/
+/-- Node 7 (map node `sampled_gram_ae_entrywise`, finite tail half). -/
 def N7 : Prop := SamplingBound → EntryMeanSquare → EntryTail
 /-- Node 8 (summability along strictly increasing sizes). -/
 def N8 : Prop := SummableTail
 /-- Node 9 (first Borel–Cantelli, generic). -/
 def N9 : Prop := BorelCantelliZero.{u}
-/-- Node 10 (almost-sure entrywise convergence: marginal transfer
+/-- Node 10 (map node `sampled_gram_ae_entrywise`, almost-sure half: marginal transfer
 through `RandomizationSequence`, Borel–Cantelli, finite intersection over entries). -/
 def N10 : Prop := EntryTail → SummableTail → BorelCantelliZero.{u} → AEEntrywise.{u}
 /-- Node 11 (deterministic entrywise quadratic bound). -/
 def N11 : Prop := EntrywiseQuadraticBound
-/-- Node 12 (uniform quadratic-form transfer: finite maximum of
+/-- Node 12 (map node `entrywise_quadratic_uniform_bound`, limit half: finite maximum of
 the entry errors, `err j = -(k+1) D_j`). -/
 def N12 : Prop := EntrywiseQuadraticBound → QuadraticFromEntrywise
 
 /-- The nodes suffice. The coefficient vector is arbitrary in the quadratic bound, so the
-actual fitted-minus-pooled error needs no additional assumption. -/
+actual fitted-minus-pooled error needs no assumption (map node
+`actual_error_vector_instance`). -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7 : N7)
     (h8 : N8) (h9 : N9.{u}) (h10 : N10.{u}) (h11 : N11) (h12 : N12) : Target.{u} := by
   intro Ω _ μ _ sizes hsizes k P Z δ e A B r _hk _hδ _he hA _hB hr hP hZ _hInd sub hsub

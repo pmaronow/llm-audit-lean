@@ -1,4 +1,4 @@
-/- Dense quadratic-form probability limit and PSD conservativeness, derived from a finite O(n) variance bound. -/
+/- Dense quadratic-form probability limit and PSD conservativeness, derived from the finite O(n) variance bound. The variance premise is discharged by the original public theorem in DenseVarianceCompletion; this helper receives no separate selected-result credit. -/
 import AronowAudit.P011.P011_DenseInfrastructure
 import AronowAudit.P011.P011_TraceCompletion
 namespace AronowAudit.P011.DenseLimitCompletion
@@ -131,5 +131,7 @@ lemma limit_clauses_from_variance (F : Family) (c1 c2 c3 c4 K : ℝ)
   have ha:=neg_le_abs ((F.size k:ℝ)*varianceForm (M k) (weighted (F.model k) y)-scaledTrue F k-b k)
   dsimp [scaledTrue] at ha ⊢
   nlinarith
+#print axioms quadratic_centered_memLp
+#print axioms limit_clauses_from_variance
 end
 end AronowAudit.P011.DenseLimitCompletion

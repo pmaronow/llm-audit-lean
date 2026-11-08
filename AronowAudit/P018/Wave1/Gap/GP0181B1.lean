@@ -4,7 +4,11 @@ import Mathlib.Probability.Independence.Integration
 import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 import Mathlib.Analysis.SpecificLimits.Basic
 
-/-! P018-T11 and P018-T12: fair-sign moments and finite target corrections. -/
+/-!
+Draft for P018-T11 and P018-T12. No Lean executable was used to prepare this
+file. In particular, the examples at the end of each record are checks for
+its Beam writer to run, not claims that elaboration has already succeeded.
+-/
 noncomputable section
 namespace AronowAudit.P018.Wave1
 open Finset Matrix MeasureTheory ProbabilityTheory Filter
@@ -14,7 +18,7 @@ set_option maxHeartbeats 2000000
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 
-/-! Finite unordered-pair algebra. -/
+/-! Record 1: finite unordered-pair algebra. -/
 
 lemma printed_endpoints_lt {N : ℕ} (d : Dyad N) : firstUnit d < secondUnit d := by
   exact Finset.min'_lt_max'_of_card (members d) (by rw [members_card]; omega)
@@ -292,7 +296,7 @@ lemma printed_scaled_sandwich {N : ℕ} (hN : 4 ≤ N) (ω : Fin N → Bool) :
   field_simp [hn0, hn1]
   <;> ring
 
-/-! Fair-law moments, followed by a direct Markov bound. -/
+/-! Record 1: actual fair-law moments, followed by a direct Markov bound. -/
 
 lemma printed_fair_probability : IsProbabilityMeasure fairLaw := by
   unfold fairLaw
@@ -513,7 +517,9 @@ theorem printed_targets_counterexample_proof :
   exact ⟨printed_scaled_coefficient_variance, printed_missing_sum_limit,
     printed_sandwich_probability_limit⟩
 
-/-! Two-coordinate transport and the expected finite sums. -/
+example : type_of% @AronowAudit.P018.printed_targets_counterexample := printed_targets_counterexample_proof
+
+/-! Record 2: two-coordinate transport and the expected finite sums. -/
 
 lemma corrected_pair_preserving {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (K : Kernel U k) [IsProbabilityMeasure K.μ] (d : Dyad N) :
@@ -721,5 +727,7 @@ theorem corrected_target_reductions_proof {U : Type*} [MeasurableSpace U] {k N :
       funext ω
       exact corrected_one_score K hK hN ω
     simp only [weightedTarget, corrected_one_H K hK hN, hs, trueTarget]
+
+example : type_of% @AronowAudit.P018.corrected_target_reductions := corrected_target_reductions_proof
 
 end AronowAudit.P018.Wave1

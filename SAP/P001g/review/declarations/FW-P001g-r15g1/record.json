@@ -1,0 +1,67 @@
+[
+ {
+  "target_id": "P001-T115",
+  "decision": "whole",
+  "theorem": "SAP.P001g.T115",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.random_assignment_ate_and_selection_bias",
+   "AronowAudit.P001.independent_constant_cef"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001g.T115WholeStatement"
+ },
+ {
+  "target_id": "P001-T116",
+  "decision": "whole",
+  "theorem": "SAP.P001g.T116",
+  "restriction": null,
+  "statement_note": "The usual measure-theoretic conditions are assumed; identification has the stated measurability and integrability hypotheses, while the separate propensity-score domain imposes no outcome-moment conditions.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.discrete_strong_ignorability_ate_sum_proof",
+   "AronowAudit.P001.Wave1.strong_ignorability_repaired"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T117",
+  "decision": "whole",
+  "theorem": "SAP.P001g.T117",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.Wave1.causal_ipw_and_dr_paper_contract",
+   "AronowAudit.P001.isCEF_condExp",
+   "AronowAudit.P001.Wave1.CausalIpwDr.n1_proof",
+   "AronowAudit.P001.Wave1.CausalIpwDr.n2_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n1_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n2_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n3_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n4_proof",
+   "AronowAudit.P001.Wave1.MarSelection.n6_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001g.T117WholeStatement"
+ },
+ {
+  "target_id": "P001-T118",
+  "decision": "refuted",
+  "theorem": "SAP.P001g.T118",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.PrintedConfidence.printed_plugin_positive_normal_limit_refuted",
+   "AronowAudit.P001.Wave1.printed_finite_variance_mean_hadamard_refuted"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T119",
+  "decision": "restricted",
+  "theorem": "SAP.P001g.T119",
+  "restriction": "The usual measure-theoretic conditions are assumed, including existence of population squared errors in the canonical BLP setting, enforced by MemLp (Y 0) 2 μ. Refutes only the specified integrated squared-risk interpretation; no refutation of the book's undefined regional, pointwise or prediction-measure consistency assertion is claimed. Uses the target-authorized squared-residual correction and makes no assertion about the literal unsquared argmin. Retains the universe-zero domain, covariate density positive exactly on a nondegenerate compact interval and literal ContDiff ℝ ⊤ CEF premise. Fits are not assumed measurable; risk-event probabilities use measure outer values.",
+  "rows_used": [
+   "AronowAudit.P001.Wave1.printed_sieve_degree_rate_contract_refuted"
+  ],
+  "rows_not_used": [],
+  "proof_transport": "Reassembles the credited row's existing Gaussian/uniform witness, bad-event probability bound and event inclusion. Square integrability follows by transporting Mathlib's Gaussian second moment through the existing one-observation marginal law; the source's subsequence contradiction then supplies the strengthened negation."
+ }
+]

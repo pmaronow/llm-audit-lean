@@ -241,5 +241,7 @@ theorem unrestricted_inconsistency_proof (S : Study) (k : ℝ) (hk : 0 < k)
     have hp : 0 < k⁻¹ := inv_pos.2 hk
     linarith
 
+example : type_of% @AronowAudit.P009.unrestricted_inconsistency := unrestricted_inconsistency_proof
+
 end
 end AronowAudit.P009.Wave1

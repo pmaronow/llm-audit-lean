@@ -3,7 +3,7 @@ import AronowAudit.P008.P008_Audit
 noncomputable section
 namespace AronowAudit.P008
 
-/-- Refutation of the printed interpolated-percentile calibration assertion. -/
+/-- The exact closed contract of the retired false printed assertion. -/
 theorem printed_percentile_calibration_refuted :
     ¬ (∀ {n : ℕ}
     (s : Fin (n + 1) → ℝ) (hs : Monotone s) (δ : ℝ)
@@ -22,8 +22,7 @@ theorem printed_percentile_calibration_refuted :
     interpolated_percentile_counterexample.2.2.2.1] at hb
   norm_num at hb
 
-/-- Refutation of the printed claim that a sum of probability differences
-is itself a probability difference. -/
+/-- The exact closed contract of the retired false printed assertion. -/
 theorem printed_sum_probability_gloss_refuted :
     ¬ (∀ {J : ℕ} (q₀ q₁ : Fin J → ℝ)
     (h₀ : ∀ j, 0 ≤ q₀ j ∧ q₀ j ≤ 1) (h₁ : ∀ j, 0 ≤ q₁ j ∧ q₁ j ≤ 1),
@@ -37,3 +36,5 @@ theorem printed_sum_probability_gloss_refuted :
 
 end AronowAudit.P008
 
+#print axioms AronowAudit.P008.printed_percentile_calibration_refuted
+#print axioms AronowAudit.P008.printed_sum_probability_gloss_refuted

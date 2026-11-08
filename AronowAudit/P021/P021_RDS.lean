@@ -106,7 +106,7 @@ def observedDegreeMass (F : Measure (RDSState B K)) (k : Fin K) : ℝ :=
   sampledMass F k / sampleFraction F
 
 /-- Condition 1, p. 101: "For all k such that Pr[D=k]>0".
-The sums in (2)–(4) are restricted to positive-mass degrees. -/
+The support restriction is the validator's reading of the sums in (2)–(4). -/
 def degreeSupport (F : Measure (RDSState B K)) : Finset (Fin K) :=
   by classical exact Finset.univ.filter fun k => 0 < degreeMass F k
 
@@ -122,7 +122,7 @@ def Ignorability (F : Measure (RDSState B K)) : Prop :=
 
 /-- Condition 2, p. 101: "Pr[S=1|D=k] = c f(k), where f(.) is known and c
 is an unknown scale parameter." No separate sign is imposed on c or f.
-The condition is used only where Pr[D=k]>0 (positive-mass degree support). -/
+The condition is used only where Pr[D=k]>0 (validator's support convention). -/
 def KnownSampling (F : Measure (RDSState B K)) (c : ℝ) (f : Fin K → ℝ) : Prop :=
   ∀ k, 0 < degreeMass F k → samplingProbability F k = c * f k
 
@@ -364,7 +364,7 @@ theorem mean_ignorability_sum (F : Measure (RDSState B K)) [IsProbabilityMeasure
 /-- Proposition 1, Eq. (2), p. 101. For a full joint probability law of bounded
 Y, positive integer D≤K and S∈{0,1}, Conditions 1 and 2 identify E[Y] by the
 ratio of observed degree probabilities and sampled conditional means. The sums
-use positive-mass degrees in (2)–(4).
+use positive-mass degrees, exactly the validator's interpretation of (2)–(4).
 The conclusion also proves positivity, observable support, Eq. (3), and the
 nonzero denominator, without requiring c>0 or f>0 separately. -/
 theorem proposition_one (F : Measure (RDSState B K)) [IsProbabilityMeasure F]
@@ -445,6 +445,12 @@ theorem degreeValue_pos (k : Fin K) : 0 < degreeValue k := by
   unfold degreeValue
   positivity
 
+/-- Every degree in the standing support is at least one (Section 2, p. 101).
+Auxiliary lemma for Corollary 1, p. 101. -/
+theorem degreeValue_ge_one (k : Fin K) : 1 ≤ degreeValue k := by
+  unfold degreeValue
+  have hn : (0 : ℝ) ≤ (k.val : ℝ) := Nat.cast_nonneg k.val
+  linarith
 
 /-- E[SY/D]'s test function; its finite empirical average is the population-
 normalized numerator of Eq. (1). This is a derived object for Corollary 1. -/
@@ -473,6 +479,27 @@ theorem inverseDegreeDenominator_continuous :
     Continuous (inverseDegreeDenominator (B := B) (K := K)) :=
   sampleIndicator_continuous.div degree_continuous (fun x => (degreeValue_pos x.2.1).ne')
 
+/-- On the common support, |SY/D|≤B, 0≤S/D≤1 and 0≤S≤1. These are the
+bounded test functions used to pass from weak convergence to moments in
+Corollary 1, p. 101 (validator derivation, item (d)). -/
+theorem inverse_degree_test_bounds (hB : 0 ≤ B) (x : RDSState B K) :
+    |inverseDegreeNumerator x| ≤ B ∧
+    0 ≤ inverseDegreeDenominator x ∧ inverseDegreeDenominator x ≤ 1 ∧
+    0 ≤ sampleIndicator x ∧ sampleIndicator x ≤ 1 := by
+  have hd := degreeValue_pos x.2.1
+  have hd1 := degreeValue_ge_one x.2.1
+  have hy : |outcome x| ≤ B := abs_le.mpr x.1.property
+  cases hs : x.2.2
+  · simp [inverseDegreeNumerator, inverseDegreeDenominator, sampleIndicator, hs, hB]
+  · have hs1 : sampleIndicator x = 1 := by simp [sampleIndicator, hs]
+    unfold inverseDegreeNumerator inverseDegreeDenominator
+    rw [hs1]
+    simp only [one_mul]
+    refine ⟨?_, (one_div_pos.mpr hd).le, ?_, by norm_num, by norm_num⟩
+    · rw [abs_div, abs_of_pos hd]
+      apply (div_le_iff₀ hd).mpr
+      exact hy.trans (by nlinarith)
+    · exact (div_le_one hd).mpr hd1
 
 /-- The exact degree partition of E[S/D], derived for Corollary 1. -/
 theorem inverse_degree_denominator_partition (F : Measure (RDSState B K))
@@ -577,15 +604,18 @@ It is used only with N>0. -/
 def empiricalAverage {N : ℕ} (z : Fin N → RDSState B K) (g : RDSState B K → ℝ) : ℝ :=
   (∑ j, g (z j)) / (N : ℝ)
 
-/-- Eq. (1), p. 100: the RDS sample consists of units with S=1, using the
-joint empirical law of Section 2's sampling indicator. -/
+/-- Eq. (1), p. 100: the RDS sample consists of units with S=1, under the
+validator's joint-empirical-law reading of Section 2's sampling indicator. -/
 def sampleSet {N : ℕ} (z : Fin N → RDSState B K) : Finset (Fin N) :=
   Finset.univ.filter fun j => (z j).2.2 = true
 
+/-- Eq. (1), p. 100: "For an RDS sample of size n"; n is the number of S=1 units. -/
+def sampleSize {N : ℕ} (z : Fin N → RDSState B K) : ℕ := (sampleSet z).card
 
 /-- Volz–Heckathorn estimator, Eq. (1), p. 100:
 "sum y_i d_i^{-1} / sum d_i^{-1}" over sampled units.
-Lean's total division assigns 0 when the sample is empty. -/
+Lean's total division assigns 0 when the sample is empty; the empty-sample
+event is proved to have probability tending to zero below. -/
 def vhEstimator {N : ℕ} (z : Fin N → RDSState B K) : ℝ :=
   (∑ j ∈ sampleSet z, outcome (z j) / degreeValue (z j).2.1) /
     (∑ j ∈ sampleSet z, 1 / degreeValue (z j).2.1)
@@ -620,12 +650,38 @@ theorem vh_empirical_ratio {N : ℕ} (hN : 0 < N) (z : Fin N → RDSState B K) :
   rw [vh_numerator_sum z, vh_denominator_sum z]
   exact (div_div_div_cancel_right₀ hNr _ _).symm
 
+/-- A nonempty finite sample has a positive inverse-degree denominator and
+B_N>0 (Corollary 1 finite lemma (c), Eq. (1)). -/
+theorem vh_finite_denominator_pos {N : ℕ} (hN : 0 < N)
+    (z : Fin N → RDSState B K) (hn : 0 < sampleSize z) :
+    0 < ∑ j ∈ sampleSet z, 1 / degreeValue (z j).2.1 ∧
+    0 < empiricalAverage z inverseDegreeDenominator := by
+  have hs : 0 < ∑ j ∈ sampleSet z, 1 / degreeValue (z j).2.1 :=
+    Finset.sum_pos (fun j _ => one_div_pos.mpr (degreeValue_pos _))
+      (Finset.card_pos.mp hn)
+  refine ⟨hs, ?_⟩
+  unfold empiricalAverage
+  rw [← vh_denominator_sum]
+  exact div_pos hs (by exact_mod_cast hN)
+
+/-- The empirical sample proportion is n/N=∫S dF_N (finite lemma (c)).
+Auxiliary lemma for Corollary 1, p. 101. -/
+theorem empirical_sample_fraction {N : ℕ} (z : Fin N → RDSState B K) :
+    empiricalAverage z sampleIndicator = (sampleSize z : ℝ) / (N : ℝ) := by
+  unfold empiricalAverage sampleSize
+  congr 1
+  rw [Finset.card_eq_sum_ones, Nat.cast_sum]
+  simp only [Nat.cast_one]
+  rw [sampleSet, Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro j _
+  cases hs : (z j).2.2 <;> simp [sampleIndicator, hs]
 
 /-- Section 2, first sentence, p. 101: "sequence of populations and samples
 converging weakly to a joint limit distribution". For random realized empirical
-laws this is convergence in probability of their integrals against every
-bounded continuous test function. On the compact common support every
-continuous real test function is bounded.
+laws this is convergence in probability of their integrals against EVERY
+bounded continuous test function, as specified by the validators. On the
+compact common support every continuous real test function is bounded.
 F is the fixed full joint limiting law; N_r is the positive population size. -/
 def EmpiricalWeakInProbability {Ω : Type*} [MeasurableSpace Ω]
     (P : Measure Ω) (F : Measure (RDSState B K)) (N : ℕ → ℕ)
@@ -698,7 +754,309 @@ theorem corollary_one {Ω : Type*} [MeasurableSpace Ω]
   intro r
   exact Filter.Eventually.of_forall (fun ω => (vh_empirical_ratio (hN r) (z r ω)).symm)
 
+/-- "Known to scale" (abstract, p. 100): rescaling f by any nonzero real
+constant leaves Eq. (2)'s observable ratio unchanged, including its support.
+Auxiliary lemma for Corollary 1, p. 101. -/
+theorem observedMeanFunctional_scale (q m f : Fin K → ℝ) (a : ℝ) (ha : a ≠ 0) :
+    observedMeanFunctional q m (fun k => a * f k) = observedMeanFunctional q m f := by
+  classical
+  unfold observedMeanFunctional
+  have hw : ∀ k, q k / (a * f k) = (q k / f k) / a := by
+    intro k
+    rw [mul_comm a, div_mul_eq_div_div]
+  simp_rw [hw, ← mul_div_assoc]
+  rw [← Finset.sum_div, ← Finset.sum_div]
+  exact div_div_div_cancel_right₀ ha _ _
+
+/-- Every conditional sampling probability is at most one because it comes
+from a full probability law, not unconstrained stratum numbers (Condition 2).
+Auxiliary lemma for Corollary 1, p. 101. -/
+theorem samplingProbability_le_one (F : Measure (RDSState B K)) [IsProbabilityMeasure F]
+    (k : Fin K) (hk : 0 < degreeMass F k) : samplingProbability F k ≤ 1 := by
+  have hm : sampledMass F k ≤ degreeMass F k := by
+    apply integral_mono (continuous_integrable F (sampleCell_continuous k))
+      (continuous_integrable F (degreeCell_continuous k))
+    intro x
+    unfold sampleCell degreeCell sampleIndicator
+    split_ifs <;> norm_num
+  exact (div_le_one hk).mpr hm
+
+/-- At degree-proportional sampling, every supported degree is at most 1/b
+where b=ca>0 (Corollary 1 exact lemma (g)). -/
+theorem supported_degree_bound (F : Measure (RDSState B K)) [IsProbabilityMeasure F]
+    (c a : ℝ) (hI : Ignorability F)
+    (hC : KnownSampling F c (fun k => a * degreeValue k))
+    (k : Fin K) (hk : 0 < degreeMass F k) : degreeValue k ≤ 1 / (c * a) := by
+  have hb := degree_sampling_scale_pos F c a hI hC
+  have hle := samplingProbability_le_one F k hk
+  rw [hC k hk] at hle
+  apply (le_div_iff₀ hb).mpr
+  nlinarith
+
+/-- The exact ratio error identity and bound for any finite stage, Corollary 1
+finite lemma (e): when H≥b/2>0, |A/H−μ|≤(2/b)(|A−bμ|+|μ||H−b|). -/
+theorem ratio_error_bound (A H b μ : ℝ) (hb : 0 < b) (hH : b / 2 ≤ H) :
+    |A / H - μ| = |A - μ * H| / H ∧
+    |A / H - μ| ≤ (2 / b) * (|A - b * μ| + |μ| * |H - b|) := by
+  have hHp : 0 < H := (half_pos hb).trans_le hH
+  have heq : A / H - μ = (A - μ * H) / H := by field_simp [hHp.ne']
+  have habs : |A / H - μ| = |A - μ * H| / H := by
+    rw [heq, abs_div, abs_of_pos hHp]
+  have htri : |A - μ * H| ≤ |A - b * μ| + |μ| * |H - b| := by
+    calc
+      |A - μ * H| = |(A - b * μ) + μ * (b - H)| := by congr 1; ring
+      _ ≤ |A - b * μ| + |μ * (b - H)| := abs_add_le _ _
+      _ = _ := by rw [abs_mul, abs_sub_comm b H]
+  have hinv : 1 / H ≤ 2 / b := by
+    apply (div_le_div_iff₀ hHp hb).mpr
+    nlinarith
+  refine ⟨habs, ?_⟩
+  calc
+    |A / H - μ| = |A - μ * H| * (1 / H) := by rw [habs]; ring
+    _ ≤ (|A - b * μ| + |μ| * |H - b|) * (1 / H) :=
+      mul_le_mul_of_nonneg_right htri (by positivity)
+    _ ≤ (|A - b * μ| + |μ| * |H - b|) * (2 / b) :=
+      mul_le_mul_of_nonneg_left hinv (by positivity)
+    _ = _ := by ring
+
+/-- The finite epsilon estimate underlying the event bound for Corollary 1. -/
+theorem ratio_error_small (A H b μ ε : ℝ) (hb : 0 < b) (hε : 0 < ε)
+    (hH : b / 2 ≤ H)
+    (hA : |A - b * μ| < ε * b / (4 * (1 + |μ|)))
+    (hD : |H - b| < ε * b / (4 * (1 + |μ|))) : |A / H - μ| < ε := by
+  have hμ : 0 < 1 + |μ| := by positivity
+  have hinner : |A - b * μ| + |μ| * |H - b| <
+      ε * b / (4 * (1 + |μ|)) + |μ| * (ε * b / (4 * (1 + |μ|))) :=
+    add_lt_add_of_lt_of_le hA (mul_le_mul_of_nonneg_left hD.le (abs_nonneg μ))
+  have hid : (2 / b) * (ε * b / (4 * (1 + |μ|)) +
+      |μ| * (ε * b / (4 * (1 + |μ|)))) = ε / 2 := by
+    field_simp [hb.ne', hμ.ne']
+    ring
+  have hlt := mul_lt_mul_of_pos_left hinner (show (0 : ℝ) < 2 / b by positivity)
+  rw [hid] at hlt
+  exact (ratio_error_bound A H b μ hb hH).2.trans_lt (hlt.trans (by linarith))
+
+/-- Corollary 1 finite lemma (e), the probability union bound at any fixed
+population: the ratio's error event is controlled by three moment-error events
+with t=εb/[4(1+|μ|)]. No independence is used. -/
+theorem ratio_error_probability_bound {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) (A H : Ω → ℝ) (b μ ε : ℝ) (hb : 0 < b) (hε : 0 < ε) :
+    P {ω | ε < |A ω / H ω - μ|} ≤
+      P {ω | b / 2 ≤ |H ω - b|} +
+      P {ω | ε * b / (4 * (1 + |μ|)) ≤ |A ω - b * μ|} +
+      P {ω | ε * b / (4 * (1 + |μ|)) ≤ |H ω - b|} := by
+  have hsub : {ω | ε < |A ω / H ω - μ|} ⊆
+      {ω | b / 2 ≤ |H ω - b|} ∪
+        ({ω | ε * b / (4 * (1 + |μ|)) ≤ |A ω - b * μ|} ∪
+          {ω | ε * b / (4 * (1 + |μ|)) ≤ |H ω - b|}) := by
+    intro ω hω
+    by_cases hhalf : b / 2 ≤ |H ω - b|
+    · exact Or.inl hhalf
+    · by_cases hnum : ε * b / (4 * (1 + |μ|)) ≤ |A ω - b * μ|
+      · exact Or.inr (Or.inl hnum)
+      · by_cases hden : ε * b / (4 * (1 + |μ|)) ≤ |H ω - b|
+        · exact Or.inr (Or.inr hden)
+        · have hg : b / 2 ≤ H ω := by
+            have h := (abs_lt.mp (lt_of_not_ge hhalf)).1
+            linarith
+          have hs := ratio_error_small (A ω) (H ω) b μ ε hb hε hg
+            (lt_of_not_ge hnum) (lt_of_not_ge hden)
+          exact False.elim (lt_asymm hs hω)
+  calc
+    _ ≤ P ({ω | b / 2 ≤ |H ω - b|} ∪
+        ({ω | ε * b / (4 * (1 + |μ|)) ≤ |A ω - b * μ|} ∪
+          {ω | ε * b / (4 * (1 + |μ|)) ≤ |H ω - b|})) := measure_mono hsub
+    _ ≤ P {ω | b / 2 ≤ |H ω - b|} +
+        P ({ω | ε * b / (4 * (1 + |μ|)) ≤ |A ω - b * μ|} ∪
+          {ω | ε * b / (4 * (1 + |μ|)) ≤ |H ω - b|}) := measure_union_le _ _
+    _ ≤ _ := by
+      rw [add_assoc]
+      exact add_le_add le_rfl (measure_union_le (μ := P) _ _)
+
+/-- The deterministic case of Corollary 1, p. 101: ordinary weak convergence
+of the realized finite empirical laws gives ordinary convergence of Eq. (1)
+to E_F[Y]. The common bounded supports remain part of the state space. -/
+theorem corollary_one_deterministic (_hB : 0 ≤ B) (_hK : 0 < K)
+    (F : Measure (RDSState B K)) [IsProbabilityMeasure F]
+    (N : ℕ → ℕ) (hN : ∀ r, 0 < N r)
+    (z : (r : ℕ) → Fin (N r) → RDSState B K)
+    (hweak : ∀ g : RDSState B K → ℝ, Continuous g →
+      Tendsto (fun r => empiricalAverage (z r) g) atTop (𝓝 (∫ x, g x ∂F)))
+    (c a : ℝ) (_ha : a ≠ 0) (hI : Ignorability F)
+    (hC : KnownSampling F c (fun k => a * degreeValue k)) :
+    Tendsto (fun r => vhEstimator (z r)) atTop (𝓝 (populationMean F)) := by
+  have hlim := vh_limit_moments F c a hI hC
+  have hA := hweak inverseDegreeNumerator inverseDegreeNumerator_continuous
+  have hH := hweak inverseDegreeDenominator inverseDegreeDenominator_continuous
+  have hr := hA.div hH (by rw [hlim.2.1]; exact hlim.1.ne')
+  rw [hlim.2.2.2] at hr
+  have hv : (fun r => vhEstimator (z r)) =
+      (fun r => empiricalAverage (z r) inverseDegreeNumerator /
+        empiricalAverage (z r) inverseDegreeDenominator) :=
+    funext fun r => vh_empirical_ratio (hN r) (z r)
+  rw [hv]
+  exact hr
+
+/-- An empty finite sample has B_N=0, with the same population normalization
+used in the ratio error bound (Corollary 1 finite lemma (e)). -/
+theorem empty_sample_denominator {N : ℕ} (z : Fin N → RDSState B K)
+    (hn : sampleSize z = 0) : empiricalAverage z inverseDegreeDenominator = 0 := by
+  have he : sampleSet z = ∅ := Finset.card_eq_zero.mp hn
+  unfold empiricalAverage
+  rw [← vh_denominator_sum, he]
+  simp
+
+/-- Under Corollary 1's hypotheses the empty-sample event has probability
+tending to zero; hence it does not affect the consistency conclusion. -/
+theorem empty_sample_probability_tendsto {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (F : Measure (RDSState B K)) [IsProbabilityMeasure F]
+    (N : ℕ → ℕ) (z : (r : ℕ) → Ω → Fin (N r) → RDSState B K)
+    (hweak : EmpiricalWeakInProbability P F N z)
+    (c a : ℝ) (hI : Ignorability F)
+    (hC : KnownSampling F c (fun k => a * degreeValue k)) :
+    Tendsto (fun r => P {ω | sampleSize (z r ω) = 0}) atTop (𝓝 0) := by
+  have hlim := vh_limit_moments F c a hI hC
+  have hH := hweak inverseDegreeDenominator inverseDegreeDenominator_continuous
+  rw [hlim.2.1] at hH
+  have ht := tendstoInMeasure_iff_dist.mp hH ((c * a) / 2) (half_pos hlim.1)
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ht
+    (fun _ => zero_le) ?_
+  intro r
+  apply measure_mono
+  intro ω hω
+  change (c * a) / 2 ≤ dist (empiricalAverage (z r ω) inverseDegreeDenominator) (c * a)
+  rw [empty_sample_denominator (z r ω) hω]
+  simp only [Real.dist_eq, zero_sub, abs_neg, abs_of_pos hlim.1]
+  linarith [hlim.1]
+
+/-- Weak empirical convergence also gives n_r/N_r→Pr_F[S=1]>0, the third
+bounded continuous test functional for Corollary 1 (finite lemma (d)). -/
+theorem sample_fraction_tendstoInMeasure {Ω : Type*} [MeasurableSpace Ω]
+    (P : Measure Ω) (F : Measure (RDSState B K)) [IsProbabilityMeasure F]
+    (N : ℕ → ℕ) (z : (r : ℕ) → Ω → Fin (N r) → RDSState B K)
+    (hweak : EmpiricalWeakInProbability P F N z) (hI : Ignorability F) :
+    0 < sampleFraction F ∧
+    TendstoInMeasure P (fun r ω => (sampleSize (z r ω) : ℝ) / (N r : ℝ)) atTop
+      (fun _ => sampleFraction F) := by
+  refine ⟨sampleFraction_pos F hI, ?_⟩
+  have h := hweak sampleIndicator sampleIndicator_continuous
+  exact h.congr_left (fun r => Filter.Eventually.of_forall (fun ω =>
+    empirical_sample_fraction (z r ω)))
+
+/-- The indicator-integral definition of Pr[D=k] is exactly the ordinary
+real-valued probability of that event under F (Section 2, p. 101).
+Auxiliary lemma for Proposition 1, p. 101. -/
+theorem degreeMass_eq_measureReal (F : Measure (RDSState B K)) (k : Fin K) :
+    degreeMass F k = F.real {x | x.2.1 = k} := by
+  classical
+  have hm : MeasurableSet {x : RDSState B K | x.2.1 = k} :=
+    measurableSet_eq_fun (measurable_fst.comp measurable_snd) measurable_const
+  have he : degreeCell (B := B) k =
+      ({x : RDSState B K | x.2.1 = k}).indicator (fun _ => (1 : ℝ)) := by
+    funext x
+    simp [degreeCell, Set.indicator]
+  unfold degreeMass
+  rw [he]
+  exact integral_indicator_one hm
+
+/-- The joint sampled-degree indicator integral is Pr[S=1,D=k] under F,
+the event probability in Bayes' identity Eq. (3), p. 101.
+Auxiliary lemma for Proposition 1, p. 101. -/
+theorem sampledMass_eq_measureReal (F : Measure (RDSState B K)) (k : Fin K) :
+    sampledMass F k = F.real {x | x.2.1 = k ∧ x.2.2 = true} := by
+  classical
+  have hm : MeasurableSet {x : RDSState B K | x.2.1 = k ∧ x.2.2 = true} :=
+    (measurableSet_eq_fun (measurable_fst.comp measurable_snd) measurable_const).inter
+      (measurableSet_eq_fun (measurable_snd.comp measurable_snd) measurable_const)
+  have he : sampleCell (B := B) k =
+      ({x : RDSState B K | x.2.1 = k ∧ x.2.2 = true}).indicator (fun _ => (1 : ℝ)) := by
+    funext x
+    by_cases hd : x.2.1 = k <;>
+      cases hs : x.2.2 <;> simp [sampleCell, degreeCell, sampleIndicator, Set.indicator, hd, hs]
+  unfold sampledMass
+  rw [he]
+  exact integral_indicator_one hm
+
+/-- The sampling-fraction indicator integral is Pr[S=1] under the full
+limiting law F (Eqs. (3)–(4), p. 101).
+Auxiliary lemma for Proposition 1, p. 101. -/
+theorem sampleFraction_eq_measureReal (F : Measure (RDSState B K)) :
+    sampleFraction F = F.real {x | x.2.2 = true} := by
+  classical
+  have hm : MeasurableSet {x : RDSState B K | x.2.2 = true} :=
+    measurableSet_eq_fun (measurable_snd.comp measurable_snd) measurable_const
+  have he : sampleIndicator (B := B) (K := K) =
+      ({x : RDSState B K | x.2.2 = true}).indicator (fun _ => (1 : ℝ)) := by
+    funext x
+    cases hs : x.2.2 <;> simp [sampleIndicator, Set.indicator, hs]
+  unfold sampleFraction
+  rw [he]
+  exact integral_indicator_one hm
 
 end
+
+#print axioms AronowAudit.P021.outcome_continuous
+#print axioms AronowAudit.P021.sampleIndicator_continuous
+#print axioms AronowAudit.P021.degreeCell_continuous
+#print axioms AronowAudit.P021.sampleCell_continuous
+#print axioms AronowAudit.P021.continuous_integrable
+#print axioms AronowAudit.P021.degreeMass_nonneg
+#print axioms AronowAudit.P021.sampledMass_nonneg
+#print axioms AronowAudit.P021.degreeMass_sum
+#print axioms AronowAudit.P021.degreeMoment_sum
+#print axioms AronowAudit.P021.sampledMass_sum
+#print axioms AronowAudit.P021.null_degree
+#print axioms AronowAudit.P021.degreeSupport_nonempty
+#print axioms AronowAudit.P021.degreeMass_zero_of_not_pos
+#print axioms AronowAudit.P021.support_degreeMass_sum
+#print axioms AronowAudit.P021.support_degreeMoment_sum
+#print axioms AronowAudit.P021.sampledMass_pos
+#print axioms AronowAudit.P021.sampleFraction_pos
+#print axioms AronowAudit.P021.degreeSupport_eq_observedSupport
+#print axioms AronowAudit.P021.sampledMass_eq
+#print axioms AronowAudit.P021.sampledMoment_eq
+#print axioms AronowAudit.P021.samplingScale_ne_zero
+#print axioms AronowAudit.P021.samplingProfile_nonzero
+#print axioms AronowAudit.P021.bayes_degree_identity
+#print axioms AronowAudit.P021.inverse_weight_identity
+#print axioms AronowAudit.P021.inverse_weight_denominator
+#print axioms AronowAudit.P021.mean_ignorability_sum
+#print axioms AronowAudit.P021.proposition_one
+#print axioms AronowAudit.P021.proposition_one_observed
+#print axioms AronowAudit.P021.population_mean_identified
+#print axioms AronowAudit.P021.degreeValue_pos
+#print axioms AronowAudit.P021.degreeValue_ge_one
+#print axioms AronowAudit.P021.degree_continuous
+#print axioms AronowAudit.P021.inverseDegreeNumerator_continuous
+#print axioms AronowAudit.P021.inverseDegreeDenominator_continuous
+#print axioms AronowAudit.P021.inverse_degree_test_bounds
+#print axioms AronowAudit.P021.inverse_degree_denominator_partition
+#print axioms AronowAudit.P021.inverse_degree_numerator_partition
+#print axioms AronowAudit.P021.degree_sampling_scale_pos
+#print axioms AronowAudit.P021.degree_proportional_sampledMass
+#print axioms AronowAudit.P021.degree_proportional_sampledMoment
+#print axioms AronowAudit.P021.vh_limit_moments
+#print axioms AronowAudit.P021.vh_numerator_sum
+#print axioms AronowAudit.P021.vh_denominator_sum
+#print axioms AronowAudit.P021.vh_empirical_ratio
+#print axioms AronowAudit.P021.vh_finite_denominator_pos
+#print axioms AronowAudit.P021.empirical_sample_fraction
+#print axioms AronowAudit.P021.empiricalAverage_measurable
+#print axioms AronowAudit.P021.ratio_tendstoInMeasure
+#print axioms AronowAudit.P021.corollary_one
+#print axioms AronowAudit.P021.observedMeanFunctional_scale
+#print axioms AronowAudit.P021.samplingProbability_le_one
+#print axioms AronowAudit.P021.supported_degree_bound
+#print axioms AronowAudit.P021.ratio_error_bound
+#print axioms AronowAudit.P021.ratio_error_small
+#print axioms AronowAudit.P021.ratio_error_probability_bound
+#print axioms AronowAudit.P021.corollary_one_deterministic
+#print axioms AronowAudit.P021.empty_sample_denominator
+#print axioms AronowAudit.P021.empty_sample_probability_tendsto
+#print axioms AronowAudit.P021.sample_fraction_tendstoInMeasure
+#print axioms AronowAudit.P021.degreeMass_eq_measureReal
+#print axioms AronowAudit.P021.sampledMass_eq_measureReal
+#print axioms AronowAudit.P021.sampleFraction_eq_measureReal
 
 end AronowAudit.P021

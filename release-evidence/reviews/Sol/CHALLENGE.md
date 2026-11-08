@@ -1,0 +1,15 @@
+# Combined final Sol V-ORCH / A7 / A1 delta challenge
+
+This is the single final delta review required by PLAN-v2 A3/A7/C7 and the retained final-release command retrieval, step 2. It is incremental. It is not another semantic, source, process, replay, or mathematical audit. Final closure requires the genuine final retained `all` output, current A1 reconciliation, completed trust report and exact package bindings. No final verdict or release approval is issued by the initial checkpoint.
+
+The adversarial questions are:
+
+1. Does every assurance claim retain its proper role? Ordinary50/988, A2 source/type/edge evidence, A3 work50, unit81 native/index facts, paper fidelity and coverage are different claims. An operational index/native zero must not become final mathematical or release acceptance.
+2. Is history honest? Preserve ordinary P016 timeout, A3 work26+41 launches, six zero plus three predicate-validated artifacts with native-15, all nine original winners and 81 first unit launches. Preflight-only controllers and prepared/unspawned work must not be counted as work launches; successful work must not be represented as rerun.
+3. Do the new unit index and combined selection join the previously reviewed native/capture evidence, actual plan/source profile, work aggregate and context exactly, with no new physical or mathematical claims? Reuse review8bc99b75 rather than repeating its capture checks.
+4. Are source roles preserved? Historical frozen8c/lock8652 and external execution394/Replaydca/workdbaf/A11fd are distinct. Producer-v2/profilec9 and protocol path adjacency must remain explicit. Reuse external consumer491006/scan3da8 and the accepted producer reviews; do not self-review authored consumer code.
+5. Does the trust report preserve the adopted scope denominator (805 whole,110 restricted,73 refuted,33 omitted), ten named premises, exporter sharing, caller/deployment limits, correction history and P048/P050 inapplicability? Do source-only and old Opus reviews retain their original byte/scope limits?
+6. When genuine final outputs arrive, do the sole native invocation, canonical all summary, current A1 config/452 historical rows/416 current joins, exact source/base/selection and package file map/commit/tree bind the same accepted inputs? Are genuine failures or changed inputs held at the existing affected gate rather than silently relabeled?
+7. Are the final report and once-only completed-trust-report Opus review kept distinct from old finding/calibration reviews? Existing publication authorization persists; stale permission paragraphs must not invent another approval request. Exact finding/publication scope and source/certificate gates remain in force.
+
+Only local, bounded documentary joins are performed here. No reviewed runtime module is imported or executed; no SSH, process query, test, old audit, validator or Opus invocation occurs. No compiled tree, ledger, source generation, main/public branch, findings draft, HANDOFF or ACTIVE is modified.

@@ -1,0 +1,142 @@
+[
+  {
+    "target_id": "P008-T15",
+    "theorem": "SAP.P008b.T15",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: two nodes at (0,0) and (10,0), field R^2, zeta a unit atom at (1,0), Y(x,z)=bit(z_0), i=0, d=1, k=1/4. The band has finite mass 1 and integrable outcomes, the other node really exists and is farther than d+k, and neither intervention node belongs to the nonempty outcome band.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T16",
+    "theorem": "SAP.P008b.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The revised record2 decision refuted is accepted. The full canonical counterexample remains: two nonempty separated rectangular boundaries and eight outcome points, with one node in each treatment arm. Own-boundary distances are 0,19/8,27/8,35/8; cross-boundary distances exceed 5. The adjacent, centered and full-buffer selections have 2,2,3 own cells, so no mean is supplied by division by zero. Re-running scratch/check_finite.py reproduces counts/sums (1,4),(3,6), archived difference-of-sums value 1, centered value 4, disk value 2 and zero controls. Hence the supplied archived donut rule does not equal the symmetric-band rule. The counterexample refutes the canonical general identity under the supplied archived formula, without claiming to reconstruct the validator's square fixture or the release cited in the article.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T17",
+    "theorem": "SAP.P008b.T17",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Rechecked against the revised Defs with scratch/Check.lean: genuine radius-1 circle examples allow k=1/4 and k=2; initial and increasing nested buffers B_0={0}, B_1={0,1} and strictly increasing distance buffers have nonempty selected sets. For d=1,k=2 the clipped radial interval has width 3, not 4; the repaired docstring now explicitly limits the twice-tolerance width to k<=d. The prior finding is fully fixed, without changing the formal theorem or its hypotheses.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T18",
+    "theorem": "SAP.P008b.T18",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take C=1, Q uniform on the sixteen assignments, base=0, r_ic=1 and w_ic=1 for every node. All weight rows sum to 1, distances are nonnegative and the resulting AMR is the nonzero kernel value at 1. The hypotheses and existence of the fair assignment laws were compiled in scratch/Check.lean. The strict kernel lower bound follows from max_{r>=0} r^4 exp(-4r)=exp(-4) and exp(4)>437/9; a nonempty finite convex average preserves strictness.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T19",
+    "theorem": "SAP.P008b.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The revised record2 decision refuted is accepted. The unchanged 200-cell raster, two 25-cell polygons, sixteen-cell eight-neighbor boundaries, nine interior cells, binary potential outcomes and independent fair assignment realize every canonical counterexample clause. The displayed allocation has probability 1/4 and nT=nC=1. Re-running scratch/check_finite.py reproduces boundary/area contrasts 0 and 9/25 and AMRs 0 and 9/50, with positive denominators. These unequal functionals refute the canonical claim that the edge-based distance-zero contrast is the whole-polygon contrast; no empirical village contrast or smoothed-curve value is claimed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T20",
+    "theorem": "SAP.P008b.T20",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A lattice 5-by-5 block has the required nonempty sixteen-cell eight-neighbor boundary and nine interior cells. For the continuous assertion take the closed unit disk: its frontier is a nonempty unit circle, its center is an interior point, and its distance to the frontier is 1. The differing summary functionals are witnessed by T19's explicit positive-denominator example, independently enumerated in scratch/check_finite.py.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T21",
+    "theorem": "SAP.P008b.T21",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "An unconditional inequality of real rational numbers, -321/10000 < -19/625. It has no hypotheses to make inconsistent or empty. Independently proved with norm_num in scratch/Check.lean and checked with exact fractions in scratch/check_finite.py.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P008-T22",
+    "theorem": "SAP.P008b.T22",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "An unconditional real-rational disjunction; its second disjunct is 7.97 < 12.38. Independently proved with norm_num in scratch/Check.lean and checked with exact fractions in scratch/check_finite.py. This does not assert that the inputs are the actual spatial statistic or its quantiles, or that the rule has a calibrated error rate.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P008-T23",
+    "theorem": "SAP.P008b.T23",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: uniform Q on four points, N=2, contributions (0,0,1,1) and (0,1,0,1), D_ii=0, D_ij=1 for i!=j, c=0. The omitted off-diagonal covariances vanish, while Var(phi_0+phi_1)=1/2>0. In general the result follows by finite covariance bilinearity and discarding precisely the zero terms.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T24",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: no theorem is exported. The reported values -0.0304, 0.0336 and -0.0321 are inside [-1,1], so an unrelated sum outside [-1,1] does not refute their empirical interpretation. The supplied canonical claim defines no cumulative forest-loss event and supplies no reconstruction linking such an event to the reported statistic or its quantiles. Omitting this empirical claim is justified on the visible material; this does not endorse its probability gloss or deny general counterexamples to unnormalized sums.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P008-T25",
+    "theorem": "SAP.P008b.T25",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled in scratch/Check.lean: N=1, field R^2, node 0, zeta a unit atom at (1,0), Y(x,z)=bit(z_0), radius 1. The restricted circle measure is exactly that unit atom, every potential outcome is integrable, and M_0(1,z)=bit(z_0), so the circle effect and AMR are 1 under any normalized one-bit law. Uniform four-bit laws also exist, giving eight assignments in each displayed mean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T26",
+    "theorem": "SAP.P008b.T26",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The sharp-null implication admits the compiled positive-mass radius-1 atomic model with Y identically zero, measurable field R^2 and N=1. The converse witness is genuinely non-sharp: at 1, Y(true)=1 and Y(false)=0, while the nonempty radius-1 circle {-1,1} cancels and the radius-0 circle {0} is zero. Embed the rational coordinates into R^2 by x -> (x,0) and use counting measure. Only radii 0 and 1 have outcome points, so no empty-circle convention is used to obtain the cancellation.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T27",
+    "theorem": "SAP.P008b.T27",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled N=1 atomic model at radius 1 has Y(x,z)=bit(z_0), base zero, and additive coefficient g_0(x)=1, equivalently homogeneous radial function g(r)=1. Its measurable field is R^2 and its circle has finite mass 1 and integrable potential outcomes. Point effects, node effects and AMR are all the nonzero value 1. The simultaneous all-node validity requirement for the circle conclusions is satisfied.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P008-T28",
+    "theorem": "SAP.P008b.T28",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every n let Q_n be uniform on (n+1)-bit assignments and M_n,i(z)=bit(z_i). Set p=1/2, H=1, D=0 and exceptional=0. The common-Bernoulli laws and outcome bound were compiled in scratch/Check.lean. The empty graph satisfies the full collection-dependency definition because each pair (z_i,M_i(z))=(z_i,bit(z_i)) depends on only one independent bit; disjoint collections are independent. The target finiteAMR equals 1. The completed estimator is 1 on mixed assignments and 0 on the two empty-arm assignments, whose total probability is 2^(-n). This gives a nonzero-target nonvacuous sequence; the collection-independence argument is mathematical, not a claim of a compiled proof of that graph predicate.",
+    "confidence": 0.99
+  }
+]

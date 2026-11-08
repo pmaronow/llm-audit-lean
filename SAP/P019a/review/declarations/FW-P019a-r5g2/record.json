@@ -1,0 +1,114 @@
+[
+ {
+  "target_id": "P019-T6",
+  "decision": "whole",
+  "theorem": "SAP.P019a.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.placebo_distribution_corrected"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P019.cell_probability"
+  ]
+ },
+ {
+  "target_id": "P019-T7",
+  "decision": "whole",
+  "theorem": "SAP.P019a.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.diagnosis_counterexample",
+   "SAP.P019a.WH.W1.T7_whole",
+   "SAP.P019a.WH.W1.T7_assembly",
+   "SAP.P019a.WH.W1.restrictedT7",
+   "SAP.P019a.WH.W1.t7_sixteen",
+   "SAP.P019a.WH.W1.t7_eight"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P019a.T7WholeStatement"
+ },
+ {
+  "target_id": "P019-T8",
+  "decision": "whole",
+  "theorem": "SAP.P019a.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.beta_baseline_decomposition",
+   "AronowAudit.P019.beta_departure_diagnosis",
+   "AronowAudit.P019.placebo_one_identity"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P019-T9",
+  "decision": "whole",
+  "theorem": "SAP.P019a.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P019.Wave1.fisher_reference_counterexample_proof",
+   "AronowAudit.P019.Wave1.fisher_sequential_finite_proof",
+   "SAP.P019a.WH.W1.T9_whole",
+   "SAP.P019a.WH.W1.T9_assembly",
+   "SAP.P019a.WH.W1.restrictedT9",
+   "SAP.P019a.WH.W1.t9_linearization",
+   "SAP.P019a.WH.W1.t9_fisher_law",
+   "SAP.P019a.WH.W1.t9_variance_formula",
+   "SAP.P019a.WH.W1.t9_chi_moments",
+   "SAP.P019a.WH.W1.T9_L1_proof",
+   "SAP.P019a.WH.W1.T9_L2_proof",
+   "SAP.P019a.WH.W1.T9_L3_proof",
+   "SAP.P019a.WH.W1.T9_L4_proof",
+   "SAP.P019a.WH.W1.T9_L5_proof",
+   "SAP.P019a.WH.W1.T9_L6_proof",
+   "SAP.P019a.WH.W1.T9_L7_proof",
+   "AronowAudit.P019.placebo_influence_residual"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.Wave1.sequential_own_independence_proof",
+    "reason": "Not invoked separately: the finite composite declaration includes whole-triple independence in its standing assumptions."
+   },
+   {
+    "lean_name": "AronowAudit.P019.Wave1.sequential_standing_proof",
+    "reason": "Not invoked separately: the finite composite declaration already proves the standing assumptions for every list."
+   },
+   {
+    "lean_name": "AronowAudit.P019.sequential_influence_centered",
+    "reason": "Not invoked separately: the finite composite declaration already includes centered influence functions."
+   },
+   {
+    "lean_name": "AronowAudit.P019.sequential_influence_matrix",
+    "reason": "Not invoked separately: the finite composite declaration already includes the entire influence matrix."
+   }
+  ],
+  "statement_definition": "SAP.P019a.T9WholeStatement"
+ },
+ {
+  "target_id": "P019-T10",
+  "decision": "restricted",
+  "theorem": "SAP.P019a.T10",
+  "restriction": "Omits the reported statistic 12.143, p-value 0.276 and empirical nonrejection. Uses zero completions for empty cells and unavailable variances, and statistic zero when the variance estimate is nonpositive.",
+  "rows_used": [
+   "AronowAudit.P019.Wave1.fisher_corrected_proof"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P019.Wave1.normal_pvalue_uniform_proof",
+    "reason": "Auxiliary transform result; the corrected Fisher declaration already supplies the required joint uniform limit."
+   },
+   {
+    "lean_name": "AronowAudit.P019.Wave1.uniform_fisher_identity_proof",
+    "reason": "Auxiliary Fisher-law identity; the corrected Fisher declaration already supplies the chi-square limit."
+   },
+   {
+    "lean_name": "AronowAudit.P019.placebo_influence_residual",
+    "reason": "Auxiliary influence identity; the corrected Fisher declaration already supplies the conditional and unconditional cross-moment conclusions."
+   },
+   {
+    "lean_name": "AronowAudit.P019.ratio_residual_identity",
+    "reason": "Auxiliary ratio identity; the corrected Fisher declaration already supplies the statistic and Fisher limits."
+   }
+  ]
+ }
+]

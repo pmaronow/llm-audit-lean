@@ -1,0 +1,42 @@
+[
+ {
+  "target_id": "P012-T24",
+  "decision": "restricted",
+  "theorem": "SAP.P012b.T24",
+  "restriction": "Retains only display (1)'s positive scalar objective bound and sharp maximum 1/epsilon on [-1,1]^2, attained at (-1,0), and the resulting objective and homophily range estimates for finite simple binary-trait graphs with positive all-vertex degree totals in both trait classes. Omits annealing convergence, certification of the printed proposals and cooling schedule, all communication-depth assertions (including existence of D*, its bound by the compatible-space maximum and D*epsilon<=1), existence or attainment of a maximum on an arbitrary compatible space, the cited convergence implication, and display (2)'s divergence assertion for D*. The graph estimate evaluates the inactive second argument at zero; it asserts no defined preferential recruitment value or attainment of 1/epsilon by a compatible graph.",
+  "rows_used": [
+   "AronowAudit.P012.objective_bounds",
+   "AronowAudit.P012.homophily_global_range"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P012.Wave1.annealing_convergence_proof",
+    "reason": "Excluded: proves convergence for a materially repaired proposal process, not the canonical printed process."
+   },
+   {
+    "lean_name": "AronowAudit.P012.Wave1.compatible_finite_up_to_names_proof",
+    "reason": "Quotient finiteness is not part of the retained objective estimate."
+   },
+   {
+    "lean_name": "AronowAudit.P012.compatible_objective_bounds",
+    "reason": "Not needed: the two ok rows give the graph estimate using all-vertex trait-degree positivity, without its stronger sampled-trait positivity premises."
+   },
+   {
+    "lean_name": "AronowAudit.P012.critical_depth_bound",
+    "reason": "Communication-depth assertions are omitted from the retained objective estimate."
+   },
+   {
+    "lean_name": "AronowAudit.P012.critical_depth_singleton",
+    "reason": "Communication-depth assertions are omitted from the retained objective estimate."
+   },
+   {
+    "lean_name": "AronowAudit.P012.optimum_exact_zero_depth",
+    "reason": "Communication-depth assertions are omitted from the retained objective estimate."
+   },
+   {
+    "lean_name": "AronowAudit.P012.unsampled_card_bound",
+    "reason": "The incidence bound is not part of the retained objective estimate."
+   }
+  ]
+ }
+]

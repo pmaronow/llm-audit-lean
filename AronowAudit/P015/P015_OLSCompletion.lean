@@ -18,8 +18,8 @@ lemma normalized_ols {N Q : Type*} [Fintype N] [Fintype Q] [DecidableEq Q]
     inv_mul_cancel₀ hc,one_smul]
 
 /-- Actual finite-sample OLS is a continuous function of its empirical Gram and
-cross moments at every nonsingular population Gram matrix. The totalized
-inverse also defines OLS for singular sample matrices. -/
+cross moments at every nonsingular population Gram matrix. Singular sample
+matrices are retained in the original totalized inverse definition. -/
 lemma ols_moment_limit {Ω Q : Type*} [MeasurableSpace Ω] [Fintype Q] [DecidableEq Q]
     (P : Measure Ω) (V : ℕ → Ω → Q → ℝ) (Y : ℕ → Ω → ℝ)
     (G : Matrix Q Q ℝ) (b : Q → ℝ) (hdet:G.det≠0)
@@ -174,5 +174,10 @@ lemma weighted_perturbation_limit {Ω Q : Type*} [MeasurableSpace Ω] [Fintype Q
     (weighted_residual_average_expansion (fun i:Fin n=>r i s) (fun i=>Z i s)
       (fun i:Fin n=>V i s) (δ n s) (n:ℝ)).symm)) h'
 
+#print axioms weighted_perturbation_limit
+#print axioms projection_population_equations
+#print axioms weighted_residual_average_expansion
+#print axioms normalized_ols
+#print axioms ols_moment_limit
 end
 end AronowAudit.P015.OLSCompletion

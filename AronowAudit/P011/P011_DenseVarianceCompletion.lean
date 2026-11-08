@@ -227,6 +227,11 @@ lemma uniform_sample_variance (F:Family) (c1 c2 c3 c4 K:ℝ) (h:Scaling F c1 c2 
   exact hv.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hk hC) (Nat.cast_nonneg _))
 
 
+#print axioms quadratic_mulVec
+#print axioms quadratic_translate
+#print axioms linear_variance_bound
+#print axioms sample_variance_bound
+#print axioms uniform_sample_variance
 end
 end AronowAudit.P011.DenseSampleCompletion
 
@@ -234,9 +239,8 @@ namespace AronowAudit.P011
 open MeasureTheory ProbabilityTheory Filter Finset
 open scoped BigOperators Matrix Topology ENNReal ProbabilityTheory
 noncomputable section
-/-- P011-T4(ii)–(iv): quadratic-form expansion for deterministic symmetric
-matrices with uniformly bounded Euclidean operator norm, including
-Var(eᵀMe)=O(n) and conservativeness when both M and M-(I+A) are PSD. -/
+/-- T4(ii)–(iv): F1 for deterministic uniformly bounded spectral-norm matrices,
+including Var(eᵀMe)=O(n) and the two PSD sufficient conditions for conservativeness. -/
 theorem deterministic_quadratic_expansion (F : Family) (c1 c2 c3 c4 K : ℝ)
     (h : Scaling F c1 c2 c3 c4)
     (M : ∀ k, Matrix (Fin (F.size k)) (Fin (F.size k)) ℝ)
@@ -256,5 +260,6 @@ theorem deterministic_quadratic_expansion (F : Family) (c1 c2 c3 c4 K : ℝ)
   exact ⟨hv,DenseLimitCompletion.limit_clauses_from_variance F c1 c2 c3 c4 K h M hM hK hv⟩
 
 
+#print axioms deterministic_quadratic_expansion
 end
 end AronowAudit.P011

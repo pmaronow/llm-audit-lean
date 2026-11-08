@@ -40,6 +40,9 @@ theorem polynomial_blp_paper_support_approximation
     PolynomialBlp.n3_proof PolynomialBlp.n4_proof PolynomialBlp.n5_proof
     μ X Y hX hY a b hsupp hfull m hm hc
 
+example : AronowAudit.P001.Wave1.PolynomialBlp.Target.{u} :=
+  polynomial_blp_paper_support_approximation
+
 end
 
 end AronowAudit.P001.Wave1

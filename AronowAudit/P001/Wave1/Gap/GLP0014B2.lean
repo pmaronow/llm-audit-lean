@@ -11,8 +11,8 @@ set_option maxRecDepth 3000
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-/-! Conditional moment and variance convergence. The proof uses a
-continuous compact cutoff. Its quadratic coercivity proves the converse
+/-! Record 4: conditional moment and variance convergence.  The proof uses a
+continuous compact cutoff.  Its quadratic coercivity proves the converse
 directly, without choosing an almost-sure weak-convergence subsequence. -/
 
 private lemma t62b2_prob_le_one {Ω : Type*} [MeasurableSpace Ω]
@@ -132,6 +132,11 @@ private lemma t62b2_tail_integrable (P : Measure ℝ) (h2 : MemLp id 2 P) (K : �
   intro x
   by_cases hx : (K : ℝ) < |x| <;> simp [Set.indicator, hx]
 
+private lemma t62b2_tail_nonneg (P : Measure ℝ) (K : ℕ) : 0 ≤ t62b2_tail P K := by
+  apply integral_nonneg
+  intro x
+  change 0 ≤ if (K : ℝ) < |x| then x^2 else 0
+  split_ifs <;> positivity
 
 private lemma t62b2_cut_integrable (P : Measure ℝ) [IsProbabilityMeasure P] (K : ℕ) :
     Integrable (t62b2_cut K) P ∧
@@ -491,6 +496,8 @@ theorem bootstrap_moments_correction_proof {Ω : Type*} [MeasurableSpace Ω] (μ
     have hs := probability_convergence_continuous_at μ (fun n ω => var (ν n ω) id)
       (φ^2) Real.sqrt hv Real.continuous_sqrt.continuousAt
     simpa only [Real.sqrt_sq hφ.le] using hs
+
+example : type_of% @AronowAudit.P001.bootstrap_moments_correction := bootstrap_moments_correction_proof
 
 end
 end AronowAudit.P001.Wave1

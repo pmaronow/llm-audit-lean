@@ -1,16 +1,23 @@
 import AronowAudit.P022.P022_Variance
 
 /-!
-# Randomization variance: equation (2) of P022
+# Blueprint (shared): the actual randomization variance, equation (2) of P022
 
-`Target` is equation (2), p. 851, for the independently defined finite randomization
-variance `trueVariance`, a centred square averaged over all permutations.
-It is the second conjunct of P022-T13 and is also used in P022-T10 and P022-T17.
+Shared by P022-T10 (`FixedArmBlueprint`) and P022-T13 (`SharpBoundsBlueprint`); see also
+P022-T17 (deferred), which needs the same identity.
 
-At one position a uniform permutation is uniform on the units; at two distinct
-positions it is uniform on ordered pairs of distinct units, so
-`E[a(π s) b(π t)] = ((Σa)(Σb) - Σ a_i b_i) / (N(N-1))` for `s ≠ t`. Writing the centred
+`Target` is equation (2), p. 851, for the *independently defined* finite randomization
+variance `trueVariance` (a centred square averaged over all permutations), not the
+asserted formula by definition.  It is the second conjunct of the P022-T13 contract.
+
+Paper proof (map-P022 REPORT.md, record 9, step 1 "ACTUAL RANDOMIZATION MOMENTS"): at one
+position a uniform permutation is uniform on the units; at two distinct positions it is
+uniform on ordered pairs of distinct units, so
+`E[a(π s) b(π t)] = ((Σa)(Σb) - Σ a_i b_i) / (N(N-1))` for `s ≠ t`.  Writing the centred
 estimator as a position-linear statistic and expanding its square gives (2).
+
+Writers prove `theorem nk_proof : Nk` in
+`AronowAudit/P022/Wave1/RandomizationVariance/Nk.lean`.
 -/
 
 set_option autoImplicit false
@@ -37,9 +44,17 @@ def Target : Prop :=
     trueVariance d y1 y0 = varianceExpression d.N d.m d.k
       (finiteVariance y1) (finiteVariance y0) (finiteCovariance y1 y0)
 
-/-- One- and two-position moments of a uniform permutation.
-At equal positions the product mean is the population mean of the products;
-at distinct positions it is the mean over ordered pairs of distinct units. -/
+/-- **Node N1** (map record 9, step 1: "for distinct positions s,t and distinct units i,j,
+there are exactly (N-2)! permutations with π(s)=i, π(t)=j ... This also follows by
+permutation invariance and summing over distinct images, avoiding factorial division").
+One- and two-position moments of a uniform permutation.
+Suggested route (no factorials): for `s ≠ t`, `Σ_t' E[a(πs) b(πt')] = E[a(πs)]·Σb = N μ_a μ_b`;
+the `t' = s` term is `μ_{ab}` (`permutation_eval_mean` applied to `a*b`); the remaining
+`N-1` terms are equal, by reindexing `π ↦ π * swap t t'` (which fixes `s`), exactly as in
+the proof of `AronowAudit.P022.permutation_eval_mean`.  Shortcut: the vendored
+`StatLean.HypothesisTesting.avg_perm_apply_pair` (import
+`AronowAudit.External.StatLean.HypothesisTesting.ForMathlib.PermutationMarginals`) already
+gives the two-position marginal as the uniform average over `offDiag`. -/
 def N1 : Prop :=
   ∀ {N : ℕ} (a b : Fin N → ℝ) (s t : Fin N),
     (s = t → (𝔼 π : Equiv.Perm (Fin N), a (π s) * b (π t)) =
@@ -48,16 +63,23 @@ def N1 : Prop :=
         ((N : ℝ) * finiteMean a * finiteMean b - finiteMean (fun i => a i * b i)) /
           ((N : ℝ) - 1))
 
-/-- The centered estimator equals the position-linear statistic of the
-centered outcomes with coefficients `treatCoef` and `ctrlCoef`. -/
+/-- **Node N2** (map record 9, step 1: "Put u_i=y1_i-mu1, v_i=y0_i-mu0 ... the treated mean
+... the control mean"). The centred estimator is a position-linear statistic of the
+centred outcomes. Pure finite algebra: reindex `Fin d.m` (resp. `Fin d.k`) into the first
+`m` (resp. the next `k`) positions of `Fin d.N`, and use `Σ treatCoef = 1`,
+`Σ ctrlCoef = -1` to absorb the population means. -/
 def N2 : Prop :=
   ∀ (d : Design) (y1 y0 : Fin d.N → ℝ) (π : Assignment d),
     estimatedEffect d y1 y0 π - averageEffect d y1 y0 =
       ∑ s : Fin d.N, (treatCoef d s * (y1 (π s) - finiteMean y1) +
         ctrlCoef d s * (y0 (π s) - finiteMean y0))
 
-/-- Assuming `N1`, the displayed second-moment identity holds for any
-position-linear statistic of two centered arrays when `N ≥ 2`. -/
+/-- **Node N3** (map record 9, step 1: "Equal-position second moments are v1,v0,c and
+unequal-position mixed moments are -v1/(N-1), -v0/(N-1), -c/(N-1)"). Second moment of an
+arbitrary position-linear statistic of two centred arrays under a uniform permutation.
+Expand the square as a double sum over positions, exchange `𝔼` with the finite sums, and
+apply `N1` to each term (diagonal vs off-diagonal); `finiteMean u = 0` kills `N μ_u μ_v`.
+Stated as a consequence of `N1`. -/
 def N3 : Prop :=
   N1 → ∀ {N : ℕ} (u v α γ : Fin N → ℝ), 2 ≤ N → finiteMean u = 0 → finiteMean v = 0 →
     (𝔼 π : Equiv.Perm (Fin N), (∑ s, (α s * u (π s) + γ s * v (π s))) ^ 2) =
@@ -68,16 +90,16 @@ def N3 : Prop :=
         finiteMean (fun i => v i ^ 2) *
           (∑ s, γ s ^ 2 - ((∑ s, γ s) ^ 2 - ∑ s, γ s ^ 2) / ((N : ℝ) - 1))
 
-/-- The treatment coefficients sum to `1` and their squares to `1/m`;
-the control coefficients sum to `-1` and their squares to `1/k`.
-The sum of the products of treatment and control coefficients is zero. -/
+/-- **Node N4** (map record 9, step 1: "the treated mean has variance ... all mk cross-arm
+position pairs are distinct"). The five coefficient sums. Finite sums over a filtered
+range of `Fin d.N`; uses `d.treatment_min`, `d.control_min`, `d.sample_le`. -/
 def N4 : Prop :=
   ∀ d : Design,
     ∑ s, treatCoef d s = 1 ∧ ∑ s, treatCoef d s ^ 2 = 1 / (d.m : ℝ) ∧
     ∑ s, ctrlCoef d s = -1 ∧ ∑ s, ctrlCoef d s ^ 2 = 1 / (d.k : ℝ) ∧
     ∑ s, treatCoef d s * ctrlCoef d s = 0
 
-/-- The centred array has mean zero. -/
+/-- The centred array has mean zero (glue, proved here). -/
 theorem finiteMean_centered {N : ℕ} (hN : 0 < N) (y : Fin N → ℝ) :
     finiteMean (fun i => y i - finiteMean y) = 0 := by
   have : NeZero N := ⟨by omega⟩
@@ -85,7 +107,7 @@ theorem finiteMean_centered {N : ℕ} (hN : 0 < N) (y : Fin N → ℝ) :
   rw [Finset.expect_sub_distrib, Finset.expect_const Finset.univ_nonempty]
   ring
 
-/-- The four component propositions imply equation (2) for every valid design. -/
+/-- **Assembly.** The nodes give equation (2) for every valid design. -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) : Target := by
   intro d y1 y0
   have hN4 : 4 ≤ d.N := d.population_min

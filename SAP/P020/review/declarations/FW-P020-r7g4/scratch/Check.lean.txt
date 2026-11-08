@@ -1,0 +1,164 @@
+import SAP.P020.Challenge
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open scoped BigOperators
+open SAP.P020
+open Filter MeasureTheory ProbabilityTheory
+
+noncomputable section
+
+-- Each disjunct of T16's assumption is independently realizable.
+abbrev unbalancedConstant : ClusterPopulation where
+  M := 3
+  mt := 1
+  mt_pos := by decide
+  mt_lt := by decide
+  n := ![1, 2, 3]
+  n_pos := by intro j; fin_cases j <;> norm_num
+  y0 := ![0, 1, 2]
+  y1 := ![1, 2, 3]
+
+abbrev balancedVarying : ClusterPopulation where
+  M := 2
+  mt := 1
+  mt_pos := by decide
+  mt_lt := by decide
+  n := ![1, 2]
+  n_pos := by intro j; fin_cases j <;> norm_num
+  y0 := ![0, 0]
+  y1 := ![0, 1]
+
+example : (∃ τ : ℝ, ∀ j, unbalancedConstant.y1 j - unbalancedConstant.y0 j = τ) ∧
+    controlCount unbalancedConstant ≠ unbalancedConstant.mt := by
+  constructor
+  · refine ⟨1, ?_⟩
+    intro j
+    fin_cases j <;> norm_num [unbalancedConstant]
+  · norm_num [controlCount, unbalancedConstant]
+
+example : controlCount balancedVarying = balancedVarying.mt ∧
+    ¬ (∃ τ : ℝ, ∀ j, balancedVarying.y1 j - balancedVarying.y0 j = τ) := by
+  constructor
+  · norm_num [controlCount, balancedVarying]
+  · rintro ⟨τ, hτ⟩
+    have h0 := hτ 0
+    have h1 := hτ 1
+    norm_num [balancedVarying] at h0 h1
+    linarith
+
+lemma efficiency_support : assignments efficiencyPopulation = { {0}, {1}, {2} } := by
+  decide
+
+lemma efficiency_weight (s : Finset (Fin efficiencyPopulation.M)) :
+    (clusterLaw efficiencyPopulation).weight s = (1 : ℝ) / 3 := by
+  norm_num [clusterLaw, uniformLaw, efficiency_support]
+
+lemma efficiency_target : averageTreatmentEffect efficiencyPopulation = -(2 : ℝ) / 7 := by
+  norm_num [averageTreatmentEffect, populationSize, efficiencyPopulation, Fin.sum_univ_succ]
+
+lemma efficiency_values :
+    differenceInMeans efficiencyPopulation {0} = -(1 : ℝ) / 3 ∧
+    differenceInMeans efficiencyPopulation {1} = -(1 : ℝ) / 5 ∧
+    differenceInMeans efficiencyPopulation {2} = -(1 : ℝ) / 3 := by
+  norm_num [differenceInMeans, armSum, armSize, controls, efficiencyPopulation,
+    Fin.sum_univ_succ, Finset.sum_sdiff]
+
+-- These verify the witness without using either audited theorem.
+lemma efficiency_bias : designBias (clusterLaw efficiencyPopulation) (differenceInMeans efficiencyPopulation)
+    (averageTreatmentEffect efficiencyPopulation) = -(1 : ℝ) / 315 := by
+  rw [designBias, efficiency_target]
+  simp only [expectation, clusterLaw, uniformLaw, efficiency_support]
+  norm_num [efficiency_values.1, efficiency_values.2.1, efficiency_values.2.2]
+
+lemma efficiency_error : errorProbability (clusterLaw efficiencyPopulation) (differenceInMeans efficiencyPopulation)
+    (averageTreatmentEffect efficiencyPopulation) (1 / 25) = 1 := by
+  rw [efficiency_target]
+  simp only [errorProbability, clusterLaw, uniformLaw, efficiency_support]
+  norm_num [efficiency_values.1, efficiency_values.2.1, efficiency_values.2.2]
+
+example : designBias (clusterLaw efficiencyPopulation) (differenceInMeans efficiencyPopulation)
+    (averageTreatmentEffect efficiencyPopulation) ≠ 0 := by
+  rw [efficiency_bias]
+  norm_num
+
+-- All positive within-cluster replications retain the witness values.
+example (h : ℕ) (hh : 0 < h) :
+    differenceInMeans (replicateWithin efficiencyPopulation h hh) {0} = -(1 : ℝ) / 3 ∧
+    differenceInMeans (replicateWithin efficiencyPopulation h hh) {1} = -(1 : ℝ) / 5 ∧
+    differenceInMeans (replicateWithin efficiencyPopulation h hh) {2} = -(1 : ℝ) / 3 := by
+  have hz : (h : ℝ) ≠ 0 := by exact_mod_cast Nat.ne_of_gt hh
+  norm_num [differenceInMeans, armSum, armSize, controls, replicateWithin,
+    efficiencyPopulation, Fin.sum_univ_succ, Finset.sum_sdiff, Nat.cast_mul]
+  field_simp [hz]
+  norm_num
+
+lemma unbalanced_support : assignments unbalancedConstant = { {0}, {1}, {2} } := by
+  decide
+
+lemma balanced_support : assignments balancedVarying = { {0}, {1} } := by
+  decide
+
+-- T16 has substantive, nonzero variance instances under each alternative.
+example : designVariance (clusterLaw unbalancedConstant) (horvitzThompson unbalancedConstant) = 3 / 8 ∧
+    expectation (clusterLaw unbalancedConstant) (sharpNullVarianceEstimator unbalancedConstant) = 1 / 2 := by
+  norm_num [designVariance, expectation, clusterLaw, uniformLaw, unbalanced_support,
+    horvitzThompson, htTotal, armSum, controls, sharpNullVarianceEstimator,
+    clusterVariance, clusterMean, observedTotal, populationSize, controlCount,
+    unbalancedConstant, Fin.sum_univ_succ, Finset.sum_sdiff]
+
+example : designVariance (clusterLaw balancedVarying) (horvitzThompson balancedVarying) = 1 / 9 ∧
+    expectation (clusterLaw balancedVarying) (sharpNullVarianceEstimator balancedVarying) = 2 / 9 := by
+  norm_num [designVariance, expectation, clusterLaw, uniformLaw, balanced_support,
+    horvitzThompson, htTotal, armSum, controls, sharpNullVarianceEstimator,
+    clusterVariance, clusterMean, observedTotal, populationSize, controlCount,
+    balancedVarying, Fin.sum_univ_succ, Finset.sum_sdiff]
+  norm_num [Finset.filter_singleton]
+
+lemma efficiency_assignment_card : Fintype.card (W1Assignment efficiencyPopulation) = 3 := by
+  change Fintype.card ↥(assignments efficiencyPopulation) = 3
+  rw [Fintype.card_coe, efficiency_support]
+  decide
+
+-- The finite copy space contains all 3^2 assignments, including distinct draws.
+lemma efficiency_two_copy_card : Fintype.card (CopyAssignments efficiencyPopulation 2) = 9 := by
+  change Fintype.card (Fin 2 → W1Assignment efficiencyPopulation) = 9
+  rw [Fintype.card_fun, Fintype.card_fin, efficiency_assignment_card]
+  norm_num
+
+def a0 : W1Assignment efficiencyPopulation := ⟨{0}, by rw [efficiency_support]; simp⟩
+def a1 : W1Assignment efficiencyPopulation := ⟨{1}, by rw [efficiency_support]; simp⟩
+def twoDifferent : CopyAssignments efficiencyPopulation 2 := ![a0, a1]
+
+example : (twoDifferent 0).val ≠ (twoDifferent 1).val := by
+  norm_num [twoDifferent, a0, a1]
+
+example : (copyLaw efficiencyPopulation 2).weight twoDifferent = (1 : ℝ) / 9 := by
+  change 1 / ((Finset.univ : Finset (CopyAssignments efficiencyPopulation 2)).card : ℝ) = 1 / 9
+  rw [Finset.card_univ, efficiency_two_copy_card]
+  norm_num
+
+-- Finite positive arms and an actual copied population, with no zero ratios.
+example : populationSize efficiencyPopulation = 7 ∧
+    populationSize (replicateWithin efficiencyPopulation 2 (by decide)) = 14 ∧
+    armSize efficiencyPopulation true a0.val = 1 ∧
+    armSize efficiencyPopulation false a0.val = 6 ∧
+    copiedDifferenceInMeans efficiencyPopulation 2 twoDifferent = -(3 : ℝ) / 11 := by
+  norm_num [populationSize, replicateWithin, efficiencyPopulation, armSize, armSum,
+    controls, a0, a1, twoDifferent, copiedDifferenceInMeans, Fin.sum_univ_succ,
+    Finset.sum_sdiff]
+
+-- The fixed-size witness also has an individual-level realization: its totals
+-- do not rely on formal cluster outcomes that cannot be aggregated from units.
+example : Nonempty (IndividualPotentialOutcomes efficiencyPopulation) := by
+  refine ⟨{
+    Y0 := fun j _ => efficiencyPopulation.y0 j / efficiencyPopulation.n j
+    Y1 := fun j _ => efficiencyPopulation.y1 j / efficiencyPopulation.n j
+    total0 := ?_
+    total1 := ?_
+  }⟩
+  · intro j
+    fin_cases j <;> norm_num [clusterTotal, efficiencyPopulation, Fin.sum_univ_succ]
+  · intro j
+    fin_cases j <;> norm_num [clusterTotal, efficiencyPopulation, Fin.sum_univ_succ]

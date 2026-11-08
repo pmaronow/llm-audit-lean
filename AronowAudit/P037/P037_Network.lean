@@ -25,7 +25,7 @@ def eitherDirection {n : ℕ} (B : Fin n → Fin n → Bool) (i j : Fin n) : Boo
 def nominationIndegree {n : ℕ} (B : Fin n → Fin n → Bool) (j : Fin n) : ℕ :=
   (Finset.univ.filter (fun i => B i j=true)).card
 
-/-- Empirical 90th percentile by type-7 linear
+/-- N032 doubt certificate: empirical 90th percentile by type-7 linear
 interpolation of sorted indegrees. Integer quotient/remainder give the
 interpolation index and fraction exactly, without floating-point rounding. -/
 noncomputable def indegreeNinety {n : ℕ} (B : Fin n → Fin n → Bool) : ℝ :=
@@ -34,8 +34,8 @@ noncomputable def indegreeNinety {n : ℕ} (B : Fin n → Fin n → Bool) : ℝ 
   ((10-h%10:ℕ):ℝ)/10*(sorted.getD (h/10) 0:ℝ)+
     ((h%10:ℕ):ℝ)/10*(sorted.getD (h/10+1) 0:ℝ)
 
-/-- Referents are students whose directed indegree strictly exceeds the
-interpolated 90th percentile of the roster’s indegrees. -/
+/-- In both N032 examples no indegree equals its 90th percentile, so
+strict > and the code's ≥ convention give the same referents. -/
 noncomputable def networkReferents {n : ℕ} (B : Fin n → Fin n → Bool) : Finset (Fin n) :=
   Finset.univ.filter (fun j => indegreeNinety B<(nominationIndegree B j:ℝ))
 
@@ -86,8 +86,7 @@ theorem either_direction_count_identities {n : ℕ}
 
 /-- T26(d),(e): exact condition for equal treated-nonseed labels and
 pointwise directions of change. r≤c and q≤b encode that referent seeds
-are seeds. This characterizes label equality without requiring reciprocal
-ties everywhere. -/
+are seeds. This is stronger than assuming reciprocal ties everywhere. -/
 theorem exposure_rows_equal_iff (c b r q : ℕ) (hr : r≤c) (hq : q≤b) :
     (countExposure c r=countExposure (c+b) (r+q) ↔
       (0<c ∨ b=0) ∧ (0<r ∨ q=0)) ∧
@@ -139,7 +138,7 @@ theorem exposure_probability_monotone {Ω : Type*} [Fintype Ω]
   rintro ⟨z,he,hf⟩
   exact strict _ _ hI ⟨z,hf,he⟩
 
-/-- T25(W1),(W2): two nomination graphs with zero-based indices. -/
+/-- T25(W1),(W2), zero-based versions of the checker's two nomination graphs. -/
 def nominationWitness10 (i j : Fin 10) : Bool :=
   decide ((i=1 ∧ j=0) ∨ ((i=2 ∨ i=3) ∧ j=1))
 def nominationWitness20 (i j : Fin 20) : Bool :=
@@ -151,6 +150,20 @@ noncomputable def graphProbability20 (B : Fin 20 → Fin 20 → Bool) (k : Fin 4
     (((Finset.univ.powersetCard 3).filter (fun s : Finset (Fin 6) =>
       (rowExposure B (networkReferents nominationWitness20) (s.image graphEligible20) 0).val+1=k.val)).card:ℝ)/40
 
+/-- T25, full two-network certificate: actual indegree-derived referents,
+type-7 percentile, differing observed labels, and differing exact probabilities
+under the same uniform three-of-six seed draw, with positivity in both. -/
+theorem nomination_union_counterexamples :
+    indegreeNinety nominationWitness10=11/10 ∧ networkReferents nominationWitness10={1} ∧
+    rowExposure nominationWitness10 (networkReferents nominationWitness10) {1} 0=0 ∧
+    rowExposure (eitherDirection nominationWitness10) (networkReferents nominationWitness10) {1} 0=2 ∧
+    indegreeNinety nominationWitness20=3/2 ∧ networkReferents nominationWitness20={1,2} ∧
+    (∀ k, graphProbability20 nominationWitness20 k=(![1/2,1/10,3/20,1/4] : Fin 4 → ℝ) k) ∧
+    (∀ k, graphProbability20 (eitherDirection nominationWitness20) k=(![1/2,1/40,3/40,2/5] : Fin 4 → ℝ) k) ∧
+    (∀ k, 0<graphProbability20 nominationWitness20 k ∧ graphProbability20 nominationWitness20 k<1 ∧
+      0<graphProbability20 (eitherDirection nominationWitness20) k ∧
+      graphProbability20 (eitherDirection nominationWitness20) k<1) := by
+  sorry
 
 /-- SI p. 29: "mean of outcomes of peers of seeds ... peers of
 seed-eligibles who were not selected". T36's released statistic counts
@@ -177,6 +190,17 @@ theorem nomination_statistic_direct_effect {I : Type*} [Fintype I]
   simp only [mul_left_comm _ δ, ← Finset.mul_sum]
   ring
 
+/-- T36(b): weighted exact permutation p-values are super-uniform under
+the global sharp null. A fixed outcome vector is justified by that null;
+this theorem does not test the weaker null of no social influence. -/
+theorem sharp_null_permutation_valid {Ω I : Type*} [Fintype Ω] [Fintype I]
+    (p : Ω → ℝ) (hp : ∀ z, 0<p z) (htotal : ∑ z, p z=1)
+    (T : Ω → (I → ℝ) → ℝ) (Y : Ω → I → ℝ)
+    (hsharp : ∀ z z' i, Y z i=Y z' i) (z0 : Ω) (α : ℝ)
+    (hα : 0≤α ∧ α≤1) :
+    let pval := fun z => ∑ z', p z'*(if |T z' (Y z0)| ≥ |T z (Y z0)| then (1:ℝ) else 0)
+    (∑ z, p z*(if pval z≤α then (1:ℝ) else 0))≤α := by
+  sorry
 
 /-- T35: five reciprocal pairs of eligibles; (pair,false/true) is the
 zero-based student 2*pair+bit. Exactly five of ten are drawn uniformly. -/
@@ -196,11 +220,33 @@ theorem paired_no_social_influence (z z' : Finset (Fin 5 × Bool)) (i : Fin 5 ×
     (h : i∈z ↔ i∈z') : directOnly z i=directOnly z' i := by
   simp only [directOnly,h]
 
+/-- T35(ii)--(vi), complete permutation counterexample over the actual
+252-assignment support. In particular the false social-influence rejection
+event has probability 8/63. The four-block extension is also stated. -/
+theorem direct_effect_permutation_counterexample :
+    pairedSupport.card=252 ∧ pairedObserved∈pairedSupport ∧
+    pairedStatistic pairedObserved (directOnly pairedObserved)=-1 ∧
+    (∀ k : Fin 6, (pairedSupport.filter (fun z =>
+      pairedStatistic z (directOnly pairedObserved)=((2*(k.val:ℝ)-5)/5))).card=
+      (Nat.choose 5 k.val)^2) ∧
+    pairedPValue pairedObserved=1/126 ∧ (1/126:ℝ)<1/100 ∧
+    (∀ z ∈ pairedSupport,
+      (∀ b : Fin 5, ((b,false)∈z ↔ (b,true)∉z)) → pairedPValue z=1/126) ∧
+    (∀ z ∈ pairedSupport,
+      ¬(∀ b : Fin 5, ((b,false)∈z ↔ (b,true)∉z)) → 13/63≤pairedPValue z) ∧
+    ((pairedSupport.filter (fun z => pairedPValue z<1/100)).card:ℝ)/252=8/63 ∧
+    (let support4 := Finset.univ.powerset.filter (fun z : Finset (Fin 4 × (Fin 5 × Bool)) =>
+      ∀ h, (z.filter (fun i => i.1=h)).card=5)
+     let Y := fun i : Fin 4 × (Fin 5 × Bool) => if i.2.2=false then (1:ℝ) else 0
+     let stat := fun z : Finset (Fin 4 × (Fin 5 × Bool)) =>
+      (∑ i ∈ z, Y (i.1,partner i.2))/20-
+      (∑ i ∈ Finset.univ \ z, Y (i.1,partner i.2))/20
+     ((support4.filter (fun z => |stat z| ≥ 1)).card:ℝ)/(252:ℝ)^4=2/(252:ℝ)^4) := by
+  sorry
 
-/-- T35(iii)--(vi): arithmetic certificate for the hypergeometric histogram
-and rejection probabilities. The theorem verifies the displayed numerical
-identities and inequalities; it does not identify them with probabilities
-computed from the full permutation supports. -/
+/-- T35(iii)--(vi), arithmetic certificate for the hypergeometric histogram
+and rejection probabilities; connecting it to the full permutation supports
+is the separate, explicitly drafted theorem above. -/
 theorem paired_permutation_arithmetic :
     (∀ k : Fin 6, (Nat.choose 5 k.val)^2=(![1,25,100,100,25,1] : Fin 6 → ℕ) k) ∧
     (1+25+100+100+25+1:ℕ)=252 ∧ (2/252:ℝ)=1/126 ∧ (1/126:ℝ)<1/100 ∧
@@ -212,3 +258,13 @@ theorem paired_permutation_arithmetic :
 
 end AronowAudit.P037
 
+#print axioms AronowAudit.P037.either_direction_properties
+#print axioms AronowAudit.P037.either_direction_count_identities
+#print axioms AronowAudit.P037.exposure_rows_equal_iff
+#print axioms AronowAudit.P037.exposure_probability_monotone
+#print axioms AronowAudit.P037.nomination_union_counterexamples
+#print axioms AronowAudit.P037.nomination_statistic_direct_effect
+#print axioms AronowAudit.P037.sharp_null_permutation_valid
+#print axioms AronowAudit.P037.paired_no_social_influence
+#print axioms AronowAudit.P037.direct_effect_permutation_counterexample
+#print axioms AronowAudit.P037.paired_permutation_arithmetic

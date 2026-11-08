@@ -252,3 +252,4 @@ theorem quadratic_expectation {n : ℕ} (hn : 0 < n) (m : Model n)
   exact QuadraticCompletion.quadratic_expectation_completed hn m hL2 M hM
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.quadratic_expectation

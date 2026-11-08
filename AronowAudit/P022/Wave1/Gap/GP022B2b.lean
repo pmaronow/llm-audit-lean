@@ -519,5 +519,8 @@ theorem proposition2_corrected_finite_proof (d : Design) (y1 y0 : Fin d.N â†’ â„
         nlinarith [hcleared]
       exact le_max_iff.mp hmax
 
+example : type_of% @AronowAudit.P022.proposition2_corrected_finite :=
+  proposition2_corrected_finite_proof
+
 end
 end AronowAudit.P022.Wave1

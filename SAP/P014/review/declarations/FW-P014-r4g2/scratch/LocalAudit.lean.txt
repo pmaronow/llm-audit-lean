@@ -1,0 +1,148 @@
+import SAP.P014.Defs
+open SAP.P014
+open scoped BigOperators
+noncomputable section
+set_option maxRecDepth 4096
+set_option maxHeartbeats 1500000
+
+-- Expand a three-subject CDF by finite-sum identities before simplifying indicators.
+private theorem cdf_three (x : Fin 4 → ℝ) (t : ℝ) :
+    windowCDF localThree x t =
+      ((if x 0 ≤ t then (1:ℝ) else 0) +
+       (if x 1 ≤ t then (1:ℝ) else 0) +
+       (if x 2 ≤ t then (1:ℝ) else 0)) / 3 := by
+  classical
+  unfold windowCDF localThree
+  rw [Finset.sum_insert (by norm_num : (0:Fin 4) ∉ ({1,2} : Finset (Fin 4))),
+    Finset.sum_insert (by norm_num : (1:Fin 4) ∉ ({2} : Finset (Fin 4))), Finset.sum_singleton]
+  norm_num
+  ring
+
+-- Independent verification of every printed-local hypothesis for each witness.
+example : PrintedLocalConditions uniformSix scores1 2 localThree := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [windowSubjects, insideWindow, localThree, scores1, Fin.univ_succ,
+        Finset.filter_insert, Finset.filter_singleton, Finset.filter_empty]
+  · refine ⟨fun t => ((if (-2:ℝ) ≤ t then (1:ℝ) else 0) +
+        (if (-1:ℝ) ≤ t then (1:ℝ) else 0) +
+        (if (1:ℝ) ≤ t then (1:ℝ) else 0)) / 3, ?_⟩
+    intro ω hω t
+    fin_cases ω <;>
+      by_cases h0 : (-2:ℝ) ≤ t <;>
+      by_cases h1 : (-1:ℝ) ≤ t <;>
+      by_cases h2 : (1:ℝ) ≤ t <;>
+      norm_num [cdf_three, scores1, h0, h1, h2]
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [probability, uniformSix, scores1, localThree, Fin.sum_univ_succ,
+        funext_iff, Fin.forall_fin_succ]
+  · intro i hi j hj hne
+    fin_cases i <;> fin_cases j <;>
+      norm_num [localThree, probability, uniformSix, scores1, Fin.sum_univ_succ] at *
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [armSize, localThree, thresholdAssignment, scores1,
+        Finset.filter_insert, Finset.filter_singleton, Finset.filter_empty]
+
+example : (pushforward uniformSix scores1).atoms.card = 6 := by
+  classical
+  norm_num [pushforward, uniformSix, scores1, Fin.univ_succ,
+    funext_iff, Fin.forall_fin_succ]
+
+example : PrintedLocalConditions uniformSix scores9 1 localThree := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [windowSubjects, insideWindow, localThree, scores9, Fin.univ_succ,
+        Finset.filter_insert, Finset.filter_singleton, Finset.filter_empty]
+  · refine ⟨fun t => ((if (-1:ℝ) ≤ t then (1:ℝ) else 0) +
+        (if (-(1/2):ℝ) ≤ t then (1:ℝ) else 0) +
+        (if (1/2:ℝ) ≤ t then (1:ℝ) else 0)) / 3, ?_⟩
+    intro ω hω t
+    fin_cases ω <;>
+      by_cases h0 : (-1:ℝ) ≤ t <;>
+      by_cases h1 : (-(1/2):ℝ) ≤ t <;>
+      by_cases h2 : (1/2:ℝ) ≤ t <;>
+      norm_num [cdf_three, scores9, h0, h1, h2]
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [probability, uniformSix, scores9, localThree, Fin.sum_univ_succ,
+        funext_iff, Fin.forall_fin_succ]
+  · intro i hi j hj hne
+    fin_cases i <;> fin_cases j <;>
+      norm_num [localThree, probability, uniformSix, scores9, Fin.sum_univ_succ] at *
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [armSize, localThree, thresholdAssignment, scores9,
+        Finset.filter_insert, Finset.filter_singleton, Finset.filter_empty]
+
+example : (pushforward uniformSix scores9).atoms.card = 6 := by
+  classical
+  norm_num [pushforward, uniformSix, scores9, Fin.univ_succ,
+    funext_iff, Fin.forall_fin_succ]
+
+example : PrintedLocalConditions uniformSix scores5 2 localThree := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [windowSubjects, insideWindow, localThree, scores5, Fin.univ_succ,
+        Finset.filter_insert, Finset.filter_singleton, Finset.filter_empty]
+  · refine ⟨fun t => ((if (-2:ℝ) ≤ t then (1:ℝ) else 0) +
+        (if (-1:ℝ) ≤ t then (1:ℝ) else 0) +
+        (if (1:ℝ) ≤ t then (1:ℝ) else 0)) / 3, ?_⟩
+    intro ω hω t
+    fin_cases ω <;>
+      by_cases h0 : (-2:ℝ) ≤ t <;>
+      by_cases h1 : (-1:ℝ) ≤ t <;>
+      by_cases h2 : (1:ℝ) ≤ t <;>
+      norm_num [cdf_three, scores5, h0, h1, h2]
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [probability, uniformSix, scores5, localThree, Fin.sum_univ_succ,
+        funext_iff, Fin.forall_fin_succ]
+  · intro i hi j hj hne
+    fin_cases i <;> fin_cases j <;>
+      norm_num [localThree, probability, uniformSix, scores5, Fin.sum_univ_succ] at *
+  · intro ω hω
+    fin_cases ω <;>
+      norm_num [armSize, localThree, thresholdAssignment, scores5,
+        Finset.filter_insert, Finset.filter_singleton, Finset.filter_empty]
+
+example : (pushforward uniformSix scores5).atoms.card = 6 := by
+  classical
+  norm_num [pushforward, uniformSix, scores5, Fin.univ_succ,
+    funext_iff, Fin.forall_fin_succ]
+
+-- These six distinct local rows exhaust all permutations of the three values.
+example : ∀ r : Fin 6,
+    probability uniformSix (fun ω => localCoordinates scores1 ω = localCoordinates scores1 r) = 1/6 := by
+  intro r
+  fin_cases r <;>
+    norm_num [probability, uniformSix, localCoordinates, scores1,
+      Fin.sum_univ_succ, funext_iff, Fin.forall_fin_succ]
+
+-- These six distinct local rows exhaust all permutations of the three values.
+example : ∀ r : Fin 6,
+    probability uniformSix (fun ω => localCoordinates scores9 ω = localCoordinates scores9 r) = 1/6 := by
+  intro r
+  fin_cases r <;>
+    norm_num [probability, uniformSix, localCoordinates, scores9,
+      Fin.sum_univ_succ, funext_iff, Fin.forall_fin_succ]
+
+-- The T5 offending arrangement has mass 2/3, and an absent one has mass 0.
+example : probability uniformSix (fun ω => localCoordinates scores5 ω = ![-1,-2,1]) = 2/3 ∧
+    probability uniformSix (fun ω => localCoordinates scores5 ω = ![-2,-1,1]) = 0 := by
+  norm_num [probability, uniformSix, localCoordinates, scores5,
+    Fin.sum_univ_succ, funext_iff, Fin.forall_fin_succ]
+
+-- The independent-outside example has twelve positive masses summing to one.
+example : IsDistribution extendedDistribution ∧
+    probability extendedDistribution (fun ω => extendedScores ω 3 = -3) = 1/3 ∧
+    probability extendedDistribution (fun ω => extendedScores ω 3 = 3) = 2/3 := by
+  norm_num [IsDistribution, probability, extendedDistribution, extendedScores,
+    Fin.forall_fin_succ, Fintype.sum_prod_type, Fintype.sum_bool, Fin.sum_univ_succ]

@@ -7,7 +7,9 @@ import Mathlib.Analysis.Matrix.MeasurableSpace
 import Mathlib.MeasureTheory.Measure.LevyConvergence
 
 /-!
-Common regularity sets for P001-T12: score measurability, consistency, and asymptotic normality.
+Common-regular-set infrastructure for the three repaired P001-T12 contracts.
+Only proved declarations are retained here; the report records the status of
+the requested final contracts.
 -/
 
 open MeasureTheory ProbabilityTheory Filter AronowAudit.P001
@@ -35,6 +37,20 @@ theorem DecideB_ae_all_mem {Ω E : Type*} [MeasurableSpace Ω] [MeasurableSpace 
   rw [← (hiid.2.2 i).map_eq] at hbase
   exact (ae_map_iff (hiid.1 i).aemeasurable hS).mp hbase
 
+/-- The common regularity set supplies the entire finite sample's C² event. -/
+theorem DecideB_sample_contDiffOn {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] {K τ : ℕ}
+    (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+    (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
+    (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+    (S : Set ((Fin K → ℝ) × ℝ)) (hS : MeasurableSet S)
+    (hfull : (μ.map (fun ω => (X 0 ω, Y 0 ω))) S = 1)
+    (U : Set (Fin τ → ℝ))
+    (hdiff : ∀ xy ∈ S, ContDiffOn ℝ 2 (fun t => Real.log (g xy.2 xy.1 t)) U) :
+    ∀ᵐ ω ∂μ, ∀ n, ContDiffOn ℝ 2 (sampleLogLikelihood X Y g n ω) U := by
+  filter_upwards [DecideB_ae_all_mem μ _ hiid S hS hfull] with ω hω
+  intro n
+  exact (ContDiffOn.sum (fun i (_ : i ∈ Finset.range n) => hdiff _ (hω i))).div_const _
 
 /-- Coordinate gradient of the actual average log likelihood. -/
 def DecideB_sampleScore {Ω : Type*} {K τ : ℕ}
@@ -217,7 +233,7 @@ theorem DecideB_scoreVersion_iid {Ω : Type*} [MeasurableSpace Ω]
   intro i
   simp [DecideB_scoreVersion, hω i]
 
-/-- The outer-probability definition of convergence in probability agrees with Mathlib's. -/
+/-- The project's outer-probability convention agrees with Mathlib's. -/
 theorem DecideB_cp_iff_tendstoInMeasure {Ω E : Type*} [MeasurableSpace Ω]
     [PseudoMetricSpace E] (μ : Measure Ω) [IsFiniteMeasure μ]
     (Z : ℕ → Ω → E) (c : E) :
@@ -225,7 +241,7 @@ theorem DecideB_cp_iff_tendstoInMeasure {Ω E : Type*} [MeasurableSpace Ω]
   rw [tendstoInMeasure_iff_measureReal_dist]
   rfl
 
-/-- Convergence in distribution implies convergence of integrals of bounded continuous test functions. -/
+/-- Distribution convergence gives exactly the project's bounded-test limit. -/
 theorem DecideB_weakLimit_of_tendstoInDistribution {Ω E : Type*}
     [MeasurableSpace Ω] [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : ℕ → Ω → E)
@@ -356,6 +372,17 @@ theorem DecideB_vector_clt_distribution {Ω : Type*} [MeasurableSpace Ω]
   · convert! hpi.tendsto using 1
     simp only [Measure.map_id, normalVectorLaw, Function.comp_id]
 
+theorem DecideB_vector_clt {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] {d : ℕ}
+    (s : ℕ → Ω → Fin d → ℝ) (hiid : IID μ s)
+    (hs2 : ∀ j, MemLp (fun ω => s 0 ω j) 2 μ)
+    (hs0 : ∀ j, mean μ (fun ω => s 0 ω j) = 0)
+    (I : Matrix (Fin d) (Fin d) ℝ) (hI : I.PosSemidef)
+    (hcov : ∀ j k, I j k = mean μ (fun ω => s 0 ω j * s 0 ω k)) :
+    WeakLimit μ (fun n ω => (Real.sqrt n)⁻¹ • (fun j => ∑ i ∈ Finset.range n, s i ω j))
+      (normalVectorLaw I) :=
+  DecideB_weakLimit_of_tendstoInDistribution μ _ _
+    (DecideB_vector_clt_distribution μ s hiid hs2 hs0 I hI hcov)
 
 /-- The inverse-information transform of the centered score has covariance I⁻¹. -/
 theorem DecideB_inverse_information_clt {Ω : Type*} [MeasurableSpace Ω]
@@ -424,6 +451,54 @@ theorem DecideB_sqrt_div_nat (n : ℕ) : Real.sqrt n / n = (Real.sqrt n)⁻¹ :=
   field_simp
   simpa [pow_two] using Real.sq_sqrt (Nat.cast_nonneg n)
 
+/-- The actual root-n score obeys the multivariate CLT under the repaired common set. -/
+theorem DecideB_sample_score_clt {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] {K τ : ℕ}
+    (X : ℕ → Ω → Fin K → ℝ) (Y : ℕ → Ω → ℝ)
+    (hiid : IID μ (fun i ω => (X i ω, Y i ω)))
+    (g : ℝ → (Fin K → ℝ) → (Fin τ → ℝ) → ℝ)
+    (S : Set ((Fin K → ℝ) × ℝ)) (hS : MeasurableSet S)
+    (hfull : (μ.map (fun ω => (X 0 ω, Y 0 ω))) S = 1)
+    (U : Set (Fin τ → ℝ)) (hU : IsOpen U) (θ : Fin τ → ℝ) (hθ : θ ∈ U)
+    (hg : ∀ t ∈ U, Measurable (fun xy : (Fin K → ℝ) × ℝ => g xy.2 xy.1 t))
+    (hdiff : ∀ xy ∈ S, ContDiffOn ℝ 2 (fun t => Real.log (g xy.2 xy.1 t)) U)
+    (hs2 : ∀ j, MemLp (fun ω => modelScore g (Y 0 ω) (X 0 ω) θ j) 2 μ)
+    (hs0 : ∀ j, mean μ (fun ω => modelScore g (Y 0 ω) (X 0 ω) θ j) = 0)
+    (hinfo : (informationMatrix μ (X 0) (Y 0) g θ).PosSemidef) :
+    TendstoInDistribution (fun (n : ℕ) ω => Real.sqrt n • DecideB_sampleScore X Y g n ω θ)
+      atTop id (fun _ => μ) (normalVectorLaw (informationMatrix μ (X 0) (Y 0) g θ)) := by
+  let s : ℕ → Ω → Fin τ → ℝ :=
+    fun i ω => DecideB_scoreVersion g S θ (X i ω, Y i ω)
+  obtain ⟨hsiid, heq⟩ := DecideB_scoreVersion_iid μ X Y hiid g S hS hfull θ
+    (DecideB_scoreVersion_measurable g S hS U hU θ hθ hg hdiff)
+  have hs (j : Fin τ) : (fun ω => s 0 ω j) =ᵐ[μ]
+      fun ω => modelScore g (Y 0 ω) (X 0 ω) θ j := by
+    filter_upwards [heq] with ω hω
+    exact congrFun (hω 0) j
+  have h2 (j : Fin τ) : MemLp (fun ω => s 0 ω j) 2 μ := (memLp_congr_ae (hs j)).mpr (hs2 j)
+  have h0 (j : Fin τ) : mean μ (fun ω => s 0 ω j) = 0 :=
+    (integral_congr_ae (hs j)).trans (hs0 j)
+  have hcov (j k : Fin τ) : informationMatrix μ (X 0) (Y 0) g θ j k =
+      mean μ (fun ω => s 0 ω j * s 0 ω k) := by
+    apply integral_congr_ae
+    filter_upwards [hs j, hs k] with ω hj hk
+    rw [hj, hk]
+  have hclt := DecideB_vector_clt_distribution μ s hsiid h2 h0 _ hinfo hcov
+  apply hclt.congr _ (Filter.EventuallyEq.refl _ _)
+  intro n
+  filter_upwards [heq] with ω hω
+  ext j
+  simp only [Pi.smul_apply, smul_eq_mul, DecideB_sampleScore]
+  have he : (∑ i ∈ Finset.range n, s i ω j) =
+      ∑ i ∈ Finset.range n, modelScore g (Y i ω) (X i ω) θ j := by
+    apply Finset.sum_congr rfl
+    intro i _
+    exact congrFun (hω i) j
+  rw [he]
+  calc
+    _ = (Real.sqrt n / n) * (∑ i ∈ Finset.range n, modelScore g (Y i ω) (X i ω) θ j) := by
+      rw [DecideB_sqrt_div_nat]
+    _ = _ := by ring
 
 /-- A coordinate bound gives an operator-norm bound for a real linear functional. -/
 theorem DecideB_functional_norm_le {d : ℕ} (L : (Fin d → ℝ) →L[ℝ] ℝ)

@@ -1,0 +1,32 @@
+[
+  {
+    "target_id": "P047-T1",
+    "theorem": "SAP.P047.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled without sorry in scratch/Check.lean: exampleLaw has W uniform on (0,1], A an independent fair Boolean, Y(0)=0, Y(1)=1 and e identically 1/2. It satisfies BoundedOverlap exampleLaw 1 (1/4) and TreatedMeanModel exampleLaw (1/4), with the complete conditional-factorization assumption proved for every measurable integrable test. More generally, for every B>0 and 0<epsilon<=1/2, the same construction with Y(1)=B satisfies the two-arm model. There are positive sample sizes and nominal levels, for example n=1 and alpha=1/4. The score and sample estimators are genuinely integrable; conditional expectation does not use its zero fallback.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P047-T2",
+    "theorem": "SAP.P047.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The compiled exampleLaw in scratch/Check.lean satisfies the model with B=1 and epsilon=1/4. Its score is 2A, its ATE is 1, and its variance is 1, so a nondegenerate normal limit is represented. Replacing Y(1)=1 by Y(1)=B gives a model for every allowed pair B,epsilon. Setting both potential outcomes to zero also realizes the allowed zero-variance case. Each risk is a genuine probability in [0,1]; hence the nonempty supremum is finite and the limit does not depend on an unbounded-supremum convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P047-T3",
+    "theorem": "SAP.P047.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled without sorry in scratch/Check.lean: UnknownModel exampleLaw, where W is uniform, A is independent and fair, Y(0)=0, Y(1)=1, and e=1/2; the joint test-factorization assumption is proved. The defined baselineLaw likewise has the canonical independent uniform W, fair A, fair Y(1), Y(0)=0, and admits e=1/2, although the Challenge does not separately assert this membership. Deterministic procedures are included by a singleton seed with its Dirac probability measure. The constant endpoint families lo=-infinity and hi=+infinity are measurable and give randCoverage=1 and widthProb=1 for every n, so the honesty antecedent is satisfiable for every 0<alpha<1/2. Suprema and infima range over genuine [0,1]-bounded probabilities; the asymptotic limsup and liminf therefore have their ordinary meanings.",
+    "confidence": 0.98
+  }
+]

@@ -176,3 +176,5 @@ theorem external_validity_wasserstein {n : ℕ} (hn : 0 < n) (E : Experiment n)
 
 end AronowAudit.P009
 
+#print axioms AronowAudit.P009.assignment_ATE_lipschitz
+#print axioms AronowAudit.P009.external_validity_wasserstein

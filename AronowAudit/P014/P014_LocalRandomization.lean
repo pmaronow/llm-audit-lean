@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-P014: The Regression Discontinuity Design Under Interference (2017).
+P014: The Regression Discontinuity Design Under Interference (2016).
 Printed pp. 129--131, PDF pp. 2--4. Finite sums use actual distinct support
 points. No assumption of independence or no interference is built into the model.
 Fin N uses indices 0,...,N-1 in place of the paper's 1,...,N.
@@ -330,26 +330,29 @@ def PrintedLocal {Ω : Type*} {N : ℕ} (L : FiniteLaw Ω) (X : Ω → Fin N →
   (∀ ω ∈ L.support, 0 < armCount S (threshold (X ω)) true ∧
     armCount S (threshold (X ω)) true < S.card)
 
+/- The paper's headline unbiasedness display on p. 131, AS PRINTED, under
+the formal clauses of p. 130 (distinct-subject no-ties reading). It is false:
+T1 supplies a counterexample. This statement is deliberately left unproved. -/
+/- False printed assertion archived as PrintedClaims.printed_unbiasedness and refuted in P014_Refutations.lean. -/
 
-
-
-/-- Uniform six-atom randomization for the counterexamples to T1,
-T5, T9: every running-vector row has probability 1/6. -/
+/-- Uniform six-atom randomization used in the validator witnesses to T1,
+T5, T9 (not in the paper): every running-vector row has probability 1/6. -/
 def sixLaw : FiniteLaw (Fin 6) :=
   ⟨Finset.univ, fun _ => 1/6, by intro a ha; norm_num,
     by norm_num [Fin.sum_univ_succ]⟩
 
-/-- The fixed window S={1,2,3} (zero-based {0,1,2}) in the counterexamples. -/
+/-- The fixed window S={1,2,3} (zero-based {0,1,2}) in the validator witnesses. -/
 def threeWindow : Finset (Fin 4) := {0, 1, 2}
 
-/-- Finite expansion for S={1,2,3}, shared by the exact
+/-- Finite expansion for S={1,2,3}, shared by the exact validator
 counterexamples to the displays on pp. 130--131. -/
 theorem sum_three_window (f : Fin 4 → ℝ) :
     (∑ i ∈ threeWindow, f i) = f 0 + f 1 + f 2 := by
   norm_num [threeWindow]
   ring
 
-/-- T1's complete six-row running-variable schedule (P014-E001), N=4, b=2. -/
+/-- T1's complete six-row running-variable schedule (E001/v1 derivation,
+"Complete exact counterexample"), N=4, b=2. -/
 def witnessX : Fin 6 → Fin 4 → ℝ :=
   ![![-2,-1,1,3], ![-2,1,-1,-3], ![-1,-2,1,-3],
     ![-1,1,-2,-3], ![1,-2,-1,-3], ![1,-1,-2,-3]]
@@ -360,24 +363,24 @@ def witnessZ : Fin 6 → Assignment 4 :=
     ![false,true,false,false], ![true,false,false,false], ![true,false,false,false]]
 
 /-- T1 outcomes on ALL 16 treatment vectors: y_1=y_2=y_3=z_4, y_4=0
-(P014-E001), independent of scores conditional on full assignment. -/
+(E001/v1 derivation), independent of scores conditional on full assignment. -/
 def spilloverAll : Outcomes 4 := fun i z => if i = 3 then 0 else bit (z 3)
 
 /-- T9's outcomes on all assignments: y_1=z_4, y_2=y_3=y_4=0
-(P014-N002). -/
+(N002/v1 derivation §3). -/
 def spilloverOne : Outcomes 4 := fun i z => if i = 0 then bit (z 3) else 0
 
-/-- T5's complete running-variable schedule (P014-E002), N=4,b=2;
+/-- T5's complete running-variable schedule (E002/v1 derivation §2), N=4,b=2;
 four different outside scores lie above one repeated in-window arrangement. -/
 def defectiveX : Fin 6 → Fin 4 → ℝ :=
   ![![1,-1,-2,3], ![-1,1,-2,3], ![-1,-2,1,3],
     ![-1,-2,1,4], ![-1,-2,1,5], ![-1,-2,1,6]]
 
 /-- T5 outcomes on all assignments: y_1=z_1 and all other outcomes zero
-(P014-E002); no interference. -/
+(E002/v1 derivation §3); no interference. -/
 def noInterferenceOne : Outcomes 4 := fun i z => if i = 0 then bit (z 0) else 0
 
-/-- T9 running scores, N=4,b=1, the six vectors of P014-N002. -/
+/-- T9 running scores, N=4,b=1, the six vectors of N002/v1 derivation §2. -/
 def comparisonX : Fin 6 → Fin 4 → ℝ :=
   ![![-1,-(1/2),1/2,2], ![-1,1/2,-(1/2),-2], ![-(1/2),-1,1/2,-2],
     ![-(1/2),1/2,-1,-2], ![1/2,-1,-(1/2),-2], ![1/2,-(1/2),-1,-2]]
@@ -408,7 +411,7 @@ theorem witness_local_arrangements :
       witnessX, funext_iff, Fin.forall_fin_succ]
 
 /-- T1: every printed local-randomization clause holds, with the no-ties
-quantifier interpreted for distinct subjects (p. 130; P014-E001). -/
+quantifier interpreted for distinct subjects (p. 130; E001/v1 witness). -/
 theorem witness_printed_local : PrintedLocal sixLaw witnessX 2 threeWindow := by
   classical
   refine ⟨?_, ⟨fun t => ((if (-2 : ℝ) ≤ t then 1 else 0) +
@@ -432,7 +435,7 @@ theorem witness_printed_local : PrintedLocal sixLaw witnessX 2 threeWindow := by
     fin_cases ω <;> norm_num [armCount, threshold, witnessX, threeWindow, Finset.filter_insert, Finset.filter_singleton]
 
 /-- T9: the rescaled six-row running law also satisfies every printed clause
-(p. 130; P014-N002). -/
+(p. 130; N002/v1 witness §2). -/
 theorem comparison_printed_local : PrintedLocal sixLaw comparisonX 1 threeWindow := by
   classical
   refine ⟨?_, ⟨fun t => ((if (-1 : ℝ) ≤ t then 1 else 0) +
@@ -466,7 +469,7 @@ theorem witness_support : witnessLaw.support =
   tauto
 
 /-- T1/T9: the actual four treatment masses are 1/6,1/3,1/6,1/3
-(P014-E001 and P014-N002). -/
+(E001/v1 and N002/v1 tables). -/
 theorem witness_masses :
     witnessLaw.mass ![false,false,true,true] = 1/6 ∧
     witnessLaw.mass ![false,true,false,false] = 1/3 ∧
@@ -494,7 +497,7 @@ theorem witness_counts_propensities :
         Finset.filter_insert, Finset.filter_singleton, funext_iff, Fin.forall_fin_succ]
 
 /-- T1: the printed conditional means, weighted means, estimator expectation
-and targets, computed from the actual support and probabilities (P014-E001). -/
+and targets, computed from the actual support and probabilities (E001/v1). -/
 theorem t1_arithmetic :
     printedMean witnessLaw spilloverAll 0 true = 0 ∧
     printedMean witnessLaw spilloverAll 0 false = 1/3 ∧
@@ -553,7 +556,7 @@ theorem t1_counterexample :
       rw [he, ht]; norm_num⟩
 
 /-- T5: the defective local law satisfies every FORMAL printed clause
-(p. 130; P014-E002), despite nonuniform local arrangement probabilities. -/
+(p. 130; E002/v1 §2), despite nonuniform local arrangement probabilities. -/
 theorem defective_printed_local : PrintedLocal sixLaw defectiveX 2 threeWindow := by
   classical
   refine ⟨?_, ⟨fun t => ((if (-2 : ℝ) ≤ t then 1 else 0) +
@@ -611,7 +614,7 @@ theorem t5_counterexample :
     Finset.filter_insert, Finset.filter_singleton]
 
 /-- T9, concrete counterexample to equivalence with the cited direct effect
-(p. 129 and p. 131; P014-N002). All printed clauses hold. The printed contrast
+(p. 129 and p. 131; N002/v1). All printed clauses hold. The printed contrast
 is -1/9, the weighted contrast -1/12, and the control-minus-treatment direct
 effect is 1/12; the printed contrast equals neither sign of that effect. -/
 theorem t9_counterexample :
@@ -696,7 +699,7 @@ theorem constant_arm_means {N : ℕ} (L : FiniteLaw (Assignment N)) (y : Outcome
     field_simp
 
 /-- "absence of interference" (p. 130): for window subject i, y_i depends
-only on that subject's treatment, with values defined on all assignment vectors. -/
+only on her own treatment, with values defined on all assignment vectors. -/
 def NoInterference {N : ℕ} (S : Finset (Fin N)) (y : Outcomes N) : Prop :=
   ∀ i ∈ S, ∀ z z', z i = z' i → y i z = y i z'
 
@@ -756,15 +759,15 @@ theorem conditional_uniform_necessary {N : ℕ} (L : FiniteLaw (Assignment N))
   have h := hall (fun _ z' => if z' = z then 1 else 0)
   simpa [printedMean, weightedMean, weightedNumerator, hz, mul_ite] using h.symm
 
-/-- Hudgens--Halloran's Z_{-i} in single-population notation:
-assignments of other subjects (P014-N002). -/
+/-- Hudgens--Halloran's Z_{-i}, rendered in the validator's single-population
+notation (N002/v1 source_check.md, Sections 3.1--3.2): assignments of other subjects. -/
 abbrev OtherAssignment {N : ℕ} (i : Fin N) := {j : Fin N // j ≠ i} → Bool
 
 /-- Remove subject i's assignment, the vector Z_{-i} in T9/T10. -/
 def others {N : ℕ} (i : Fin N) (z : Assignment N) : OtherAssignment i := fun j => z j
 
 /-- y_i(s,u): insert own assignment s among assignments u of the other N-1
-subjects (T10, P014-N002). -/
+subjects (T10, N002/v1 source_check.md). -/
 def withOwn {N : ℕ} (i : Fin N) (a : Bool) (u : OtherAssignment i) : Assignment N :=
   (Equiv.funSplitAt i Bool).symm (a, u)
 
@@ -779,19 +782,19 @@ theorem withOwn_others {N : ℕ} (i : Fin N) (a : Bool) (z : Assignment N)
   exact (Equiv.funSplitAt i Bool).symm_apply_apply z
 
 /-- Pr(Z_{-i}=u | Z_i=a), the conditional weights in Hudgens--Halloran's
-individual average potential outcome (T10; P014-N002). -/
+individual average potential outcome (T10; N002/v1 source_check.md). -/
 def conditionalOtherMass {N : ℕ} (L : FiniteLaw (Assignment N)) (i : Fin N)
     (a : Bool) (u : OtherAssignment i) : ℝ :=
   L.prob (fun z => z i = a ∧ others i z = u) / armMass L i a
 
 /-- m_i(s;p)=Σ_u y_i(s,u) Pr(Z_{-i}=u | Z_i=s), the cited individual
-average potential outcome in T10 (P014-N002). -/
+average potential outcome as supplied in T10 (N002/v1 source_check.md). -/
 def hhMean {N : ℕ} (L : FiniteLaw (Assignment N)) (y : Outcomes N)
     (i : Fin N) (a : Bool) : ℝ :=
   ∑ u : OtherAssignment i, y i (withOwn i a u) * conditionalOtherMass L i a u
 
 /-- d_i(p)=m_i(0;p)-m_i(1;p), Hudgens--Halloran's CONTROL MINUS TREATMENT
-convention in T9/T10 (their equation (3)). -/
+convention in T9/T10 (source_check.md, their equation (3)). -/
 def hhDirect {N : ℕ} (L : FiniteLaw (Assignment N)) (y : Outcomes N) (i : Fin N) : ℝ :=
   hhMean L y i false - hhMean L y i true
 
@@ -827,7 +830,7 @@ theorem corrected_target_hh_sign {N : ℕ} (L : FiniteLaw (Assignment N))
   ring
 
 /-- T10(c): under T2's hypotheses the unchanged estimator has expectation
-minus the cited direct-effect average, using Hudgens--Halloran's sign convention. -/
+minus the cited direct-effect average, consistent with the note's sign convention. -/
 theorem estimator_hh_sign {N : ℕ} (L : FiniteLaw (Assignment N))
     (S : Finset (Fin N)) (y : Outcomes N) (m : ℕ)
     (hm : 0 < m) (hmn : m < S.card)
@@ -843,10 +846,10 @@ theorem estimator_hh_sign {N : ℕ} (L : FiniteLaw (Assignment N))
   rw [hp i hi]
   exact ⟨div_pos hmr hnr, (div_lt_one hnr).mpr hmnr⟩
 
-/-- T9's explicit comparison with the cited definition, using the
-other-subject conditional sum: D=1/12, neither sign equals
-the printed target, and the estimator's bias for the printed target is 1/36
-(P014-N002). -/
+/-- T9's explicit comparison with the cited definition, after its genuine
+other-subject conditional sum has been defined: D=1/12, neither sign equals
+the printed target, and the estimator's bias for the printed target is 1/36.
+This is the numerical witness in N002/v1, Sections 3--5. -/
 theorem t9_hudgens_halloran_comparison :
     (∑ i ∈ threeWindow, hhDirect witnessLaw spilloverOne i) / threeWindow.card = 1/12 ∧
     windowContrast threeWindow (printedMean witnessLaw spilloverOne) ≠
@@ -885,12 +888,10 @@ continuous outside scores: ordinary probability μ(event), as a real number. -/
 def eventProb {Ω : Type*} [MeasurableSpace Ω] (μ : MeasureTheory.Measure Ω)
     (P : Ω → Prop) : ℝ := (μ {ω | P ω}).toReal
 
-/-- Probability clauses for corrected local randomization (P014-T6, p. 130):
-measurability of the running scores, fixed window-membership probabilities, and
-mass 1/|S|! for each permutation event generated by the fixed score map `v`.
-In `corrected_local_randomization`, the probability-measure condition, injectivity
-of `v`, and membership of its values in the window are supplied separately.
-Outside scores have no additional joint-law restriction. -/
+/-- The CORRECTED local-randomization assumption (P014-T6, correction to p.130).
+S is fixed, v assigns distinct fixed local scores to its n subjects, and each
+of the n! arrangements has probability 1/n!. Outside scores can have ANY joint
+law, continuous or discrete, subject only to fixed membership. -/
 def CorrectedLocal {Ω : Type*} [MeasurableSpace Ω] {N : ℕ}
     (μ : MeasureTheory.Measure Ω) (X : Ω → Fin N → ℝ) (b : ℝ)
     (S : Finset (Fin N)) (v : S → ℝ) : Prop :=
@@ -987,7 +988,7 @@ def assignmentFromPermutation {N : ℕ} (S : Finset (Fin N)) (v : S → ℝ)
 
 /-- T6(d), finite fiber identity: under a uniform local marginal with k points,
 uniform full-vector masses 1/k are equivalent to each local value having
-exactly one full supported vector above it (P014-E002). -/
+exactly one full supported vector above it (E002/v1 derivation §4). -/
 theorem uniform_joint_iff_injective_local {α β : Type*} (L : FiniteLaw α)
     (f : α → β) (k : ℕ) (hk : 0 < k)
     (hlocal : ∀ b, (∃ a ∈ L.support, f a = b) → L.prob (fun a => f a = b) = 1 / (k : ℝ)) :
@@ -1038,7 +1039,7 @@ def extendedLaw : FiniteLaw (Fin 6 × Bool) :=
     by norm_num [Fintype.sum_prod_type, Fin.sum_univ_succ]⟩
 
 /-- T6(e)'s full running scores: the six local arrangements of (-2,-1,1),
-and the independently randomized outside score -3 or 3 (P014-E002). -/
+and the independently randomized outside score -3 or 3 (E002/v1 §4). -/
 def extendedX (ω : Fin 6 × Bool) : Fin 4 → ℝ := fun i =>
   if i = 3 then (if ω.2 then 3 else -3) else witnessX ω.1 i
 
@@ -1087,7 +1088,7 @@ theorem no_ties_diagonal_general {Ω : Type*} [MeasurableSpace Ω] {N : ℕ}
     simp
 
 /-- The six actual permutations of three scores, corresponding to the six
-rows of the T1/T9 counterexamples. -/
+rows of the T1/T9 witnesses (validator constructions, not a paper definition). -/
 def rowPermutation (ω : Fin 6) : Equiv.Perm (Fin 3) :=
   Equiv.ofBijective
     (![![0,1,2], ![0,2,1], ![1,0,2], ![1,2,0], ![2,0,1], ![2,1,0]] ω)
@@ -1104,7 +1105,7 @@ theorem rows_exhaust_permutations : Function.Bijective rowPermutation := by
   · norm_num [Fintype.card_perm]
 
 /-- T1 and T9 score rows are exactly the corresponding permutations of
-(-2,-1,1) and (-1,-1/2,1/2), respectively (P014-E001 and P014-N002). -/
+(-2,-1,1) and (-1,-1/2,1/2), respectively (E001/v1 and N002/v1). -/
 theorem score_rows_are_permutations :
     (∀ ω : Fin 6, ∀ i : Fin 3,
       witnessX ω (Fin.castSucc i) = (![-2,-1,1] : Fin 3 → ℝ) (rowPermutation ω i)) ∧
@@ -1383,8 +1384,10 @@ theorem no_ties_quantifier_decomposition {Ω : Type*} [MeasurableSpace Ω] {N : 
     · subst j; exact hd i hi
     · exact h i hi j hj hij
 
-
-
+/- T4, the printed headline also under the intended prose reading of local
+randomization (p. 130): distinct fixed scores are uniformly permuted in the
+window, and all formal printed clauses hold. Still false by T1; left unproved. -/
+/- False printed assertion archived as PrintedClaims.printed_unbiasedness_intended_local and refuted in P014_Refutations.lean. -/
 
 /-- T3(c)'s finite combinatorial reduction: a permutation matching two binary
 partitions is exactly a pair of bijections on their treated and control parts. -/
@@ -1921,8 +1924,8 @@ theorem extended_scores_injective : Function.Injective extendedX := by
 /-- T6(e)'s support cardinality and outside law: there are exactly 12 full
 support points; X_4=-3 has probability 1/3 and X_4=3 probability 2/3, and each
 local arrangement/outside-value joint probability factors into its marginals.
-Together with corrected_law_allows_outside_randomness this gives the
-independent-outside counterexample (P014-E002). -/
+Together with corrected_law_allows_outside_randomness this is the validator's
+independent-outside witness (E002/v1, Part C). -/
 theorem extended_law_support_and_outside :
     (extendedLaw.map extendedX).support.card = 12 ∧
     extendedLaw.prob (fun ω => extendedX ω 3 = -3) = 1/3 ∧
@@ -1949,3 +1952,90 @@ theorem extended_law_support_and_outside :
 end
 end AronowAudit.P014
 
+#print axioms AronowAudit.P014.expect_map
+#print axioms AronowAudit.P014.bracketed_contrast
+#print axioms AronowAudit.P014.armCounts_add
+#print axioms AronowAudit.P014.armMasses_add
+#print axioms AronowAudit.P014.expectation_fixed_counts
+#print axioms AronowAudit.P014.moment_identity
+#print axioms AronowAudit.P014.weighted_unbiasedness
+#print axioms AronowAudit.P014.means_equal_of_conditional_uniform
+#print axioms AronowAudit.P014.printed_unbiasedness_under_U
+#print axioms AronowAudit.P014.printed_no_ties_iff_empty
+#print axioms AronowAudit.P014.witness_threshold
+#print axioms AronowAudit.P014.witness_local_arrangements
+
+#print axioms AronowAudit.P014.witness_printed_local
+#print axioms AronowAudit.P014.comparison_printed_local
+#print axioms AronowAudit.P014.witness_support
+#print axioms AronowAudit.P014.witness_masses
+#print axioms AronowAudit.P014.witness_counts_propensities
+#print axioms AronowAudit.P014.t1_arithmetic
+#print axioms AronowAudit.P014.t1_counterexample
+#print axioms AronowAudit.P014.defective_printed_local
+#print axioms AronowAudit.P014.t5_counterexample
+#print axioms AronowAudit.P014.t9_counterexample
+
+#print axioms AronowAudit.P014.conditional_uniform_of_full_uniform
+#print axioms AronowAudit.P014.arm_nonempty_of_mass_ne_zero
+#print axioms AronowAudit.P014.constant_arm_means
+#print axioms AronowAudit.P014.means_equal_without_interference
+#print axioms AronowAudit.P014.printed_unbiasedness_no_interference
+#print axioms AronowAudit.P014.conditional_uniform_necessary
+#print axioms AronowAudit.P014.withOwn_others
+#print axioms AronowAudit.P014.hhMean_eq_weighted
+#print axioms AronowAudit.P014.corrected_target_hh_sign
+#print axioms AronowAudit.P014.estimator_hh_sign
+#print axioms AronowAudit.P014.corrected_local_randomization
+
+#print axioms AronowAudit.P014.permutation_count
+#print axioms AronowAudit.P014.uniform_permutation_average
+#print axioms AronowAudit.P014.uniform_permutation_propensity
+#print axioms AronowAudit.P014.permutation_no_ties
+#print axioms AronowAudit.P014.fixed_outside_uniform_assignments
+#print axioms AronowAudit.P014.uniform_joint_iff_injective_local
+#print axioms AronowAudit.P014.corrected_law_allows_outside_randomness
+#print axioms AronowAudit.P014.no_ties_diagonal_general
+
+#print axioms AronowAudit.P014.rows_exhaust_permutations
+#print axioms AronowAudit.P014.score_rows_are_permutations
+#print axioms AronowAudit.P014.all_local_permutations_equiprobable
+#print axioms AronowAudit.P014.corrected_no_ties_witnesses
+
+#print axioms AronowAudit.P014.ae_event_of_probability_one
+#print axioms AronowAudit.P014.ae_not_of_probability_zero
+#print axioms AronowAudit.P014.uniform_partition_covers
+#print axioms AronowAudit.P014.probability_from_uniform_partition
+#print axioms AronowAudit.P014.factorial_propensity_ratio
+
+#print axioms AronowAudit.P014.injective_local_iff_reconstructible
+#print axioms AronowAudit.P014.conditional_full_average_eq_weighted
+#print axioms AronowAudit.P014.no_ties_quantifier_decomposition
+
+#print axioms AronowAudit.P014.sum_three_window
+
+#print axioms AronowAudit.P014.matching_permutation_count
+#print axioms AronowAudit.P014.assignment_permutation_mass
+
+#print axioms AronowAudit.P014.assignment_matching_iff
+#print axioms AronowAudit.P014.assignment_permutation_fiber_count
+#print axioms AronowAudit.P014.prob_map
+#print axioms AronowAudit.P014.armMass_as_prob
+#print axioms AronowAudit.P014.assignment_permutation_count
+#print axioms AronowAudit.P014.assignment_permutation_propensity
+#print axioms AronowAudit.P014.map_mass_zero_off_support
+
+#print axioms AronowAudit.P014.t9_hudgens_halloran_comparison
+
+#print axioms AronowAudit.P014.assignment_with_count_obtainable
+
+#print axioms AronowAudit.P014.map_mass_of_injective
+#print axioms AronowAudit.P014.uniform_finite_support_card
+#print axioms AronowAudit.P014.uniform_joint_support_card
+#print axioms AronowAudit.P014.outside_function_gives_discrete_full_law
+
+#print axioms AronowAudit.P014.mem_map_support_iff
+
+#print axioms AronowAudit.P014.map_support_card_of_injective
+#print axioms AronowAudit.P014.extended_scores_injective
+#print axioms AronowAudit.P014.extended_law_support_and_outside

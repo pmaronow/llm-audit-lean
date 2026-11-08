@@ -7,7 +7,7 @@ noncomputable section
 open AronowAudit.P004 MeasureTheory Filter
 open scoped BigOperators Classical
 
-/-- Direct computation of the line distance, independently of N1. -/
+/-- Direct computation of the line distance, so this leaf does not assume N1. -/
 theorem pairedPop_separation {N : ℕ} (i j : Fin N) :
     nodeSeparation (pairedPop N) i j = 10 * |(i : ℝ) - (j : ℝ)| := by
   have hsep : nodeSeparation (pairedPop N) i j =

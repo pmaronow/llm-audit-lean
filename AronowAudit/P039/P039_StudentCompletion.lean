@@ -81,6 +81,10 @@ theorem not_integrable_rpow_gamma {a r q : ℝ} (ha : 0<a) (hr : 0<r)
   have ht := (intervalIntegral.integrableOn_Ioo_rpow_iff (show (0:ℝ)<1 by norm_num)).mp hi''
   linarith
 
+#print axioms gamma_rpow_integrand
+#print axioms integrable_rpow_gamma
+#print axioms not_integrable_rpow_gamma
+
 theorem gaussian_squares_rpow_integrable_iff {ν : ℕ} (hν : 0<ν) (q : ℝ) :
     Integrable (fun z : Fin ν → ℝ => (∑ i, (z i)^2)^q)
       (Measure.pi (fun _ : Fin ν => gaussianReal 0 1)) ↔ -(ν:ℝ)/2<q := by
@@ -147,6 +151,11 @@ theorem sq_ratio_factor {ν : ℕ} (z : Fin (ν+1) → ℝ) :
     Real.rpow_neg_one]
   simp only [div_eq_mul_inv,mul_inv_rev,inv_inv]
   rfl
+
+#print axioms gaussian_squares_rpow_integrable_iff
+#print axioms integrable_mul_prod_iff_right
+#print axioms abs_ratio_factor
+#print axioms sq_ratio_factor
 
 theorem integrable_abs_ratio_iff {ν : ℕ} (hν : 0<ν) :
     Integrable (fun z : Fin (ν+1) → ℝ => |ratio z|)
@@ -220,6 +229,9 @@ theorem integrable_sq_ratio_iff {ν : ℕ} (hν : 0<ν) :
   · exact_mod_cast (show (2:ℝ)<ν by linarith)
   · have hh : (2:ℝ)<ν := by exact_mod_cast h
     linarith
+
+#print axioms integrable_abs_ratio_iff
+#print axioms integrable_sq_ratio_iff
 
 def ratioLaw (ν : ℕ) : Measure ℝ :=
   (Measure.pi (fun _ : Fin (ν+1) => gaussianReal 0 1)).map (ratio (ν:=ν))
@@ -296,6 +308,10 @@ theorem scaled_ratioLaw_ne {ν ν' : ℕ} (hν : 0<ν) (hlt : ν<ν') :
   have hn'0 : (ν':ℝ)-2≠0 := (sub_pos.mpr hn'r).ne'
   field_simp [hνr.ne',hn0,hn'0] at hm
   nlinarith
+
+#print axioms integrable_abs_ratioLaw_iff
+#print axioms integrable_sq_ratioLaw_iff
+#print axioms scaled_ratioLaw_ne
 
 end
 end AronowAudit.P039.StudentCompletion

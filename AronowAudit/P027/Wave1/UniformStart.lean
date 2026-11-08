@@ -47,5 +47,7 @@ theorem periodic_uniform_start_bridge :
   exact UniformStart.assemble UniformStart.n1_proof UniformStart.n2_proof
     UniformStart.n3_proof UniformStart.n4_proof UniformStart.n5_proof
 
+example : AronowAudit.P027.Wave1.UniformStart.Target := periodic_uniform_start_bridge
+
 end
 end AronowAudit.P027.Wave1

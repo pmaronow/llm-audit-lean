@@ -5,6 +5,7 @@ P009: Sävje, Aronow and Hudgens, Average treatment effects in the presence of
 unknown interference. Randomization designs use finite weighted laws. The
 general coverage theorem and simulation sampling formulas also use measures.
 Unit labels are zero-based Fin n; paper unit i is Lean unit i-1.
+`sorry` is used only for honestly unfinished statements, never as a named axiom.
 -/
 
 namespace AronowAudit.P009
@@ -79,7 +80,7 @@ theorem probability_nonnegative {Ω : Type*} [Fintype Ω] (P : Law Ω) (A : Ω �
   intro ω _
   by_cases hω : A ω <;> simp [hω, P.nonneg ω]
 
-/-- Finite union bound, used for the corrected plug-in coverage argument. -/
+/-- Finite union bound, used for the repaired plug-in coverage argument. -/
 theorem probability_union_bound {Ω : Type*} [Fintype Ω] (P : Law Ω)
     (A B C : Ω → Prop) (h : ∀ ω, A ω → B ω ∨ C ω) :
     prob P A ≤ prob P B + prob P C := by
@@ -217,6 +218,9 @@ def muHat {n : ℕ} (E : Experiment n) (b : Bool) (z : Assignment n) : ℝ :=
 def nHat {n : ℕ} (E : Experiment n) (b : Bool) (z : Assignment n) : ℝ :=
   ∑ i, (if z i = b then (1 : ℝ) else 0) / marginal E i b
 
+/-- Definition A1, Supplement A, p. 2: mu_z, the unconditional potential mean. -/
+def mu {n : ℕ} (E : Experiment n) (b : Bool) : ℝ :=
+  (∑ i, mean E.design (potential E i b)) / n
 
 /-- Definition A1, Supplement A, p. 2: breve mu_z, the conditional potential mean. -/
 def muBreve {n : ℕ} (E : Experiment n) (b : Bool) : ℝ :=
@@ -232,7 +236,7 @@ def ArmsNonempty {n : ℕ} (E : Experiment n) (z : Assignment n) : Prop :=
 
 /-- Definition 6, p. 682: the Hájek estimator, extended by zero on the empty-arm
 event. On ArmsNonempty this is exactly the printed ratio. This is a stated
-modeling convention for the paper's undefined event (P009-E015). -/
+modeling convention for the paper's undefined event (target notes, E015). -/
 def hajek {n : ℕ} (E : Experiment n) (z : Assignment n) : ℝ :=
   if ArmsNonempty E z then
     (n : ℝ) * muHat E true z / nHat E true z -
@@ -536,10 +540,9 @@ def Op (S : Study) (X : (t : ℕ) → Assignment (S.N t) → ℝ) (a : ℕ → �
   ∀ ε > 0, ∃ K > 0, ∀ᶠ t in atTop,
     prob (S.experiment t).design (fun z => K * a t ≤ |X t z|) ≤ ε
 
-/-- Definition 10, p. 691: the printed iterated limit of the lower scaled
-variance-error probability. Inner limits are required to exist. For these monotone
-lower tails it is equivalent to convergence to zero at every fixed positive
-tolerance; see `conservative_additive_lower_tails`. -/
+/-- Definition 10, p. 691: the printed ITERATED limit of the lower scaled
+variance-error probability. Inner limits are required to exist. This definition
+is kept separate from the stronger for-each-epsilon condition used in T2. -/
 def Conservative (S : Study) (Vhat : (t : ℕ) → Assignment (S.N t) → ℝ) : Prop :=
   ∃ L : ℝ → ℝ,
     (∀ ε > 0, Tendsto (fun t => prob (S.experiment t).design (fun z =>
@@ -627,7 +630,7 @@ theorem fair_first_coordinate (n : ℕ) (f : Bool → ℝ) :
     Fintype.card_bool, nsmul_eq_mul, Nat.cast_pow, Nat.cast_ofNat, pow_succ]
   field_simp
 
-/-- T1 and T7, P009-E002/P009-E001: only paper unit 1 has outcome z_1. -/
+/-- T1 and T7, validator E002/E001: only paper unit 1 has outcome z_1. -/
 def sparseExperiment (n : ℕ) : Experiment n :=
   fairExperiment n (fun i z => if i.val = 0 then bit (z i) else 0)
 
@@ -694,6 +697,38 @@ theorem sparse_moments_finite (t : ℕ) :
     rw [fair_first_coordinate t (fun b => 4*bit b/(t+1:ℕ)^2)]
     simp only [bit, Bool.false_eq_true, ite_false, ite_true] <;> field_simp [htn] <;> ring
 
+/-- T1 (p. 689, tested with Definition 10): the specified no-interference
+Bernoulli sequence has strictly conservative expected variance, satisfies the
+printed additive limits, yet its nominal 19/20 plug-in interval has coverage 1/2.
+This does not refute equation (1) or Propositions 8–10. -/
+theorem sparse_coverage_counterexample :
+    RegularSequence sparseStudy 2 4 1 ∧
+    (∀ t, Bernoulli (sparseStudy.experiment t) ∧
+      NoInterference (sparseStudy.experiment t) ∧
+      dAvg (sparseStudy.experiment t) = 1 ∧ dMax (sparseStudy.experiment t) = 1 ∧
+      dRMS (sparseStudy.experiment t) = 1 ∧ lambdaMax (sparseStudy.experiment t) = 1) ∧
+    Restricted sparseStudy ∧
+    (∀ t, let E := sparseStudy.experiment t
+      eate E = 1 / size sparseStudy t ∧ adse E = 1 / size sparseStudy t ∧
+      msq E = 1 / size sparseStudy t ∧
+      var E.design (ht E) = 1 / size sparseStudy t ^ 2 ∧
+      mean E.design (vBER E) = 2 / size sparseStudy t ^ 2 ∧
+      var E.design (ht E) < mean E.design (vBER E) ∧
+      (∀ z, ht E z = 2 * bit (z ⟨0, by simp [sparseStudy]⟩) / size sparseStudy t ∧
+        vBER E z = 4 * bit (z ⟨0, by simp [sparseStudy]⟩) / size sparseStudy t ^ 2 ∧
+        vAVG E z = vBER E z ∧ vMAX E z = vBER E z ∧ vSR E z = vBER E z) ∧
+      sdSigmaSq E ^ 2 = (size sparseStudy t - 1) / size sparseStudy t ^ 2) ∧
+    Conservative sparseStudy (fun t => vBER (sparseStudy.experiment t)) ∧
+    Conservative sparseStudy (fun t => vAVG (sparseStudy.experiment t)) ∧
+    Conservative sparseStudy (fun t => vMAX (sparseStudy.experiment t)) ∧
+    Conservative sparseStudy (fun t => vSR (sparseStudy.experiment t)) ∧
+    InProbability sparseStudy (fun t z => let E := sparseStudy.experiment t
+      size sparseStudy t * (vBER E z - var E.design (ht E)) - msq E) ∧
+    (∀ t, prob (sparseStudy.experiment t).design (fun z =>
+      Covered (ht (sparseStudy.experiment t) z) (eate (sparseStudy.experiment t))
+        (vBER (sparseStudy.experiment t) z) (1/20)) = 1/2) ∧
+    (1/2 : ℝ) < 1 - 1/20 := by
+  sorry
 
 /-- T2 finite event inclusion: a lower bound c on the scaled true variance
 turns relative underestimation into an additive negative-error event. -/
@@ -804,6 +839,32 @@ theorem relative_control_of_additive_control
   intro ω hω
   simpa only [neg_mul, Set.mem_ofPred_eq] using relative_underestimate_inclusion (a t) (V t) (Vhat t ω) η c (ha t) hη ht hω
 
+/-- For monotone lower-tail events, the literal iterated Definition-10 limit
+already forces every fixed positive-cutoff probability to converge to zero. -/
+theorem iterated_lower_tail_zero
+    (Ω : ℕ → Type) [∀ t, MeasurableSpace (Ω t)]
+    (P : (t : ℕ) → Measure (Ω t)) [∀ t, IsProbabilityMeasure (P t)]
+    (error : (t : ℕ) → Ω t → ℝ) (L : ℝ → ℝ)
+    (hinner : ∀ ε > 0, Tendsto (fun t => (P t).real {ω | error t ω ≤ -ε})
+      atTop (𝓝 (L ε)))
+    (houter : Tendsto L (𝓝[>] (0:ℝ)) (𝓝 0)) :
+    ∀ ε > 0, Tendsto (fun t => (P t).real {ω | error t ω ≤ -ε}) atTop (𝓝 0) := by
+  intro ε hε
+  have hnonneg : 0 ≤ L ε := ge_of_tendsto (hinner ε hε)
+    (Eventually.of_forall (fun t => measureReal_nonneg))
+  have hLle : ∀ᶠ δ : ℝ in 𝓝[>] (0:ℝ), L ε ≤ L δ := by
+    filter_upwards [self_mem_nhdsWithin,
+      (eventually_lt_nhds hε).filter_mono nhdsWithin_le_nhds] with δ hδ hδε
+    apply le_of_tendsto_of_tendsto (hinner ε hε) (hinner δ hδ)
+    apply Eventually.of_forall
+    intro t
+    apply measureReal_mono ?_ (measure_ne_top (P t) _)
+    intro ω hω
+    change error t ω ≤ -ε at hω
+    change error t ω ≤ -δ
+    linarith
+  have hnonpos : L ε ≤ 0 := ge_of_tendsto houter hLle
+  simpa only [le_antisymm hnonpos hnonneg] using hinner ε hε
 
 /-- The iterated monotone-tail argument depends only on real probabilities,
 so it also applies directly to the paper's finite law model. -/
@@ -830,7 +891,7 @@ end GeneralCoverageCompletion
 section CorrectedCoverageProof
 open MeasureTheory Topology
 
-/-- T2: corrected plug-in coverage theorem on arbitrary
+/-- T2, validator E002 §7: corrected plug-in coverage theorem on arbitrary
 probability spaces, with unbiased square-integrable T and nonnegative Vhat.
 It includes the finite union/Chebyshev bound and the relative-control limit. -/
 theorem corrected_coverage
@@ -907,7 +968,7 @@ theorem finite_chebyshev {Ω : Type*} [Fintype Ω] (P : Law Ω) (T : Ω → ℝ)
   · simp only [hω, if_false, mul_zero, zero_mul]
     exact mul_nonneg (P.nonneg ω) (mul_self_nonneg _)
 
-/-- T2's corrected finite plug-in interval bound, specialized to the finite
+/-- T2's repaired finite plug-in interval bound, specialized to the finite
 design model: noncoverage is at most the relative-underestimation probability
 plus alpha/(1-eta). Positivity and unbiasedness are explicit. -/
 theorem finite_plugin_coverage_bound {Ω : Type*} [Fintype Ω] (P : Law Ω)
@@ -1045,19 +1106,19 @@ theorem finite_asymptotic_plugin_coverage
 
 end FiniteCoverageCompletion
 
-/-- Unequal independent assignment probabilities (1/4,3/4), P009-E009. -/
+/-- Unequal independent assignment probabilities (1/4,3/4), E009. -/
 def unequalLaw : Law (Assignment 2) where
   mass := fun z => (if z 0 then 1/4 else 3/4) * (if z 1 then 3/4 else 1/4)
   nonneg := by intro z; split_ifs <;> norm_num
   total := by norm_num [sum_cube_succ, sum_cube_zero, Fintype.sum_bool]
 
-/-- P009-E009's anti-correlated two-unit design, supported at 10 and 01. -/
+/-- E009's anti-correlated two-unit design, supported at 10 and 01. -/
 def anticorrelatedLaw : Law (Assignment 2) where
   mass := fun z => if z 0 ∧ ¬ z 1 then 1/4 else if ¬ z 0 ∧ z 1 then 3/4 else 0
   nonneg := by intro z; split_ifs <;> norm_num
   total := by norm_num [sum_cube_succ, sum_cube_zero, Fintype.sum_bool]
 
-/-- T3(i): y_1=z_2, y_2=-z_1, the full outcome schedule in P009-E009. -/
+/-- T3(i): y_1=z_2, y_2=-z_1, the full outcome schedule in validator E009. -/
 def signedExperiment : Experiment 2 :=
   ⟨unequalLaw, fun i z => if i = 0 then bit (z 1) else -bit (z 0)⟩
 
@@ -1095,7 +1156,7 @@ theorem signed_weight_counterexamples :
     Fin.forall_fin_succ, Fin.sum_univ_succ, Fin.prod_univ_succ, Bool.forall_bool,
     sum_cube_succ, sum_cube_zero, Fintype.sum_bool, Function.update]
 
-/-- T4's corrected finite bound: the covariance expansion and the upper bound
+/-- T4's general finite repair: the covariance expansion and the upper bound
 with ABSOLUTE covariances for all positive weights w_i≤K. -/
 theorem weighted_variance_absolute {Ω U : Type*} [Fintype Ω] [Fintype U]
     (P : Law Ω) (X : U → Ω → ℝ) (w : U → ℝ) (K : ℝ)
@@ -1145,11 +1206,38 @@ theorem weighted_variance_absolute {Ω U : Type*} [Fintype Ω] [Fintype U]
     (Finset.sum_le_sum (fun i (_ : i ∈ Finset.univ) =>
       Finset.sum_le_sum (fun j (_ : j ∈ Finset.univ) => hb i j)))
 
+/-- T4, corrected chains for Lemmas A9/A22/A23/A25, fixed n. Absolute
+covariances replace the invalid extraction of unequal weights; diagonal mixing
+is retained. All final constants and rates are the published ones. -/
+theorem corrected_variance_chains {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (k q s : ℝ) (hReg : Regular E k q s) :
+    (∀ b, var E.design (muHat E b) ≤ k^2/(n:ℝ)^2 *
+      (∑ i, ∑ j, |cov E.design (armVariable E b 1 i) (armVariable E b 1 j)|)) ∧
+    (Bernoulli E → ∀ b,
+      (∑ i, ∑ j, |cov E.design (armVariable E b 1 i) (armVariable E b 1 j)|) =
+        ∑ i, ∑ j, d E i j * |cov E.design (armVariable E b 1 i) (armVariable E b 1 j)| ∧
+      var E.design (muHat E b) ≤ k^4/(n:ℝ) * dAvg E) ∧
+    (∀ b, var E.design (muHat E b) ≤ k^4/(n:ℝ)*dAvg E +
+      10*k^4/(n:ℝ)*alphaExt E ((q-2)/q)) ∧
+    (∀ b, var E.design (fun z => nHat E b z / n) ≤ k^2/(n:ℝ)^2 *
+      (∑ i, ∑ j, |cov E.design
+        (fun z => if z i = b then 1 else 0) (fun z => if z j = b then 1 else 0)|) ∧
+      var E.design (fun z => nHat E b z / n) ≤
+        k^2/(n:ℝ)*dAvg E + k^2/(n:ℝ)*alphaExt E ((q-2)/q)) ∧
+    (4 ≤ q → Bernoulli E →
+      (∀ b, var E.design (fun z => ∑ i, armVariable E b 2 i z / marginal E i b ^ 2) ≤
+        k^4 * (∑ i, ∑ j, |cov E.design (armVariable E b 2 i) (armVariable E b 2 j)|) ∧
+        (∑ i, ∑ j, |cov E.design (armVariable E b 2 i) (armVariable E b 2 j)|) =
+          ∑ i, ∑ j, d E i j * |cov E.design (armVariable E b 2 i) (armVariable E b 2 j)| ∧
+        var E.design (fun z => ∑ i, armVariable E b 2 i z / marginal E i b ^ 2) ≤
+          k^8*(n:ℝ)*dAvg E) ∧
+      var E.design (fun z => (n:ℝ)*vBER E z) ≤ 4*k^8*dAvg E/(n:ℝ)) := by
+  sorry
 
-/-- P009-E014: h_n=max(1,floor(n/2)-1), with natural truncated subtraction. -/
+/-- Validator E014: h_n=max(1,floor(n/2)-1), with natural truncated subtraction. -/
 def limsupCluster (n : ℕ) : ℕ := max 1 (n/2-1)
 
-/-- P009-E014: the interference density generated by the explicit cluster. -/
+/-- Validator E014: the interference density generated by the explicit cluster. -/
 def limsupDensity (n : ℕ) : ℝ :=
   ((limsupCluster n : ℝ)^2 + n - limsupCluster n) / (n:ℝ)^2
 
@@ -1232,7 +1320,7 @@ theorem limsup_density_even (m : ℕ) (hm : 3 ≤ m) :
   field_simp <;> ring
 
 
-/-- T5, Supplement A p. 6: P009-E014's explicit density tends to 1/4, but
+/-- T5, Supplement A p. 6: the validator's explicit density tends to 1/4, but
 meets or exceeds 1/4 only at n=1,2,3,4. Positive limsup need not be attained
 infinitely often. The exact even and odd deficiencies are also included. -/
 theorem limsup_threshold_counterexample :
@@ -1250,7 +1338,7 @@ theorem limsup_threshold_counterexample :
 
 /-- T6, corrected subsequence selection in Proposition 1's proof: every
 strictly smaller positive threshold than a finite positive limsup is met
-infinitely often. -/
+infinitely often. The subsequent construction is stated as construction_p1. -/
 theorem corrected_limsup_subsequence (a : ℕ → ℝ) (L c : ℝ)
     (hL : HasLimsup a L) (hc : 0 < c) (hcL : c < L) :
     Set.Infinite {t | c ≤ a t} := by
@@ -1283,36 +1371,88 @@ theorem bounded_support_limit_obstruction (S : Study)
   linarith
 
 
-/-- The half-population consisting of unit 0 and every unit with index
-2 ≤ i ≤ 2r+1, containing the first exceptional unit in P009-E005's
-`n=4r+2` counterexample; its complement contains the second. -/
+/-- The fixed two exceptional units in E005's n=4r+2 counterexample. -/
 def halfA (r : ℕ) : Finset (Fin (4*r+2)) :=
   Finset.univ.filter (fun i => i.val = 0 ∨ (2 ≤ i.val ∧ i.val ≤ 2*r+1))
 
-/-- P009-E005: bounded outcomes averaging assignments in disjoint half-populations. -/
+/-- E005: bounded outcomes averaging assignments in disjoint half-populations. -/
 def halfOutcome (r : ℕ) (i : Fin (4*r+2)) (z : Assignment (4*r+2)) : ℝ :=
   if i.val = 0 then (∑ j ∈ halfA r, bit (z j)) / (2*r+1:ℕ)
   else if i.val = 1 then (∑ j ∈ Finset.univ \ halfA r, bit (z j)) / (2*r+1:ℕ)
   else bit (z i)
 
+/-- T9, p. 688: for every r≥1 the complete-randomization half-population
+construction has d_12=0, d_AVG<3, but alpha(tilde Z_1,tilde Z_2)=1/4.
+The fixed pair therefore remains dependent along an infinite growing sequence. -/
+theorem exceptional_pair_counterexample (r : ℕ) (hr : 1 ≤ r) :
+    ∃ E : Experiment (4*r+2), Complete E (2*r+1) ∧ E.outcome = halfOutcome r ∧
+      Regular E 2 4 1 ∧ d E 0 1 = 0 ∧
+      dAvg E = 3 - 4/(4*r+2:ℕ) ∧ dAvg E < 3 ∧
+      C1 E = 2 - 2/(4*r+2:ℕ) ∧ Cinf E = 2 ∧
+      alpha E.design (masked E 0) (masked E 1) = 1/4 := by
+  sorry
 
+/- T10, corrected overwhelming-fraction mixing (p. 688): under complete
+randomization and bounded d_AVG there are exceptional sets of negligible
+relative size outside which all zero-dependence pair coefficients vanish
+uniformly. The N_0 denominator is the number of ordered pairs with d_ij=0. -/
+/- The unchanged corrected_exceptional_pair_mixing contract is proved in P009_OverwhelmingCompletion.lean. -/
 
+/- T10's finite counting ingredients: incoming treatments are at most the
+corresponding dependence degree, their sum is n C1, and thresholding them
+removes at most 2 n² d_AVG/u ordered pairs. Diagonal d_ii is retained in N0. -/
+/- The unchanged exceptional_pair_finite_counts contract is proved in P009_MixingBasics.lean. -/
 
+/- T10's complete-randomization coupling bound: two disjoint incoming masks
+with K total coordinates have alpha at most three times K(K-1)/(2(n-K+1)).
+Choosing the threshold n^(1/4) in the preceding counting lemma makes this vanish. -/
+/- The unchanged complete_mask_mixing_finite contract is proved in P009_CompleteMixing.lean. -/
 
-
-
-
-
-
-
-/-- P009-E008: m blocks of m units, each with a hub and distinguished leaf. -/
+/-- E008: m blocks of m units, each with a hub and distinguished leaf. -/
 def starOutcome (m : ℕ) (hm : 2 ≤ m) (i : Fin (m*m)) (z : Assignment (m*m)) : ℝ :=
   let hub : Fin (m*m) := ⟨((i.val / m)*m) % (m*m), Nat.mod_lt _ (by nlinarith)⟩
   let leaf : Fin (m*m) := ⟨((i.val / m)*m+1) % (m*m), Nat.mod_lt _ (by nlinarith)⟩
   bit (z i) + if i.val % m = 0 then bit (z leaf) else bit (z hub)
 
+/-- T11, p. 691: the explicit block-star Bernoulli family has d_AVG/C1→∞,
+yet B2=0 and B1>0, with tau_MSQ/d_AVG=1/m. Exact formulas for all m≥2
+constitute the counterexample; the asymptotic ratio is explicitly included. -/
+theorem dominating_term_counterexample :
+    (∀ m (hm : 2 ≤ m), let E := fairExperiment (m*m) (starOutcome m hm)
+      Bernoulli E ∧ Regular E 2 4 1 ∧ C1 E = 2 ∧ dAvg E = m ∧
+      msq E = 1 ∧ B1 E = 2/(m:ℝ)^2 ∧ B2 E = 0 ∧
+      0 < B1 E ∧ B1 E ≤ msq E / dAvg E) ∧
+    Tendsto (fun t => ((t+2:ℕ):ℝ)/2) atTop atTop := by
+  sorry
 
-/-- P009-E004, T13: y_2=z_1(2z_3-1), with all other outcomes zero. -/
+/-- T12 finite corrected comparison: under the published hypotheses the three
+terms have upper bounds, with no lower bound on |B2|. -/
+theorem corrected_bias_term_bounds {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (k q s : ℝ) (hReg : Regular E k q s) (hQ : 4 ≤ q) (hBER : Bernoulli E) :
+    |B1 E| ≤ 12*k^4*(C1 E-1)/dAvg E ∧
+    |B2 E| ≤ 4*k^4*(dAvg E-1)/dAvg E ∧ |B2 E| ≤ 4*k^4 ∧
+    0 ≤ msq E ∧ msq E ≤ 4*k^4 := by
+  sorry
+
+/-- T12 asymptotic repair: when d_AVG/C1→∞ the first two scaled terms
+vanish and B2 is O(1); the additional stated magnitude condition suffices
+for actual dominance. No such dominance follows from upper bounds alone. -/
+theorem corrected_bias_term_comparison (S : Study) (k q s : ℝ)
+    (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
+    (hBER : ∀ t, Bernoulli (S.experiment t))
+    (hRatio : Tendsto (fun t => dAvg (S.experiment t)/C1 (S.experiment t)) atTop atTop) :
+    Tendsto (fun t => msq (S.experiment t)/dAvg (S.experiment t)) atTop (nhds 0) ∧
+    Tendsto (fun t => B1 (S.experiment t)) atTop (nhds 0) ∧
+    BigO (fun t => B2 (S.experiment t)) (fun _ => 1) ∧
+    (Tendsto (fun t => C1 (S.experiment t)/
+      (dAvg (S.experiment t)*|B2 (S.experiment t)|)) atTop (nhds 0) →
+      (∀ᶠ t in atTop, B2 (S.experiment t) ≠ 0) →
+      LittleO (fun t => msq (S.experiment t)/dAvg (S.experiment t))
+        (fun t => |B2 (S.experiment t)|) ∧
+      LittleO (fun t => B1 (S.experiment t)) (fun t => |B2 (S.experiment t)|)) := by
+  sorry
+
+/-- E004, T13: y_2=z_1(2z_3-1), with all other outcomes zero. -/
 def cancellationExperiment : Experiment 3 := fairExperiment 3
   (fun i z => if i = 1 then bit (z 0)*(2*bit (z 2)-1) else 0)
 
@@ -1391,9 +1531,9 @@ theorem no_interference_B1_zero {n : ℕ} (hn : 0 < n) (E : Experiment n)
   rw [hsum, zero_div]
 
 /-- T15: n=1 is already a concrete counterexample to dropping the diagonal
-mixing terms in Supplement A p. 23. The fair no-interference experiment has
-four times its full covariance sum equal to one, whereas four times its
-off-diagonal alpha sum is zero. It satisfies the regularity hypotheses. -/
+mixing terms in Supplement A p. 23. It belongs to the fair no-interference
+family stated in the target; the full covariance sum is one and the excluded
+sum is zero. The regularity hypotheses are checked explicitly. -/
 theorem diagonal_omission_counterexample :
     Regular (sparseExperiment 1) 2 4 1 ∧ Bernoulli (sparseExperiment 1) ∧
     (4:ℝ) * (∑ i : Fin 1, ∑ j : Fin 1, cov (fairLaw 1)
@@ -1405,8 +1545,9 @@ theorem diagonal_omission_counterexample :
     Fin.forall_fin_succ, Fin.sum_univ_succ, Fin.prod_univ_succ, Bool.forall_bool,
     sum_cube_succ, sum_cube_zero, Fintype.sum_bool, Function.update]
 
-
-
+/- T16, corrected diagonal-inclusive covariance-to-mixing bound, Supplement A
+p. 23. Both inequalities hold for any design and retain every ordered pair. -/
+/- The unchanged corrected_full_pair_mixing_bound contract is proved in P009_MixingBasics.lean. -/
 
 /-- Complete randomization of two of four units, each supported assignment mass 1/6. -/
 def completeFourLaw : Law (Assignment 4) where
@@ -1417,7 +1558,7 @@ def completeFourLaw : Law (Assignment 4) where
       Fin.sum_univ_zero, Fin.cons_zero, Fin.cons_succ]
     norm_num
 
-/-- P009-E012: y_1=z_1+z_2 and y_j=z_j otherwise, under complete randomization. -/
+/-- E012: y_1=z_1+z_2 and y_j=z_j otherwise, under complete randomization. -/
 def hypergeomExperiment : Experiment 4 :=
   ⟨completeFourLaw, fun i z => bit (z i) + if i = 0 then bit (z 1) else 0⟩
 
@@ -1431,7 +1572,7 @@ def hypergeomMass (n m draws t : ℕ) : ℝ :=
   (m.choose t : ℝ) * ((n-m).choose (draws-t) : ℝ) / (n.choose draws : ℝ)
 
 /-- T17 finite structural certificate: precisely treatments 1 and 2 in paper
-labels affect outcome 1 in P009-E012's four-unit experiment. -/
+labels affect outcome 1 in the validator's four-unit experiment. -/
 theorem hypergeom_interferes_zero (j : Fin 4) :
     Interferes hypergeomExperiment j 0 ↔ j = 0 ∨ j = 1 := by
   constructor
@@ -1558,21 +1699,58 @@ theorem hypergeometric_draw_counterexample :
     norm_num
   all_goals norm_num [hypergeomMass, Nat.choose]
 
+/-- T18, corrected laws, likelihood ratio and Lemma A12, Supplement A pp. 9–10.
+The draw count r is incoming(i)-1; its zero case is treated separately.
+The vector bound is quantified over every supported masked-others pattern. -/
+theorem corrected_hypergeometric {n : ℕ} (E : Experiment n) (m : ℕ)
+    (hCR : Complete E m) (i : Fin n)
+    (hc : incoming E i ≤ min m (n-m)) :
+    let r := incoming E i - 1
+    (∀ t, t ≤ r → prob E.design (fun z => treatedIncoming E i z = t) =
+      hypergeomMass n m r t) ∧
+    (∀ t b, t ≤ r → cmean E.design (fun z => z i = b)
+      (fun z => if treatedIncoming E i z = t then 1 else 0) =
+      hypergeomMass (n-1) (m-(if b then 1 else 0)) r t) ∧
+    (r = 0 → ∀ b, cmean E.design (fun z => z i = b)
+      (fun z => if treatedIncoming E i z = 0 then 1 else 0) /
+        prob E.design (fun z => treatedIncoming E i z = 0) = 1) ∧
+    (∀ t b, t ≤ r → 0 < r →
+      cmean E.design (fun z => z i = b)
+        (fun z => if treatedIncoming E i z = t then 1 else 0) /
+        prob E.design (fun z => treatedIncoming E i z = t) - 1 =
+          (r:ℝ)/(marginal E i b*((n:ℝ)-r)) *
+            (marginal E i b - bit b*(t:ℝ)/r - (1-bit b)*((r:ℝ)-t)/r)) ∧
+    (∀ t b, t ≤ r → 0 < r →
+      -1 < marginal E i b-bit b*(t:ℝ)/r-(1-bit b)*((r:ℝ)-t)/r ∧
+      marginal E i b-bit b*(t:ℝ)/r-(1-bit b)*((r:ℝ)-t)/r < 1 ∧
+      |cmean E.design (fun z => z i = b)
+        (fun z => if treatedIncoming E i z = t then 1 else 0) /
+        prob E.design (fun z => treatedIncoming E i z = t)-1| ≤
+          (r:ℝ)/(marginal E i b*((n:ℝ)-r)) ∧
+      (r:ℝ)/(marginal E i b*((n:ℝ)-r)) ≤
+        (incoming E i:ℝ)/(marginal E i b*((n:ℝ)-incoming E i)) ∧
+      (incoming E i:ℝ)/(marginal E i b*((n:ℝ)-incoming E i)) ≤
+        (incoming E i:ℝ)/(marginal E i b*(min m (n-m):ℝ))) ∧
+    (∀ w b, 0 < prob E.design (fun z => maskedOthers E i z = w) →
+      |cmean E.design (fun z => z i = b) (fun z => if maskedOthers E i z = w then 1 else 0) /
+        prob E.design (fun z => maskedOthers E i z = w) - 1| ≤
+        (incoming E i : ℝ)/(marginal E i b * (min m (n-m):ℝ))) := by
+  sorry
 
-/-- P009-E013's explicit six-unit linear outcome schedule realizes its interference
+/-- E013's explicit six-unit linear outcome schedule realizes its interference
 indicators on the full cube; no on-support notion of interference is substituted. -/
 def sixOutcome (i : Fin 6) (z : Assignment 6) : ℝ :=
   if i = 0 then bit (z 0)+bit (z 2)+bit (z 4)
   else if i = 1 then bit (z 1)+bit (z 3)+bit (z 5) else bit (z i)
 
-/-- P009-E013's six-unit pairing, (1,2),(3,4),(5,6) in paper labels. -/
+/-- E013's six-unit pairing, (1,2),(3,4),(5,6) in paper labels. -/
 def sixPartner : Fin 6 → Fin 6 := ![1,0,3,2,5,4]
 
 /-- Involution of the explicit pairing, finite certificate. -/
 theorem sixPartner_involution : Function.Involutive sixPartner := by
   intro i; fin_cases i <;> rfl
 
-/-- P009-E013's symmetric pairing, with no fixed points. -/
+/-- E013's symmetric pairing, with no fixed points. -/
 def sixPairing : Pairing 6 where
   partner := { toFun := sixPartner, invFun := sixPartner, left_inv := sixPartner_involution, right_inv := sixPartner_involution }
   involution := sixPartner_involution
@@ -1679,19 +1857,46 @@ theorem corrected_pair_dependence {n : ℕ} (hn : 0 < n) (E : Experiment n) (ρ 
   rw [Real.sq_sqrt (div_nonneg (Finset.sum_nonneg (fun i _ => sq_nonneg _)) hnR)]
   exact div_le_div_of_nonneg_right hsum hnR
 
-/-- P009-E024's six-unit one-source illustration, with c_1=-1/4 and other c_i=1. -/
+/-- E024's six-unit one-source illustration, with c_1=-1/4 and other c_i=1. -/
 def illustrationExperiment : Experiment 6 :=
   fairExperiment 6 (oneSourceOutcome 4 (fun i => if i = 0 then -1/4 else 1))
 
+/- T21, Supplement B p. 8: the explicit six-unit illustration has B2=1/3
+rather than the printed 2/3. Its exact expected normalized variance gap is
+-1/6 rather than the printed center -1/2; the asymptotic arrow is not refuted. -/
+/- The unchanged original contract is proved in P009_IllustrationCompletion. -/
 
+/-- T22, corrected one-source formulas (Supplement B p. 8) for every positive
+n, every cutoff 1≤b≤n and every fixed baseline. No simulation law for the
+baselines is inserted into these design-based identities. -/
+theorem corrected_one_source_formulas {n : ℕ} (hn : 0 < n) (b : ℕ)
+    (hb : 1 ≤ b ∧ b ≤ n) (c : Fin n → ℝ) :
+    let E := fairExperiment n (oneSourceOutcome b c)
+    (n:ℝ)*dAvg E = n+(b:ℝ)*((b:ℝ)-1) ∧ msq E = 1 ∧
+    B2 E = ((b:ℝ)-1)*((b:ℝ)-2)/((n:ℝ)+(b:ℝ)*((b:ℝ)-1)) ∧
+    B1 E = (2+4*c ⟨0,hn⟩)*((b:ℝ)-1)/((n:ℝ)+(b:ℝ)*((b:ℝ)-1)) ∧
+    (n:ℝ)^2*(mean E.design (vBER E)-var E.design (ht E)) =
+      n-2*((b:ℝ)-1)*(1+2*c ⟨0,hn⟩)-((b:ℝ)-1)*((b:ℝ)-2) ∧
+    (c ⟨0,hn⟩ = -1/4 →
+      msq E/dAvg E-B1 E-B2 E = ((n:ℝ)-((b:ℝ)-1)^2)/((n:ℝ)+(b:ℝ)*((b:ℝ)-1)) ∧
+      (n:ℝ)/dAvg E*(mean E.design (vBER E)-var E.design (ht E)) =
+        ((n:ℝ)-((b:ℝ)-1)^2)/((n:ℝ)+(b:ℝ)*((b:ℝ)-1))) ∧
+    0 ≤ 2*((b:ℝ)-1)/((n:ℝ)+(b:ℝ)*((b:ℝ)-1)) ∧
+    2*((b:ℝ)-1)/((n:ℝ)+(b:ℝ)*((b:ℝ)-1)) ≤ 1/Real.sqrt n := by
+  sorry
 
+/- T23 finite illustration (Supplement B pp. 2–3): a concrete 100-unit
+complete-interference, complete-randomization population has both estimators
+exactly zero and EATE one. Its signed bias is -1, squared bias one, and true
+variance zero. This single zero-baseline population does not certify the
+sampling-averaged counterexample; those formulas are stated separately in
+simulation_sampling_variance. -/
+/- Proof relocated unchanged to P009_FullBiasCompletion.lean. -/
 
-
-
-
-
-
-
+/- T24, exact corrected simulation exception (Supplement B pp. 3 and 6):
+for ANY fixed baselines and either balanced complete or paired design, EATE
+is one, both estimators have mean zero and signed bias -1, and MSE=variance+1. -/
+/- Proof relocated unchanged to P009_FullBiasCompletion.lean. -/
 
 /-- T25: signed Monte Carlo mean error, the unqualified "Bias" caption would
 ordinarily denote this statistic (Supplement B Tables B1/B3/B5/B7). -/
@@ -1702,14 +1907,18 @@ def empiricalBias (R : ℕ) (estimates : Fin R → ℝ) : ℝ :=
 def reportedBias (R : ℕ) (estimates : Fin R → ℝ) : ℝ := |empiricalBias R estimates|
 
 /-- T25, corrected "Absolute bias" caption: the reported statistic is
-nonnegative, is the magnitude of signed mean error, and loses its sign. -/
+nonnegative, is the magnitude of signed mean error, and loses its sign.
+The population signed -1 exception is formalized in full_interference_bias. -/
 theorem absolute_bias_caption (R : ℕ) (hR : 0 < R) (estimates : Fin R → ℝ) :
     0 ≤ reportedBias R estimates ∧ reportedBias R estimates = |empiricalBias R estimates| ∧
     |(-1:ℝ)| = 1 ∧ (-1:ℝ) ≠ 1 := by
   exact ⟨abs_nonneg _, rfl, by norm_num, by norm_num⟩
 
-
-
+/- T25 part (ii), the corrected interpretation of the full-interference rows:
+the population signed error is -1 and its reported magnitude is 1. This
+separate statement does not treat the proved caption arithmetic as a proof
+of the unfinished design-based simulation identity. -/
+/- Proof relocated unchanged to P009_FullBiasCompletion.lean. -/
 
 /-- T23, Supplement B p. 2: independent uniform X_i on [0,3] and epsilon_i
 on [0,7]. Product restricted Lebesgue measures represent sampling, separately
@@ -1727,11 +1936,50 @@ def AdjacentRanks {n : ℕ} (x : Fin n → ℝ) (ρ : Pairing n) : Prop :=
   ∃ order : Fin n ≃ Fin n, Monotone (fun i => x (order i)) ∧
     ∀ i j, i.val/2 = j.val/2 → i ≠ j → ρ.partner (order i) = order j
 
+/-- T23's sampling-averaged counterexample formulas, for every positive even
+n. Conditional design variances are integrated over the stated independent
+uniform baselines. Complete randomization gives 58/(3n); adjacent-rank paired
+randomization gives 49/(3n)+36/[n(n+1)(n+2)]. The squared bias is one. -/
+theorem simulation_sampling_variance {n : ℕ} (hn : 0 < n) (heven : Even n)
+    (P : Law (Assignment n))
+    (hCR : Complete (⟨P, fullOutcome (fun _ => 0)⟩ : Experiment n) (n/2))
+    (ρ : (Fin n → ℝ) → Pairing n) (hRank : ∀ x, AdjacentRanks x (ρ x))
+    (Q : (Fin n → ℝ) → Law (Assignment n))
+    (hPair : ∀ x, Paired (⟨Q x, fullOutcome (fun _ => 0)⟩ : Experiment n) (ρ x)) :
+    let cr := fun b : (Fin n → ℝ) × (Fin n → ℝ) =>
+      (⟨P, fullOutcome (fun i => b.1 i+b.2 i)⟩ : Experiment n)
+    let pair := fun b : (Fin n → ℝ) × (Fin n → ℝ) =>
+      (⟨Q b.1, fullOutcome (fun i => b.1 i+b.2 i)⟩ : Experiment n)
+    (∫ b, mean (cr b).design (ht (cr b))-eate (cr b) ∂uniformBaselines n) = -1 ∧
+    (∫ b, mean (pair b).design (ht (pair b))-eate (pair b) ∂uniformBaselines n) = -1 ∧
+    (∫ b, mean (cr b).design (hajek (cr b))-eate (cr b) ∂uniformBaselines n) = -1 ∧
+    (∫ b, mean (pair b).design (hajek (pair b))-eate (pair b) ∂uniformBaselines n) = -1 ∧
+    (∫ b, var (cr b).design (ht (cr b)) ∂uniformBaselines n) = 58/(3*(n:ℝ)) ∧
+    (∫ b, var (pair b).design (ht (pair b)) ∂uniformBaselines n) =
+      49/(3*(n:ℝ))+36/((n:ℝ)*((n:ℝ)+1)*((n:ℝ)+2)) ∧
+    (∫ b, var (cr b).design (hajek (cr b)) ∂uniformBaselines n) = 58/(3*(n:ℝ)) ∧
+    (∫ b, var (pair b).design (hajek (pair b)) ∂uniformBaselines n) =
+      49/(3*(n:ℝ))+36/((n:ℝ)*((n:ℝ)+1)*((n:ℝ)+2)) ∧
+    (∫ b, mean (cr b).design (fun z => (ht (cr b) z-eate (cr b))^2)
+      ∂uniformBaselines n) = 58/(3*(n:ℝ))+1 ∧
+    (∫ b, mean (pair b).design (fun z => (ht (pair b) z-eate (pair b))^2)
+      ∂uniformBaselines n) = 49/(3*(n:ℝ))+36/((n:ℝ)*((n:ℝ)+1)*((n:ℝ)+2))+1 ∧
+    (∫ b, mean (cr b).design (fun z => (hajek (cr b) z-eate (cr b))^2)
+      ∂uniformBaselines n) = 58/(3*(n:ℝ))+1 ∧
+    (∫ b, mean (pair b).design (fun z => (hajek (pair b) z-eate (pair b))^2)
+      ∂uniformBaselines n) = 49/(3*(n:ℝ))+36/((n:ℝ)*((n:ℝ)+1)*((n:ℝ)+2))+1 ∧
+    1/(58/(3*(n:ℝ))) = 3*(n:ℝ)/58 := by
+  sorry
 
+/- T26, corrected Remark 2 (p. 688): no interference and common Bernoulli(p)
+assignment give exact alpha_EXT=(n-1)[p(1-p)]^theta; under the bounded-outcome
+exponent theta=1 it is (n-1)p(1-p), with fair constant 1/4 only at p=1/2. -/
+/- Original contract proved in P009_CommonCompletion.lean. -/
 
-
-
-
+/- T27, finite atom-mass approximation repair (Supplement A p. 37): a finite
+law with every atom at most delta can realize two disjoint target masses
+alpha/2 within delta, via a {-1,0,1}-valued map. -/
+/- Original contract proved in P009_AtomCompletion.lean. -/
 
 
 
@@ -1739,13 +1987,14 @@ def AdjacentRanks {n : ℕ} (x : Fin n → ℝ) (ρ : Pairing n) : Prop :=
 def approximationError {Ω : Type*} [Fintype Ω] (P : Law Ω) (α : ℝ) (f : Ω → ℝ) : ℝ :=
   |prob P (fun ω => f ω = 1)-α/2| + |prob P (fun ω => f ω = -1)-α/2|
 
-
-
+/- T27, repaired two limiting atom probabilities for ANY choice of minimizing
+three-point map on the first b_n assignments, with b_n→∞. -/
+/- Original contract proved in P009_MinimizerCompletion.lean. -/
 
 /-- T28: the distance from a fixed real threshold to the three support points. -/
 def threePointDistance (x : ℝ) : ℝ := min |x+1| (min |x| |x-1|)
 
-/-- T28 finite corrected comparison: if the ABSOLUTE centering shift is less
+/-- T28 finite repaired comparison: if the ABSOLUTE centering shift is less
 than the distance to the support, centering cannot change any CDF event. -/
 theorem three_point_centering {Ω : Type*} [Fintype Ω] (P : Law Ω) (F : Ω → ℝ)
     (hF : ∀ ω, F ω = -1 ∨ F ω = 0 ∨ F ω = 1)
@@ -2122,8 +2371,9 @@ theorem one_source_untreated_spillover {n : ℕ} (b : ℕ) (c : Fin n → ℝ)
   simp_rw [hs, sub_self]
   exact mean_const _ 0
 
-
-
+/- T33, corrected untreated spillover in the one-source illustration,
+Supplement B p. 8: xi_ij(0)=ZERO; the printed B1 already uses that value. -/
+/- Proof relocated unchanged to P009_OneSourceCompletion.lean. -/
 
 /-- Definition 9, p. 687: moment indices may be finite real numbers or infinity
 under the paper's bounded-outcome convention. -/
@@ -2156,8 +2406,8 @@ def AdmissiblePotential (S : Study) (s : MomentIndex) : Prop :=
 
 /-- Literal Definition 9, p. 687: "the maximum values of q and s".
 These explicit premises require maxima to EXIST and to be admissible. They are
-not automatically supplied by Assumption 1 when a finite supremum is unattained.
-Infinity handles the bounded case. -/
+not automatically supplied by Assumption 1 when a finite supremum is unattained
+(as explained in the target notes). Infinity handles the bounded case. -/
 def MaximalMoments (S : Study) (q s : MomentIndex) : Prop :=
   AdmissibleObserved S q ∧ (∀ r, AdmissibleObserved S r → r ≤ q) ∧
   AdmissiblePotential S s ∧ (∀ r, AdmissiblePotential S r → r ≤ s)
@@ -2565,6 +2815,25 @@ theorem external_validity_total_variation {n : ℕ} (hn : 0 < n)
       ring
 
 
+
+
+/-- T40, Proposition 1 (p. 683): failure of restricted interference permits
+new bounded-moment outcomes, with the SAME designs and limsup interference
+density, for which neither estimator is consistent for EATE. Hájek uses the
+explicit empty-arm extension documented above. -/
+theorem unrestricted_inconsistency (S : Study) (k : ℝ) (hk : 0 < k)
+    (hA : ∀ t i, k⁻¹ ≤ marginal (S.experiment t) i true ∧
+      marginal (S.experiment t) i true ≤ 1-k⁻¹) (hFail : ¬ Restricted S) :
+    ∃ y : (t : ℕ) → Fin (S.N t) → Assignment (S.N t) → ℝ,
+      let S' : Study := {S with experiment := fun t =>
+        {S.experiment t with outcome := y t}}
+      (∃ K q s, RegularSequence S' K q s) ∧
+      (∃ L > 0, HasLimsup (fun t => dAvg (S.experiment t)/size S t) L ∧
+        HasLimsup (fun t => dAvg (S'.experiment t)/size S' t) L) ∧
+      ¬ InProbability S' (fun t z => ht (S'.experiment t) z-eate (S'.experiment t)) ∧
+      ¬ InProbability S' (fun t z => hajek (S'.experiment t) z-eate (S'.experiment t)) := by
+  sorry
+
 /-- T6/T40: the outcome construction on the selected subsequence, Supplement A
 p. 6, using a reference design to determine its marginal assignment probabilities. -/
 def p1Outcome {n : ℕ} (hn : 0 < n) (E : Experiment n) (M : ℕ)
@@ -2572,6 +2841,207 @@ def p1Outcome {n : ℕ} (hn : 0 < n) (E : Experiment n) (M : ℕ)
   if i.val < M then (n:ℝ)/(M:ℝ)*bit (z ⟨0,hn⟩)*
     (bit (z i)*marginal E i true - (1-bit (z i))*marginal E i false) else 0
 
+/-- T6/T40's finite construction identities. M=ceil(sqrt(lambda)n),
+lambda∈(0,1], full counterfactual outcomes, and arbitrary regular design. -/
+theorem construction_p1 {n : ℕ} (hn : 0 < n) (E : Experiment n) (k q s lam : ℝ)
+    (hReg : Regular E k q s) (hLam : 0 < lam ∧ lam ≤ 1) :
+    let M := ⌈Real.sqrt lam*(n:ℝ)⌉₊
+    let E' : Experiment n := {E with outcome := p1Outcome hn E M}
+    dAvg E' = (M:ℝ)^2/(n:ℝ)+((n:ℝ)-M)/(n:ℝ) ∧ lam*(n:ℝ) ≤ dAvg E' ∧
+    (∀ i z, |E'.outcome i z| ≤ 1/Real.sqrt lam) ∧
+    eate E' = marginal E ⟨0,hn⟩ true ∧
+    (∀ z, ht E' z = bit (z ⟨0,hn⟩) ∧ k⁻¹ ≤ |ht E' z-eate E'|) ∧
+    k⁻¹ ≤ prob E'.design (fun z => k⁻¹ ≤ |hajek E' z-eate E'|) := by
+  sorry
+
+
+
+/-- T42, Proposition 3 (p. 685): complete-randomization consistency for EATE
+and both printed rates, with restricted interference and C1=o(sqrt(n)). -/
+theorem complete_consistency (S : Study) (k q s : ℝ)
+    (hReg : RegularSequence S k q s) (hCR : CompleteSequence S)
+    (hRestricted : Restricted S)
+    (hC1 : LittleO (fun t => C1 (S.experiment t)) (fun t => Real.sqrt (size S t))) :
+    EstimatorClaims S (fun t => eate (S.experiment t))
+      (fun t => bernoulliRate S t + C1 (S.experiment t)/Real.sqrt (size S t)) := by
+  sorry
+
+/-- T42 finite lemmas, Supplement A pp. 13–16: exact ADSE/EATE discrepancy
+bound, complete-design variance bound, deterministic arm counts, and equality
+of HT and Hájek on every supported assignment. -/
+theorem complete_finite_lemmas {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (m : ℕ) (hCR : Complete E m) (k q s : ℝ) (hReg : Regular E k q s) :
+    (∑ i, (incoming E i:ℝ))/(n:ℝ) = C1 E ∧
+    |adse E-eate E| ≤ 4*k^3*C1 E/(n:ℝ) ∧
+    (∀ b, var E.design (muHat E b) ≤
+      k^4*dAvg E/(n:ℝ)+4*k^4*C1 E^2/(min m (n-m):ℝ) ∧
+      var E.design (muHat E b) ≤ k^4*dAvg E/(n:ℝ)+4*k^5*C1 E^2/(n:ℝ)) ∧
+    (∀ z, 0 < E.design.mass z → nHat E true z = n ∧ nHat E false z = n ∧
+      ht E z = hajek E z) := by
+  sorry
+
+/-- T43, Corollary 1 (p. 685): bounded d_AVG under either Bernoulli or fixed
+fraction complete randomization gives root-n stochastic rates for EATE. -/
+theorem root_n_consistency (S : Study) (k q s : ℝ)
+    (hReg : RegularSequence S k q s)
+    (hDesign : (∀ t, Bernoulli (S.experiment t)) ∨ CompleteSequence S)
+    (hBound : BigO (fun t => dAvg (S.experiment t)) (fun _ => 1)) :
+    EstimatorClaims S (fun t => eate (S.experiment t))
+      (fun t => 1/Real.sqrt (size S t)) := by
+  sorry
+
+/-- T45, Proposition 5 (p. 688): arbitrary-design consistency for EATE with
+the printed interference, external-mixing and internal-separation rate terms.
+The maximum-moment premises make the literal Definition 9 explicit. -/
+theorem arbitrary_EATE_consistency (S : Study) (k : ℝ) (q s : MomentIndex)
+    (hReg : RegularMix S k q s) (hMax : MaximalMoments S q s)
+    (hRestricted : Restricted S)
+    (hExt : LittleO (fun t => alphaExt (S.experiment t) (extExponent q)) (size S))
+    (hInt : LittleO (fun t => alphaInt (S.experiment t) (intExponent s)) (size S)) :
+    EstimatorClaims S (fun t => eate (S.experiment t)) (fun t =>
+      bernoulliRate S t + Real.sqrt (alphaExt (S.experiment t) (extExponent q))/Real.sqrt (size S t) +
+        alphaInt (S.experiment t) (intExponent s)/size S t) := by
+  sorry
+
+/-- T45 finite bias lemma A20, Supplement A p. 18, for any selected finite
+admissible potential-moment exponent. Maximality is unnecessary for this bound. -/
+theorem arbitrary_bias_finite {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (k q s : ℝ) (hReg : Regular E k q s) :
+    |adse E-eate E| ≤ 6*k^2*alphaInt E ((s-1)/s)/(n:ℝ) := by
+  sorry
+
+/-- T46, Proposition 6 (p. 689): arbitrary-design consistency for ADSE under
+restricted interference and design mixing, with both printed two-term rates. -/
+theorem arbitrary_ADSE_consistency (S : Study) (k : ℝ) (q s : MomentIndex)
+    (hReg : RegularMix S k q s) (hMax : MaximalMoments S q s)
+    (hRestricted : Restricted S)
+    (hExt : LittleO (fun t => alphaExt (S.experiment t) (extExponent q)) (size S)) :
+    EstimatorClaims S (fun t => adse (S.experiment t)) (fun t =>
+      bernoulliRate S t + Real.sqrt (alphaExt (S.experiment t) (extExponent q))/Real.sqrt (size S t)) := by
+  sorry
+
+/-- T46 finite lemmas A1/A2/A22/A23, Supplement A pp. 3,22–24: arbitrary
+design unbiasedness for ADSE and the corrected outcome/count variance bounds. -/
+theorem arbitrary_finite_lemmas {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (k q s : ℝ) (hReg : Regular E k q s) :
+    mean E.design (ht E) = adse E ∧
+    (∀ b, mean E.design (muHat E b) = muBreve E b ∧ mean E.design (nHat E b) = n ∧
+      var E.design (muHat E b) ≤ k^4*dAvg E/(n:ℝ)+10*k^4*alphaExt E ((q-2)/q)/(n:ℝ) ∧
+      var E.design (fun z => nHat E b z/n) ≤
+        k^2*dAvg E/(n:ℝ)+k^2*alphaExt E ((q-2)/q)/(n:ℝ)) := by
+  sorry
+
+/-- T47, Proposition 7 and equation (1), pp. 689–690: convergence means the
+DIFFERENCE from the n-dependent bias decomposition tends to zero in probability.
+Assumption 2 is deliberately absent, as in the printed proposition. -/
+theorem variance_bias_limit (S : Study) (k q s : ℝ)
+    (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
+    (hBER : ∀ t, Bernoulli (S.experiment t)) :
+    InProbability S (fun t z => let E := S.experiment t
+      size S t/dAvg E*(vBER E z-var E.design (ht E)) - (msq E/dAvg E-B1 E-B2 E)) ∧
+    ((∀ t, NoInterference (S.experiment t)) →
+      InProbability S (fun t z => let E := S.experiment t
+        size S t*(vBER E z-var E.design (ht E))-msq E)) := by
+  sorry
+
+/-- T47 finite identities and corrected bound, Supplement A pp. 24–30:
+the exact expected variance-bias decomposition, mean of n vBER, contribution
+variance formula and finite variance bound underlying Proposition 7. -/
+theorem variance_bias_finite {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (k q s : ℝ) (hReg : Regular E k q s) (hQ : 4 ≤ q) (hBER : Bernoulli E) :
+    mean E.design (fun z => (n:ℝ)*vBER E z) = aVariance E ∧
+    var E.design (fun z => (n:ℝ)*vBER E z) ≤ 4*k^8*dAvg E/(n:ℝ) ∧
+    (∀ i, sigmaSq E i =
+      cmean E.design (fun z => z i = true) (fun z => E.outcome i z^2)/marginal E i true +
+      cmean E.design (fun z => z i = false) (fun z => E.outcome i z^2)/marginal E i false -
+      mean E.design (effect E i)^2) ∧
+    (n:ℝ)/dAvg E*var E.design (ht E) = aVariance E/dAvg E-msq E/dAvg E+B1 E+B2 E ∧
+    (n:ℝ)/dAvg E*(mean E.design (vBER E)-var E.design (ht E)) = msq E/dAvg E-B1 E-B2 E ∧
+    var E.design (fun z => (n:ℝ)/dAvg E*(vBER E z-var E.design (ht E))) ≤
+      4*k^8/((n:ℝ)*dAvg E) := by
+  sorry
+
+/-- T48, Proposition 8 (p. 692): AVG inflation is asymptotically conservative
+in the precise iterated-limit sense of Definition 10, under the printed
+variance-heterogeneity condition. This is not a coverage theorem. -/
+theorem average_inflation_conservative (S : Study) (k q s : ℝ)
+    (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
+    (hBER : ∀ t, Bernoulli (S.experiment t)) (hRestricted : Restricted S)
+    (hSD : LittleO (fun t => sdSigmaSq (S.experiment t))
+      (fun t => dAvg (S.experiment t)/dRMS (S.experiment t))) :
+    Conservative S (fun t => vAVG (S.experiment t)) := by
+  sorry
+
+/-- T48's finite bound, Supplement A pp. 32–33: dependency covariance and
+Cauchy–Schwarz control the possible coupling of degrees with unit variances. -/
+theorem average_inflation_finite {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (hBER : Bernoulli E) :
+    (n:ℝ)*var E.design (ht E) ≤ (∑ i, degree E i*sigmaSq E i)/(n:ℝ) ∧
+    (n:ℝ)/dAvg E*var E.design (ht E) ≤
+      aVariance E+dRMS E*sdSigmaSq E/dAvg E := by
+  sorry
+
+/-- T49, Proposition 9 (p. 692): MAX inflation is conservative under EITHER
+printed alternative A or B, retaining the q≥4 and positive mean-square effect
+conditions exactly. -/
+theorem maximum_inflation_conservative (S : Study) (k q s : ℝ)
+    (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
+    (hBER : ∀ t, Bernoulli (S.experiment t))
+    (hAlt : LittleO (fun t => dMax (S.experiment t))
+      (fun t => Real.sqrt (size S t)*Real.sqrt (dAvg (S.experiment t))) ∨
+      (Restricted S ∧ PositiveLiminf (fun t => msq (S.experiment t)))) :
+    Conservative S (fun t => vMAX (S.experiment t)) := by
+  sorry
+
+/-- T49 finite bound, Supplement A p. 34: normalized true variance is bounded
+by a_n-tau_MSQ, and d_MAX≥d_AVG. No asymptotic assumptions are used. -/
+theorem maximum_inflation_finite {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (hBER : Bernoulli E) :
+    (n:ℝ)/dMax E*var E.design (ht E) ≤ aVariance E-msq E ∧ dAvg E ≤ dMax E := by
+  sorry
+
+/-- T50, Proposition 10 (p. 693): SR inflation is conservative under either
+printed alternative, with lambda_max as the symmetric dependence matrix's
+largest eigenvalue. -/
+theorem spectral_inflation_conservative (S : Study) (k q s : ℝ)
+    (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
+    (hBER : ∀ t, Bernoulli (S.experiment t))
+    (hAlt : LittleO (fun t => lambdaMax (S.experiment t))
+      (fun t => Real.sqrt (size S t)*Real.sqrt (dAvg (S.experiment t))) ∨
+      (Restricted S ∧ PositiveLiminf (fun t => msq (S.experiment t)))) :
+    Conservative S (fun t => vSR (S.experiment t)) := by
+  sorry
+
+/-- T50 finite spectral bound, Supplement A pp. 35–36: the Rayleigh bound
+gives the normalized-variance inequality, and lambda_max lies between the
+average and maximum degrees. -/
+theorem spectral_inflation_finite {n : ℕ} (hn : 0 < n) (E : Experiment n)
+    (hBER : Bernoulli E) :
+    (∀ v : Fin n → ℝ, quadD E v ≤ lambdaMax E*(∑ i, v i^2)) ∧
+    (n:ℝ)/lambdaMax E*var E.design (ht E) ≤ aVariance E-msq E ∧
+    dAvg E ≤ lambdaMax E ∧ lambdaMax E ≤ dMax E := by
+  sorry
+
+/-- T51, Proposition 11 as precisely restated in Supplement A p. 36: for
+every Bernoulli design sequence with regular marginal probabilities, every
+alpha∈(0,1) and every 0≤x<1 there are bounded outcomes with d_AVG=O(n^x)
+and the normalized HT law tending to Definition A4. At x=0 this includes
+bounded d_AVG and d_MAX=O(sqrt(n)). No exact-cutoff tail limit is substituted
+for convergence in distribution. -/
+theorem chebyshev_asymptotic_sharpness (S : Study) (k α x : ℝ) (hk : 0 < k)
+    (hA : ∀ t i, k⁻¹ ≤ marginal (S.experiment t) i true ∧
+      marginal (S.experiment t) i true ≤ 1-k⁻¹)
+    (hBER : ∀ t, Bernoulli (S.experiment t)) (hα : 0 < α ∧ α < 1)
+    (hx : 0 ≤ x ∧ x < 1) :
+    ∃ y : (t : ℕ) → Fin (S.N t) → Assignment (S.N t) → ℝ,
+      let S' : Study := {S with experiment := fun t => {S.experiment t with outcome := y t}}
+      (∃ K q s, RegularSequence S' K q s) ∧ Restricted S' ∧
+      BigO (fun t => dAvg (S'.experiment t)) (fun t => Real.rpow (size S' t) x) ∧
+      (x = 0 → BigO (fun t => dMax (S'.experiment t)) (fun t => Real.sqrt (size S' t))) ∧
+      InDistribution S' (fun t z => Real.sqrt (size S' t)/Real.sqrt (dAvg (S'.experiment t))*
+        (ht (S'.experiment t) z-mean (S'.experiment t).design (ht (S'.experiment t))))
+        (sharpCDF α) := by
+  sorry
 
 /-- T51 finite Lemma A30, Supplement A p. 36: the three-point law has mean
 zero, variance alpha and exactly alpha mass at the Chebyshev cutoff. -/
@@ -2589,10 +3059,12 @@ theorem chebyshev_three_point_sharp (α : ℝ) (hα : 0 < α ∧ α < 1) :
   refine ⟨hm, hv, ht, ?_⟩
   simpa [hm, hv, div_self (ne_of_gt hα.1)] using ht
 
+/- T51 finite identity in the construction, Supplement A pp. 36–38: choosing
+the printed own-treatment coefficient makes the HT estimator exactly the
+scaled three-point map whenever 1≤h≤n. -/
+/- Proof relocated unchanged to P009_SharpnessCompletion.lean. -/
 
-
-
-/-- T5, P009-E014's full-cube cluster outcomes, here with fair Bernoulli
+/-- T5, validator E014's full-cube cluster outcomes, here with fair Bernoulli
 design (also allowed by the arbitrary-design proof step). Paper unit 1 affects
 the first h_n units; all other outcomes are zero. -/
 def limsupExperiment (n : ℕ) (hn : 0 < n) : Experiment n :=
@@ -2603,22 +3075,142 @@ def limsupStudy : Study :=
   { sparseStudy with
     experiment := fun t => limsupExperiment (t+1) (by omega) }
 
+/- T5, full interference realization of the limsup counterexample: the
+explicit regular family has the stated density tending to 1/4, but attains
+that limsup threshold exactly four times. The density-only arithmetic statement
+is separate; no graph realization is inferred from an unproved calculation. -/
+/- Original contract proved in P009_LimsupCompletion.lean. -/
 
-
-
-/-- T15, P009-E010: every unit has the no-interference outcome z_i. -/
+/-- T15, validator E010: every unit has the no-interference outcome z_i. -/
 def identityExperiment (n : ℕ) : Experiment n := fairExperiment n (fun i z => bit (z i))
 
 /-- T15's growing fair no-interference family, with all coordinates included. -/
 def identityStudy : Study := {sparseStudy with experiment := fun t => identityExperiment (t+1)}
 
+/- T15's complete sequence certificate, including the standing asymptotic
+restrictions. The full covariance sum is n/4 while the sum excluding diagonals
+is zero for every n. The separately proved n=1 calculation is only a finite
+component of this stronger counterexample statement. -/
+/- Original contract proved in P009_DiagonalCompletion.lean. -/
 
 
+/-- T22's corrected asymptotic center (Supplement B p. 8): for the fair
+one-source sequence with source baseline −1/4, the normalized conventional
+variance error approaches [n−(b−1)²]/[n+b(b−1)] in probability. The original
+arrow survives because the finite correction tends uniformly to zero. -/
+theorem corrected_one_source_limit (S : Study) (k q s : ℝ)
+    (hReg : RegularSequence S k q s) (hQ : 4 ≤ q)
+    (b : ℕ → ℕ) (hb : ∀ t, 1 ≤ b t ∧ b t ≤ S.N t)
+    (c : (t : ℕ) → Fin (S.N t) → ℝ)
+    (hSource : ∀ t, c t ⟨0,S.positive t⟩ = -1/4)
+    (hLaw : ∀ t, (S.experiment t).design = fairLaw (S.N t))
+    (hOutcome : ∀ t, (S.experiment t).outcome = oneSourceOutcome (b t) (c t)) :
+    InProbability S (fun t z => size S t/dAvg (S.experiment t)*
+      (vBER (S.experiment t) z-var (S.experiment t).design (ht (S.experiment t))) -
+        (size S t-((b t:ℝ)-1)^2)/(size S t+(b t:ℝ)*((b t:ℝ)-1))) := by
+  sorry
 
-
-
-
+/- T51's remaining fixed-n construction claims as printed on Supplement A
+pp. 37–38. A minimizing three-point map on b coordinates and h=ceil(n^((x+1)/2))
+give the claimed clique counts, uniform outcome bounds and exact centered HT
+identity. This is explicitly drafted: the fixed-n graph realization, including
+small populations and ties of minimizing maps, has not been certified. -/
+/- This overstrong prior fixed-n draft is refuted in P009_SharpnessRefutation.lean.
+The paper's separate existential asymptotic theorem remains unresolved. -/
 
 end
 end AronowAudit.P009
 
+#print axioms AronowAudit.P009.mean_const
+#print axioms AronowAudit.P009.mean_add
+#print axioms AronowAudit.P009.mean_sub
+#print axioms AronowAudit.P009.mean_const_mul
+#print axioms AronowAudit.P009.mean_div
+#print axioms AronowAudit.P009.mean_sum
+#print axioms AronowAudit.P009.probability_nonnegative
+#print axioms AronowAudit.P009.probability_union_bound
+#print axioms AronowAudit.P009.probability_complement
+#print axioms AronowAudit.P009.variance_nonnegative
+#print axioms AronowAudit.P009.covariance_cauchy_schwarz
+#print axioms AronowAudit.P009.marginal_partition
+#print axioms AronowAudit.P009.interferes_sum_bit
+#print axioms AronowAudit.P009.sum_cube_succ
+#print axioms AronowAudit.P009.sum_cube_zero
+#print axioms AronowAudit.P009.cons_at_two
+#print axioms AronowAudit.P009.cons_at_three
+#print axioms AronowAudit.P009.fair_first_coordinate
+#print axioms AronowAudit.P009.sparse_estimators_finite
+#print axioms AronowAudit.P009.sparse_moments_finite
+#print axioms AronowAudit.P009.sparse_coverage_counterexample
+#print axioms AronowAudit.P009.corrected_coverage
+#print axioms AronowAudit.P009.relative_underestimate_inclusion
+#print axioms AronowAudit.P009.finite_chebyshev
+#print axioms AronowAudit.P009.finite_plugin_coverage_bound
+#print axioms AronowAudit.P009.bernoulli_corrected_coverage
+#print axioms AronowAudit.P009.signed_weight_counterexamples
+#print axioms AronowAudit.P009.weighted_variance_absolute
+#print axioms AronowAudit.P009.corrected_variance_chains
+#print axioms AronowAudit.P009.limsup_threshold_counterexample
+#print axioms AronowAudit.P009.corrected_limsup_subsequence
+#print axioms AronowAudit.P009.bounded_support_limit_obstruction
+#print axioms AronowAudit.P009.exceptional_pair_counterexample
+#print axioms AronowAudit.P009.dominating_term_counterexample
+#print axioms AronowAudit.P009.corrected_bias_term_bounds
+#print axioms AronowAudit.P009.corrected_bias_term_comparison
+#print axioms AronowAudit.P009.direct_spillover_counterexample
+#print axioms AronowAudit.P009.no_interference_zero_spillover
+#print axioms AronowAudit.P009.no_interference_B1_zero
+#print axioms AronowAudit.P009.diagonal_omission_counterexample
+#print axioms AronowAudit.P009.hypergeom_interferes_zero
+#print axioms AronowAudit.P009.hypergeometric_draw_counterexample
+#print axioms AronowAudit.P009.corrected_hypergeometric
+#print axioms AronowAudit.P009.sixPartner_involution
+#print axioms AronowAudit.P009.six_incoming_certificate
+#print axioms AronowAudit.P009.pair_witness_counterexample
+#print axioms AronowAudit.P009.corrected_pair_dependence
+#print axioms AronowAudit.P009.corrected_one_source_formulas
+#print axioms AronowAudit.P009.absolute_bias_caption
+#print axioms AronowAudit.P009.simulation_sampling_variance
+#print axioms AronowAudit.P009.three_point_centering
+#print axioms AronowAudit.P009.centering_shift_eventually
+#print axioms AronowAudit.P009.variance_second_moment
+#print axioms AronowAudit.P009.finite_moment_interpolation
+#print axioms AronowAudit.P009.corrected_moment_covariance
+#print axioms AronowAudit.P009.corrected_inflated_estimator_names
+#print axioms AronowAudit.P009.corrected_three_point_CDF
+#print axioms AronowAudit.P009.three_point_CDF_formula
+#print axioms AronowAudit.P009.three_point_CDF_limit
+#print axioms AronowAudit.P009.balance_update
+#print axioms AronowAudit.P009.balance_flip
+#print axioms AronowAudit.P009.multiplier_crossings
+#print axioms AronowAudit.P009.balance_paired_flip
+#print axioms AronowAudit.P009.one_source_control_outcome
+#print axioms AronowAudit.P009.one_source_untreated_spillover
+#print axioms AronowAudit.P009.expected_arm_mean
+#print axioms AronowAudit.P009.ht_unbiased_ADSE
+#print axioms AronowAudit.P009.expected_arm_count
+#print axioms AronowAudit.P009.eate_finite_identity
+#print axioms AronowAudit.P009.no_interference_eate
+#print axioms AronowAudit.P009.estimand_identities
+#print axioms AronowAudit.P009.interference_count_bounds
+#print axioms AronowAudit.P009.external_validity_total_variation
+#print axioms AronowAudit.P009.unrestricted_inconsistency
+#print axioms AronowAudit.P009.construction_p1
+#print axioms AronowAudit.P009.complete_consistency
+#print axioms AronowAudit.P009.complete_finite_lemmas
+#print axioms AronowAudit.P009.root_n_consistency
+#print axioms AronowAudit.P009.arbitrary_EATE_consistency
+#print axioms AronowAudit.P009.arbitrary_bias_finite
+#print axioms AronowAudit.P009.arbitrary_ADSE_consistency
+#print axioms AronowAudit.P009.arbitrary_finite_lemmas
+#print axioms AronowAudit.P009.variance_bias_limit
+#print axioms AronowAudit.P009.variance_bias_finite
+#print axioms AronowAudit.P009.average_inflation_conservative
+#print axioms AronowAudit.P009.average_inflation_finite
+#print axioms AronowAudit.P009.maximum_inflation_conservative
+#print axioms AronowAudit.P009.maximum_inflation_finite
+#print axioms AronowAudit.P009.spectral_inflation_conservative
+#print axioms AronowAudit.P009.spectral_inflation_finite
+#print axioms AronowAudit.P009.chebyshev_asymptotic_sharpness
+#print axioms AronowAudit.P009.chebyshev_three_point_sharp
+#print axioms AronowAudit.P009.corrected_one_source_limit

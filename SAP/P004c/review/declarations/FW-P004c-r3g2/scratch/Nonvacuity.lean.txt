@@ -1,0 +1,141 @@
+import SAP.P004c.Defs
+
+open scoped BigOperators Classical
+open MeasureTheory Filter SAP.P004c
+
+noncomputable section
+namespace Review
+
+structure Point (N : ℕ) where
+  index : Fin N
+  deriving DecidableEq, Fintype
+
+instance (N : ℕ) : MetricSpace (Point N) where
+  dist i j := if i = j then 0 else (N : ℝ) + 1
+  dist_self i := by simp
+  dist_comm i j := by simp [eq_comm]
+  dist_triangle i j k := by
+    by_cases hij : i = j <;> by_cases hjk : j = k <;>
+      by_cases hik : i = k <;> simp_all <;> positivity
+  eq_of_dist_eq_zero := by
+    intro i j h
+    by_contra hn
+    simp only [if_neg hn] at h
+    have : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+    linarith
+
+instance (N : ℕ) : MeasurableSpace (Point N) := ⊤
+instance (N : ℕ) : MeasurableSingletonClass (Point N) := ⟨fun _ => trivial⟩
+
+def coeff (N : ℕ) (i : Fin N) : ℝ :=
+  (if i.val < N / 2 then 1 else 0) -
+    (if i.val < 2 * (N / 2) then 1 else 0) +
+      (if i.val < N / 2 then 1 else 0)
+
+def population (N : ℕ) : SpatialPopulation N (Point N) where
+  node i := {Point.mk i}
+  node_nonempty i := Set.singleton_nonempty (Point.mk i)
+  zeta := Measure.count
+  outcome i _ := coeff N i.index
+  bands _ := {0}
+
+lemma region_eq (N : ℕ) (i : Fin N) (d : ℝ) :
+    region (population N) i d = {Point.mk i} := by
+  ext x
+  simp [region, nodeDistance, population, Metric.infDist_singleton]
+
+lemma circle_eq (N : ℕ) (d : ℝ) :
+    circleAverage (population N) d = fun i _ => coeff N i := by
+  funext i z
+  unfold circleAverage
+  rw [region_eq]
+  simp [population]
+
+lemma well_defined (N : ℕ) (d : ℝ) : WellDefined (population N) d := by
+  intro i
+  rw [region_eq]
+  simp [population, integrableOn_singleton]
+
+lemma separation_eq (N : ℕ) (i j : Fin N) :
+    nodeSeparation (population N) i j =
+      if i = j then 0 else (N : ℝ) + 1 := by
+  simp [nodeSeparation, population, dist]
+
+lemma sum_coeff (N : ℕ) : ∑ i, coeff N i = 0 := by
+  have hhalf : N / 2 ≤ N := Nat.div_le_self N 2
+  have htwo : 2 * (N / 2) ≤ N := Nat.mul_div_le N 2
+  simp only [coeff, Finset.sum_add_distrib, Finset.sum_sub_distrib]
+  simp only [Finset.sum_boole, Fin.card_filter_val_lt,
+    Nat.min_eq_right hhalf, Nat.min_eq_right htwo]
+  push_cast
+  ring
+
+lemma coeff_bound (N : ℕ) (i : Fin N) : |coeff N i| ≤ 1 := by
+  unfold coeff
+  split_ifs <;> norm_num <;> omega
+
+lemma sum_coeff_sq (N : ℕ) : ∑ i, (coeff N i)^2 = (2 * (N / 2) : ℕ) := by
+  have he (i : Fin N) : (coeff N i)^2 = if i.val < 2*(N/2) then 1 else 0 := by
+    unfold coeff
+    split_ifs <;> norm_num <;> omega
+  simp_rw [he]
+  have htwo : 2 * (N / 2) ≤ N := Nat.mul_div_le N 2
+  simp [Finset.sum_boole, Fin.card_filter_val_lt, Nat.min_eq_right htwo]
+
+lemma bounded : BoundedOutcomes population := by
+  refine ⟨2, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro N x z
+  exact lt_of_le_of_lt (coeff_bound N x.index) (by norm_num)
+
+lemma ball_small (N : ℕ) (i : Fin N) (s : ℝ) (hs : 0 ≤ s)
+    (hsmall : s < (N : ℝ)+1) : ball (nodeSeparation (population N)) i s = {i} := by
+  ext j
+  by_cases hij : i=j
+  · subst j; simp [ball, separation_eq, hs]
+  · simp [ball, separation_eq, hij, Ne.symm hij, not_le.mpr hsmall]
+
+lemma spacing : QuadraticSpacing population := by
+  refine ⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro N i s hs
+  by_cases hsmall : s < (N : ℝ)+1
+  · rw [ball_small N i s hs hsmall]
+    simp only [Finset.card_singleton, Nat.cast_one, one_mul]
+    nlinarith [sq_nonneg s]
+  · have hcard : (ball (nodeSeparation (population N)) i s).card ≤ N :=
+      (Finset.card_le_card (Finset.filter_subset _ _)).trans_eq (by simp)
+    have hcard' : ((ball (nodeSeparation (population N)) i s).card : ℝ) ≤ N :=
+      by exact_mod_cast hcard
+    have hlarge : (N : ℝ)+1 ≤ s := le_of_not_gt hsmall
+    nlinarith [sq_nonneg (s-1), (Nat.cast_nonneg N : (0:ℝ) ≤ N)]
+
+lemma metric_nodes : MetricNodeDistances population := by
+  intro N
+  have hd (i j : Fin N) : nodeSeparation (population N) i j =
+      dist (Point.mk i) (Point.mk j) := by simp [separation_eq, dist]
+  simp_rw [hd]
+  refine ⟨fun _ _ => dist_nonneg, ?_, fun _ _ => dist_comm _ _,
+    fun _ _ _ => dist_triangle _ _ _⟩
+  intro i j
+  simp
+
+lemma spatial_local : SpatialLocalConditions population := by
+  refine ⟨bounded, ?_, ?_⟩
+  · refine ⟨fun _ => 0, by simp, ?_⟩
+    intro d hd
+    refine Filter.Eventually.of_forall ?_
+    intro N i j hdist hsource
+    rcases hsource with ⟨l, hil, hjl⟩
+    have hi : i=l := by simpa [interferes, circle_eq] using hil
+    have hj : j=l := by simpa [interferes, circle_eq] using hjl
+    subst i; subst j
+    simpa [separation_eq] using hdist
+  · refine ⟨fun _ => 1, ?_⟩
+    intro r hr
+    obtain ⟨M, hM⟩ := exists_nat_gt r
+    filter_upwards [eventually_ge_atTop M] with N hN
+    intro i
+    have hMN : (M : ℝ) ≤ N := by exact_mod_cast hN
+    rw [ball_small N i r hr (by linarith)]
+    simp
+
+end Review

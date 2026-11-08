@@ -12,7 +12,8 @@ import Mathlib.MeasureTheory.Integral.BoundedContinuousFunction
 
 /-!
 P018: Aronow, Samii and Assenova (2015), pp. 564--577.
-The printed claims and their corrections are kept separate.
+The printed claims and their corrections are kept separate. A `sorry` is a
+statement draft, including when the mathematical claim is known to be false.
 All random designs below use probability measures, never the zero measure.
 -/
 
@@ -274,11 +275,13 @@ theorem meat_symmetric {V E : Type*} [Fintype E] [DecidableEq V]
 {1,2},{1,3},{1,4},{2,3},{2,4},{3,4} (T13, T15, T17). -/
 def sixMembers : Fin 6 → Finset (Fin 4) := ![{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}]
 
+/-- The three dyads of three units, in order {1,2},{1,3},{2,3} (T5). -/
+def threeMembers : Fin 3 → Finset (Fin 3) := ![{0,1}, {0,2}, {1,2}]
 
 /-- Six-dyad logistic witness x=(0,2,5,5,1,1), Y=(1,1,1,0,0,0)
-(T13, P018-E005, Appendix E p. 576). -/
+(T13, validator P018-E005, Appendix E p. 576). -/
 def logitX : Fin 6 → Vec 2 := fun d => ![1, (![0,2,5,5,1,1] : Fin 6 → ℝ) d]
-/-- Binary outcomes (1,1,1,0,0,0) in the T13 witness (P018-E005; Appendix E, p. 576). -/
+/-- Binary outcomes (1,1,1,0,0,0) in the T13 validator witness (P018-E005; Appendix E, p. 576). -/
 def logitY : Fin 6 → ℝ := ![1,1,1,0,0,0]
 /-- Fitted residuals r_d=Y_d-p_d in the T13 zero-parameter witness (Appendix E, p. 576). -/
 def logitR : Fin 6 → ℝ := ![1/2,1/2,1/2,-1/2,-1/2,-1/2]
@@ -289,7 +292,7 @@ def logitHinv : Mat 2 := !![8/5,-2/5;-2/5,6/35]
 
 /-- The numerical logistic score is zero, the bread is nonsingular, and the
 printed and corrected meats give distinct covariances (T13(b)--(d), p. 576).
-This finite certificate does not establish uniqueness of the logistic MLE. -/
+This finite certificate does not yet prove uniqueness of the logistic MLE. -/
 theorem logistic_numeric_certificate :
     (∑ d, score (logitX d) (logitR d)) = 0 ∧
     (∑ d, (1/4 : ℝ) • outer (logitX d) (logitX d)) = logitH ∧
@@ -439,7 +442,7 @@ theorem ordered_index_counterexample :
   norm_num [orderedWitness, dyadMeat, meat, outer, Matrix.of_apply, unitScore, nonincidentMeat,
     sixMembers, Fin.sum_univ_succ, funext_iff, ← Matrix.ext_iff, Fin.forall_fin_succ]
 
-/-- Negative-variance-estimate witness with a full-rank intercept-and-slope
+/-- Negative-standard-error witness with a full-rank intercept-and-slope
 sample and actual OLS residuals (T17(c), p. 567; P018-N003). -/
 def negativeX : Fin 6 → Vec 2 := fun d => ![1, (![1,2,3,1,2,1] : Fin 6 → ℝ) d]
 /-- Response values in the T17 full-rank negative-variance sample (P018-N003, equation (3), p. 567). -/
@@ -558,7 +561,7 @@ theorem table_rounding_constraints :
   norm_num [tableSE]
 
 /-- All values in the conservative rounding intervals have D/H<10
-(T24(ii)). -/
+(T24(ii)); adapted from the named validator's check.lean. -/
 theorem table_rounding_ratio (r : ℚ × ℚ × ℚ) (hr : r ∈ tableSE) (h d : ℝ)
     (hh : (r.1 : ℝ)-1/2000 ≤ h) (hd : d ≤ (r.2.2 : ℝ)+1/2000) : d/h < 10 := by
   obtain ⟨hp,hb,_⟩ := table_rounding_constraints r hr
@@ -566,11 +569,31 @@ theorem table_rounding_ratio (r : ℚ × ℚ × ℚ) (hr : r ∈ tableSE) (h d :
   apply (div_lt_iff₀ hpos).mpr
   linarith
 
-/- The HC significance-ratio implication of T24(iv) is false without a
-positivity assumption on se: se=0 and se<0 give counterexamples.
-The printed table has positive standard errors. -/
+/- Literal T24(iv) correction: the two significance ratio implications,
+including its HC clause with no positivity assumption on se. That clause
+is false for se=0 (or se<0); this is deliberately an unproved transcription.
+The mathematically valid standard-error version is significance_rounding_positive. -/
+/- The false literal draft is recorded and refuted by
+   PaperDomains.printed_significance_rounding_refuted. -/
 
-
+/-- International-organizations significance comparison remains below 1.64
+with dyadic SEs and above 1.64 with positive HC SEs, throughout the table's
+rounding intervals (T24(iv), p. 571). -/
+theorem significance_rounding_positive (b se : ℝ) :
+    (|b| ≤ 23/2000 → 15/2000 ≤ se → |b|/se ≤ 23/15 ∧ (23/15 : ℝ) < 41/25) ∧
+    (21/2000 ≤ |b| → 0 < se → se ≤ 5/2000 →
+      21/5 ≤ |b|/se ∧ (41/25 : ℝ) < 21/5) := by
+  constructor
+  · intro hb hs
+    constructor
+    · apply (div_le_iff₀ (by linarith : 0 < se)).mpr
+      linarith
+    · norm_num
+  · intro hb hp hs
+    constructor
+    · apply (le_div_iff₀ hp).mpr
+      linarith
+    · norm_num
 
 /-- Exact obstruction to the literal final implication of T24(iv):
 b=21/2000 and se=0 meet its inequalities but give a ratio below 21/5.
@@ -657,7 +680,7 @@ def populationGram {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : 
   meanMat (K.μ.prod K.μ) (fun uv => outer (K.X uv.1 uv.2) (K.X uv.1 uv.2))
 
 /-- "beta is the slope ... if we could fit ... to the entire population"
-(p. 566), interpreted as the least-squares projection Q^(-1)E[XY]. -/
+(p. 566), interpreted as the least-squares projection Q^(-1)E[XY] (S9). -/
 def populationBeta {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : Vec k :=
   (populationGram K)⁻¹.mulVec (meanVec (K.μ.prod K.μ) (fun uv => score (K.X uv.1 uv.2) (K.Y uv.1 uv.2)))
 
@@ -696,7 +719,7 @@ def populationScore {U : Type*} [MeasurableSpace U] {k : ℕ}
 def scoreSum {U : Type*} [MeasurableSpace U] {k N : ℕ} (K : Kernel U k) (ω : Fin N → U) : Vec k :=
   ∑ d : Dyad N, score (design K ω d) (epsilon K ω d)
 
-/-- The standing model (p. 566): a genuine unit
+/-- The standing model (p. 566, S1--S4, validator S9): a genuine unit
 probability law, bounded symmetric measurable dyad data, an intercept, and a
 nonsingular population Gram matrix. No conditional mean-zero assumption. -/
 def Standing {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : Prop :=
@@ -711,7 +734,7 @@ def Standing {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : Prop :
 cross-moments" (Proposition 1, p. 567). Residual moments are those of the
 sample-fitted e_d, over the entire N-unit design, and hold eventually in N.
 This asymptotic quantifier avoids requiring nonzero residuals in saturated
-small samples. Regressor moments are interpreted entrywise. -/
+small samples. Regressor moments retain the entrywise reading of the audit. -/
 def Proposition1Extra {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : Prop :=
   (∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, ∀ᵐ ω ∂ unitSampleLaw K N,
     ∀ d, |fittedResidual (design K ω) (response K ω) d| ≤ C) ∧
@@ -776,16 +799,40 @@ def correctedSigma {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) (N
 The projection g integrates an independent neighbor with respect to the unit law. -/
 def scoreH {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : Mat k :=
   meanMat (K.μ.prod K.μ) (fun uv => outer (populationScore K uv.1 uv.2) (populationScore K uv.1 uv.2))
-/-- The unit-score projection g(u)=E[h(u,U')] in corrected T2(v), T8 (P018-E001/P018-E002). -/
+/-- The unit-score projection g(u)=E[h(u,U')] in corrected T2(v), T8 (P018-E001/E002). -/
 def projection {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) (u : U) : Vec k :=
   meanVec K.μ (populationScore K u)
-/-- Gamma=E[g(U)g(U)'] in corrected T2(v), T8 (P018-E001/P018-E002). -/
+/-- Gamma=E[g(U)g(U)'] in corrected T2(v), T8 (P018-E001/E002). -/
 def projectionGamma {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : Mat k :=
   meanMat K.μ (fun u => outer (projection K u) (projection K u))
-/-- The corrected limit 4 Q^(-1) Gamma Q^(-1) (T2(v), T8, P018-E001/P018-E002). -/
+/-- The corrected limit 4 Q^(-1) Gamma Q^(-1) (T2(v), T8, P018-E001/E002). -/
 def limitingTarget {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : Mat k :=
   (4 : ℝ) • sandwich (populationGram K)⁻¹ (projectionGamma K)
 
+/-- Equation (2)/(6), corrected (T2): projection orthogonality, sparse
+unconditional score covariance, the omitted conditional-mean variance and
+the disjoint conditional remainder; closed form and limit (pp. 566,573). -/
+theorem variance_correction {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (K : Kernel U k) (hK : Standing K) :
+    (meanVec (K.μ.prod K.μ) (fun uv => populationScore K uv.1 uv.2) = 0) ∧
+    (∀ N : ℕ, 2 ≤ N →
+      (∀ d : Dyad N, meanVec (unitSampleLaw K N) (fun ω => score (design K ω d) (epsilon K ω d)) = 0) ∧
+      (∀ d f : Dyad N, ¬overlap d f →
+        meanMat (unitSampleLaw K N) (fun ω => outer (score (design K ω d) (epsilon K ω d))
+          (score (design K ω f) (epsilon K ω f))) = 0) ∧
+      varMat (unitSampleLaw K N) (scoreSum K) = correctedSigma K N ∧
+      let M := varMat (unitSampleLaw K N) (fun ω => ∑ d : Dyad N,
+        score (design K ω d) (conditionalResidualMean K d ω))
+      varMat (unitSampleLaw K N) (scoreSum K) = (∑ d : Dyad N, ∑ f : Dyad N, conditionalTerm K d f) + M ∧
+      M.PosSemidef ∧
+      (varMat (unitSampleLaw K N) (scoreSum K) = (∑ d : Dyad N, ∑ f : Dyad N, conditionalTerm K d f) ↔ M = 0) ∧
+      varMat (unitSampleLaw K N) (scoreSum K) - printedSigma K N =
+        M + (∑ d : Dyad N, ∑ f : Dyad N, if ¬overlap d f then conditionalTerm K d f else 0) ∧
+      correctedSigma K N = (Dreal N) • scoreH K +
+        ((N : ℝ)*((N : ℝ)-1)*((N : ℝ)-2)) • projectionGamma K) ∧
+    (projectionGamma K).PosSemidef ∧
+    Tendsto (trueTarget K) atTop (𝓝 (limitingTarget K)) := by
+  sorry
 
 /-- The first equality of equation (6) is an exact sum-of-covariances identity
 for all finite L2 scores (T26(F3), p. 573), independent of the false later lines. -/
@@ -797,8 +844,8 @@ theorem variance_sum_identity {Ω E : Type*} [MeasurableSpace Ω] [Fintype E]
   simp only [varMat, covMat, Matrix.sum_apply, Finset.sum_apply]
   exact ProbabilityTheory.covariance_fun_sum_fun_sum (fun d => hq d a) (fun f => hq f b)
 
-/-- The unscaled coefficient error β̂ − β, used in the Appendix A and
-corrected Appendix B arguments (T4). -/
+/-- N beta-hat scaling in Appendix A and the normalized score meat in the
+replacement for Appendix B (T4). -/
 def coefficientError {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (K : Kernel U k) (ω : Fin N → U) : Vec k := sampleOLS (design K ω) (response K ω) - populationBeta K
 
@@ -807,6 +854,14 @@ def scaledMeat {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (K : Kernel U k) (r : (Fin N → U) → Dyad N → ℝ) (ω : Fin N → U) : Mat k :=
   ((N : ℝ)/(Dreal N)^2) • meat members (fun d => score (design K ω d) (r ω d))
 
+/-- Proposition 1, corrected proof and unchanged unconditional target
+(T4): N Vhat - V_N converges in probability to zero under the bounded iid-unit
+projection model. Singular samples use the explicitly totalized OLS convention. -/
+theorem variance_consistency_corrected {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (K : Kernel U k) (hK : Standing K) :
+    inProbability (unitSampleLaw K) (fun N ω =>
+      (N : ℝ) • sampleVariance members (design K ω) (response K ω) - trueTarget K N) := by
+  sorry
 
 /-- Exact algebraic last step of the replacement consistency proof
 (T4(L6), Appendix B correction, pp. 573--574). -/
@@ -849,8 +904,28 @@ theorem corrected_chebyshev {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
   simpa only [div_eq_mul_inv, inv_pow, mul_comm] using hbound
 
 
+/-- A mean-zero projection CLT and valid inference for positive-variance
+contrasts (T8, correction to pp. 565,567,571--572). No positivity is imposed
+on untested contrasts; singular multivariate limits are allowed. -/
+theorem inference_corrected {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (K : Kernel U k) (hK : Standing K) :
+    (∃ ν : Measure (Vec k), centeredNormalLaw ν (limitingTarget K) ∧
+      weakLimit (unitSampleLaw K) (fun N ω => Real.sqrt N • coefficientError K ω) ν) ∧
+    Tendsto (trueTarget K) atTop (𝓝 (limitingTarget K)) ∧
+    inProbability (unitSampleLaw K) (fun N ω =>
+      (N : ℝ) • sampleVariance members (design K ω) (response K ω) - limitingTarget K) ∧
+    ∀ c : Vec k, 0 < dot c ((limitingTarget K).mulVec c) →
+      weakLimit (unitSampleLaw K) (fun N ω =>
+        dot c (coefficientError K ω) /
+          Real.sqrt (dot c ((sampleVariance members (design K ω) (response K ω)).mulVec c)))
+        (gaussianReal 0 1) ∧
+      Tendsto (fun N : ℕ => (unitSampleLaw K N {ω |
+        dot c ((sampleVariance members (design K ω) (response K ω)).mulVec c) ≤ 0}).toReal)
+        atTop (𝓝 0) := by
+  sorry
+
 /-- Uniform[-1,1] unit law, normalized restriction of Lebesgue measure
-(T1, P018-E001, eq. (2) counterexample). -/
+(T1, validator P018-E001, eq. (2) counterexample). -/
 def uniformUnitLaw : Measure ℝ := ProbabilityTheory.cond volume (Set.Icc (-1 : ℝ) 1)
 
 instance : IsProbabilityMeasure uniformUnitLaw := by
@@ -860,7 +935,7 @@ instance : IsProbabilityMeasure uniformUnitLaw := by
 
 
 /-- Actual monomial moments of the iid Uniform[-1,1] unit law in the
-nonlinear counterexample (T1(a),(c), P018-E001). The expectation
+nonlinear counterexample (T1(a),(c), validator P018-E001). The expectation
 is with respect to the normalized Lebesgue restriction, not assigned constants. -/
 theorem uniform_unit_moment (n : ℕ) :
     (∫ z, z^n ∂ uniformUnitLaw) =
@@ -935,7 +1010,7 @@ theorem uniform_polynomial_integral {m : ℕ} (c : Fin m → ℝ) (a b : Fin m �
   rw [integral_const_mul, uniform_pair_monomial]
 
 /-- The exact nonlinear bounded witness X=(1,2+z+z'), Y=(z+z')^2
-(T1, P018-E001; does not assume conditional mean-zero residuals). -/
+(T1, validator P018-E001; does not assume conditional mean-zero residuals). -/
 def nonlinearKernel : Kernel ℝ 2 :=
   ⟨uniformUnitLaw, fun z t => ![1,2+z+t], fun z t => (z+t)^2⟩
 
@@ -952,7 +1027,7 @@ def nonlinearVstar : Mat 2 := !![3664/315,-592/105;-592/105,296/105]
 /-- The nonlinear counterexample's population Gram and projection
 coefficients are actual expectation calculations: Q=[[1,2],[2,14/3]],
 E[XY]=(2/3,4/3), det(Q)=2/3 and beta=(2/3,0)
-(T1(a), p. 566 equation (2); P018-E001). -/
+(T1(a), p. 566 equation (2); validator P018-E001). -/
 theorem nonlinear_population_projection :
     populationGram nonlinearKernel = nonlinearQ ∧
     meanVec (uniformUnitLaw.prod uniformUnitLaw) (fun uv =>
@@ -1083,9 +1158,35 @@ theorem nonlinear_model_assumptions : Standing nonlinearKernel := by
   · rw [nonlinear_population_projection.1]
     norm_num [nonlinearQ, Matrix.det_fin_two]
 
+/-- Uniform witness satisfies the paper's conditions, makes every printed
+conditional covariance zero, and has positive true leading covariance
+(T1(a)--(f), eqs. (1),(2),(6), pp. 566,573). The repeated/unit-weight special
+cases use the same zero conditional terms. -/
+theorem nonlinear_counterexample :
+    Standing nonlinearKernel ∧
+    (∀ N : ℕ, 3 ≤ N → ∀ᵐ ω ∂ unitSampleLaw nonlinearKernel N, (sampleGram (design nonlinearKernel ω)).det ≠ 0) ∧
+    populationGram nonlinearKernel = nonlinearQ ∧ nonlinearQ.det = 2/3 ∧
+    populationBeta nonlinearKernel = ![2/3,0] ∧
+    scoreH nonlinearKernel = nonlinearH ∧ projectionGamma nonlinearKernel = nonlinearGamma ∧
+    nonlinearGamma.PosDef ∧
+    (∀ N : ℕ, 3 ≤ N →
+      (∀ d f : Dyad N, conditionalResidualCov nonlinearKernel d f =ᵐ[unitSampleLaw nonlinearKernel N] 0) ∧
+      printedSigma nonlinearKernel N = 0 ∧
+      varMat (unitSampleLaw nonlinearKernel N) (scoreSum nonlinearKernel) =
+        (Dreal N) • nonlinearH + ((N : ℝ)*((N : ℝ)-1)*((N : ℝ)-2)) • nonlinearGamma ∧
+      varMat (unitSampleLaw nonlinearKernel N) (scoreSum nonlinearKernel) ≠ 0) ∧
+    varMat (unitSampleLaw nonlinearKernel 3) (scoreSum nonlinearKernel) = !![12/5,24/5;24/5,4712/315] ∧
+    Tendsto (trueTarget nonlinearKernel) atTop (𝓝 nonlinearVstar) ∧
+    nonlinearVstar.PosDef ∧
+    (∃ ν : Measure (Vec 2), centeredNormalLaw ν nonlinearVstar ∧
+      weakLimit (unitSampleLaw nonlinearKernel) (fun N ω => Real.sqrt N • coefficientError nonlinearKernel ω) ν) ∧
+    inProbability (unitSampleLaw nonlinearKernel) (fun N ω =>
+      (N : ℝ) • sampleVariance members (design nonlinearKernel ω) (response nonlinearKernel ω) - nonlinearVstar) := by
+  sorry
 
 /-- Exact rational matrix checks in the uniform witness (T1(a),(c),(d)).
-These identities do not identify the constants with probability moments. -/
+The link from these constants to probability moments remains in the drafted
+counterexample theorem, so this certificate is not a probability proof. -/
 theorem nonlinear_matrix_certificate :
     nonlinearQ.det = 2/3 ∧ nonlinearGamma.det = 1184/42525 ∧
     (nonlinearGamma 0 0 : ℝ) > 0 ∧ nonlinearVstar.det = 4736/4725 ∧
@@ -1098,13 +1199,32 @@ theorem nonlinear_matrix_certificate :
 The finite iid sample is exactly a product of uniform two-point laws. -/
 def fairLaw : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
 
-/-- The values +1,-1 of each fair iid unit in the T3 witness (P018-E006, pp. 573--574). -/
+/-- The values +1,-1 of each fair iid unit in the T3 validator witness (P018-E006, pp. 573--574). -/
 def signValue (b : Bool) : ℝ := if b then 1 else -1
 
-/-- The intercept-only model X_ij=1, Y_ij=U_i+U_j in T3/T9/T11. -/
+/-- The intercept-only model X_ij=1, Y_ij=U_i+U_j in T3/T9/T11 (validator constructions). -/
 def signKernel : Kernel Bool 1 :=
   ⟨fairLaw, fun _ _ => ![1], fun b c => signValue b + signValue c⟩
 
+/-- Appendix B counterexample, general exact intercept model and its
+asymptotic consequence (T3(a)--(g)). It falsifies proof steps, while the
+conclusion N Vhat -> 4 still holds. -/
+theorem appendixB_counterexample :
+    Standing signKernel ∧ SampleRank signKernel ∧ Proposition1Extra signKernel ∧
+    populationBeta signKernel = 0 ∧
+    (∀ N : ℕ, 4 ≤ N → trueTarget signKernel N = !![4] ∧
+      meanMat (unitSampleLaw signKernel N) (fun ω =>
+        meat members (fun d => score (design signKernel ω d)
+          (fittedResidual (design signKernel ω) (response signKernel ω) d))) =
+          !![((N : ℝ)-1)*((N : ℝ)-2)*((N : ℝ)-3)] ∧
+      (∫ ω, (sampleVariance members (design signKernel ω) (response signKernel ω)) 0 0 ∂ unitSampleLaw signKernel N) =
+        4*((N : ℝ)-2)*((N : ℝ)-3)/((N : ℝ)^2*((N : ℝ)-1))) ∧
+    Tendsto (fun N : ℕ => (∫ ω,
+      (sampleVariance members (design signKernel ω) (response signKernel ω)) 0 0 ∂ unitSampleLaw signKernel N)-4)
+      atTop (𝓝 (-4)) ∧
+    inProbability (unitSampleLaw signKernel) (fun N ω =>
+      (N : ℝ) • sampleVariance members (design signKernel ω) (response signKernel ω) - (!![4] : Mat 1)) := by
+  sorry
 
 /-- The deterministic counterexample to Appendix B's printed Chebyshev
 sufficiency claim: Vhat_N=V=1 gives unscaled mean error zero and scaled
@@ -1169,7 +1289,7 @@ def concentratedWeight {N : ℕ} (d : Dyad N) : ℝ :=
   (2 : ℝ) ^ (-((firstUnit d).val + (secondUnit d).val + 2 : ℤ))
 
 /-- Weighted Gram, population projection and residuals (Appendix D, p. 575;
-weighted beta is the population projection and is undefined in the printed paper). -/
+weighted beta is the validator's S9 reading, undefined in the printed paper). -/
 def weightedGram {U : Type*} [MeasurableSpace U] {k N : ℕ} (K : Kernel U k)
     (w : Dyad N → ℝ) (ω : Fin N → U) : Mat k :=
   ∑ d, w d • outer (design K ω d) (design K ω d)
@@ -1181,7 +1301,7 @@ def weightedOLS {U : Type*} [MeasurableSpace U] {k N : ℕ} (K : Kernel U k)
 def weightedPopulationGram {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (K : Kernel U k) (w : Dyad N → ℝ) : Mat k :=
   (Dreal N)⁻¹ • meanMat (unitSampleLaw K N) (weightedGram K w)
-/-- Population weighted projection beta_w (T12; beta_w is undefined in the printed Appendix D). -/
+/-- Population weighted projection beta_w under S9 (T12; beta_w is undefined in the printed Appendix D). -/
 def weightedPopulationBeta {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (K : Kernel U k) (w : Dyad N → ℝ) : Vec k :=
   (meanMat (unitSampleLaw K N) (weightedGram K w))⁻¹.mulVec
@@ -1200,6 +1320,28 @@ def weightedTarget {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (K : Kernel U k) (w : Dyad N → ℝ) : Mat k :=
   ((N : ℝ)/(Dreal N)^2) • sandwich (weightedPopulationGram K w)⁻¹
     (varMat (unitSampleLaw K N) (weightedScoreSum K w))
+
+/-- Positive bounded fixed weights need not permit both conclusions of
+Corollary 2, for any deterministic target (T9(a)--(d), pp. 575--576). -/
+theorem concentrated_weights_counterexample :
+    (∀ N : ℕ, 2 ≤ N → ∀ d : Dyad N, 0 < concentratedWeight d ∧ concentratedWeight d ≤ 1/8) ∧
+    (∀ N : ℕ, 2 ≤ N → (9/16 : ℝ) ≤ ProbabilityTheory.variance
+      (fun ω => weightedOLS signKernel concentratedWeight ω 0) (unitSampleLaw signKernel N)) ∧
+    Tendsto (fun N : ℕ => ProbabilityTheory.variance
+      (fun ω => weightedOLS signKernel concentratedWeight ω 0) (unitSampleLaw signKernel N))
+      atTop (𝓝 (36/35)) ∧
+    (∀ N : ℕ, 8 ≤ N → (1/256 : ℝ) ≤ (unitSampleLaw signKernel N {ω |
+      (N : ℝ)/2 ≤ |(N : ℝ)*(weightedVariance signKernel concentratedWeight ω) 0 0 -
+        (N : ℝ)*ProbabilityTheory.variance (fun u => weightedOLS signKernel concentratedWeight u 0)
+          (unitSampleLaw signKernel N)|}).toReal) ∧
+    ¬(∃ V : ℕ → ℝ,
+      Tendsto (fun N : ℕ => (N : ℝ)*ProbabilityTheory.variance
+        (fun ω => weightedOLS signKernel concentratedWeight ω 0) (unitSampleLaw signKernel N)-V N)
+        atTop (𝓝 0) ∧
+      inProbability (unitSampleLaw signKernel) (fun N ω =>
+        (N : ℝ)*(weightedVariance signKernel concentratedWeight ω) 0 0 - V N)) := by
+  sorry
+
 
 
 /-- Restoring the dyad sum changes the scalar printed target 4/D to the
@@ -1255,7 +1397,7 @@ def repeatedGram {U : Type*} [MeasurableSpace U] {k N : ℕ} (R : RepeatedKernel
 /-- Corrected H_r=L^(-1) sum_d E[X_d'X_d] (T12, P018-E004). -/
 def repeatedH {U : Type*} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k) (N : ℕ) : Mat k :=
   (repeatedL R N)⁻¹ • meanMat (repeatedLaw R N) (repeatedGram R)
-/-- Population projection beta_r on the stacked repeated data (p. 567). -/
+/-- Population projection beta_r on the stacked repeated data (p. 567 and S9). -/
 def repeatedBeta {U : Type*} [MeasurableSpace U] {k : ℕ} (R : RepeatedKernel U k) (N : ℕ) : Vec k :=
   (meanMat (repeatedLaw R N) (repeatedGram R))⁻¹.mulVec
     (meanVec (repeatedLaw R N) (fun ω => ∑ d : Dyad N, ∑ t, score (repeatedX R ω d t) (repeatedY R ω d t)))
@@ -1321,7 +1463,7 @@ def recordWeightedOLS {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (ω : Fin N → U) : Vec k :=
   (recordWeightedGram R w ω)⁻¹.mulVec (recordWeightedXY R w ω)
 
-/-- Population weighted projection beta_w
+/-- Population weighted projection beta_w under the target's S9 reading
 (T12; the paper leaves beta_w undefined). Uses the expected weighted Gram. -/
 def recordWeightedBeta {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (R : RepeatedKernel U k) (w : (d : Dyad N) → Fin (R.T N d) → ℝ) : Vec k :=
@@ -1337,7 +1479,7 @@ def recordWeightedBlockScore {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (w d t * (repeatedY R ω d t - dot (repeatedX R ω d t) β))
 
 /-- H_w=D^(-1) sum E[w_dt X_dt X_dt'] (T12, corrected p. 576).
-D=binom(N,2) counts the unordered unit pairs; all directed
+D=binom(N,2) counts the unordered unit pairs as in S1; all directed
 records enter the numerator. The chosen common normalization cancels in V_w. -/
 def recordWeightedH {U : Type*} [MeasurableSpace U] {k N : ℕ}
     (R : RepeatedKernel U k) (w : (d : Dyad N) → Fin (R.T N d) → ℝ) : Mat k :=
@@ -1361,6 +1503,69 @@ def recordWeightedTarget {U : Type*} [MeasurableSpace U] {k N : ℕ}
       recordWeightedBlockScore R w (recordWeightedBeta R w) ω d))
 
 
+
+/-- Corrected Corollary 2 (T10(C2), pp. 575--576): deterministic normalized
+weights are positive and uniformly bounded, and the normalized expected
+weighted Gram has a positive definite limit. Directed records need not be
+symmetric; there are at most the two directions per unit pair. -/
+theorem weighted_consistency_corrected {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (R : RepeatedKernel U k) (hR : RepeatedStanding R)
+    (hDirections : ∀ N d, R.T N d ≤ 2)
+    (w : ∀ N : ℕ, (d : Dyad N) → Fin (R.T N d) → ℝ) (a : ℕ → ℝ)
+    (ha : ∀ N : ℕ, 0 < a N)
+    (hw : ∃ C : ℝ, ∀ N d t, 0 < w N d t/a N ∧ w N d t/a N ≤ C)
+    (H : Mat k) (hH : H.PosDef)
+    (hlim : Tendsto (fun N : ℕ => recordWeightedH R (fun d t => w N d t/a N)) atTop (𝓝 H)) :
+    inProbability (repeatedLaw R) (fun N ω =>
+      (N : ℝ) • recordWeightedVariance R (w N) ω - recordWeightedTarget R (w N)) := by
+  sorry
+
+/-- Corrected weighted display is the exact covariance of its linear
+approximation (T12(i)--(ii), T20(i), pp. 575--576). Only bounded data and
+weighted population rank at this N are required; no unweighted Gram rank,
+symmetry, or positive-weight condition is added to the finite identity. -/
+theorem weighted_target_correction {U : Type*} [MeasurableSpace U] {k N : ℕ}
+    (R : RepeatedKernel U k) (hR : RepeatedAtSize R N) (hN : 2 ≤ N)
+    (w : (d : Dyad N) → Fin (R.T N d) → ℝ)
+    (hH : (recordWeightedH R w).det ≠ 0) :
+    let S := fun ω => ∑ d : Dyad N, recordWeightedBlockScore R w (recordWeightedBeta R w) ω d
+    meanVec (repeatedLaw R N) S = 0 ∧
+    meanMat (repeatedLaw R N) (fun ω => (Dreal N)⁻¹ • recordWeightedGram R w ω) = recordWeightedH R w ∧
+    recordWeightedTarget R w = varMat (repeatedLaw R N) (fun ω =>
+      (recordWeightedH R w)⁻¹.mulVec ((Real.sqrt N / Dreal N) • S ω)) ∧
+    (∀ᵐ ω ∂ repeatedLaw R N, (recordWeightedGram R w ω).det ≠ 0 →
+      Real.sqrt N • (recordWeightedOLS R w ω - recordWeightedBeta R w) =
+      ((Dreal N)⁻¹ • recordWeightedGram R w ω)⁻¹.mulVec
+        ((Real.sqrt N / Dreal N) • S ω)) := by
+  sorry
+
+/-- Corrected Corollary 1: uniformly bounded repetition lengths and a positive
+definite limiting observation-normalized Gram matrix (T10(C1), pp. 567--568). -/
+theorem repeated_consistency_corrected {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (R : RepeatedKernel U k) (hR : RepeatedStanding R)
+    (hT : ∃ T0 : ℕ, ∀ N d, R.T N d ≤ T0) (H : Mat k) (hH : H.PosDef)
+    (hlim : Tendsto (repeatedH R) atTop (𝓝 H)) :
+    inProbability (repeatedLaw R) (fun N ω => (N : ℝ) • repeatedVariance R ω - repeatedTarget R N) := by
+  sorry
+
+/-- Corrected V_r is the exact covariance of its linear approximation,
+with centered total score, expected normalized Gram and exact OLS
+linearization (T12(i)--(ii), T20(i), p. 568). Bounded directed or block-specific
+records and population rank are required only at the stated finite N. -/
+theorem repeated_target_correction {U : Type*} [MeasurableSpace U] {k N : ℕ}
+    (R : RepeatedKernel U k) (hR : RepeatedAtSize R N) (hN : 2 ≤ N)
+    (hH : (repeatedH R N).det ≠ 0) :
+    let S := fun ω => ∑ d : Dyad N, repeatedBlockScore R (repeatedBeta R N) ω d
+    meanVec (repeatedLaw R N) S = 0 ∧
+    meanMat (repeatedLaw R N) (fun ω => (repeatedL R N)⁻¹ • repeatedGram R ω) = repeatedH R N ∧
+    repeatedTarget R N = varMat (repeatedLaw R N) (fun ω =>
+      (repeatedH R N)⁻¹.mulVec ((Real.sqrt N/repeatedL R N) • S ω)) ∧
+    (∀ᵐ ω ∂ repeatedLaw R N, (repeatedGram R ω).det ≠ 0 →
+      Real.sqrt N • (repeatedOLS R ω - repeatedBeta R N) =
+        ((repeatedL R N)⁻¹ • repeatedGram R ω)⁻¹.mulVec ((Real.sqrt N/repeatedL R N) • S ω)) := by
+  sorry
+
+
 /-- Moment convergence with uniformly integrable squared coefficient errors,
 explicitly for changing finite iid-unit sampling spaces (T20(iii)). UI is
 expressed by its uniform tail criterion, which includes finite second moments. -/
@@ -1369,6 +1574,53 @@ def uiSquares {Ω : ℕ → Type*} [∀ N : ℕ, MeasurableSpace (Ω N)] {k : �
   (∀ N a, MemLp (fun ω => ξ N ω a) 2 (μ N)) ∧
   ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 < C ∧ ∀ N : ℕ,
     (∫ ω, (if C < ∑ a, (ξ N ω a)^2 then ∑ a, (ξ N ω a)^2 else 0) ∂ μ N) < ε
+
+/-- Correct replacement for actual finite-sample variance convergence:
+weak convergence plus UI squares gives convergence of means and covariances
+(T20(iii)); bounded data and sample rank alone do not supply UI. -/
+theorem variance_limit_with_UI {Ω : ℕ → Type*} [∀ N : ℕ, MeasurableSpace (Ω N)]
+    {k : ℕ} (μ : ∀ N : ℕ, Measure (Ω N)) (hμ : ∀ N : ℕ, IsProbabilityMeasure (μ N))
+    (ξ : ∀ N : ℕ, Ω N → Vec k) (ν : Measure (Vec k))
+    (hweak : weakLimit μ ξ ν) (hui : uiSquares μ ξ)
+    (hL2 : ∀ a, MemLp (fun x : Vec k => x a) 2 ν)
+    (hzero : meanVec ν id = 0) :
+    Tendsto (fun N : ℕ => meanVec (μ N) (ξ N)) atTop (𝓝 0) ∧
+    Tendsto (fun N : ℕ => varMat (μ N) (ξ N)) atTop (𝓝 (varMat ν id)) := by
+  sorry
+
+/-- Lemma 1, as printed: the asymptotic mean/covariance claim AND the printed
+conditional identity (T26, pp. 566,573). The E placement is interpreted as in
+(6) and separately audited by T21. This assertion is false in general and
+is deliberately a draft, never a named axiom or a proved theorem. -/
+theorem lemma1_printed {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (K : Kernel U k) (hK : Standing K) (hrank : SampleRank K) :
+    (∀ N : ℕ, 3 ≤ N → varMat (unitSampleLaw K N) (scoreSum K) = printedSigma K N) ∧
+    (∃ ν : Measure (Vec k), weakLimit (unitSampleLaw K)
+      (fun N ω => Real.sqrt N • coefficientError K ω) ν ∧
+      (∀ a, MemLp (fun x : Vec k => x a) 2 ν) ∧ meanVec ν id = 0 ∧ Tendsto (trueTarget K) atTop (𝓝 (varMat ν id))) := by
+  sorry
+
+/-- Proposition 1, as printed, with its fitted-residual/nonzero-moment
+hypotheses (T27, p. 567). V is equation (1)'s unconditional variance target;
+this theorem does not assert the invalid Appendix B proof steps. -/
+theorem proposition1_printed {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (K : Kernel U k) (hK : Standing K) (hrank : SampleRank K) (hextra : Proposition1Extra K) :
+    inProbability (unitSampleLaw K) (fun N ω =>
+      (N : ℝ) • sampleVariance members (design K ω) (response K ω) - trueTarget K N) := by
+  sorry
+
+/-- Scalar specialization of BOTH printed corollaries, T(d)=w_d=k=1:
+the literal missing-sum target is 4/D in the sign model (T11,T28,T29).
+The general repeated display has incompatible matrix dimensions, and the
+weighted display has an unbound d and a scalar left bread; neither is silently
+repaired here. The scalar specialization is explicitly narrower. -/
+theorem printed_corollaries_scalar :
+    Tendsto (fun N : ℕ => (N : ℝ)*ProbabilityTheory.variance
+      (fun ω => sampleOLS (design signKernel ω) (response signKernel ω) 0)
+      (unitSampleLaw signKernel N) - 4/Dreal N) atTop (𝓝 0) ∧
+    inProbability (unitSampleLaw signKernel) (fun N ω =>
+      (N : ℝ)*(sampleVariance members (design signKernel ω) (response signKernel ω)) 0 0 - 4/Dreal N) := by
+  sorry
 
 
 /-- Block/weighted sandwich scale algebra (T10(C3)): normal equations have
@@ -1557,6 +1809,29 @@ def twoRoleCov (N : ℕ) (t1 t2 σ : ℝ) : Matrix (Dyad N) (Dyad N) ℝ :=
   t1 • (endpointZ1 N * (endpointZ1 N).transpose) +
     t2 • (endpointZ2 N * (endpointZ2 N).transpose) + σ • 1
 
+/-- The printed "corresponds precisely" assertion about the model actually
+fitted, read as membership in its covariance family (T25, pp. 569--570,572).
+This is false for N>=3; the draft preserves the false existential claim. -/
+theorem benchmark_correspondence_printed (N : ℕ) (hN : 3 ≤ N) :
+    ∃ t1 t2 σ : ℝ, 0 ≤ t1 ∧ 0 ≤ t2 ∧ 0 ≤ σ ∧ sharedCov N 1 1 = twoRoleCov N t1 t2 σ := by
+  sorry
+
+/-- Corrected benchmark algebra for every sample size (T6(i)--(iii)): role
+incidence products and the shared-unit model's missing cross-role terms.
+The no-match conclusion does not depend on estimated variance components. -/
+theorem benchmark_covariance_correction (N : ℕ) (hN : 2 ≤ N) :
+    (∀ d f : Dyad N,
+      (endpointZ1 N * (endpointZ1 N).transpose) d f = (if firstUnit d = firstUnit f then 1 else 0) ∧
+      (endpointZ2 N * (endpointZ2 N).transpose) d f = (if secondUnit d = secondUnit f then 1 else 0) ∧
+      (endpointZ1 N * (endpointZ2 N).transpose) d f = (if firstUnit d = secondUnit f then 1 else 0) ∧
+      (endpointZ2 N * (endpointZ1 N).transpose) d f = (if secondUnit d = firstUnit f then 1 else 0) ∧
+      ((endpointZ1 N + endpointZ2 N) * (endpointZ1 N + endpointZ2 N).transpose) d f =
+        ((members d ∩ members f).card : ℝ)) ∧
+    (∀ τ σ : ℝ, sharedCov N τ σ =
+      τ • (endpointZ1 N * (endpointZ1 N).transpose + endpointZ2 N * (endpointZ2 N).transpose +
+        endpointZ1 N * (endpointZ2 N).transpose + endpointZ2 N * (endpointZ1 N).transpose) + σ • 1) ∧
+    (3 ≤ N → ∀ τ σ : ℝ, 0 < τ → ∀ t1 t2 s : ℝ, sharedCov N τ σ ≠ twoRoleCov N t1 t2 s) := by
+  sorry
 
 /-- The explicit 28 dyads for the T7 N=8 sign witness. -/
 def eightMembers : Fin 28 → Finset (Fin 8) :=
@@ -1579,8 +1854,27 @@ def signPairKernel : Kernel (Bool × Bool) 2 :=
   ⟨fairLaw.prod fairLaw, fun u v => ![1,1+signValue u.1*signValue v.1],
     fun u v => signValue u.2+signValue v.2⟩
 
+/-- The bounded two-sign model has zero leading slope variance and a
+non-Gaussian slope pivot, although absolute sandwich consistency holds
+(T7(a),(b),(d), pp. 565--567,571). The finite N=8 sample is proved separately. -/
+theorem degenerate_inference_counterexample :
+    Standing signPairKernel ∧ Proposition1Extra signPairKernel ∧
+    populationGram signPairKernel = !![1,1;1,2] ∧ populationBeta signPairKernel = 0 ∧
+    projectionGamma signPairKernel = !![1,1;1,1] ∧ limitingTarget signPairKernel = !![4,0;0,0] ∧
+    (∀ N : ℕ, 3 ≤ N → trueTarget signPairKernel N =
+      !![4*(N : ℝ)/((N : ℝ)-1),-4/((N : ℝ)-1);-4/((N : ℝ)-1),4/((N : ℝ)-1)]) ∧
+    Tendsto (fun N : ℕ => (unitSampleLaw signPairKernel N {ω |
+      (sampleVariance members (design signPairKernel ω) (response signPairKernel ω)) 1 1 < 0}).toReal)
+      atTop (𝓝 (1-Real.exp (-1/2))) ∧
+    ¬weakLimit (unitSampleLaw signPairKernel) (fun N ω =>
+      coefficientError signPairKernel ω 1 /
+        Real.sqrt ((sampleVariance members (design signPairKernel ω) (response signPairKernel ω)) 1 1))
+        (gaussianReal 0 1) ∧
+    inProbability (unitSampleLaw signPairKernel) (fun N ω =>
+      (N : ℝ) • sampleVariance members (design signPairKernel ω) (response signPairKernel ω) - (!![4,0;0,0] : Mat 2)) := by
+  sorry
 
-/-- Exact N=8 sample with a negative slope-variance estimate in the two-sign iid model (T7(c)).
+/-- Exact N=8 negative-slope sample in the two-sign iid model (T7(c)).
 Its rank and OLS fit are explicitly checked, not assumed. -/
 theorem degenerate_numeric_certificate :
     sampleGram degeneracyX = !![28,24;24,48] ∧
@@ -1632,6 +1926,31 @@ def finiteNegativeKernel : Kernel (Fin 4 × Bool) 2 :=
     fun u v => ![1, |(u.1.val : ℝ)-(v.1.val : ℝ)|],
     fun u v => |(u.1.val : ℝ)-(v.1.val : ℝ)| + heterogeneityTable u.1 v.1 + signValue u.2 + signValue v.2⟩
 
+/-- The T17(c) sample has positive probability under bounded iid unit data,
+a nonsingular population Gram and positive definite leading covariance
+(T17(d)). This is the sampling justification for the proved OLS certificate. -/
+theorem negative_sample_population :
+    Standing finiteNegativeKernel ∧ populationGram finiteNegativeKernel = !![1,5/4;5/4,5/2] ∧
+    populationBeta finiteNegativeKernel = ![1/3,11/15] ∧
+    limitingTarget finiteNegativeKernel = !![1004/225,-48/125;-48/125,1856/5625] ∧
+    (limitingTarget finiteNegativeKernel).PosDef ∧
+    (unitSampleLaw finiteNegativeKernel 4 {ω |
+      ∀ i : Fin 4, ω i = (i,true)}).toReal = 1/4096 ∧
+    (∀ ω : Fin 4 → Fin 4 × Bool, (∀ i : Fin 4, ω i = (i,true)) →
+      (sampleGram (design finiteNegativeKernel ω)).det = 20 ∧
+      sampleVariance members (design finiteNegativeKernel ω) (response finiteNegativeKernel ω) =
+        (!![-17/50,21/125;21/125,-58/625] : Mat 2)) := by
+  sorry
+
+/-- The counted terms in the corrected expectation placement (T21(i),
+eq. (2) p. 566, and the finite dependence counts used in T2,T4,T8,T26). -/
+theorem dyad_counts (N : ℕ) (hN : 2 ≤ N) :
+    Fintype.card (Dyad N) = N.choose 2 ∧
+    (∀ d : Dyad N, (neighbors d).card = 2*(N-2)) ∧
+    (∑ d : Dyad N, (neighbors d).card) = N*(N-1)*(N-2) ∧
+    (univ.filter (fun p : Dyad N × Dyad N => overlap p.1 p.2)).card =
+      N.choose 2 * (2*N-3) := by
+  sorry
 
 /-- Corrected notation for term B equals the sparse conditional double sum
 term by term (T21(ii), equation (2) p. 566 and equation (6) p. 573).
@@ -1671,6 +1990,7 @@ theorem expectation_placement_correction {U : Type*} [MeasurableSpace U] {k N : 
     Finset.sum_ite_eq',Finset.mem_univ,if_true]
 
 
+
 /-- Independent normal simulation variables (equation (4), p. 569,
 correcting u_dt to nu_dt). Three disjoint index families encode all mutual
 independence: unit covariates, unit effects, and observation shocks. -/
@@ -1684,6 +2004,22 @@ def simulationX {N T : ℕ} (ω : SimulationIndex N T → ℝ) (i : Fin N) : ℝ
 def simulationError {N T : ℕ} (ω : SimulationIndex N T → ℝ) (d : Dyad N) (t : Fin T) : ℝ :=
   (∑ i ∈ members d, ω (Sum.inr (Sum.inl i))) + ω (Sum.inr (Sum.inr (d,t)))
 
+/-- Corrected simulation design (T22): jointly normal mean-zero errors,
+independent of unit covariates, covariance equal to shared-unit count plus
+one for the identical record, and correct conditional linear mean (p. 569). -/
+theorem simulation_design_correction (N T : ℕ) (hN : 2 ≤ N) (hT : 1 ≤ T) :
+    IsGaussian ((simulationLaw N T).map (fun ω =>
+      fun dt : Dyad N × Fin T => simulationError ω dt.1 dt.2)) ∧
+    IndepFun (fun ω => fun dt : Dyad N × Fin T => simulationError ω dt.1 dt.2)
+      (fun ω => fun i : Fin N => simulationX ω i) (simulationLaw N T) ∧
+    (∀ d t, (∫ ω, simulationError ω d t ∂ simulationLaw N T) = 0) ∧
+    (∀ d f : Dyad N, ∀ t u : Fin T, ProbabilityTheory.covariance
+      (fun ω => simulationError ω d t) (fun ω => simulationError ω f u) (simulationLaw N T) =
+        ((members d ∩ members f).card : ℝ) + (if d=f ∧ t=u then 1 else 0)) ∧
+    (∀ d t, MeasureTheory.condExp (MeasurableSpace.comap
+      (fun ω : SimulationIndex N T → ℝ => fun i : Fin N => simulationX ω i) inferInstance)
+      (simulationLaw N T) (fun ω => simulationError ω d t) =ᵐ[simulationLaw N T] 0) := by
+  sorry
 
 /-- Positive integer type and category label for the rare ill-conditioned
 population (T19, P018-N004). `m` is M-1; label is C-1. -/
@@ -1730,6 +2066,46 @@ def rareH : ℝ := ∑' m : ℕ, (2 : ℝ)^(-3*(m+1 : ℤ)) *
 
 /-- v=4H/q^2, the positive slope variance limit in T19(f) (P018-N004). -/
 def rareLimitSlopeVariance : ℝ := 4*rareH/rareQ^2
+
+/-- An infinite moment is represented by a nonnegative extended integral,
+never by Lean's totalized real integral, which would assign zero to some
+nonintegrable functions (T19(d),(e), P018-N004). -/
+theorem infinite_moments_counterexample :
+    IsProbabilityMeasure rareLaw ∧ RepeatedStanding rareRepeated ∧
+    (∀ N : ℕ, 2 ≤ N → ∀ ω : Fin N → RareUnit, (repeatedGram rareRepeated ω).det > 0 ∧
+      (∀ d : Dyad N, ∀ t : Fin 2, |repeatedY rareRepeated ω d t -
+        dot (repeatedX rareRepeated ω d t) (repeatedOLS rareRepeated ω)| ≤ 8)) ∧
+    (∀ N : ℕ, 3 ≤ N →
+      (∫⁻ ω, ENNReal.ofReal ((repeatedOLS rareRepeated ω 1)^2) ∂ repeatedLaw rareRepeated N) = ∞ ∧
+      (∫⁻ ω, ENNReal.ofReal |repeatedOLS rareRepeated ω 1| ∂ repeatedLaw rareRepeated N) = ∞) ∧
+    (∀ N : ℕ, 4 ≤ N →
+      (∫⁻ ω, ENNReal.ofReal (max ((repeatedVariance rareRepeated ω) 1 1) 0) ∂ repeatedLaw rareRepeated N) = ∞ ∧
+      (∫⁻ ω, ENNReal.ofReal (max (-((repeatedVariance rareRepeated ω) 1 1)) 0) ∂ repeatedLaw rareRepeated N) < ∞) ∧
+    (0 < rareLimitSlopeVariance ∧
+      inProbability (repeatedLaw rareRepeated) (fun N ω =>
+        (N : ℝ) • repeatedVariance rareRepeated ω - (!![4+rareLimitSlopeVariance,-rareLimitSlopeVariance;-rareLimitSlopeVariance,rareLimitSlopeVariance] : Mat 2)) ∧
+      ∃ ν : Measure (Vec 2), centeredNormalLaw ν (!![4+rareLimitSlopeVariance,-rareLimitSlopeVariance;-rareLimitSlopeVariance,rareLimitSlopeVariance]) ∧
+        weakLimit (repeatedLaw rareRepeated)
+          (fun N ω => Real.sqrt N • (repeatedOLS rareRepeated ω - repeatedBeta rareRepeated N)) ν) := by
+  sorry
+
+/-- Both estimator consistency conclusions retained in the correction
+(T20(ii), pp. 567--568,575--576), under T10's uniform repetition/normalized
+weight bounds and positive limiting designs. Allows directed and block-specific
+records; actual finite-sample covariance convergence is the separate UI claim. -/
+theorem corollaries_corrected_conclusions {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (R W : RepeatedKernel U k) (hR : RepeatedStanding R) (hW : RepeatedStanding W)
+    (hT : ∃ T0 : ℕ, ∀ N d, R.T N d ≤ T0) (hDirections : ∀ N d, W.T N d ≤ 2)
+    (Hr Hw : Mat k) (hHr : Hr.PosDef) (hHw : Hw.PosDef)
+    (hrlim : Tendsto (repeatedH R) atTop (𝓝 Hr))
+    (w : ∀ N : ℕ, (d : Dyad N) → Fin (W.T N d) → ℝ) (a : ℕ → ℝ)
+    (ha : ∀ N : ℕ, 0 < a N)
+    (hw : ∃ C : ℝ, ∀ N d t, 0 < w N d t/a N ∧ w N d t/a N ≤ C)
+    (hwlim : Tendsto (fun N : ℕ => recordWeightedH W (fun d t => w N d t/a N)) atTop (𝓝 Hw)) :
+    inProbability (repeatedLaw R) (fun N ω => (N : ℝ) • repeatedVariance R ω - repeatedTarget R N) ∧
+    inProbability (repeatedLaw W) (fun N ω => (N : ℝ) • recordWeightedVariance W (w N) ω - recordWeightedTarget W (w N)) := by
+  exact ⟨repeated_consistency_corrected R hR hT Hr hHr hrlim,
+    weighted_consistency_corrected W hW hDirections w a ha hw Hw hHw hwlim⟩
 
 
 /-- The nonlinear uniform witness's regressors, response and residual have
@@ -1865,6 +2241,17 @@ theorem fitted_products_counterexample :
       (fun u => signResidual8 u 0 3*signResidual8 u 0 4) = -1/16 := by
   norm_num [fairCov8, fairAverage, signResidual8, Fin.sum_univ_succ, Matrix.cons_val_zero, Matrix.cons_val_succ, Matrix.cons_val_succ']
 
+/-- The k=1 literal targets of the two corollaries tend to zero, although
+the true scaled coefficient variance and the estimated target tend to four
+(T11(a)--(d), pp. 568,576). This is a draft about the actual iid sign model. -/
+theorem printed_targets_counterexample :
+    (∀ N : ℕ, 3 ≤ N → (N : ℝ)*ProbabilityTheory.variance
+      (fun ω => sampleOLS (design signKernel ω) (response signKernel ω) 0)
+      (unitSampleLaw signKernel N) = 4) ∧
+    Tendsto (fun N : ℕ => 4/Dreal N) atTop (𝓝 0) ∧
+    inProbability (unitSampleLaw signKernel) (fun N ω =>
+      (N : ℝ)*(sampleVariance members (design signKernel ω) (response signKernel ω)) 0 0 - 4) := by
+  sorry
 
 /-- Repeated bread printed as E[X_d X'_d] can be singular even for an
 excellent coefficient design, and the weighted scalar left bread changes
@@ -1876,11 +2263,39 @@ theorem printed_bread_numeric_certificate :
     (3/5 : ℝ) * 2 * 2 = 12/5 ∧ (12/5 : ℝ) ≠ 4 := by
   norm_num [Matrix.det_fin_two, Fin.sum_univ_succ]
 
+/-- The corrected projection decomposition of the dyadic score average
+(T8(F1)--(F5)): degenerate remainder, exact coefficient 2/N, and variance.
+The probability arguments, not the formula alone, remain drafted. -/
+theorem score_projection_decomposition {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (K : Kernel U k) (hK : Standing K) :
+    let r := fun u v => populationScore K u v-projection K u-projection K v
+    meanVec K.μ (projection K) = 0 ∧
+    (∀ᵐ u ∂ K.μ, meanVec K.μ (r u) = 0) ∧
+    (∀ N : ℕ, 2 ≤ N → ∀ ω : Fin N → U,
+      (Dreal N)⁻¹ • scoreSum K ω =
+        (2/(N : ℝ)) • (∑ i, projection K (ω i)) +
+        (Dreal N)⁻¹ • (∑ d : Dyad N, r (ω (firstUnit d)) (ω (secondUnit d)))) ∧
+    (∀ N : ℕ, 2 ≤ N → varMat (unitSampleLaw K N) (fun ω => (Dreal N)⁻¹ • scoreSum K ω) =
+      (4/(N : ℝ)) • projectionGamma K +
+        (Dreal N)⁻¹ • meanMat (K.μ.prod K.μ) (fun uv => outer (r uv.1 uv.2) (r uv.1 uv.2))) := by
+  sorry
 
 /-- Standard normal quantile used by the corrected confidence interval
 (T8(iii)). It is the lower quantile of the genuine N(0,1) measure. -/
 def normalQuantile (p : ℝ) : ℝ := sInf {z : ℝ | p ≤ ((gaussianReal 0 1) (Set.Iic z)).toReal}
 
+/-- Corrected confidence interval has coverage 1-alpha for each fixed
+positive-variance contrast (T8(iii), pp. 565,567,572). Positivity of the
+sample variance is part of the event where the interval is defined. -/
+theorem contrast_coverage_corrected {U : Type*} [MeasurableSpace U] {k : ℕ}
+    (K : Kernel U k) (hK : Standing K) (c : Vec k)
+    (hc : 0 < dot c ((limitingTarget K).mulVec c)) (α : ℝ) (hα : 0 < α ∧ α < 1) :
+    Tendsto (fun N : ℕ => (unitSampleLaw K N {ω |
+      0 ≤ dot c ((sampleVariance members (design K ω) (response K ω)).mulVec c) ∧
+      |dot c (coefficientError K ω)| ≤ normalQuantile (1-α/2) *
+        Real.sqrt (dot c ((sampleVariance members (design K ω) (response K ω)).mulVec c))}).toReal)
+      atTop (𝓝 (1-α)) := by
+  sorry
 
 /-- Concrete probability-only example showing that stochastic convergence
 of inverse factors gives no convergence of moments (T3(h), p. 574 correction).
@@ -1889,6 +2304,17 @@ def inverseSpikeLaw (N : ℕ) : Measure ℝ :=
   ENNReal.ofReal ((N : ℝ)⁻¹) • Measure.dirac (N : ℝ) +
     ENNReal.ofReal (1-(N : ℝ)⁻¹) • Measure.dirac 1
 
+/-- R_N tends in probability to one, but its expectation tends to two and
+its variance diverges (T3(h)); only N>=1 is used for the moment formulas. -/
+theorem inverse_spike_counterexample :
+    (∀ N : ℕ, 1 ≤ N → IsProbabilityMeasure (inverseSpikeLaw N)) ∧
+    inProbability inverseSpikeLaw (fun _ x => x-1) ∧
+    (∀ N : ℕ, 1 ≤ N → (∫ x, x ∂ inverseSpikeLaw N) = 2-(N : ℝ)⁻¹ ∧
+      ProbabilityTheory.variance id (inverseSpikeLaw N) =
+        (N : ℝ)-3+3/(N : ℝ)-1/(N : ℝ)^2) ∧
+    Tendsto (fun N : ℕ => ∫ x, x ∂ inverseSpikeLaw N) atTop (𝓝 2) ∧
+    Tendsto (fun N : ℕ => ProbabilityTheory.variance id (inverseSpikeLaw N)) atTop atTop := by
+  sorry
 
 /-- Pareto t^(-2) unit law on [1,infinity), and bounded regressors
 (1,exp(-t_i)+exp(-t_j)) for the inverse-Gram moment witness (T3(i)). -/
@@ -1906,6 +2332,21 @@ def euclideanSq {k : ℕ} (x : Vec k) : ℝ := ∑ a, (x a)^2
 /-- Euclidean operator norm of inverse Q_N, used in T3(i) (P018-E006). -/
 def matrixOperatorNorm {k : ℕ} (M : Mat k) : ℝ :=
   sSup {r : ℝ | ∃ x : Vec k, euclideanSq x ≤ 1 ∧ r=Real.sqrt (euclideanSq (M.mulVec x))}
+
+/-- The T3(i) bounded full-rank design has infinite inverse-Gram expectation; probability convergence does not give inverse moments (Appendix B, pp. 573--574). -/
+theorem inverse_gram_counterexample :
+    Standing inverseKernel ∧ SampleRank inverseKernel ∧
+    inProbability (unitSampleLaw inverseKernel) (fun N ω =>
+      ((Dreal N)⁻¹ • sampleGram (design inverseKernel ω))⁻¹ - (populationGram inverseKernel)⁻¹) ∧
+    (∀ N : ℕ, 3 ≤ N → ∀ m : ℕ, 1 ≤ m →
+      ENNReal.ofReal (Real.exp (2*m)/(4*(m : ℝ)^N)) ≤
+        ∫⁻ ω, ENNReal.ofReal (matrixOperatorNorm
+          (((Dreal N)⁻¹ • sampleGram (design inverseKernel ω))⁻¹)) ∂ unitSampleLaw inverseKernel N) ∧
+    (∀ N : ℕ, 3 ≤ N →
+      (∫⁻ ω, ENNReal.ofReal (matrixOperatorNorm
+        (((Dreal N)⁻¹ • sampleGram (design inverseKernel ω))⁻¹)) ∂ unitSampleLaw inverseKernel N) = ∞) := by
+  sorry
+
 
 
 /-- Covariance of a fixed finite linear map is A Var(q) A' (T12(ii),
@@ -1999,11 +2440,40 @@ theorem shared_random_effect_covariance {Ω : Type*} [MeasurableSpace Ω]
   simp [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_assoc]
 
 
+/-- The shared Gaussian average imposes Var(intercept)>=4/N for every
+translation-equivariant finite-variance intercept estimator (T5(f)).
+The centered response is explicitly independent of that average. -/
+theorem random_intercept_lower_bound {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ] (N : ℕ) (hN : 1 ≤ N)
+    (a : Fin N → Ω → ℝ) (ha : iIndepFun a μ)
+    (hlaw : ∀ i, HasLaw (a i) (gaussianReal 0 1) μ)
+    {D : ℕ} (yc : Ω → Vec D) (estimate : Vec D → ℝ)
+    (htranslate : ∀ y c, estimate (y+c • (fun _ => 1)) = estimate y+c)
+    (hind : IndepFun yc (fun ω => (∑ i, a i ω)/(N : ℝ)) μ)
+    (hmeas : Measurable estimate)
+    (hL2c : MemLp (fun ω => estimate (yc ω)) 2 μ)
+    (hL2 : MemLp (fun ω => estimate (yc ω+(2*(∑ i,a i ω)/(N : ℝ)) • (fun _ => 1))) 2 μ) :
+    ProbabilityTheory.variance
+      (fun ω => estimate (yc ω+(2*(∑ i,a i ω)/(N : ℝ)) • (fun _ => 1))) μ =
+        ProbabilityTheory.variance (fun ω => estimate (yc ω)) μ + 4/(N : ℝ) ∧
+    4/(N : ℝ) ≤ ProbabilityTheory.variance
+      (fun ω => estimate (yc ω+(2*(∑ i,a i ω)/(N : ℝ)) • (fun _ => 1))) μ := by
+  sorry
+
 /-- Repeated sign data with fixed but unbounded lengths 2^(i+j) (T9(e)). -/
 def concentratedRepeated : RepeatedKernel Bool 1 :=
   ⟨fairLaw, fun _ d => 2^((firstUnit d).val+(secondUnit d).val+2),
     fun _ _ _ _ _ => ![1], fun _ _ _ u v => signValue u+signValue v⟩
 
+/-- Reversing iid unit order shows the elementwise-finite repetitions
+counterexample has exactly the weighted example's coefficient/variance law
+(T9(e)); uniformly bounded repetitions exclude it. -/
+theorem concentrated_repetitions_counterexample (N : ℕ) (hN : 2 ≤ N) :
+    IdentDistrib (fun ω => (weightedOLS signKernel concentratedWeight ω,
+      weightedVariance signKernel concentratedWeight ω))
+      (fun ω => (repeatedOLS concentratedRepeated ω, repeatedVariance concentratedRepeated ω))
+      (unitSampleLaw signKernel N) (repeatedLaw concentratedRepeated N) := by
+  sorry
 
 /-- Inverse of a rescaled nonsingular coefficient Gram, used by the exact
 common-weight-rescaling calculation (T10(C3)). -/
@@ -2343,6 +2813,38 @@ theorem generic_score_meat_psd {Ω Θ : Type*} [MeasurableSpace Ω] {k : ℕ}
     exact sq_nonneg _
 
 
+/-- If conditional residual means vanish, the omitted conditional-mean
+variance vanishes. Conditional uncentred moments recover the corrected
+unconditional sparse meat (T2(ii),(iii), equations (2),(6), pp. 566,573). -/
+theorem conditional_moment_correction {U : Type*} [MeasurableSpace U] {k N : ℕ}
+    (K : Kernel U k) (hK : Standing K) (hN : 2 ≤ N) :
+    correctedSigma K N = (∑ d : Dyad N, ∑ f : Dyad N,
+      if overlap d f then meanMat (unitSampleLaw K N) (fun ω =>
+        (MeasureTheory.condExp (designSigma K) (unitSampleLaw K N)
+          (fun w => epsilon K w d*epsilon K w f) ω) •
+          outer (design K ω d) (design K ω f)) else 0) ∧
+    ((∀ d : Dyad N, conditionalResidualMean K d =ᵐ[unitSampleLaw K N] 0) →
+      varMat (unitSampleLaw K N) (fun ω => ∑ d : Dyad N,
+        score (design K ω d) (conditionalResidualMean K d ω)) = 0) := by
+  sorry
+
+/-- T4(L3),(L4): actual finite variance bounds from counting independent
+collections on disjoint unit sets (replacement for Appendix B, pp. 573--574).
+The vector bounds use the Euclidean squared norm, not the Pi sup norm. -/
+theorem population_meat_variance_bounds {U : Type*} [MeasurableSpace U] {k N : ℕ}
+    (K : Kernel U k) (hK : Standing K) (hN : 2 ≤ N) (CX Ce : ℝ)
+    (hCX : 0 ≤ CX) (hCe : 0 ≤ Ce)
+    (hX : ∀ᵐ uv ∂ K.μ.prod K.μ, euclideanSq (K.X uv.1 uv.2) ≤ CX^2)
+    (he : ∀ᵐ uv ∂ K.μ.prod K.μ, |populationResidual K uv.1 uv.2| ≤ Ce) :
+    (∀ a b, ProbabilityTheory.variance (fun ω =>
+      (((Dreal N)⁻¹ • sampleGram (design K ω)) a b)) (unitSampleLaw K N) ≤
+        2*CX^4*(2*(N : ℝ)-3)/Dreal N) ∧
+    (∀ a b, ProbabilityTheory.variance (fun ω => scaledMeat K (epsilon K) ω a b)
+      (unitSampleLaw K N) ≤ (N : ℝ)^2/(Dreal N)^4 *
+        (2*(CX^2*Ce^2)^2)*(Dreal N*(2*(N : ℝ)-3)) *
+          (3*((N : ℝ)-1)*(3*(N : ℝ)-5))) := by
+  sorry
+
 /-- Exact normalized sample sandwich identity in the replacement proof
 (T4(L6), Appendix B, pp. 573--574), on each nonsingular sample. -/
 theorem normalized_sample_sandwich {U : Type*} [MeasurableSpace U] {k N : ℕ}
@@ -2367,6 +2869,13 @@ one record per dyad and unit weights (T12(iv),(v), pp. 568,575--576). -/
 def singleRecord {U : Type*} [MeasurableSpace U] {k : ℕ} (K : Kernel U k) : RepeatedKernel U k :=
   ⟨K.μ, fun _ _ => 1, fun _ _ _ u v => K.X u v, fun _ _ _ u v => K.Y u v⟩
 
+/-- T12(iv): both corrected targets are V when T(d)=w_d=1.
+This is a reduction of the definitions, without a limit assertion. -/
+theorem corrected_target_reductions {U : Type*} [MeasurableSpace U] {k N : ℕ}
+    (K : Kernel U k) (hK : Standing K) (hN : 2 ≤ N) :
+    repeatedTarget (singleRecord K) N = trueTarget K N ∧
+    weightedTarget K (fun _ : Dyad N => 1) = trueTarget K N := by
+  sorry
 
 /-- Equivalent normalizations of the corrected repeated target (T12(v),
 p. 568 correction): observation-normalized and dyad-normalized Gram matrices
@@ -2500,6 +3009,7 @@ theorem incidence_meat_structure {V E : Type*} [Fintype V] [Fintype E]
   refine ⟨hW,?_,hm⟩
   rw [hm]
   simp only [Matrix.transpose_mul,Matrix.mul_sub,Matrix.sub_mul,Matrix.mul_one,Matrix.mul_assoc]
+
 
 
 /-- The exact nine displayed D/H ratios and their worst-case rounded upper
@@ -2643,7 +3153,7 @@ theorem positive_definite_two (a b c : ℝ) (ha : 0 < a) (hd : 0 < a*c-b^2) :
 
 /-- The rational matrices Gamma and V_* in the nonlinear uniform witness
 are positive definite (T1(c),(d)). This does not identify their probability
-moments. -/
+moments, which remain in nonlinear_counterexample. -/
 theorem nonlinear_matrices_positive : nonlinearGamma.PosDef ∧ nonlinearVstar.PosDef := by
   constructor
   · exact positive_definite_two _ _ _ (by norm_num) (by norm_num)
@@ -2686,3 +3196,134 @@ theorem sandwich_difference_of_grams {V E : Type*} [Fintype V] [Fintype E]
 
 end AronowAudit.P018
 
+#print axioms AronowAudit.P018.matrix_ite_apply
+#print axioms AronowAudit.P018.members_card
+#print axioms AronowAudit.P018.intersection_count
+#print axioms AronowAudit.P018.overlap_meat_identity
+#print axioms AronowAudit.P018.nonincident_sum
+#print axioms AronowAudit.P018.proposition2_corrected
+#print axioms AronowAudit.P018.score_product
+#print axioms AronowAudit.P018.expit_bounds
+#print axioms AronowAudit.P018.meat_symmetric
+#print axioms AronowAudit.P018.logistic_numeric_certificate
+#print axioms AronowAudit.P018.two_role_counterexample
+#print axioms AronowAudit.P018.shared_role_expansion
+#print axioms AronowAudit.P018.gls_variance_counterexample
+#print axioms AronowAudit.P018.correct_gls_identity
+#print axioms AronowAudit.P018.ordered_index_counterexample
+#print axioms AronowAudit.P018.negative_ols_certificate
+#print axioms AronowAudit.P018.standard_error_domain
+#print axioms AronowAudit.P018.truncation_contraction
+#print axioms AronowAudit.P018.scaled_truncation
+#print axioms AronowAudit.P018.negative_implies_deviation
+#print axioms AronowAudit.P018.table_ratios_corrected
+#print axioms AronowAudit.P018.table_rounding_constraints
+#print axioms AronowAudit.P018.table_rounding_ratio
+#print axioms AronowAudit.P018.table_magnitude_correction
+#print axioms AronowAudit.P018.variance_correction
+#print axioms AronowAudit.P018.variance_sum_identity
+#print axioms AronowAudit.P018.variance_consistency_corrected
+#print axioms AronowAudit.P018.sandwich_difference
+#print axioms AronowAudit.P018.corrected_chebyshev
+#print axioms AronowAudit.P018.inference_corrected
+#print axioms AronowAudit.P018.nonlinear_counterexample
+#print axioms AronowAudit.P018.nonlinear_matrix_certificate
+#print axioms AronowAudit.P018.appendixB_counterexample
+#print axioms AronowAudit.P018.missing_N_counterexample
+#print axioms AronowAudit.P018.sign_mean_counterexample
+#print axioms AronowAudit.P018.concentrated_weights_counterexample
+#print axioms AronowAudit.P018.weighted_consistency_corrected
+#print axioms AronowAudit.P018.weighted_target_correction
+#print axioms AronowAudit.P018.scalar_target_counterexample
+#print axioms AronowAudit.P018.repeated_consistency_corrected
+#print axioms AronowAudit.P018.repeated_target_correction
+#print axioms AronowAudit.P018.variance_limit_with_UI
+#print axioms AronowAudit.P018.lemma1_printed
+#print axioms AronowAudit.P018.proposition1_printed
+#print axioms AronowAudit.P018.printed_corollaries_scalar
+#print axioms AronowAudit.P018.sandwich_scale_invariance
+#print axioms AronowAudit.P018.weighted_scale_invariance
+#print axioms AronowAudit.P018.logistic_bread_symmetric
+#print axioms AronowAudit.P018.sandwich_symmetric
+#print axioms AronowAudit.P018.printed_logistic_factorization
+#print axioms AronowAudit.P018.logistic_correction
+#print axioms AronowAudit.P018.logistic_tangent_bound
+#print axioms AronowAudit.P018.logLikelihood_tangent
+#print axioms AronowAudit.P018.logistic_witness_is_MLE
+#print axioms AronowAudit.P018.benchmark_correspondence_printed
+#print axioms AronowAudit.P018.benchmark_covariance_correction
+#print axioms AronowAudit.P018.degenerate_inference_counterexample
+#print axioms AronowAudit.P018.degenerate_numeric_certificate
+#print axioms AronowAudit.P018.negative_sample_population
+#print axioms AronowAudit.P018.dyad_counts
+#print axioms AronowAudit.P018.expectation_placement_correction
+#print axioms AronowAudit.P018.simulation_design_correction
+#print axioms AronowAudit.P018.infinite_moments_counterexample
+#print axioms AronowAudit.P018.corollaries_corrected_conclusions
+#print axioms AronowAudit.P018.nonlinear_bounds
+#print axioms AronowAudit.P018.residual_substitution_bound
+#print axioms AronowAudit.P018.ols_score_identity
+#print axioms AronowAudit.P018.variance_sparse_identity
+#print axioms AronowAudit.P018.intercept4_fit
+#print axioms AronowAudit.P018.fitted_products_counterexample
+#print axioms AronowAudit.P018.printed_targets_counterexample
+#print axioms AronowAudit.P018.printed_bread_numeric_certificate
+#print axioms AronowAudit.P018.score_projection_decomposition
+#print axioms AronowAudit.P018.contrast_coverage_corrected
+#print axioms AronowAudit.P018.inverse_spike_counterexample
+#print axioms AronowAudit.P018.inverse_gram_counterexample
+#print axioms AronowAudit.P018.shared_random_effect_covariance
+#print axioms AronowAudit.P018.random_intercept_lower_bound
+#print axioms AronowAudit.P018.concentrated_repetitions_counterexample
+#print axioms AronowAudit.P018.matrix_inverse_scale
+#print axioms AronowAudit.P018.meat_scale
+#print axioms AronowAudit.P018.weighted_sample_scale_invariance
+#print axioms AronowAudit.P018.standard_error_correction
+#print axioms AronowAudit.P018.truncation_keeps_consistency
+#print axioms AronowAudit.P018.logistic_counterexample
+#print axioms AronowAudit.P018.outer_positive_semidefinite
+#print axioms AronowAudit.P018.score_gram_terms_psd
+#print axioms AronowAudit.P018.ordered_index_general
+#print axioms AronowAudit.P018.negative_diagonals_vanish
+#print axioms AronowAudit.P018.normalized_overlap_coefficient
+#print axioms AronowAudit.P018.generic_score_meat_psd
+#print axioms AronowAudit.P018.conditional_moment_correction
+#print axioms AronowAudit.P018.population_meat_variance_bounds
+#print axioms AronowAudit.P018.normalized_sample_sandwich
+#print axioms AronowAudit.P018.corrected_target_reductions
+#print axioms AronowAudit.P018.repeated_target_normalization
+#print axioms AronowAudit.P018.appendixC_corrected_steps
+#print axioms AronowAudit.P018.incidence_meat_structure
+#print axioms AronowAudit.P018.table_exact_ratios
+#print axioms AronowAudit.P018.expit_positive_form
+#print axioms AronowAudit.P018.expit_hasDerivAt
+#print axioms AronowAudit.P018.predictor_partial_derivative
+#print axioms AronowAudit.P018.scalar_logLikelihood_derivative
+#print axioms AronowAudit.P018.logistic_formula_correction
+#print axioms AronowAudit.P018.logistic_summed_formulas
+#print axioms AronowAudit.P018.number_of_dyads
+#print axioms AronowAudit.P018.positive_definite_two
+#print axioms AronowAudit.P018.nonlinear_matrices_positive
+#print axioms AronowAudit.P018.logistic_covariances_positive
+#print axioms AronowAudit.P018.sandwich_positive_semidefinite
+#print axioms AronowAudit.P018.sandwich_difference_of_grams
+
+#print axioms AronowAudit.P018.significance_rounding_positive
+#print axioms AronowAudit.P018.significance_rounding_literal_fails
+
+#print axioms AronowAudit.P018.covariance_linear_map
+#print axioms AronowAudit.P018.covariance_score_scale
+#print axioms AronowAudit.P018.meanMat_scale
+#print axioms AronowAudit.P018.meanVec_scale
+#print axioms AronowAudit.P018.matrix_inverse_scale_total
+
+#print axioms AronowAudit.P018.uniform_unit_moment
+#print axioms AronowAudit.P018.uniform_unit_moments
+#print axioms AronowAudit.P018.uniform_pair_monomial
+
+#print axioms AronowAudit.P018.uniform_unit_power_L2
+#print axioms AronowAudit.P018.uniform_pair_monomial_integrable
+#print axioms AronowAudit.P018.uniform_polynomial_integral
+#print axioms AronowAudit.P018.nonlinear_population_projection
+
+#print axioms AronowAudit.P018.nonlinear_model_assumptions

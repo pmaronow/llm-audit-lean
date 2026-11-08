@@ -1,0 +1,82 @@
+[
+  {
+    "target_id": "P053-T1",
+    "theorem": "SAP.P053.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take S=R, n1=n0=2 and y=(1,1,0,0). There are six supported assignments, including fourA and fourB. scratch/Check.lean compiles their support membership, treated-success counts, zero differences and table (1,1,1,1), importing Defs only. More generally 1<=n1<n1+n0 makes the support nonempty. Exact rational enumeration checks the affine identities and table identification on all 5,208 assignment/vector cases with 2<=N<=6. Empty codomain types do not drive the theorem; real-valued table and symmetric-sample statistics are substantive instances.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P053-T2",
+    "theorem": "SAP.P053.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The four-unit population and both assignments are explicit, with a six-element support. For every m>=1, repeatA and repeatB contain 2m of 4m units, so the repeated support is nonempty; the distinguished label (0,0) exists because m>0. Exact rational checks at m=1,2,3 confirm both differing statistics on the equal-difference assignments. With Y1=Y0=repeatY, the full mathematical family actually has tau=0, effect variance 0, outcome variances N/(4(N-1))->1/4, allocation 1/2 and raw fourth-moment average 1. The theorem asserts the finite counterexamples and the explicitly disclosed, smaller set of scaling facts, rather than a full S5 certificate.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P053-T3",
+    "theorem": "SAP.P053.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The six-unit support has 20 assignments and the four-unit support has six; exact rational enumeration checks all asserted frequencies, tail probabilities and rejection inequalities. The general monotonicity implication has the identity transformation as an instance for every outcome vector, and strictly increasing nonlinear functions also qualify. Positive n1,n0 ensure a nonempty support and positive arm divisors.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P053-T4",
+    "theorem": "SAP.P053.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example p=3/4, S1=2 and S0=1 satisfy every antecedent and the strict inequality. The denominator p*(1-p) is positive throughout the quantified domain. Factoring the difference proves the identity and equivalence; 80 rational parameter checks include p=1/2, equal standard deviations and zero standard deviations.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P053-T5",
+    "theorem": "SAP.P053.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A nonconstant S5 instance is N=10m, n1=2m, n0=8m, with Y1=Y0 taking +1 on 5m units and -1 on 5m units, m=k+1. Its parameter tuple is (p,v1,v0,vt,tauInf)=(1/5,1,1,0,0): outcome variances are N/(N-1), effect variance and mean effect are zero, and the raw fourth-moment average is 2. A fixed shift of Y1 also supplies nonzero tauInf with bounded fourth moments. Independently, scratch/Check.lean compiles a complete Regularity instance with n1=n0=k+2 and zero outcomes, using no Challenge theorem.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P053-T6",
+    "theorem": "SAP.P053.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use N=10m, n1=2m, n0=8m, Y1=Y0=+1 on 5m units and -1 on the other 5m, m=k+1. This satisfies Regularity with (p,v1,v0,vt,tauInf)=(1/5,1,1,0,0), local effects, constant effects, SharpNull, v0>0 and L_OLS=25/4>0 simultaneously. Every control sample has 8m units but each outcome value occurs only 5m times, so it contains both signs; its centered sum of squares is at least 15m/2. Thus every supported assignment has V_OLS>=75/(16*(10m-2))>0, proving PositiveOLS for the entire sequence. Exact enumeration confirms minima 75/128 and 25/96 at m=1,2. The added condition is substantive: balanced binary sharp-null populations with n1=n0=N/2 and half successes satisfy S5 with positive variance limits but have zero OLS variance at the all-success-treated assignment for every N.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P053-T8",
+    "theorem": "SAP.P053.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "heterogeneousWitness is an explicit nonconstant, heterogeneous, zero-average-effect sequence with N=10m, n1=2m and n0=8m, m=k+1. Its variances are 4N/(N-1), N/(N-1) and N/(N-1), and its raw fourth-moment average is 17, so the Regularity tuple (1/5,4,1,1,0) is consistent. The assignment support has binomial(10m,2m)>0 elements. Independent exact enumeration of all 45 assignments at m=1 and all 4,845 at m=2 verifies every finite variance formula, giving actual variances 9/4 and 81/76. The nonconstant sharp-null sequence described for T6 also satisfies the universal constant-effect branch of T8.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P053-T7",
+    "theorem": "SAP.P053.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The nonconstant sharp-null sequence N=10m, n1=2m, n0=8m, with equal Y1,Y0 taking each of +/-1 on 5m units, satisfies all hypotheses with p=1/5, sigma1=sigma0=1, vt=tauInf=0, including the local-effect antecedent. For a substantive unequal-limit instance, heterogeneousWitness satisfies them with sigma1=2, sigma0=1 and gives OLS and Neyman coefficients 10 and 85/4, with p=1/5 different from 1/2. Squaring the nonnegative standard-deviation parameters therefore adds no restriction beyond the canonical S5 interpretation.",
+    "confidence": "high"
+  }
+]

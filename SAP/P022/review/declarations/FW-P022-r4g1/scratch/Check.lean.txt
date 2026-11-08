@@ -1,0 +1,282 @@
+import SAP.P022.Defs
+
+open SAP.P022 Filter MeasureTheory
+open scoped BigOperators Topology ENNReal NNReal
+noncomputable section
+
+-- T11: all antecedents, including the additional variance-display bins.
+example : ∃ Va VH z L U LH UH : ℝ,
+    0 < Va ∧ 0 < VH ∧ 0 < z ∧
+    DisplaysAs L (-1555 / 1000) ∧ DisplaysAs U (192 / 1000) ∧
+    DisplaysAs LH (-1528 / 1000) ∧ DisplaysAs UH (165 / 1000) ∧
+    (U - L) / 2 = z * Real.sqrt Va ∧
+    (UH - LH) / 2 = z * Real.sqrt VH ∧
+    DisplaysAs Va (199 / 1000) ∧ DisplaysAs VH (186 / 1000) := by
+  refine ⟨(437 / 980) ^ 2, (423 / 980) ^ 2, 49 / 25,
+    -3111 / 2000, 385 / 2000, -3055 / 2000, 329 / 2000, ?_⟩
+  rw [Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 437 / 980),
+    Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 423 / 980)]
+  norm_num [DisplaysAs, Set.mem_Icc]
+
+-- T12(a): an admissible full-population design with nonconstant sharp-null outcomes.
+example : ∃ (d : Design) (y : Fin d.N → ℝ),
+    d.m + d.k = d.N ∧ ∃ i j, y i ≠ y j := by
+  refine ⟨fourUnitDesign, fun i => (i.val : ℝ), rfl,
+    ⟨0, by norm_num [fourUnitDesign]⟩, ⟨1, by norm_num [fourUnitDesign]⟩, ?_⟩
+  norm_num
+
+-- T12(b): a genuine nonempty finite collection, with nonnegative variances.
+example : ∃ (s : Finset (Fin 2)) (v : Fin 2 → ℝ) (c : ℝ),
+    s.Nonempty ∧ (∀ i ∈ s, 0 ≤ v i) ∧ c ≠ 0 := by
+  refine ⟨Finset.univ, fun i => (i.val : ℝ), 98 / 25, ?_, ?_, ?_⟩
+  · exact Finset.univ_nonempty
+  · intro i hi; exact Nat.cast_nonneg _
+  · norm_num
+
+-- T12(c), (e), and the upper-mean premise in (e) have ordinary numeric instances.
+example : ∃ c q d : ℝ, 391 / 2000 ≤ q ∧ 0 ≤ d ∧ d ≤ 867 / 500 ∧
+    d ^ 2 = c ^ 2 * q := by
+  refine ⟨3, 1 / 4, 3 / 2, ?_⟩; norm_num
+
+example : ∃ w v : ℝ, 3447 / 2000 ≤ w ∧ w ^ 2 ≤ (98 / 25 : ℝ) ^ 2 * v := by
+  refine ⟨3447 / 2000, 11881809 / 61465600, ?_⟩; norm_num
+
+example : ∃ V b : ℝ, V ≤ 399 / 2000 ∧ b ≤ -(13 / 2000) := by
+  refine ⟨399 / 2000, -(13 / 2000), ?_⟩; norm_num
+
+-- T3: all finite antecedents with C>0 and nonconstant bounded outcomes.
+example : ∃ (d : Design) (y1 y0 : Fin d.N → ℝ) (C c : ℝ),
+    0 ≤ C ∧ (∀ i, |y1 i| ≤ C ∧ |y0 i| ≤ C) ∧
+    0 < c ∧ c * d.N ≤ d.m ∧ c * d.N ≤ d.k ∧ 2 / c ≤ (d.N : ℝ) ∧
+    ∃ i j, y1 i ≠ y1 j := by
+  refine ⟨fourUnitDesign, fun i => (i.val : ℝ), fun i => -(i.val : ℝ), 3, 1 / 2,
+    by norm_num, ?_, by norm_num, by norm_num [fourUnitDesign],
+    by norm_num [fourUnitDesign], by norm_num [fourUnitDesign],
+    ⟨0, by norm_num [fourUnitDesign]⟩, ⟨1, by norm_num [fourUnitDesign]⟩, ?_⟩
+  · intro i
+    have hi : (i.val : ℝ) ≤ 3 := by
+      have h : i.val ≤ 3 := by have := i.isLt; change i.val < 4 at this; omega
+      exact_mod_cast h
+    simpa [abs_of_nonneg (Nat.cast_nonneg i.val : (0 : ℝ) ≤ i.val)] using And.intro hi hi
+  · norm_num
+
+-- Elementary limit for the balanced, admissible row allocations.
+lemma audit_balanced_allocation :
+    Tendsto (fun q => ((reciprocalWitness.design q).m : ℝ) /
+      (reciprocalWitness.design q).N) atTop (𝓝 (1 / 2)) := by
+  have hm := (tendsto_mod_div_atTop_nhds_zero_nat (m := 2) (by norm_num)).comp
+    (tendsto_add_atTop_nat 4)
+  have ht := (tendsto_const_nhds (x := (1 : ℝ))).sub hm
+  have ht' := ht.div_const 2
+  norm_num only [sub_zero] at ht'
+  convert ht' using 1
+  funext q
+  dsimp [reciprocalWitness]
+  have hn : ((q + 4 : ℕ) : ℝ) ≠ 0 := by positivity
+  have heq : (((q + 4) % 2 : ℕ) : ℝ) + 2 * (((q + 4) / 2 : ℕ) : ℝ) =
+      ((q + 4 : ℕ) : ℝ) := by exact_mod_cast (Nat.mod_add_div (q + 4) 2)
+  field_simp
+  nlinarith
+
+lemma audit_total_allocation :
+    Tendsto (fun q => (((reciprocalWitness.design q).m : ℝ) +
+      (reciprocalWitness.design q).k) / (reciprocalWitness.design q).N)
+      atTop (𝓝 1) := by
+  have hconst : (fun q => (((reciprocalWitness.design q).m : ℝ) +
+      (reciprocalWitness.design q).k) / (reciprocalWitness.design q).N) = fun _ : ℕ => 1 := by
+    funext q
+    have h : (q + 4) / 2 + (q + 4 - (q + 4) / 2) = q + 4 := by omega
+    have hR : (((q + 4) / 2 : ℕ) : ℝ) + ((q + 4 - (q + 4) / 2 : ℕ) : ℝ) =
+      ((q + 4 : ℕ) : ℝ) := by exact_mod_cast h
+    dsimp [reciprocalWitness]
+    rw [hR, div_self (by positivity)]
+  rw [hconst]
+  exact tendsto_const_nhds
+
+def auditZero : ExperimentSequence :=
+  { reciprocalWitness with y1 := fun _ => 0, y0 := fun _ => 0 }
+
+lemma audit_mean_const {n : ℕ} (hn : 0 < n) (a : ℝ) :
+    finiteMean (fun _ : Fin n => a) = a := by
+  have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  exact Finset.expect_const Finset.univ_nonempty a
+
+lemma audit_origin_cdf (t : Bool) (x : ℝ) :
+    lawCDF originLaw t x = if 0 ≤ x then 1 else 0 := by
+  cases t <;> by_cases hx : 0 ≤ x <;> simp [lawCDF, originLaw, Set.indicator, hx]
+
+lemma audit_origin_left_cdf (t : Bool) (x : ℝ) :
+    lawLeftCDF originLaw t x = if 0 < x then 1 else 0 := by
+  cases t <;> by_cases hx : 0 < x <;> simp [lawLeftCDF, originLaw, Set.indicator, hx]
+
+lemma audit_zero_cdf (q : ℕ) (t : Bool) (x : ℝ) :
+    empiricalCDF (rowOutcomes auditZero t q) x = if 0 ≤ x then 1 else 0 := by
+  cases t <;>
+    change finiteMean (fun _ : Fin (q + 4) => if (0 : ℝ) ≤ x then 1 else 0) = _
+  all_goals exact audit_mean_const (by omega) _
+
+lemma audit_zero_left_cdf (q : ℕ) (t : Bool) (x : ℝ) :
+    empiricalLeftCDF (rowOutcomes auditZero t q) x = if 0 < x then 1 else 0 := by
+  cases t <;>
+    change finiteMean (fun _ : Fin (q + 4) => if (0 : ℝ) < x then 1 else 0) = _
+  all_goals exact audit_mean_const (by omega) _
+
+lemma audit_zero_conditions : Conditions123 auditZero originLaw 1 (1 / 2) := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+    ?_, ?_, ?_, ?_⟩
+  · simpa [auditZero] using audit_balanced_allocation
+  · simpa [auditZero] using audit_total_allocation
+  · intro f
+    have heq : (fun q => finiteMean (fun i : Fin (auditZero.design q).N =>
+        f (auditZero.y1 i.val, auditZero.y0 i.val))) = fun _ : ℕ => f (0, 0) := by
+      funext q
+      change finiteMean (fun _ : Fin (q + 4) => f (0, 0)) = _
+      exact audit_mean_const (by omega) _
+    rw [heq]
+    simpa [originLaw] using (tendsto_const_nhds (x := f (0, 0)) :
+      Tendsto (fun _ : ℕ => f (0, 0)) atTop (𝓝 (f (0, 0))))
+  · intro t x hx
+    simp only [audit_zero_cdf, audit_origin_cdf]
+    exact tendsto_const_nhds
+
+lemma audit_zero_atom_left : AtomLeftConvergence auditZero originLaw := by
+  intro t x hx
+  simp only [audit_zero_left_cdf, audit_origin_left_cdf]
+  exact tendsto_const_nhds
+
+-- T2: all hypotheses, including atom-left convergence, hold together.
+example : ∃ (S : ExperimentSequence) (H : JointLaw) (θ ρ : ℝ),
+    Conditions123 S H θ ρ ∧ AtomLeftConvergence S H :=
+  ⟨auditZero, originLaw, 1, 1 / 2, audit_zero_conditions, audit_zero_atom_left⟩
+
+-- T3: every asymptotic antecedent and a positive admissible c, epsilon, and C.
+example : ∃ (S : ExperimentSequence) (θ ρ C ε c : ℝ),
+    (0 < θ ∧ θ ≤ 1) ∧ (0 < ρ ∧ ρ < 1) ∧
+    Tendsto (fun q => ((S.design q).m : ℝ) / (S.design q).N) atTop (𝓝 (θ * ρ)) ∧
+    Tendsto (fun q => (((S.design q).m : ℝ) + (S.design q).k) / (S.design q).N)
+      atTop (𝓝 θ) ∧ 0 ≤ C ∧ (∀ i, |S.y1 i| ≤ C ∧ |S.y0 i| ≤ C) ∧
+    0 < ε ∧ 0 < c ∧ c < min (θ * ρ) (θ * (1 - ρ)) := by
+  refine ⟨auditZero, 1, 1 / 2, 1, 1, 1 / 4, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · norm_num
+  · norm_num
+  · simpa [auditZero] using audit_balanced_allocation
+  · simpa [auditZero] using audit_total_allocation
+  · norm_num
+  · intro i; norm_num [auditZero]
+  · norm_num
+  · norm_num
+  · norm_num
+
+-- T18: independently check the printed-reading witness, using only Defs/Mathlib.
+lemma audit_mean_fin_eq (f : ℕ → ℝ) (n : ℕ) :
+    finiteMean (fun i : Fin n => f i.val) = (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, f i := by
+  unfold finiteMean
+  rw [Fintype.expect_eq_sum_div_card, Fintype.card_fin, Fin.sum_univ_eq_sum_range]
+  rw [div_eq_mul_inv, mul_comm]
+
+lemma audit_reciprocal_weak : weakPopulationConvergence reciprocalWitness originLaw := by
+  intro f
+  let g : ℕ → ℝ := fun i => f (-(1 / ((i : ℝ) + 1)), -(1 / ((i : ℝ) + 1)))
+  have hy : Tendsto (fun i : ℕ => -(1 / ((i : ℝ) + 1))) atTop (𝓝 (0 : ℝ)) := by
+    simpa using (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).neg
+  have hf : Tendsto (fun i : ℕ => f (-(1 / ((i : ℝ) + 1)), -(1 / ((i : ℝ) + 1))))
+      atTop (𝓝 (f (0, 0))) :=
+    f.continuous.continuousAt.tendsto.comp (hy.prodMk_nhds hy)
+  have hc := hf.cesaro.comp (tendsto_add_atTop_nat 4)
+  change Tendsto (fun q => finiteMean (fun i : Fin (q + 4) => g i.val)) atTop
+    (𝓝 (∫ p, f p ∂(originLaw : Measure (ℝ × ℝ))))
+  simp_rw [audit_mean_fin_eq g]
+  simpa [g, Function.comp_def, originLaw] using hc
+
+lemma audit_origin_continuous_off_zero (t : Bool) (x : ℝ) (hx : x ≠ 0) :
+    ContinuousAt (lawCDF originLaw t) x := by
+  rcases lt_or_gt_of_ne hx with hneg | hpos
+  · refine (continuousAt_const (y := (0 : ℝ))).congr_of_eventuallyEq ?_
+    filter_upwards [Iio_mem_nhds hneg] with y hy
+    change y < 0 at hy
+    simp [audit_origin_cdf, not_le.mpr hy]
+  · refine (continuousAt_const (y := (1 : ℝ))).congr_of_eventuallyEq ?_
+    filter_upwards [Ioi_mem_nhds hpos] with y hy
+    change 0 < y at hy
+    simp [audit_origin_cdf, le_of_lt hy]
+
+lemma audit_cdf_all {n : ℕ} (hn : 0 < n) (y : Fin n → ℝ) (x : ℝ)
+    (hy : ∀ i, y i ≤ x) : empiricalCDF y x = 1 := by
+  unfold empiricalCDF
+  simp only [ite_eq_left (hy _)]
+  exact audit_mean_const hn 1
+
+lemma audit_reciprocal_below (q : ℕ) (t : Bool)
+    (i : Fin (reciprocalWitness.design q).N) :
+    rowOutcomes reciprocalWitness t q i ≤ reciprocalThreshold q := by
+  have hi : i.val < q + 4 := i.isLt
+  have hiR : (i.val : ℝ) + 1 ≤ 2 * ((q : ℝ) + 4) := by
+    have hi' : (i.val : ℝ) + 1 ≤ ((q + 4 : ℕ) : ℝ) := by exact_mod_cast hi
+    push_cast at hi'
+    nlinarith [show (0 : ℝ) ≤ q from Nat.cast_nonneg q]
+  have hr := neg_le_neg (one_div_le_one_div_of_le
+    (by positivity : (0 : ℝ) < (i.val : ℝ) + 1) hiR)
+  cases t <;> exact hr
+
+lemma audit_threshold_negative (q : ℕ) : reciprocalThreshold q < 0 := by
+  unfold reciprocalThreshold
+  exact neg_neg_of_pos (by positivity)
+
+lemma audit_reciprocal_conditions : Conditions123 reciprocalWitness originLaw 1 (1 / 2) := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+    ?_, audit_total_allocation, audit_reciprocal_weak, ?_⟩
+  · simpa using audit_balanced_allocation
+  · intro t x hx
+    have hx0 : x = 0 := by
+      by_contra h
+      exact hx (audit_origin_continuous_off_zero t x h)
+    subst x
+    have heq : (fun q => empiricalCDF (rowOutcomes reciprocalWitness t q) 0) =
+        fun _ : ℕ => (1 : ℝ) := by
+      funext q
+      exact audit_cdf_all (by change 0 < q + 4; omega) _ _
+        (fun i => le_trans (audit_reciprocal_below q t i) (audit_threshold_negative q).le)
+    rw [heq, audit_origin_cdf]
+    norm_num
+
+lemma audit_cdf_bounds {n : ℕ} (hn : 0 < n) (y : Fin n → ℝ) (x : ℝ) :
+    0 ≤ empiricalCDF y x ∧ empiricalCDF y x ≤ 1 := by
+  have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  constructor
+  · exact Finset.expect_nonneg (fun i hi => by split_ifs <;> norm_num)
+  · exact Finset.expect_le Finset.univ_nonempty (fun i hi => by split_ifs <;> norm_num)
+
+lemma audit_distance_eq_one {n : ℕ} (hn : 0 < n) (y : Fin n → ℝ) (t : Bool)
+    (x : ℝ) (hx : x < 0) (hy : ∀ i, y i ≤ x) :
+    cdfDistance (lawCDF originLaw t) (empiricalCDF y) = 1 := by
+  have hbound : ∀ z, |lawCDF originLaw t z - empiricalCDF y z| ≤ 1 := by
+    intro z
+    have hp : 0 ≤ lawCDF originLaw t z ∧ lawCDF originLaw t z ≤ 1 := by
+      rw [audit_origin_cdf]; split_ifs <;> norm_num
+    have hq := audit_cdf_bounds hn y z
+    exact abs_le.mpr ⟨by linarith [hp.1, hp.2, hq.1, hq.2],
+      by linarith [hp.1, hp.2, hq.1, hq.2]⟩
+  have hb : BddAbove (Set.range (fun z => |lawCDF originLaw t z - empiricalCDF y z|)) := by
+    refine ⟨1, ?_⟩
+    rintro a ⟨z, rfl⟩
+    exact hbound z
+  unfold cdfDistance
+  apply le_antisymm
+  · exact csSup_le (Set.range_nonempty _) (by rintro a ⟨z, rfl⟩; exact hbound z)
+  · have h := le_csSup hb (Set.mem_range_self x)
+    simpa [audit_origin_cdf, not_le.mpr hx, audit_cdf_all hn y x hy] using h
+
+lemma audit_reciprocal_distance (q : ℕ) (t : Bool) :
+    cdfDistance (lawCDF originLaw t) (empiricalCDF (rowOutcomes reciprocalWitness t q)) = 1 :=
+  audit_distance_eq_one (by change 0 < q + 4; omega) _ t (reciprocalThreshold q)
+    (audit_threshold_negative q) (audit_reciprocal_below q t)
+
+lemma audit_reciprocal_not_lemma : ¬Lemma2Conclusions reciprocalWitness originLaw 1 (1 / 2) := by
+  intro h
+  have ht : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 0) := by
+    simpa only [audit_reciprocal_distance] using h.1 true
+  have hf := tendsto_nhds_unique (tendsto_const_nhds (x := (1 : ℝ))) ht
+  norm_num at hf
+
+example : T18Statement :=
+  ⟨reciprocalWitness, originLaw, 1, 1 / 2, audit_reciprocal_conditions, audit_reciprocal_not_lemma⟩

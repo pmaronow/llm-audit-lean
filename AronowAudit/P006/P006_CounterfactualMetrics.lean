@@ -3,8 +3,8 @@ import Mathlib
 /-!
 P006: On Counterfactual Metrics for Social Welfare: Incentives, Ranking,
 and Information Asymmetry. All locations are one-based PDF pages.
-The file contains definitions, counterexamples to printed claims and
-corrected results.
+The printed claims and their corrections are separate declarations.
+No mathematical axioms are introduced. `sorry` marks an unproved statement.
 -/
 
 namespace AronowAudit.P006
@@ -88,7 +88,7 @@ and random estimator. A policy is fixed before this law is integrated.
 `C` is X for full information and X×U for private information. -/
 structure Experiment (Ω C : Type*) [MeasurableSpace Ω] [MeasurableSpace C]
     (n : ℕ) where
-  /-- Section 2, PDF p. 3: "i ∈ {1,...,n}"; the sample is nonempty. -/
+  /-- Section 2, PDF p. 3: "i ∈ {1,...,n}"; the population is nonempty. -/
   hn : 0 < n
   /-- Appendix B.1, PDF p. 14: integration "with respect to the probability
   measure" for X; Section 2, p. 3, supplies the iid covariate draw. -/
@@ -175,7 +175,7 @@ def vectorSigma (E : Experiment Ω C n) (π : C → ℝ) : MeasurableSpace Ω :=
 end Experiment
 
 /-- Standing assumptions of Section 2 (PDF p. 3), strong ignorability in
-Appendix B.3 (p. 15), and the i.i.d./independent treatment assumptions.
+Appendix B.3 (p. 15), and the i.i.d./independent treatment reading S9.
 The potential-outcome population law is fixed across policies.
 The indicator conditional-moment identity expresses full binary-treatment
 conditional independence from the potential-outcome pair, not merely equality
@@ -244,7 +244,7 @@ def VectorUnbiased {Ω C : Type*} [MeasurableSpace Ω] [MeasurableSpace C]
       =ᵐ[E.law π] (fun ω => E.μ0 (E.X i ω))
 
 /-- Concrete binary-covariate examples (T1, T4, T5, T18, T25), with
-π=(u,v). False denotes 0 and true denotes 1. -/
+"π=(u,v)" in the validator derivations. False denotes 0 and true denotes 1. -/
 abbrev BinaryPolicy := ℝ × ℝ
 
 /-- Section 2, PDF p. 3: "π : X → [0,1]" specialized to the two-point support; the two real coordinates are π(0),π(1). -/
@@ -322,7 +322,7 @@ def effectE001 (x : Bool) : ℝ := if x then 1 else 9/10
 /-- T1: the exact zero-on-empty ATO/ATT objective for n=2. -/
 def rewardE001 (π : BinaryPolicy) : ℝ := twoATO (1/2) effectE001 π
 
-/-- T1: the polynomial objective F₂(u,v). -/
+/-- T1: the polynomial objective F₂(u,v) in the validator's exact derivation. -/
 theorem rewardE001_formula (π : BinaryPolicy) :
     rewardE001 π = (9*π.1+10*π.2)*(4-π.1-π.2)/40 := by
   unfold rewardE001 effectE001
@@ -405,11 +405,11 @@ theorem oneTT_formula (y1 : Bool → ℝ) (est : Bool → Bool → ℝ)
     Fintype.sum_bool, Fin.sum_univ_one]
   ring
 
-/-- T4, estimator of witness A (P006-E002): 2·1(x=X₁)−1.
+/-- T4, estimator of witness A: "2·1(x=X₁)−1" (validator E002, §2).
 The argument order is observed covariate, then queried covariate. -/
 def estA (s x : Bool) : ℝ := if x = s then 1 else -1
 
-/-- T4, estimator of witness B (P006-E002): 1−2·1(x=X₁). -/
+/-- T4, estimator of witness B: "1−2·1(x=X₁)" (validator E002, §3). -/
 def estB (s x : Bool) : ℝ := -estA s x
 
 /-- T4: pointwise means of the random estimator under fair X. -/
@@ -499,7 +499,7 @@ theorem T4_unbiasedness_counterexamples :
     norm_num [welfareB, binaryWelfare]
   · rw [bestValue_eq optB]; norm_num [welfareB, binaryWelfare]
 
-/-- T5: the shared estimator 1(x=Xʲ)−1(x=Xᵏ) (P006-E002).
+/-- T5: the shared estimator "1(x=Xʲ)−1(x=Xᵏ)" (validator E002, §4).
 The two observed covariates are independent fair Bernoulli draws. -/
 def sharedEst (xj xk x : Bool) : ℝ := (if x = xj then 1 else 0) -
   (if x = xk then 1 else 0)
@@ -604,7 +604,7 @@ theorem T18_regret_sign_counterexample :
 /-- P006-T19 (corrected Proposition 1 proof, PDF p. 17).
 For 0<p<1 and β>1, the welfare optimum treats only covariate 0,
 and the regret of (0,1) is 1−2p+pβ, exceeding 1−pβ by 2p(β−1).
-The n=2 best response is established above. -/
+The n=2 best response has been independently certified above. -/
 theorem T19_corrected_regret (p β : ℝ) (hp : 0 < p ∧ p < 1) (hβ : 1 < β) :
     IsBest binaryPolicies (binaryWelfare p (effectP1 β)) (1,0) ∧
     bestValue binaryPolicies (binaryWelfare p (effectP1 β)) = 1-p ∧
@@ -665,6 +665,36 @@ def eventMean {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
     (s : Set Ω) (f : Ω → ℝ) : ℝ :=
   (∫ ω in s, f ω ∂μ) / (μ s).toReal
 
+/-- P006-T2(i),(ii): corrected Propositions 6–7, PDF pp. 15–16.
+For the actual zero-on-empty average rewards, the unconditional mean is
+hₙ(q)A, not A/q. The conditional mean given at least one treatment is A/q.
+Best responses maximize hₙ(q)A, with the full random-vector unbiasedness
+condition required for ATT. Countability represents the discrete support. -/
+theorem T2_corrected_average {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] [Countable C] [MeasurableSingletonClass C] {n : ℕ}
+    (E : Experiment Ω C n) (hS : Standing E)
+    (hU : VectorUnbiased E {π | Admissible π}) :
+    (∀ π, Admissible π →
+      (E.law π {ω | treatedCount (fun i => E.T π i ω) = 0}).toReal =
+        (1-E.q π)^n ∧
+      E.expectedATO π = E.averageObjective E.μ1 π ∧
+      E.expectedATT π = E.averageObjective E.τ π ∧
+      E.averageObjective E.μ1 π =
+        (if 0 < E.q π then (1-(1-E.q π)^n)*(E.A E.μ1 π/E.q π) else 0) ∧
+      E.averageObjective E.τ π =
+        (if 0 < E.q π then (1-(1-E.q π)^n)*(E.A E.τ π/E.q π) else 0) ∧
+      (0 < E.q π →
+        eventMean (E.law π) {ω | 0 < treatedCount (fun i => E.T π i ω)}
+          (fun ω => wATO (fun i => E.T π i ω) (E.observed π ω)) =
+            E.A E.μ1 π / E.q π ∧
+        eventMean (E.law π) {ω | 0 < treatedCount (fun i => E.T π i ω)}
+          (fun ω => wATT (E.μhat π ω) (fun i => E.X i ω)
+            (fun i => E.T π i ω) (E.observed π ω)) = E.A E.τ π / E.q π)) ∧
+    (∀ π, (IsBest {π | Admissible π} E.expectedATO π ↔
+       IsBest {π | Admissible π} (E.averageObjective E.μ1) π) ∧
+      (IsBest {π | Admissible π} E.expectedATT π ↔
+       IsBest {π | Admissible π} (E.averageObjective E.τ) π)) := by
+  sorry
 
 /-- Finite-support objects in T2(iii): pⱼ>0, Σpⱼ=1 and m₁≥⋯≥m_K.
 Lean uses indices 0,…,K−1. All stochastic policies remain allowed. -/
@@ -685,7 +715,7 @@ def prefixMass {K : ℕ} (p : Fin K → ℝ) (j : Fin K) : ℝ :=
 def prefixA {K : ℕ} (p m : Fin K → ℝ) (j : Fin K) : ℝ :=
   ∑ i, if i < j then p i * m i else 0
 
-/-- T2(iii), corrected finite-n best response: treat every score above the
+/-- T2(iii), repaired finite-n best response: treat every score above the
 boundary, randomize at the boundary, treat none below it. -/
 def thresholdRule {K : ℕ} (p : Fin K → ℝ) (j : Fin K) (q : ℝ) : Fin K → ℝ :=
   fun i => if i < j then 1 else if i = j then (q-prefixMass p j)/p j else 0
@@ -695,8 +725,29 @@ printed rule, which differs from the printed finite-n sample reward. -/
 def finiteConditionalAverage {K : ℕ} (p m π : Fin K → ℝ) : ℝ :=
   if 0 < finiteMass p π then finiteA p m π / finiteMass p π else 0
 
+/-- P006-T2(iii),(iv): finite-support correction, including the exact threshold
+frontier, existence of a threshold optimum for the finite-n reward, and the
+objective that the printed arg-max-only rule actually maximizes. -/
+theorem T2_finite_threshold {K : ℕ} (hK : 0 < K) (n : ℕ) (hn : 0 < n)
+    (p m : Fin K → ℝ) (hp : ∀ i, 0 < p i) (hsum : ∑ i, p i = 1)
+    (hm : Antitone m) :
+    (∀ j q, prefixMass p j ≤ q → q ≤ prefixMass p j+p j →
+      thresholdRule p j q ∈ finitePolicies ∧
+      finiteMass p (thresholdRule p j q) = q ∧
+      finiteA p m (thresholdRule p j q) = prefixA p m j + m j*(q-prefixMass p j) ∧
+      ∀ π ∈ finitePolicies, finiteMass p π = q →
+        finiteA p m π ≤ prefixA p m j + m j*(q-prefixMass p j)) ∧
+    (∃ j q, prefixMass p j ≤ q ∧ q ≤ prefixMass p j+p j ∧
+      IsBest finitePolicies
+        (fun π => emptyFactor n (finiteMass p π) * finiteA p m π)
+        (thresholdRule p j q)) ∧
+    (if 0 < m ⟨0,hK⟩ then
+      IsBest finitePolicies (finiteConditionalAverage p m) (printedAverageRule m) ∧
+        finiteConditionalAverage p m (printedAverageRule m) = m ⟨0,hK⟩
+    else IsBest finitePolicies (finiteConditionalAverage p m) (fun _ => 0)) := by
+  sorry
 
-/-- T2(iv): with total sample size `n = 1`, the finite-sample objective is `A(π)`.
+/-- T2(iv): with one treatment unit the finite-n objective is A(π).
 This is an exact finite lemma, not a replacement for the general theorem. -/
 theorem T2_one_unit_factor (q A : ℝ) : emptyFactor 1 q * A = A := by
   simp [emptyFactor]
@@ -724,6 +775,23 @@ theorem positive_factor_regret {P : Type*} (PiSet : Set P) (V h : P → ℝ)
   have hV : 0 ≤ V b := by nlinarith
   exact ⟨hV, by dsimp [regret]; linarith⟩
 
+/-- P006-T3: corrected Proposition 2 (ATT Regret), PDF pp. 5,17–18.
+For any feasible class containing the zero policy, under vector-conditional
+unbiasedness the exact ATT expected reward is hₙ(q)V. Every best response
+has nonnegative welfare and regret at most the feasible welfare maximum.
+A welfare-maximizing policy supplies the printed maximum. -/
+theorem T3_corrected_ATT_regret {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] [Countable C] [MeasurableSingletonClass C] {n : ℕ}
+    (E : Experiment Ω C n) (hS : Standing E) (PiSet : Set (C → ℝ))
+    (hPiSet : ∀ π ∈ PiSet, Admissible π) (hz : (fun _ => 0) ∈ PiSet)
+    (hU : VectorUnbiased E PiSet) (b s : C → ℝ)
+    (hb : IsBest PiSet E.expectedATT b) (hs : IsBest PiSet E.V s) :
+    (∀ π ∈ PiSet, E.V π = E.A E.τ π ∧
+      E.expectedATT π = emptyFactor n (E.q π)*E.V π ∧
+      1 ≤ emptyFactor n (E.q π)) ∧
+    E.expectedATT (fun _ => 0) = 0 ∧ E.V (fun _ => 0) = 0 ∧
+    0 ≤ E.expectedATT b ∧ 0 ≤ E.V b ∧ regret PiSet E.V b ≤ bestValue PiSet E.V := by
+  sorry
 
 /-- A random-function estimator independent of the evaluation design,
 as in the sufficient implementation in T6(iv), Appendix D.2, PDF p. 21.
@@ -740,6 +808,81 @@ def IndependentEstimator {Ω C : Type*} [MeasurableSpace Ω]
         (∀ ω x, E.μhat π ω x = f π (Z ω) x) ∧
         IndepFun Z (fun ω => ((fun i => E.X i ω), (fun i => E.T π i ω))) (E.law π)
 
+/-- P006-T6(i)–(iii): corrected Assumption 1′ and Propositions 9 and 3,
+PDF pp. 4,5,17–18. The exact TT identity holds for every feasible fixed
+policy, hence equality of the two argmax sets for an arbitrary feasible class.
+For the unconstrained class the positive-effect rule is a best response. -/
+theorem T6_corrected_TT {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (PiSet : Set (C → ℝ)) (hPiSet : ∀ π ∈ PiSet, Admissible π)
+    (hU : TreatedUnbiased E E.μ0 PiSet) :
+    (∀ π ∈ PiSet, E.expectedTT π = (n : ℝ)*E.meanWelfare π ∧
+      E.V π = E.meanWelfare π) ∧
+    (∀ π, IsBest PiSet E.expectedTT π ↔ IsBest PiSet E.V π) ∧
+    (∀ π, IsBest PiSet E.expectedTT π → regret PiSet E.V π = 0) ∧
+    (PiSet = {π | Admissible π} → IsBest PiSet E.expectedTT (positiveRule E.τ)) := by
+  sorry
+
+/-- P006-T6(iv): an independent pointwise-unbiased random estimator supplies
+treated-evaluation unbiasedness. This is a sufficient implementation, not
+a claim that independence is necessary. -/
+theorem T6_independent_estimation {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (PiSet : Set (C → ℝ)) (hPiSet : ∀ π ∈ PiSet, Admissible π)
+    (hU : PointwiseUnbiased E PiSet) (hI : IndependentEstimator E PiSet) :
+    TreatedUnbiased E E.μ0 PiSet := by
+  sorry
+
+/-- P006-T7: corrected Theorem 1 (Incentive Alignment), PDF pp. 6,19.
+With strictly positive deterministic weights and an unconstrained class,
+the positive-effect rule maximizes reward. Every maximizer agrees with it
+almost surely wherever the effect is nonzero, so every best response has
+zero regret. Weighted expectations are explicitly required to be finite. -/
+theorem T7_corrected_weighted_alignment {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (g : C → ℝ) (hg : Measurable g) (hpos : ∀ x, 0 < g x)
+    (hU : TreatedUnbiased E E.μ0 {π | Admissible π})
+    (hprod : Integrable (fun x => g x * E.τ x) E.PX)
+    (hreward : ∀ π, Admissible π → ∀ i, Integrable
+      (fun ω => (E.observed π ω i-E.μhat π ω (E.X i ω)) *
+        bit (E.T π i ω) * g (E.X i ω)) (E.law π)) :
+    (∀ π, Admissible π →
+      E.expectedWeightedTT g π = (n : ℝ)*(∫ x, g x*E.τ x*π x ∂E.PX)) ∧
+    IsBest {π | Admissible π} (E.expectedWeightedTT g) (positiveRule E.τ) ∧
+    (∀ b, IsBest {π | Admissible π} (E.expectedWeightedTT g) b →
+      (∀ᵐ x ∂E.PX, (0 < E.τ x → b x = 1) ∧ (E.τ x < 0 → b x = 0)) ∧
+      E.V b = (∫ x, E.τ x * positiveRule E.τ x ∂E.PX) ∧
+      IsBest {π | Admissible π} E.V b ∧
+      regret {π | Admissible π} E.V b = 0) := by
+  sorry
+
+/-- P006-T26: Propositions 6 and 7 AS PRINTED, PDF pp. 15–16.
+The unconstrained discrete best responses are asserted to be the arg-max-only
+rules. No corrected averaging factor or conditional-unbiasedness assumption
+has been inserted. The declaration is false, refuted by T1 and T4, and its
+sorry is intentionally retained so the printed statement stays reviewable. -/
+theorem T26_printed_average_best_response {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] [Countable C] [MeasurableSingletonClass C] {n : ℕ}
+    (E : Experiment Ω C n) (hS : Standing E)
+    (hU : PointwiseUnbiased E {π | Admissible π}) :
+    IsBest {π | Admissible π} E.expectedATO (printedAverageRule E.μ1) ∧
+    IsBest {π | Admissible π} E.expectedATT (printedAverageRule E.τ) := by
+  sorry
+
+/-- P006-T27: Propositions 9 and 3 AS PRINTED, PDF pp. 5,17–18.
+Under fixed-x unbiasedness alone, TT is asserted to equal nV, have identical
+welfare and reward argmax sets, yield zero regret for every feasible class,
+and have the positive-effect rule as an unconstrained best response.
+T4 refutes these assertions; their hypotheses have not been repaired here. -/
+theorem T27_printed_TT_alignment {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (PiSet : Set (C → ℝ)) (hPiSet : ∀ π ∈ PiSet, Admissible π)
+    (hU : PointwiseUnbiased E PiSet) :
+    (∀ π ∈ PiSet, E.expectedTT π = (n : ℝ)*E.V π) ∧
+    (∀ π, IsBest PiSet E.expectedTT π ↔ IsBest PiSet E.V π) ∧
+    (∀ π, IsBest PiSet E.expectedTT π → regret PiSet E.V π = 0) ∧
+    (PiSet = {π | Admissible π} → IsBest PiSet E.expectedTT (positiveRule E.τ)) := by
+  sorry
 
 /-- Section 5, PDF p. 6: "μ₀(X)=E[μ₀(X,U)|X]".
 C=X×U is the agent's covariate, and b₀ is the principal's baseline using
@@ -784,6 +927,26 @@ theorem uniform_error_regret {P : Type*} (PiSet : Set P) (S V : P → ℝ)
   rw [regret, bestValue_eq hs]
   linarith
 
+/-- P006-T8(i)–(iii): corrected Theorem 3, PDF pp. 7,22.
+The estimator is unbiased at treated evaluations conditional on (X,U), while
+estimating μ₀(X). The exact expected-score identity and bias bound yield
+R≤2γ_marg for every feasible class and every best response.
+The welfare maximum is represented by its maximizing witness. -/
+theorem T8_corrected_information_bound {Ω X U : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace X] [MeasurableSpace U] {n : ℕ}
+    (E : Experiment Ω (X × U) n) (hS : Standing E) (b0 : X → ℝ)
+    (hM : MarginalBaseline E b0) (hX : EstimatorUsesOnlyX E)
+    (PiSet : Set ((X × U) → ℝ)) (hPiSet : ∀ π ∈ PiSet, Admissible π)
+    (hU : TreatedUnbiased E (fun c => b0 c.1) PiSet)
+    (γ : ℝ) (hγ : marginalHeterogeneity E b0 ≤ γ)
+    (b s : (X × U) → ℝ) (hb : IsBest PiSet E.expectedTT b) (hs : IsBest PiSet E.V s) :
+    (∀ π ∈ PiSet,
+      normalizedTT E π = (∫ c, π c*(E.μ1 c-b0 c.1) ∂E.PX) ∧
+      |normalizedTT E π-E.V π| =
+        |∫ c, π c*(E.μ0 c-b0 c.1) ∂E.PX| ∧
+      |normalizedTT E π-E.V π| ≤ marginalHeterogeneity E b0) ∧
+    regret PiSet E.V b ≤ 2*γ := by
+  sorry
 
 /-- Conditional mean independence of the estimator from the treatment coin,
 needed by the second term of Lemma 2 (PDF p. 21). This keeps μ̂₀ inside its
@@ -796,6 +959,26 @@ def EstimatorCoinMeanIndependent {Ω C : Type*} [MeasurableSpace Ω]
         (fun ω => π (E.X i ω) *
           (E.law π)[(fun η => E.μhat π η (E.X i η)) | E.covariateSigma i] ω)
 
+/-- P006-T8 supporting results: Lemma 2 and Proposition 10, PDF pp. 21–22.
+D is the common law of (X,U,μ̂₀(X)) at an evaluation observation, such as the
+product of the independent auxiliary-estimator law and population draw.
+The random estimator remains inside the expectation and the error bound.
+Its joint evaluation law is explicitly the same for every fixed policy/unit. -/
+theorem T8_lemma2_proposition10 {Ω X U : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace X] [MeasurableSpace U] {n : ℕ}
+    (E : Experiment Ω (X × U) n) (hS : Standing E)
+    (hX : EstimatorUsesOnlyX E) (PiSet : Set ((X × U) → ℝ))
+    (hPiSet : ∀ π ∈ PiSet, Admissible π) (hI : EstimatorCoinMeanIndependent E PiSet)
+    (D : Measure ((X × U) × ℝ)) (hD : IsProbabilityMeasure D)
+    (hcommon : ∀ π ∈ PiSet, ∀ i, IdentDistrib
+      (fun ω => (E.X i ω, E.μhat π ω (E.X i ω))) id (E.law π) D)
+    (herror : Integrable (fun z => |z.2-E.μ0 z.1|) D)
+    (b s : (X × U) → ℝ) (hb : IsBest PiSet E.expectedTT b) (hs : IsBest PiSet E.V s) :
+    (∀ π ∈ PiSet, E.expectedTT π = (n : ℝ) *
+      ((∫ ω, π (E.X ⟨0,E.hn⟩ ω)*E.μ1 (E.X ⟨0,E.hn⟩ ω) ∂E.law π) -
+       (∫ ω, π (E.X ⟨0,E.hn⟩ ω)*E.μhat π ω (E.X ⟨0,E.hn⟩ ω) ∂E.law π))) ∧
+    regret PiSet E.V b ≤ 2*(∫ z, |z.2-E.μ0 z.1| ∂D) := by
+  sorry
 
 /-- Definition 1, corrected (T14), PDF p. 5: for all j,k, pointwise dominance
 of τʲ over τᵏ implies the same ordering of the agents' maximum own scores.
@@ -845,6 +1028,49 @@ def referenceWeight {C : Type*} [MeasurableSpace C]
     (n : ℕ) (P0 Pk : Measure C) : C → ℝ :=
   fun x => (n : ℝ)⁻¹ * (P0.rnDeriv Pk x).toReal
 
+/-- P006-T13: corrected Theorem 2 (PDF pp. 6,20), with every estimator and
+index correction. Reference absolute continuity is P0≪Pk. Each score uses
+its own experiment E k and the unit-level weight g_k(X_i^(k)).
+The normalized change-of-measure identity, optimal positive-part score,
+uniform preservation, and relative preservation under nonnegative effects
+are stated together. Common μ₀ and common support are explicit. -/
+theorem T13_corrected_ranking {K : ℕ} {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] [TopologicalSpace C] [BorelSpace C]
+    (nk : Fin K → ℕ) (E : (k : Fin K) → Experiment Ω C (nk k))
+    (P0 : Measure C) (hP0 : IsProbabilityMeasure P0)
+    (hS : ∀ k, Standing (E k)) (hsupport : ∀ k, (E k).PX.support = P0.support)
+    (hmu0 : ∀ j k, (E j).μ0 = (E k).μ0)
+    (hac : ∀ k, P0 ≪ (E k).PX)
+    (hτ : ∀ k, Integrable (E k).τ P0)
+    (hU : ∀ k, TreatedUnbiased (E k) (E k).μ0 {π | Admissible π})
+    (hreward : ∀ k π, Admissible π → ∀ i,
+      Integrable (fun ω => ((E k).observed π ω i -
+        (E k).μhat π ω ((E k).X i ω)) * bit ((E k).T π i ω) *
+        referenceWeight (nk k) P0 (E k).PX ((E k).X i ω)) ((E k).law π)) :
+    (∀ k π, Admissible π →
+      (E k).expectedWeightedTT (referenceWeight (nk k) P0 (E k).PX) π =
+        (nk k : ℝ)*(∫ x, (E k).τ x*π x*
+          referenceWeight (nk k) P0 (E k).PX x ∂(E k).PX) ∧
+      (nk k : ℝ)*(∫ x, (E k).τ x*π x*
+          referenceWeight (nk k) P0 (E k).PX x ∂(E k).PX) =
+        (∫ x, (E k).τ x*π x ∂P0)) ∧
+    (∀ k, IsBest {π | Admissible π}
+      ((E k).expectedWeightedTT (referenceWeight (nk k) P0 (E k).PX))
+      (positiveRule (E k).τ) ∧
+      bestValue {π | Admissible π}
+        ((E k).expectedWeightedTT (referenceWeight (nk k) P0 (E k).PX)) =
+        (∫ x, positivePart ((E k).τ x) ∂P0)) ∧
+    UniformRankPreservation (fun _ => {π | Admissible π})
+      (fun k => (E k).expectedWeightedTT (referenceWeight (nk k) P0 (E k).PX))
+      (fun k => (E k).τ) ∧
+    ((∀ k x, 0 ≤ (E k).τ x) →
+      (∀ k, bestValue {π | Admissible π}
+        ((E k).expectedWeightedTT (referenceWeight (nk k) P0 (E k).PX)) =
+        (∫ x, (E k).τ x ∂P0)) ∧
+      RelativeRankPreservation P0 (fun _ => {π | Admissible π})
+        (fun k => (E k).expectedWeightedTT (referenceWeight (nk k) P0 (E k).PX))
+        (fun k => (E k).τ)) := by
+  sorry
 
 /-- Exact two-unit TT expectation for the constant-effect agents in
 Proposition 4 (PDF pp. 18–19). All covariate and treatment states are summed. -/
@@ -941,7 +1167,7 @@ theorem T21_corrected_logistic_mean {d : ℕ} (β : LogisticFit d) (x : Fin d �
     have h := (logistic_bounds z).2
     linarith
 
-/-- T20: the exact four-state potential-outcome distribution from P006-E008.
+/-- T20: the exact four-state potential-outcome distribution from E008.
 The state (y0,y1) denotes the two survival indicators; X is constant 0. -/
 def logisticWitnessMass (y0 y1 : Bool) : ℝ :=
   (1/2 : ℝ) * coinMass (1/4) y1
@@ -1043,8 +1269,12 @@ theorem T9_from_printed_table (vH rH vS rS : ℝ)
   · apply (lt_div_iff₀ hHr).mpr; linarith
   · apply (lt_div_iff₀ hSr).mpr; linarith
 
-
-
+/- P006-T28: the two Section 6 beneficiary-average claims AS PRINTED
+(PDF pp. 7–8), formalized with the same fitted sums, the reported cohort
+counts, and notebook-output utility intervals as explicit source hypotheses.
+This asserts rounding to 0.147 and 0.025 and is contradicted by T9. -/
+/- Historical false affirmative draft retired after exact full-contract refutation.
+   Full original source is archived in confidence-followup/batch02-small/source-integration/original-declarations.json. -/
 
 /-- Appendix E.4, PDF p. 26, corrected: "G_x={i:X_i=x}". -/
 def empiricalGroup {C : Type*} [DecidableEq C] {n : ℕ}
@@ -1056,6 +1286,10 @@ def empiricalMean {C : Type*} [DecidableEq C] {n : ℕ}
     (X : Fin n → C) (m : Fin n → ℝ) (x : C) : ℝ :=
   (∑ i ∈ empiricalGroup X x, m i) / (empiricalGroup X x).card
 
+/-- E.4, PDF p. 26: "γ_marg=(1/n)Σ_i|μ₀(X_i)−μ₀(X_i,U_i)|". -/
+def empiricalGamma {C : Type*} [DecidableEq C] {n : ℕ}
+    (X : Fin n → C) (m : Fin n → ℝ) : ℝ :=
+  (∑ i, |empiricalMean X m (X i)-m i|) / n
 
 /-- P006-T22(a),(b): corrected empirical conditioning (PDF p. 26).
 Every nonempty covariate group has a mean between its minimum and maximum,
@@ -1242,7 +1476,7 @@ def TreatedDataInvariant {C : Type*} [MeasurableSpace C]
     Measure.map treatedProjection D = Measure.map treatedProjection D' →
     ∀ π ∈ PiSet, reward D π = reward D' π
 
-/-- The corrected family in T11: retain (X,Y1) and set Y0=Y1+B everywhere. -/
+/-- The repaired family in T11: retain (X,Y1) and set Y0=Y1+B everywhere. -/
 def shiftedOutcomeLaw {C : Type*} [MeasurableSpace C]
     (D : OutcomeLaw C) (B : ℝ) : OutcomeLaw C :=
   Measure.map (fun z => (z.1,(z.2.2+B,z.2.2))) D
@@ -1354,7 +1588,7 @@ theorem T11_unbounded_shift_arithmetic (M c : ℝ) (hM : 0 < M) (hc : 0 < c) :
   · exact div_pos (by linarith) hc
   · rw [div_mul_cancel₀ _ (ne_of_gt hc)]; linarith
 
-/-- T12 (P006-E005): Lebesgue probability on [0,1], represented as a
+/-- T12 (validator E005): Lebesgue probability on [0,1], represented as a
 measure on ℝ restricted to its common support. -/
 def intervalLaw : Measure ℝ := volume.restrict (Set.Icc 0 1)
 
@@ -1512,10 +1746,47 @@ def selectedBaseline {X U : Type*} [MeasurableSpace X] [MeasurableSpace U]
   (∫ u, μ0 (x,u)*(1-π (x,u)) ∂κ x) / untreatedProbability κ π x
 
 /-- Assumption 4, PDF p. 23: "Δ(x,u)=max_{ũ∈U}|μ₀(x,u)−μ₀(x,ũ)|".
-Represented here by the real supremum of the absolute-difference range. -/
+The theorem below requires these printed maxima to be attained. -/
 def maximumDeviation {X U : Type*} (μ0 : (X × U) → ℝ) (c : X × U) : ℝ :=
   sSup (Set.range (fun u => |μ0 c-μ0 (c.1,u)|))
 
+/-- P006-T16: corrected Theorem 5 with Lemma 3, PDF pp. 23–24.
+For every feasible policy, untreated probability is positive for P_X-a.e. x.
+The conditional untreated distribution is normalized, its mean lies in the
+range of μ₀(x,u), and its error is bounded by Δ(x,u). Thus the score/welfare
+error is ≤γ_max and every best response has regret ≤2γ_max.
+The actual TT reward is used, with the population selected baseline. -/
+theorem T16_corrected_agent_data_bound {Ω X U : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace X] [MeasurableSpace U] [Nonempty U] {n : ℕ}
+    (E : Experiment Ω (X × U) n) (hS : Standing E)
+    (PX : Measure X) (hPX : IsProbabilityMeasure PX)
+    (κ : Kernel X U) (hκ : IsMarkovKernel κ) (hjoint : E.PX = PX.compProd κ)
+    (PiSet : Set ((X × U) → ℝ)) (hπ : ∀ π ∈ PiSet, Admissible π)
+    (hq : ∀ π ∈ PiSet, ∀ᵐ x ∂PX, 0 < untreatedProbability κ π x)
+    (hcond : ∀ᵐ x ∂PX, Integrable (fun u => E.μ0 (x,u)) (κ x))
+    (hminmax : ∀ x, ∃ umin umax, ∀ u, E.μ0 (x,umin) ≤ E.μ0 (x,u) ∧
+      E.μ0 (x,u) ≤ E.μ0 (x,umax))
+    (hmax : ∀ c : X × U, ∃ v, ∀ u, |E.μ0 c-E.μ0 (c.1,u)| ≤
+      |E.μ0 c-E.μ0 (c.1,v)|)
+    (hest : ∀ π ∈ PiSet, ∀ ω c, E.μhat π ω c = selectedBaseline κ E.μ0 π c.1)
+    (γ : ℝ) (hint : Integrable (maximumDeviation E.μ0) E.PX)
+    (hγ : (∫ c, maximumDeviation E.μ0 c ∂E.PX) ≤ γ)
+    (b s : (X × U) → ℝ) (hb : IsBest PiSet E.expectedTT b) (hs : IsBest PiSet E.V s) :
+    (∀ π ∈ PiSet,
+      (∀ᵐ x ∂PX, IsProbabilityMeasure (untreatedConditionalLaw κ π x) ∧
+        selectedBaseline κ E.μ0 π x =
+          (∫ u, E.μ0 (x,u) ∂untreatedConditionalLaw κ π x) ∧
+        sInf (Set.range (fun u => E.μ0 (x,u))) ≤ selectedBaseline κ E.μ0 π x ∧
+        selectedBaseline κ E.μ0 π x ≤ sSup (Set.range (fun u => E.μ0 (x,u))) ∧
+        ∀ u, |selectedBaseline κ E.μ0 π x-E.μ0 (x,u)| ≤
+          maximumDeviation E.μ0 (x,u)) ∧
+      normalizedTT E π = (∫ c, π c*(E.μ1 c-selectedBaseline κ E.μ0 π c.1) ∂E.PX) ∧
+      |normalizedTT E π-E.V π| ≤
+        (∫ c, |selectedBaseline κ E.μ0 π c.1-E.μ0 c| ∂E.PX) ∧
+      (∫ c, |selectedBaseline κ E.μ0 π c.1-E.μ0 c| ∂E.PX) ≤
+        (∫ c, maximumDeviation E.μ0 c ∂E.PX)) ∧
+    regret PiSet E.V b ≤ 2*γ := by
+  sorry
 
 /-- T16's sufficient pointwise replacement π(x,u)<1 and the corrected
 full-information identification sentence in D.3 (PDF p. 23).
@@ -1572,8 +1843,8 @@ def treatOnlyType {K : ℕ} (j : Fin K) : Fin K → ℝ :=
 /-- P006-T17(a)–(c), corrected selection mechanism in D.3, PDF p. 23.
 Leaving only j untreated yields μ̂₀^π=μ₀(x,j). Treating only j instead yields
 the weighted mean over its complement. This theorem uses finite positive-mass
-types; it does not claim that a singleton of nonatomic U can be selected with
-positive probability. -/
+types as in the validator; it does not claim a singleton of nonatomic U
+can be selected with positive probability. -/
 theorem T17_selected_type {K : ℕ} (p m : Fin K → ℝ) (hp : ∀ i, 0 < p i)
     (hsum : ∑ i, p i = 1) (j : Fin K) :
     finiteMass p (fun i => 1-leaveOnlyType j i) = p j ∧
@@ -1614,6 +1885,20 @@ theorem T17_three_type_example :
   norm_num [finiteSelectedBaseline, finiteA, finiteMass, treatOnlyType,
     leaveOnlyType, Fin.sum_univ_succ]
 
+/-- P006-T17(d), companion claim in D.3, PDF p. 23.
+Assumption 4 implies Assumption 2 with γ_marg=γ_max: the mean deviation
+from the marginal baseline cannot exceed the expected maximum deviation.
+The marginal baseline condition and finiteness of the printed maxima are
+explicit; no regret bound under Assumption 2 alone is asserted here. -/
+theorem T17_maximum_dominates_marginal {Ω X U : Type*}
+    [MeasurableSpace Ω] [MeasurableSpace X] [MeasurableSpace U] {n : ℕ}
+    (E : Experiment Ω (X × U) n) (hS : Standing E) (b0 : X → ℝ)
+    (hM : MarginalBaseline E b0)
+    (hmax : ∀ c : X × U, ∃ v, ∀ u, |E.μ0 c-E.μ0 (c.1,u)| ≤
+      |E.μ0 c-E.μ0 (c.1,v)|)
+    (hint : Integrable (maximumDeviation E.μ0) E.PX) :
+    marginalHeterogeneity E b0 ≤ (∫ c, maximumDeviation E.μ0 c ∂E.PX) := by
+  sorry
 
 /-- T16 finite convexity lemma: any nonnegative normalized distribution of
 untreated types gives a baseline between the smallest and largest type means.
@@ -1632,8 +1917,8 @@ theorem finite_convex_mean_bounds {K : ℕ} (p m : Fin K → ℝ)
         mul_le_mul_of_nonneg_left (hb i).2 (hp i))
       _ = h := by rw [← Finset.sum_mul, hsum, one_mul]
 
-/-- T23 (P006-N005): probability of Y0=1 is 1/2 in World A and 3/4 in
-World B. X is the singleton 0 and Y1 is the constant 1. -/
+/-- T23: probability of Y0=1 is 1/2 in World A and 3/4 in World B
+(validator N005, §3). X is the singleton 0 and Y1 is the constant 1. -/
 def missingWorldPrevalence (world : Bool) : ℝ := if world then 3/4 else 1/2
 
 /-- T23: untreated observation probabilities are 1/4 versus 3/4 according
@@ -1716,6 +2001,35 @@ theorem T23_missing_outcome_counterexample :
           missingWorldPrevalence, missingObservationProbability, coinMass, Fintype.sum_bool]
   · rw [hobserved false, hmeans.1]; norm_num
 
+/-- P006-T24: corrected identification from partially observed untreated
+outcomes, Appendix A.1(2), PDF p. 13. Work at any fixed covariate stratum x
+under its conditional law μ; this avoids conditioning a continuous X on a
+singleton event. Treatment is independent of both potential outcomes,
+and both untreated and observed-untreated probabilities are positive.
+Adding representativeness in mean identifies μ₀ from the available outcomes.
+The mixture identity and the stronger independence condition are also stated. -/
+theorem T24_corrected_identification {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (hμ : IsProbabilityMeasure μ)
+    (Y0 Y1 : Ω → ℝ) (T R : Ω → Bool)
+    (hm : Measurable Y0 ∧ Measurable Y1 ∧ Measurable T ∧ Measurable R)
+    (hint : Integrable Y0 μ ∧ Integrable Y1 μ)
+    (hI : IndepFun (fun ω => (Y0 ω,Y1 ω)) T μ)
+    (hT : 0 < (μ {ω | T ω = false}).toReal)
+    (hR : 0 < (μ {ω | T ω = false ∧ R ω = true}).toReal) :
+    let A := {ω | T ω = false}
+    let A1 := {ω | T ω = false ∧ R ω = true}
+    let A0 := {ω | T ω = false ∧ R ω = false}
+    let Y := fun ω => if T ω then Y1 ω else Y0 ω
+    let q := (μ A1).toReal/(μ A).toReal
+    (eventMean μ A1 Y0 = eventMean μ A Y0 →
+      (∫ ω, Y0 ω ∂μ) = eventMean μ A1 Y) ∧
+    (q < 1 →
+      (∫ ω, Y0 ω ∂μ) = q*eventMean μ A1 Y0+(1-q)*eventMean μ A0 Y0 ∧
+      (eventMean μ A1 Y0 = (∫ ω, Y0 ω ∂μ) ↔
+        eventMean μ A1 Y0 = eventMean μ A0 Y0)) ∧
+    (IndepFun Y0 R ((μ A)⁻¹ • μ.restrict A) →
+      eventMean μ A1 Y0 = eventMean μ A Y0) := by
+  sorry
 
 /-- T24(ii)'s finite algebra: for a proper observed fraction 0<q<1,
 the observed mean equals the mixture mean iff it equals the missing mean. -/
@@ -1748,7 +2062,7 @@ theorem scale_best_iff {P : Type*} (PiSet : Set P) (f : P → ℝ)
 
 /-- Proposition 5's outcomes, Appendix D.2, PDF pp. 22–23:
 "μ₀(x,0)=α; μ₀(x,1)=−α", "μ₁(x,0)=β; μ₁(x,1)=0".
-η=0 gives the printed example; η>0 gives a variant with a unique best response.
+η=0 gives the printed example; η>0 gives the validator's tie-removing variant.
 X is the constant 0 and U is a fair binary variable. -/
 def lowerBoundY0 (α : ℝ) (u : Bool) : ℝ := if u then -α else α
 
@@ -1901,9 +2215,9 @@ theorem lower_bound_perturbed_best_iff (β η : ℝ) (hβ : 0 < β) (hη : 0 < �
     rw [(forms q).1, (forms (1,0)).1]
     dsimp; linarith
 
-/-- P006-T25(vii): a variant with a unique best response.
+/-- P006-T25(vii), validator's optional unique-response construction.
 Set β=η=min(ε,α/2). Every best response is (1,0) and has
-R=α−(β+η)/2≥γ_marg−ε. This variant is separate from the
+R=α−(β+η)/2≥γ_marg−ε. This variant is explicitly separate from the
 printed existential lower-bound construction. -/
 theorem T25_unique_response_variant (n : ℕ) (hn : 0 < n)
     (α ε : ℝ) (hα : 0 < α) (hε : 0 < ε) :
@@ -1933,13 +2247,38 @@ theorem T25_unique_response_variant (n : ℕ) (hn : 0 < n)
   rw [hr, lower_bound_gamma_eq α hα.le]; linarith
 
 
-/-- Exact i.i.d. finite-sample ATO expectation for arbitrary sample size,
+
+/-- Exact i.i.d. finite-sample ATO expectation for arbitrary population size,
 used to state every sample-size clause of the Proposition 1 family (T29).
 Both covariate and treatment vectors are summed with their product masses. -/
 def finiteIIDAverage (n : ℕ) (p : ℝ) (m : Bool → ℝ) (π : BinaryPolicy) : ℝ :=
   ∑ X : Fin n → Bool, ∑ T : Fin n → Bool,
     (∏ i, coinMass p (X i)) * (∏ i, coinMass (binaryRule π (X i)) (T i)) *
       wATO T (fun i => m (X i))
+
+/-- P006-T29 supporting family characterization (PDF p. 17).
+For every n≥2 the exact finite-sample reward in this particular μ₁=(0,1)
+family has unique best response (0,1); for n=1, b=1 and a is arbitrary.
+The first-mode maximum welfare and regret are also stated for all p∈(0,1).
+The headline existential unbounded-regret theorem T29_ato_unbounded is proved
+separately; this general sample-size characterization remains a distinct
+statement, so its proof status cannot be hidden by the existential witness. -/
+theorem T29_family_all_sizes (n : ℕ) (hn : 0 < n) (p α : ℝ)
+    (hp : 0 < p ∧ p < 1) (hα : α < 0) :
+    (∀ π ∈ binaryPolicies, finiteIIDAverage n p outcomeP1 π =
+      emptyFactor n ((1-p)*π.1+p*π.2)*(p*π.2)) ∧
+    (2 ≤ n → ∀ π, IsBest binaryPolicies (finiteIIDAverage n p outcomeP1) π ↔
+      π = (0,1)) ∧
+    (n = 1 → ∀ π, IsBest binaryPolicies (finiteIIDAverage n p outcomeP1) π ↔
+      binaryFeasible π ∧ π.2 = 1) ∧
+    IsBest binaryPolicies
+      (binaryWelfare p (fun x => if x then 1 else -α)) (1,1) ∧
+    bestValue binaryPolicies (binaryWelfare p (fun x => if x then 1 else -α)) =
+      -α*(1-p)+p ∧
+    regret binaryPolicies (binaryWelfare p (fun x => if x then 1 else -α)) (0,1) =
+      -α*(1-p) := by
+  sorry
+
 
 
 /-- Finite conditional estimator/treatment model for T6 and T7.
@@ -2002,9 +2341,10 @@ theorem T6_finite_reward_identity {K L : ℕ} (n : ℕ) (p : Fin K → ℝ)
     _ = p x*(π x*(μ1 x-μ0 x))*g x := by rw [he]
     _ = _ := by ring
 
-/-- T6(ii), finite random-estimator model: the actual expected TT reward
-and welfare have the same argmax set for every feasible class, and every TT
-best response has zero regret. -/
+/-- T6(ii), finite random-estimator model: the actual expected TT reward and
+welfare have the same argmax set for every feasible class, and every TT best
+response has zero regret. This is a proved finite specialization; the general
+measure-theoretic statement T6_corrected_TT remains separately reported. -/
 theorem T6_finite_corrected_alignment {K L : ℕ} (n : ℕ) (hn : 0 < n)
     (p : Fin K → ℝ) (hp : ∀ x, 0 ≤ p x) (hsum : ∑ x, p x = 1)
     (r : Fin K → Fin L → ℝ) (hr0 : ∀ x a, 0 ≤ r x a) (hr : ∀ x, ∑ a, r x a = 1)
@@ -2082,6 +2422,7 @@ theorem T7_finite_positive_rule {K : ℕ} (p g τ : Fin K → ℝ)
   exact ⟨hw,hv,by rw [regret,bestValue_eq hv];ring⟩
 
 
+
 /-- Reward Functions 1 and 2, PDF p. 4: when μ̂0=0 the two realized
 zero-on-empty average rewards coincide, for every sample and treatment vector.
 This certifies that T1 refutes both printed propositions with the same law. -/
@@ -2108,7 +2449,7 @@ theorem wATT_one_eq_TT {C : Type*} (μhat : C → ℝ) (x : C) (t : Bool) (y : �
 
 /-- T29's first failure mode (Proposition 1 proof, PDF p. 17):
 for every 0<p<1 and α<0 the welfare optimum treats both types and the
-regret of the ATO policy (0,1) is −α(1−p).
+regret of the independently certified ATO policy (0,1) is −α(1−p).
 This finite welfare identity does not assume the invalid general rule
 of Proposition 6. -/
 theorem T29_first_mode_welfare (p α : ℝ) (hp : 0 < p ∧ p < 1) (hα : α < 0) :
@@ -2492,7 +2833,7 @@ theorem T15_constant_private_heterogeneity {X : Type*} [MeasurableSpace X]
 
 /-- Section 2, PDF p. 3 (SUTVA and observation of treated outcomes only),
 and Reward Functions 1–5, pp. 4–6,15: replacing an untreated outcome slot by
-its treated potential outcome leaves each reward unchanged.
+its treated potential outcome leaves every audited reward unchanged.
 Thus the finite expectation formulas that fill untreated slots with μ1
 compute exactly the rewards from the SUTVA observed outcomes. -/
 theorem realized_rewards_SUTVA {C : Type*} {n : ℕ} (μhat g : C → ℝ)
@@ -2542,3 +2883,96 @@ theorem binaryWelfare_SUTVA (p : ℝ) (y0 y1 : Bool → ℝ) (π : BinaryPolicy)
 end
 end AronowAudit.P006
 
+#print axioms AronowAudit.P006.coin_is_probability
+#print axioms AronowAudit.P006.treatedCount_two
+#print axioms AronowAudit.P006.wATO_two
+#print axioms AronowAudit.P006.twoATO_formula
+#print axioms AronowAudit.P006.rewardE001_formula
+#print axioms AronowAudit.P006.T1_average_counterexample
+#print axioms AronowAudit.P006.bestValue_eq
+#print axioms AronowAudit.P006.oneTT_formula
+#print axioms AronowAudit.P006.witnesses_AB_formula
+#print axioms AronowAudit.P006.T4_unbiasedness_counterexamples
+#print axioms AronowAudit.P006.ranking_witness_formula
+#print axioms AronowAudit.P006.T5_ranking_counterexample
+#print axioms AronowAudit.P006.rewardP1_best
+#print axioms AronowAudit.P006.T18_regret_sign_counterexample
+#print axioms AronowAudit.P006.T19_corrected_regret
+#print axioms AronowAudit.P006.T19_corrected_regret_tendsto
+#print axioms AronowAudit.P006.T29_ato_unbounded
+#print axioms AronowAudit.P006.T2_corrected_average
+#print axioms AronowAudit.P006.T2_finite_threshold
+#print axioms AronowAudit.P006.T2_one_unit_factor
+#print axioms AronowAudit.P006.emptyFactor_ge_one
+#print axioms AronowAudit.P006.positive_factor_regret
+#print axioms AronowAudit.P006.T3_corrected_ATT_regret
+#print axioms AronowAudit.P006.T6_corrected_TT
+#print axioms AronowAudit.P006.T6_independent_estimation
+#print axioms AronowAudit.P006.T7_corrected_weighted_alignment
+#print axioms AronowAudit.P006.T26_printed_average_best_response
+#print axioms AronowAudit.P006.T27_printed_TT_alignment
+#print axioms AronowAudit.P006.uniform_error_regret
+#print axioms AronowAudit.P006.T8_corrected_information_bound
+#print axioms AronowAudit.P006.T8_lemma2_proposition10
+#print axioms AronowAudit.P006.positivePart_eq_max
+#print axioms AronowAudit.P006.T14_corrected_rank_inequality
+#print axioms AronowAudit.P006.T13_corrected_ranking
+#print axioms AronowAudit.P006.T30_TT_ranking_failure
+#print axioms AronowAudit.P006.logistic_bounds
+#print axioms AronowAudit.P006.signed_mean_formula
+#print axioms AronowAudit.P006.T21_corrected_logistic_mean
+#print axioms AronowAudit.P006.T20_logistic_counterexample
+#print axioms AronowAudit.P006.T9_denominator_identity
+#print axioms AronowAudit.P006.T9_corrected_numeric_intervals
+#print axioms AronowAudit.P006.T9_from_printed_table
+#print axioms AronowAudit.P006.T22_corrected_empirical_mean
+#print axioms AronowAudit.P006.T22_two_row_example
+#print axioms AronowAudit.P006.treatedCount_one
+#print axioms AronowAudit.P006.wATO_one
+#print axioms AronowAudit.P006.oneATOExpectation_formula
+#print axioms AronowAudit.P006.oneATO_invariance
+#print axioms AronowAudit.P006.T10_singleton_feasible_counterexample
+#print axioms AronowAudit.P006.T11_corrected_impossibility
+#print axioms AronowAudit.P006.T11_unbounded_shift_arithmetic
+#print axioms AronowAudit.P006.smul_support_eq
+#print axioms AronowAudit.P006.T12_density_direction_counterexample
+#print axioms AronowAudit.P006.T15_untreated_positivity_counterexamples
+#print axioms AronowAudit.P006.T16_corrected_agent_data_bound
+#print axioms AronowAudit.P006.T16_sufficient_positivity
+#print axioms AronowAudit.P006.T17_selected_type
+#print axioms AronowAudit.P006.T17_three_type_example
+#print axioms AronowAudit.P006.T17_maximum_dominates_marginal
+#print axioms AronowAudit.P006.finite_convex_mean_bounds
+#print axioms AronowAudit.P006.T23_missing_outcome_counterexample
+#print axioms AronowAudit.P006.T24_corrected_identification
+#print axioms AronowAudit.P006.T24_mixture_mean_iff
+#print axioms AronowAudit.P006.scale_best_iff
+#print axioms AronowAudit.P006.lower_bound_formulas
+#print axioms AronowAudit.P006.lower_bound_gamma_eq
+#print axioms AronowAudit.P006.lower_bound_best_response_iff
+#print axioms AronowAudit.P006.lower_bound_welfare_optimum
+#print axioms AronowAudit.P006.T25_printed_lower_bound_family
+#print axioms AronowAudit.P006.T25_existential_lower_bound
+#print axioms AronowAudit.P006.lower_bound_perturbed_best_iff
+#print axioms AronowAudit.P006.T25_unique_response_variant
+#print axioms AronowAudit.P006.T29_family_all_sizes
+#print axioms AronowAudit.P006.T6_finite_reward_identity
+#print axioms AronowAudit.P006.T6_finite_corrected_alignment
+#print axioms AronowAudit.P006.pointwise_policy_gain_le
+#print axioms AronowAudit.P006.T7_finite_positive_rule
+#print axioms AronowAudit.P006.wATT_zero
+#print axioms AronowAudit.P006.T1_conditional_mean_mismatch
+#print axioms AronowAudit.P006.wATT_one_eq_TT
+#print axioms AronowAudit.P006.T29_first_mode_welfare
+#print axioms AronowAudit.P006.T29_first_mode_tendsto
+#print axioms AronowAudit.P006.iid_additive_expectation
+#print axioms AronowAudit.P006.T25_exact_sample_reward
+#print axioms AronowAudit.P006.independent_untreated_mean
+#print axioms AronowAudit.P006.T24_representative_identification
+#print axioms AronowAudit.P006.T2_population_conditional_rule
+#print axioms AronowAudit.P006.T6_finite_aux_actual_identity
+#print axioms AronowAudit.P006.T6_finite_auxiliary_estimation
+#print axioms AronowAudit.P006.T4_zero_heterogeneity_bound_failure
+#print axioms AronowAudit.P006.T15_constant_private_heterogeneity
+#print axioms AronowAudit.P006.realized_rewards_SUTVA
+#print axioms AronowAudit.P006.binaryWelfare_SUTVA

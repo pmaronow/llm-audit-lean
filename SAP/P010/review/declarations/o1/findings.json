@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P010-T1",
+    "theorem": "SAP.P010.T1",
+    "fingerprint": "891a11a4983d8bd9b5170d33bd6ccbbdead08f3f089a9ded48d33a0f25fb4b99",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed proposition with no hypotheses, so no instance is needed. The witness is genuine: the supplied counts in SAP/P010/Defs/Part1.lean:12-20 are exactly the canonical ones (N=(544,538,533), failures (35,182,40), prefer-among-passers (61,162,327)). keptLower/keptUpper/sampleBounds (Part1.lean:27-35) implement the authors' helper rule (lower: j/n < 1-trim, upper: j/n > trim). Checked two ways: #eval in scratch/Check1.lean, and an independent exact-fraction Python recomputation that sorts the binary outcomes and applies the j/n rule directly. Both give retained counts (284,281,278)/(285,282,279) and I_0=[0,61/285], I_1=[87/281,27/47], I_2=[56/139,1], so I_0 is disjoint from I_1 and I_2. Printed reading: for both outcomes the reported Panel D-E intervals intersect pairwise (stronger reading: all three share a point). Its conditions are that the intervals are the reported estimates computed by the authors' rule from the data, and that overlap means the estimate intervals, not the CIs. The unweighted Figure-2 preference intervals meet each condition, and T1Statement (Defs/Part4.lean:11-16) refutes both readings.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T2",
+    "theorem": "SAP.P010.T2",
+    "fingerprint": "79e0ec8185535b79f874be5a38ee081511961ef6d14b05ee571812e866316087",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed proposition with no hypotheses. Every exact value in T2Statement (Defs/Part4.lean:19-47) was re-verified by #eval in scratch/Check1.lean and by an independent Python recomputation with exact fractions: passers, trim proportions, retained counts, the approval and preference intervals, minAlwaysShare=40739821/77997088 and the fractionalPreference triples. Those triples equal the canonical (d) formula [max(0,(a_t-Σ_{s≠t}f_s)/q), min(1,a_t/q)] with a_t = prefer/N. Clauses (a)-(d) of the canonical formal content are all stated, plus the j/n characterisation of the retained counts (Part4.lean:29-32).",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T3",
+    "theorem": "SAP.P010.T3",
+    "fingerprint": "fc78e2e68ff6784261d5673c3c17c315c98c63e3ee9e29bf5ce62b4462840b62",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed counterexample proposition. Printed reading: under Assumptions 1-3 with Pr[A]>0, Y continuous with unbounded support and r_z<1, E[Y|Y≤Q_{Y|Z=z,S=1}(1-r_z),Z=z] ≤ E[Y(z)|A] ≤ E[Y|Y≥Q_{Y|Z=z,S=1}(r_z),Z=z], and the bounds are sharp. T3Statement (Defs/Part6.lean:11-26) checks the witness against every condition, for both models: populationAssumptions; Pr[A]=1/4; atomless response law; full real support; all moments finite; pass rates 1/2 and 3/4, so r=1/2<1; passer law Laplace(1) with quantile 0 at 1/2. The printed expressions on the sets {Y≤0}∩{Z=0} and {Y≥0}∩{Z=0} (no S=1) are -3/4 and 3/4, the target is ±1, so the printed inequality fails. The two models have the same law of (Y,S,Z), and the corrected endpoints are -1 and 1. missingPassingPopulation (Defs/Part5.lean:109-114) matches the canonical strata exactly (paper arm z=1 is Lean arm 0). Hand check: the arm-0 law is ½Laplace(1)+½Laplace(1/2) and E[Y;Y≤0|Z=0]=-3/8. The joint ignorability is even stronger than per-arm, because every stratum is a product with the fair arm. Scratch: noAtoms (laplaceDistribution r) is compiled in scratch/NonvacT4.lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T4",
+    "theorem": "SAP.P010.T4",
+    "fingerprint": "72adef22007f5c4b3d1692cb48a607b920654b5c112e56118cb8f7e3f465f061",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/NonvacT4.lean compiles without errors or sorry. It is `example (h3 : T3Statement) : ∃ μ : Measure (Population 2 0), populationAssumptions μ ∧ 0 < μ allPass ∧ noAtoms (passerDistribution μ 0) ∧ Integrable response (μ.restrict (passed ∩ assigned 0)) ∧ trimmingRatio μ 0 < 1 ∧ 0 < trimmingRatio μ 0`. The witness is missingPassingPopulation true at arm 0. Proof sketch: noAtoms from withDensity ≪ volume; integrability from allMoments n=1 plus a compiled measurability proof of response; trimming ratio 1/2 strictly inside (0,1). So all hypotheses of T4 hold jointly in a non-degenerate case, given the Comparator-certified T3Statement. Trivially, K=1 with any atomless integrable passer law also works (trimming ratio 0). The meanOn junk value (non-integrable always-passer integrand) cannot occur for compatible ν. Under per-arm ignorability, the ν-law of Y(a) on {S(a)=1} is the observed passer law scaled by 1/ν(Z=a), which is integrable by hi, and A ⊆ {S(a)=1}. hA follows from hr by the union bound μ(A) ≥ L > 0, so it adds nothing.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P010-T5",
+    "theorem": "SAP.P010.T5",
+    "fingerprint": "8d56f1007320ce7aa0d286ac37035aa2d180c6d0d237fbefcca175cc903b71b1",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Closed counterexample proposition. Printed reading: under Assumptions 1-3, Pr[A]>0, Y continuous with unbounded support and r_z ≥ 1, the sharp bounds (inf and sup over compatible laws) for E[Y(z)|A] are -∞ and +∞. T5Statement (Defs/Part6.lean:49-72) checks the witness against each condition: populationAssumptions; Pr[A]=1/3; atomless response; full real support with two-sided tails 1/(3(1+R)^5); E[Y]=1/6, E[Y²]=13/63, E|Y|³=19/84 (hand-checked from the Beta(3,3) moments 1/2, 2/7, 5/28 and the moments 0, 1/6, 1/4 of h); p_z=1/3 and r_z=2 ≥ 1 in both arms. The conclusion contradicts the printed assertion: every compatible mean lies in (0,1), and the EReal GLB and LUB are 0 and 1, not ⊥ or ⊤. The family betaEndpointPopulation t (Defs/Part5.lean:128-136) matches the canonical (e) construction (weights (q/3,(1-q)/3,(1-q)/3,(1+q)/3), complements [t,1) and (0,1-t]). It is compatible and has always-passer mean t(15/2-12t+5t²)/(10-15t+6t²) ∈ (0,t), which I hand-checked from ∫_0^t 30x³(1-x)²dx. The meanOn junk value cannot occur: a compatible ν has Y(a) ∈ (0,1) a.s. on {S(a)=1}.",
+    "confidence": "high"
+  }
+]

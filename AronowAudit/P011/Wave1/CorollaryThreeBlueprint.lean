@@ -1,17 +1,20 @@
 import AronowAudit.P011.Wave1.CorollaryOneBlueprint
 
 /-!
-# P011-T33: refutation of printed Corollary 3 (printed V̂₁ Wald interval)
+# Blueprint: P011-T33, refutation of printed Corollary 3 (printed V̂₁ Wald interval)
 
-Printed Corollary 3 asserts `PrintedConservativeCoverage` for the interval
-`β̂ ± z √V̂₁(A)` under `Scaling`, `Valid` and an all-data maximizer. The definition
-`printedCoverage` counts a negative `V̂₁` (undefined real root) as uncovered;
-no clipping is substituted. `Target` is the exact negation.
+Wave 1, group P011-P013. The frozen record `AronowAudit.P011.printed_corollary_three`
+asserts `PrintedConservativeCoverage` for the printed interval `β̂ ± z √V̂₁(A)` under
+`Scaling`, `Valid` and an all-data maximizer. The recorded `printedCoverage` counts a
+negative `V̂₁` (undefined real root) as uncovered; no clipping is substituted. `Target` is
+the exact negation.
 
-The witness is the T31/T32 path family with `A(k,y) = G_k`.
-Since `n V̂₁ → -11/15` in probability, `P(V̂₁ ≥ 0) → 0`; the printed coverage event
-is contained in `{V̂₁ ≥ 0}`, so coverage tends to `0 < 1/2` at `α = 1/2`.
-No CLT or Gaussian quantile is needed.
+Witness (mapper P011-T33, accepted by both referees): the T31/T32 path family with
+`A(k,y) = G_k`. Since `n V̂₁ → -11/15` in probability, `P(V̂₁ ≥ 0) → 0`; the printed coverage
+event is contained in `{V̂₁ ≥ 0}`, so coverage tends to `0 < 1/2` at `α = 1/2`. No CLT or
+Gaussian quantile is needed.
+
+Writers: prove `theorem nk_proof : Nk` in `AronowAudit/P011/Wave1/CorollaryThree/Nk.lean`.
 -/
 
 set_option autoImplicit false
@@ -24,9 +27,10 @@ open scoped BigOperators Topology
 
 noncomputable section
 
-/-! ## Target -/
+/-! ## Frozen target -/
 
-/-- **Target (P011-T33).** Exact negation of printed Corollary 3 (p. 2248). -/
+/-- **Target (P011-T33).** Exact negation of `printed_corollary_three` (Corollary 3,
+p. 2248). -/
 def Target : Prop :=
   ¬ ∀ (F : Family) (c1 c2 c3 c4 : ℝ), Scaling F c1 c2 c3 c4 → Valid F →
       ∀ (A : ∀ k, (Fin (F.size k) → ℝ) → Graph (F.size k)),
@@ -34,23 +38,24 @@ def Target : Prop :=
           (fun B => V1 B (weighted (F.model k) y)) (A k y)) →
         PrintedConservativeCoverage F (fun k y => V1 (A k y) (weighted (F.model k) y))
 
-/-- The explicit witness to failure of printed conservative coverage. -/
+/-- The mapper's explicit witness statement (`printed_corollary_three_refuted` in the map). -/
 def Witness : Prop :=
   Scaling PF 6 2 (29 / 15) 2 ∧ Valid PF ∧
     (∀ k y, Maximizes (PF.model k).R (PF.model k).d
       (fun B => V1 B (weighted (PF.model k) y)) (oracleChoice k y)) ∧
     ¬ PrintedConservativeCoverage PF oracleV1
 
-/-! ## Consequence of a negative probability limit -/
+/-! ## Nodes (plus the shared `PropositionOne.N1`–`N10` and `CorollaryOne.N1`) -/
 
-/-- A statistic converging in probability to a negative constant is
-nonnegative with probability tending to zero. -/
+/-- **Node N1** (paper proof T33, "Whenever T>=0, |T+11/15|>=11/15>11/30. Consequently
+0 <= P(V1(A)>=0) <= P(|T+11/15|>11/30) -> 0"): generic. A statistic converging in
+probability to a negative constant is nonnegative with vanishing probability. -/
 def N1 : Prop :=
   ∀ (F : Family) (T : ∀ k, (Fin (F.size k) → ℝ) → ℝ) (a : ℝ), a < 0 →
     InProbability F T (fun _ => a) →
       Tendsto (fun k => probability (F.model k) {y | 0 ≤ T k y}) atTop (𝓝 0)
 
-/-! ## Coverage bounds -/
+/-! ## Glue (proved here) -/
 
 /-- The printed coverage probability lies between `0` and `P(V ≥ 0)` (its event contains
 the definedness clause `0 ≤ V`). -/
@@ -70,9 +75,9 @@ theorem nonneg_event_eq (k : ℕ) :
   · intro h; exact mul_nonneg hn.le h
   · intro h; exact nonneg_of_mul_nonneg_right (by linarith) hn
 
-/-! ## Refutation from the witness -/
+/-! ## Assembly (fully proved) -/
 
-/-- The stated properties imply the explicit witness to coverage failure. -/
+/-- **Assembly of the explicit witness.** -/
 theorem assemble_witness (p1 : PropositionOne.N1) (p2 : PropositionOne.N2)
     (p3 : PropositionOne.N3) (p4 : PropositionOne.N4) (p5 : PropositionOne.N5)
     (p6 : PropositionOne.N6) (p7 : PropositionOne.N7) (p8 : PropositionOne.N8)
@@ -92,7 +97,7 @@ theorem assemble_witness (p1 : PropositionOne.N1) (p2 : PropositionOne.N2)
   rw [hcov.liminf_eq] at h
   norm_num at h
 
-/-- The stated witness properties imply the refutation of printed Corollary 3. -/
+/-- **Assembly.** The nodes suffice for the refutation. -/
 theorem assemble (p1 : PropositionOne.N1) (p2 : PropositionOne.N2)
     (p3 : PropositionOne.N3) (p4 : PropositionOne.N4) (p5 : PropositionOne.N5)
     (p6 : PropositionOne.N6) (p7 : PropositionOne.N7) (p8 : PropositionOne.N8)
@@ -101,6 +106,10 @@ theorem assemble (p1 : PropositionOne.N1) (p2 : PropositionOne.N2)
   intro hall
   obtain ⟨hS, hV, hM, hnot⟩ := assemble_witness p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 q1 h1
   exact hnot (hall PF 6 2 (29 / 15) 2 hS hV oracleChoice hM)
+
+/-- Fidelity check: `Target` is literally the negation of the frozen statement
+`AronowAudit.P011.printed_corollary_three` (only its type is read; its unproved draft proof is never used). -/
+example : Target = ¬ type_of% @AronowAudit.P011.printed_corollary_three := rfl
 
 end
 

@@ -1,0 +1,46 @@
+[
+  {
+    "target_id": "P018-T25",
+    "theorem": "SAP.P018b.T25",
+    "fingerprint": "431d1acd12152b5604e9cb710a8bb1f2ee4a479a81ec4e06955822c9ceb3aeeb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Checks.lean constructs dyads {0,1} and {1,2} in Dyad 3, checks their minimum/maximum endpoints, computes the shared covariance entry as 1 and the independent-role entry as 0 for arbitrary real parameters, and proves no representation exists even without nonnegativity. These matrices are covariances of the independent standard-normal effects in the canonical simulation reading; the same entry obstruction works for every N>=3.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T26",
+    "theorem": "SAP.P018b.T26",
+    "fingerprint": "3209debcefa36f16e296154b75b8582c67df2e2dda5cdc88f973cc736c85872a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Checks.lean constructs signKernel with Standing signKernel and SampleRank signKernel (threshold 2), so all Lean premises are jointly satisfiable. This sign model is only the nonvacuity instance. A genuine refuting witness is checked mathematically in refutation-checks.md: iid uniform[-1,1] units, X=(1,u+v), Y=(u+v)^2, Q=diag(1,2/3), beta=(2/3,0). It is bounded, measurable and symmetric, and has almost-sure sample rank for every N>=3. Its design-measurable residual makes printedSigma zero, while the intercept score-sum variance is 12/5 at N=3. Exact polynomial integration in scratch/exact_checks.py verifies the variance. The continuous witness is not separately formalized in Lean.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T27",
+    "theorem": "SAP.P018b.T27",
+    "fingerprint": "9b8a053e1c5b57b920ab838a035af00736f6ce26b116877485b40ffb6f78a2c8",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Checks.lean proves Standing signKernel, constructing data that satisfy every premise of T27WholeStatement_W3; it also proves SampleRank for this kernel although T27 does not require it. Probability and bounded data guarantee the relevant population means and finite-N score covariances are finite. The stronger conclusion includes the canonical claim under its additional fitted-residual and nonzero-moment hypotheses.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P018-T28",
+    "theorem": "SAP.P018b.T28",
+    "fingerprint": "b2798d0a989e83a428a330e9ed6dfa1899d7dbae07b8a63503d31a2493f904bd",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The explicit signKernel has iid fair-sign units, intercept X=1, Y_ij=Z_i+Z_j, and T(d)=1. Compiled scratch/Checks.lean verifies Standing and sample rank from N=2. For every N>=5 the fitted residual bound is 4, E[e_d^2]=2-4/N>0 and neighboring E[e_d e_f]=1-4/N is nonzero; all relevant moments exist. The all-N algebra is recorded in refutation-checks.md, and scratch/exact_checks.py verifies the OLS variance and fitted-residual moments by exact enumeration for N=2,...,7. The literal target is 4/D, whereas N Var(bhat-beta)=4, giving a genuine refutation without using a singular inverse or an undefined moment.",
+    "confidence": "high"
+  }
+]

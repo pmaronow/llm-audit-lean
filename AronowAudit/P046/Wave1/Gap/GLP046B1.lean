@@ -1,11 +1,11 @@
 import AronowAudit.P046.Wave1.Gap.GP046B1
 
 /-!
-The interval count-mass bound and the Robins–Ritov observed-sample
-indistinguishability theorem. The interval bound uses the continuous-law
-exact noncoverage calculation. The second proof transports the uniform
-generators, averages the three observed marks over independent bin types,
-and bounds event differences by collision mass.
+Independent proofs of the interval count-mass bridge and the Robins–Ritov
+observed-sample indistinguishability theorem. The interval bridge reuses the
+proved continuous-law exact noncoverage calculation in GP046B1. The second
+proof transports the actual uniform generators, averages the three observed
+marks over independent bin types, and bounds event differences by collision mass.
 -/
 
 namespace AronowAudit.P046.Wave1
@@ -40,6 +40,8 @@ theorem count_mass_bridge_proof :
       (sampleLaw study 100 {a | printedRadius study (1/10000000) a < |ht study a - mu study|}).toReal := by
   rw [exact_noncoverage_proof]
   exact div_le_div_of_nonneg_right (by exact_mod_cast count_mass_bridge_numerator) (by positivity)
+
+example : type_of% @AronowAudit.P046.IntervalExample.count_mass_bridge := count_mass_bridge_proof
 
 private def rr_indist_mark (p m : ℝ) (z : ℝ × ℝ) : Fin 3 :=
   if z.1 ≤ p then (if z.2 ≤ m then 0 else 1) else 2
@@ -395,7 +397,7 @@ private theorem rr_indist_restrict_eq (K n : ℕ) (hK : 0 < K) :
   · exact (rr_indist_cond_mixture K n hK w hw S hS).symm
   · simp
 
--- Interval-fiber calculation for the count-state noncoverage bound.
+-- The following interval-fiber calculation is reused from GP046B1.lean.
 private theorem rr_indist_bin_fiber (K : ℕ) (hK : 0 < K) (j : Fin K) (w : ℝ)
     (hw : w ∈ Set.Ico (0 : ℝ) 1) :
     RobinsRitov.bin K hK w = j ↔ w ∈ Set.Ico ((j : ℝ)/K) (((j : ℝ)+1)/K) := by
@@ -563,6 +565,8 @@ theorem rr_indistinguishability_proof (K n : ℕ) (hK : 0 < K) :
     _ = (binLaw K n {b | ∃ i j, i ≠ j ∧ b i = b j}).toReal :=
       congrArg ENNReal.toReal (rr_indist_collision_mass K n hK)
     _ ≤ (n : ℝ)*(n-1)/(2*K) := robins_ritov_collision K n hK
+
+example : type_of% @AronowAudit.P046.RobinsRitov.rr_indistinguishability := rr_indistinguishability_proof
 
 end
 end AronowAudit.P046.Wave1

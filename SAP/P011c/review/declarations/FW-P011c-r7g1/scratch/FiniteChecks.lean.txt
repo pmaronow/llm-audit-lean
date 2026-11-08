@@ -1,0 +1,95 @@
+import SAP.P011c.Defs
+
+open MeasureTheory Finset
+open scoped BigOperators
+open scoped Matrix
+open SAP.P011c
+
+noncomputable section
+
+def emptyGraph (n : ℕ) : Graph n := ⟨fun _ _ => false, by simp⟩
+
+def oneModel : Model 1 where
+  law := Measure.dirac (fun _ => (2 : ℝ))
+  probability := inferInstance
+  theta := fun _ => 1
+  G := emptyGraph 1
+  R := emptyGraph 1
+  d := fun _ => 0
+
+-- All assumptions in both conjuncts of T29, with a nonempty coefficient type.
+example : 0 < (1 : ℕ) ∧
+    (Matrix.det ((1 : Matrix (Fin 1) (Fin 1) ℝ)ᵀ * 1) ≠ 0) ∧
+    MeanModel oneModel (1 : Matrix (Fin 1) (Fin 1) ℝ) (fun _ => 2) ∧
+    (∀ i : Fin 1, MemLp (fun y : Fin 1 → ℝ => y i) 2 oneModel.law) := by
+  refine ⟨by norm_num, by simp, ?_, ?_⟩
+  · constructor
+    · intro i
+      exact integrable_dirac (by simp)
+    · intro i
+      simp [expectation, oneModel]
+  · intro i
+    have : IsProbabilityMeasure oneModel.law := oneModel.probability
+    apply (memLp_congr_ae (f := fun _ : Fin 1 → ℝ => (2 : ℝ))
+      (g := fun y : Fin 1 → ℝ => y i) (μ := oneModel.law) ?_).mp
+    exact MeasureTheory.memLp_const (2 : ℝ)
+    change ∀ᵐ y ∂Measure.dirac (fun _ : Fin 1 => (2 : ℝ)), 2 = y i
+    simp [ae_dirac_eq]
+
+-- For every design and coefficient vector the mean-model premise has an instance.
+-- Thus its grouping with the model-independent representation does not restrict it.
+example (n p : ℕ) (D : Matrix (Fin n) (Fin p) ℝ) (b : Fin p → ℝ) :
+    ∃ m : Model n, MeanModel m D b := by
+  let m : Model n := {
+    law := Measure.dirac (D *ᵥ b)
+    probability := inferInstance
+    theta := fun _ => 0
+    G := emptyGraph n
+    R := emptyGraph n
+    d := fun _ => 0 }
+  refine ⟨m, ?_, ?_⟩
+  · intro i
+    exact integrable_dirac (by simp)
+  · intro i
+    simp [expectation, m]
+
+def onlyEdge : Edge 2 := ⟨(0, 1), by decide⟩
+
+-- The nontrivial two-vertex instance has a mandatory negative-profit edge.
+example : edgeProfit (fun i : Fin 2 => if i = 0 then (-1 : ℝ) else 1)
+    {onlyEdge} = -1 := by
+  norm_num [edgeProfit, centered, SAP.P011c.average, onlyEdge, Fin.sum_univ_two]
+
+example :
+    (DegreeFeasible {onlyEdge} (fun _ => 1) {onlyEdge} ∧
+      ∀ T, DegreeFeasible {onlyEdge} (fun _ => 1) T →
+        edgeProgramVariance (fun i : Fin 2 => (i : ℝ)) T ≤
+          edgeProgramVariance (fun i : Fin 2 => (i : ℝ)) {onlyEdge}) ∧
+    (IncidenceFeasible {onlyEdge} (fun _ => 1) {onlyEdge} ∧
+      ∀ T, IncidenceFeasible {onlyEdge} (fun _ => 1) T →
+        edgeProfit (fun i : Fin 2 => (i : ℝ)) T ≤
+          edgeProfit (fun i : Fin 2 => (i : ℝ)) {onlyEdge}) := by
+  have unique : ∀ T : Finset (Edge 2), {onlyEdge} ⊆ T → T = {onlyEdge} := by
+    intro T h
+    apply Subset.antisymm _ h
+    intro e he
+    obtain ⟨⟨i, j⟩, hij⟩ := e
+    change i < j at hij
+    have hi : i = 0 := by omega
+    have hj : j = 1 := by omega
+    subst i
+    subst j
+    simp [onlyEdge]
+  constructor
+  · refine ⟨⟨Subset.rfl, ?_⟩, ?_⟩
+    · intro i
+      unfold edgeDegree
+      exact (card_filter_le _ _).trans (by simp)
+    · intro T h
+      rw [unique T h.1]
+  · refine ⟨⟨Subset.rfl, ?_⟩, ?_⟩
+    · intro i
+      simp only [sum_singleton]
+      split_ifs <;> norm_num
+    · intro T h
+      rw [unique T h.1]

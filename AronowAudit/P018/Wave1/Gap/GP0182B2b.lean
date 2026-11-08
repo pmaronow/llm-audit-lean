@@ -12,7 +12,8 @@ import Mathlib.Probability.Independence.InfinitePi
 /-!
 P018-T8: corrected contrast coverage under the original `Standing` assumptions.
 The proof derives the scalar projection CLT, covariance consistency, and studentization
-before applying the fixed normal-quantile coverage argument.
+before applying the fixed normal-quantile coverage argument. All auxiliary declarations
+are prefixed `GP0182B2b_`; the held statistical proof terms are not used.
 -/
 
 noncomputable section
@@ -27,7 +28,7 @@ set_option linter.unusedVariables false
 set_option linter.unusedSectionVars false
 set_option linter.style.haveILetI false
 
-/-! ## Coverage probabilities -/
+/-! ## Record 8: the coverage probability endgame. -/
 
 theorem GP0182B2b_contrast_coverage_quantile_bridge (α : ℝ) :
     normalQuantile (1-α/2) = AronowAudit.P053.normalCritical α := by
@@ -63,7 +64,7 @@ theorem GP0182B2b_contrast_coverage_event_symmDiff {Ω : Type*} (x v : Ω → �
   · exact hω.2 (he.mp hω.1)
   · exact hω.2 (he.mpr hω.1)
 
-/-- Relate the changing-space weak-limit predicate to interval mass.
+/-- Bridge the dossier's changing-space weak-limit predicate to interval mass.
 Using AEMeasurability here preserves the strength of the original predicate. -/
 theorem GP0182B2b_contrast_coverage_interval_limit
     {Ω : ℕ → Type*} [∀ N, MeasurableSpace (Ω N)]
@@ -143,6 +144,7 @@ theorem GP0182B2b_contrast_coverage_from_studentization
     simpa only [q, B, GP0182B2b_contrast_coverage_quantile_mass α hα] using h
   have hsum := hdiff.add hcentral
   simpa only [sub_add_cancel, zero_add] using hsum
+
 
 
 theorem GP0182B2b_measurable_inverse {Ω : Type*} [MeasurableSpace Ω] {k : ℕ}
@@ -402,7 +404,8 @@ theorem GP0182B2b_variance_consistency {U : Type*} [MeasurableSpace U] {k : ℕ}
   rw [GP0182B2b_singleWeightedVariance, GP0182B2b_singleWeightedTarget K hK hN]
 
 /-
-Adapted from earlier code by P. M. Aronow and Patrick Lopatto.
+Adapted from NearlyMinimax/PairUStatistic.lean at
+f3ef2ef312d44bbc693c1d5bea9cee654a29b598 (ccv-palomar).
 MIT License
 
 Copyright (c) 2026 P. M. Aronow and Patrick Lopatto
@@ -425,7 +428,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -/
-/- See NOTICE at the repository root for this adapted section. -/
 
 section GP0182B2b_PairMoments
 set_option backward.isDefEq.respectTransparency false
@@ -1717,5 +1719,7 @@ theorem contrast_coverage_corrected_proof {U : Type*} [MeasurableSpace U] {k : �
       atTop (𝓝 (1-α)) := by
   exact GP0182B2b_coverage_from_pivot K hK c (GP0182B2b_pivot_weak K hK c hc)
     (GP0182B2b_variance_bad K hK c hc) α hα
+
+example : type_of% @AronowAudit.P018.contrast_coverage_corrected := contrast_coverage_corrected_proof
 
 end AronowAudit.P018.Wave1

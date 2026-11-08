@@ -9,11 +9,13 @@ open scoped BigOperators Topology NNReal ENNReal
 
 noncomputable section
 
-/-- Corrected coverage from the finite-design identities and dependency CLT. -/
+/-- Corrected coverage, reusing the proved finite-design and dependency-CLT bridge. -/
 theorem corrected_wald_coverage_proof (S : ExperimentSequence) (hnested : NestedPopulationSetup S) (hc3 : ComparisonBounded S)
     (hc5 : Condition5Genuine S) (hc6 : Condition6 S) (hL : LowerTailCondition S) :
     ∀ α : ℝ, 0 < α → α < 1 → 1-α ≤ liminf (seqCoverage S α) atTop := by
   exact corrected_wald_coverage_bridge S hnested hc3 hc5 hc6 hL
+
+example : type_of% @AronowAudit.P013.corrected_wald_coverage := corrected_wald_coverage_proof
 
 /-! Local ordered-pair scores for the original expression (11). -/
 
@@ -49,6 +51,10 @@ theorem shrinking_pairValue_eq (F : Population P N K) (i j : Fin N) (d e : Fin K
     (z : Ω) : shrinking_pairValue F i j d e (F.exposure z i) (F.exposure z j) =
       pairTerm F i j d e z := rfl
 
+theorem shrinking_pair_zero (F : Population P N K) (i j : Fin N) (d e : Fin K)
+    (hp : jointPi F i j d e = 0) (a b : Fin K) :
+    shrinking_pairValue F i j d e a b = 0 := by
+  simp [shrinking_pairValue, hp]
 
 theorem shrinking_positive_guard (F : Population P N K) (i j : Fin N) (d e : Fin K)
     (z : Ω) : (if 0 < jointPi F i j d e then pairTerm F i j d e z else 0) =
@@ -605,6 +611,8 @@ theorem shrinking_joints_variance_rate_proof (S : ExperimentSequence) (hnested :
   exact ⟨⟨C,hC,hr⟩, fun ht => shrinking_rate_lower_tail S
     (fun n => (n+1 : ℝ)*b n) C hr ht⟩
 
+example : type_of% @AronowAudit.P013.shrinking_joints_variance_rate := shrinking_joints_variance_rate_proof
+
 /-- A fixed positive joint bound is the constant-denominator specialization. -/
 theorem uniform_joints_variance_rate_proof (S : ExperimentSequence) (hnested : NestedPopulationSetup S) (hc3 : ComparisonBounded S)
     (hc5 : Condition5Genuine S) (b : ℝ) (hb : 0 < b) (hj : JointLowerBound S b) :
@@ -662,6 +670,8 @@ theorem uniform_joints_variance_rate_proof (S : ExperimentSequence) (hnested : N
   refine ⟨⟨C,hC,Eventually.of_forall hr⟩, ?_⟩
   apply shrinking_rate_lower_tail S (fun n => (n+1 : ℝ)) C (Eventually.of_forall hr)
   exact tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
+
+example : type_of% @AronowAudit.P013.uniform_joints_variance_rate := uniform_joints_variance_rate_proof
 
 end
 

@@ -1,0 +1,75 @@
+[
+ {
+  "target_id": "P003-T36",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T36",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.general_complexity",
+   "AronowAudit.P003.general_envelope_bound",
+   "AronowAudit.P003.general_finite_counts",
+   "SAP.P003b.WH.W2.T36_whole",
+   "SAP.P003b.WH.W2.T36_assembly",
+   "SAP.P003b.WH.W2.T36_L1_proof",
+   "SAP.P003b.WH.W2.T36_L2_proof",
+   "AronowAudit.P003.Wave1.glp0032b2_possible_iff",
+   "AronowAudit.P003.first_on_line_spec",
+   "AronowAudit.P003.list_cost_bound"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P003.list_cost_bound",
+    "reason": "List-cost auxiliary already used inside the exported finite-count result."
+   },
+   {
+    "lean_name": "AronowAudit.P003.list_sum_bound",
+    "reason": "Natural-list auxiliary already used inside the exported finite-count result."
+   }
+  ],
+  "statement_definition": "SAP.P003b.T36WholeStatement"
+ },
+ {
+  "target_id": "P003-T18",
+  "decision": "whole",
+  "theorem": "SAP.P003b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P003.balanced_algorithm_complexity",
+   "AronowAudit.P003.Wave1.balanced_shuffle_lower_bounds_proof",
+   "AronowAudit.P003.Wave1.balanced_shuffle_not_linear_polylog_proof",
+   "AronowAudit.P003.squared_log_dominates",
+   "SAP.P003b.WH.W1.T18_whole",
+   "SAP.P003b.WH.W1.T18_assembly",
+   "SAP.P003b.WH.W1.T18_L1_proof",
+   "SAP.P003b.WH.W1.T18_L2_proof",
+   "SAP.P003b.WH.W1.T18_L3_proof",
+   "AronowAudit.P003.balanced_complexity",
+   "AronowAudit.P003.recommended_k_log_bound",
+   "AronowAudit.P003.general_finite_counts",
+   "AronowAudit.P003.general_envelope_bound",
+   "AronowAudit.P003.general_complexity",
+   "AronowAudit.P003.Wave1.GP0031B1b_balanced_shuffle_not_linear_polylog_of_quadratic",
+   "AronowAudit.P003.Wave1.GP0031B1b_balanced_shuffle_not_linear_polylog_recommendedK",
+   "AronowAudit.P003.Wave1.GP0031B1b_balanced_shuffle_not_linear_polylog_quadratic"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P003.Wave1.balanced_runtime_family_proof",
+    "reason": "Finite candidate/assignment auxiliary; its runtime consequences are supplied by the selected lower-bound results."
+   },
+   {
+    "lean_name": "AronowAudit.P003.balanced_complexity",
+    "reason": "Envelope auxiliary already used in the conditional operation theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P003.balanced_cost_multiplication",
+    "reason": "Arithmetic supporting identity; the separate finite product assertion is omitted."
+   },
+   {
+    "lean_name": "AronowAudit.P003.recommended_k_log_bound",
+    "reason": "Budget-growth auxiliary already used in the conditional operation theorem."
+   }
+  ],
+  "statement_definition": "SAP.P003b.T18WholeStatement"
+ }
+]

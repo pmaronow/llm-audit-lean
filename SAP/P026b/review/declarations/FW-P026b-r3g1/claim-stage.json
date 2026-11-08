@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P026b.T13",
+    "target_id": "P026-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal UnitExperiment law is exactly an arbitrary finite binary assignment distribution with positive marginals and a nonempty population. For every pair of fixed real potential-outcome vectors and every assignment-dependent real prediction vector, both arm-total identities and the ATE covariance-bias identity are stated. Generalized totals unfold to the corrected expectation expression, so its intermediate equality is definitional. No independence, rate, rank, or fitting assumption is added. All inverse denominators are positive."
+  },
+  {
+    "theorem": "SAP.P026b.T14",
+    "target_id": "P026-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "The dataset, cluster map, 90 uniform product assignments, unpenalized intercept-and-X likelihood, unique maximizers, coefficient bounds, exact ATE and variance-estimator unbiasedness, all stated moment intervals, ten corrected rounded entries, and failure of the six printed entries match (a)-(c). The opposite-block use of the two fits, flagged during the blind reading, is explicitly required by canonical part (a) and paper Section 7.1. Real.sqrt is applied to nonnegative finite-law variances and mean squares; maximizer existence disables the choice fallback. The blind reading's cautious comment that joints may vanish is unnecessary for this particular table law: enumeration shows every distinct-pair joint is positive."
+  },
+  {
+    "theorem": "SAP.P026b.T15",
+    "target_id": "P026-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "This is the exact canonical three-unit counterexample: uniform one-of-three assignment, X=(0,1,2) with intercept, potential outcomes one and zero, the three displayed fitted vectors certified as unique real OLS fitted vectors, estimates (1/4,1,1/4), covariances (1/6,0,1/6), expectation 1/2, ATE 1, bias -1/2, the explicit equation [19] arithmetic, and HT=1 at every allocation. The generalized estimator unfolds by masking and cancellation to the branch's observed-outcome residual contrast; it is not an unrelated hard-coded estimator. The docstring identifies the help-text interpretation being refuted and does not claim that the article's own assertion is false."
+  },
+  {
+    "theorem": "SAP.P026b.T16",
+    "target_id": "P026-T16",
+    "my_reading_vs_claim": "whole",
+    "reason": "The first block gives the fixed-prediction residual estimator and unbiasedness in (a). The second constructs ordinary all-unit OLS with an intercept by orthogonal projection onto the actual design column space, certifies least-squares minimization even at deficient rank, identifies the residual contrast, and states the exact covariance-bias formula in (b). The zero-covariance and response-only sharp-null blocks, together with the full T15 counterexample, cover (c); the sharp-null block specializes to the stated OLS map for every fixed X. Correct assignment probabilities are defined from the law. If a fixed Ypre is also supplied, substitute residual potential outcomes y1-g and y0-g into the universal blocks; their ATE is unchanged. No substantive additional hypothesis is imposed."
+  },
+  {
+    "theorem": "SAP.P026b.T17",
+    "target_id": "P026-T17",
+    "my_reading_vs_claim": "different",
+    "reason": "The canonical target records the as-printed assertions; this declaration gives their refutation rather than asserting them. This polarity difference is intentional and valid as a refutation: its negated universal conjunction contradicts printed (i)/(iii), and its explicit sharp-null unequal-moments assertion contradicts (iii)/(iv), already at fixed f=0. The witness has two singleton clusters, FF/FT/TT each of weight 1/3, positive marginals, disagreement 1/3, positive same-arm joints including diagonals, fixed sharp-null outcomes one, and all finite quantities. It violates no printed requirement: directed cross-support is the printed conclusion, not an independently imposed premise. Exact enumeration gives expected equation [35] estimate 23/8 and true variance 27/8. The printed reading and every witness condition are written and checked in scratch/refutation-check.txt. This comparison records the polarity difference only; it is not a fidelity defect if the declaration is designated refuted."
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "theorem": "SAP.P006a.T1",
+    "target_id": "P006-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "The fair two-unit finite sums use the printed zero-on-empty reward and SUTVA outcomes. They assert all stated exact rewards, the conditional population average, unique optimizer, polynomial certificate, and welfare gaps. The finite probability weights are nonnegative and sum to one on the binary cube; (0,1), (1,1), and (17/18,1) are feasible. Exact finite reward checks compile in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P006a.T2",
+    "target_id": "P006-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The stochastic identities, nonempty-sample means, finite threshold frontier and attained optimum, population-ratio optimization, and n=1 identities match. Countable covariates with measurable singletons implement the stated discrete setting. ATT adds full evaluated-estimator integrability for all admissible policies. The separate single-unit conditional-mean identity and standalone closed form for h_n are absent; the nonmaximal-type witness is delegated to T1. The canonical ATT setting also states that pointwise-unbiased independent estimation suffices for the full-vector conditional hypothesis, but this sufficient-implementation implication is not asserted in T2 (T6 only concludes TreatedUnbiased). A one-unit Bernoulli experiment with deterministic zero estimator, constant baseline zero, and constant effect one satisfies Standing and VectorUnbiased; compiled in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P006a.T3",
+    "target_id": "P006-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The reward-factor identity, zero-policy values, nonnegative best-response welfare, and regret bound are mathematically correct in the discrete setting. Full evaluated-estimator integrability is imposed on every admissible policy, even outside the feasible set. All conclusions, including the per-policy and zero-policy identities, additionally lie under supplied ATT and welfare maximizers b,s; canonical clauses (i)-(ii) do not require optimizers. The final concrete printed-closed-form comparison is not asserted here. Nonvacuity: the compiled Bernoulli experiment with P={0} gives b=s=0; with constant effect one on the unrestricted class, b=s=1 also works. A class of constant treatment probabilities in [0,1) contains zero but has no maximizer; its canonical per-policy identities are not covered by this theorem."
+  },
+  {
+    "theorem": "SAP.P006a.T4",
+    "target_id": "P006-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both one-unit estimator witnesses are exactly the stated fair-Boolean models. Fixed-query means, diagonal biases, ATT/TT objectives, unique reward maxima, welfare maxima and regrets, and zero marginal heterogeneity all match. The finite sampling law is normalized and every estimator and reward is bounded. An independent compiled check confirms fixedEstimatorMean estA false=0 and estA false false=1."
+  },
+  {
+    "theorem": "SAP.P006a.T5",
+    "target_id": "P006-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "The shared estimator, independent fair covariate law, constant effects 1/4 and 1/8, evaluation means, score polynomials, attained scores 0 and 5/8, and strict effect-order comparisons give both canonical ranking reversals. Each policy variable is optimized over its own full binary cube; there is no empty index set or inappropriate common optimizer."
+  },
+  {
+    "theorem": "SAP.P006a.T6",
+    "target_id": "P006-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "TreatedUnbiased with explicit treated-residual integrability is the corrected moment, rather than pointwise unbiasedness or an assumed reward identity. The TT and welfare identities, arbitrary-feasible-class best-response equivalence, zero regret, unrestricted positive rule, and independent-estimation sufficient implementation all appear. PolicyDesign weakens unnecessary cross-unit assumptions without weakening the conclusions. The compiled Bernoulli experiment with zero estimator and effect one supplies a nonempty instance; all its relevant integrals are finite."
+  },
+  {
+    "theorem": "SAP.P006a.T7",
+    "target_id": "P006-T7",
+    "my_reading_vs_claim": "whole",
+    "reason": "The strict measurable positive weight, integrability of g*tau and actual weighted summands, and treated-residual moment are exactly the qualified corrected hypotheses. Standing with estimator replaced by zero adds no integrability requirement on the original untreated estimator evaluations. The identity, positive-rule optimizer, a.e. characterization of every maximizer, welfare optimality and zero regret all match. Nonvacuity: the compiled one-unit experiment with g=1 and effect one has b=1 and score/welfare one."
+  },
+  {
+    "theorem": "SAP.P006a.T8",
+    "target_id": "P006-T8",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The normalized TT identity, exact bias identity, marginal-heterogeneity bound, and 2*gamma regret for supplied maximizers match. Standing adds full evaluated-estimator integrability on all admissible policies, including untreated draws and policies outside the feasible class. The independent-estimator sufficient implementation and the standalone general Lemma 2/Proposition 10 statements are absent. Per-policy identities correctly precede optimizer premises. Nonvacuity: the compiled Bernoulli construction at C=Unit*Unit with b0=mu0=estimator=0 and effect one has heterogeneity zero and satisfies every hypothesis."
+  },
+  {
+    "theorem": "SAP.P006a.T9",
+    "target_id": "P006-T9",
+    "my_reading_vs_claim": "whole",
+    "reason": "The beneficiary/whole-sample denominator identity and strict comparison, both exact rational interval calculations, printed-table lower bounds, and corrected three-decimal intervals are all asserted. Dataset-derived numbers are hypotheses, as in the canonical claim, rather than unproved facts about external data. Positive sample and beneficiary counts protect all denominator uses. Example: n=2, fitted effects (1,-1); numerical premises hold at vH=0.146954 and vS=0.025186 with their prescribed scaled beneficiary means."
+  },
+  {
+    "theorem": "SAP.P006a.T10",
+    "target_id": "P006-T10",
+    "my_reading_vs_claim": "whole",
+    "reason": "The singleton always-treated class makes regret zero for any real welfare functional, establishes nondegeneracy and treated-data invariance of the actual one-unit ATO expectation, and refutes the withholding step with B>0. The general integral equality and marginal invariance remain valid as algebraic strengthenings under total Bochner integrals; the counterexample itself uses only finite moments and denominator one. Example B=1 gives D=dirac((),2,1), welfare -1, regret zero, and an infeasible zero policy."
+  },
+  {
+    "theorem": "SAP.P006a.T11",
+    "target_id": "P006-T11",
+    "my_reading_vs_claim": "whole",
+    "reason": "The exact quantifier order is every M>0, then some finite-moment law and some best response with regret>M. The shifted law preserves (X,Y1), has welfare -B times treatment mass and maximum zero attained at the feasible zero policy, and realizes regret Bc. The zero-reward tie example correctly refutes a conclusion for every best response. Nonvacuity: C=Unit, P={0,1}, zero reward, and any finite-moment law (for example B=1) satisfy the reward hypotheses."
+  },
+  {
+    "theorem": "SAP.P006a.T12",
+    "target_id": "P006-T12",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The real-line laws are normalized probability laws with the exact common support, atom masses, printed absolute-continuity direction, failure in the reverse direction, and no representing measurable density. They are mathematically equivalent to the stated laws on the Borel interval. Clause (d), the two-agent treatment-model completion, is not asserted. Both measures have total mass one, and the obstruction is the real atom at 1/2 rather than a default value of rnDeriv."
+  },
+  {
+    "theorem": "SAP.P006a.T13",
+    "target_id": "P006-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "The normalized density is in the corrected direction P0 << PXk. Treated residual and individual weighted reward integrability match the explicit qualification; no original-estimator integrability is required at untreated evaluations. All per-policy score/change-of-measure identities, attained optimum values, positive-part comparison, uniform ranking, and nonnegative-effect relative ranking are present with each own-agent argument. Probability measures make rnDeriv finite a.e., sample sizes are positive, and optimizers ensure real suprema are bounded and nonempty. Nonvacuity: K=2 with both PX=P0=dirac(), sample sizes one, deterministic zero estimator, and respective effects one and two, using the compiled Bernoulli construction."
+  },
+  {
+    "theorem": "SAP.P006a.T14",
+    "target_id": "P006-T14",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The canonical formal content is monotonicity of the integrated positive part, with corrected score identities assigned to other targets. This theorem asserts that content only when both positive parts are integrable. It therefore excludes infinite positive-part expectations; its extension to arbitrary measures is a valid strengthening. Correct own-agent score/ranking conventions are indeed represented in Defs. Nonvacuity: P0=dirac(), tau_j=2 and tau_k=1."
+  },
+  {
+    "theorem": "SAP.P006a.T15",
+    "target_id": "P006-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both explicit pairs of observation-equivalent models, their strictly positive treatment probabilities, failure of non-treatment positivity, the three mixed-model atom masses, and zero singleton-U maximum heterogeneity are asserted. They refute identification and the implication needed to apply Lemma 3, as the canonical target says; they do not purport to refute a bound with a well-defined untreated estimator. The supremum in maximumDeviation is genuinely the nonempty singleton {0}. The point-mass observation check compiles in scratch/Check.lean."
+  }
+]

@@ -1,0 +1,48 @@
+[
+ {
+  "target_id": "P037-T32",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T32",
+  "restriction": "Retains the blocked mass definition and its normalization/support count, general uniform-selection marginal/pair formulas, and the school-local mixture identity for normalized nonnegative school and seed masses. Omits explicit independence of the blocked components, the numerical specializations in (b), the control-versus-other-exposure specializations and explicit equality of exposure probabilities/populations/estimands under the two school laws in (c), the joint control-exposure/variance comparisons in (d), and certification of the released-sampler repair.",
+  "rows_used": [
+   "AronowAudit.P037.Wave1.school_randomization_laws_proof",
+   "AronowAudit.P037.school_local_exposure_invariance"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T32Statement",
+  "bridge": "SAP.P037b.Bridge.T32_correspondence"
+ },
+ {
+  "target_id": "P037-T25",
+  "decision": "whole",
+  "theorem": "SAP.P037b.T25",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P037.Wave1.nomination_union_counterexamples_proof"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T25Statement",
+  "bridge": "SAP.P037b.Bridge.T25_correspondence",
+  "supporting_declarations": [
+   "AronowAudit.P037.Wave1.nomination_degrees10",
+   "AronowAudit.P037.Wave1.nomination_degrees20",
+   "AronowAudit.P037.Wave1.nomination_count_direct",
+   "AronowAudit.P037.Wave1.nomination_count_union"
+  ]
+ },
+ {
+  "target_id": "P037-T26",
+  "decision": "restricted",
+  "theorem": "SAP.P037b.T26",
+  "restriction": "Retains Boolean union-graph properties and the two count decompositions, the scalar equal-label criterion and pointwise implications, and normalized positive-weight scalar probability inequalities with strictness. Omits the graph-instantiated subset-count inequalities, the all-supported-assignments reciprocal-possible-seed sufficient condition in (d), referenced concrete examples in (f), and verification of the released-script and Fig. S5 descriptions; probability comparisons are stated for scalar counts satisfying r ≤ c and q ≤ b.",
+  "rows_used": [
+   "AronowAudit.P037.either_direction_count_identities",
+   "AronowAudit.P037.either_direction_properties",
+   "AronowAudit.P037.exposure_probability_monotone",
+   "AronowAudit.P037.exposure_rows_equal_iff"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P037b.T26Statement",
+  "bridge": "SAP.P037b.Bridge.T26_correspondence"
+ }
+]

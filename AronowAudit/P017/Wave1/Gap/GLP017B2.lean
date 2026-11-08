@@ -6,8 +6,9 @@ import Mathlib.MeasureTheory.Function.Floor
 import Mathlib.Probability.Independence.InfinitePi
 
 /-!
-The prescribed rare-outlier sequence. The fractional sum uses Haar measure on
-the unit circle.
+The prescribed rare-outlier sequence. The initial law, population, and Gaussian
+helpers are adapted from GP017B1b.lean. The fractional sum uses Haar measure on
+the unit circle; the held arbitrary-outlier declaration is used only for its type.
 -/
 
 namespace AronowAudit.P017.Wave1
@@ -505,6 +506,10 @@ private theorem arbitrary_outlier_sequence_decomposition (p : ℕ → ℝ) (n : 
   unfold rareEstimator rareRemainder
   ring
 
+private theorem arbitrary_outlier_sequence_remainder_measurable (p : ℕ → ℝ) (n : ℕ) :
+    Measurable (rareRemainder p n) := by
+  exact measurable_const.mul (((arbitrary_outlier_sequence_clip_measurable n).sub (arbitrary_outlier_sequence_mean_measurable n)).add
+    (measurable_const.mul (arbitrary_outlier_sequence_flag_measurable p n)))
 
 private theorem arbitrary_outlier_sequence_remainder_probability (p : ℕ → ℝ) (n : ℕ) (hn : 1 ≤ n)
     (hp : 0 < p n ∧ p n ≤ 1) (δ : ℝ) (hδ : 0 < δ) :
@@ -813,6 +818,8 @@ theorem arbitrary_outlier_sequence_proof (p : ℕ → ℝ)
       hmse.1, hmse.2⟩
   · intro n hn
     exact arbitrary_outlier_sequence_remainder_lower p n hn (hp n (by omega))
+
+example : type_of% @AronowAudit.P017.arbitrary_outlier_sequence := arbitrary_outlier_sequence_proof
 
 end
 end AronowAudit.P017.Wave1

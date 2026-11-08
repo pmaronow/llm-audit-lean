@@ -1,0 +1,122 @@
+[
+  {
+    "target_id": "P015-T1",
+    "theorem": "SAP.P015a.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; The displayed four atoms all have strictly positive mass at epsilon=10^-6. E[w]=250000999999/(2*10^12)>0 and det E[W'W]=250000999999/(8*10^12)>0. The family is inhabited, for example at epsilon=1/4. Positive normalization is compiled in scratch/Check.lean; exact moments, effective masses and actual population OLS are independently checked in scratch/exact_checks.py. The new refuted decision is accepted for the precise canonical printed reading; see REPORT2.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T2",
+    "theorem": "SAP.P015a.T2",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; Four atoms have mass 1/4, E[w]=5/8 and every effective atom mass is positive. The iid hypothesis is inhabited by Omega=(N -> Fin 4), P the infinite product of the uniform four-point law, and draw_i the coordinate projection; this is compiled in scratch/Check.lean. Exact weights, effects and observational equivalence are checked independently. The new refuted decision is accepted for the precise canonical printed reading; see REPORT2.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T3",
+    "theorem": "SAP.P015a.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; The actual ordered uniform draw (0,0,2,3) has mass 1/256>0. The controls Gram determinant is 4 and the full regression Gram determinant is 2. Draw probability is compiled and the genuine least-squares solution is checked by independent exact rational elimination. The new refuted decision is accepted for the precise canonical printed reading; see REPORT2.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T13",
+    "theorem": "SAP.P015a.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; Take p=1/2. The center is zero, sigma(0)=1/2 and the derivative is 1/4. All exponential denominators are strictly positive. The erroneous printed fraction has denominator 1 at this witness, so its value 1 uses no division-by-zero convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T12",
+    "theorem": "SAP.P015a.T12",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/DeltaCheck.lean proves by rfl that the newly parenthesized statement equals the original unparenthesized statement recorded in reading.md. Both circle-image guards govern the entire series/radius/error/limit conjunction, exactly as now disclosed. Take p=1/2, center=0, r=1/2, rho=1<pi. The complex circle is nonempty and compact, and its denominator has no zero (the nearest zeros are +/-i*pi), so the norm image is bounded and its supremum finite. rho>0 and 1-r/rho>0. The real inequalities are recompiled in scratch/Check.lean; the extra guards do not create an empty hypothesis class.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T8",
+    "theorem": "SAP.P015a.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; The Bernoulli hypotheses hold for m=sigmoid, I=R, eta0=0 and p0=1/2; smoothness and admissible range are compiled. A nonempty normalized canonical family is nu=dirac_0+dirac_1, kappa(eta)=log(1+exp eta), s=1, carrier=0, support={0,1}, I=R; all ValidCanonicalFamily guards are compiled. Use a positive sample size and full-rank intercept/treatment design, for example rows (1,0),(1,1), with binary responses. No empty index type is needed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T5",
+    "theorem": "SAP.P015a.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; No external hypotheses. The six displayed cells have 12 observations each, counts 7,6,10 strictly between 0 and 12, predictors 1,2,3 and probabilities 1/2,2/3,3/4. The design Gram determinant is 36. Exact rational checks reproduce both the zero substituted residual and the nonzero true score.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T6",
+    "theorem": "SAP.P015a.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No mathematical change from the blind reading; the corrected role is explicitly restricted. The standard-normal 3/4-quantile has a nonempty bounded-below defining set and lies in (0,7/10), with fitted probabilities 1/4,1/2,3/4. All six cells contain both outcomes and det(8 W'W)=18432. The score/nonmaximality example remains substantive and uses no zero denominators. scratch/DeltaCheck.lean verifies by rfl that T6 retains its original proposition; scratch/Check.lean was recompiled against the revised Defs. Both previous objections are fixed by the restricted label and precise converse/necessary-implication disclaimer.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T7",
+    "theorem": "SAP.P015a.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; All six atom probabilities are positive. For a=0 or 1/16 and |epsilon|<=1/16, all six response probabilities are between 3/32 and 23/64, strictly inside (0,1). The base point (1/2,0,0) is admissible; A has positive diagonal and the score Jacobian diag(-16/3,-119/108,-100/27) is nonsingular. Exact checks give treatment derivative 120/119. Strict concavity of each squared-link Bernoulli expected log likelihood on 0<eta<1, full rank and the implicit function theorem justify the asserted unique maximizing branches; the desired derivative is a conclusion, not a hypothesis. The new refuted decision is accepted for the precise canonical printed reading; see REPORT2.md.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P015-T16",
+    "theorem": "SAP.P015a.T16",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; The four actual observations have positive log arguments 1,1,1/2,2 and a regression Gram determinant 4. The log identities give treatment coefficient zero while spending means are 1 and 3/2. Rational Taylor lower/upper bounds independently certify every stated exponential and percentage interval.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T4",
+    "theorem": "SAP.P015a.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; A compiled nondegenerate instance is Omega=Fin 2, P=(dirac_0+dirac_1)/2, X constant in Unit, D(i)=i. The cell has probability 1, both treatment endpoints have probability 1/2, D is measurable and in L2, the residual weight is integrable with mean 1/4>0. Thus the positive-normalization/effective-law clauses are inhabited. D identically zero supplies the separate zero-variance case.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P015-T19",
+    "theorem": "SAP.P015a.T19",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The mathematical statement and definitions agree with the original blind reading; The same compiled fair Bernoulli population, constant measurable X and D(i)=i satisfies measurability and L2 with genuine variance 1/4. scratch/Check.lean also proves by rfl that conditionalTreatmentVariance is precisely Mathlib condVar at sigma(X). Thus its definitional first conjunct uses the standard notion; the binary identity is an additional nontrivial assertion.",
+    "confidence": 0.99
+  }
+]

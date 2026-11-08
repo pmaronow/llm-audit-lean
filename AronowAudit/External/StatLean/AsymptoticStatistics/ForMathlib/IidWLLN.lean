@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.IIdJointLaw
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.InProbability
 import AronowAudit.External.StatLean.AsymptoticStatistics.ForMathlib.EmpiricalAverage
@@ -239,5 +235,91 @@ lemma iid_lln_in_prob_l1
   simp_rw [h_set_eq]
   exact h_inf
 
+open AsymptoticStatistics.EmpiricalProcess in
+/-- **C (single-base iid WLLN in probability).** For an `L¹(P)` function `g` and the
+single-base i.i.d. quadruple `X : ℕ → Ξ → Ω` with `μ.map (X 0) = P`, the empirical
+average `ℙₙ g = (1/n)∑_{i<n} g(Xᵢ)` converges to `∫ g ∂P` in `μ`-probability:
+
+    `empiricalAvg g n (fun i : Fin n => X i.val ξ) − ∫ g ∂P →ₚ 0`.
+
+This is the single-base (varying-base `TendstoInProbZero`) sibling of the `Measure.pi`
+form `iid_lln_in_prob_l1`; the classical Z-estimator layer consumes this form (it matches
+the `(Ξ, μ, X)` sample encoding of the headline theorems). The proof applies
+`ProbabilityTheory.strong_law_ae` to the iid `ℝ`-sequence `g ∘ Xᵢ` on `(Ξ, μ)`
+(mean `∫ g ∂P` via `μ.map (X 0) = P`) gives a.s. convergence of the prefix averages;
+`MeasureTheory.tendstoInMeasure_of_tendsto_ae` upgrades a.s. → in-measure on the finite
+measure `μ`; unfold `empiricalAvg` to the `Fin n` prefix average. This direct
+argument does not require transport through `Measure.pi`. -/
+theorem iid_lln_in_prob_seq {Ω : Type*} [MeasurableSpace Ω] (P : Measure Ω)
+    [IsProbabilityMeasure P] (g : Ω → ℝ) (hg_meas : Measurable g) (hg_int : Integrable g P)
+    {Ξ : Type*} [MeasurableSpace Ξ] (μ : Measure Ξ) [IsProbabilityMeasure μ]
+    (X : ℕ → Ξ → Ω) (hX_meas : ∀ i, Measurable (X i))
+    (hX_indep : ProbabilityTheory.iIndepFun X μ)
+    (hX_id : ∀ i, ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hX_law : μ.map (X 0) = P) :
+    TendstoInProbZero (fun _ : ℕ => μ)
+      (fun n ξ => empiricalAvg g n (fun i : Fin n => X i.val ξ) - ∫ x, g x ∂P) := by
+  classical
+  -- The i.i.d. real sequence `Y i ξ = g (X i ξ)` on the single base `(Ξ, μ)`.
+  set Y : ℕ → Ξ → ℝ := fun i ξ => g (X i ξ) with hY_def
+  have hY_meas : ∀ i, Measurable (Y i) := fun i => hg_meas.comp (hX_meas i)
+  -- (i) Independence: post-compose the i.i.d. family `X` with the measurable `g`.
+  have hY_indep : ProbabilityTheory.iIndepFun Y μ := by
+    simpa [Y, Function.comp_def] using
+      hX_indep.comp (fun _ : ℕ => g) (fun _ => hg_meas)
+  have hY_pair :
+      Pairwise ((fun U V : Ξ → ℝ => ProbabilityTheory.IndepFun U V μ) on Y) :=
+    fun i j hij => hY_indep.indepFun hij
+  -- (ii) Identical distribution: `IdentDistrib.comp` along `g`.
+  have hY_ident : ∀ i, ProbabilityTheory.IdentDistrib (Y i) (Y 0) μ μ := fun i =>
+    (hX_id i).comp hg_meas
+  -- (iii) Integrability of `Y 0 = g ∘ X 0`, transported along `μ.map (X 0) = P`.
+  have hY0_int : Integrable (Y 0) μ := by
+    have hiff := MeasureTheory.integrable_map_measure
+      (μ := μ) (f := X 0) (g := g) (by rw [hX_law]; exact hg_meas.aestronglyMeasurable)
+      (hX_meas 0).aemeasurable
+    rw [hX_law] at hiff
+    exact hiff.mp hg_int
+  -- (iv) Mean of `Y 0` is `∫ g ∂P`, again via `μ.map (X 0) = P`.
+  have hY0_mean : ∫ ξ, Y 0 ξ ∂μ = ∫ x, g x ∂P := by
+    rw [← hX_law]
+    exact (MeasureTheory.integral_map (hX_meas 0).aemeasurable
+      hg_meas.aestronglyMeasurable).symm
+  -- Etemadi's strong law on `(Ξ, μ)`: prefix averages converge a.s. to `∫ g ∂P`.
+  have h_slln : ∀ᵐ ξ ∂μ,
+      Tendsto (fun n : ℕ => (∑ i ∈ Finset.range n, Y i ξ) / n) atTop
+        (𝓝 (∫ ξ, Y 0 ξ ∂μ)) :=
+    ProbabilityTheory.strong_law_ae_real Y hY0_int hY_pair hY_ident
+  -- Index bridge: `empiricalAvg` over `Fin n` = the `Finset.range n` prefix average.
+  set F : ℕ → Ξ → ℝ := fun n ξ => empiricalAvg g n (fun i : Fin n => X i.val ξ) with hF_def
+  have hF_eq : ∀ (n : ℕ) (ξ : Ξ), F n ξ = (∑ i ∈ Finset.range n, Y i ξ) / n := by
+    intro n ξ
+    rw [hF_def]
+    simp only [empiricalAvg]
+    rw [← Fin.sum_univ_eq_sum_range (fun i => Y i ξ) n]
+    ring
+  have hF_fun : ∀ n : ℕ, F n = fun ξ => (∑ i ∈ Finset.range n, Y i ξ) / n :=
+    fun n => funext (fun ξ => hF_eq n ξ)
+  have h_target_ae : ∀ᵐ ξ ∂μ, Tendsto (fun n : ℕ => F n ξ) atTop (𝓝 (∫ x, g x ∂P)) := by
+    filter_upwards [h_slln] with ξ hξ
+    rw [hY0_mean] at hξ
+    have hseq : (fun n : ℕ => F n ξ) = fun n : ℕ => (∑ i ∈ Finset.range n, Y i ξ) / n :=
+      funext (fun n => hF_eq n ξ)
+    rw [hseq]
+    exact hξ
+  have hF_meas : ∀ n : ℕ, AEStronglyMeasurable (F n) μ := by
+    intro n
+    rw [hF_fun n]
+    exact ((Finset.measurable_sum _ fun i _ => hY_meas i).div_const _).aestronglyMeasurable
+  -- a.s. ⇒ in measure (μ is a probability measure, hence finite).
+  have h_in_meas : MeasureTheory.TendstoInMeasure μ F atTop (fun _ => ∫ x, g x ∂P) :=
+    MeasureTheory.tendstoInMeasure_of_tendsto_ae hF_meas h_target_ae
+  have h_norm := (MeasureTheory.tendstoInMeasure_iff_norm (μ := μ) (l := atTop)
+      (f := F) (g := fun _ => ∫ x, g x ∂P)).mp h_in_meas
+  -- Finally convert the `ℝ≥0∞`-valued statement to the `Measure.real` form.
+  intro ε hε
+  have h_ennreal := h_norm ε hε
+  have h_toReal := (ENNReal.tendsto_toReal (by simp)).comp h_ennreal
+  simpa [Function.comp_def, measureReal_def] using h_toReal
 
 end AsymptoticStatistics

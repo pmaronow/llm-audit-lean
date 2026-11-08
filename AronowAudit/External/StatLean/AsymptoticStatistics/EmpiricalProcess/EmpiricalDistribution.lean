@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -32,6 +31,13 @@ gives the zero function. The book invokes this definition only for `n ≥ 1`. -/
 noncomputable def empiricalCDF (n : ℕ) (X : Fin n → ℝ) (t : ℝ) : ℝ :=
   empiricalAvg (halfLineIndicator t) n X
 
+/-- The empirical CDF is the normalized count of observations in `(-∞,t]`. -/
+lemma empiricalCDF_eq_count (n : ℕ) (X : Fin n → ℝ) (t : ℝ) :
+    empiricalCDF n X t =
+      (n : ℝ)⁻¹ * ((Finset.univ.filter fun i => X i ≤ t).card : ℝ) := by
+  unfold empiricalCDF empiricalAvg
+  congr 1
+  simp [halfLineIndicator, Set.indicator_apply, Finset.sum_boole]
 
 /-- Half-line coordinate of the empirical process is the classical centred
 empirical distribution process `√n (Fₙ(t) - F(t))`. -/
@@ -72,6 +78,22 @@ noncomputable def halfLineLinfEquiv :
     simp only [lp.norm_eq_ciSup]
     exact halfLineIndexEquiv.iSup_congr (fun _ ↦ rfl)
 
+/-- Every threshold evaluation is continuous in the `ℓ∞` uniform norm. -/
+theorem continuous_halfLine_evaluation (t : ℝ) :
+    Continuous (fun z : LinfF halfLineIndicatorClass => z (halfLineIndex t)) :=
+  continuous_linfF_eval (halfLineIndex t)
+
+/-- **Theorem 19.1 (Glivenko–Cantelli for empirical distribution functions).**
+For every real probability law, the closed half-line indicator class is
+`P`-Glivenko–Cantelli. No continuity or nonatomicity assumption is present. -/
+theorem halfLine_isPGlivenkoCantelli
+    -- USER-INPUT: an arbitrary probability law on `ℝ`; vdV Theorem 19.1.
+    (P : Measure ℝ) [IsProbabilityMeasure P] :
+    IsPGlivenkoCantelli halfLineIndicatorClass P := by
+  apply isPGlivenkoCantelli_of_finite_bracketing_L1 halfLineIndicatorClass P
+  · rintro f ⟨t, rfl⟩
+    exact (halfLineIndicator_memLp P t 1).integrable (by norm_num)
+  · exact fun ε hε ↦ halfLine_hasFiniteBracketingCover_L1 P hε
 
 /-- **Theorem 19.3 (Donsker for empirical distribution functions).**
 The full half-line empirical process converges weakly, in the uniform-norm

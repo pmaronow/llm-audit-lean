@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P014-T2",
+    "theorem": "SAP.P014.T2",
+    "fingerprint": "c6798c26438407a0c03e9484445c4e316e0e4b78b91b0d9018e71f0d498ce844",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:11-48 and :140-149: Bool has probability 1/2 at each outcome; N=2, S=univ, b=2, local scores -1 and 1 exchanged uniformly, m=1, and both treatment probabilities 1/2. The assignment vector is measurable. All hypotheses of both T2 components are jointly realized; finite-valued outcomes are integrable.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T8",
+    "theorem": "SAP.P014.T8",
+    "fingerprint": "f896e2c8389bb11420a52c3ab082e94bb3d659effafe563606a192422c8d5772",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:170-175: N=2, S=univ is nonempty, f(i,true)=3, f(i,false)=2, and the contrast equals 1. The denominator is 2.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T3",
+    "theorem": "SAP.P014.T3",
+    "fingerprint": "9cf490d67c26d72704d77bb90298eb5b47794e271f8e91c3064d4c135673982b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:105-168: the normalized law has the two full assignments (true,false) and (false,true), each with mass 1/2; m=1 and both own-arm probabilities are 1/2. Conditional and full uniformity hold. The same Bool score model satisfies the entire fixed-outside hypothesis family, including exact assignment-law matching; S is the whole population, so outside treatments may be any fixed vector. Y(i,z) is 3 when z_i is treated and 2 otherwise and is noninterfering. The necessity premise is checked for every potential-outcome array, with positive arms.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T7",
+    "theorem": "SAP.P014.T7",
+    "fingerprint": "c370295ea334bb3399922be1e334d01b82c2e2b5298d7e3a0b0d1a804a2c3ec7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:140-149 and :177-180: a two-subject uniform local-permutation law satisfies every local hypothesis; diagonal tie probability is 1 and distinct-subject tie probability is 0. Compiled scratch/Counterexample.lean:50-70 and :84-90 independently verifies the distinct-subject no-ties condition for all three required finite designs. The general assertion has no substantive antecedent beyond a probability space and includes the intended empty-window case.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P014-T4",
+    "theorem": "SAP.P014.T4",
+    "fingerprint": "e3ea2cfba9578ac6350a1dced9c43d712c9c32fdb28aa30338bc85450d469002",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Counterexample.lean:93-97 proves the entire explicit T4Statement from definitions without importing a Challenge stub: normalization of both laws, every printed local clause under R6, thresholds, every local permutation with probability 1/6, fixed treated count 1 of 3, common propensities 1/3, positive arms, expectation 0, target -1/18, and their inequality. Independent exact Fraction arithmetic confirmed the four distinct assignment masses 1/6, 1/3, 1/6, 1/3, all nonzero denominators, and the weighted target 0.",
+    "confidence": "high"
+  }
+]

@@ -1,5 +1,4 @@
 /-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
 Copyright (c) 2026. All rights reserved.
 Released under Apache 2.0 license.
 -/
@@ -288,7 +287,7 @@ scales `m ≥ J`.  Then `gpPath ω` lies in the modulus ball
 `modulusBall P F M (2^{-·}) η`, where `η k = a k + 2·∑' i, a (k + i)` is the
 deterministic chaining schedule and `M` bounds the sup-norm of `gpPath ω`.
 
-The bound part uses sup-boundedness on the good set. The
+The bound part is `bddAbove_pathExtend_of_good` (good ⟹ sup-bounded).  The
 modulus part is the genuine transport: `osc_le_of_avoid_bigOsc` controls the
 `gpX`-increment of any two *skeleton* points within a dyadic scale by `η`, and
 uniform continuity of `pathExtend` (= `gpPath ω` on the good set) lifts this to
@@ -392,6 +391,20 @@ theorem gpPath_mem_modulusBall_of_avoid
     exact hskelbound k (fseq n) (gseq n) (hfseq_mem n) (hgseq_mem n) hn
   exact le_of_tendsto habs_tend hbound_ev
 
+/-- **A.e. sup-bound for `gpPath`.** On the good event (a.s. by `gpSkeleton_spec`)
+the path `gpPath ω` has bounded range, hence finite sup-norm. -/
+theorem ae_bddAbove_gpPath :
+    ∀ᵐ ω ∂iidStdGaussian, BddAbove (Set.range
+      (fun f : ↥F => |gpPath hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne ω f|)) := by
+  filter_upwards [(gpSkeleton_spec hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).2.2] with ω hω
+  -- On the good set `gpPath ω = pathExtend ω`, whose range is bounded.
+  have hb := bddAbove_pathExtend_of_good hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne hω
+  obtain ⟨C, hC⟩ := hb
+  refine ⟨C, ?_⟩
+  rintro _ ⟨f, rfl⟩
+  change |gpPath hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne ω f| ≤ C
+  rw [gpPath_apply_of_good hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne hω f]
+  exact hC ⟨f, rfl⟩
 
 /-- **Sup-norm overflow mass tends to `0`.** The events `{ω | M < ‖gpPath ω‖}`
 decrease (in `M` along ℕ) to the null set `⋂ₙ {ω | n < ‖gpPath ω‖}` (a.e.
@@ -474,7 +487,7 @@ theorem pBridge_tight :
   -- (`gpSkeletonNet`), so `gpSkeleton = ⋃ j, net j` holds definitionally.
   set net : ℕ → Finset ↥F := gpSkeletonNet hF_meas hF_ent hF_ne with hnetdef
   obtain ⟨hnet, hmono, hDud⟩ := (exists_dudley_net hF_ent hF_ne).choose_spec
-  -- Sub-Gaussian increments of `gpX` with proxy `K = 1`.
+  -- Sub-Gaussian increments of `gpX` with proxy `K = 1` (proxy weakening as in `gpX_aeUC`).
   have hSG : ∀ s t : ↥F, ProbabilityTheory.HasSubgaussianMGF
       (fun ω => gpX ⟨G, hG_env, hG⟩ hF_meas hH_inf hH_sep s ω
         - gpX ⟨G, hG_env, hG⟩ hF_meas hH_inf hH_sep t ω)
@@ -640,6 +653,28 @@ theorem exists_pBrownianBridge :
       tight := pBridge_tight hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne
       ucPaths := pBridge_ucPaths hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne }⟩
 
+/-- The **`P`-Brownian-bridge law `G_P`** on `ℓ∞(F)`: the chosen witness of
+`exists_pBrownianBridge`. This is the tight Gaussian limit to which the empirical
+process `𝔾ₙ` converges (in outer expectation `⇝ₒ`) for a `P`-Donsker class. -/
+noncomputable def gaussianPBridge : Measure (LinfF F) :=
+  (exists_pBrownianBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).choose
+
+include hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne in
+/-- The chosen `gaussianPBridge` witness satisfies the `IsPBrownianBridge`
+specification. -/
+lemma isPBrownianBridge_gaussianPBridge :
+    IsPBrownianBridge F P
+      (gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne) :=
+  (exists_pBrownianBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).choose_spec
+
+include hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne in
+/-- **Mean-zero coordinate marginals of `G_P`.** Each coordinate evaluation
+`z ↦ z f` has integral `0` under the chosen Brownian-bridge law `gaussianPBridge`
+(the `mean` field of `isPBrownianBridge_gaussianPBridge`). -/
+lemma gaussianPBridge_mean (f : ↥F) :
+    ∫ z : LinfF F, (z f)
+        ∂(gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne) = 0 :=
+  (isPBrownianBridge_gaussianPBridge hG_env hG hF_meas hH_inf hH_sep hF_ent hF_ne).mean f
 
 end Tight
 

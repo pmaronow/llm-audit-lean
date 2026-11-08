@@ -1,9 +1,8 @@
 import AronowAudit.P045.Wave1.DirectVarianceBlueprint
 import AronowAudit.P045.Wave1.DirectVariance.N1
 
-/-!
-P045-T26: a counterexample to the direct-effect variance proposition.
--/
+/-! Final assembly of the DirectVariance refutation. The statement below is the
+literal body of the blueprint's Target, not an abbreviation for it. -/
 
 set_option autoImplicit false
 
@@ -12,7 +11,7 @@ namespace AronowAudit.P045.Wave1
 open AronowAudit.P045 Finset
 open scoped BigOperators
 
-/-- The direct-effect variance proposition fails on the additive witness. -/
+/-- Refutation of the exact frozen contract, from the blueprint nodes. -/
 theorem direct_variance_as_printed_refuted :
   ¬ ∀ {G C : ℕ}, 2 ≤ C → C ≤ G →
     ∀ (n m : Fin G → ℕ), (∀ g, 0 < m g ∧ m g < n g) →
@@ -24,5 +23,7 @@ theorem direct_variance_as_printed_refuted :
     variance law point ≤ expect law vest := by
   exact DirectVariance.assemble
     DirectVariance.n1_proof
+
+example : AronowAudit.P045.Wave1.DirectVariance.Target := direct_variance_as_printed_refuted
 
 end AronowAudit.P045.Wave1

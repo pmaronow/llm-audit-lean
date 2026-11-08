@@ -1,0 +1,824 @@
+{
+ "declarations": [
+  {
+   "theorem": "SAP.P003b.T24",
+   "target_id": "P003-T24",
+   "fingerprint": "7a0cc0853414b92b898e6dedbe892e7c4a55fdb726c059ba5134806d6cb97ac1",
+   "module": "SAP.P003b.Challenge.Part1",
+   "line": 8,
+   "closure": [
+    {
+     "line": 11,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.a"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.b"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.c"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.d"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.mk"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.total"
+    },
+    {
+     "line": 104,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.PotentialTable"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T24Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T24Statement._proof_1"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.binomial"
+    },
+    {
+     "line": 106,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.bit"
+    },
+    {
+     "line": 51,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.designMean"
+    },
+    {
+     "line": 47,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.designProb"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.estimate"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.estimateQ"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.multiplicity"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.observed"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.randomStates"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tableCounts"
+    },
+    {
+     "line": 117,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tableEstimator"
+    },
+    {
+     "line": 114,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tableTau"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P003b.T25",
+   "target_id": "P003-T25",
+   "fingerprint": "a25e7ecea1b329cf219de06d00439d6917a5bd8a9356929a385a5a9679745845",
+   "module": "SAP.P003b.Challenge.Part1",
+   "line": 13,
+   "closure": [
+    {
+     "line": 11,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.a"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.b"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.c"
+    },
+    {
+     "line": 11,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.casesOn"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.d"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.effect"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.mk"
+    },
+    {
+     "line": 11,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.rec"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.total"
+    },
+    {
+     "line": 79,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Possible"
+    },
+    {
+     "line": 104,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.T25WholeStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.T25WholeStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.T25WholeStatement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.T25WholeStatement._proof_3"
+    },
+    {
+     "line": 84,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.accepted"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.binomial"
+    },
+    {
+     "line": 125,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.candidateLattice"
+    },
+    {
+     "line": 121,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.candidateNumerators"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.deviationNumerator"
+    },
+    {
+     "line": 30,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.estimate"
+    },
+    {
+     "line": 27,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.estimateQ"
+    },
+    {
+     "line": 88,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.exactInterval"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq.match_1"
+    },
+    {
+     "line": 91,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.lower"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.multiplicity"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.observed"
+    },
+    {
+     "line": 65,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.pValue"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.possibleTables"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.randomStates"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tailCount"
+    },
+    {
+     "line": 25,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tau"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tauQ"
+    },
+    {
+     "line": 93,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.upper"
+    },
+    {
+     "line": 92,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeCPlus"
+    },
+    {
+     "line": 82,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeJ"
+    },
+    {
+     "line": 87,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholePrintedJ"
+    },
+    {
+     "line": 95,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeT25Data"
+    },
+    {
+     "line": 97,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeT25Maxima"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P003b.T8",
+   "target_id": "P003-T8",
+   "fingerprint": "2c61ba3dee2c9ad98414ce55a65b0d407d3188e3cc780d6fd5fe77e35ef8b3ad",
+   "module": "SAP.P003b.Challenge.Part1",
+   "line": 25,
+   "closure": [
+    {
+     "line": 62,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.IsWaldMedian"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T24Statement._proof_1"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T8Statement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T8Statement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T8Statement._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T8Statement._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T8Statement._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T8Statement._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T8Statement._proof_6"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T8Statement._proof_7"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.binomial"
+    },
+    {
+     "line": 58,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.median"
+    },
+    {
+     "line": 54,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.waldCoverageQ"
+    },
+    {
+     "line": 46,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.waldEstimateQ"
+    },
+    {
+     "line": 48,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.waldInterval"
+    },
+    {
+     "line": 42,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.waldVarianceQ"
+    },
+    {
+     "line": 52,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.waldWidth"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.waldWidth._proof_1"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P003b.T19",
+   "target_id": "P003-T19",
+   "fingerprint": "1e4b2f9e11fff9aa2e7988e39074f9f345cb038753d53d98f822412717a62869",
+   "module": "SAP.P003b.Challenge.Part1",
+   "line": 40,
+   "closure": [
+    {
+     "line": 11,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.a"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.b"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.c"
+    },
+    {
+     "line": 11,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.casesOn"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.d"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.mk"
+    },
+    {
+     "line": 11,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.rec"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.total"
+    },
+    {
+     "line": 104,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.PotentialTable"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.T19WholeStatement"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.T19WholeStatement._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.T19WholeStatement._proof_2"
+    },
+    {
+     "line": 68,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.allCounts"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts"
+    },
+    {
+     "line": 17,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_2"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_3"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_4"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq._proof_5"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.instDecidableEqCounts.decEq.match_1"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.randomStates"
+    },
+    {
+     "line": 70,
+     "module": "SAP.P003b.Defs.Part3",
+     "name": "SAP.P003b.stratifiedCounts"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tableCounts"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeCountsOn"
+    },
+    {
+     "line": 23,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeStratumCounts"
+    },
+    {
+     "line": 28,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeStratumImage"
+    },
+    {
+     "line": 35,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeStratumRow"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeStratumSize"
+    },
+    {
+     "line": 31,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeTotalEight"
+    }
+   ]
+  },
+  {
+   "theorem": "SAP.P003b.T20",
+   "target_id": "P003-T20",
+   "fingerprint": "a540bdbdba549e7dccf3ad44177710e8e671217b4f9d192343b8a5da864a9816",
+   "module": "SAP.P003b.Challenge.Part1",
+   "line": 50,
+   "closure": [
+    {
+     "line": 145,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Assignment"
+    },
+    {
+     "line": 11,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts"
+    },
+    {
+     "line": 13,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.a"
+    },
+    {
+     "line": 14,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.b"
+    },
+    {
+     "line": 15,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.c"
+    },
+    {
+     "line": 16,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.d"
+    },
+    {
+     "line": 21,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.effect"
+    },
+    {
+     "line": 12,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.mk"
+    },
+    {
+     "line": 19,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Counts.total"
+    },
+    {
+     "line": 79,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.Possible"
+    },
+    {
+     "line": 104,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.PotentialTable"
+    },
+    {
+     "line": 89,
+     "module": "SAP.P003b.Defs.Part4",
+     "name": "SAP.P003b.T20Statement"
+    },
+    {
+     "line": 162,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.T20WholeStatement"
+    },
+    {
+     "line": 39,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.binomial"
+    },
+    {
+     "line": 106,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.bit"
+    },
+    {
+     "line": 55,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.deviationNumerator"
+    },
+    {
+     "line": 140,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.firstOnLine"
+    },
+    {
+     "line": 131,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.lineGroup"
+    },
+    {
+     "line": 134,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.minimumB"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.minimumB._f"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.minimumB.match_1"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.minimumB.match_3"
+    },
+    {
+     "line": 41,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.multiplicity"
+    },
+    {
+     "line": 44,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.observed"
+    },
+    {
+     "line": 65,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.pValue"
+    },
+    {
+     "line": 72,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.possibleTables"
+    },
+    {
+     "line": 32,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.randomStates"
+    },
+    {
+     "line": 143,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.reuseVector"
+    },
+    {
+     "line": 108,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tableCounts"
+    },
+    {
+     "line": 117,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tableEstimator"
+    },
+    {
+     "line": 59,
+     "module": "SAP.P003b.Defs.Part1",
+     "name": "SAP.P003b.tailCount"
+    },
+    {
+     "line": 97,
+     "module": "SAP.P003b.Defs.Part2",
+     "name": "SAP.P003b.uniformProb"
+    },
+    {
+     "line": 146,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeAssignmentBits"
+    },
+    {
+     "line": 150,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeBinaryAssignments"
+    },
+    {
+     "line": 153,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeSignedLine"
+    },
+    {
+     "line": 160,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeT20Assignment"
+    },
+    {
+     "line": 0,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeT20Assignment._proof_1"
+    },
+    {
+     "line": 157,
+     "module": "SAP.P003b.Defs.WholeW2",
+     "name": "SAP.P003b.wholeT20Table"
+    }
+   ]
+  }
+ ]
+}

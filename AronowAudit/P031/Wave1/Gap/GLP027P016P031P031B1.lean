@@ -359,5 +359,7 @@ theorem ols_ce_may_be_too_small_or_large_proof :
   change normalCDF (z * Real.sqrt ((28 / 3 : ℝ) / (49 / 3))) < normalCDF z at hh
   linarith
 
+example : type_of% @AronowAudit.P031.ols_ce_may_be_too_small_or_large := ols_ce_may_be_too_small_or_large_proof
+
 end
 end AronowAudit.P031.Wave1

@@ -233,7 +233,7 @@ set_option maxHeartbeats 1000000
 attribute [local instance] Classical.propDecidable
 
 variable {Space : ℕ→Type*} [∀N,MetricSpace (Space N)] [∀N,MeasurableSpace (Space N)]
-/-- T41, Proposition 2, p. 754: the HT central limit statement
+/-- T41, Proposition 2, p. 754: the unweakened HT central limit statement
 under C1–C4 and its own actual variance lower bound. -/
 theorem ht_central_limit (P : PopulationSequence Space) (p d : ℝ)
     (hp : 0 < p ∧ p < 1) (hd : 0 ≤ d) (hP : SpatialLocalConditions P)
@@ -280,5 +280,6 @@ theorem ht_central_limit (P : PopulationSequence Space) (p d : ℝ)
     (fun n=>(hk n).2.2.2.2) x
 
 
+#print axioms ht_central_limit
 end
 end AronowAudit.P004

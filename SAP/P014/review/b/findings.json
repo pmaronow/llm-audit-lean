@@ -1,0 +1,102 @@
+[
+  {
+    "target_id": "P014-T2",
+    "theorem": "SAP.P014.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Lean-checked in scratch/Check.lean: N=3, S={0,1}, n=2, m=1, law supported on (false,true,false) and (true,false,false), each of mass 1/2. The law is valid, both local treatment marginals are 1/2, counts are fixed at one per arm, and own-treatment outcomes y_i(z)=1{z_i=true} give estimator expectation and both targets equal to 1. Thus all retained hypotheses hold jointly with nonzero conclusions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T8",
+    "theorem": "SAP.P014.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "N=1,S={0},f(0,true)=1,f(0,false)=0 gives a nonempty window and both sides equal to 1. The identity also compiles for the two-subject nonempty S in scratch/Check.lean.",
+    "confidence": 1.0
+  },
+  {
+    "target_id": "P014-T3",
+    "theorem": "SAP.P014.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use a two-point probability space with its powerset sigma-algebra, each point of probability 1/2; let X be (-1,1,-2) or (1,-1,-2), b=1, S={0,1}, v_0=-1,v_1=1,n=2,m=1. The two permutations each have probability 1/2=1/2!; outside treatment is constantly false and both local own arms are positive. The Boolean pushforward is the Lean-checked law in scratch/Check.lean; it is fully and conditionally uniform, all eligible assignments occur, and own-treatment outcomes are noninterfering with target 1. Each own arm contains one atom, so the necessity premise holds for every outcome function; this is also checked in Lean for subject 0, treated arm.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P014-T7",
+    "theorem": "SAP.P014.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Nonempty corrected-local model: the two local scores (-1,1) are swapped with probability 1/2 each, with a third score -2 outside b=1. Distinct local subjects never tie, while each diagonal equality event is the entire probability space and has probability 1. This realizes the corrected condition and the conclusion that the literal condition is impossible. All three six-row no-distinct-ties witnesses also pass exact enumeration. The impossible literal condition is a conclusion being diagnosed, not a hypothesis used vacuously.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T4",
+    "theorem": "SAP.P014.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The same valid six-row scores1 design as T1 satisfies the actual printed formal clauses under standing R6, and also every intended equiprobable local permutation. The potential outcomes depend on subject 3 treatment as in the canonical witness. Both estimator arms and every own-treatment conditioning event are nonempty. Exact enumeration gives expectation 0 and printed target -1/18, refuting the original positive identity rather than a modified reading.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T1",
+    "theorem": "SAP.P014.T1",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional concrete witness: N=4, S={0,1,2}, b=2, the six scores1 rows each of mass 1/6. There are six distinct full score vectors and four assignment atoms with masses 1/6,1/3,1/6,1/3. Each local assignment has treated/control counts 1/2; each local subject has treatment probability 1/3 and control probability 2/3. Exact enumeration in scratch/check_exact.py verifies every concrete condition and E[D]=0, printed target=-1/18, weighted target=0. No zero denominators.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T9",
+    "theorem": "SAP.P014.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional six-row scores9 law with b=1,S={0,1,2}; its assignment law is the same four-positive-atom law as T1, all local own arms have probabilities 1/3 or 2/3, and estimator arm sizes are 1 and 2. Exact enumeration verifies printed target -1/9, weighted target and estimator expectation -1/12, defined direct-effect average 1/12, and bias 1/36. The other-subject conditional sums agree with weighted averages. Lean verifies that insertOwn/removeOwn genuinely reconstruct the full assignment.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P014-T5",
+    "theorem": "SAP.P014.T5",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Unconditional scores5 witness: six distinct equiprobable full score vectors; local arrangement masses 1/6,1/6,2/3 and three zero masses. The assignment pushforward has three positive atoms, local treated count 1 and control count 2; local treatment probabilities are 1/6,1/6,2/3, all strictly between zero and one. The stated outcomes are noninterfering. Exact enumeration verifies expectation 1/6 and printed/weighted target 1/3.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P014-T10",
+    "theorem": "SAP.P014.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For the general and estimator parts use the Lean-checked fair law on (false,true,false)/(true,false,false), S={0,1},n=2,m=1 and y_i(z)=1{z_i=true}. Local propensities are 1/2, target and expectation are 1, and the control-minus-treatment direct-effect average is -1. The failure part is the nonempty positive-arm T9 law: the printed control average 1/3 differs from the conditional other-subject average 1/4, and -1/9 differs from both signs of 1/12. These inequalities pass exact enumeration.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P014-T6",
+    "theorem": "SAP.P014.T6",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The powerset-measurable fair two-point score model (-1,1,-2)/(1,-1,-2), b=1,S={0,1},v=(-1,1),n=2,m=1 satisfies every general hypothesis; outside score -2 is a constant function of the local scores, so the retained converse also applies nonvacuously. Separately, exact enumeration verifies the specified twelve-point extendedScores law, fixed membership and local count 1, local mass 1/6 per permutation, independent outside score probabilities 1/3 and 2/3, and twelve full atoms of mass 1/18 or 1/9.",
+    "confidence": 0.98
+  }
+]

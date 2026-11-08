@@ -15,7 +15,7 @@ set_option linter.unusedSimpArgs false
 set_option linter.unnecessarySeqFocus false
 set_option linter.style.haveILetI false
 
-/-! The explicit bounded summand, its mean, and clipping. -/
+/-! Record 1: the explicit bounded summand, its mean, and clipping. -/
 
 def matching_score_summand (u : ℝ × Bool × Bool) : ℝ :=
   (if u.2.1 then (1 : ℝ) else 0) - (u.1 - 1/4)
@@ -168,7 +168,10 @@ theorem matching_score_intercept_consistent_proof {Ω : Type*} [MeasurableSpace 
     exact heq n ω
   simpa only [hseq] using hclip
 
-/-! Donor regrouping and independent finite-product signs. -/
+example : type_of% @AronowAudit.P001.matching_score_intercept_consistent :=
+  matching_score_intercept_consistent_proof
+
+/-! Record 2: donor regrouping and independent finite-product signs. -/
 
 lemma causal_matching_donor_membership {n : ℕ} (p : Fin n → ℝ)
     (r : Fin n → Bool) (i j : Fin n) (h : nearestDonor p r i = some j) :
@@ -349,6 +352,10 @@ theorem causal_matching_conditional_reuse_variance_proof {n : ℕ} (hn : 0 < n) 
     dsimp only [c, w]
     simp only [neg_sq, inv_pow, div_eq_mul_inv]
     ring
+
+example : type_of% @AronowAudit.P001.causal_matching_conditional_reuse_variance :=
+  causal_matching_conditional_reuse_variance_proof
+
 
 end
 end AronowAudit.P001.Wave1

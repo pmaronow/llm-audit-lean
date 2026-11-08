@@ -1,8 +1,7 @@
-/-
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
- P011 T38: dependency-graph central limit theorem.
-This file applies the dependency CLT imported from CausalSmith;
-see NOTICE at the repository root. -/
+/- Original P011 T38 contracts, proved without adding premises.
+The dependency CLT donor is CausalSmith a7085d88d2e4b30003db7097ca374f4718da0f01
+(Apache-2.0); its source, license, compatibility edits and generic AE adapter
+are documented under AronowAudit.External.Causalean. -/
 import AronowAudit.P011.P011_FiniteCompletion
 import AronowAudit.External.Causalean.Mathlib.Probability.SteinMethod.AlmostEverywhereDepGraphCLT
 
@@ -290,3 +289,5 @@ theorem clt_finite_normalization {n : ℕ} (hn : 0 < n) (m : Model n)
 
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.dependency_graph_clt
+#print axioms AronowAudit.P011.clt_finite_normalization

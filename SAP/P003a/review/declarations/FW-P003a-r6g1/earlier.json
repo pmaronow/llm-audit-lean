@@ -1,0 +1,13 @@
+[
+ {
+  "theorem": "SAP.P003a.T1",
+  "target_id": "P003-T1",
+  "round": 5,
+  "verdict": "not_faithful",
+  "severity": "minor",
+  "issues": [
+   "SAP/P003a/Challenge/Part1.lean:19: The sentence \"The possible upper-completion tables have maximum 248/1140 at the two stated vectors\" omits the condition tau >= -3/20. T1WholeStatement bounds only tables satisfying that condition (SAP/P003a/Defs/WholeW1.lean:455). Without it the claimed maximum is false: v=(0,0,12,8) is possible for the upper-completion observation (0,3,10,7), has tau=-3/5, and has pValue=1 > 248/1140; all four facts were compiled in scratch/Check.lean. The formal counterexample itself matches the entire canonical claim.",
+   "SAP/P003a/Defs/WholeW1.lean:449: The repeated docstring makes the same unqualified maximum assertion, although the defining statement at lines 455-457 includes the essential effect constraint."
+  ]
+ }
+]

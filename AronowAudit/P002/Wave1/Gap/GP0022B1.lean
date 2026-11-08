@@ -2,8 +2,9 @@ import AronowAudit.P002.Wave1.AlgorithmSupportBlueprint
 import Mathlib.Topology.Order.IntermediateValue
 
 /-!
-P002-T23, P002-T26 and P002-T27: gap geometry, residual moments,
-identification of arm fits, and interval validity.
+Drafts for P002-T23, P002-T26 and P002-T27.  No Lean process was run.
+The shared rank/closure layer is placed before T23 because T23 needs it.
+Only proved declarations of P002_Audit are used as proof dependencies.
 -/
 
 namespace AronowAudit.P002.Wave1
@@ -248,6 +249,8 @@ theorem corrected_H1_AR_proof {M} (Qf : QuadraticAR) (Qg : Fin M → QuadraticAR
       rw [← hsqrt β hβ] at hle
       exact (Real.sqrt_le_sqrt_iff (hreg.2.1 _ _)).mp hle
 
+example : type_of% @AronowAudit.P002.corrected_H1_AR := corrected_H1_AR_proof
+
 /-! ### T26: IV residual moments and identification of both arm fits -/
 
 private def iv_armCoefficients {k} (θ : IVIndex k → ℝ) (a : Bool) :
@@ -422,6 +425,8 @@ theorem adjusted_wald_equals_IV_proof {n k} (P : CovPopulation n k) (Y D : Fin n
     apply (eq_div_iff hd).mpr
     simpa only [mul_comm] using heq
 
+example : type_of% @AronowAudit.P002.adjusted_wald_equals_IV := adjusted_wald_equals_IV_proof
+
 /-! ### T27: the four interval conclusions -/
 
 private theorem t27_open_subset_closed (l u : EReal) :
@@ -469,6 +474,8 @@ theorem quantile_index_interval_AR_proof {M} (Q : Fin M → QuadraticAR) (hM : 0
     exact hcl x hx b ⟨hu ▸ hlu.le, hu.symm.le⟩
   · intro x hx a _ hl
     exact hcl x hx a ⟨hl.le, hl ▸ hlu.le⟩
+
+example : type_of% @AronowAudit.P002.quantile_index_interval_AR := quantile_index_interval_AR_proof
 
 end
 end AronowAudit.P002.Wave1

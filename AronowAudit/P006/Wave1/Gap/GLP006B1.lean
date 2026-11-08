@@ -3,7 +3,7 @@ import Mathlib.Probability.Kernel.MeasurableIntegral
 import Mathlib.Probability.Kernel.Composition.MeasureCompProd
 import Mathlib.Probability.Independence.Integration
 
-/-! P006-T16 and P006-T2. -/
+/-! Exact completions of P006-T16 and P006-T2. -/
 namespace AronowAudit.P006.Wave1
 
 open MeasureTheory ProbabilityTheory Filter
@@ -209,6 +209,8 @@ theorem T16_corrected_agent_data_bound_proof {Ω X U : Type*} [MeasurableSpace �
     (T8_information_normalized_best E PiSet b hb) hs γ
   intro π hp
   exact ((hpolicy π hp).2.2.1.trans (hpolicy π hp).2.2.2).trans hγ
+
+example : type_of% @AronowAudit.P006.T16_corrected_agent_data_bound := T16_corrected_agent_data_bound_proof
 
 /-! The reciprocal count omitting the current unit is independent of its mark. -/
 def T2_restWeight {n : ℕ} (T : Fin n → Bool) (i : Fin n) : ℝ :=
@@ -722,6 +724,8 @@ theorem T2_corrected_average_proof {Ω C : Type*} [MeasurableSpace Ω]
   intro π
   exact ⟨T2_best_congr _ _ _ (fun p hp => (hpolicy p hp).2.1) π,
     T2_best_congr _ _ _ (fun p hp => (hpolicy p hp).2.2.1) π⟩
+
+example : type_of% @AronowAudit.P006.T2_corrected_average := T2_corrected_average_proof
 
 end
 end AronowAudit.P006.Wave1

@@ -1,0 +1,62 @@
+[
+ {
+  "target_id": "P001-T73",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T73",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.cef_residual_not_independent",
+   "SAP.P001d.WH.W2.T73_whole",
+   "SAP.P001d.WH.W2.T73_assembly"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001d.T73WholeStatement"
+ },
+ {
+  "target_id": "P001-T74",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T74",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.cef_residual_conditional_variance",
+   "AronowAudit.P001.cef_residual_orthogonality_correction",
+   "AronowAudit.P001.classical_normal_residual_independent",
+   "SAP.P001d.WH.W1.T74_whole",
+   "SAP.P001d.WH.W1.T74_assembly",
+   "SAP.P001d.WH.W1.T74_L1V2_proof",
+   "SAP.P001d.WH.W1.T74_L2V2_proof",
+   "SAP.P001d.WH.W1.T74_L3V2_proof",
+   "AronowAudit.P001.isCEF_condExp",
+   "AronowAudit.P001.cef_residual_not_independent"
+  ],
+  "rows_not_used": [],
+  "supporting_declarations": [
+   "AronowAudit.P001.cef_residual_not_independent"
+  ],
+  "statement_definition": "SAP.P001d.T74WholeStatement"
+ },
+ {
+  "target_id": "P001-T75",
+  "decision": "restricted",
+  "theorem": "SAP.P001d.T75",
+  "restriction": "Only the fixed-covariate mean calculation and [0,1] bound for the explicit two-point weights 1-h(x dot beta) and h(x dot beta). The conditional-law-to-CEF implication for an arbitrary binary response is omitted.",
+  "rows_used": [
+   "AronowAudit.P001.binary_choice_fixed_argument_mean"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P001-T76",
+  "decision": "whole",
+  "theorem": "SAP.P001d.T76",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P001.normal_fixed_scale_ml_is_ols",
+   "SAP.P001d.WH.W1.T76_whole",
+   "SAP.P001d.WH.W1.T76_assembly",
+   "AronowAudit.P039.full_rank_ols_unique"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P001d.T76WholeStatement"
+ }
+]

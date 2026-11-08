@@ -8,12 +8,15 @@ at the covariate mean, assuming a continuous covariate and differentiability
 on its positive-density support. Definition 2.2.15 (p. 69) only determines the
 CEF on that support. The scalar case already refutes the vector assertion.
 
-The contract below quantifies over probability spaces, laws, covariates,
-responses, densities, and both CEF versions. Measurability is the random-variable
-convention; integrability of X makes its displayed mean genuine, and integrability
-of Y is included in `IsCEF`. No support-at-the-mean premise is supplied by the book.
-The counterexample is bounded and jointly absolutely continuous, and its two CEF
-versions agree pointwise on the entire positive-density support.
+Unlike the old fixed-law `PdaMeanNotIdentified.Target`, the contract below
+quantifies over probability spaces, laws, covariates, responses, densities,
+and both CEF versions. Measurability is the random-variable convention;
+integrability of X makes its displayed mean genuine, and integrability of Y
+is included in `IsCEF`. No support-at-the-mean premise is supplied by the book.
+The existing witness is even bounded and jointly absolutely continuous, and
+its two versions agree pointwise on the entire positive-density support.
+The true analytic supporting lemma `pda_extrapolation_witness_supporting`
+is neither the contract nor an input to this proof.
 -/
 
 namespace AronowAudit.P001.Wave1
@@ -38,6 +41,18 @@ def pda_at_mean_printed_contract : Prop :=
       (∀ x, 0 < fX x → DifferentiableAt ℝ m' x) →
       ∃ a : ℝ, HasDerivAt m a (mean μ X) ∧ HasDerivAt m' a (mean μ X)
 
+/-- The refutation target is definitionally the negation of the whole contract. -/
+def RepairT3.Target : Prop := ¬ pda_at_mean_printed_contract
+
+example : RepairT3.Target ↔ ¬ pda_at_mean_printed_contract := Iff.rfl
+
+/-- The witness versions agree at every point where the chosen density is
+positive, so the counterexample also respects the book's pointwise CEF domain. -/
+lemma RepairT3_versions_agree_on_support :
+    ∀ x : ℝ, 0 < gapPDF x → (0 : ℝ) = pdaBump x := by
+  intro x hx
+  have hs := (PdaMeanNotIdentified.n1_proof.2.2.2.1 x hx).1
+  simp [pdaBump, not_lt.mpr hs]
 
 /-- Universally asserting the printed implication contradicts the existing
 fixed-law counterexample, with all its admissibility conditions discharged. -/
@@ -52,6 +67,8 @@ theorem pda_at_mean_printed_contract_refuted : ¬ pda_at_mean_printed_contract :
     simpa only [Real.norm_eq_abs] using abs_le.mpr hxy.1
   exact hrefute (hcontract (ℝ × ℝ) gapJointLaw hprob Prod.fst Prod.snd
     measurable_fst measurable_snd hXint gapPDF hpdf)
+
+example : RepairT3.Target := pda_at_mean_printed_contract_refuted
 
 end
 end AronowAudit.P001.Wave1

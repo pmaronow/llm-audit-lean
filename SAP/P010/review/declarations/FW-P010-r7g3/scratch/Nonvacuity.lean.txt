@@ -1,0 +1,44 @@
+import SAP.P010.Defs.WholeW1
+
+open MeasureTheory ProbabilityTheory Set Filter
+open SAP.P010
+open scoped ENNReal NNReal Classical Topology BigOperators
+
+-- These checks do not use any Challenge theorem.
+example :
+    (∀ x : Fin 2, 0 < originalDistribution x ∧ 0 < replicationDistribution x ∧
+      0 < cellPropensity x ∧ cellPropensity x < 1) ∧
+    normalizeMass replicationDistribution (fun x => odds (cellPropensity x)) 1 = 27/28 ∧
+    normalizeMass replicationDistribution (fun x => odds (cellPropensity x)) 1 ≠ originalDistribution 1 ∧
+    (∀ x : Fin 2, normalizeMass replicationDistribution
+      (fun x => reverseOdds (cellPropensity x)) x = originalDistribution x) := by
+  norm_num [originalDistribution, replicationDistribution, cellPropensity, propensity,
+    odds, reverseOdds, normalizeMass, Fin.sum_univ_two, Fin.forall_fin_two]
+
+example : sigmoid (Real.log (1/3)) = (1/4 : ℝ) ∧
+    sigmoid (Real.log (1/3) + Real.log 9) = (3/4 : ℝ) := by
+  norm_num [sigmoid, Real.exp_add, Real.exp_log (by norm_num : (0 : ℝ) < 1/3),
+    Real.exp_log (by norm_num : (0 : ℝ) < 9)]
+
+-- T12: all input hypotheses hold for the nonidentical two-cell laws.
+example :
+    (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 ∧
+    (∀ᵐ x ∂(Measure.count : Measure (Fin 2)), 0 < replicationDistribution x) ∧
+    (∀ᵐ x ∂(Measure.count : Measure (Fin 2)), 0 < originalDistribution x) ∧
+    Integrable replicationDistribution Measure.count ∧
+    Integrable originalDistribution Measure.count ∧
+    (∫ x, replicationDistribution x ∂Measure.count) = 1 ∧
+    (∫ x, originalDistribution x ∂Measure.count) = 1 := by
+  refine ⟨by norm_num, by norm_num, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact Filter.Eventually.of_forall (by norm_num [replicationDistribution, Fin.forall_fin_two])
+  · exact Filter.Eventually.of_forall (by norm_num [originalDistribution, Fin.forall_fin_two])
+  · exact integrable_count_iff.mpr (hasSum_fintype _).summable
+  · exact integrable_count_iff.mpr (hasSum_fintype _).summable
+  · norm_num [integral_count, replicationDistribution, Fin.sum_univ_two]
+  · norm_num [integral_count, originalDistribution, Fin.sum_univ_two]
+
+example : squareRatioMass Measure.count replicationDistribution originalDistribution = 7/3 := by
+  norm_num [squareRatioMass, lintegral_count, tsum_fintype, Fin.sum_univ_two,
+    replicationDistribution, originalDistribution]
+  rw [← ENNReal.ofReal_add (by norm_num : (0 : ℝ) ≤ 1/12) (by norm_num : (0 : ℝ) ≤ 9/4)]
+  norm_num [ENNReal.ofReal_div_of_pos]

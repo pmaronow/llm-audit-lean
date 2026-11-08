@@ -5,8 +5,13 @@ import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 
 /-!
 P017-T8: the two corrected mean-square limits.
-The bounds follow from pointwise lemmas. The constant is twice the finite
-fourth Gaussian moment; its exact value is irrelevant to these limits.
+
+The finite theorem planned by the mapper is not yet present in this worktree.
+We prove just its two needed bounds from the already proved pointwise lemmas.
+The constant is twice the finite fourth Gaussian moment; its exact value is
+irrelevant to these limits. No held proof is used.
+
+This is a source-inspected draft. Lean has deliberately not been run.
 -/
 
 namespace AronowAudit.P017.Wave1
@@ -175,7 +180,7 @@ theorem t8limits_finite_bounds {Ξ : Type*} [MeasurableSpace Ξ]
   · exact (integral_mono_ae hAi hDi (hpoint.mono (fun _ h => h.1))).trans_eq hDint
   · exact (integral_mono_ae hBi hDi (hpoint.mono (fun _ h => h.2))).trans_eq hDint
 
-/-- Both mean-square conclusions of corrected Proposition 4. -/
+/-- The held declaration's statement, with both original MSE conclusions. -/
 theorem corrected_proposition4_limits_proof {Ξ : Type*} [MeasurableSpace Ξ]
     (P : Measure Ξ) [IsProbabilityMeasure P] (hat Z ε : ℕ → Ξ → ℝ)
     (μ c : ℝ) (v : ℝ≥0) (hc : 0 < c) (hv : 0 < v)
@@ -206,6 +211,9 @@ theorem corrected_proposition4_limits_proof {Ξ : Type*} [MeasurableSpace Ξ]
       (fun n => ∫ ω, ε n ω ^ 2 ∂P) K c hc
       (fun n => integral_nonneg (fun ω => sq_nonneg _)) he0
       (hfinite.mono (fun _ h => h.2))
+
+example : type_of% @AronowAudit.P017.corrected_proposition4_limits :=
+  corrected_proposition4_limits_proof
 
 end
 

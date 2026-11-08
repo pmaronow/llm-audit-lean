@@ -6,8 +6,8 @@ import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Order.Filter.AtTopBot.Archimedean
 
 /-!
-P029: saturated score consistency, the nested receipt model, one-sided ignorability,
-and constant-effect identities.
+Proofs for records 4, 6, 7, 8 of the rx-GP029B2b brief.
+GP029B1 supplies the proved finite binomial bound; no held proof is used. All measure-theoretic helpers below are proved in this module.
 -/
 namespace AronowAudit.P029.Wave1
 
@@ -20,7 +20,7 @@ set_option maxRecDepth 4096
 set_option maxHeartbeats 2000000
 set_option backward.isDefEq.respectTransparency false
 
-/-! ## Saturated score consistency -/
+/-! ## Record 4: saturated score consistency -/
 
 private theorem GP029B2b_t14_reciprocal_limit (n : ℕ → ℕ) (ht : Tendsto n atTop atTop) :
     Tendsto (fun k => ((n k : ℝ))⁻¹) atTop (𝓝 0) := by
@@ -60,8 +60,11 @@ theorem saturated_score_consistency_proof (n1 n0 : ℕ → ℕ)
   · exact (saturated_binomial_bias_bound_proof (n1 n) (n0 n) (hn1 n) (hn0 n)
       p1 p0 hp0 horder hp1).2.2.2 δ hδ
 
-/-! ## Nested receipt model
-The event factorization also applies to one-sided ignorability. -/
+example : type_of% @AronowAudit.P029.saturated_score_consistency :=
+  saturated_score_consistency_proof
+
+/-! ## Record 6: nested receipt model
+The following event factorization is also used by record 7. -/
 
 private theorem GP029B2b_t18_arm_pos {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (Z : Ω → Bool) (hz : Measurable Z)
@@ -249,7 +252,10 @@ theorem corrected_nested_receipt_model_proof {Ω X : Type*}
     rw [h1, hac, hab, h0]
     rfl
 
-/-! ## One-sided ignorability -/
+example : type_of% @AronowAudit.P029.corrected_nested_receipt_model :=
+  corrected_nested_receipt_model_proof
+
+/-! ## Record 7: one-sided ignorability -/
 
 private theorem GP029B2b_t2_ce_congr_set {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (v : Ω → ℝ) {A B : Set Ω} (h : A =ᵐ[μ] B) :
@@ -356,7 +362,12 @@ theorem one_sided_ignorability_implication_proof {Ω X : Type*}
   change mCE μ (fun ω => (U ω).tau) A = mCE μ (fun ω => (U ω).tau) C
   rw [hsub, hsub, h0, h1]
 
-/-! ## Constant-effect Wald identities -/
+example : type_of% @AronowAudit.P029.one_sided_ignorability_implication :=
+  one_sided_ignorability_implication_proof
+
+/-! ## Record 8: constant effects
+We prove the constant-effect Wald identities directly. This avoids a dependency
+on the still-to-be-written general LATE and Appendix population theorems. -/
 
 private theorem GP029B2b_t21_constant_event_mean {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ] (v : Ω → ℝ) (τ : ℝ)
@@ -614,6 +625,9 @@ theorem constant_effect_population_limits_proof {Ω X : Type*}
     · exact (le_div_iff₀ hc).mpr (by simpa using hp.2)
     · rw [Real.norm_eq_abs, abs_of_pos (one_div_pos.mpr hc)]
       exact (one_div_le_one_div_of_le he hp.1.le)
+
+example : type_of% @AronowAudit.P029.constant_effect_population_limits :=
+  constant_effect_population_limits_proof
 
 end
 

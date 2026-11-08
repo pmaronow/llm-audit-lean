@@ -1,0 +1,198 @@
+import SAP.P002a.Challenge
+
+open Filter MeasureTheory
+open scoped BigOperators ENNReal Classical Topology
+noncomputable section
+namespace Audit
+open SAP.P002a
+
+def pairPop : Population 2 where
+  y := fun i _ => if i.val = 0 then -1 else 1
+  d := fun _ a => a
+  n1 := 1
+
+example : ValidDesign pairPop ∧ MonotoneReceipt pairPop ∧
+    (compliers pairPop).Nonempty ∧ late pairPop = 0 ∧
+    ({0} : Finset (Fin 2)) ∈ assignments pairPop := by
+  norm_num [ValidDesign, pairPop, MonotoneReceipt, compliers, assignments,
+    Finset.mem_powersetCard, late, groupMean, Fin.sum_univ_two]
+
+lemma pair_values (a : Bool) : w pairPop a (late pairPop) = fun i => pairPop.y i false := by
+  have hlate : late pairPop = 0 := by
+    norm_num [late, groupMean, compliers, pairPop, Fin.sum_univ_two]
+  funext i
+  rw [w, hlate]
+  simp [pairPop]
+
+lemma pair_moments (a : Bool) :
+    mean (w pairPop a (late pairPop)) = 0 ∧
+    popVar (w pairPop a (late pairPop)) = 2 ∧
+    fourthNorm (v pairPop a (late pairPop)) = 1 := by
+  simp only [fourthNorm, SAP.P002a.v, pair_values]
+  norm_num [mean, popVar, pairPop, Fin.sum_univ_two]
+
+example : Theta pairPop 0 (1/2) 1 ∧
+    (∀ a, 0 < popVar (w pairPop a (late pairPop))) ∧
+    0 < S2 pairPop (late pairPop) true := by
+  have hm := pair_moments
+  have hroot : (1 : ℝ) ≤ Real.sqrt 2 := by
+    exact (Real.le_sqrt (by norm_num) (by norm_num)).2 (by norm_num)
+  constructor
+  · refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · norm_num [ValidDesign, pairPop]
+    · simp [MonotoneReceipt, pairPop]
+    · simp [compliers, pairPop]
+    · norm_num [pairPop]
+    · norm_num [pairPop]
+    · rw [pair_values, pair_values]
+      norm_num [groupCov, compliers, pairPop, groupMean, Fin.sum_univ_two]
+    · intro a
+      rw [(hm a).2.2, (hm a).2.1]
+      simp only [one_mul]
+      exact hroot
+  · constructor
+    · intro a
+      rw [(hm a).2.1]
+      norm_num
+    · rw [S2, (hm true).2.1]
+      norm_num [fraction, pairPop]
+
+lemma sign_late (m : ℕ) : late (signModel m) = 0 := by
+  simp [late, signModel, groupMean]
+
+lemma sign_values (m : ℕ) (a : Bool) :
+    w (signModel m) a (late (signModel m)) =
+      fun i => if i.val < m then -1 else 1 := by
+  funext i
+  rw [w, sign_late]
+  simp [signModel]
+
+lemma sign_sum (m : ℕ) :
+    (∑ i : Fin (2*m), (if i.val < m then (-1 : ℝ) else 1)) = 0 := by
+  rw [show 2*m = m+m by omega, Fin.sum_univ_add]
+  simp
+
+lemma sign_mean (m : ℕ) :
+    mean (fun i : Fin (2*m) => if i.val < m then (-1 : ℝ) else 1) = 0 := by
+  simp only [mean, sign_sum, zero_div]
+
+lemma sign_moments (m : ℕ) (hm : 0 < m) (a : Bool) :
+    popVar (w (signModel m) a (late (signModel m))) =
+      ((2*m : ℕ) : ℝ)/(((2*m : ℕ) : ℝ)-1) ∧
+    fourthNorm (v (signModel m) a (late (signModel m))) = 1 := by
+  have h2 : ∀ i : Fin (2*m), (if i.val < m then (-1 : ℝ) else 1)^2 = 1 := by
+    intro i; split <;> norm_num
+  have h4 : ∀ i : Fin (2*m), (if i.val < m then (-1 : ℝ) else 1)^4 = 1 := by
+    intro i; split <;> norm_num
+  have hn : ((2*m : ℕ) : ℝ) ≠ 0 := by positivity
+  constructor
+  · rw [sign_values, popVar, sign_mean]
+    simp only [sub_zero, h2, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul, mul_one]
+  · simp only [fourthNorm, SAP.P002a.v, sign_values, sign_mean, sub_zero]
+    simp only [mean, h4, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul, mul_one, div_self hn, Real.sqrt_one]
+
+lemma sign_hypotheses (m : ℕ) (hm : 2 ≤ m) :
+    Theta (signModel m) 0 (1/2) 1 ∧
+    (∀ a, 0 < popVar (w (signModel m) a (late (signModel m)))) ∧
+    0 < S2 (signModel m) (late (signModel m)) true := by
+  have hm0 : 0 < m := by omega
+  have hn : 2 ≤ 2*m := by omega
+  have hnR : 1 < ((2*m : ℕ) : ℝ) := by exact_mod_cast (show 1 < 2*m by omega)
+  have hv : 1 ≤ ((2*m : ℕ) : ℝ)/(((2*m : ℕ) : ℝ)-1) := by
+    apply (le_div_iff₀ (by linarith : 0 < ((2*m : ℕ) : ℝ)-1)).2
+    linarith
+  have hroot : 1 ≤ Real.sqrt (((2*m : ℕ) : ℝ)/(((2*m : ℕ) : ℝ)-1)) := by
+    apply (Real.le_sqrt (by norm_num) (by positivity)).2
+    simpa using hv
+  constructor
+  · refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · exact ⟨hn, hm0, by dsimp [signModel]; omega⟩
+    · simp [MonotoneReceipt, signModel]
+    · refine ⟨⟨0, by omega⟩, ?_⟩
+      simp [compliers, signModel]
+    · dsimp [signModel]; push_cast; linarith
+    · dsimp [signModel]; push_cast; linarith
+    · simp only [sign_values]
+      have hg : groupCov (compliers (signModel m))
+          (fun i => if i.val < m then (-1 : ℝ) else 1)
+          (fun i => if i.val < m then (-1 : ℝ) else 1) =
+          popVar (fun i : Fin (2*m) => if i.val < m then (-1 : ℝ) else 1) := by
+        simp [compliers, signModel, groupCov, hn, groupMean, popVar, mean, pow_two]
+      simp only [zero_mul, neg_zero, ge_iff_le]
+      rw [hg, ← sign_values m true, (sign_moments m hm0 true).1]
+      linarith
+    · intro a
+      rw [(sign_moments m hm0 a).2, (sign_moments m hm0 a).1]
+      simpa using hroot
+  · constructor
+    · intro a
+      rw [(sign_moments m hm0 a).1]
+      linarith
+    · rw [S2, (sign_moments m hm0 true).1]
+      have hp : fraction (signModel m) = 1/2 := by
+        dsimp [fraction, signModel]
+        push_cast
+        field_simp
+      rw [hp]
+      positivity
+
+def witnessSizes (j : ℕ) : ℕ := 2*(j+2)
+def witnessP (j : ℕ) : Population (witnessSizes j) := signModel (j+2)
+
+lemma witness_sizes : StrictMono witnessSizes := by
+  intro i j hij
+  dsimp [witnessSizes]
+  omega
+
+lemma witness_assignment (j : ℕ) :
+    (Finset.univ.filter (fun i : Fin (witnessSizes j) => i.val < j+2)) ∈
+      assignments (witnessP j) := by
+  apply Finset.mem_powersetCard.mpr
+  refine ⟨Finset.subset_univ _, ?_⟩
+  change (Finset.univ.filter (fun i : Fin (2*(j+2)) => i.val < j+2)).card = j+2
+  rw [Finset.card_filter]
+  rw [show 2*(j+2) = (j+2)+(j+2) by omega, Fin.sum_univ_add]
+  simp
+
+lemma witness_nonempty (j : ℕ) : (assignments (witnessP j)).Nonempty :=
+  ⟨_, witness_assignment j⟩
+
+example : StrictMono witnessSizes ∧ (0 : ℝ) < 1 ∧
+    (0 < (1/2 : ℝ) ∧ (1/2 : ℝ) ≤ 1/2) ∧ (0 : ℝ) < 1 ∧
+    (∀ j, Theta (witnessP j) 0 (1/2) 1) ∧
+    (∀ j a, 0 < popVar (w (witnessP j) a (late (witnessP j)))) ∧
+    (∀ j, 0 < S2 (witnessP j) (late (witnessP j)) true) ∧
+    StrictMono (fun j : ℕ => j) := by
+  refine ⟨witness_sizes, by norm_num, by norm_num, by norm_num, ?_, ?_, ?_,
+    fun _ _ h => h⟩
+  · intro j; exact (sign_hypotheses (j+2) (by omega)).1
+  · intro j a; exact (sign_hypotheses (j+2) (by omega)).2.1 a
+  · intro j; exact (sign_hypotheses (j+2) (by omega)).2.2
+
+-- Nonvacuity for T13 with an unbalanced design and a nonconstant array.
+def threePop : Population 3 where
+  y := fun i _ => if i.val = 0 then -2 else 1
+  d := fun _ a => a
+  n1 := 1
+
+example : ValidDesign threePop ∧
+    ({0} : Finset (Fin 3)) ∈ assignments threePop ∧
+    (0 < (1/3 : ℝ) ∧ (1/3 : ℝ) ≤ 1/2) ∧
+    (1/3 : ℝ)*3 ≤ (threePop.n1 : ℝ) ∧
+    (threePop.n1 : ℝ) ≤ (1-1/3 : ℝ)*3 := by
+  norm_num [ValidDesign, threePop, assignments, Finset.mem_powersetCard]
+
+-- All assumptions and nondegeneracy of the specific T12 witness.
+example : Theta (signModel 4) 0 (1/2) 1 ∧ late (signModel 4) = 0 ∧
+    ({0,1,2,3} : Finset (Fin 8)) ∈ assignments (signModel 4) ∧
+    (assignments (signModel 4)).card = 70 ∧
+    (∀ a, 0 < popVar (w (signModel 4) a (late (signModel 4)))) := by
+  refine ⟨(sign_hypotheses 4 (by omega)).1, sign_late 4, ?_, ?_,
+    (sign_hypotheses 4 (by omega)).2.1⟩
+  · norm_num [assignments, Finset.mem_powersetCard, signModel]
+  · norm_num [assignments, signModel, Finset.card_powersetCard]
+    decide
+
+end Audit

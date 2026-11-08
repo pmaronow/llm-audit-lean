@@ -1,0 +1,74 @@
+[
+  {
+    "target_id": "P001-T68",
+    "theorem": "SAP.P001d.T68",
+    "fingerprint": "49a88e757fa80aa3318d61e083afaf2684d063709868ce1d0e453221f6386d79",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:10 with sap-lean, exit 0. On the real sample space take mu=dirac 0, X=id, epsilon identically 0, and g(x)=x^2+1. The example explicitly constructs a probability measure, proves both random variables measurable, independence, integrability and zero expectation of epsilon, measurability of g, and integrability of g composed with X. The theorem's remaining integrability and conditional-mean assertions are conclusions, not premises. The general independent-noise setting is also inhabited by product probability spaces; no assumption forces the noise to vanish.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T69",
+    "theorem": "SAP.P001d.T69",
+    "fingerprint": "1e3632f57e4067d99e2b5c2db80b077b8ec8c3d33471ada8b46295fea8c4b7dc",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:90 and :108 with sap-lean, exit 0. For the population clause use the product of two uniformLaw 0 1 measures on R x R, coordinate projections X1,X2, and Y=apdExample(X1,X2). The scratch file independently proves uniformLaw 0 1 equals Lebesgue measure restricted to [0,1], proves normalization and independence, both pushforward equalities, integrability, and the full IsCEF certificate. For the separate plug-in clause use d=n=2, sample vectors (0,0),(1,1), fitted function mhat(z)=z_0^2+z_1, and Lean coordinate k=0. The example proves positive sample size and genuine differentiability of every coordinate-increment function used by the formula. No audited Challenge theorem is used in these constructions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T70",
+    "theorem": "SAP.P001d.T70",
+    "fingerprint": "01779208181608e69668d20154ec9e5f741cd67398dea3d957bbdf4767e1a6a2",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:24 with sap-lean, exit 0. Take n=2, J=1, x=(0,1), y=(2,3). The example proves n>0 and invertibility of the polynomial Gram matrix by calculating the design determinant as 1. This inhabits the conditional inverse-formula and distinct-value clauses as well as the unconditional unsquared-criterion clauses. Coefficient vectors always have J+1 coordinates, including a genuine intercept. In particular the theorem's arbitrarily low criterion values are attained by real coefficient vectors, not by a totalized inverse.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T71",
+    "theorem": "SAP.P001d.T71",
+    "fingerprint": "953de82dabaaf79e2072c8edbf83ebe3c704151dc8676475b997a712b27d453f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:37 with sap-lean, exit 0. Take n=2, K=1, design rows (1,0),(1,1), responses (2,3), and lambda=2. The example proves the positive sample size, actual intercept column, and the nonnegative-lambda hypothesis of the convexity clause. The zero-penalty clauses specialize at lambda=0, which also satisfies the nonnegative-lambda condition. No rank or distributional hypothesis is imposed by this deterministic theorem; all coefficient spaces are nonempty.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P001-T72",
+    "theorem": "SAP.P001d.T72",
+    "fingerprint": "7848f9257ab6270393e7e36a2b44966f589059f231138e8961677016687f7cca",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean:44 with sap-lean, exit 0. Take K=1, x=(1,2), b=(1,3), and s=2. The example proves positive scale, the intended unit-intercept covariate, and nonzero linear mean x dot b=7. The density and first-moment integrabilities are conclusions. At zero scale the displayed total formula is identically zero because real division by zero is totalized; the docstring expressly describes this as a diagnostic of the formula, not a degenerate Gaussian probability measure. The arbitrary-random-variable conditional-model-to-CEF implication is expressly omitted by both the docstring and record restriction.",
+    "confidence": "high",
+    "resolved": [
+      {
+        "earlier_issue": "earlier.json, issue 1: SAP/P001d/Defs/Part4.lean:52 omits canonical clause (ii), the conditional-model-to-CEF implication.",
+        "status": "fixed",
+        "reason": "Fixed as a scope defect by accurately restricting the package. The mathematical statement remains the fixed-covariate density lemma, and does not acquire the missing implication. The current decision is restricted at record.json:63, with that exact omission at record.json:65 and SAP/P001d/Challenge/Part2.lean:44. The authorized rule allows correct, explicitly disclosed partial coverage; the omission is no longer misrepresented as whole coverage."
+      },
+      {
+        "earlier_issue": "earlier.json, issue 2: record.json:63 previously said whole with restriction=null.",
+        "status": "fixed",
+        "reason": "The current record.json:63 says restricted, and record.json:65 specifies the fixed-covariate normalization, first moment and totalized zero-scale diagnostic, expressly omitting the arbitrary-X,Y conditional-normal-model-to-linear-CEF implication. This matches every part of the current Lean statement."
+      },
+      {
+        "earlier_issue": "earlier.json, issue 3: SAP/P001d/Challenge/Part2.lean:43 previously failed to disclose omission of Theorem 5.1.5's conditional-law-to-CEF implication.",
+        "status": "fixed",
+        "reason": "SAP/P001d/Challenge/Part2.lean:44 now expressly gives the restriction and names the omitted implication. Line 43 accurately describes the retained kernel calculation and distinguishes the totalized zero-scale formula. The docstring makes no claim to prove the omitted random-variable theorem."
+      }
+    ]
+  }
+]

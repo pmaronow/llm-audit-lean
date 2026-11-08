@@ -1,7 +1,3 @@
-/-
-Upstream project: StatLean.
-Modified for llm-audit-lean: import paths adapted and declarations not used by this repository removed.
--/
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 import Mathlib.MeasureTheory.Integral.Prod
@@ -35,7 +31,8 @@ This route avoids Sum-type reindexing (`sumPiEquivProdPi`) and its `Eq.rec`
 casts entirely — both directions of `arrowProdEquivProdArrow` are cast-free
 lambda terms. The integral identity `integral_flip_diff` is a pure change of
 variables (`Measure.map` + `integral_map`) and needs **no** integrability
-hypotheses.
+hypotheses. Named-sorry fallback of this work item:
+`measurePreserving_condSwap` (with `integral_flip_diff` derived from it).
 
 **Bibliographic comments.** The symmetrization device of comparing a sum with
 the difference of two independent copies goes back to P. Lévy (1937) and was
@@ -54,7 +51,7 @@ variable {Ω : Type*} {mΩ : MeasurableSpace Ω}
 /-- **The conditional coordinate swap is measure-preserving** (engine of HDP
 §6.3, Lemma 6.3.1(c) / Exercise 6.16(b)): on the product of two independent
 copies of `⊗ᵢ νᵢ`, swapping the two copies in exactly the coordinates selected
-by `σ` preserves the measure. -/
+by `σ` preserves the measure. Named-sorry debt candidate of this work item. -/
 theorem measurePreserving_condSwap {E : Type*} [MeasurableSpace E] {N : ℕ}
     (ν : Fin N → Measure E) [∀ i, IsProbabilityMeasure (ν i)]
     (σ : Fin N → Bool) :

@@ -1,0 +1,162 @@
+import SAP.P001a.Defs
+import SAP.P001a.Defs.WholeW1
+import SAP.P001a.Defs.WholeW4
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped ENNReal NNReal BigOperators Topology
+
+noncomputable section
+namespace Audit
+
+-- These checks import only definitions and Mathlib, never the Challenge theorems.
+
+lemma geo_sum : HasSum SAP.P001a.geoMass 1 := by
+  have h := (hasSum_geometric_of_norm_lt_one (ξ := (1 / 2 : ℝ)) (by norm_num)).mul_right (1 / 2 : ℝ)
+  convert h using 1
+  · funext k
+    simp [SAP.P001a.geoMass, pow_succ]
+  · norm_num
+
+lemma geo_mean : HasSum (fun k : ℕ => (k : ℝ) * SAP.P001a.geoMass k) 1 := by
+  have h := (hasSum_coe_mul_geometric_of_norm_lt_one (r := (1 / 2 : ℝ)) (by norm_num)).mul_right (1 / 2 : ℝ)
+  convert h using 1 <;> norm_num [SAP.P001a.geoMass, pow_succ, mul_assoc]
+
+lemma geo_second : HasSum (fun k : ℕ => (k : ℝ)^2 * SAP.P001a.geoMass k) 3 := by
+  have h := (hasSum_sq_mul_geometric_of_norm_lt_one (r := (1 / 2 : ℝ)) (by norm_num)).mul_right (1 / 2 : ℝ)
+  convert h using 1 <;> norm_num [SAP.P001a.geoMass, pow_succ, mul_assoc]
+
+example : SAP.P001a.FiniteMomentLaw SAP.P001a.geoMass ∧
+    SAP.P001a.massMean SAP.P001a.geoMass = 1 ∧
+    SAP.P001a.massSecond SAP.P001a.geoMass = 3 := by
+  refine ⟨⟨?_, geo_sum.summable, geo_sum.tsum_eq, geo_mean.summable, geo_second.summable⟩,
+    geo_mean.tsum_eq, geo_second.tsum_eq⟩
+  intro k
+  exact le_of_lt (pow_pos (by norm_num : (0 : ℝ) < 1/2) _)
+
+example : SAP.P001a.mixMass 2 0 = 7/16 ∧ SAP.P001a.mixMass 2 2 = 11/64 := by
+  norm_num [SAP.P001a.mixMass, SAP.P001a.geoMass]
+
+-- A genuine infinite iid Gaussian experiment satisfying every T2 premise.
+example : ∃ (Ω : Type) (_ : MeasurableSpace Ω) (μ : Measure Ω)
+    (_ : IsProbabilityMeasure μ) (X : ℕ → Ω → ℝ),
+    SAP.P001a.IID μ X ∧ MemLp (X 0) 2 μ ∧ 0 < SAP.P001a.var μ (X 0) := by
+  obtain ⟨Ω, mΩ, μ, X, hmeas, hlaw, hind, hprob⟩ := exists_iid ℕ (gaussianReal 0 1)
+  letI := mΩ
+  letI := hprob
+  refine ⟨Ω, mΩ, μ, hprob, X, ⟨hmeas, hind, ?_⟩, ?_, ?_⟩
+  · intro i
+    exact ⟨(hmeas i).aemeasurable, (hmeas 0).aemeasurable,
+      (hlaw i).map_eq.trans (hlaw 0).map_eq.symm⟩
+  · exact (hlaw 0).memLp (memLp_id_gaussianReal' 2 (by norm_num))
+  · change 0 < variance (X 0) μ
+    rw [(hlaw 0).variance_eq, variance_id_gaussianReal]
+    norm_num
+
+lemma uniform01_eq : SAP.P001a.uniformLaw 0 1 = volume.restrict (Set.Icc (0 : ℝ) 1) := by
+  unfold SAP.P001a.uniformLaw
+  convert (withDensity_indicator_one (μ := (volume : Measure ℝ)) measurableSet_Icc) using 1
+  congr 1
+  funext x
+  by_cases h : x ∈ Set.Icc (0 : ℝ) 1 <;> simp [h, Set.indicator]
+
+instance uniform01_probability : IsProbabilityMeasure (SAP.P001a.uniformLaw 0 1) where
+  measure_univ := by simp [uniform01_eq]
+
+lemma uniform_eq_constant (a b : ℝ) : SAP.P001a.uniformLaw a b =
+    ENNReal.ofReal ((b-a)⁻¹) • volume.restrict (Set.Icc a b) := by
+  unfold SAP.P001a.uniformLaw
+  rw [← withDensity_const, ← withDensity_indicator measurableSet_Icc]
+  congr 1
+  funext x
+  by_cases h : x ∈ Set.Icc a b <;> simp [h, Set.indicator]
+
+instance uniformNeg11_probability : IsProbabilityMeasure (SAP.P001a.uniformLaw (-1) 1) where
+  measure_univ := by
+    norm_num [uniform_eq_constant]
+    rw [ENNReal.ofReal_div_of_pos (by norm_num)]
+    norm_num only [ENNReal.ofReal_one, ENNReal.ofReal_ofNat, one_div]
+    exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+lemma gap_eq_constant :
+    volume.withDensity (fun x => ENNReal.ofReal (SAP.P001a.gapPDF x)) =
+    (1/2 : ℝ≥0∞) • volume.restrict
+      (Set.Icc (-2 : ℝ) (-1) ∪ Set.Icc 1 2) := by
+  rw [← withDensity_const, ← withDensity_indicator (measurableSet_Icc.union measurableSet_Icc)]
+  congr 1
+  funext x
+  by_cases h : x ∈ Set.Icc (-2 : ℝ) (-1) ∪ Set.Icc 1 2 <;>
+    simp [SAP.P001a.gapPDF, h, Set.indicator]
+
+instance gapMarginal_probability : IsProbabilityMeasure
+    (volume.withDensity (fun x => ENNReal.ofReal (SAP.P001a.gapPDF x))) where
+  measure_univ := by
+    have hd : Disjoint (Set.Icc (-2 : ℝ) (-1)) (Set.Icc 1 2) := by
+      apply Set.disjoint_left.mpr
+      intro x hx hy
+      simp only [Set.mem_Icc] at hx hy
+      linarith
+    norm_num [gap_eq_constant, measure_union hd measurableSet_Icc]
+    exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
+
+example : IsProbabilityMeasure SAP.P001a.gapJointLaw := by
+  unfold SAP.P001a.gapJointLaw
+  infer_instance
+
+-- A genuine infinite iid uniform/Gaussian experiment satisfying every T5 premise.
+example : ∃ (Ω : Type) (_ : MeasurableSpace Ω) (μ : Measure Ω)
+    (_ : IsProbabilityMeasure μ) (X Y : ℕ → Ω → ℝ),
+    SAP.P001a.IID μ (fun i ω => (X i ω, Y i ω)) ∧
+    μ.map (fun ω => (X 0 ω, Y 0 ω)) =
+      (SAP.P001a.uniformLaw 0 1).prod (gaussianReal 0 1) := by
+  obtain ⟨Ω, mΩ, μ, Z, hmeas, hlaw, hind, hprob⟩ :=
+    exists_iid ℕ ((SAP.P001a.uniformLaw 0 1).prod (gaussianReal 0 1))
+  letI := mΩ
+  letI := hprob
+  refine ⟨Ω, mΩ, μ, hprob, (fun i ω => (Z i ω).1), (fun i ω => (Z i ω).2),
+    ⟨hmeas, hind, ?_⟩, (hlaw 0).map_eq⟩
+  intro i
+  exact ⟨(hmeas i).aemeasurable, (hmeas 0).aemeasurable,
+    (hlaw i).map_eq.trans (hlaw 0).map_eq.symm⟩
+
+-- Gap-law witnesses really are distinct smooth extensions at the off-domain mean.
+example : SAP.P001a.gapPDF 0 = 0 ∧
+    SAP.P001a.gapPDF (-3/2) = 1/2 ∧ SAP.P001a.gapPDF (3/2) = 1/2 := by
+  norm_num [SAP.P001a.gapPDF]
+
+example (x : ℝ) (hx : 0 < SAP.P001a.gapPDF x) : SAP.P001a.pdaBump x = 0 := by
+  unfold SAP.P001a.gapPDF at hx
+  split_ifs at hx with h
+  · rcases h with h | h
+    · simp only [Set.mem_Icc] at h
+      unfold SAP.P001a.pdaBump
+      rw [if_neg (by rw [abs_of_nonpos (by linarith : x ≤ 0)]; linarith)]
+    · simp only [Set.mem_Icc] at h
+      unfold SAP.P001a.pdaBump
+      rw [if_neg (by rw [abs_of_nonneg (by linarith : 0 ≤ x)]; linarith)]
+  · norm_num at hx
+
+example : HasDerivAt SAP.P001a.pdaBump 1 0 := by
+  have heq : SAP.P001a.pdaBump =ᶠ[nhds (0 : ℝ)] (fun x : ℝ => x * (1-x^2)^2) := by
+    filter_upwards [Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1)] with x hx
+    exact if_pos (abs_lt.mpr hx)
+  have h : HasDerivAt (fun x : ℝ => x * (1-x^2)^2) 1 0 := by
+    convert (hasDerivAt_id (0 : ℝ)).mul
+      (((hasDerivAt_const (0 : ℝ) 1).sub ((hasDerivAt_id (0 : ℝ)).pow 2)).pow 2) using 1 <;>
+      norm_num [Pi.mul_def, Pi.sub_def, Pi.pow_def]
+  exact h.congr_of_eventuallyEq heq
+
+-- Nonempty, positive-dimensional data for the deterministic T4 block.
+example : ∃ (U : Set (Fin 1 → ℝ)) (m m' : U → ℝ),
+    U.Nonempty ∧ IsOpen U ∧ Continuous m ∧ Continuous m' ∧
+    (∀ᵐ x ∂(volume.restrict U), ∀ hx : x ∈ U, m ⟨x,hx⟩ = m' ⟨x,hx⟩) := by
+  refine ⟨Set.univ, (fun _ => 0), (fun _ => 0), Set.univ_nonempty,
+    isOpen_univ, continuous_const, continuous_const, ?_⟩
+  exact Filter.Eventually.of_forall (fun _ _ => rfl)
+
+example : SAP.P001a.wholeHolePDF 0 = 0 ∧ SAP.P001a.wholeHolePDF (1/2) = 1/2 := by
+  norm_num [SAP.P001a.wholeHolePDF]
+
+example : SAP.P001a.mainDegreeW4 0 = 0 ∧ SAP.P001a.endpointDegreeW4 4 = 2 := by
+  norm_num [SAP.P001a.mainDegreeW4, SAP.P001a.endpointDegreeW4, Nat.sqrt]
+
+end Audit

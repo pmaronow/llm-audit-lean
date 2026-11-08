@@ -1,0 +1,40 @@
+import SAP.P026b.Challenge
+
+open SAP.P026b
+
+set_option autoImplicit false
+
+#print SAP.P026b.UnitExperiment
+#check @SAP.P026b.ate
+#check @SAP.P026b.olsFitted
+
+namespace Scratch
+open Finset
+
+/-- Uniform law on the two allocations of one unit: nonvacuity instance for UnitExperiment. -/
+noncomputable def uniform1 : UnitExperiment (Fin 1) where
+  weight := fun _ => 1/2
+  nonnegative := by intro w; norm_num
+  normalized := by
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_bool, Fintype.card_fin]
+    norm_num
+  positive := by
+    intro i
+    have e : (Finset.univ : Finset (Fin 1 → Bool)) = {fun _ => true, fun _ => false} := by
+      decide
+    have hne : (fun _ : Fin 1 => true) ≠ (fun _ => false) := by decide
+    rw [e, Finset.sum_pair hne, Finset.sum_pair hne]
+    norm_num
+
+/-- T16(c)'s zero-covariance hypothesis is satisfiable: fixed predictions have zero covariance. -/
+example (I : Type) [Fintype I] [DecidableEq I] (E : UnitExperiment I) (c : ℝ) (i : I) :
+    covariance E.design (fun w => indicator E.design true w i) (fun _ => c) = 0 := by
+  have h : ∑ w, E.design.weight w = 1 := E.normalized
+  simp only [covariance, expectation]
+  have h1 : ∑ w, E.design.weight w * (indicator E.design true w i * c) =
+      (∑ w, E.design.weight w * indicator E.design true w i) * c := by
+    rw [Finset.sum_mul]; congr 1; ext; ring
+  have h2 : ∑ w, E.design.weight w * c = c := by rw [← Finset.sum_mul, h]; ring
+  rw [h1, h2]; ring
+
+end Scratch

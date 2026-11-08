@@ -1,6 +1,10 @@
 import AronowAudit.P015.P015_Regression
 
-
+/- Paper-context replacements for recorded auxiliary associations. The original
+helpers remain unchanged. Every replacement states the actual audited clause
+or its complete counterexample/correction; these are scope repairs, not new
+proofs of the older generic or partial statements. The migration ledger retains
+those statements and the earlier fidelity judgments verbatim. -/
 namespace AronowAudit.P015.PaperSpecializations
 open Matrix Finset MeasureTheory ProbabilityTheory Filter
 open scoped BigOperators Topology

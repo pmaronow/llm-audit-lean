@@ -1,0 +1,80 @@
+import SAP.P061a.Defs
+import SAP.P061a.Defs.WholeW1
+
+open SAP.P061a Filter
+open scoped BigOperators Topology Classical
+
+namespace ReviewGeometric
+
+theorem cast_inj : Function.Injective (fun n : ℕ => (n : ℝ)) := by
+  intro a b h
+  change (a : ℝ) = (b : ℝ) at h
+  exact_mod_cast h
+
+theorem geom_sum : HasSum geometricMass 1 := by
+  have h := (hasSum_geometric_of_lt_one (r := (1/2 : ℝ)) (by norm_num)
+    (by norm_num)).mul_left (1/2 : ℝ)
+  convert h using 1
+  · funext n
+    simp only [geometricMass, pow_succ]
+    ring
+  · norm_num
+
+noncomputable def design : AtomicDesign ℝ where
+  mass := realIntegerMass
+  mass_nonnegative := by
+    intro z
+    unfold realIntegerMass Function.extend
+    split_ifs with hz
+    · exact pow_nonneg (by norm_num) _
+    · exact le_refl _
+  mass_summable := (hasSum_extend_zero cast_inj |>.mpr geom_sum).summable
+  mass_total := (hasSum_extend_zero cast_inj |>.mpr geom_sum).tsum_eq
+
+theorem mass_nat (n : ℕ) : design.mass (n : ℝ) = (1/2 : ℝ)^(n+1) := by
+  exact cast_inj.extend_apply geometricMass (fun _ => 0) n
+
+theorem support_exact (z : ℝ) : supported design z ↔ ∃ n : ℕ, (n : ℝ) = z := by
+  constructor
+  · intro hp
+    by_contra hn
+    have hz : design.mass z = 0 := by
+      exact Function.extend_apply' geometricMass (fun _ => 0) z hn
+    simp [supported, hz] at hp
+  · rintro ⟨n, rfl⟩
+    rw [supported, mass_nat]
+    positivity
+
+theorem exposure_nat (n : ℕ) :
+    integerExposure 0 (n : ℝ) = if n = 0 then 0 else 1 := by
+  exact cast_inj.extend_apply _ _ n
+
+theorem response_nat (n : ℕ) : integerResponse 0 (n : ℝ) = alternatingResponse n := by
+  exact cast_inj.extend_apply _ _ n
+
+-- The positive-integer weighted responses are the genuine alternating terms.
+example (k : ℕ) : integerResponseTerm design k = (-1 : ℝ)^k := by
+  unfold integerResponseTerm
+  rw [mass_nat, response_nat]
+  simp only [alternatingResponse, Nat.add_eq_zero_iff, Nat.one_ne_zero,
+    and_false, ite_false]
+  have hp : (1/2 : ℝ)^(k+2) * 2^(k+2) = 1 := by
+    rw [← mul_pow]; norm_num
+  calc
+    (1/2 : ℝ)^(k+1+1) * ((-1 : ℝ)^(k+1+1) * 2^(k+1+1)) =
+        ((1/2 : ℝ)^(k+2) * 2^(k+2)) * (-1 : ℝ)^k := by
+      rw [show k+1+1 = k+2 by omega]
+      simp only [pow_add, pow_one, pow_two]
+      ring
+    _ = (-1 : ℝ)^k := by rw [hp, one_mul]
+
+example : design.mass 0 = 1/2 ∧ design.mass 1 = 1/4 ∧
+    integerResponse 0 1 = 4 ∧ integerResponse 0 2 = -8 := by
+  have h0 := mass_nat 0
+  have h1 := mass_nat 1
+  have hy1 := response_nat 1
+  have hy2 := response_nat 2
+  norm_num [alternatingResponse] at *
+  exact ⟨h0, h1, hy1, hy2⟩
+
+end ReviewGeometric

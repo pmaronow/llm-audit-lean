@@ -2,7 +2,8 @@ import AronowAudit.P003.P003_Audit
 import Mathlib.Topology.Algebra.InfiniteSum.Constructions
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
-
+/-! Drafts for dd-GP0031B1. No Lean process was used in preparing this file.
+The frozen declarations are used only in the four type comparisons. -/
 
 namespace AronowAudit.P003.Wave1
 
@@ -12,7 +13,7 @@ attribute [local instance 0] Classical.propDecidable
 set_option maxRecDepth 100000
 set_option maxHeartbeats 1200000
 
-/-! Parity convolution. A sum of two copies of ℤ makes the two
+/-! Record 0: parity convolution. A sum of two copies of ℤ makes the two
 parity fibres explicit, including at negative integers. -/
 
 def parity_convolution_sd_equiv (p : ℤ) : ℤ ⊕ ℤ ≃ ℤ where
@@ -120,7 +121,10 @@ theorem parity_convolution_sd_proof (f : ℤ → ℝ) (hf : IsSD f) (p : ℤ)
   push_cast
   ring
 
-/-! The finite weak-rank lemma. -/
+example : type_of% @AronowAudit.P003.parity_convolution_sd := parity_convolution_sd_proof
+
+/-! Record 2: the finite weak-rank lemma is proved here, rather than using
+the strict rejection conclusion of `finite_tail_repair`. -/
 
 lemma monte_rank_valid_uniform_reindex {A B : Type*} [Fintype A] [Fintype B]
     (e : A ≃ B) (P : B → Prop) :
@@ -356,7 +360,10 @@ theorem monte_rank_valid_proof (v : Counts) (m K : ℕ) (α : ℝ)
   simp_rw [he]
   exact monte_rank_valid_finite_rank K s α hα.1
 
-/-! A balanced family of first-query candidates. -/
+example : type_of% @AronowAudit.P003.monte_rank_valid := monte_rank_valid_proof
+
+/-! Record 3: this construction precedes first-query trace reasoning.
+It has no dependency on S8. Only the elementary membership part of S1 is needed. -/
 
 lemma balanced_runtime_family_randomStates_iff (v q : Counts) (m : ℕ) :
     q ∈ randomStates v m ↔
@@ -473,7 +480,7 @@ lemma balanced_runtime_family_window {A : Type*} (V : ℕ → A) (a t : ℕ) :
     rw [show a+(t+1) = (a+t)+1 by omega,List.range_succ,List.flatMap_append,ih]
     simp [List.range_succ,show a ≤ a+t by omega]
 
-/-- Ordered first-query candidates. -/
+/-- Exported ordered first-query candidates, for the downstream trace proof. -/
 lemma balanced_runtime_family_zero_candidates (x : ℕ) (hx : 0 < x) :
     candidates ⟨0,2*x,0,2*x⟩ (x : ℤ) =
       (List.range (x+1)).map (fun t => (⟨0,x+t,t,4*x-2*(x+t)+x⟩ : Counts)) := by
@@ -569,6 +576,8 @@ theorem balanced_runtime_family_proof (r : ℕ) (hr : 4 ≤ r) :
     exact balanced_runtime_family_assignment (2^r) (2^r/2) (2^r/4) j
       hn hm heven hx hjlo hjhi
 
+example : type_of% @AronowAudit.P003.balanced_runtime_family := balanced_runtime_family_proof
 
+-- Record 5 omitted: the new balanced_shuffle_lower_bounds proof is unavailable.
 
 end AronowAudit.P003.Wave1

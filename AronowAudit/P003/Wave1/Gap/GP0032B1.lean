@@ -1,6 +1,10 @@
 import AronowAudit.P003.P003_Audit
 
-/-! Finite counterexamples for adaptive testing and confidence-set inversion. -/
+/-!
+Repaired finite counterexample proofs for records 7 and 8.
+The held declarations are used only by the two `type_of%` checks below.
+Record 3 was incomplete in the draft and is omitted; see the fx-7 report.
+-/
 
 namespace AronowAudit.P003.Wave1
 
@@ -9,7 +13,7 @@ attribute [local instance 0] Classical.propDecidable
 set_option maxRecDepth 100000
 set_option maxHeartbeats 6000000
 
-/-! ## Finite candidates, tails, and chronological test traces -/
+/-! ## Record 7: finite candidates, tails, and actual chronological traces -/
 
 /-- The common complete-randomization denominator; no assignment-pool enumeration. -/
 theorem atr_denominator : binomial 30 15 = 155117520 := by
@@ -414,7 +418,10 @@ theorem adaptive_trace_counterexample_proof :
   exact ⟨rfl, rfl, rfl, rfl, rfl, rfl, atr_positive_A,
     rfl, rfl, rfl, atr_positive_B, rfl, rfl, rfl, rfl, atr_positive_D⟩
 
-/-! ## Full inversion independently of the fast search -/
+example : type_of% @AronowAudit.P003.adaptive_trace_counterexample :=
+  adaptive_trace_counterexample_proof
+
+/-! ## Record 8: certify full inversion independently of the fast search -/
 
 theorem ac_outside_neg14 :
     ((possibleTables adaptiveData).filter (fun v => decide (v.effect = (-14 : ℤ)))).all
@@ -607,5 +614,8 @@ theorem adaptivity_counterexample_proof :
     bD.trace[1]!.2 = true ∧ a.trace[1]!.2 = false ∧
     0 < traceProbabilityQ adaptiveData bD.trace) := by
   exact ⟨ac_interval_large, ac_interval_small, adaptive_trace_counterexample_proof⟩
+
+example : type_of% @AronowAudit.P003.adaptivity_counterexample :=
+  adaptivity_counterexample_proof
 
 end AronowAudit.P003.Wave1

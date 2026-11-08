@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P001e.T77",
+    "target_id": "P001-T77",
+    "my_reading_vs_claim": "whole",
+    "reason": "The corrected claim is the pointwise typing of a realized finite likelihood on Theta, together with the normal-density illustration. T77Statement uses Theta as a subtype of Fin tau -> Real and NNReal as the finite nonnegative codomain; lifting any nonnegative real g proves this for every conditional PMF/PDF without needing its normalization. T77WholeStatement also supplies a genuinely normalized normal density, its value at the mean, and the exact small-positive-scale inequality. Taking an arbitrary normal mean includes the regression mean x beta. No claim of parameter selection or asymptotic behavior is needed by this canonical assertion. Empty parameter sets do not trivialize the universal result, and nonempty two-dimensional parameter data and a genuine PMF have been compiled. Positive scale and positive 2*pi exclude division and square-root junk. All clauses of the corrected claim are retained."
+  },
+  {
+    "theorem": "SAP.P001e.T78",
+    "target_id": "P001-T78",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical formal content explicitly assumes a least-squares minimizer and Q > 0 in the regression setting, which includes an intercept. The theorem states these hypotheses and n > 0, uses the exact normal log-likelihood over every coefficient vector and every positive scale, proves its global maximum at sqrt(Q/n), and identifies the squared scale Q/n. It additionally states zero residual sum and mean and both centered-second-moment and plug-in-variance formulas. The deterministic statement applies to every realized sample in the i.i.d. setting; no probabilistic performance assertion is omitted. It adds no rank or uniqueness requirement. An intercept-only two-observation sample (0,2), fitted intercept 1 and Q=2 satisfies all the hypotheses, as compiled independently of the target theorem. All denominators and log/sqrt inputs used in the conclusion have the required domains."
+  },
+  {
+    "theorem": "SAP.P001e.T79",
+    "target_id": "P001-T79",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem contains the population joint-CDF identity motivated by iterated expectation, both the PMF-sum and PDF-integral conditional-law versions, both corrected fitted displays, normalization of each fitted joint law and the definition T(Fhat). Its orthant compares each sample covariate coordinate to the corresponding common threshold, and each summand uses the same attained ML parameter. W1IsMLE is exactly product-likelihood maximality over Theta, not an assumption of the CDF conclusion. The fitted law is an empirical mixture of normalized conditional laws times point masses at the sampled covariates. W1JointCDF ranges over actual CDFs of probability measures, and W1HasPDF is the usual nonnegative integrable Lebesgue density predicate. Conditional PMF/PDF equalities are versions as permitted by the standing assumptions. The elementary pointwise fitted formulas do not need an extra sampling or model-truth hypothesis. The functional equality is definitional because the canonical text defines the plug-in operation; the population and normalization assertions are independent substantive content. Nonempty PMF and positive-variance Gaussian models with attained maxima, and genuine population conditional-law versions for each case, have been compiled. No infinite measure, nonsummable PMF tail, or nonintegrable PDF is used."
+  },
+  {
+    "theorem": "SAP.P001e.T80",
+    "target_id": "P001-T80",
+    "my_reading_vs_claim": "whole",
+    "reason": "All parts of the composite canonical claim are present: the respondent-mean endpoint formulas, the population inequalities, their interpretation as endpoint-completion expectations, every intermediate compatible population mean with the same observable joint distribution, both printed completion vectors and sample means, and the failure of repeating the lowest-value instruction to produce 5/6. The positive probabilities for both response values express the printed condition Supp[R]={0,1}; they are not additional positivity restrictions. The outcome support condition is correctly expressed almost surely, and the recording/completion formulas use the stated stable-outcomes model. Sharpness is strengthened by retaining the same response variable and probability space and by equality almost everywhere of recorded outcomes; this implies the canonical equality of observable laws. Neither MAR nor independence is assumed. A uniform two-atom probability space with Y=R=(0,1), bounds [0,1] and both response probabilities 1/2 satisfies every hypothesis, as compiled. Boundedness ensures all the relevant integrals exist, so their default values do not drive the conclusion. The finite completion calculations have also been independently compiled."
+  },
+  {
+    "theorem": "SAP.P001e.T81",
+    "target_id": "P001-T81",
+    "my_reading_vs_claim": "whole",
+    "reason": "The fixed score vector and respondent candidate set exactly match the canonical table after converting one-based unit numbers to Fin 6 indices. The theorem checks all eight score distances, both unique nearest donors, unit 4 as second nearest to unit 2 with gap 0.02, the completed vector (2,2,3,10,12,3), and its mean 16/3. The supplied nearest-neighbor relation compares genuine absolute distances against every other respondent; it does not encode the answer as a hypothesis. The explicit donor map reads only respondent outcomes, so zero placeholders at missing data positions have no effect. The omitted raw covariates are not inputs to any numerical assertion once the given propensity scores are fixed. The canonical informal information-sharing motivation adds no further numerical conclusion. There are no hypotheses to be inconsistent, and the entire closed conjunction has been independently proved by finite real arithmetic in scratch/Check.lean."
+  }
+]

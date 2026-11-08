@@ -1,0 +1,102 @@
+[
+  {
+    "target_id": "P046-T1",
+    "theorem": "SAP.P046.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed theorem uses the actual pushforward of independent W,U uniform on [0,1]: pi=13/20 on W<=3/5 and 99/100 otherwise, X=1{U<=pi(W)}, Y0=0, Y1=1{W<=3/5}, m=Y1 as a function of W, delta=1/200. Both potential outcomes are functions of W, so the two required conditional independences hold. The marginal is atomless and the stated strict positivity inequalities hold. Exact rational enumeration with a certified log enclosure independently confirms all 5151 feasible states, all 1946 failing states, the integer cut, the full probability numerator and the strict comparisons. Lean also checked the integer count and numerator in scratch/Check.lean. The docstring accurately identifies the omitted intermediate assertions and separate coverage/tail conclusions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T2",
+    "theorem": "SAP.P046.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Independent W,U uniform on [0,1], X=1{U<=9/10}, Y0=0, Y1=1{W>=1/2}, pi=9/10, m(w)=1{w>=1/2}, delta=1/20 give the specified valid law. The covariate event has mass 2^(-100)>0. On that event the generated outcomes and HT estimator vanish, while the population mean is 1/2. Since log(40)<4, the squared radius log(40)/162 is less than 1/4, so conditional tail probability one is correct. Conditional expectation uses the original sample law; restriction only specifies the event on which the equality holds. The omitted pointwise and conditional-centre assertions are disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T3",
+    "theorem": "SAP.P046.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use W uniform on [0,1], independent X and B both Bernoulli(1/2), Y0=0, Y1=B, pi=m=1/2, delta=1/4. All ValidStudy fields follow from the product law and independence; mu=1/2. Take n=1, alpha=1/2 and b=1/2 for concrete positive parameters in both implications. Conditional Hoeffding about muW and Hoeffding for the iid bounded m(W_i), followed by the union bound, give the corrected radius. The known-b inequality follows from iid HT summands in [0,1/b]. Strict positivity gives the strict radius bound and a finite width constant. Every probability is finite and all involved expectations are integrable. The declared omissions of corrected-proof steps are accurate.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P046-T4",
+    "theorem": "SAP.P046.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified law is generated from three independent uniforms: W, the Bernoulli(1/10) outcome seed, and the treatment seed. It has Y0=Y1=LZ, pi=1/4 or 3/4, delta=1/8, and continuous uniform W. The deterministic fits use g(w)=1/2 on the lower half and zero on the upper half, with folds of sizes floor(n/2) and ceil(n/2). They are genuine opposite-fold fits and empirical minimizers. Exact independent enumeration confirms E[H]=E[A]=1/20, E[H^2]=1/5, E[A^2]=17/40, variances 79/400 and 169/400, risks 3/20 and 3/8, and the weighted-norm coefficients. All summands are bounded, so the finite-sample variance scaling and both CLTs are ordinary nondegenerate results. The docstring correctly restricts the retained counterexample conclusions relative to the detailed canonical derivation and identifies the treated-case loss reading.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T5",
+    "theorem": "SAP.P046.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use independent W uniform and X,B Bernoulli(1/2), Y0=0, Y1=B, pi=m=1/2, delta=1/4. Let d=1 and family(theta)(w)=0 for every real parameter theta and w; use constant-zero fits in deterministic half-sample folds and gstar=0. The family is square-integrable and contains zero; empirical and population minimization are automatic; both L2 prediction errors are identically zero. Every premise of both implications holds. Here Var(Y1)=1/4, R(0)=1/2 and V(0)=3/4, giving a nondegenerate common limiting variance. In the general family implication, family membership guarantees fitted L2 integrability, and the zero-closure alternative uses genuine finite weighted norms. The additional L2 guards in the family-free direct implication are accurately disclosed. Its risk inequality is already an explicit canonical direct-condition premise.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P046-T6",
+    "theorem": "SAP.P046.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The valid T1 study with n=100 and alpha=10^(-7) witnesses the negation. Its strict noncoverage is 1.1979291069795625472576722625601454579... times 10^(-7), exceeding alpha; the non-strict tail in T6 is at least that large. Thus the record's refuted decision and the docstring 'The printed claim is false' concern the canonical assertion itself. The correct_whole verdict here denotes a correct complete refutation, as the requested verdict vocabulary has no separate correct_refuted value. The step-2 different classification remains unchanged: the theorem is the justified negation of the positive canonical assertion.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T7",
+    "theorem": "SAP.P046.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take W uniform, X and B independent Bernoulli(1/2), Y0=0, Y1=B, pi=m=1/2, delta=1/4. This is a valid atomless study with mu=1/2 and HT summand variance 3/4. It demonstrates a nondegenerate CLT instance and a nonempty common-delta class. For general valid studies, bounded HT summands give integrability, unbiasedness, the displayed finite variance and the iid CLT. A variance or Hoeffding bound depending only on the common delta gives the exact uniform quantifiers in definitions_needed. The allowed zero-variance case is also realized by Y1=0. No extra common-delta restriction is hidden: that class is part of the canonical definition of uniform root-n consistency.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T8",
+    "theorem": "SAP.P046.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "In the independent uniform/Bernoulli study with pi=m=1/2, Y0=0, Y1=B and delta=1/4, choose any positive n and deterministic constant-zero fits. Every evaluated prediction is integrable and the estimator reduces to unbiased HT. The admitted class is nonempty for balanced or other deterministic folds. More generally, opposite-fold measurability gives the required conditional independence, and positivity bounds the multiplier of each integrable prediction; hence the adjusted estimator has a genuine finite expectation. The explicitly added L1 assumption is an accurate restriction, including exclusion of cases where only the final estimator is integrable after cancellation.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P046-T9",
+    "theorem": "SAP.P046.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use independent W uniform and X,B Bernoulli(1/2), Y0=0, Y1=B, pi=m=1/2, delta=1/4, and deterministic half-sample folds. For part (b), constant-zero fits with both limits zero have integrable squared-error expectations identically zero and produce root-n HT. For part (d), constant-1/2 fits equal the true regression at every sample size and have finite L2 norm; the Hahn variance is (1/2)(1-1/2)/(1/2)=1/2>0. Thus both parts have nonvacuous, nondegenerate examples. The disclosed fitted-L2 and mean-square integrability conditions prevent the totalized real integral from treating infinite squared errors as zero. The numerical Hahn normal limit matches definitions_needed; no lower-bound theorem or fixed-covariate-distribution efficiency assertion is silently required by the canonical reading.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P046-T10",
+    "theorem": "SAP.P046.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each n>=1 put p=1/(n+1)^2 and consider two laws with W uniform, independent X Bernoulli(p), Y0=0, and Y1 identically 0 or identically 1. Set pi=p, delta=p/2, and m=0 or 1. Both studies satisfy every ValidStudy field. On the no-treatment event the observed sample laws agree, and that event has probability at least 1-np>=3/4. For any observed-data estimator, at least one of the two laws therefore has error >1/4 with probability at least 3/8. Choosing eps=1/4 and c=3/8 verifies the assertion along every positive sample size. Varying delta is permitted by the canonical unrestricted class. The stronger common-delta finite-bin construction occurs only in audit history, not in the canonical assertion; its omission needs no restriction.",
+    "confidence": 0.99
+  }
+]

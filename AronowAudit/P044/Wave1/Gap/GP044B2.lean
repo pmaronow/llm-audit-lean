@@ -124,6 +124,8 @@ theorem clique_fixed_reduced_arithmetic_proof :
   simp only [gp044Reduced_mean, gp044Reduced_second, gp044Reduced_value]
   exact AronowAudit.P045.ExposureVariance.clique_fixed_reduced_arithmetic
 
+example : type_of% @AronowAudit.P044.clique_fixed_reduced_arithmetic := clique_fixed_reduced_arithmetic_proof
+
 private lemma gp044Counts_marginal (i : Fin 12) (a : Exposure) :
     exposureCount cliqueF i a = cliqueFullCount a := by
   rw [gp044Counts_exposureTransport,
@@ -199,11 +201,15 @@ theorem clique_fixed_table_counterexamples_proof :
   have h := clique_fixed_reduced_arithmetic_proof
   exact ⟨h.1, h.2.1, h.2.2.1, h.2.2.2.1, h.2.2.2.2.1, h.2.2.2.2.2.1⟩
 
+example : type_of% @AronowAudit.P044.clique_fixed_table_counterexamples := clique_fixed_table_counterexamples_proof
+
 theorem clique_full_counts_proof :
     (∀ i a, exposureCount cliqueF i a = cliqueFullCount a) ∧
     (∀ i j a b, (a = Exposure.d01 ∨ a = .d00) → (b = Exposure.d01 ∨ b = .d00) →
       jointCount cliqueF i j a b = cliqueFullJoint i j a b) := by
   exact ⟨gp044Counts_marginal, gp044Counts_joint⟩
+
+example : type_of% @AronowAudit.P044.clique_full_counts := clique_full_counts_proof
 
 end
 end AronowAudit.P044.Wave1

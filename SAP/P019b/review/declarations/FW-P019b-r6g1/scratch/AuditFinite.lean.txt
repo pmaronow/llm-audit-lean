@@ -1,0 +1,83 @@
+import SAP.P019b.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 2000
+set_option maxHeartbeats 800000
+open scoped BigOperators
+open SAP.P019b
+noncomputable section
+open Classical
+
+-- Verify the fixed T13 witness without invoking any Challenge theorem.
+theorem audit_cnn_standing : cnnWitness.standing := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro ω hω hy
+    fin_cases ω <;> norm_num [cnnWitness, fairBit] at *
+  · intro ω hω
+    fin_cases ω <;> norm_num [cnnWitness, fairBit, bitVal] at *
+  · intro f z
+    cases z <;>
+      norm_num [cnnWitness, cnnLaw, fairBit, bitVal, FiniteLaw.mean,
+        FiniteLaw.prob, Fin.sum_univ_succ] <;> ring
+  · refine ⟨?_, ?_, ?_⟩
+    · intro z y
+      cases z <;> cases y <;>
+        norm_num [cnnWitness, cnnLaw, fairBit, bitVal, Study.cell,
+          FiniteLaw.cv, FiniteLaw.ce, FiniteLaw.prob, FiniteLaw.mean,
+          Fin.sum_univ_succ]
+    · norm_num [cnnWitness, cnnLaw, fairBit, bitVal, FiniteLaw.variance,
+        FiniteLaw.mean, Fin.sum_univ_succ]
+    · norm_num [cnnWitness, cnnLaw, fairBit, bitVal, FiniteLaw.variance,
+        FiniteLaw.mean, Fin.sum_univ_succ]
+
+-- The two worlds really have different targets and different truthful-answer classes.
+example :
+    cnnLaw.prob (fun ω => cnnWatching false ω = true) = 1/4 ∧
+    cnnLaw.prob (fun ω => cnnWatching true ω = true) = 1/2 ∧
+    cnnLaw.prob (fun ω => cnnWitness.Y ω ≠ cnnWatching false ω) = 0 ∧
+    cnnLaw.prob (fun ω => cnnWitness.Y ω ≠ cnnWatching true ω) = 1/4 := by
+  norm_num [cnnWatching, cnnWitness, cnnLaw, FiniteLaw.prob, FiniteLaw.mean,
+    Fin.sum_univ_succ]
+
+-- One explicit instance of every T14 antecedent; it has positive reader-only mass.
+example :
+    (∀ ω, cnnWitness.Y ω = cnnWatching false ω) ∧
+    (∀ ω, cnnWitness.X ω = (cnnReading false ω || cnnWatching false ω)) ∧
+    cnnWitness.noLiarsDesign ∧
+    tripleIndependent cnnLaw cnnWitness.W (cnnReading false) (cnnWatching false) cnnWitness.Z ∧
+    0 < cnnLaw.prob (fun ω => cnnWitness.Z ω = true) ∧
+    cnnLaw.prob (fun ω => cnnWitness.Z ω = true) < 1 ∧
+    0 < cnnLaw.prob (fun ω => cnnWatching false ω = true) ∧
+    cnnLaw.prob (fun ω => cnnWatching false ω = true) < 1 ∧
+    cnnLaw.prob (fun ω => cnnReading false ω = true ∧ cnnWatching false ω = false) = 1/4 := by
+  refine ⟨?_, ?_, audit_cnn_standing.2.1, ?_, ?_⟩
+  · intro ω
+    fin_cases ω <;> norm_num [cnnWitness, cnnWatching]
+  · intro ω
+    fin_cases ω <;> norm_num [cnnWitness, cnnWatching, cnnReading]
+  · intro f z
+    cases z <;>
+      norm_num [cnnWitness, cnnWatching, cnnReading, cnnLaw, fairBit,
+        FiniteLaw.mean, FiniteLaw.prob, Fin.sum_univ_succ] <;> ring
+  · norm_num [cnnWitness, cnnWatching, cnnReading, cnnLaw, fairBit,
+      FiniteLaw.mean, FiniteLaw.prob, Fin.sum_univ_succ]
+
+-- T15 includes both a null and a genuine alternative with all domain guards satisfied.
+example : (0 < (50 : ℝ)) ∧ 0 ≤ (1/2 : ℝ) ∧ (1/2 : ℝ) ≤ 1 ∧
+    0 < planningS (1/2) (1/2) ∧ 0 < (1/20 : ℝ) ∧ (1/20 : ℝ) < 1 := by
+  norm_num [planningS]
+
+example : (0 < (50 : ℝ)) ∧ 0 ≤ (1/3 : ℝ) ∧ (1/3 : ℝ) ≤ 1 ∧
+    0 ≤ (2/3 : ℝ) ∧ (2/3 : ℝ) ≤ 1 ∧ 0 < planningS (1/3) (2/3) ∧
+    0 < (1/20 : ℝ) ∧ (1/20 : ℝ) < 1 ∧ (1/3 : ℝ) ≠ 2/3 := by
+  norm_num [planningS]
+
+-- T16's mixture interval and raw finite expectations give nonconstant contrasts.
+example : 0 ≤ (1/5 : ℝ) ∧ (1/5 : ℝ) ≤ 1 ∧
+    ceilingBeta printedAffected 0 = 1 ∧
+    ceilingBeta printedAffected (1/5) = 3109/3125 ∧
+    ceilingBeta printedAffected 1 = 609/625 := by
+  norm_num [ceilingBeta, printedAffected, unaffected, ceilingBaseline,
+    FiniteLaw.mean, Fin.sum_univ_succ]
+
+end

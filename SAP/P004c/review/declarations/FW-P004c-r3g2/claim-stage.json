@@ -1,0 +1,20 @@
+[
+  {
+    "theorem": "SAP.P004c.T41",
+    "target_id": "P004-T41",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part5.lean:57-68 states the companion HT variance bound under C1-C4, and separately the AME-centred, actual-variance-standardized CLT under an eventual strictly positive lower bound for N times variance. The design, forced-coordinate-equivalent marginals, shared-source interference, radiuswise-eventual C3/C4 thresholds, and Gaussian law match the canonical statement and S1-S5. Eventual WellDefined makes the paper's suitable spatial averages explicit. Arbitrary metric spaces and infimum distances generalize the setting without losing any paper case. No finite proof lemma is being treated as an additional required conclusion. The compiled scratch/Check.lean constructs every premise, including nondegeneracy; no target theorem is used."
+  },
+  {
+    "theorem": "SAP.P004c.T42",
+    "target_id": "P004-T42",
+    "my_reading_vs_claim": "whole",
+    "reason": "Defs/Part5.lean:70-78 states the C1-C4 Hajek CLT with exactly the canonical AME centring and AVar equal to the variance of the corrected linearization. Defs/Part1.lean:65-72 has the control denominator N(1-p), and its constant-arm-fit term equals the AME for positive N. Empty arm means are zero as disclosed in the Challenge docstring and the canonical supplement convention; the exceptional assignments have vanishing probability. Eventual genuine averaging and the positive N-times-AVar lower bound exclude relevant junk denominators. The complete hypotheses, including nondegeneracy, are instantiated in compiled scratch/Check.lean without using the target."
+  },
+  {
+    "theorem": "SAP.P004c.T44",
+    "target_id": "P004-T44",
+    "my_reading_vs_claim": "different",
+    "reason": "All four asserted results are present in Defs/Part5.lean:80-98, with genuine conditional expectations, uniform L2-NED of size -4 on the assignment field, the corrected Hajek linearization, and the canonical metric-node premise. However, Defs/Part3.lean:64-66 replaces the canonical statement's printed radiuswise-eventual Cb*s^2 condition with Cb*(1+s^2), with one eventual threshold for all radii. These are explicitly different premises. The printed condition at s=0 is impossible for positive population sizes because balls contain their centre; the note in claims.json cannot amend that assertion. The new spacing condition is nonvacuous, as the complete compiled witness in scratch/Check.lean shows, even with positive linearization variance. On the meaningful positive-small-radius reading, the change in quantifier order is a substantive additional uniformity assumption. The Challenge docstring openly describes the replacement and does not label the canonical assertion refuted. Its accuracy against the architect's restriction remains to be checked in step 3."
+  }
+]

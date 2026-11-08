@@ -1,0 +1,11 @@
+import SAP.P010.Challenge
+open SAP.P010 MeasureTheory ProbabilityTheory
+set_option pp.universes true
+#check @SAP.P010.T12
+#print SAP.P010.T12WholeStatement
+#check @SAP.P010.T14
+#print SAP.P010.tailCoupling
+#check (inferInstance : MeasurableSpace (Population 2 0))
+example : (0:ℝ) = 0 := rfl
+#check @ProbabilityTheory.indepFun_const_right
+#check @MeasureTheory.NoAtoms

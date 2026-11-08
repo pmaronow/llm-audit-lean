@@ -1,0 +1,70 @@
+import SAP.P008b.Defs.WholeW1
+
+open scoped BigOperators
+open MeasureTheory SAP.P008b
+
+set_option maxHeartbeats 4000000
+set_option maxRecDepth 4000
+
+noncomputable section
+
+def auditLine (r : ℝ) : Plane := WithLp.toLp 2 ![r, 0]
+def auditProbe (i : Fin 4) (j : Fin 5) : Plane :=
+  auditLine (10 * (i.val : ℝ) + wholeTestRadius j)
+
+def auditPlaneModel : SpatialModel 4 where
+  field := Set.univ
+  node i := auditLine (10 * (i.val : ℝ))
+  node_mem _ := Set.mem_univ _
+  ζ := ∑ i : Fin 4, ∑ j : Fin 5, Measure.dirac (auditProbe i j)
+  Y x _ := if x 0 < 5 then 0 else if x 0 < 15 then 1 else if x 0 < 25 then 2 else 3
+
+lemma auditLine_dist (x y : ℝ) : dist (auditLine x) (auditLine y) = |x - y| := by
+  rw [EuclideanSpace.dist_eq]
+  simp [auditLine, Fin.sum_univ_two, Real.dist_eq, Real.sqrt_sq_eq_abs]
+
+lemma auditProbe_circle (i k : Fin 4) (j l : Fin 5) :
+    auditProbe k l ∈ auditPlaneModel.circle i (wholeTestRadius j) ↔ k = i ∧ l = j := by
+  change (True ∧ dist (auditLine (10 * (i.val : ℝ)))
+    (auditLine (10 * (k.val : ℝ) + wholeTestRadius l)) = wholeTestRadius j) ↔ _
+  rw [auditLine_dist]
+  fin_cases i <;> fin_cases k <;> fin_cases j <;> fin_cases l <;>
+    norm_num [wholeTestRadius]
+
+lemma auditCircleMeasure (i : Fin 4) (j : Fin 5) :
+    auditPlaneModel.circleMeasure i (wholeTestRadius j) = Measure.dirac (auditProbe i j) := by
+  classical
+  change (Measure.restrictₗ (auditPlaneModel.circle i (wholeTestRadius j)))
+    (∑ k : Fin 4, ∑ l : Fin 5, Measure.dirac (auditProbe k l)) = _
+  rw [map_sum]
+  simp_rw [map_sum]
+  change (∑ k : Fin 4, ∑ l : Fin 5, (Measure.dirac (auditProbe k l)).restrict
+    (auditPlaneModel.circle i (wholeTestRadius j))) = _
+  simp_rw [restrict_dirac, auditProbe_circle, ite_and]
+  simp
+
+lemma auditOutcome (i : Fin 4) (j : Fin 5) (z : Assignment 4) :
+    auditPlaneModel.Y (auditProbe i j) z = (i.val : ℝ) := by
+  fin_cases i <;> fin_cases j <;>
+    norm_num [auditPlaneModel, auditProbe, auditLine, wholeTestRadius]
+
+example : auditPlaneModel.sharpNull := by
+  intro x hx z
+  rfl
+
+example : ∀ (i : Fin 4) (j : Fin 5), auditPlaneModel.validCircle i (wholeTestRadius j) := by
+  intro i j
+  simp only [SpatialModel.validCircle, SpatialModel.circleMass, auditCircleMeasure]
+  refine ⟨by norm_num, by simp, ?_⟩
+  intro z
+  exact integrable_dirac (by simp)
+
+lemma auditM (i : Fin 4) (j : Fin 5) (z : Assignment 4) :
+    auditPlaneModel.M i (wholeTestRadius j) z = (i.val : ℝ) := by
+  simp [SpatialModel.M, SpatialModel.average, SpatialModel.circleMass,
+    auditCircleMeasure, integral_dirac, auditOutcome]
+
+-- The measure is finite (mass 20), hence sigma-finite; no integral default occurs.
+example : auditPlaneModel.ζ Set.univ = 20 := by
+  norm_num [auditPlaneModel, Measure.finsetSum_apply]
+

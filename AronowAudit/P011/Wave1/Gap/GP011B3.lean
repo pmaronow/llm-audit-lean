@@ -1,7 +1,11 @@
 import AronowAudit.P011.P011_OracleCompletion
 import AronowAudit.P011.P011_SpectralCompletion
 
-
+/-!
+Draft for dd-GP011B3. No Lean process was run by the drafter.
+The three frozen contracts are proved in order. All shared helpers are local to this
+module's namespace and use only proved completion results, never the held contracts.
+-/
 namespace AronowAudit.P011.Wave1
 
 open MeasureTheory ProbabilityTheory Filter Finset
@@ -390,6 +394,9 @@ theorem misspecified_residual_limit_proof (F : Family) (c1 c2 c3 c4 : ℝ)
         (fittedResidual (F.model k) (D k) (γhat k) y) - (scaledTrue F k + b k) := by ring
   simpa only [probability, he] using hh
 
+example : type_of% @AronowAudit.P011.misspecified_residual_limit :=
+  misspecified_residual_limit_proof
+
 /-! Correct specification eliminates the moving mean quadratic. -/
 lemma rps_weighted_mean {n p : ℕ} (m : Model n)
     (D : Matrix (Fin n) (Fin p) ℝ) (γ : Fin p → ℝ)
@@ -478,6 +485,9 @@ theorem residual_prediction_stability_proof (F : Family) (c1 c2 c3 c4 : ℝ)
   have ho := rps_oracle F c1 c2 c3 c4 h p D γ γhat hmeas hmean hz herr
   exact ⟨ho, rps_maximum_conservative F
     (fun k y => fittedResidual (F.model k) (D k) (γhat k) y) A hv hm ho⟩
+
+example : type_of% @AronowAudit.P011.residual_prediction_stability :=
+  residual_prediction_stability_proof
 
 /-! Norm and probability-tail helpers for root-n estimation. -/
 lemma rrn_probability_mono_ae {n : ℕ} (m : Model n)
@@ -731,6 +741,8 @@ theorem residual_root_n_proof (F : Family) (c1 c2 c3 c4 : ℝ) (h : Scaling F c1
     hmeas hmean ⟨2*c1, hz⟩ herr A hv hm
   exact ⟨(fun k i => (hmom k).1 i), (fun k i j => (hmom k).2 i j),
     hmax, hnorm, htrue, hlast.1, hlast.2⟩
+
+example : type_of% @AronowAudit.P011.residual_root_n := residual_root_n_proof
 
 end
 end AronowAudit.P011.Wave1

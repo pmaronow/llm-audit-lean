@@ -1,0 +1,80 @@
+import SAP.P044.Defs
+
+open MeasureTheory ProbabilityTheory
+open scoped NNReal ENNReal
+
+namespace T13Audit
+
+def triangle : SAP.P044.Adjacency 3 := fun i j => decide (i ≠ j)
+
+-- All T13 hypotheses, with symmetry and absence of isolates as extra checks.
+example :
+    (∀ i, triangle i i = false) ∧ 0 < (3 : ℕ) ∧
+    (∀ i j, triangle i j = triangle j i) ∧
+    (∀ i, SAP.P044.degree triangle i = 2 ∧
+      SAP.P044.twoWalkDegree triangle i = 2 ∧
+      SAP.P044.degreeScale triangle i = 8) := by
+  decide
+
+example (a : ℝ) : Measurable (fun x : ℝ × ℝ => SAP.P044.baseline a x.1 x.2) := by
+  unfold SAP.P044.baseline
+  fun_prop
+
+example : Measurable (fun g : ℝ => |g|) := measurable_id.abs
+
+example : IsProbabilityMeasure SAP.P044.normalPair := by
+  unfold SAP.P044.normalPair
+  infer_instance
+
+example : SigmaFinite SAP.P044.normalPair := by
+  unfold SAP.P044.normalPair
+  infer_instance
+
+lemma gaussian_interval_positive (m : ℝ) (v : ℝ≥0) (hv : v ≠ 0)
+    (l u : ℝ) (hlu : l < u) :
+    0 < gaussianReal m v (Set.Ioo l u) := by
+  have hvol : 0 < (volume : Measure ℝ) (Set.Ioo l u) :=
+    (MeasureTheory.Measure.measure_Ioo_pos volume).2 hlu
+  apply bot_lt_iff_ne_bot.mpr
+  intro hz
+  exact (ne_of_gt hvol) ((gaussianReal_absolutelyContinuous' m hv) hz)
+
+-- A positive-probability rectangle, rather than a single probability-zero draw.
+lemma rectangle_positive :
+    0 < SAP.P044.normalPair
+      (Set.Ioo (-1/32 : ℝ) (1/32) ×ˢ Set.Ioo (-1 : ℝ) (-1/2)) := by
+  unfold SAP.P044.normalPair
+  rw [Measure.prod_prod]
+  exact ENNReal.mul_pos
+    (ne_of_gt (gaussian_interval_positive 0 1 (by norm_num)
+      (-1/32) (1/32) (by norm_num)))
+    (ne_of_gt (gaussian_interval_positive 1 (1/16) (by norm_num)
+      (-1) (-1/2) (by norm_num)))
+
+lemma negative_mass : 0 < SAP.P044.baselineLaw 8 (Set.Iio 0) := by
+  unfold SAP.P044.baselineLaw
+  rw [Measure.map_apply (by unfold SAP.P044.baseline; fun_prop) measurableSet_Iio]
+  refine lt_of_lt_of_le rectangle_positive (measure_mono ?_)
+  intro x hx
+  rcases hx with ⟨⟨hgl, hgu⟩, ⟨hel, heu⟩⟩
+  have habs : |x.1| < (1/32 : ℝ) := abs_lt.mpr ⟨by linarith, hgu⟩
+  change (8 : ℝ) * |x.1| + x.2 < 0
+  linarith
+
+lemma half_normal_no_negative_mass : SAP.P044.halfNormalLaw (Set.Iio 0) = 0 := by
+  unfold SAP.P044.halfNormalLaw
+  rw [Measure.map_apply (show Measurable (fun g : ℝ => |g|) from measurable_id.abs)
+    measurableSet_Iio]
+  have hpre : (fun g : ℝ => |g|) ⁻¹' Set.Iio (0 : ℝ) = ∅ := by
+    ext g
+    simp [not_lt_of_ge (abs_nonneg g)]
+  rw [hpre, measure_empty]
+
+-- Genuine distributional disagreement, proved without T13 or any Challenge theorem.
+example : SAP.P044.baselineLaw 8 ≠ SAP.P044.halfNormalLaw := by
+  intro h
+  have hp := negative_mass
+  rw [h, half_normal_no_negative_mass] at hp
+  exact lt_irrefl _ hp
+
+end T13Audit

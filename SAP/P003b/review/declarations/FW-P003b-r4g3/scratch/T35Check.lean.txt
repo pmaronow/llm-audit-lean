@@ -1,0 +1,59 @@
+import SAP.P003b.Challenge
+open SAP.P003b
+namespace LiteralCheck
+set_option maxRecDepth 100000
+set_option maxHeartbeats 2000000
+
+lemma zero_data_bases (ij : Fin 3 × Fin 3) (v : Counts)
+    (h : w1LiteralBase ⟨0,1,0,1⟩
+      ((candidateNumerators ⟨0,1,0,1⟩).reverse[ij.1.val]!) = some (ij.2.val,v)) :
+    v = ⟨0,1,0,1⟩ ∨ v = ⟨0,0,0,2⟩ ∨ v = ⟨0,0,1,1⟩ := by
+  rcases ij with ⟨i,j⟩
+  fin_cases i
+  · change w1LiteralBase ⟨0,1,0,1⟩ 1 = some (j.val,v) at h
+    rw [show w1LiteralBase ⟨0,1,0,1⟩ 1 = some (1,⟨0,1,0,1⟩) by native_decide] at h
+    exact Or.inl (congrArg Prod.snd (Option.some.inj h)).symm
+  · change w1LiteralBase ⟨0,1,0,1⟩ 0 = some (j.val,v) at h
+    rw [show w1LiteralBase ⟨0,1,0,1⟩ 0 = some (0,⟨0,0,0,2⟩) by native_decide] at h
+    exact Or.inr (Or.inl (congrArg Prod.snd (Option.some.inj h)).symm)
+  · change w1LiteralBase ⟨0,1,0,1⟩ (-1) = some (j.val,v) at h
+    rw [show w1LiteralBase ⟨0,1,0,1⟩ (-1) = some (0,⟨0,0,1,1⟩) by native_decide] at h
+    exact Or.inr (Or.inr (congrArg Prod.snd (Option.some.inj h)).symm)
+
+example (K : ℕ)
+    (initial : (Fin 3 × Fin 3) → Fin K → Assignment 2 1)
+    (seeds : (Fin 3 × Fin 3) → Fin 2 → Fin K → (Fin 2 × Fin 2)) :
+    w1T35Theta w1T35Population ∉
+      w1LiteralSet (1/4) w1T35Theta (fun _ _ => 0) ⟨0,1,0,1⟩ initial seeds := by
+  rintro ⟨ij,v,hv,k,hkn,hka,hkd,hposs,ht,hr⟩
+  rcases zero_data_bases ij v hv with rfl | rfl | rfl
+  all_goals
+    have hk : k=0 := by simpa using hka
+    subst k
+    norm_num [reuseVector, w1T35Theta, w1T35Population] at ht
+
+example : (Finset.univ.filter (fun z : Assignment 2 1 =>
+    canonicalObserved w1T35Population z.val = ⟨0,1,0,1⟩)).card = 1 := by decide
+example : (Finset.univ.filter (fun z : Assignment 2 1 =>
+    canonicalObserved w1T35Population z.val = ⟨1,0,1,0⟩)).card = 1 := by decide
+example : ∀ z : Assignment 2 1,
+    canonicalObserved w1T35Population z.val = ⟨0,1,0,1⟩ ∨
+    canonicalObserved w1T35Population z.val = ⟨1,0,1,0⟩ := by decide
+
+example (K : ℕ)
+    (initial : (Fin 3 × Fin 3) → Fin K → Assignment 2 1)
+    (seeds : (Fin 3 × Fin 3) → Fin 2 → Fin K → (Fin 2 × Fin 2)) :
+    w1T35Theta w1T35Population ∈
+      w1LiteralSet (1/4) w1T35Theta (fun _ _ => 0) ⟨1,0,1,0⟩ initial seeds := by
+  refine ⟨(1,1),w1T35Population,?_,0,by decide,by decide,by decide,?_,?_,?_⟩
+  · native_decide
+  · native_decide
+  · rfl
+  · have hp : (0 : ℝ) < (K : ℝ)+1 := by positivity
+    have hr (v : Counts) (samples : Fin K → Counts) :
+        rankValue (fun _ _ => 0) ⟨1,0,1,0⟩ v samples = 1 := by
+      simp [rankValue, add_comm, ne_of_gt hp]
+    rw [hr]
+    norm_num
+
+end LiteralCheck

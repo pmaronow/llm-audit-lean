@@ -196,9 +196,152 @@ lemma T6_actual_welfare (E : Experiment Ω C n) (hS : Standing E)
     _ = ∫ ω, π (E.X i ω) * E.τ (E.X i ω) ∂E.law π := integral_congr_ae hc
     _ = E.meanWelfare π := hpop.2
 
+/-- The actual reward summand is integrable and has the asserted conditional mean.
+This retains the conditional identity needed when a later theorem introduces weights. -/
+lemma T6_actual_treated_summand (E : Experiment Ω C n) (hS : Standing E)
+    {π a : C → ℝ} (hπ : Admissible π) (ha : Measurable a) (hai : Integrable a E.PX)
+    (hU : ∀ i, (E.law π)[(fun ω => bit (E.T π i ω) *
+      (E.μhat π ω (E.X i ω) - a (E.X i ω))) | E.covariateSigma i]
+      =ᵐ[E.law π] (fun _ => (0 : ℝ))) (i : Fin n) :
+    Integrable (fun ω => (E.observed π ω i - E.μhat π ω (E.X i ω)) *
+      bit (E.T π i ω)) (E.law π) ∧
+    (E.law π)[(fun ω => (E.observed π ω i - E.μhat π ω (E.X i ω)) *
+      bit (E.T π i ω)) | E.covariateSigma i]
+      =ᵐ[E.law π] (fun ω => π (E.X i ω) * (E.μ1 (E.X i ω) - a (E.X i ω))) := by
+  have hLaw : IsProbabilityMeasure (E.law π) := hS.law_probability π hπ
+  obtain ⟨hX, hY0, hY1, hT⟩ := hS.measurable_units π hπ i
+  have hb : Measurable (fun ω => bit (E.T π i ω)) :=
+    (measurable_of_countable bit).comp hT
+  have hbnd := fun ω => T6_bit_norm (E.T π i ω)
+  obtain ⟨hiY0, hiY1, hiH⟩ := hS.integrable_units π hπ i
+  have hia := (T6_law_transport E hS hπ i ha hai).1
+  have hiba := T6_mul_integrable hb hbnd hia
+  have hibY := T6_mul_integrable hb hbnd hiY1
+  have hir := T6_mul_integrable hb hbnd (hiH.sub hia)
+  have hib : Integrable (fun ω => bit (E.T π i ω)) (E.law π) :=
+    (integrable_const (1 : ℝ)).mono' hb.aestronglyMeasurable (Eventually.of_forall hbnd)
+  have haG : Measurable[E.covariateSigma i] (fun ω => a (E.X i ω)) :=
+    ha.comp (comap_measurable (E.X i))
+  have hca : (E.law π)[(fun ω => bit (E.T π i ω) * a (E.X i ω)) |
+      E.covariateSigma i] =ᵐ[E.law π] (fun ω => π (E.X i ω) * a (E.X i ω)) :=
+    (condExp_mul_of_stronglyMeasurable_right haG.stronglyMeasurable hiba hib).trans (by
+      filter_upwards [hS.bernoulli π hπ i] with ω hω
+      exact congrArg (· * a (E.X i ω)) hω)
+  have hsutva : (fun ω => (E.observed π ω i - E.μhat π ω (E.X i ω)) *
+      bit (E.T π i ω)) = (fun ω => bit (E.T π i ω) *
+        (E.Y1 i ω - E.μhat π ω (E.X i ω))) := by
+    ext ω
+    cases ht : E.T π i ω <;> simp [Experiment.observed, ht, bit]
+  rw [hsutva]
+  refine ⟨T6_mul_integrable hb hbnd (hiY1.sub hiH), ?_⟩
+  have hsplit : (fun ω => bit (E.T π i ω) * (E.Y1 i ω - E.μhat π ω (E.X i ω))) =
+      (fun ω => bit (E.T π i ω) * E.Y1 i ω - bit (E.T π i ω) * a (E.X i ω)) -
+        (fun ω => bit (E.T π i ω) * (E.μhat π ω (E.X i ω) - a (E.X i ω))) := by
+    ext ω
+    simp only [Pi.sub_apply]
+    ring
+  rw [hsplit]
+  refine (condExp_sub (hibY.sub hiba) hir (E.covariateSigma i)).trans ?_
+  filter_upwards [condExp_sub hibY hiba (E.covariateSigma i),
+    (T6_unit_outcome_moments E hS hπ i).2, hca, hU i] with ω hsub hY ha' hr
+  simp only [Pi.sub_apply, hsub, hY, ha', hr]
+  ring
+
+lemma T6_actual_treated_score (E : Experiment Ω C n) (hS : Standing E)
+    {π a : C → ℝ} (hπ : Admissible π) (ha : Measurable a) (hai : Integrable a E.PX)
+    (hU : ∀ i, (E.law π)[(fun ω => bit (E.T π i ω) *
+      (E.μhat π ω (E.X i ω) - a (E.X i ω))) | E.covariateSigma i]
+      =ᵐ[E.law π] (fun _ => (0 : ℝ))) :
+    E.expectedTT π = (n : ℝ) * ∫ c, π c * (E.μ1 c - a c) ∂E.PX := by
+  have hLaw : IsProbabilityMeasure (E.law π) := hS.law_probability π hπ
+  have hs := T6_actual_treated_summand E hS hπ ha hai hU
+  have hi (i : Fin n) :
+      (∫ ω, (E.observed π ω i - E.μhat π ω (E.X i ω)) * bit (E.T π i ω) ∂E.law π) =
+        ∫ c, π c * (E.μ1 c - a c) ∂E.PX := by
+    have hG : E.covariateSigma i ≤ ‹MeasurableSpace Ω› :=
+      (hS.measurable_units π hπ i).1.comap_le
+    have hTrimFinite : IsFiniteMeasure ((E.law π).trim hG) := isFiniteMeasure_trim hG
+    have hTrimSigma : SigmaFinite ((E.law π).trim hG) := inferInstance
+    calc
+      _ = ∫ ω, (E.law π)[(fun η => (E.observed π η i - E.μhat π η (E.X i η)) *
+          bit (E.T π i η)) | E.covariateSigma i] ω ∂E.law π :=
+        (integral_condExp (μ := E.law π) (m := E.covariateSigma i)
+          (hμm := hTrimSigma) hG).symm
+      _ = ∫ ω, π (E.X i ω) * (E.μ1 (E.X i ω) - a (E.X i ω)) ∂E.law π :=
+        integral_congr_ae (hs i).2
+      _ = _ := (T6_law_transport E hS hπ i (hπ.1.mul (hS.means_measurable.2.sub ha))
+        (T6_mul_integrable hπ.1 (T6_admissible_norm hπ)
+          (hS.means_integrable.2.sub hai))).2
+  change (∫ ω, ∑ i : Fin n, (E.observed π ω i - E.μhat π ω (E.X i ω)) *
+    bit (E.T π i ω) * 1 ∂E.law π) = _
+  simp only [mul_one]
+  rw [integral_finsetSum _ (fun i _ => (hs i).1)]
+  simp_rw [hi]
+  simp
+
+lemma T6_positive_rule_integral_maximum {P : Measure C} {t : C → ℝ}
+    (ht : Measurable t) (hti : Integrable t P) :
+    Admissible (positiveRule t) ∧ ∀ π : C → ℝ, Admissible π →
+      (∫ c, π c * t c ∂P) ≤ ∫ c, positiveRule t c * t c ∂P := by
+  have hp : Admissible (positiveRule t) := by
+    refine ⟨Measurable.ite (measurableSet_lt measurable_const ht)
+      measurable_const measurable_const, ?_⟩
+    intro c
+    by_cases h : 0 < t c <;> simp [positiveRule, h]
+  refine ⟨hp, fun π hπ => integral_mono
+    (T6_mul_integrable hπ.1 (T6_admissible_norm hπ) hti)
+    (T6_mul_integrable hp.1 (T6_admissible_norm hp) hti) ?_⟩
+  intro c
+  by_cases h : 0 < t c
+  · simp only [positiveRule, if_pos h, one_mul]
+    exact mul_le_of_le_one_left h.le (hπ.2 c).2
+  · simp only [positiveRule, if_neg h, zero_mul]
+    exact mul_nonpos_of_nonneg_of_nonpos (hπ.2 c).1 (le_of_not_gt h)
 
 end ExperimentMoments
 
+theorem T6_corrected_TT_proof {Ω C : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace C] {n : ℕ} (E : Experiment Ω C n)
+    (hS : Standing E) (PiSet : Set (C → ℝ)) (hPiSet : ∀ π ∈ PiSet, Admissible π)
+    (hU : TreatedUnbiased E E.μ0 PiSet) :
+    (∀ π ∈ PiSet, E.expectedTT π = (n : ℝ)*E.meanWelfare π ∧
+      E.V π = E.meanWelfare π) ∧
+    (∀ π, IsBest PiSet E.expectedTT π ↔ IsBest PiSet E.V π) ∧
+    (∀ π, IsBest PiSet E.expectedTT π → regret PiSet E.V π = 0) ∧
+    (PiSet = {π | Admissible π} → IsBest PiSet E.expectedTT (positiveRule E.τ)) := by
+  have hid (π : C → ℝ) (hπ : π ∈ PiSet) :
+      E.expectedTT π = (n : ℝ) * E.meanWelfare π ∧ E.V π = E.meanWelfare π := by
+    refine ⟨?_, T6_actual_welfare E hS (hPiSet π hπ)⟩
+    exact T6_actual_treated_score E hS (hPiSet π hπ)
+      hS.means_measurable.1 hS.means_integrable.1 (hU π hπ)
+  have hn : 0 < (n : ℝ) := Nat.cast_pos.mpr E.hn
+  have hscore (π : C → ℝ) (hπ : π ∈ PiSet) : E.expectedTT π = (n : ℝ) * E.V π := by
+    rw [(hid π hπ).1, (hid π hπ).2]
+  have hbest (π : C → ℝ) : IsBest PiSet E.expectedTT π ↔ IsBest PiSet E.V π := by
+    constructor
+    · rintro ⟨hπ, hmax⟩
+      refine ⟨hπ, fun q hq => ?_⟩
+      have h := hmax q hq
+      rw [hscore q hq, hscore π hπ] at h
+      exact (mul_le_mul_iff_right₀ hn).mp h
+    · rintro ⟨hπ, hmax⟩
+      refine ⟨hπ, fun q hq => ?_⟩
+      rw [hscore q hq, hscore π hπ]
+      exact (mul_le_mul_iff_right₀ hn).mpr (hmax q hq)
+  refine ⟨hid, hbest, ?_, ?_⟩
+  · intro π hb
+    rw [regret, bestValue_eq ((hbest π).mp hb), sub_self]
+  · intro hAll
+    obtain ⟨hp, hmax⟩ := T6_positive_rule_integral_maximum (P := E.PX) (t := E.τ)
+      (hS.means_measurable.2.sub hS.means_measurable.1)
+      (hS.means_integrable.2.sub hS.means_integrable.1)
+    have hmem : positiveRule E.τ ∈ PiSet := by rw [hAll]; exact hp
+    apply (hbest _).mpr
+    refine ⟨hmem, fun π hπ => ?_⟩
+    rw [(hid π hπ).2, (hid _ hmem).2]
+    exact hmax π (hPiSet π hπ)
+
+example : type_of% @AronowAudit.P006.T6_corrected_TT := T6_corrected_TT_proof
 
 end
 

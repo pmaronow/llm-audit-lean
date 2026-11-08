@@ -1,0 +1,301 @@
+import SAP.P006a.Challenge
+
+open MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators ENNReal
+
+namespace Review
+noncomputable section
+open SAP.P006a
+
+def propensity {C : Type} (c : C) (π : C → ℝ) : unitInterval :=
+  if h : 0 ≤ π c ∧ π c ≤ 1 then ⟨π c, h⟩ else 0
+
+lemma propensity_eq {C : Type} [MeasurableSpace C] (c : C) (π : C → ℝ)
+    (hπ : Admissible π) : (propensity c π : ℝ) = π c := by
+  simp [propensity, hπ.2 c]
+
+/-- One genuine Bernoulli treatment draw, constant positive treatment effect,
+    and a deterministic oracle baseline. The law is defined even off the
+    admissible-policy domain, where it is not used. -/
+def experiment {C : Type} [MeasurableSpace C] (c : C) : Experiment Bool C 1 where
+  hn := by decide
+  PX := Measure.dirac c
+  μ0 := fun _ => 0
+  μ1 := fun _ => 1
+  law := fun π => bernoulliMeasure true false (propensity c π)
+  X := fun _ _ => c
+  Y0 := fun _ _ => 0
+  Y1 := fun _ _ => 1
+  T := fun _ _ ω => ω
+  μhat := fun _ _ _ => 0
+
+lemma design {C : Type} [MeasurableSpace C] [MeasurableSingletonClass C]
+    (c : C) (π : C → ℝ) (hπ : Admissible π) : PolicyDesign (experiment c) π := by
+  refine {
+    px_probability := by dsimp [experiment]; infer_instance
+    means_measurable := ⟨measurable_const, measurable_const⟩
+    means_integrable := ⟨by simp [experiment], by simp [experiment]⟩
+    law_probability := by dsimp [experiment]; infer_instance
+    measurable_units := fun _ => ⟨measurable_const, measurable_const,
+      measurable_const, measurable_id⟩
+    integrable_units := fun _ => ⟨by apply integrable_bernoulliMeasure,
+      by apply integrable_bernoulliMeasure⟩
+    covariate_law := ?_
+    conditional_means := ?_
+    bernoulli := ?_
+    ignorability := ?_ }
+  · intro i
+    refine ⟨measurable_const.aemeasurable, measurable_id.aemeasurable, ?_⟩
+    simp [experiment, Measure.map_const]
+  · intro i
+    simp [experiment, Experiment.covariateSigma, condExp_const]
+  · intro i
+    apply Filter.Eventually.of_forall
+    intro ω
+    simp [experiment, Experiment.covariateSigma, condExp_bot,
+      integral_bernoulliMeasure, bit, propensity_eq c π hπ]
+  · intro i B hB
+    apply Filter.Eventually.of_forall
+    intro ω
+    simp [experiment, Experiment.covariateSigma, condExp_bot,
+      integral_bernoulliMeasure, bit, propensity_eq c π hπ]
+
+lemma standing {C : Type} [MeasurableSpace C] [MeasurableSingletonClass C]
+    (c : C) : Standing (experiment c) := by
+  refine {
+    px_probability := by dsimp [experiment]; infer_instance
+    means_measurable := ⟨measurable_const, measurable_const⟩
+    means_integrable := ⟨by simp [experiment], by simp [experiment]⟩
+    law_probability := fun π hπ => (design c π hπ).law_probability
+    measurable_units := fun π hπ => (design c π hπ).measurable_units
+    integrable_units := ?_
+    covariate_law := fun π hπ => (design c π hπ).covariate_law
+    potential_law_fixed := ?_
+    iid_independent := ?_
+    iid_identical := ?_
+    conditional_means := fun π hπ => (design c π hπ).conditional_means
+    bernoulli := fun π hπ => (design c π hπ).bernoulli
+    ignorability := fun π hπ => (design c π hπ).ignorability }
+  · intro π hπ i
+    exact ⟨(design c π hπ).integrable_units i |>.1,
+      (design c π hπ).integrable_units i |>.2, by simp [experiment]⟩
+  · intro π π' hπ hπ' i
+    dsimp [experiment]
+    refine ⟨measurable_const.aemeasurable, measurable_const.aemeasurable, ?_⟩
+    simp [experiment, Measure.map_const]
+  · intro π hπ
+    dsimp [experiment]
+    exact iIndepFun.of_subsingleton
+  · intro π hπ i j
+    have hij : i = j := Subsingleton.elim i j
+    subst j
+    apply IdentDistrib.refl
+    fun_prop
+
+lemma residual_integrable {C : Type} [MeasurableSpace C] (c : C)
+    (π : C → ℝ) (i : Fin 1) :
+    Integrable (fun ω => bit ((experiment c).T π i ω) *
+      ((experiment c).μhat π ω ((experiment c).X i ω) -
+        (experiment c).μ0 ((experiment c).X i ω))) ((experiment c).law π) := by
+  simp [experiment]
+
+lemma treated_unbiased {C : Type} [MeasurableSpace C] (c : C)
+    (F : Set (C → ℝ)) : TreatedUnbiased (experiment c) (experiment c).μ0 F := by
+  intro π hπ i
+  simp [experiment]
+
+lemma pointwise_unbiased {C : Type} [MeasurableSpace C] (c : C)
+    (F : Set (C → ℝ)) : PointwiseUnbiased (experiment c) F := by
+  intro π hπ x
+  simp [experiment]
+
+lemma independent_estimator {C : Type} [MeasurableSpace C] (c : C)
+    (F : Set (C → ℝ)) : IndependentEstimator (experiment c) F := by
+  refine ⟨Unit, inferInstance, (fun _ => ()), (fun _ _ _ => 0),
+    measurable_const, ?_⟩
+  intro π hπ
+  refine ⟨measurable_const, (fun _ _ => rfl), ?_⟩
+  dsimp [experiment]
+  exact indepFun_const_left _ _
+
+-- A nonempty feasible class with both an inferior and a superior policy.
+example : ∃ E : Experiment Bool Unit 1,
+    let F := {π | Admissible π}
+    (fun _ => (0 : ℝ)) ∈ F ∧ (fun _ => (1 : ℝ)) ∈ F ∧
+    (∀ π ∈ F, PolicyDesign E π) ∧
+    (∀ π ∈ F, ∀ i, Integrable (fun ω => bit (E.T π i ω) *
+      (E.μhat π ω (E.X i ω) - E.μ0 (E.X i ω))) (E.law π)) ∧
+    TreatedUnbiased E E.μ0 F ∧ PointwiseUnbiased E F ∧
+    IndependentEstimator E F := by
+  refine ⟨experiment (), ?_⟩
+  exact ⟨⟨measurable_const, fun _ => by norm_num⟩,
+    ⟨measurable_const, fun _ => by norm_num⟩,
+    fun π hπ => design () π hπ,
+    fun π _ i => residual_integrable () π i,
+    treated_unbiased () _, pointwise_unbiased () _, independent_estimator () _⟩
+
+example : (experiment ()).V (fun _ => 1) = 1 ∧
+    (experiment ()).V (fun _ => 0) = 0 := by
+  simp [Experiment.V, Experiment.observed, experiment, propensity,
+    integral_bernoulliMeasure]
+
+-- Every hypothesis of T7, including design and moments for every admissible π.
+example : ∃ (E : Experiment Bool Unit 1) (g : Unit → ℝ),
+    Standing ({E with μhat := fun _ _ _ => 0} : Experiment Bool Unit 1) ∧
+    Measurable g ∧ (∀ x, 0 < g x) ∧
+    (∀ π, Admissible π → ∀ i, Integrable (fun ω => bit (E.T π i ω) *
+      (E.μhat π ω (E.X i ω) - E.μ0 (E.X i ω))) (E.law π)) ∧
+    TreatedUnbiased E E.μ0 {π | Admissible π} ∧
+    Integrable (fun x => g x * E.τ x) E.PX ∧
+    (∀ π, Admissible π → ∀ i, Integrable (fun ω =>
+      (E.observed π ω i - E.μhat π ω (E.X i ω)) * bit (E.T π i ω) *
+        g (E.X i ω)) (E.law π)) := by
+  refine ⟨experiment (), fun _ => 1, ?_, measurable_const,
+    (fun _ => by norm_num), (fun π _ i => residual_integrable () π i),
+    treated_unbiased () _, ?_, ?_⟩
+  · simpa [experiment] using standing ()
+  · simp [experiment, Experiment.τ]
+  · intro π hπ i
+    apply integrable_bernoulliMeasure
+
+lemma marginal_baseline (c : Unit × Unit) (F : Set ((Unit × Unit) → ℝ)) :
+    MarginalBaselineOnW2 (experiment c) (fun _ => 0) F := by
+  simp [MarginalBaselineOnW2, experiment]
+
+lemma public_estimator (c : Unit × Unit) (F : Set ((Unit × Unit) → ℝ)) :
+    PublicEstimatorOnW2 (experiment c) F := by
+  intro π hπ
+  exact ⟨measurable_const, fun _ _ _ _ => rfl⟩
+
+-- All hypotheses of T8's main information bound, with a nonempty feasible set.
+example : ∃ (E : Experiment Bool (Unit × Unit) 1) (b0 : Unit → ℝ)
+    (F : Set ((Unit × Unit) → ℝ)),
+    F.Nonempty ∧ (∀ π ∈ F, Admissible π) ∧
+    (∀ π ∈ F, PolicyDesign E π) ∧ MarginalBaselineOnW2 E b0 F ∧
+    PublicEstimatorOnW2 E F ∧
+    (∀ π ∈ F, ∀ i, Integrable
+      (TreatedResidualW2 E (fun c => b0 c.1) π i) (E.law π)) ∧
+    TreatedUnbiased E (fun c => b0 c.1) F ∧
+    (∃ b s, IsBest F E.expectedTT b ∧ IsBest F E.V s) := by
+  let c : Unit × Unit := ((), ())
+  let F : Set ((Unit × Unit) → ℝ) := {π | Admissible π}
+  refine ⟨experiment c, fun _ => 0, F,
+    ⟨fun _ => 0, measurable_const, fun _ => by norm_num⟩,
+    (fun _ h => h), (fun π hπ => design c π hπ),
+    marginal_baseline c F, public_estimator c F, ?_, treated_unbiased c F, ?_⟩
+  · intro π hπ i
+    simp [TreatedResidualW2, experiment]
+  · have hOne : (fun _ : Unit × Unit => (1 : ℝ)) ∈ F :=
+      ⟨measurable_const, fun _ => by norm_num⟩
+    refine ⟨fun _ => 1, fun _ => 1, ⟨hOne, ?_⟩, ⟨hOne, ?_⟩⟩
+    · intro π hπ
+      have hp := propensity_eq c π hπ
+      have hb := hπ.2 c
+      simpa [Experiment.expectedTT, Experiment.expectedWeightedTT,
+        wWeightedTT, Experiment.observed, experiment, integral_bernoulliMeasure,
+        bit, propensity, hb] using hb.2
+    · intro π hπ
+      have hp := propensity_eq c π hπ
+      have hb := hπ.2 c
+      simpa [Experiment.V, Experiment.observed, experiment,
+        integral_bernoulliMeasure, propensity, hb] using hb.2
+
+-- The hypotheses of qualified Lemma 2 and common-law Proposition 10 hold
+-- for every policy, with an actual common probability law.
+example : ∃ (E : Experiment Bool (Unit × Unit) 1)
+    (D : Measure ((Unit × Unit) × ℝ)),
+    IsProbabilityMeasure D ∧
+    (∀ π, Admissible π → PolicyDesign E π ∧ CoinMomentW2 E π) ∧
+    (∀ π, Admissible π → ∀ i,
+      IdentDistrib (fun ω => (E.X i ω, E.μhat π ω (E.X i ω)))
+        id (E.law π) D) ∧
+    Integrable (fun z => |z.2 - E.μ0 z.1|) D := by
+  let c : Unit × Unit := ((), ())
+  refine ⟨experiment c, Measure.dirac (c, (0 : ℝ)), inferInstance, ?_, ?_, ?_⟩
+  · intro π hπ
+    exact ⟨design c π hπ, by simp [CoinMomentW2, experiment]⟩
+  · intro π hπ i
+    dsimp [experiment]
+    refine ⟨measurable_const.aemeasurable, measurable_id.aemeasurable, ?_⟩
+    simp [Measure.map_const]
+  · simp [experiment]
+    exact integrable_dirac (by simp)
+
+-- Fixed, independent auxiliary data satisfy the auxiliary branch's assumptions.
+example : ∃ (E : Experiment Bool (Unit × Unit) 1) (Q : Measure Unit)
+    (Z : Bool → Unit) (f : Unit × Unit → ℝ),
+    (∀ π, Admissible π → PolicyDesign E π) ∧
+    AuxiliaryDataW2 E {π | Admissible π} Q Z f ∧
+    Integrable (fun z => |z.2 - E.μ0 z.1|) (AuxiliaryLawW2 E Q f) := by
+  let c : Unit × Unit := ((), ())
+  refine ⟨experiment c, Measure.dirac (), (fun _ => ()), (fun _ => 0),
+    (fun π hπ => design c π hπ), ?_, ?_⟩
+  · refine {
+      probability := inferInstance
+      measurable_Z := measurable_const
+      measurable_f := measurable_const
+      representation := fun _ _ _ _ => rfl
+      law_Z := ?_
+      independent := ?_ }
+    · intro π hπ
+      refine ⟨measurable_const.aemeasurable, measurable_id.aemeasurable, ?_⟩
+      simp [experiment, Measure.map_const]
+    · intro π hπ
+      dsimp [experiment]
+      exact indepFun_const_left _ _
+  · simp [AuxiliaryLawW2, experiment, Measure.dirac_prod_dirac]
+    exact integrable_dirac (by simp)
+
+-- All assumptions of independent-unbiased implementation, including a
+-- separate independent-estimator witness at each policy, are satisfiable.
+example : ∃ E : Experiment Bool (Unit × Unit) 1,
+    (∀ π, Admissible π → PolicyDesign E π) ∧
+    Measurable (fun _ : Unit => (0 : ℝ)) ∧
+    Integrable (fun _ : Unit × Unit => (0 : ℝ)) E.PX ∧
+    (∀ π, Admissible π → ∀ c,
+      Integrable (fun ω => E.μhat π ω c) (E.law π) ∧
+        (∫ ω, E.μhat π ω c ∂E.law π) = 0) ∧
+    (∀ π, Admissible π → IndependentEstimator E {π}) ∧
+    (∀ π, Admissible π → ∀ i,
+      Integrable (TreatedResidualW2 E (fun _ => 0) π i) (E.law π)) := by
+  let c : Unit × Unit := ((), ())
+  refine ⟨experiment c, (fun π hπ => design c π hπ), measurable_const,
+    by simp, ?_, (fun π _ => independent_estimator c {π}), ?_⟩
+  · intro π hπ d
+    simp [experiment]
+  · intro π hπ i
+    simp [TreatedResidualW2, experiment]
+
+-- A nonzero selected measure, with every hypothesis of SelectedEquivalence
+-- and CoinFactorization (including optional full integrability and conditional
+-- independence). Bool is a standard Borel space.
+example : ∃ (μ : Measure Bool) (hμ : IsProbabilityMeasure μ),
+    letI : IsProbabilityMeasure μ := hμ
+    (μ {true} > 0) ∧
+    Measurable (id : Bool → Bool) ∧
+    Measurable (fun _ : Bool => (0 : ℝ)) ∧
+    Measurable[⊥] (fun _ : Bool => (0 : ℝ)) ∧
+    Integrable (fun _ : Bool => (0 : ℝ)) μ ∧
+    Measurable[⊥] (fun _ : Bool => (1/2 : ℝ)) ∧
+    (∀ _ : Bool, 0 ≤ (1/2 : ℝ) ∧ (1/2 : ℝ) ≤ 1) ∧
+    (μ[(fun ω => bit ω) | ⊥] =ᵐ[μ] (fun _ => (1/2 : ℝ))) ∧
+    Integrable (fun ω => bit ω * ((0 : ℝ) - 0)) μ ∧
+    Integrable (fun ω => bit ω * (0 : ℝ)) μ ∧
+    Integrable (fun _ : Bool => (1/2 : ℝ) * 0) μ ∧
+    CondIndepFun ⊥ bot_le (id : Bool → Bool) (fun _ => (0 : ℝ)) μ := by
+  let p : unitInterval := ⟨1/2, by constructor <;> norm_num⟩
+  let μ := bernoulliMeasure true false p
+  refine ⟨μ, inferInstance, ?_, measurable_id, measurable_const,
+    measurable_const, by simp, measurable_const, (fun _ => by norm_num), ?_,
+    by simp, by simp, by simp, ?_⟩
+  · norm_num [μ, bernoulliMeasure_apply, p, unitInterval.toNNReal]
+    apply ENNReal.coe_pos.mpr
+    change (0 : ℝ) < 1/2
+    norm_num
+  · apply Filter.Eventually.of_forall
+    intro ω
+    simp [μ, p, condExp_bot, integral_bernoulliMeasure, bit]
+  · exact condIndepFun_const_right _ _
+
+end
+end Review

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P022-T4",
+    "theorem": "SAP.P022.T4",
+    "fingerprint": "f8cd5a0e1b887f3aa96ae7f939429ba63378bbca404cc94c8ab2a9c208fadea7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: fourUnitDesign=(N,m,k)=(4,2,2) satisfies all design inequalities; balanced=(0,0,1,1) has empiricalCDF balanced 0=1/2. Take both population vectors equal to balanced and x=0. Real outcomes and threshold are unrestricted, and permutation assignments are inhabited.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T5",
+    "theorem": "SAP.P022.T5",
+    "fingerprint": "2be731d5a152d9e115b78270d18ea18a75c20b4806b210106d4377680c923d10",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: the valid (4,2,2) design with treatment outcomes all one and x=0 has population CDF zero, indicator variance zero, every sampled CDF zero, and assignment variance zero; the printed quarter factor is 1/12, nonzero, and choose(4,2)=6. Choose the unrestricted control outcomes all one. The uniform-permutation representation repeats each of the six arm allocations four times with equal multiplicity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T8",
+    "theorem": "SAP.P022.T8",
+    "fingerprint": "904d0fbfb7e913fcb963371fb884b86cb2e08b54f50160910051976cbb4c9d2f",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: m=k=2, N=4, a=(0,1), b=(-1,2) give nonconstant samples and satisfy every size hypothesis. Compiled scratch/CodeCheck.lean establishes partitionKnots 2 2=[0,1/2,1] and the genuine cell widths, so the cell and rank clauses have nonempty domains. B has both constructors H and L.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T9",
+    "theorem": "SAP.P022.T9",
+    "fingerprint": "768beeba0205fcd49dc0f508e29fd826b3e10a7c1441ddd5d311173b99ad9950",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean and scratch/CodeCheck.lean using definitions and Mathlib, without the reviewed Challenge stubs: (N,m,k)=(4,2,2), both populations all one, every observed sample all one, effect and actual variance zero, sample and marginal variance estimates zero. CodeCheck independently proves both sharp covariance and variance endpoints zero, both code outputs -1/50331648, and satisfaction of the general width>2e condition. Thus the witness meets the printed routine reading and all design and measure-theoretic conditions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P022-T10",
+    "theorem": "SAP.P022.T10",
+    "fingerprint": "632cc1d5d63f46be843ed8433c5618311ff9b68dbaf70793166bb0cb4c5b9a23",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: zeroOneSequence has N=q+4, m=k=2 for every q, y1 identically zero, y0 identically one, and both population variances bounded uniformly by M=0; this constructs every hypothesis of the actual-variance limit. The same file constructs fixed samples a=b=(0,1), m=k=2, each with sample variance 1/2, for the estimator identity and limit (take N=4 for the finite identity).",
+    "confidence": 0.99
+  }
+]

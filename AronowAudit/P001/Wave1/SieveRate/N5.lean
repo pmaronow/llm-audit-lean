@@ -5,6 +5,7 @@ import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!
 Distinct designs give an injective polynomial evaluation map and a positive definite Gram matrix.
+Drafted by source inspection only; Lean has not been run on this file.
 -/
 
 set_option autoImplicit false

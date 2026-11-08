@@ -1,0 +1,110 @@
+import SAP.P008a.Challenge
+
+open SAP.P008a MeasureTheory
+open scoped BigOperators Classical
+
+noncomputable section
+
+def atomModel : SpatialModel 1 where
+  field := Set.univ
+  node _ := 0
+  node_mem _ := Set.mem_univ _
+  ζ := Measure.dirac 0
+  Y _ z := bit (z 0)
+
+lemma atomCircle : atomModel.circle 0 0 = {0} := by
+  ext x
+  change (True ∧ dist (0 : Plane) x = 0) ↔ x = 0
+  simpa only [true_and, dist_eq_zero] using (eq_comm : (0 : Plane) = x ↔ x = 0)
+
+lemma atomMeasure : atomModel.circleMeasure 0 0 = Measure.dirac 0 := by
+  rw [SpatialModel.circleMeasure, atomCircle]
+  change (Measure.dirac (0 : Plane)).restrict {0} = Measure.dirac 0
+  simp [Measure.restrict_singleton]
+
+-- Every premise of T8's spatial branch is satisfied by a nonconstant binary
+-- treatment response and a genuine probability measure, not a junk integral.
+example : (0 : ℕ) < 1 ∧ MeasurableSet atomModel.field ∧
+    (∀ i, 0 < atomModel.circleMass i 0) ∧
+    (∀ i, atomModel.circleMeasure i 0 Set.univ ≠ ⊤) ∧
+    (∀ i b z, (uniformLaw (Assignment 1)).mass z ≠ 0 →
+      Integrable (fun x => atomModel.Y x (Function.update z i b))
+        (atomModel.circleMeasure i 0)) ∧
+    (∀ x ∈ atomModel.field, ∀ z, atomModel.Y x z = 0 ∨ atomModel.Y x z = 1) := by
+  refine ⟨by decide, MeasurableSet.univ, ?_, ?_, ?_, ?_⟩
+  · intro i; have hi : i = 0 := Subsingleton.elim _ _; subst i
+    simp [SpatialModel.circleMass, atomMeasure]
+  · intro i; have hi : i = 0 := Subsingleton.elim _ _; subst i
+    simp [atomMeasure]
+  · intro i b z _; have hi : i = 0 := Subsingleton.elim _ _; subst i
+    rw [atomMeasure]
+    change Integrable (fun _ : Plane => bit ((Function.update z 0 b) 0)) (Measure.dirac 0)
+    exact integrable_const _
+  · intro x _ z
+    cases h : z 0 <;> simp [atomModel, bit, h]
+
+example : atomModel.M 0 0 (fun _ => true) = 1 ∧
+    atomModel.M 0 0 (fun _ => false) = 0 := by
+  simp only [SpatialModel.M, SpatialModel.average, SpatialModel.circleMass, atomMeasure]
+  simp [atomModel, bit]
+
+-- All mixture, equal-mean, constant-effect and quantile premises in T8 have
+-- ordinary nonempty instances, with variation in the two effects.
+example : let w : Fin 2 → ℝ := ![1 / 2, 1 / 2]
+    let q₀ : Fin 2 → ℝ := ![1 / 4, 3 / 4]
+    let q₁ : Fin 2 → ℝ := ![1 / 2, 1 / 2]
+    (∀ j, 0 ≤ w j) ∧ (∑ j, w j = 1) ∧
+    (∀ j, 0 ≤ q₀ j ∧ q₀ j ≤ 1) ∧ (∀ j, 0 ≤ q₁ j ∧ q₁ j ≤ 1) ∧
+    (∀ j, (-1 / 4 : ℝ) ≤ q₁ j - q₀ j) ∧
+    (∀ j, q₁ j - q₀ j ≤ (1 / 4 : ℝ)) := by
+  dsimp
+  norm_num [Fin.sum_univ_succ]
+
+example : Monotone (![-1, 0, 2] : Fin 3 → ℝ) ∧
+    (0 : ℝ) ≤ 1 / 2 ∧ (1 / 2 : ℝ) ≤ 1 ∧ (0 : ℝ) < 4 ∧
+    quantile7 (![-1, 0, 2] : Fin 3 → ℝ) (1 / 2) = 0 := by
+  refine ⟨?_, by norm_num, by norm_num, by norm_num, ?_⟩
+  · intro i j hij
+    fin_cases i <;> fin_cases j <;> norm_num at *
+  · norm_num [quantile7]
+
+def geomNode : Fin 2 → Plane := ![0, WithLp.toLp 2 ![1, 0]]
+
+def geomModel : SpatialModel 2 where
+  field := Set.univ
+  node := geomNode
+  node_mem _ := Set.mem_univ _
+  ζ := Measure.dirac (geomNode 0) + Measure.dirac (geomNode 1)
+  Y _ _ := 0
+
+lemma geomDistinct : geomNode 0 ≠ geomNode 1 := by
+  intro h
+  have := congrArg (fun x : Plane => x 0) h
+  norm_num [geomNode, WithLp.toLp] at this
+
+lemma geomCircle (i : Fin 2) : geomModel.circle i 0 = {geomNode i} := by
+  ext x
+  simp [SpatialModel.circle, geomModel, eq_comm]
+
+lemma geomMeasure (i : Fin 2) :
+    geomModel.circleMeasure i 0 = Measure.dirac (geomNode i) := by
+  rw [SpatialModel.circleMeasure, geomCircle, Measure.restrict_singleton]
+  fin_cases i <;> simp [geomModel, Measure.add_apply, geomDistinct, geomDistinct.symm]
+
+-- T6's geometric support hypotheses coexist with positive masses, nonzero
+-- integrands and genuinely excluded pairs.
+example : MeasurableSet geomModel.field ∧
+    (∀ i, 0 < geomModel.circleMass i 0) ∧
+    (∀ i, geomModel.circleMeasure i 0 Set.univ ≠ ⊤) ∧
+    (∀ (_i k : Fin 2) (x : Plane), (0 : ℝ) < dist (geomModel.node k) x →
+      (if x = geomNode k then (1 : ℝ) else 0) = 0) ∧
+    (0 + 0 : ℝ) ≤ 0 ∧
+    0 < dist (geomModel.node 0) (geomModel.node 1) := by
+  refine ⟨MeasurableSet.univ, ?_, ?_, ?_, by norm_num, ?_⟩
+  · intro i; simp [SpatialModel.circleMass, geomMeasure]
+  · intro i; simp [geomMeasure]
+  · intro i k x hx
+    split_ifs with heq
+    · subst x; simp [geomModel] at hx
+    · rfl
+  · exact dist_pos.mpr geomDistinct

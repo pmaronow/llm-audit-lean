@@ -3,8 +3,8 @@ import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Algebra.BigOperators.Fin
 
 /-!
-Exact finite-product counterexample.
-The finite partition arguments below retain null fibres.
+Exact finite-product counterexample; repaired from the GP019B4 draft.
+The finite partition arguments below deliberately retain null fibres.
 -/
 
 namespace AronowAudit.P019.Wave1
@@ -19,7 +19,8 @@ open Classical
 
 variable {Ω : Type*} [Fintype Ω]
 
-/- Helpers for finite conditional means and product variances. -/
+/- Helpers for finite_product_counterexample, also used by the two general
+   results below. None refers to an unproved audit declaration. -/
 
 private theorem GP019B4b_ce_sub (P : FiniteLaw Ω) (f g : Ω → ℝ)
     (D : Ω → Prop) [DecidablePred D] :
@@ -767,6 +768,9 @@ theorem finite_product_counterexample_proof :
     exact hv
   · rw [hvB, hB, hb, hh, hA, hvarA]
     norm_num
+
+example : type_of% @AronowAudit.P019.finite_product_counterexample := finite_product_counterexample_proof
+
 
 end
 end AronowAudit.P019.Wave1

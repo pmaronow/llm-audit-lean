@@ -1,0 +1,131 @@
+import SAP.P008b.Challenge
+
+open scoped BigOperators
+open SAP.P008b
+
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 10000
+
+noncomputable section
+namespace Review16
+
+def axis (a : ℝ) : Plane := WithLp.toLp 2 ![a, 0]
+
+lemma axis_dist (a b : ℝ) : dist (axis a) (axis b) = |a - b| := by
+  simp [EuclideanSpace.dist_eq, axis, Fin.sum_univ_two, Real.dist_eq,
+    Real.sqrt_sq_eq_abs]
+
+lemma square_nonempty (i : Fin 2) : (squarePolygonW3 i).Nonempty := by
+  refine ⟨axis (20 * (i : ℝ)), ?_⟩
+  simp only [squarePolygonW3, Set.mem_setOf_eq, axis, PiLp.toLp_apply,
+    Matrix.cons_val_zero, Matrix.cons_val_one]
+  constructor
+  · linarith
+  constructor
+  · linarith
+  norm_num
+
+lemma right_edge_distance (i : Fin 2) (o : ℝ) (ho : 1/8 ≤ o) :
+    Metric.infDist (axis (20 * (i : ℝ) + o)) (squarePolygonW3 i) = o - 1/8 := by
+  have hy : axis (20 * (i : ℝ) + 1/8) ∈ squarePolygonW3 i := by
+    simp only [squarePolygonW3, Set.mem_setOf_eq, axis, PiLp.toLp_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one]
+    exact ⟨by linarith, le_rfl, by norm_num, by norm_num⟩
+  apply le_antisymm
+  · have h := Metric.infDist_le_dist_of_mem (x := axis (20 * (i : ℝ) + o)) hy
+    rw [axis_dist, abs_of_nonneg (by linarith)] at h
+    linarith
+  · apply (Metric.le_infDist (square_nonempty i)).mpr
+    intro y hy
+    have hc := PiLp.dist_apply_le (axis (20 * (i : ℝ) + o)) y (0 : Fin 2)
+    simp only [axis, PiLp.toLp_apply, Matrix.cons_val_zero, Real.dist_eq] at hc
+    have ha := le_abs_self (20 * (i : ℝ) + o - y 0)
+    have hy0 := hy.2.1
+    dsimp only [axis]
+    linarith
+
+lemma own_distance (i : Fin 2) (c : Fin 4) :
+    squareDistanceW3 i (i,c) = bufferCellDistance c := by
+  fin_cases c
+  · apply Metric.infDist_zero_of_mem
+    norm_num [squarePolygonW3, squareCellW3, squareOffsetW3]
+  all_goals
+    change Metric.infDist (axis (20 * (i : ℝ) + _)) (squarePolygonW3 i) = _
+    rw [right_edge_distance i _ (by norm_num [squareOffsetW3])]
+    norm_num [squareOffsetW3, bufferCellDistance]
+
+lemma cross_distance (i j : Fin 2) (c : Fin 4) (hij : i ≠ j) :
+    5 < squareDistanceW3 i (j,c) := by
+  have h : 15 ≤ squareDistanceW3 i (j,c) := by
+    apply (Metric.le_infDist (square_nonempty i)).mpr
+    intro y hy
+    have hc := PiLp.dist_apply_le (squareCellW3 j c) y (0 : Fin 2)
+    have hp := le_abs_self ((squareCellW3 j c) 0 - y 0)
+    have hn := neg_le_abs ((squareCellW3 j c) 0 - y 0)
+    fin_cases i <;> fin_cases j
+    · exact (hij rfl).elim
+    · fin_cases c <;>
+        norm_num [squarePolygonW3, squareCellW3, squareOffsetW3, Real.dist_eq] at hy hc hp hn ⊢ <;>
+        linarith
+    · fin_cases c <;>
+        norm_num [squarePolygonW3, squareCellW3, squareOffsetW3, Real.dist_eq] at hy hc hp hn ⊢ <;>
+        linarith
+    · exact (hij rfl).elim
+  linarith
+
+lemma distance_le_iff (i j : Fin 2) (c : Fin 4) (r : ℝ) (hr : r ≤ 5) :
+    squareDistanceW3 i (j,c) ≤ r ↔ j = i ∧ bufferCellDistance c ≤ r := by
+  by_cases h : j = i
+  · subst j
+    simp [own_distance]
+  · have hc := cross_distance i j c (Ne.symm h)
+    constructor
+    · intro hle
+      linarith
+    · rintro ⟨hji, _⟩
+      exact (h hji).elim
+
+lemma buffer_two (i : Fin 2) : squareBufferW3 i 2 = {(i,0)} := by
+  ext ⟨j,c⟩
+  simp only [squareBufferW3, Finset.mem_filter, Finset.mem_univ, true_and,
+    distance_le_iff i j c 2 (by norm_num), Finset.mem_singleton, Prod.mk.injEq]
+  fin_cases c <;> norm_num [bufferCellDistance]
+
+lemma buffer_four (i : Fin 2) : squareBufferW3 i 4 = {(i,0),(i,1),(i,2)} := by
+  ext ⟨j,c⟩
+  simp only [squareBufferW3, Finset.mem_filter, Finset.mem_univ, true_and,
+    distance_le_iff i j c 4 (by norm_num), Finset.mem_insert, Finset.mem_singleton,
+    Prod.mk.injEq]
+  fin_cases c <;> norm_num [bufferCellDistance]
+
+lemma centered (i : Fin 2) : squareCenteredW3 i = {(i,2),(i,3)} := by
+  ext ⟨j,c⟩
+  simp only [squareCenteredW3, Finset.mem_filter, Finset.mem_univ, true_and,
+    Finset.mem_insert, Finset.mem_singleton, Prod.mk.injEq]
+  by_cases h : j = i
+  · subst j
+    rw [own_distance]
+    fin_cases c <;> norm_num [bufferCellDistance]
+  · have hc := cross_distance i j c (Ne.symm h)
+    simp only [h, false_and, or_self, iff_false]
+    rintro ⟨_, hle⟩
+    linarith
+
+-- Independent arithmetic on the actual Euclidean fixture, without invoking T16.
+example : (∀ i, (squareBufferW3 i 2).card = 1 ∧ (squareBufferW3 i 4).card = 3 ∧
+      (squareCenteredW3 i).card = 2) ∧
+    nTreated ![true,false] = 1 ∧ nControl ![true,false] = 1 ∧
+    hajek (fun i z => squareArchivedMeanW3 i 1 z) ![true,false] = 1 ∧
+    hajek (squareMeansW3 1) ![true,false] = 4 ∧
+    hajek (squareMeansW3 2) ![true,false] = 2 := by
+  have ht : nTreated ![true,false] = 1 := by
+    unfold nTreated
+    rw [Fin.sum_univ_two]
+    norm_num [bit]
+  have hc : nControl ![true,false] = 1 := by
+    norm_num [nControl, ht]
+  norm_num [buffer_two, buffer_four, centered, squareArchivedMeanW3, squareRadiusW3,
+    squareMeansW3, countMean, donutSpatialY, bufferCellOutcome, bit, hajek,
+    ht, hc, Fin.sum_univ_two]
+
+end Review16

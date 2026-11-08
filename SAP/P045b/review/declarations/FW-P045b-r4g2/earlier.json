@@ -1,0 +1,24 @@
+[
+ {
+  "theorem": "SAP.P045b.T25",
+  "target_id": "P045-T25",
+  "round": 3,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "SAP/P045b/Defs/Part5.lean:17: the hierarchical conjunct quantifies over every first-stage law `∀ S : Design (Assignment G)`, including point masses and non-exchangeable laws. The printed reading has groups randomly assigned to saturations: S10 (p. 308), and the p. 310 toy example ('half of the groups ... with equal probability'), i.e. Hudgens-Halloran's uniform first stage. The canonical note itself records that the tau-hat^O claim holds under a uniform first stage. The negated conjunction is therefore strictly stronger than the canonical assertion, because the canonical claim does not imply A ∧ B, so the proved negation does not contradict the canonical claim.",
+   "SAP/P045b/Defs/Part5.lean:31-35 (overall clause B5): with G = 2, a first stage that is a point mass at regimes (H,L), psi = phi = 1/2 (any psi, phi work) and outcomes y_0 ≡ 0, y_1 ≡ 1 that ignore z, P(E) = 1, the LHS is -1 and the RHS is 0. So T25Statement is provable without the group-level Bernoulli clause and without any arm-mean conditioning. Compiled: scratch/T25Trivial.lean, theorem T25_from_degenerate_first_stage : T25Statement, axioms [propext, Classical.choice, Quot.sound]. The certified Challenge theorem (Challenge/Part2.lean:9) thus certifies only a failure caused by a deterministic first stage, which is outside the printed claim, and not the finding P045-E001.",
+   "SAP/P045b/Challenge/Part2.lean:6-8: the docstring says the theorem shows that 'conditional Bernoulli arm means need not be unbiased for marginal potential-outcome averages' and that it 'negates the printed conjunction ... under its Bernoulli reading'. The statement establishes neither. It negates a broader conjunction (arbitrary first stage), and it is provable with no arm mean involved."
+  ]
+ },
+ {
+  "theorem": "SAP.P045b.T26",
+  "target_id": "P045-T26",
+  "round": 3,
+  "verdict": "not_faithful",
+  "severity": "major",
+  "issues": [
+   "Refutation recheck (weaker_reading): The printed guarantee refers to Hudgens–Halloran’s proposed estimator, whose within-arm sample variances need two observations; the source explicitly separates required sample variances from the singleton-drop statistic (/home/ubuntu/sap/ref/llm-audit/data/works/P045.json:1138; /home/ubuntu/sap/repo2/AronowAudit/P045/P045_Spillover.lean:1508; /home/ubuntu/sap/repo2/AronowAudit/P045/P045_Spillover.lean:1552). The six-by-three additive witness has one control per group, so it violates this existence condition even though the modified formula is finite and has expectation 1/3 below the true variance 1/2 (/home/ubuntu/sap/repo2/AronowAudit/P045/Wave1/DirectVarianceBlueprint.lean:49; scratch/ConditionChecks.lean:19; scratch/exact_checks.py:19). The Lean statement negates an extension allowing only 0<m_g<n_g and using droppedWithin, which is a weaker set of premises and a changed estimator (/home/ubuntu/sap/wt/ARCH-P045b/SAP/P045b/Defs/Part5.lean:38; /home/ubuntu/sap/repo2/AronowAudit/P045/P045_Spillover.lean:1528). On the defined domain the cited unbiasedness/conservativeness result is true; the chapter’s singleton-arm toy output remains a software/application error, but this theorem does not refute that defined-domain guarantee (/home/ubuntu/sap/ref/llm-audit/data/works/P045.json:1139; /home/ubuntu/sap/ref/llm-audit/data/works/P045.json:1141). Violated conditions: ['C7: existence of each required arm sample variance (n_g−m_g=1).', 'C8: use of the cited two-term variance estimator rather than the singleton-drop extension.', 'C9: existence of the variance-estimator expectation for that cited estimator.']. Printed reading: Under the stated two-stage randomization and stratified interference, the Hudgens–Halloran direct-effect variance estimator is unbiased under constant additive unit effects and conservative otherwise, and the chapter presents the toy package output as an implementation of that estimator."
+  ]
+ }
+]

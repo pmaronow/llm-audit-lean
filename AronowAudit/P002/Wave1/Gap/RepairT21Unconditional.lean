@@ -19,5 +19,14 @@ theorem corrected_theorem7_limsup
   exact corrected_theorem7_limsup_of_finitePopulationCLT finitePopulationCLT
     k δ e A B r α hk hδ he hA hB hr hα
 
+example : type_of% @corrected_theorem7_limsup =
+    ∀ (k : ℕ) (δ e A B r α : ℝ),
+      0 < k → δ < 1 → 0 < e → 0 < A → 0 < B → (0 < r ∧ r ≤ 1/2) → (0 < α ∧ α < 1) →
+      ∃ u : ℝ≥0∞,
+        Tendsto (fun κ : ℝ => Filter.limsup
+          (fun n : ℕ => supAdjustedTail n k δ e A B r α κ) atTop)
+          (nhdsWithin 0 (Set.Ioi 0)) (nhds u) ∧
+        u ≤ ENNReal.ofReal α := rfl
+
 end
 end AronowAudit.P002.Wave1

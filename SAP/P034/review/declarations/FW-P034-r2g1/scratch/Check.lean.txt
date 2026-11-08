@@ -1,0 +1,110 @@
+import SAP.P034.Defs
+
+open MeasureTheory ProbabilityTheory
+open scoped BigOperators
+open SAP.P034
+
+set_option maxHeartbeats 800000
+set_option maxRecDepth 4096
+set_option synthInstance.maxSize 4096
+
+-- T1: the witness weights genuinely form strictly positive probability laws.
+example : (∑ ω : WorldA, worldAWeight ω) = 1 ∧
+    (∀ ω : WorldA, 0 < worldAWeight ω) := by native_decide
+
+example : (∑ ω : WorldB, worldBWeight ω) = 1 ∧
+    (∀ ω : WorldB, 0 < worldBWeight ω) := by native_decide
+
+-- The fixed sample uses only positive-probability observed cells.
+example : (∑ c : ObservedCell, sampleCount c) = 400 ∧
+    (∀ c : ObservedCell, 0 < finiteProb worldAWeight (fun ω => observedA ω = c)) ∧
+    (∀ t r : Bool, sampleExpectedCount t r = 100) := by native_decide
+
+-- Check the witnesses' substantive independence failures, OLS bias, and
+-- observational equivalence as well, using only the computable definitions.
+example : WorldANumericalFacts ∧ SampleNumericalFacts ∧ WorldBFacts ∧
+    EqualCompletionFailure := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  all_goals
+    simp only [WorldANumericalFacts, SampleNumericalFacts, WorldBFacts, EqualCompletionFailure,
+      finiteIndependent, finiteConditionalIndependent, ← Matrix.ext_iff, funext_iff]
+    repeat' apply And.intro
+  all_goals
+    first
+    | native_decide
+    | intro i j; fin_cases i <;> fin_cases j <;> native_decide
+
+-- T2: all general identification hypotheses hold together on a fair coin.
+noncomputable def auditμ : Measure Bool := (PMF.uniformOfFintype Bool).toMeasure
+
+instance : IsProbabilityMeasure auditμ := by
+  unfold auditμ
+  infer_instance
+
+def auditModel : SurveyModel Bool ℝ 0 where
+  T := id
+  Y t _ := if t then 1 else 0
+  R _ _ := true
+  X _ := 0
+
+example : Measurable auditModel.T ∧
+    (∀ t, Measurable (auditModel.Y t)) ∧
+    (∀ t, Measurable (auditModel.R t)) ∧
+    Measurable auditModel.X ∧
+    (∀ t, MemLp (auditModel.Y t) 2 auditμ) ∧
+    MemLp auditModel.X 2 auditμ ∧
+    IndepFun auditModel.T (potentialBundle auditModel) auditμ ∧
+    (0 < auditμ.real {ω | auditModel.T ω = true} ∧
+      auditμ.real {ω | auditModel.T ω = true} < 1) ∧
+    (∀ t : Bool, IndepFun (auditModel.R t) (outcomeCovariateBundle auditModel) auditμ ∧
+      0 < auditμ.real {ω | auditModel.R t ω = true}) := by
+  refine ⟨measurable_id, ?_, ?_, measurable_const, ?_, memLp_const 0, ?_, ?_, ?_⟩
+  · intro t
+    exact measurable_const
+  · intro t
+    exact measurable_const
+  · intro t
+    exact memLp_const _
+  · exact indepFun_const_right (μ := auditμ) auditModel.T
+      (0, 1, true, true, (0 : Fin 0 → ℝ))
+  · have h : auditμ.real {ω | auditModel.T ω = true} = 1 / 2 := by
+      simp [auditμ, auditModel, Measure.real]
+    rw [h]
+    norm_num
+  · intro t
+    refine ⟨indepFun_const_left (μ := auditμ) true _, ?_⟩
+    change 0 < auditμ.real {ω : Bool | true = true}
+    rw [show {ω : Bool | true = true} = Set.univ from Set.ext (by simp)]
+    rw [probReal_univ]
+    norm_num
+
+-- T3: four real coefficients actually fit every cell; both averages differ.
+example : (∀ w v : Bool,
+      fittedOutcome 0 0 0 2 (0 : Fin 0 → ℝ) 0
+        (if w then 1 else 0) (if v then 1 else 0) = factorialCell w v) ∧
+    (1/2 : ℝ) * (factorialCell true false - factorialCell false false) +
+      (1/2 : ℝ) * (factorialCell true true - factorialCell false true) = 1 ∧
+    (1/2 : ℝ) * (factorialCell false true - factorialCell false false) +
+      (1/2 : ℝ) * (factorialCell true true - factorialCell true false) = 1 := by
+  constructor
+  · intro w v
+    cases w <;> cases v <;> norm_num [fittedOutcome, factorialCell]
+  · norm_num [factorialCell]
+
+-- T4: positive averaging weight and a nonzero interaction make the
+-- reference coefficient differ from the averaged contrast.
+example : ∃ b d q : ℝ, 0 < q ∧ q < 1 ∧ d ≠ 0 ∧ b + q*d ≠ b := by
+  exact ⟨0, 2, 1/2, by norm_num⟩
+
+-- T5: actual denominators and all 39 literal percentages, without the Challenge.
+example : (∀ j : Fin 3, 0 < oa3Totals j) ∧
+    (∀ i j, roundsToTenth (oa3Percentage i j) (oa3Tenths i j)) ∧
+    (∀ i, oa3Counts i 0 + oa3Counts i 1 = oa3Counts i 2) ∧
+    (∀ j, ∑ i, oa3Counts i j = oa3Totals j) := by
+  unfold roundsToTenth
+  native_decide
+
+example : ¬ roundsToTenth (oa3Percentage 3 2) 93 ∧
+    ¬ roundsToTenth (oa3Percentage 9 2) 9 := by
+  unfold roundsToTenth
+  native_decide

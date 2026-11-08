@@ -223,6 +223,8 @@ theorem geometric_mean_perturbation_proof : FiniteMomentLaw geoMass ∧ massMean
     intro x
     exact (geometric_cdf_quotient_bound n hn x).trans_lt hεn
 
+example : type_of% @AronowAudit.P001.geometric_mean_perturbation := geometric_mean_perturbation_proof
+
 end
 
 end AronowAudit.P001.Wave1

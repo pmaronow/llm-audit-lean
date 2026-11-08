@@ -160,6 +160,18 @@ theorem normalized_pair_law (σ : ℝ≥0) (hσ : 0<σ) :
     normalized_contrasts_law σ hσ]
   exact standard_pair_squares 3
 
+theorem full_gram_inverse :
+    ((fullDesign witnessZ witnessV)ᵀ*fullDesign witnessZ witnessV)⁻¹ =
+      !![1/6,0,0;0,1/2,0;0,0,1/2] := by
+  have hg : (fullDesign witnessZ witnessV)ᵀ*fullDesign witnessZ witnessV =
+      !![(6:ℝ),0,0;0,2,0;0,0,2] := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [fullDesign,witnessZ,witnessU,witnessV,Matrix.mul_apply,Fin.sum_univ_succ]
+  apply Matrix.inv_eq_left_inv
+  rw [hg]
+  ext i j
+  fin_cases i <;> fin_cases j <;> norm_num [Matrix.mul_apply,Fin.sum_univ_succ]
 
 theorem raw_gram_inverse :
     ((residualLine witnessV)ᵀ*residualLine witnessV)⁻¹ = !![1/6,0;0,1/2] := by
@@ -451,6 +463,21 @@ theorem residual_gaussian_reference_completed (σ : ℝ≥0) (hσ : 0 < σ)
 
 end
 end AronowAudit.P039.GaussianCompletion
+#print axioms AronowAudit.P039.GaussianCompletion.gaussian_coisometry
+#print axioms AronowAudit.P039.GaussianCompletion.contrastMatrix_coisometry
+
+#print axioms AronowAudit.P039.GaussianCompletion.normalized_contrasts_law
+
+#print axioms AronowAudit.P039.GaussianCompletion.normalized_pair_law
+
+#print axioms AronowAudit.P039.GaussianCompletion.full_sse_contrasts
+#print axioms AronowAudit.P039.GaussianCompletion.raw_se_contrasts
+
+#print axioms AronowAudit.P039.GaussianCompletion.actual_pair_law
+#print axioms AronowAudit.P039.GaussianCompletion.actual_stat_ratio
+
+#print axioms AronowAudit.P039.GaussianCompletion.residual_gaussian_reference_completed
+
 namespace AronowAudit.P039
 open MeasureTheory ProbabilityTheory
 open scoped BigOperators Matrix NNReal
@@ -459,7 +486,7 @@ open scoped BigOperators Matrix NNReal
 noise scale under the conditional null, the residual-line statistic has the
 scaled t3 law, its second moment is four, whereas t4 has second moment two.
 The laws differ. This is a distributional statement, separate from the
-sample counterexample and the analytic-tail definitions. -/
+sample counterexample and the permitted analytic-tail definitions. -/
 theorem residual_gaussian_reference_counterexample (σ : ℝ≥0) (hσ : 0 < σ)
     (γ : Fin 2 → ℝ) :
     let μ := Measure.pi (fun _ : Fin 6 => gaussianReal 0 (σ^2))
@@ -476,3 +503,4 @@ theorem residual_gaussian_reference_counterexample (σ : ℝ≥0) (hσ : 0 < σ)
   exact GaussianCompletion.residual_gaussian_reference_completed σ hσ γ
 
 end AronowAudit.P039
+#print axioms AronowAudit.P039.residual_gaussian_reference_counterexample

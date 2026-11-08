@@ -1,0 +1,22 @@
+import SAP.P011b.Challenge
+open SAP.P011b MeasureTheory ProbabilityTheory Filter Finset
+open scoped BigOperators Topology Classical Matrix NNReal ENNReal
+noncomputable section
+
+theorem t16_shift_witness : RawSlopeShiftWitnessW2 := by
+  have hInt : ∀ i : Fin 2, Integrable (fun y : Fin 2 → ℝ => y i) shiftModelW2.law := by
+    intro i
+    exact integrable_dirac (by simp)
+  norm_num [RawSlopeShiftWitnessW2, shiftDesignW2, MeanModel, shiftModelW2,
+    expectation, olsTheta, ols, fittedResidual, V1, weighted, emptyGraph,
+    centered, SAP.P011b.average, quadratic, adjacency,
+    Matrix.inv_def, Matrix.adjugate_fin_two, Matrix.det_fin_two,
+    Matrix.mul_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_two] at *
+  refine ⟨hInt, ?_, ?_⟩
+  · norm_num [Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+  · funext i
+    fin_cases i <;>
+      norm_num [fittedResidual, ols, Matrix.inv_def, Matrix.adjugate_fin_two,
+        Matrix.det_fin_two, Matrix.mul_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+
+#print axioms t16_shift_witness

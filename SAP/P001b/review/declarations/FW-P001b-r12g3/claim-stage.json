@@ -1,0 +1,32 @@
+[
+  {
+    "theorem": "SAP.P001b.T30",
+    "target_id": "P001-T30",
+    "my_reading_vs_claim": "whole",
+    "reason": "Every univariate, bivariate, mixed-derivative, continuous-independence and discrete-factorization clause is present. CDFDensity and JointCDFDensity retain the nonnegative lower-tail integral definitions. The extended nonnegative formulation avoids infinite-to-real-zero artifacts and is equivalent to the printed finite-integral formulation for these probability laws. Law-level formulations cover exactly the random-variable instances. All universal hypotheses have concrete uniform-law or one-point-law witnesses; see scratch/Check.lean and claim-checks.md."
+  },
+  {
+    "theorem": "SAP.P001b.T31",
+    "target_id": "P001-T31",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem retains the specified recursive fat-Cantor construction, half-measure, Borel subtype probability law, density, actual range, positive-density support, and absence of every nondegenerate interval. It omits the canonical removed-length geometric series and quantitative stage-component bounds, exactly as its docstring discloses. The retained absolutely continuous witness satisfies every condition of the canonical printed reading that all continuous variables have a positive-length interval in their actual range; hence it is a genuine refutation of that assertion. Independently checked component lengths, positive components and endpoints in scratch/Cantor.lean support the measure and interval-exclusion argument in claim-checks.md."
+  },
+  {
+    "theorem": "SAP.P001b.T32",
+    "target_id": "P001-T32",
+    "my_reading_vs_claim": "whole",
+    "reason": "The universal clause gives atomlessness, uncountability of the actual range and uncountability of the sample space. Density of the pushforward law is equivalent to the canonical nonnegative lower-tail definition of continuity for probability laws, so it adds no substantive hypothesis. The second clause supplies the required interval-free continuous variable, using the irrational points of [0,1/2]; the canonical existential assertion does not prescribe a witness. Both universal premises and every condition of this existential witness are independently checked in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P001b.T33",
+    "target_id": "P001-T33",
+    "my_reading_vs_claim": "broader",
+    "reason": "The pointwise equivalence is stated for every type and all functions, without the canonical probability and measurability assumptions. This is a true algebraic generalization covering every canonical instance, with no lost conclusion. Total real functions also cause no restriction: any functions on sets containing the actual range can be extended arbitrarily outside their domains and both sides are unchanged. Function equality is the required everywhere equality, not almost-sure equality. The entire general equivalence is independently proved in scratch/Check.lean."
+  },
+  {
+    "theorem": "SAP.P001b.T34",
+    "target_id": "P001-T34",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The theorem retains counterexample (a): the correct nonnegative normalized rectangle density, event mass one, printed iterated integral zero and explicit inequality. It omits the independent uniform-square counterexample (b) and its values 3/8 and 1/8, exactly as its docstring says. The retained density defines a genuine Borel probability law satisfying the joint-CDF definition, and the event is precisely the printed event without a lower bound on Y. Thus the example genuinely refutes that canonical displayed equality, using finite, integrable quantities. The entire retained statement and its probability/joint-density witness are independently proved in scratch/Check.lean."
+  }
+]

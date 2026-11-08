@@ -1,0 +1,156 @@
+import SAP.P013b.Defs
+
+open SAP.P013b Finset
+open scoped BigOperators Topology
+noncomputable section
+namespace ConsistencyAudit
+
+def law (N : ℕ) : Design (Fin (2^N)) where
+  weight _ := (1/2 : ℝ)^N
+  positive _ := by positivity
+  total := by
+    simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+      Nat.cast_pow, Nat.cast_ofNat]
+    rw [← mul_pow]
+    norm_num
+
+def encode (N : ℕ) : (Fin N → Fin 2) ≃ Fin (2^N) :=
+  (Fintype.equivFin _).trans (finCongr (by simp))
+
+def population (N : ℕ) : Population (law N) N 2 where
+  exposure z := (encode N).symm z
+  outcome _ d := if d = 1 then 1 else 0
+
+lemma expectation_eq (N : ℕ) (f : (Fin N → Fin 2) → ℝ) :
+    expectation (law N) (fun z => f ((encode N).symm z)) =
+      (1/2 : ℝ)^N * ∑ x, f x := by
+  simp only [expectation, law, ← Finset.mul_sum]
+  rw [Equiv.sum_comp]
+
+lemma moment (N : ℕ) (f : Fin N → Fin 2 → ℝ) :
+    (1/2 : ℝ)^N * ∑ x : Fin N → Fin 2, ∏ k, f k (x k) =
+      ∏ k, ((f k 0 + f k 1) / 2) := by
+  rw [← Fintype.prod_sum]
+  simp only [Fin.sum_univ_two, div_eq_mul_inv]
+  rw [Finset.prod_mul_distrib]
+  simp [mul_comm]
+
+lemma marginal (N : ℕ) (i : Fin N) (d : Fin 2) :
+    SAP.P013b.pi (population N) i d = 1/2 := by
+  classical
+  change expectation (law N) (fun z =>
+    if ((encode N).symm z) i = d then 1 else 0) = _
+  rw [expectation_eq N (fun x => if x i = d then 1 else 0)]
+  have h (x : Fin N → Fin 2) :
+      (if x i = d then (1 : ℝ) else 0) =
+      ∏ k : Fin N, (if k = i then (if x k = d then 1 else 0) else 1) := by
+    simp
+  simp_rw [h]
+  rw [moment N (fun k b => if k = i then (if b = d then 1 else 0) else 1)]
+  have hv (k : Fin N) :
+      ((if k = i then (if (0 : Fin 2) = d then (1 : ℝ) else 0) else 1) +
+       (if k = i then (if (1 : Fin 2) = d then 1 else 0) else 1)) / 2 =
+      (if k = i then 1/2 else 1) := by
+    by_cases hi : k = i <;> fin_cases d <;> simp [hi]
+  simp_rw [hv]
+  simp
+
+lemma joint (N : ℕ) (i j : Fin N) (hij : i ≠ j) (d e : Fin 2) :
+    jointPi (population N) i j d e = 1/4 := by
+  classical
+  change expectation (law N) (fun z =>
+    (if ((encode N).symm z) i = d then 1 else 0) *
+    (if ((encode N).symm z) j = e then 1 else 0)) = _
+  rw [expectation_eq N (fun x => (if x i = d then 1 else 0) * (if x j = e then 1 else 0))]
+  have h (x : Fin N → Fin 2) :
+      (if x i = d then (1 : ℝ) else 0) * (if x j = e then 1 else 0) =
+      ∏ k : Fin N,
+        ((if k = i then (if x k = d then 1 else 0) else 1) *
+         (if k = j then (if x k = e then 1 else 0) else 1)) := by
+    rw [Finset.prod_mul_distrib]
+    simp only [Fintype.prod_ite_eq']
+  simp_rw [h]
+  rw [moment N (fun k b =>
+    (if k = i then (if b = d then 1 else 0) else 1) *
+    (if k = j then (if b = e then 1 else 0) else 1))]
+  have hv (k : Fin N) :
+      (((if k = i then (if (0 : Fin 2) = d then (1 : ℝ) else 0) else 1) *
+        (if k = j then (if (0 : Fin 2) = e then 1 else 0) else 1) +
+        (if k = i then (if (1 : Fin 2) = d then 1 else 0) else 1) *
+        (if k = j then (if (1 : Fin 2) = e then 1 else 0) else 1)) / 2) =
+      (if k = i then 1/2 else 1) * (if k = j then 1/2 else 1) := by
+    by_cases hi : k = i <;> by_cases hj : k = j <;>
+      fin_cases d <;> fin_cases e <;> simp_all
+  simp_rw [hv]
+  rw [Finset.prod_mul_distrib]
+  simp only [Fintype.prod_ite_eq']
+  norm_num
+
+lemma positive (N : ℕ) (d : Fin 2) : Positivity (population N) d := by
+  intro i
+  rw [marginal]
+  norm_num
+
+abbrev experiment (n : ℕ) : Experiment (n+1) where
+  supportSize := 2^(n+1)
+  exposureSize := 2
+  design := law (n+1)
+  population := population (n+1)
+
+abbrev sequence : ExperimentSequence where
+  experiment := experiment
+  treated _ := 1
+  control _ := 0
+  distinct _ := by change (1 : Fin 2) ≠ 0; decide
+  positiveTreated n := positive (n+1) 1
+  positiveControl n := positive (n+1) 0
+
+lemma nested : NestedPopulationSetup sequence := by
+  refine ⟨(fun _ => ⟨Fin.val, Fin.val_injective⟩), 1, 0,
+    (fun _ d => if d = 1 then 1 else 0), by decide, ?_, ?_⟩
+  · intro n; exact ⟨rfl, rfl⟩
+  · intro n i d
+    change (if d = (1 : Fin 2) then (1 : ℝ) else 0) =
+      (if d.val = 1 then 1 else 0)
+    simp only [Fin.ext_iff]
+    rfl
+
+lemma standing : StandingPositivity sequence := by
+  intro n d
+  exact positive (n+1) d
+
+lemma condition3 : Condition3 sequence := by
+  refine ⟨1, 2, by norm_num, by norm_num, ?_⟩
+  intro n i d
+  constructor
+  · change |if d = (1 : Fin 2) then (1 : ℝ) else 0| ≤ 1
+    split_ifs <;> norm_num
+  · change |1 / SAP.P013b.pi (population (n+1)) i d| ≤ 2
+    rw [marginal]
+    norm_num
+
+lemma condition4 : Condition4 sequence := by
+  classical
+  refine ⟨(fun _ i j => decide (i = j)), ?_, ?_⟩
+  · intro n i j h
+    have hij : i ≠ j := by simpa using h
+    intro d e
+    change jointPi (population (n+1)) i j d e =
+      SAP.P013b.pi (population (n+1)) i d * SAP.P013b.pi (population (n+1)) j e
+    rw [joint _ _ _ hij, marginal, marginal]
+    norm_num
+  · have h (n : ℕ) :
+        (∑ i : Fin (n+1), ∑ j : Fin (n+1),
+          (if decide (i = j) = true then 1 else 0 : ℝ)) / (n+1 : ℝ)^2 =
+        1 / (n+1 : ℝ) := by
+      simp
+      field_simp
+    simpa only [h] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+
+-- A nonconstant, positive-variance iid sequence satisfying every T19 hypothesis.
+example : NestedPopulationSetup sequence ∧ StandingPositivity sequence ∧
+    Condition3 sequence ∧ Condition4 sequence :=
+  ⟨nested, standing, condition3, condition4⟩
+
+end ConsistencyAudit

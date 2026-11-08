@@ -11,6 +11,12 @@ all-voter voter-centered, refined zero-centered, refined voter-centered,
 and NOMINATE, respectively. Fin 5 uses indices 0--4 for printed labels 1--5. -/
 abbrev ExtremismMeasure := Fin 5
 
+/-- Relative incumbent extremism: "positive values ... incumbent-party candidate
+is more extreme", pp. 132--133; note 11 takes absolute locations and negates
+the challenger's score. This is the computed distance score (|xI-m|-|xC-m|)/2
+transcribed in T5/S3, not the ambiguous displayed formula on p. 133. -/
+noncomputable def relativeExtremism (incumbent challenger reference : ℝ) : ℝ :=
+  (|incumbent - reference| - |challenger - reference|) / 2
 
 /-- Elections on which each measure is defined: T5's deposited score sets,
 not an election-level table printed in the paper. -/
@@ -24,7 +30,7 @@ noncomputable def extremismElections : ExtremismMeasure → Finset ℕ
 /-- All 64 deposited extremism scores, quoted as decimal strings in T5.
 Each decimal is the exact rational it denotes. Values outside the corresponding
 election set are dummy zeros; no claim uses them. Sources: the two ideology CSVs
-named in T5 (P039-E004). -/
+named in T5, reproduced in the adjudicated E004 derivation. -/
 noncomputable def depositedExtremism (j : ExtremismMeasure) (t : ℕ) : ℝ :=
   match j with
   | 0 =>
@@ -121,7 +127,7 @@ noncomputable def signedWinner : ExtremismMeasure → ℕ
   | 4 => 1968
 
 /-- Exact smallest gaps between the largest absolute score and a competing
-score, T6(i); these margins are not printed claims. -/
+score, T6(i); these margins are validator computations, not printed claims. -/
 noncomputable def magnitudeMargin : ExtremismMeasure → ℝ
   | 0 => 33171961114209 / 250000000000000
   | 1 => 85752092421407 / 500000000000000
@@ -267,3 +273,12 @@ theorem maximum_effect_worked_example :
 
 end AronowAudit.P039
 
+#print axioms AronowAudit.P039.corrected_extremism_selections
+#print axioms AronowAudit.P039.corrected_extremism_margins
+#print axioms AronowAudit.P039.signed_extremism_maxima
+#print axioms AronowAudit.P039.voter_centered_1980_counterexample
+#print axioms AronowAudit.P039.literal_largest_value_counterexample
+#print axioms AronowAudit.P039.maximum_effect_samples
+#print axioms AronowAudit.P039.maximum_effect_contribution
+#print axioms AronowAudit.P039.maximum_effect_sign
+#print axioms AronowAudit.P039.maximum_effect_worked_example

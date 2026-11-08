@@ -1,6 +1,7 @@
 import AronowAudit.P001.Wave1.FinitePopulationPluginBlueprint
 
-/-! P001-T50: finite-population moments, the variance sign correction, and empirical variance. -/
+/-! Node N1 (= Target) of the P001-T50 blueprint (trivial; written by the blueprint
+architect): every clause is a proved frozen theorem or one line of algebra. -/
 
 namespace AronowAudit.P001.Wave1.FinitePopulationPlugin
 

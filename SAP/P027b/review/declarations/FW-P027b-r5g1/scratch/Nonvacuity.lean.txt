@@ -1,0 +1,159 @@
+import SAP.P027b.Challenge
+
+/- Independent hypothesis witnesses. No audited theorem is invoked. -/
+open MeasureTheory ProbabilityTheory SAP.P027b
+open scoped BigOperators
+
+noncomputable section
+
+-- T14: the Gaussian premise is realized for every finite population size,
+-- including the actual 10-coordinate and 1000-coordinate populations.
+theorem normal_product_witness (K : Type) [Fintype K] :
+    GaussianNoise (Measure.pi (fun _ : K => gaussianReal 0 1))
+      (fun k (x : K → ℝ) => x k) 1 := by
+  classical
+  refine ⟨?_, ?_⟩
+  · intro k
+    refine ⟨(measurable_pi_apply k).aemeasurable, ?_⟩
+    simpa using (measurePreserving_eval (fun _ : K => gaussianReal 0 1) k).map_eq
+  · exact iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id)
+
+example : GaussianNoise (Measure.pi (fun _ : Fin 5 × Fin 2 => gaussianReal 0 1))
+    (fun k x => x k) 1 := normal_product_witness _
+
+example : GaussianNoise (Measure.pi (fun _ : Fin 500 × Fin 2 => gaussianReal 0 1))
+    (fun k x => x k) 1 := normal_product_witness _
+
+-- A product of arbitrary centered unit-variance factors realizes NoiseMoments.
+theorem product_moments (K : Type) [Fintype K] (ν : K → Measure ℝ)
+    [∀ k, IsProbabilityMeasure (ν k)]
+    (hLp : ∀ k, MemLp (fun x : ℝ => x) 2 (ν k))
+    (hmean : ∀ k, ∫ x : ℝ, x ∂ν k = 0)
+    (hsq : ∀ k, ∫ x : ℝ, x^2 ∂ν k = 1) :
+    NoiseMoments (Measure.pi ν) (fun k (x : K → ℝ) => x k) 1 := by
+  classical
+  have hcoord : ∀ k, MemLp (fun x : K → ℝ => x k) 2 (Measure.pi ν) :=
+    fun k => (hLp k).comp_measurePreserving (measurePreserving_eval ν k)
+  have hm : ∀ k, ∫ x : K → ℝ, x k ∂Measure.pi ν = 0 := by
+    intro k
+    rw [integral_comp_eval (μ := ν) (i := k) (f := fun x : ℝ => x)
+      (by fun_prop), hmean]
+  refine ⟨fun k => ⟨(hcoord k).integrable (by norm_num), hm k⟩, ?_⟩
+  intro k l
+  refine ⟨(hcoord k).integrable_mul (hcoord l), ?_⟩
+  unfold outcomeE
+  by_cases hkl : k = l
+  · subst l
+    simp only [ite_true]
+    simp_rw [← pow_two]
+    rw [integral_comp_eval (μ := ν) (i := k) (f := fun x : ℝ => x^2)
+      (by fun_prop), hsq]
+  · rw [ite_eq_right hkl]
+    have hi := (iIndepFun_pi (μ := ν) (X := fun _ => id)
+      (fun _ => aemeasurable_id)).indepFun hkl
+    simpa only [id_eq, Pi.mul_apply, hm, mul_zero] using
+      hi.integral_mul_eq_mul_integral
+        (measurable_pi_apply k).aestronglyMeasurable
+        (measurable_pi_apply l).aestronglyMeasurable
+
+theorem normal_second_moment : ∫ x : ℝ, x^2 ∂gaussianReal 0 1 = 1 := by
+  have hv := variance_eq_sub (memLp_id_gaussianReal (μ := 0) (v := 1) 2)
+  simpa using hv.symm
+
+-- T15: M=2 (and, in fact, every finite M) satisfies every moment hypothesis.
+theorem normal_noise_moments (K : Type) [Fintype K] :
+    NoiseMoments (Measure.pi (fun _ : K => gaussianReal 0 1))
+      (fun k (x : K → ℝ) => x k) 1 := by
+  apply product_moments
+  · intro k
+    exact memLp_id_gaussianReal 2
+  · intro k
+    exact integral_id_gaussianReal
+  · intro k
+    exact normal_second_moment
+
+example : (2 ≤ (2 : ℕ)) ∧
+    NoiseMoments (Measure.pi (fun _ : Fin 2 × Fin 2 => gaussianReal 0 1))
+      (fun k x => x k) 1 := ⟨by norm_num, normal_noise_moments _⟩
+
+-- T16: genuine independent fair stratum sign and two Gaussian errors.
+def pairFactors (i : Fin 3) : Measure ℝ :=
+  if i = 0 then wholeFairSignLaw else gaussianReal 0 1
+
+instance pairFactors_probability (i : Fin 3) : IsProbabilityMeasure (pairFactors i) := by
+  unfold pairFactors wholeFairSignLaw
+  split <;> infer_instance
+
+theorem gaussian_pair_witness :
+    WholeGaussianPair (Measure.pi pairFactors) (fun i (x : Fin 3 → ℝ) => x i) := by
+  refine ⟨fun i => measurable_pi_apply i, ?_, ?_, ?_, ?_⟩
+  · simpa [pairFactors] using (measurePreserving_eval pairFactors 0).map_eq
+  · simpa [pairFactors] using (measurePreserving_eval pairFactors 1).map_eq
+  · simpa [pairFactors] using (measurePreserving_eval pairFactors 2).map_eq
+  · exact iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id)
+
+theorem fair_support : ∀ᵐ x : ℝ ∂wholeFairSignLaw, x = 1 ∨ x = -1 := by
+  rw [ae_iff]
+  rw [wholeFairSignLaw, bernoulliMeasure_apply _ (by measurability)]
+  norm_num
+
+theorem fair_lp : MemLp (fun x : ℝ => x) 2 wholeFairSignLaw := by
+  apply (memLp_two_iff_integrable_sq (by fun_prop)).2
+  exact integrable_bernoulliMeasure _ _ _ _
+
+theorem fair_mean : ∫ x : ℝ, x ∂wholeFairSignLaw = 0 := by
+  rw [wholeFairSignLaw, integral_bernoulliMeasure]
+  norm_num
+
+theorem fair_second_moment : ∫ x : ℝ, x^2 ∂wholeFairSignLaw = 1 := by
+  rw [wholeFairSignLaw, integral_bernoulliMeasure]
+  norm_num
+
+-- T17: its weaker, moment-only premise is also genuinely satisfiable.
+-- This uses exactly the independent Gaussian pair constructed for T16.
+theorem pair_moments_witness :
+    PairMoments (Measure.pi pairFactors)
+      (fun x : Fin 3 → ℝ => x 0) (fun x => x 1) (fun x => x 2) := by
+  have hn : NoiseMoments (Measure.pi pairFactors)
+      (fun k (x : Fin 3 → ℝ) => x k) 1 := by
+    apply product_moments
+    · intro i
+      unfold pairFactors
+      split
+      · exact fair_lp
+      · exact memLp_id_gaussianReal 2
+    · intro i
+      unfold pairFactors
+      split
+      · exact fair_mean
+      · exact integral_id_gaussianReal
+    · intro i
+      unfold pairFactors
+      split
+      · exact fair_second_moment
+      · exact normal_second_moment
+  have hs : ∀ᵐ x : Fin 3 → ℝ ∂Measure.pi pairFactors,
+      x 0 = 1 ∨ x 0 = -1 := by
+    exact (measurePreserving_eval pairFactors 0).quasiMeasurePreserving.ae
+      (by simpa [pairFactors] using fair_support)
+  refine ⟨hs, (hn.1 0).2, (hn.1 0).1, (hn.1 1).1, (hn.1 2).1,
+    ⟨(hn.1 1).2, (hn.1 2).2⟩, ?_, ?_⟩
+  · simpa only [← pow_two, ite_true] using
+      And.intro (hn.2 1 1).1 (And.intro (hn.2 2 2).1
+        (And.intro (hn.2 1 1).2 (hn.2 2 2).2))
+  · simpa using And.intro (hn.2 0 1).1 (And.intro (hn.2 0 2).1
+      (And.intro (hn.2 1 2).1 (And.intro (hn.2 0 1).2
+        (And.intro (hn.2 0 2).2 (hn.2 1 2).2))))
+
+-- The fixed T14 population has centered deviations and nonzero variation.
+example : (∑ i : Fin 5, deviations5 i) = 0 ∧
+    (∑ i : Fin 5, deviations5 i ^ 2) = 5 := by
+  norm_num [deviations5, Fin.sum_univ_succ]
+
+-- T18: positive M, a diagonal unit, a distinct same-stratum unit,
+-- and a cross-stratum unit all exist at M=2.
+example : ∃ (M : ℕ) (hM : 0 < M) (k l j : Fin M × Fin 2),
+    k ≠ l ∧ k.2 = l.2 ∧ k.2 ≠ j.2 ∧
+    (strataDesign M hM).weight (k.1,l.1) > 0 := by
+  refine ⟨2, by norm_num, (0,0), (1,0), (0,1), ?_⟩
+  norm_num [strataDesign]

@@ -1,0 +1,182 @@
+[
+  {
+    "target_id": "P033-T1",
+    "theorem": "SAP.P033.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The specified eight-dimensional product of independent unit-variance Gaussians is a probability measure; this and positivity of both reported SEs compile in scratch/Nonvacuity.lean. Both coefficient vectors are nonzero, with independently checked variances 83/25 and 82/5. The displayed outcome vector lies in the full support; the strict significance inequalities persist on an open set of positive probability. The four omitted one-side probabilistic identities are exactly those disclosed in the record and docstring.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T2",
+    "theorem": "SAP.P033.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "M1 and M2 are genuine Gaussian product experiments with different cutoff effects 4 and 24, and the quartic perturbation vanishes at every observed right score. Taking N=1 and S either empty or the singleton gives two nonempty, observationally identical experiments with different coverage and miscalibration counts. The general normal-law premise is realized by identity random variables on a Gaussian probability space, a HasLaw example checked in Lean. The L2 variance identity admits nonconstant Gaussian variables. Omission of an explicit higher-differentiability assertion, while retaining the fixed polynomial definitions and continuity, is accurately disclosed.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T3",
+    "theorem": "SAP.P033.T3",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The pure and noisy uniform sign spaces contain 2^10 and 2^60 points. The pure-space cardinality and inhabitedness compile. Independent enumeration of all 1024 pure configurations verifies means zero, positive variances 62/25 and 10, and coverage counts 112 and 56. Independent cluster and record signs give the noisy covariance I+11^T and variances 372/125 and 12. Residual sums cancel for actual nonconstant noisy data, so no empty space or negative-square-root convention produces the zero estimates.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T4",
+    "theorem": "SAP.P033.T4",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For example take two cells, two clusters, five records in each cell and the identity owner map; such sizes compile. At n=3 the moment determinant is positive and the sign estimator has positive variance; exact formulas independently check for n=3 through 32. The normalized coordinates equal physical scores (j+1)/(n(n+1)) divided by bandwidth 1/n; the additional canonical exterior clusters have zero weights and do not change the statistics. Independent unit-variance normal Z_g, G>=2, satisfy the general L2 plug-in premises with common mean zero and variance one. The concrete ten-sign plug-in expectations were exhaustively checked. The auxiliary finite-space premise E residual^2=9/10 rules out an empty space, and the ten-sign example satisfies it.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P033-T5",
+    "theorem": "SAP.P033.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Four nonempty cells each contain 100 individuals. Direct evaluation of the binary potential outcomes and treatment assignment gives the claimed observed counts and five induced voters in each eligible cell; the count variances are 800 and 450. For the restricted scaling clause, yE=30,yI=25,dE=50,dI=0,sd=sqrt(800),scale=2 satisfies every premise. Added dE!=dI and sd>0 are exactly disclosed; all concrete binary-witness clauses remain.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T6",
+    "theorem": "SAP.P033.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "A fair Bernoulli variable gives p=1/2 and positive variance 1/4. A sample with one zero and one one realizes the finite binary clause at N=2; samples of size 31731 also exist. The fixed SE is strictly positive. Independent 90-digit evaluation gives maximal population power 0.89726191206194, sample-bound power at N=31731 of 0.89727101065238, and all three SD roots inside the claimed enclosures. No SE-estimation or empirical data-validity conclusion is inferred from these conditional calculations.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T7",
+    "theorem": "SAP.P033.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The linear and polynomial functions are nonnegative normalized densities, smooth and positive on every stated window. At the 20% window the linear-density mass is 48020/250000, so for M=19 the conditioning event has probability (48020/250000)^19>0, and for any M>=19 the corresponding binomial count event is also positive. Exact rational tails and high-precision folded-normal probabilities independently check. No conditioning on a zero-probability count event is used. The witnesses concern the finite-window equal-mass benchmark under no selection, rather than falsifying the approximate shrinking-window observation or Table 1's arithmetic.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T8",
+    "theorem": "SAP.P033.T8",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The density f(x)=1/4 on [0,4], zero elsewhere, satisfies all four global density hypotheses; these compile in scratch/Nonvacuity.lean. With h=1/10, both masses are 1/40 and total mass is 1/20. This also realizes local symmetry, monotonicity in both directions, continuity, derivative zero, and a positive lower bound with Lipschitz constant zero. At M=n=1 the conditioning event has probability 1/20. The density law is nonatomic, so the shared cutoff endpoint contributes no extra mass. The universal K<=N clause supplies support outside the binomial mass formula's j<=n range.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T9",
+    "theorem": "SAP.P033.T9",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The identity statistic on N(tau/s,1) realizes the sampling premise. L={0,1},R={1,2} gives rho=3/4; tau=s=1 then satisfies all strict power-comparison premises. All four concrete ratios lie in (0,1), and their overlap counts and all six rational table corrections independently check. Natural subtraction appears only at concrete minuends exceeding the subtrahends, or where finite-set cardinality bounds justify it. The empirical threshold crossings are canonical premises.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T10",
+    "theorem": "SAP.P033.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The closed numerical witness x=y=1/2 lies inside both plotted ranges and has t=1. The control sample (0,2,4) is nonconstant with sample variance 4 and SD 2. Every divisor is a positive concrete number. The second witness shows that direct division by variance and by SD give different coordinates; it does not establish that the wording about using variance necessarily prescribes division by variance.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T11",
+    "theorem": "SAP.P033.T11",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Positive values s=SE=y=zeta=1 realize the general ratio and significance-side premises. The binary vector with 82 ones followed by 486 zeros realizes n=568,k=82, has sample variance 123/994>0, and lies inside the stated squared SD bounds. Exact fractions and the reciprocal-critical-value enclosure independently check. All generic sample variances have n>=2.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T12",
+    "theorem": "SAP.P033.T12",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For each B=1 and B=1/2, C_B(H) is continuous and strictly increasing for H>=0, from zero toward one; hence its 95% root exists, is positive and finite, and the defining infimum set is nonempty and bounded below. Independent numerical roots are 2.646145548215311 and 2.181477442328154, and null biases b=B give rejection probabilities 0.235791967270992 and 0.204149056327712 at level 1/5. Both null laws are ordinary unit-variance Gaussians. All stated enclosures check.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T13",
+    "theorem": "SAP.P033.T13",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every B>=0, the half-length root exists by the same positive-density argument; B=0 gives H=z>0 and B=1 gives the explicit biased witness. The null family includes b=0 for every B and includes the boundary biases +-B. At B=0 the ordinary two-sided Gaussian p-value is uniform, while at B=1 the valid bias-aware tail retains exact boundary calibration. Strict/non-strict event distinctions are correct and Gaussian threshold boundaries are null sets.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T14",
+    "theorem": "SAP.P033.T14",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Both recorded intervals have L<U and beta<U. Taking q=49/25 gives positive imputed SEs 1/40 and 1/35 in the first row. Exact rational calculations verify the 8/7 ratio, t-statistics 6 and 21/4, and the second row's adjacent-bin inequalities. General formulas quantify only over q>0, so zero critical values cannot produce the conclusions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T15",
+    "theorem": "SAP.P033.T15",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Nominal alpha=1/20 gives the positive finite quantile z, and alpha=1/10 gives Q(19/20)>0; the quantile sets are nonempty and bounded below. For the general midpoint and recovery clauses, beta=0,q=s=1,L=-1,U=1 gives positive width and recovers SE=1 by both rules. The recorded-row width is positive and its exact fractions check. The first clause's positive-quantile premise is the canonical q>0 assumption.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P033-T16",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: this target is an empirical diagnosis of particular surveyed studies and a conditional warning about bias. No precise accuracy functional, model-class validity assertion, or study-level calibration data is supplied that would turn its majority diagnosis into a provable proposition. M1/M2 establish pointwise nonidentification of a comparison and do not refute the printed empirical diagnosis or the conditional bias warning. The omission agrees with no_lean=true without requiring that flag as its sole justification.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P033-T17",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: the target reports package use, empirical weighted tables and an asymptotic qualification. It supplies neither the full staged dataset/algorithm nor a specific universal validity theorem whose truth or falsity could be proved here. T3/T4 and T9 separately encode the supplied mathematical counterexamples, conditional corrections and exact table arithmetic; they do not prove or refute all printed empirical entries. Omitting a theorem for this empirical target is justified on the visible material.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P033-T18",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Not applicable: this is the printed description and empirical use of outcome standardization, with reported table cells. The general definition of an outcome-standardized effect is meaningful for the code's aggregate target and is not contradicted by the individual-outcome witness. The intended individual baseline SD and complete inputs needed to recalculate this study's empirical standardization are not supplied. T5/T6 separately capture the exact mismatch witness, conditional stored-SE bound and table arithmetic; no additional theorem is justified for this empirical target.",
+    "confidence": 0.98
+  }
+]

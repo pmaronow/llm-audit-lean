@@ -118,6 +118,13 @@ theorem tc09_residual_finite_tail (n M : ℕ) (hn : 1 ≤ n) (hnM : n ≤ M) (x 
       (AronowAudit.Literature.legendreRodrigues (2*m+1)).eval x
   linarith
 
+/-- Degrees `2n-1` and `2n` have exactly the same chosen projection. -/
+theorem tc09_uniform_projection_degree_pair (n : ℕ) (hn : 1 ≤ n) :
+    projection uniformMargins (2*n-1) = projection uniformMargins (2*n) := by
+  rw [tc04_uniform_projection_expansion, tc04_uniform_projection_expansion]
+  have he1 : (2*n-1+1)/2 = n := by omega
+  have he2 : (2*n+1)/2 = n := by omega
+  simp only [tc04_uniform_candidate, he1, he2]
 
 theorem tc09_sin_nonneg {t : ℝ} (ht : t ∈ Icc (0 : ℝ) (Real.pi/2)) :
     0 ≤ Real.sin t :=

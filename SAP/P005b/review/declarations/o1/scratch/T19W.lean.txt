@@ -1,0 +1,23 @@
+import SAP.P005b.Challenge
+open SAP.P005b Finset
+
+def wa : Fin 4 → ℝ := ![-1, -1, -1, 1]
+
+theorem design43 : design 4 3 = {{1,2,3},{0,2,3},{0,1,3},{0,1,2}} := by decide
+
+theorem w_exp : expectation 3 (fun S : Finset (Fin 4) => sampleCov (armSet Arm.treated S) wa wa) =
+    ((armSize 4 3 Arm.treated : ℝ)-1)*4/((armSize 4 3 Arm.treated : ℝ)*(4-1))*popCov wa wa := by
+  simp only [expectation, design43, armSet, armSize, sampleCov, popCov, mean, popMean]
+  simp (config := {decide := true}) [Finset.sum_insert, Finset.card_insert_of_notMem, Fin.sum_univ_four, wa]
+  norm_num
+
+theorem w_var : ¬ variance 3 (fun S : Finset (Fin 4) => sampleCov (armSet Arm.treated S) wa wa) ≤
+    covarianceBound (armSize 4 3 Arm.treated) wa wa := by
+  simp only [variance, expectation, design43, armSet, armSize, sampleCov, covarianceBound, mean, popMean]
+  simp (config := {decide := true}) [Finset.sum_insert, Finset.card_insert_of_notMem, Fin.sum_univ_four, wa]
+  norm_num
+
+/-- the witness refutes the universal conjunction, independently of the packaged proof -/
+example : T19Statement := by
+  intro h
+  exact w_var (h (n := 4) (m := 3) (by norm_num) (by norm_num) (by norm_num) Arm.treated wa wa).2

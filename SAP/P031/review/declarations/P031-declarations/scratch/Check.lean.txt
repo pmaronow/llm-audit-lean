@@ -1,0 +1,53 @@
+import SAP.P031.Defs.WholeW1
+import SAP.P031.Defs.WholeW2
+import SAP.P031.Defs.WholeW3
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+
+open SAP.P031
+
+private def legalFour : Finset (Fin 4) := {0, 1}
+
+example : Admissible legalFour := by
+  change 1 < legalFour.card ∧ 1 < legalFourᶜ.card
+  constructor
+  · decide
+  · have h : legalFourᶜ = ({2, 3} : Finset (Fin 4)) := by
+      ext i
+      fin_cases i <;> decide
+    rw [h]
+    decide
+example : legalFour.card = 2 := by decide
+example : (Finset.univ : Finset (Fin 4)).card = 4 := by decide
+example : 2 ≤ Fintype.card (Fin 4) - 2 := by decide
+example : 2 ≤ Fintype.card (Fin 4) := by decide
+example : Fintype.card (Fin 4) = 2 * legalFour.card := by decide
+
+private def realFour : Fin 4 → ℝ := ![0, 2, 5, 9]
+example : realFour 0 ≠ realFour 1 := by norm_num [realFour]
+
+private def legalPopulation : Population where
+  N := 4
+  M := 2
+  y1 := realFour
+  y0 := realFour
+  hM := by decide
+  hMN := by decide
+
+example : legalPopulation.M = 2 := rfl
+example : (footnotePopulation 1 0).N = 8 := rfl
+example : (footnotePopulation 1 0).M = 2 := rfl
+example : (footnotePopulation 1 0).N ≠ 2 * (footnotePopulation 1 0).M := by decide
+
+#check T1Statement
+#check T2Statement
+#check T3Statement
+#check T4Statement
+#check T5CitedRegimeStatement
+#check T6CitedRegimeStatement
+#check T7Statement
+#check T8Statement
+#check T9Statement
+#check T10WholeStatement
+#check T11Statement

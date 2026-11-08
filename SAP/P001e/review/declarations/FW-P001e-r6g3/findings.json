@@ -1,0 +1,62 @@
+[
+  {
+    "target_id": "P001-T87",
+    "theorem": "SAP.P001e.T87",
+    "fingerprint": "d0a5641cbbc3361cfb75dd1b088b5907b489edfe0300ed310a0beced09e5e537",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: the uniform Fin 2 probability law, constant one-dimensional X=0, Y=5, response R(i)=i, respondent m=5 and propensity p=1/2 satisfy every hypothesis, including both positive response strata, MAR independence and a uniform lower bound epsilon=1/4. No Challenge theorem is used.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T88",
+    "theorem": "SAP.P001e.T88",
+    "fingerprint": "34fb8e28e4de4f1decef19af44781494ac7c842c9acec75fdbec6cf9e0b5d0e0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: the infinite product of independent uniform Fin 2 laws, potential outcomes Y0=0 and Y1=1, binary assignment D_i(omega)=omega_i, and a=0,b=1 satisfy all measurability, support, 0<P(D=1)<1 and observable IID hypotheses. This is a nondegenerate independent sample, not a repeated draw.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T89",
+    "theorem": "SAP.P001e.T89",
+    "fingerprint": "4d74bec7d55f88e31cba0a4625f32a80b18251dae7ec6e04d907b369ece78792",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The declaration is closed and has no hypotheses. Compiled scratch/Nonvacuity.lean checks all six weights strictly positive with total one, all four conditioning cells positive, P(X1-X0=1)=1/3 and the adjusted contrast -1/4. The exact six latent tuples in Defs/WholeW2.lean:244-245 have three latent-variable values, each repeated once in each treatment arm with mass 1/6, giving genuine randomization and zero outcome effect; the corrected observable masses follow by grouping these same atoms.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T90",
+    "theorem": "SAP.P001e.T90",
+    "fingerprint": "1cd4b53cb00d2ea0cd100a8a35fc366774a448d448f3baea1d9c9abb71249793",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean proves the complete T90Statement independently, shows the restricted Lebesgue law is a probability measure, proves the spike Borel measurable and integrable and the deterministic spike process conditionally independent of the identity dose given constant X. REPORT.md lists every printed-reading condition: uniform positive density, supported doses, discrete X, deterministic process independence, consistency, finite moments and possible IID product sampling. The observable maps agree off the null singleton, and the two deterministic contrasts genuinely differ.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P001-T91",
+    "theorem": "SAP.P001e.T91",
+    "fingerprint": "ff371e42f76865afdb3aa6acccde7fa4f3652c760e084e567c9db4712c34532b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean supplies every premise of both independent conjuncts. For (a), use constant Unit covariates, a uniform Fin 2 dose, deterministic Y(t)=t for every real t, and doses 0 and 1. For (b), use Lebesgue restricted to [0,1], identity dose, constant Unit covariates and curve state, jointly measurable evaluation e(t,s)=t with injective Unit encoding, and doses 1/4 and 3/4. The check proves all-real integrability, observed integrability, conditional independence, potential-mean continuity and positive dose-neighborhood mass for every epsilon>0. It additionally constructs a continuous observed conditional-mean version.",
+    "confidence": 0.99,
+    "resolved": [
+      "Fixed: earlier issue 1 concerned a cylinder-only diagonal witness lacking the registered evaluation-ready contract. The current statement is the conjunction in SAP/P001e/Defs/DoseIdentification.lean:59-60, with a measurable curve state, jointly measurable evaluation, injective curve encoding and state-treatment conditional independence explicitly required at lines 27-30. The diagonal witness is absent from the current statement and its closure.",
+      "Fixed: earlier issue 2 concerned the claim of refuting the printed continuous-dose identification assertion. SAP/P001e/Challenge/Part1.lean:113-131 now states positive-mass and continuous-version identification under accurately disclosed restrictions, with no claim that the printed or canonical clause (b) is false. The active definition docstrings at SAP/P001e/Defs/DoseIdentification.lean:20 and :58 describe identification rather than refutation; old diagnostics outside this closure do not affect this declaration.",
+      "Fixed: earlier issue 3 concerned the unsupported refuted decision and dismissal of the canonical curve-state scope. record.json:68 now says restricted; record.json:70 explicitly lists the measurable-state assumptions, disclaims deriving clause (b) from supported-cylinder independence alone, and lists the omitted intermediate, support-wide and two-model assertions. This matches the current theorem and canonical registered scope."
+    ]
+  }
+]

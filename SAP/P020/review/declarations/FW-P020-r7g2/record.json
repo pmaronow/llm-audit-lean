@@ -1,0 +1,92 @@
+[
+ {
+  "target_id": "P020-T6",
+  "decision": "whole",
+  "theorem": "SAP.P020.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.estimated_slope_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P020.T6Statement",
+  "supporting_declarations": [
+   "AronowAudit.P020.univ_three"
+  ]
+ },
+ {
+  "target_id": "P020-T7",
+  "decision": "whole",
+  "theorem": "SAP.P020.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.raj_potential_affine",
+   "AronowAudit.P020.des_raj_affine_invariant",
+   "AronowAudit.P020.corrected_affine_chain"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P020.T7Statement",
+  "supporting_declarations": [
+   "AronowAudit.P020.affine_cluster_total"
+  ]
+ },
+ {
+  "target_id": "P020-T8",
+  "decision": "whole",
+  "theorem": "SAP.P020.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.differenced_mean",
+   "AronowAudit.P020.differenced_variance",
+   "AronowAudit.P020.differenced_covariance",
+   "AronowAudit.P020.clusterCovariance_product"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P020.T8Statement",
+  "supporting_declarations": [
+   "AronowAudit.P020.centered_mean_zero",
+   "AronowAudit.P020.clusterMean_add",
+   "AronowAudit.P020.clusterMean_sub"
+  ]
+ },
+ {
+  "target_id": "P020-T9",
+  "decision": "whole",
+  "theorem": "SAP.P020.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.bracket_admissible_counterexample",
+   "AronowAudit.P020.control_subscript_counterexample",
+   "AronowAudit.P020.expectation_bracket_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P020.T9Statement",
+  "supporting_declarations": [
+   "AronowAudit.P020.des_raj_affine_invariant"
+  ]
+ },
+ {
+  "target_id": "P020-T10",
+  "decision": "whole",
+  "theorem": "SAP.P020.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P020.individual_sharp_null_facts",
+   "AronowAudit.P020.sharp_null_exact_variance"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P020.individual_sharp_null_total",
+    "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P020.sharp_null_formula_algebra",
+    "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P020.sharp_null_moment_facts",
+    "reason": "Supporting row is already assembled into the selected primary declarations; it is not invoked separately."
+   }
+  ],
+  "statement_definition": "SAP.P020.T10Statement"
+ }
+]

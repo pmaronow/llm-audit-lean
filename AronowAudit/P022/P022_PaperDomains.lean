@@ -10,4 +10,5 @@ theorem cdf_partition_bracket (Pa Px Pb Aa Ax Ab δ : ℝ)
     Pb - Ab - δ ≤ Px - Ax ∧ Px - Ax ≤ Pa - Aa + δ := by
   constructor <;> linarith
 
+#print axioms cdf_partition_bracket
 end AronowAudit.P022.PaperDomains

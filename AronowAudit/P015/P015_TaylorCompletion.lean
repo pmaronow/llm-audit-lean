@@ -105,5 +105,7 @@ theorem logistic_power_series_radius_completed :
   obtain ⟨s,hs⟩ := analyticAt_fc_zero
   exact ⟨s,hs,le_antisymm (series_radius_upper s hs) (series_radius_lower s hs)⟩
 
+#print axioms logistic_power_series_radius_completed
+
 end
 end AronowAudit.P015.TaylorCompletion

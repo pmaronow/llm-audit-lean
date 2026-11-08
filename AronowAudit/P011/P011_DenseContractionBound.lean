@@ -122,5 +122,6 @@ theorem dense_contraction_bound (G : ι → ι → Prop) [DecidableRel G]
         D^2 * B^4 * K^2 * (Fintype.card ι : ℝ) := add_le_add (add_le_add hk hp) hp
     _ = _ := by ring
 
+#print axioms dense_contraction_bound
 end
 end AronowAudit.P011.DenseContractionBound

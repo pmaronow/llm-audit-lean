@@ -25,6 +25,9 @@ theorem printed_ignorability_ordering_refuted :
     FiniteMeasure.n6_proof
     IgnorabilityOrdering.n1_proof
 
+example : AronowAudit.P029.Wave1.IgnorabilityOrdering.Target :=
+  printed_ignorability_ordering_refuted
+
 end
 
 end AronowAudit.P029.Wave1

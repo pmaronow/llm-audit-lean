@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P034-T1",
+    "theorem": "SAP.P034.T1",
+    "fingerprint": "898fe77193229c57cf04d595728d9d931d2d14d76b08184c5c09e7aae1d8fd0c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:10 and :25 using only SAP.P034.Defs. The exact World A and World B weights sum to one and are strictly positive. The full computable WorldANumericalFacts, SampleNumericalFacts, and WorldBFacts are checked, including conditioning positivity, independence failures, the nonzero respondent OLS coefficient with zero population effect, sample support and nonrejection statistic, and full observed-law equality. The finite sample is a genuine frequency table: all 12 observed cells have positive probability, so an ordered independent sample with those counts has positive probability as well. No theorem hypotheses exist to be unsatisfiable.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P034-T2",
+    "theorem": "SAP.P034.T2",
+    "fingerprint": "757af4e0ec3c3c11287e5391a60a1b24b73f9d301e570d592de922975907bcef",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:50: Ω=Bool with the uniform two-point probability measure, k=0, T=id, Y(0)=0, Y(1)=1, R(0)=R(1)=true, and the unique empty covariate vector. The example proves every measurability, L2, randomization, overlap, independence, and positive-completion premise jointly. Its ordinary two-column Gram determinant is 1/4, so the nonsingular case is also attainable. The independent fixed counterexample EqualCompletionFailure is additionally checked at scratch/Check.lean:25 from the finite definitions, including its genuine H2 failure and biased treatment coefficient.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P034-T3",
+    "theorem": "SAP.P034.T3",
+    "fingerprint": "933252e96f63f2bdd9992b32a9fb91cf83a3265913803e0a56d8164edd89be7e",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:82: the actual real tuple (a,b,c,d)=(0,0,0,2) fits all four specified Boolean cells with k=0, and both half-weighted contrasts equal one while both reference-cell contrasts are zero. This is a genuine four-cell counterexample with no hypotheses, not an empty universal domain.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P034-T4",
+    "theorem": "SAP.P034.T4",
+    "fingerprint": "fe861d9d9faa82a8b01dae8254abca7b9de1f03330f2b685a3299d4cb782ca44",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:96: b=0,d=2,q=1/2 satisfies 0<q<1, d≠0, and b+qd≠b. All coefficient/vector domains are inhabited; k=0 or any positive finite dimension is allowed. There are no general theorem hypotheses, and the positive-weight implications have an explicitly inhabited positive-weight domain.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P034-T5",
+    "theorem": "SAP.P034.T5",
+    "fingerprint": "480d39cb7630ca287aee94a2deb9532ccfe71e1f5571ecffa05663e9b1ade97d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean:100: every column total is positive, all 39 corrected category percentages satisfy the exact rounding intervals, every row total and column sum is correct, and both printed Total-column values fail the rounding predicate. The theorem is closed arithmetic on genuine nonempty 13-by-3 tables, so there are no hypotheses requiring a separate data instance.",
+    "confidence": 0.99
+  }
+]

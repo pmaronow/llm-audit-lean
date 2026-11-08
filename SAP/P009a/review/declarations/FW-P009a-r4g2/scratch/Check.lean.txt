@@ -1,0 +1,411 @@
+import SAP.P009a.Challenge
+open SAP.P009a Filter
+open scoped BigOperators Topology Classical
+noncomputable section
+set_option maxHeartbeats 800000
+
+lemma fair_exp_prod (n : ℕ) (f : Fin n → Bool → ℝ) :
+    expectation (fairDistribution n) (fun z => ∏ i, f i (z i)) =
+      ∏ i, (f i true + f i false) / 2 := by
+  unfold expectation fairDistribution
+  simp only
+  rw [← Finset.mul_sum, ← Fintype.prod_sum]
+  simp only [Fintype.sum_bool]
+  rw [Finset.prod_div_distrib]
+  simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+  ring
+
+lemma fair_exp_coord (n : ℕ) (i : Fin n) (f : Bool → ℝ) :
+    expectation (fairDistribution n) (fun z => f (z i)) = (f true + f false) / 2 := by
+  calc
+    _ = expectation (fairDistribution n) (fun z => ∏ j, if j = i then f (z j) else 1) := by
+      congr 1
+      funext z
+      simp
+    _ = ∏ j, ((if j = i then f true else 1) + (if j = i then f false else 1)) / 2 :=
+      fair_exp_prod n (fun j b => if j = i then f b else 1)
+    _ = ∏ j, if j = i then (f true + f false) / 2 else 1 := by
+      apply Finset.prod_congr rfl
+      intro j _
+      by_cases hji : j = i <;> simp [hji]
+    _ = _ := by simp
+
+lemma fair_arm (n : ℕ) (y : Fin n → TreatmentVector n → ℝ) (i : Fin n) (b : Bool) :
+    armProbability (fairPopulation n y) i b = 1/2 := by
+  calc
+    _ = expectation (fairDistribution n) (fun z => if z i = b then (1 : ℝ) else 0) := by
+      unfold armProbability probability fairPopulation expectation
+      apply Finset.sum_congr rfl
+      intro z _
+      by_cases h : z i = b <;> simp [h]
+    _ = ((if true = b then 1 else 0) + (if false = b then 1 else 0)) / 2 :=
+      fair_exp_coord n i (fun a => if a = b then (1 : ℝ) else 0)
+    _ = _ := by cases b <;> norm_num
+
+lemma finite_expect_le {Ω : Type*} [Fintype Ω] (P : FiniteDistribution Ω)
+    (X : Ω → ℝ) (C : ℝ) (h : ∀ z, X z ≤ C) : expectation P X ≤ C := by
+  unfold expectation
+  calc
+    _ ≤ ∑ z, P.mass z * C := Finset.sum_le_sum (fun z _ => mul_le_mul_of_nonneg_left (h z) (P.nonneg z))
+    _ = C := by rw [← Finset.sum_mul, P.total, one_mul]
+
+lemma bounded_fair_reg (n : ℕ) (y : Fin n → TreatmentVector n → ℝ)
+    (hy : ∀ i z, |y i z| ≤ 1) (q s : ℝ) (hq : 2 ≤ q) (hs : 1 ≤ s) :
+    Regularity (fairPopulation n y) 2 q s := by
+  refine ⟨by norm_num, hq, hs, ?_, ?_, ?_⟩
+  · intro i
+    rw [fair_arm]
+    norm_num
+  · intro i
+    calc
+      _ ≤ 1 := finite_expect_le _ _ 1 (by
+        intro z
+        simpa only [Real.rpow_eq_pow, Real.one_rpow, fairPopulation, potentialResponse] using
+          Real.rpow_le_rpow (abs_nonneg (y i z)) (hy i z) (by linarith : 0 ≤ q))
+      _ ≤ _ := by simpa only [Real.rpow_eq_pow] using (Real.one_le_rpow (by norm_num : (1 : ℝ) ≤ 2) (by linarith))
+  · intro i b
+    calc
+      _ ≤ 1 := finite_expect_le _ _ 1 (by
+        intro z
+        simpa only [Real.rpow_eq_pow, Real.one_rpow, fairPopulation, potentialResponse] using
+          Real.rpow_le_rpow (abs_nonneg (y i (Function.update z i b)))
+            (hy i (Function.update z i b)) (by linarith : 0 ≤ s))
+      _ ≤ _ := by simpa only [Real.rpow_eq_pow] using (Real.one_le_rpow (by norm_num : (1 : ℝ) ≤ 2) (by linarith))
+
+lemma fair_product (n : ℕ) (y : Fin n → TreatmentVector n → ℝ) :
+    ProductDesign (fairPopulation n y) := by
+  constructor
+  · intro i
+    rw [fair_arm]
+    norm_num
+  · intro z
+    simp only [fair_arm]
+    norm_num [fairPopulation, fairDistribution, one_div_pow]
+
+lemma no_sp_affects {n : ℕ} (E : FiniteExperiment n) (h : NoSpillovers E) (i j : Fin n) :
+    Affects E i j ↔ i = j := by
+  constructor
+  · rintro (hij | ⟨z, z', hz, hne⟩)
+    · exact hij
+    · by_contra hij
+      exact hne (h j z z' (hz j (Ne.symm hij)))
+  · exact Or.inl
+
+lemma no_sp_dep {n : ℕ} (E : FiniteExperiment n) (h : NoSpillovers E) (i j : Fin n) :
+    dependenceIndicator E i j = if i = j then 1 else 0 := by
+  have hc : SharesCause E i j ↔ i = j := by
+    constructor
+    · rintro ⟨l, hi, hj⟩
+      exact ((no_sp_affects E h l i).mp hi).symm.trans ((no_sp_affects E h l j).mp hj)
+    · intro hij
+      subst j
+      exact ⟨i, Or.inl rfl, Or.inl rfl⟩
+  simp only [dependenceIndicator, hc]
+
+lemma no_sp_degree {n : ℕ} (E : FiniteExperiment n) (h : NoSpillovers E) (i : Fin n) :
+    dependenceDegree E i = 1 := by
+  simp [dependenceDegree, no_sp_dep E h]
+
+lemma no_sp_average {n : ℕ} (hn : 0 < n) (E : FiniteExperiment n) (h : NoSpillovers E) :
+    averageDependence E = 1 := by
+  have hnr : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  simp [averageDependence, no_sp_degree E h, hnr]
+
+lemma no_sp_max {n : ℕ} (hn : 0 < n) (E : FiniteExperiment n) (h : NoSpillovers E) :
+    maximumDependence E = 1 := by
+  letI : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  change sSup (Set.range (fun i => dependenceDegree E i)) = 1
+  simp only [no_sp_degree E h]
+  simp
+
+lemma sparse_no_sp (n : ℕ) : NoSpillovers (sparsePopulation n) := by
+  intro i z z' h
+  simp only [sparsePopulation, fairPopulation]
+  rw [h]
+
+lemma sparse_bound (n : ℕ) (i : Fin n) (z : TreatmentVector n) :
+    |(sparsePopulation n).outcome i z| ≤ 1 := by
+  simp only [sparsePopulation, fairPopulation, treatmentValue]
+  split_ifs <;> norm_num
+
+lemma identity_no_sp (n : ℕ) : NoSpillovers (identityPopulation n) := by
+  intro i z z' h
+  simp only [identityPopulation, fairPopulation]
+  rw [h]
+
+lemma identity_bound (n : ℕ) (i : Fin n) (z : TreatmentVector n) :
+    |(identityPopulation n).outcome i z| ≤ 1 := by
+  simp only [identityPopulation, fairPopulation, treatmentValue]
+  split_ifs <;> norm_num
+
+example : SequenceRegularity sparseSequence 2 4 1 ∧
+    (∀ t, ProductDesign (sparseSequence.experiment t)) ∧
+    (∀ t, NoSpillovers (sparseSequence.experiment t)) ∧
+    (∀ t, maximumDependence (sparseSequence.experiment t) = 1) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro t
+    exact bounded_fair_reg _ _ (sparse_bound _) _ _ (by norm_num) (by norm_num)
+  · intro t
+    exact fair_product _ _
+  · intro t
+    exact sparse_no_sp _
+  · intro t
+    exact no_sp_max (sparseSequence.positive t) _ (sparse_no_sp _)
+
+example : SequenceRegularity identitySequence 2 2 1 ∧
+    (∀ t, ProductDesign (identitySequence.experiment t)) ∧
+    (∃ D, ∀ t, maximumDependence (identitySequence.experiment t) ≤ D) := by
+  refine ⟨?_, ?_, 1, ?_⟩
+  · intro t
+    exact bounded_fair_reg _ _ (identity_bound _) _ _ (by norm_num) (by norm_num)
+  · intro t
+    exact fair_product _ _
+  · intro t
+    change maximumDependence (identityPopulation (t+1)) ≤ 1
+    rw [no_sp_max (by omega) _ (identity_no_sp _)]
+
+lemma fair_exp_pair (n : ℕ) (i j : Fin n) (hij : i ≠ j) (f g : Bool → ℝ) :
+    expectation (fairDistribution n) (fun z => f (z i) * g (z j)) =
+      ((f true + f false) / 2) * ((g true + g false) / 2) := by
+  calc
+    _ = expectation (fairDistribution n) (fun z =>
+        ∏ l, (if l = i then f (z l) else 1) * (if l = j then g (z l) else 1)) := by
+      congr 1
+      funext z
+      rw [Finset.prod_mul_distrib]
+      simp
+    _ = ∏ l, (((if l = i then f true else 1) * (if l = j then g true else 1)) +
+          ((if l = i then f false else 1) * (if l = j then g false else 1))) / 2 :=
+      fair_exp_prod n (fun l b => (if l = i then f b else 1) * (if l = j then g b else 1))
+    _ = ∏ l, (if l = i then (f true + f false)/2 else 1) *
+          (if l = j then (g true + g false)/2 else 1) := by
+      apply Finset.prod_congr rfl
+      intro l _
+      by_cases hli : l = i
+      · subst l
+        simp [hij]
+      · by_cases hlj : l = j
+        · subst l
+          simp [Ne.symm hij]
+        · simp [hli, hlj]
+    _ = _ := by
+      rw [Finset.prod_mul_distrib]
+      simp
+
+lemma exp_sum {Ω I : Type*} [Fintype Ω] [Fintype I] (P : FiniteDistribution Ω)
+    (f : I → Ω → ℝ) : expectation P (fun z => ∑ i, f i z) = ∑ i, expectation P (f i) := by
+  unfold expectation
+  simp only [Finset.mul_sum]
+  exact Finset.sum_comm
+
+lemma exp_scale {Ω : Type*} [Fintype Ω] (P : FiniteDistribution Ω)
+    (c : ℝ) (f : Ω → ℝ) : expectation P (fun z => c * f z) = c * expectation P f := by
+  simp only [expectation, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro z _
+  ring
+
+lemma variance_square {Ω : Type*} [Fintype Ω] (P : FiniteDistribution Ω) (X : Ω → ℝ) :
+    variance P X = expectation P (fun z => X z ^ 2) - expectation P X ^ 2 := by
+  let mu := expectation P X
+  change (∑ z, P.mass z * ((X z - mu) * (X z - mu))) =
+    (∑ z, P.mass z * X z ^ 2) - mu ^ 2
+  calc
+    _ = ∑ z, (P.mass z * X z^2 - 2*mu*(P.mass z * X z) + mu^2 * P.mass z) := by
+      apply Finset.sum_congr rfl
+      intro z _
+      ring
+    _ = _ := by
+      rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum,
+        ← Finset.mul_sum, P.total]
+      change (∑ z, P.mass z * X z ^ 2) - 2*mu*mu + mu^2*1 = _
+      ring
+
+lemma fair_treatment_mean (n : ℕ) (i : Fin n) :
+    expectation (fairDistribution n) (fun z => treatmentValue (z i)) = 1/2 := by
+  rw [fair_exp_coord]
+  norm_num [treatmentValue]
+
+lemma fair_treatment_pair (n : ℕ) (i j : Fin n) :
+    expectation (fairDistribution n) (fun z => treatmentValue (z i)*treatmentValue (z j)) =
+      if i = j then 1/2 else 1/4 := by
+  by_cases h : i = j
+  · subst j
+    rw [fair_exp_coord n i (fun b => treatmentValue b * treatmentValue b)]
+    norm_num [treatmentValue]
+  · rw [fair_exp_pair n i j h]
+    norm_num [h, treatmentValue]
+
+lemma fair_count_mean (n : ℕ) :
+    expectation (fairDistribution n) (fun z => ∑ i, treatmentValue (z i)) = n/2 := by
+  rw [exp_sum]
+  simp [fair_treatment_mean]
+  ring
+
+lemma fair_count_square (n : ℕ) :
+    expectation (fairDistribution n) (fun z => (∑ i, treatmentValue (z i)) ^ 2) =
+      (n : ℝ)*((n : ℝ)+1)/4 := by
+  have hpoint (z : TreatmentVector n) :
+      (∑ i, treatmentValue (z i)) ^ 2 = ∑ i, ∑ j, treatmentValue (z i)*treatmentValue (z j) := by
+    simp only [pow_two, Finset.sum_mul, Finset.mul_sum]
+    exact Finset.sum_comm
+  simp_rw [hpoint, exp_sum, fair_treatment_pair]
+  have hi (i j : Fin n) : (if i = j then (1 : ℝ)/2 else 1/4) =
+      (if j = i then (1 : ℝ)/4 else 0) + 1/4 := by
+    by_cases h : i = j
+    · subst j
+      norm_num
+    · simp [h, Ne.symm h]
+  simp_rw [hi, Finset.sum_add_distrib]
+  simp
+  ring
+
+lemma identity_ht (n : ℕ) (z : TreatmentVector n) :
+    htEstimate (identityPopulation n) z = (2/(n : ℝ)) * ∑ i, treatmentValue (z i) := by
+  unfold htEstimate estimatedArmMean identityPopulation
+  simp only [fair_arm]
+  dsimp only [fairPopulation]
+  have htrue (i : Fin n) : (if z i = true then treatmentValue (z i) else 0) = treatmentValue (z i) := by
+    cases h : z i <;> simp [treatmentValue, h]
+  have hfalse (i : Fin n) : (if z i = false then treatmentValue (z i) else 0) = 0 := by
+    cases h : z i <;> simp [treatmentValue, h]
+  simp only [htrue, hfalse, zero_div, Finset.sum_const_zero, sub_zero]
+  rw [← Finset.sum_div]
+  ring
+
+lemma identity_var {n : ℕ} (hn : 0 < n) :
+    variance (identityPopulation n).design (htEstimate (identityPopulation n)) = 1/(n : ℝ) := by
+  have hnr : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  change variance (fairDistribution n) _ = _
+  rw [variance_square, show htEstimate (identityPopulation n) =
+    (fun z => (2/(n : ℝ)) * ∑ i, treatmentValue (z i)) from funext (identity_ht n)]
+  have hp (z : TreatmentVector n) :
+      ((2/(n : ℝ)) * ∑ i, treatmentValue (z i))^2 =
+        (2/(n : ℝ))^2 * (∑ i, treatmentValue (z i))^2 := by ring
+  simp_rw [hp]
+  rw [exp_scale, exp_scale, fair_count_square, fair_count_mean]
+  field_simp
+  <;> ring
+
+theorem t8_nonvacuity : SequenceRegularity identitySequence 2 2 1 ∧
+    (∀ t, ProductDesign (identitySequence.experiment t)) ∧
+    (∃ D, ∀ t, maximumDependence (identitySequence.experiment t) ≤ D) ∧
+    EventuallyPositiveLowerBound (fun t => sampleSize identitySequence t *
+      variance (identitySequence.experiment t).design (htEstimate (identitySequence.experiment t))) := by
+  refine ⟨?_, ?_, ⟨1, ?_⟩, ⟨1, by norm_num, ?_⟩⟩
+  · intro t
+    exact bounded_fair_reg _ _ (identity_bound _) _ _ (by norm_num) (by norm_num)
+  · intro t
+    exact fair_product _ _
+  · intro t
+    change maximumDependence (identityPopulation (t+1)) ≤ 1
+    rw [no_sp_max (by omega) _ (identity_no_sp _)]
+  · apply Filter.Eventually.of_forall
+    intro t
+    change 1 ≤ ((t+1 : ℕ) : ℝ) * variance (identityPopulation (t+1)).design (htEstimate (identityPopulation (t+1)))
+    rw [identity_var (by omega)]
+    have hnr : ((t+1 : ℕ) : ℝ) ≠ 0 := by positivity
+    have hm : ((t+1 : ℕ) : ℝ) * (1 / ((t+1 : ℕ) : ℝ)) = 1 := by field_simp
+    rw [hm]
+
+def densePopulation (n : ℕ) (hn : 0 < n) : FiniteExperiment n :=
+  fairPopulation n (fun _ z => treatmentValue (z ⟨0, hn⟩))
+
+def denseSequence : ExperimentSequence :=
+  { sparseSequence with experiment := fun t => densePopulation (t+1) (by omega) }
+
+lemma dense_parent {n : ℕ} (hn : 0 < n) (i : Fin n) :
+    Affects (densePopulation n hn) ⟨0, hn⟩ i := by
+  apply Or.inr
+  refine ⟨fun _ => false, Function.update (fun _ => false) ⟨0, hn⟩ true, ?_, ?_⟩
+  · intro l hl
+    simp [Function.update_of_ne hl]
+  · simp [densePopulation, fairPopulation, treatmentValue]
+
+lemma dense_average {n : ℕ} (hn : 0 < n) :
+    averageDependence (densePopulation n hn) = n := by
+  have hall (i j : Fin n) : SharesCause (densePopulation n hn) i j :=
+    ⟨⟨0, hn⟩, dense_parent hn i, dense_parent hn j⟩
+  have hnr : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  simp [averageDependence, dependenceDegree, dependenceIndicator, hall, hnr]
+
+theorem t6_nonvacuity : ∃ S : ExperimentSequence,
+    (∀ t, AssignmentBounds (S.experiment t) 2) ∧ ¬ SparseDependence S := by
+  refine ⟨denseSequence, ?_, ?_⟩
+  · intro t
+    change AssignmentBounds (densePopulation (t+1) (by omega)) 2
+    refine ⟨by norm_num, ?_⟩
+    intro i
+    unfold densePopulation
+    rw [fair_arm]
+    norm_num
+  · intro h
+    have hh (t : ℕ) :
+        averageDependence (denseSequence.experiment t) / sampleSize denseSequence t = 1 := by
+      change averageDependence (densePopulation (t+1) _) / ((t+1 : ℕ) : ℝ) = 1
+      rw [dense_average]
+      have hnr : ((t+1 : ℕ) : ℝ) ≠ 0 := by positivity
+      exact div_self hnr
+    have hl : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (nhds 0) := by
+      simpa only [SparseDependence, hh] using h
+    have heq : (1 : ℝ) = 0 := tendsto_nhds_unique tendsto_const_nhds hl
+    norm_num at heq
+
+example : FiniteLimsup (fun _ : ℕ => (1 : ℝ)) 1 ∧ (0 : ℝ) < 1/2 ∧ (1/2 : ℝ) < 1 := by
+  refine ⟨⟨?_, ?_⟩, by norm_num, by norm_num⟩
+  · intro eps heps
+    exact Filter.Eventually.of_forall (fun _ => by linarith)
+  · intro eps heps
+    exact Filter.Frequently.of_forall (fun _ => by linarith)
+
+lemma sparse_ht {n : ℕ} (hn : 0 < n) (z : TreatmentVector n) :
+    htEstimate (sparsePopulation n) z = 2*treatmentValue (z ⟨0, hn⟩)/(n : ℝ) := by
+  unfold htEstimate estimatedArmMean sparsePopulation
+  simp only [fair_arm]
+  dsimp only [fairPopulation]
+  have htrue (i : Fin n) :
+      (if z i = true then (if i.val = 0 then treatmentValue (z i) else 0) else 0) =
+        if i = ⟨0, hn⟩ then treatmentValue (z ⟨0, hn⟩) else 0 := by
+    by_cases hi : i = ⟨0, hn⟩
+    · subst i
+      cases h : z ⟨0, hn⟩ <;> simp [treatmentValue, h]
+    · have hv : i.val ≠ 0 := fun hv => hi (Fin.ext hv)
+      simp [hi, hv]
+  have hfalse (i : Fin n) :
+      (if z i = false then (if i.val = 0 then treatmentValue (z i) else 0) else 0) = 0 := by
+    cases h : z i <;> simp [h, treatmentValue]
+  simp only [htrue, hfalse, zero_div, Finset.sum_const_zero, sub_zero]
+  rw [← Finset.sum_div]
+  simp
+  ring
+
+lemma sparse_var {n : ℕ} (hn : 0 < n) :
+    variance (sparsePopulation n).design (htEstimate (sparsePopulation n)) = 1/(n : ℝ)^2 := by
+  have hnr : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  change variance (fairDistribution n) _ = _
+  rw [variance_square, show htEstimate (sparsePopulation n) =
+    (fun z => 2*treatmentValue (z ⟨0, hn⟩)/(n : ℝ)) from funext (sparse_ht hn)]
+  rw [fair_exp_coord n ⟨0, hn⟩ (fun b => (2*treatmentValue b/(n : ℝ))^2),
+      fair_exp_coord n ⟨0, hn⟩ (fun b => 2*treatmentValue b/(n : ℝ))]
+  norm_num [treatmentValue]
+  field_simp
+  <;> ring
+
+theorem t7_nonvacuity : ∀ t, ProductDesign (sparseSequence.experiment t) ∧
+    NoSpillovers (sparseSequence.experiment t) ∧
+    Regularity (sparseSequence.experiment t) 2 4 1 ∧
+    maximumDependence (sparseSequence.experiment t) = 1 ∧
+    variance (sparseSequence.experiment t).design (htEstimate (sparseSequence.experiment t)) > 0 := by
+  intro t
+  change ProductDesign (sparsePopulation (t+1)) ∧ NoSpillovers (sparsePopulation (t+1)) ∧
+    Regularity (sparsePopulation (t+1)) 2 4 1 ∧ maximumDependence (sparsePopulation (t+1)) = 1 ∧
+    variance (sparsePopulation (t+1)).design (htEstimate (sparsePopulation (t+1))) > 0
+  refine ⟨fair_product _ _, sparse_no_sp _, ?_, ?_, ?_⟩
+  · exact bounded_fair_reg _ _ (sparse_bound _) _ _ (by norm_num) (by norm_num)
+  · exact no_sp_max (by omega) _ (sparse_no_sp _)
+  · rw [sparse_var (by omega)]
+    positivity
+
+#print axioms t6_nonvacuity
+#print axioms t7_nonvacuity
+#print axioms t8_nonvacuity

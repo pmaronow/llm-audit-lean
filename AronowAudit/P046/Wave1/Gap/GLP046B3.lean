@@ -241,5 +241,7 @@ theorem fixed_adjusted_variance_proof (M : Study) (hM : ValidStudy M)
   · rw [hv, he]
     exact hb.2
 
+example : type_of% @AronowAudit.P046.fixed_adjusted_variance := fixed_adjusted_variance_proof
+
 end
 end AronowAudit.P046.Wave1

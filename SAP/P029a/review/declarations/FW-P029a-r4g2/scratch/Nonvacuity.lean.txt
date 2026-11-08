@@ -1,0 +1,213 @@
+import SAP.P029a.Defs.WholeW1
+
+set_option autoImplicit false
+set_option relaxedAutoImplicit false
+set_option maxRecDepth 2000
+set_option maxHeartbeats 800000
+
+open SAP.P029a MeasureTheory ProbabilityTheory Set
+open scoped BigOperators Classical
+
+noncomputable section
+
+-- T6: a genuine probability law for every independent uniform coordinate,
+-- without invoking any Challenge theorem.
+local instance uniform_probability : IsProbabilityMeasure uniformCovariateLaw := by
+  unfold uniformCovariateLaw
+  apply cond_isProbabilityMeasure_of_finite
+  · norm_num [Real.volume_Ioo]
+  · norm_num [Real.volume_Ioo]
+
+abbrev UniformIndex := Fin 1 × Fin 3
+abbrev UniformOmega := UniformIndex → ℝ
+def uniformProduct : Measure UniformOmega := Measure.pi (fun _ : UniformIndex => uniformCovariateLaw)
+
+example : IsProbabilityMeasure uniformProduct := by
+  unfold uniformProduct
+  infer_instance
+
+example :
+    (∀ i : Fin 1, ∀ j : Fin 3, Measurable (fun ω : UniformOmega => ω (i,j))) ∧
+    iIndepFun (fun ij : UniformIndex => fun ω : UniformOmega => ω ij) uniformProduct ∧
+    (∀ i : Fin 1, ∀ j : Fin 3,
+      Measure.map (fun ω : UniformOmega => ω (i,j)) uniformProduct = uniformCovariateLaw) := by
+  refine ⟨fun i j => measurable_pi_apply (i,j), ?_, ?_⟩
+  · exact iIndepFun_pi (X := fun _ => id) (fun _ => aemeasurable_id)
+  · intro i j
+    exact (measurePreserving_eval (fun _ : UniformIndex => uniformCovariateLaw) (i,j)).map_eq
+
+-- T6: all premises of the constant-population and second-moment formulas.
+example :
+    MeasurableSet (Set.univ : Set Unit) ∧
+    0 < eventProbability (Measure.dirac ()) (Set.univ : Set Unit) ∧
+    MemLp (fun _ : Unit => (7 : ℝ)) 2 (Measure.dirac ()) ∧
+    MemLp (fun _ : Unit => (5 : ℝ)) 2 (Measure.dirac ()) ∧
+    (∫ _ : Unit, (5 : ℝ) ∂Measure.dirac ()) = 5 := by
+  exact ⟨MeasurableSet.univ, by simp [eventProbability], memLp_const 7,
+    memLp_const 5, by simp⟩
+
+example : IsFiniteLaw (fun _ : Unit => (1 : ℝ)) ∧
+    finiteExpectation (fun _ : Unit => (1 : ℝ)) (fun _ => 5) = 5 := by
+  norm_num [IsFiniteLaw, finiteExpectation]
+
+example : (0 : ℕ) < 1 ∧
+    rootMeanSquaredError (fun _ : Fin 1 => 7) (fun _ => 5) = 2 := by
+  norm_num [rootMeanSquaredError, Fin.sum_univ_succ]
+
+-- T6: the benchmark-six input and both homogeneous-effect outcome arrays.
+example : codedBenchmark (fun _ : Fin 500 => ![1/5,0,0]) = 6 := by
+  norm_num [codedBenchmark]
+
+example : ∀ opposite : Bool, ∀ i : NoiseRecord,
+    (noisePotentialResponse opposite i).treatmentEffect = 5 ∧
+    (noisePotentialResponse opposite i).receivedTreatment i.2.2 = i.2.2 ∧
+    (noisePotentialResponse opposite i).observedOutcome i.2.2 =
+      5 + (if opposite then 6 else 5) * indicatorValue i.2.2 := by
+  intro opposite i
+  rcases i with ⟨r,k,z⟩
+  cases opposite <;> cases z <;>
+    norm_num [noisePotentialResponse, PotentialResponse.treatmentEffect,
+      PotentialResponse.receivedTreatment, PotentialResponse.observedOutcome, indicatorValue]
+
+example : (∀ k : Fin 5, ∀ j : Fin 3,
+    (-1 : ℝ) < observedNoiseProfile k j ∧ observedNoiseProfile k j < 1) ∧
+    (∀ z, latentAlwaysOrComplier 2 = 1 ∧ latentAlwaysTaker 2 (-2) = 0 ∧
+      latentComplier 2 (-2) = 1 ∧ latentReceipt 2 (-2) z = indicatorValue z) := by
+  constructor
+  · intro k j
+    fin_cases k <;> fin_cases j <;> norm_num [observedNoiseProfile]
+  · intro z
+    norm_num [latentAlwaysOrComplier, latentAlwaysTaker, latentComplier,
+      latentReceipt, positiveIndexIndicator]
+
+-- T7: the explicitly nonempty one-sided sample is a probability law and
+-- has the actual success counts used for both fitted score arrays.
+example : IsFiniteLaw (fun _ : Bool × Bool × Fin 4 => (1/16 : ℝ)) := by
+  norm_num [IsFiniteLaw, Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+example :
+    (∀ x, successWeightTotal Prod.fst treatedReceipt treatedWeight x = if x then 27 else 9) ∧
+    (∀ x, failureWeightTotal Prod.fst treatedReceipt treatedWeight x = if x then 1 else 3) := by
+  constructor <;> intro x <;> cases x <;>
+    norm_num [successWeightTotal, failureWeightTotal, Fintype.sum_prod_type,
+      Fin.sum_univ_succ, treatedReceipt, treatedWeight, receiptDependentWeight,
+      weightWitnessResponse, weightWitnessAssignment, PotentialResponse.receivedTreatment]
+
+example (t : ℝ) (ht : 0 < t) :
+    (∀ i, 0 < perturbedRecordWeight t i) ∧
+    (∀ x, 0 < specifiedPerturbedScores t x ∧ specifiedPerturbedScores t x < 1) := by
+  constructor
+  · intro i
+    unfold perturbedRecordWeight
+    split_ifs <;> positivity
+  · intro x
+    cases x <;> simp only [specifiedPerturbedScores, Bool.false_eq_true, ↓reduceIte]
+    · constructor
+      · positivity
+      · exact (div_lt_one (by linarith : 0 < 3+t)).mpr (by linarith)
+    · norm_num
+
+-- T7: a simultaneous nonempty domain for the positive-likelihood and
+-- zero-weight general lemmas (zero and positive cases use distinct weights).
+example :
+    (∀ _ : Unit, 0 < (1/2 : ℝ)) ∧
+    (∀ _ : Unit, 0 < (2 : ℝ)) ∧
+    (∀ _ : Unit, (1/2 : ℝ) ∈ Ioc (0 : ℝ) 1) ∧
+    ((0 : ℝ) = 0) ∧
+    (∀ j : Unit, j ≠ () → 0 < (0 : ℝ)) := by
+  norm_num
+
+-- T8: every hypothesis of the general free-cell fitting result at once.
+-- Two cells, each containing a success and a failure, all weights one.
+example :
+    (∀ i : Bool × Bool, 0 ≤ (1 : ℝ)) ∧
+    (∀ c, 0 < successWeightTotal (fun i : Bool × Bool => i.1) Prod.snd (fun _ => 1) c) ∧
+    (∀ c, 0 < failureWeightTotal (fun i : Bool × Bool => i.1) Prod.snd (fun _ => 1) c) ∧
+    (∀ c : Bool, (1/2 : ℝ) ∈ Ioo (0 : ℝ) 1) := by
+  refine ⟨by norm_num, ?_, ?_, by norm_num⟩
+  all_goals intro c; cases c <;>
+    norm_num [successWeightTotal, failureWeightTotal, Fintype.sum_prod_type, Fintype.sum_bool] <;>
+      decide
+
+example (t : ℝ) (ht : 0 < t) :
+    (∀ x, 0 < successWeightTotal Prod.fst treatedReceipt (treatedPerturbationWeight t) x) ∧
+    (∀ x, 0 < failureWeightTotal Prod.fst treatedReceipt (treatedPerturbationWeight t) x) := by
+  constructor <;> intro x <;> cases x <;>
+    norm_num [successWeightTotal, failureWeightTotal, Fintype.sum_prod_type,
+      Fin.sum_univ_succ, treatedReceipt, treatedPerturbationWeight, perturbedRecordWeight,
+      weightWitnessResponse, PotentialResponse.receivedTreatment, Fintype.sum_bool] <;>
+      first | decide | positivity | linarith
+
+example :
+    (∀ c, 0 < successWeightTotal Prod.fst twoSidedReceipt twoSidedObservationWeight c) ∧
+    (∀ c, 0 < failureWeightTotal Prod.fst twoSidedReceipt twoSidedObservationWeight c) := by
+  constructor <;> rintro ⟨x,z⟩ <;> cases x <;> cases z <;>
+    norm_num [successWeightTotal, failureWeightTotal, Fintype.sum_prod_type,
+      Fin.sum_univ_succ, twoSidedReceipt, twoSidedObservationWeight, twoSidedSuccessCount]
+
+-- T9 and T10: counts are genuine positive finite cells, not an empty type.
+example : Fintype.card CanvassingRecord = 18933 := by
+  change Fintype.card (Sigma (fun k : Fin 9 => Fin (recordCellCount k))) = 18933
+  rw [Fintype.card_sigma]
+  norm_num [recordCellCount, Fin.sum_univ_succ]
+
+def compatibleRaw (i : CanvassingRecord) : Option String :=
+  (recordedRace i).map (fun b => if b then "W" else "B")
+
+example : ∀ i code, compatibleRaw i = some code →
+    recordedRace i = some (decide (code = "W")) := by
+  rintro ⟨k,j⟩ code
+  fin_cases k <;> simp [compatibleRaw, recordedRace] <;> intro h <;> subst code <;> decide
+
+example : PreservesRecordedRace raceCompletionA ∧ PreservesRecordedRace raceCompletionB := by
+  constructor <;> rintro ⟨k,j⟩ b <;> fin_cases k <;>
+    simp [recordedRace, raceCompletionA, raceCompletionB]
+
+example (Y : CanvassingRecord → ℝ) : ∀ i,
+    (recordPotentialResponse Y i).receivedTreatment (recordedAssignment i) = recordedContact i ∧
+    (recordPotentialResponse Y i).observedOutcome (recordedAssignment i) = Y i ∧
+    ¬ (recordPotentialResponse Y i).isDefier := by
+  rintro ⟨k,j⟩
+  fin_cases k <;>
+    simp [recordPotentialResponse, recordedAssignment, recordedContact,
+      PotentialResponse.receivedTreatment, PotentialResponse.observedOutcome,
+      PotentialResponse.isDefier]
+
+example : ∃ i : CanvassingRecord, raceCompletionA i ≠ raceCompletionB i := by
+  refine ⟨⟨6, ⟨0, by norm_num [recordCellCount]⟩⟩, ?_⟩
+  decide
+
+example (e : ℝ) (he0 : 0 < e) (he1 : e < 1) :
+    0 < ∏ i : CanvassingRecord, (if recordedAssignment i then e else 1-e) := by
+  apply Finset.prod_pos
+  intro i _
+  split_ifs <;> linarith
+
+-- T10: all four strict count hypotheses occur simultaneously.
+def binaryExample (i : Fin 2) : Bool := decide (i.val = 0)
+
+example :
+    0 < trueCount binaryExample ∧ trueCount binaryExample < 2 ∧
+    0 < trueCount binaryExample ∧ trueCount binaryExample < 2 ∧
+    jointTrueCount binaryExample binaryExample = 1 := by
+  native_decide
+
+-- T10: a positive distinguished group with a nonzero within-group term.
+def groupExample (i : Fin 4) : Bool := decide (i.val < 2)
+def scoreExample : Fin 4 → ℝ := ![0,1,2,3]
+def indicatorExample : Fin 4 → ℝ := ![0,1,2,2]
+
+example :
+    0 < finiteProbability (fun _ : Fin 4 => (1/4 : ℝ)) (fun i => groupExample i = true) ∧
+    (∀ i : Fin 4, groupExample i ≠ true →
+      ∀ j : Fin 4, groupExample j = groupExample i → indicatorExample j = indicatorExample i) := by
+  constructor
+  · norm_num [finiteProbability, groupExample, Fin.sum_univ_succ]
+  · intro i hi j hj
+    fin_cases i <;> fin_cases j <;> norm_num [groupExample, indicatorExample] at *
+
+example : finiteExpectation (fun _ : Fin 4 => (1/4 : ℝ))
+    (fun i => (scoreExample i - finiteGroupMean (fun _ => (1/4 : ℝ)) scoreExample groupExample (groupExample i)) *
+      (indicatorExample i - finiteGroupMean (fun _ => (1/4 : ℝ)) indicatorExample groupExample (groupExample i))) = 1/8 := by
+  norm_num [finiteExpectation, finiteGroupMean, finiteConditionalMean, finiteProbability,
+    scoreExample, indicatorExample, groupExample, Fin.sum_univ_succ]

@@ -5,8 +5,8 @@ import AronowAudit.Literature.CondP001g14
 /-!
 Scalar density QMD with an S-finite reference measure. Normalization and the
 score L² assumption first give genuine L² residuals. The finite pairwise
-reference is handled by a direct withDensity calculation; no sigma-finiteness
-assumption on the original reference is used.
+reference is handled by the direct withDensity calculation already proved in
+GLP0011B3; no sigma-finiteness assumption on the original reference is used.
 The final replacement of an L² representative uses contiguity of the actual
 local experiments, rather than equality under every alternative law.
 -/
@@ -65,7 +65,7 @@ theorem TailB_density_pairwise_residual_norm
   exact AronowAudit.P001.Wave1.GLP0011B3_pairwise_residual_norm
     ρ f q s hf hq hf0 hq0 t
 
-/-- Real-density QMD implies the canonical pairwise QMD condition. -/
+/-- Real-density QMD implies the donor's canonical pairwise QMD condition. -/
 theorem TailB_density_isRightQMD
     {E : Type*} [MeasurableSpace E] (ρ : Measure E)
     (p : ℝ → E → ℝ) (s : E → ℝ)
@@ -98,7 +98,7 @@ theorem TailB_density_isRightQMD
     funext x
     ring
 
-/-- Scalar density score-shift and contiguity. -/
+/-- Exact scalar density score-shift and contiguity contract from TB-QMDPATH. -/
 theorem TailB_density_qmd_score_shift
     {E : Type*} [MeasurableSpace E] (ρ : Measure E) [SFinite ρ]
     (p : ℝ → E → ℝ) (s u : E → ℝ)

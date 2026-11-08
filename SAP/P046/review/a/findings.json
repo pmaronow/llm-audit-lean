@@ -1,0 +1,102 @@
+[
+  {
+    "target_id": "P046-T1",
+    "theorem": "SAP.P046.T1",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The theorem is unconditional and constructs a probability law: independent uniform W,U on [0,1], X=1{U<=pi(W)}, Y0=0, Y1=1{W<=3/5}, with pi=13/20 below the threshold and 99/100 above it, and delta=1/200. The covariate is atomless, potential outcomes are W-measurable and hence conditionally independent of treatment, and positivity is strict. Exact rational enumeration confirms 1946 failing states, the stated integer numerator, and strict noncoverage 1.19792910697956254725767226256...e-7 > 119/10^9 > 10^-7. The actual Lean definitions' numerator and integer-cut count were also evaluated successfully in scratch/RefereeCheck.lean.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T2",
+    "theorem": "SAP.P046.T2",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Independent uniform W,U give the stated study with X=1{U<=9/10}, Y0=0, Y1=1{W>=1/2}, and delta=1/20. All ValidStudy conditions hold. The sample event E has probability 2^-100>0. On E the actual generated outcomes and HT are zero, mu=1/2, and the radius squared is log(40)/162<0.022771<1/4. Thus the conditional indicator expectation is one on a genuinely positive covariate event. This witnesses failure of the conditional proof step, not unconditional coverage for constant propensity.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T3",
+    "theorem": "SAP.P046.T3",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take W uniform on [0,1], X and Y1 independent Bernoulli(1/2) variables independent of W, Y0=0, pi=m=1/2 and delta=1/4. This satisfies every ValidStudy field and has mu=1/2 and HT summand variance 3/4. Choose any n>=1 and alpha in (0,1), and b=1/2 for the known-bound clause. Conditional Hoeffding for HT-muW and ordinary Hoeffding for muW-mu, followed by a union bound, give the corrected bound; bounded HT summands give the alternative. All denominators are positive almost surely.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T4",
+    "theorem": "SAP.P046.T4",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The unconditional generator uses three independent uniforms to produce W uniform, Z Bernoulli(1/10), Y0=Y1=1{W<=1/2}Z, and independent assignment conditional on W with propensity 1/4 or 3/4. Delta=1/8 is strictly feasible. Both fits are the deterministic g0, and opposite folds have floor(n/2) and ceil(n/2) observations, so are balanced asymptotically. The loss increase is (4/9) times the number of treated upper-half training observations times theta^2, hence zero is a valid parameter choice even in ties. Exact enumeration of scalar atoms verifies both means 1/20, second moments 1/5 and 17/40, variances 79/400 and 169/400, risks 3/20 and 3/8, and the variance gap and ratio. Bounded iid summands give the two normal limits.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T5",
+    "theorem": "SAP.P046.T5",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use W uniform, independent fair X,Y1, Y0=0, pi=m=1/2 and delta=1/4. Choose d=1, the constant parameterization family(theta,w)=0, balanced half-splits, and both fitted functions identically zero. Every parameter is an empirical minimizer, gstar=0 is a population minimizer, zero belongs to the family, every prediction and limit is L2, and every L2 error is zero. R(0)=1/2 and V(0)=3/4, so the hypotheses have a nondegenerate instance. The same fits satisfy the direct risk comparison with equality. Lean compiled the zero-family, zero-benchmark, L2 and convergence checks without importing Challenge or any Solution.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P046-T6",
+    "theorem": "SAP.P046.T6",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This verdict accepts the record's refuted decision: the theorem directly negates the canonical printed universal population-centred tail inequality. T1's valid continuous law at n=100 and alpha=10^-7 has independently verified strict noncoverage greater than alpha; the non-strict tail contains that strict event. Thus it is the printed assertion itself that is contradicted, and the docstring's 'The printed claim is false' is warranted.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T7",
+    "theorem": "SAP.P046.T7",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "W uniform, independent fair X,Y1, Y0=0, pi=m=1/2 and delta=1/4 satisfy all study hypotheses, with mu=1/2 and summand variance 3/4, so the CLT is nondegenerate. The same law permits every stored delta in (0,1/2). More generally positivity and binary outcomes bound the second moment by 1/delta, yielding a common-delta Chebyshev bound uniformly in all n>=1. The zero-outcome version also supplies the allowed zero-variance instance. Empty positivity slices at delta>=1/2 do not make the universal theorem vacuous.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T8",
+    "theorem": "SAP.P046.T8",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take the valid independent uniform-W/fair-X/fair-Y1 study with Y0=0, pi=m=1/2 and delta=1/4. For any n>=1 choose both fits identically zero, with any deterministic split. Every evaluated prediction is integrable, the adjusted estimator equals HT, and its expectation is mu=1/2. Lean compiled the evaluated-prediction integrability instance. The added individual integrability assumption is genuine and disclosed: cross-fold cancellation can produce an integrable final estimator even with nonintegrable individual predictions.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P046-T9",
+    "theorem": "SAP.P046.T9",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Use W uniform, independent fair X,Y1, Y0=0, pi=m=1/2 and delta=1/4. In part (b) use deterministic zero fits and limits g0=g1=0 with balanced half-splits; all inner errors and outer error expectations are zero and all fits are L2. This gives a misspecified, nondegenerate root-n instance. In part (d) take both deterministic fits equal to m=1/2; they are exactly L2-consistent and the Hahn variance is 1/2. The two limits in (b) are allowed to differ, as the canonical claim requires. The zero-fit L2 and mean-square predicates were also checked in Lean.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P046-T10",
+    "theorem": "SAP.P046.T10",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The estimator class contains the measurable identically zero sequence, as checked in Lean, and the study class contains independent uniform-W/Bernoulli-X laws. A direct argument works for every estimator: at each n>=1 put p=1/(4n), delta=p/2, W uniform, X independent Bernoulli(p), Y0=0, and compare constant Y1=0 with constant Y1=1. Both laws are valid. Their observed data agree when all treatments are zero, an event of probability (1-p)^n>=3/4. With eps=1/4 their two error probabilities sum to at least 3/4, so one is at least c=3/8. This supplies the quantifiers for arbitrarily large n. The changing positivity constant is allowed by the canonical unrestricted model; no fixed-delta construction is claimed.",
+    "confidence": 0.99
+  }
+]

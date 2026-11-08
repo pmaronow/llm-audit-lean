@@ -17,7 +17,7 @@ theorem n2_proof : N2 := by
   let w : Fin 4 → Exposure → ℚ := marginal p f
   let T : Fin 6 → ℚ := htContrast f starA w .d11 .d00
 
-  -- Put the pushforward identity into the form needed by the rational-to-real adapters.
+  -- First put U-N1 into the form needed by the rational-to-real adapters.
   have hpush (F : Assignment 4 → ℝ) :
       expect starMass F =
         expect (fun r : Fin 6 => (p r : ℝ)) (fun r => F (starAssignments r)) := by

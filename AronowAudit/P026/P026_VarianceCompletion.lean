@@ -126,6 +126,12 @@ lemma zeroSum_add (D:Design Ω I R) (a b:Bool) (f g:I→I→R):
   rw [←offSum_add]
   apply offSum_congr;intro i j
   by_cases h:joint D a b i j=0 <;>simp [h]
+lemma zeroSum_sub (D:Design Ω I R) (a b:Bool) (f g:I→I→R):
+    zeroSum D a b (fun i j=>f i j-g i j)=zeroSum D a b f-zeroSum D a b g:=by
+  unfold zeroSum
+  rw [←offSum_sub]
+  apply offSum_congr;intro i j
+  by_cases h:joint D a b i j=0 <;>simp [h]
 lemma zeroSum_div (D:Design Ω I R) (a b:Bool) (f:I→I→R) (c:R):
     zeroSum D a b (fun i j=>f i j/c)=zeroSum D a b f/c:=by
   unfold zeroSum
@@ -649,6 +655,11 @@ lemma support_residual_variance_completed (D:Design Ω I R) (hp:positiveMarginal
   exact hs.2.2.2.2 (fun i=>by rw [hn i]) hj
 
 
+
+
+
+
+
 end
 end AronowAudit.P026.VarianceCompletion
 
@@ -781,3 +792,13 @@ theorem support_residual_variance (D : Design Ω I ℝ) (hD : probabilityDesign 
 
 end AronowAudit.P026
 
+#print axioms AronowAudit.P026.printed_variance_bias
+#print axioms AronowAudit.P026.corrected_covariance_bias
+#print axioms AronowAudit.P026.corrected_variance_bias
+#print axioms AronowAudit.P026.corrected_sharp_null
+#print axioms AronowAudit.P026.support_repair
+#print axioms AronowAudit.P026.appendixE_corrected
+#print axioms AronowAudit.P026.arm_variance_corrected
+#print axioms AronowAudit.P026.corrected_variance_decomposition
+#print axioms AronowAudit.P026.corrected_residual_variance
+#print axioms AronowAudit.P026.support_residual_variance

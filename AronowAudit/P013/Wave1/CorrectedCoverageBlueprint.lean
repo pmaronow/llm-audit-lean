@@ -2,24 +2,35 @@ import AronowAudit.P013.P013_Audit
 import AronowAudit.External.Causalean.Mathlib.Probability.SteinMethod.StandardizedDepGraphCLT
 
 /-!
-# P013-T2: corrected Proposition 6.2
+# Blueprint: P013-T2, corrected Proposition 6.2 (general coverage bridge)
 
-For every `S : ExperimentSequence` with the nested setup, comparison-specific C3
-(`ComparisonBounded`), genuine C5 (`Condition5Genuine`), C6 and the added lower-tail
-condition (L) (`LowerTailCondition`), the defined real Wald interval of expression (11)
-has `liminf` coverage at least `1-α` for every `0<α<1`.
+Wave 1, group P011-P013. Record P013-T2 is held because the proved helper
+`sharedSequence_nested` (a zero-outcome nesting instance, reviewed for T5(c)) was joined to
+T2 by name only. That helper and its review stay untouched; this blueprint proves the full
+corrected coverage contract under a new name.
 
-Compared with Proposition 6.2 as printed, the corrected theorem replaces literal
-`Condition5Printed` by `Condition5Genuine`, narrows all-exposure `Condition3` to
-`ComparisonBounded`, uses the comparison positivity in `ExperimentSequence` instead of
-`StandingPositivity`, keeps `NestedPopulationSetup` and `Condition6`, and adds
-`LowerTailCondition`. Relative to the genuine-dependency reading of the paper, (L) is
-the one new coverage premise.
+Frozen target (`Target` below): for every `S : ExperimentSequence` with the nested setup,
+comparison-specific C3 (`ComparisonBounded`), genuine C5 (`Condition5Genuine`), C6 and the
+added lower-tail condition (L) (`LowerTailCondition`), the defined real Wald interval of
+expression (11) has `liminf` coverage at least `1-α` for every `0<α<1`.
 
-The finite-design infrastructure consists of the atomic-measure identity `N1`, the
-vector-independence implication `N2`, the HT score decomposition `N3`, the dependency-graph
-construction `N4`, the HT CLT `N5`, the Gaussian facts `N6`, the moving-width interval
-limit `N7`, and the support-relabelling lemmas. These also support the P013-T18 refutation.
+Premise comparison with the frozen printed contract `printed_wald_coverage` (referee 2 fix):
+the corrected theorem replaces literal `Condition5Printed` by `Condition5Genuine`, narrows
+all-exposure `Condition3` to `ComparisonBounded`, uses the comparison positivity already in
+`ExperimentSequence` instead of `StandingPositivity`, keeps `NestedPopulationSetup` and
+`Condition6`, and adds `LowerTailCondition`. Relative to the intended genuine-dependency
+reading of the paper, (L) is the one new coverage premise.
+
+This module also owns the finite-design infrastructure shared with the P013-T18 refutation
+(`PrintedWaldBlueprint`): the atomic-measure bridge `N1`, the vector-independence bridge `N2`,
+the HT score decomposition `N3`, the dependency-graph construction `N4`, the HT CLT `N5`, the
+Gaussian facts `N6` and the moving-width interval limit `N7`, and the support-relabelling
+helpers.
+
+Writers: prove `theorem nk_proof : Nk` in `AronowAudit/P013/Wave1/CorrectedCoverage/Nk.lean`.
+Never use the drafts `corrected_wald_coverage`, `printed_wald_coverage`,
+`corrected_concentration_coverage`, `paired_finite_identities` or
+`paired_asymptotic_counterexample`; they are unproved drafts.
 -/
 
 set_option autoImplicit false
@@ -52,14 +63,14 @@ section Relabel
 
 variable {Ω : Type*} [Fintype Ω] {m : ℕ}
 
-/-- Design expectations are invariant under support relabelling. -/
+/-- Design expectations are invariant under support relabelling (helper, proved here). -/
 theorem expectation_relabel (P : Design Ω) (e : Ω ≃ Fin m) (X : Fin m → ℝ) :
     expectation (relabelDesign P e) X = expectation P (fun ω => X (e ω)) := by
   unfold expectation
   rw [← Equiv.sum_comp e (fun z => (relabelDesign P e).weight z * X z)]
   simp [relabelDesign]
 
-/-- Design probabilities are invariant under support relabelling. -/
+/-- Design probabilities are invariant under support relabelling (helper, proved here). -/
 theorem probability_relabel (P : Design Ω) (e : Ω ≃ Fin m) (A : Fin m → Prop) :
     probability (relabelDesign P e) A = probability P (fun ω => A (e ω)) := by
   classical
@@ -86,10 +97,9 @@ theorem jointPi_relabel {N K : ℕ} {P : Design Ω} (F : Population P N K) (e : 
 
 end Relabel
 
-/-!
-## HT scores -/
+/-! ## Definitions used by the node statements -/
 
-/-- Centred HT unit score:
+/-- Centred HT unit score of the paper proof, step "For each unit define":
 `X_i = 1{D_i=d} y_i(d)/π_i(d) - 1{D_i=e} y_i(e)/π_i(e) - (y_i(d)-y_i(e))`. -/
 def htScore {Ω : Type*} [Fintype Ω] {N K : ℕ} {P : Design Ω} (F : Population P N K)
     (d e : Fin K) (i : Fin N) (z : Ω) : ℝ :=
@@ -97,30 +107,30 @@ def htScore {Ω : Type*} [Fintype Ω] {N K : ℕ} {P : Design Ω} (F : Populatio
     indicator F.exposure i e z * (F.outcome i e / pi F i e)) -
   (F.outcome i d - F.outcome i e)
 
-/-!
-## Corrected coverage statement -/
+/-! ## Frozen target -/
 
-/-- **Target (P013-T2).** Corrected Proposition 6.2
-(p. 1926; Appendix A.7, p. 1943). -/
+/-- **Target (P013-T2).** Corrected Proposition 6.2 (p. 1926; proof Appendix A.7, p. 1943),
+exactly the signature approved by both referees. -/
 def Target : Prop :=
   ∀ S : ExperimentSequence, NestedPopulationSetup S → ComparisonBounded S →
     Condition5Genuine S → Condition6 S → LowerTailCondition S →
     ∀ α : ℝ, 0 < α → α < 1 → 1 - α ≤ liminf (seqCoverage S α) atTop
 
-/-!
-## Supporting statements -/
+/-! ## Nodes -/
 
-/-- **N1.** On a finite discrete support, `designMeasure P = Σ_z ofReal(p_z) δ_z`
-is a probability measure and its real event masses are the finite design probabilities.
-The corresponding expectation identity is `integral_designMeasure`. Used also for P013-T18. -/
+/-- **Node N1** (paper proof, "First supply the finite-measure bridge"): on a finite
+discrete support, `designMeasure P = Σ_z ofReal(p_z) δ_z` is a probability measure and its
+real event masses are the finite design probabilities. (`integral_designMeasure` already
+gives the expectation identity.) Shared with P013-T18. -/
 def N1 : Prop :=
   ∀ {Ω : Type} [Fintype Ω] [MeasurableSpace Ω] [MeasurableSingletonClass Ω] (P : Design Ω),
     MeasureTheory.IsProbabilityMeasure (designMeasure P) ∧
       ∀ A : Ω → Prop, (designMeasure P).real {z | A z} = probability P A
 
-/-- **N2.** Atom factorization of the two restricted exposure vectors
-(`VectorIndependent`) gives `IndepFun` of the full restricted vectors under
-`designMeasure`. Pairwise independence is not a substitute. Used also for P013-T18. -/
+/-- **Node N2** (paper proof, "A second finite bridge converts VectorIndependent to
+measure-theoretic independence"): atom factorization of the two restricted exposure
+vectors (`VectorIndependent`) gives `IndepFun` of the full restricted vectors under
+`designMeasure`. Pairwise independence is not a substitute. Shared with P013-T18. -/
 def N2 : Prop :=
   ∀ {Ω : Type} [Fintype Ω] [MeasurableSpace Ω] [MeasurableSingletonClass Ω] {N K : ℕ},
     0 < K → ∀ (P : Design Ω) (D : Ω → Fin N → Fin K) (A B : Finset (Fin N)),
@@ -128,9 +138,9 @@ def N2 : Prop :=
         ProbabilityTheory.IndepFun (fun z (i : A) => D z i.1) (fun z (j : B) => D z j.1)
           (designMeasure P)
 
-/-- **N3.** The centred HT unit scores have design mean zero, sum to `N(τ̂-τ)`,
-have sum-of-scores second moment `N² Var(τ̂)`, and are bounded by `2c₁(c₂+1)`
-under the comparison bounds. Finite algebra only. -/
+/-- **Node N3** (paper proof, "For each unit define H_Ni, a_Ni, X_Ni"): the centred HT unit
+scores have design mean zero, sum to `N(τ̂-τ)`, have total second moment `N² Var(τ̂)`, and are
+bounded by `2c₁(c₂+1)` under the comparison bounds. Finite algebra only. -/
 def N3 : Prop :=
   ∀ {Ω : Type} [Fintype Ω] {N K : ℕ} {P : Design Ω} (F : Population P N K) (d e : Fin K),
     Positivity F d → Positivity F e →
@@ -142,9 +152,9 @@ def N3 : Prop :=
           |1 / pi F i d| ≤ c2 ∧ |1 / pi F i e| ≤ c2) →
         ∀ i z, |htScore F d e i z| ≤ 2 * c1 * (c2 + 1)
 
-/-- For a genuine C5 sequence, the centred HT scores carry a `DepGraph`
-(reflexive symmetric relation, measurable entries, independence of separated tuples)
-under `designMeasure`, with closed neighbourhoods uniformly bounded in size. -/
+/-- Conclusion of node N4: for a genuine C5 sequence, the centred HT scores carry a
+`DepGraph` (reflexive symmetric relation, measurable entries, independence of separated
+tuples) under `designMeasure`, with closed neighbourhoods uniformly bounded in size. -/
 def DepGraphBridge : Prop :=
   ∀ S : ExperimentSequence, Condition5Genuine S → ∃ Dmax : ℕ, ∀ n : ℕ,
     ∃ D : Causalean.Mathlib.Probability.SteinMethod.DepGraph
@@ -153,54 +163,62 @@ def DepGraphBridge : Prop :=
         (designMeasure (seqLaw S n)),
       ∀ i, (D.nbhd i).card ≤ Dmax
 
-/-- **N4.** Adding self-loops to the symmetric relation of genuine C5 gives
-`G i j := i = j ∨ h i j`, with closed degree `≤ m+1`. Separated sets are disjoint
-with no crossing `h`-edge (`corrected_symmetric_equivalence`), so `GenuineDependency`
-and N2 give independence of the exposure tuples; `IndepFun.comp` transfers it
-to the score tuples. -/
+/-- **Node N4** (paper proof, "Take the symmetric h and uniform row bound m from genuine C5,
+and add self-loops if needed ... Hence this is a DepGraph for the X-array"): relation
+`G i j := i = j ∨ h i j`, closed degree `≤ m+1`; separated sets are disjoint with no
+crossing `h`-edge (`corrected_symmetric_equivalence`), so `GenuineDependency` + N2 give
+independence of the exposure tuples, and `IndepFun.comp` transfers it to the score tuples.
+Template: `AronowAudit.P004.CLTCompletion.ht_clt_shift` (its `Dep` construction). -/
 def N4 : Prop := N2 → DepGraphBridge
 
-/-- **N5.** Under comparison C3, genuine C5 and C6, the true-variance standardized
-HT contrast is asymptotically standard normal. The dependency CLT applies to the
-scores of N3 on `designMeasure` (N1), with the `DepGraph` of N4, bound `2c₁(c₂+1)`,
-second moment `N²V_N` and eventual floor `(c/2)N`. N1 converts CDFs back, with
-`√(N²V) = N√V`. Used also for P013-T18. -/
+/-- **Node N5** (paper proof, from "Set v_N=E[(sum_i X_Ni)^2]=N^2 V_N" to "Z_N => N(0,1)"):
+under comparison C3, genuine C5 and C6, the true-variance standardized HT contrast is
+asymptotically standard normal. Apply `Causalean...bounded_degree_dependency_clt` to the
+scores of N3 on `designMeasure` (N1) with the `DepGraph` of N4, bound `2c₁(c₂+1)`, second
+moment `N²V_N`, eventual floor `(c/2)N`; convert CDFs back with N1 and
+`√(N²V) = N√V`. Template: `AronowAudit.P004.CLTCompletion.ht_clt_shift`. Shared with
+P013-T18. -/
 def N5 : Prop :=
   N1 → N3 → DepGraphBridge →
     ∀ S : ExperimentSequence, ComparisonBounded S → Condition5Genuine S → Condition6 S →
       TendsNormal (seqLaw S)
         (fun n z => (seqEstimate S n z - seqTarget S n) / Real.sqrt (seqTrueVariance S n)) 0 1
 
-/-- **N6.** The standard-normal CDF is continuous, symmetric and strictly increasing.
-For `0<α<1`, `normalCritical α > 0` and
-`normalCDF (normalCritical α) = 1-α/2`. The proof identifies these definitions
-with the standard Gaussian CDF and quantile in `AronowAudit.P053.NormalCompletion`
-using `standardNormalCDF_eq_cdf`. Used also for P013-T18. -/
+/-- **Node N6** (standard input, paper proof "z=normalCritical(alpha)>0 ... Phi(z)=1-alpha/2;
+the Gaussian CDF is continuous, symmetric and strictly increasing"): standard-normal CDF
+facts for the P013 definitions `normalCDF`/`normalCritical`. Provable by identifying them
+with `AronowAudit.P053.NormalCompletion` (P053 `standardNormalCDF_eq_cdf`). Shared with
+P013-T18. -/
 def N6 : Prop :=
   Continuous normalCDF ∧ StrictMono normalCDF ∧ (∀ t, normalCDF (-t) = 1 - normalCDF t) ∧
     ∀ α : ℝ, 0 < α → α < 1 → 0 < normalCritical α ∧ normalCDF (normalCritical α) = 1 - α / 2
 
-/-- **N7.** CDF convergence to `N(0,1)` and deterministic widths `w_n → a > 0`
-give `P(|X_n| ≤ w_n) → 2Φ(a)-1`, by a CDF squeeze. Used also for P013-T18. -/
+/-- **Node N7** (paper proof, "CDF convergence at the two endpoints, with a continuous
+Gaussian limit, implies ..."; T18 "convergence for these moving closed intervals"): CDF
+convergence to `N(0,1)` and deterministic widths `w_n → a > 0` give
+`P(|X_n| ≤ w_n) → 2Φ(a)-1`. Shared with P013-T18. Donor:
+`AronowAudit.P011.CoverageCompletion.row_random_width_interval` (measure form; transfer
+with N1) or a direct CDF squeeze. -/
 def N7 : Prop :=
   N6 → ∀ {L : ℕ → Type} [∀ n, Fintype (L n)] (P : ∀ n, Design (L n)) (X : ∀ n, L n → ℝ)
     (w : ℕ → ℝ) (a : ℝ), TendsNormal P X 0 1 → 0 < a → Tendsto w atTop (𝓝 a) →
       Tendsto (fun n => probability (P n) (fun z => |X n z| ≤ w n)) atTop
         (𝓝 (2 * normalCDF a - 1))
 
-/-- **N8.** C6 and (L) give vanishing relative lower-tail probabilities
-`P(V̂_N < (1-η)V_N) → 0` for each `0<η<1`, using `δ = ηc/2`
-and eventually `(n+1)V_N ≥ c/2`. -/
+/-- **Node N8** (paper proof, "Fix any eta with 0<eta<1 ... tends to zero"): C6 and (L) give
+vanishing relative lower-tail probabilities `P(V̂_N < (1-η)V_N) → 0` for each `0<η<1`
+(use `δ = ηc/2` and eventually `(n+1)V_N ≥ c/2`). -/
 def N8 : Prop :=
   ∀ S : ExperimentSequence, Condition6 S → LowerTailCondition S →
     ∀ η : ℝ, 0 < η → η < 1 →
       Tendsto (fun n => probability (seqLaw S n)
         (fun z => seqVarianceEstimate S n z < (1 - η) * seqTrueVariance S n)) atTop (𝓝 0)
 
-/-- **N9.** For any finite-design sequence, a standard-normal limit of the
-true-variance standardized statistic, eventually positive true variance and vanishing
-relative lower tails give `liminf` defined Wald coverage `≥ 1-α`. The proof uses
-`finite_wald_coverage_bound`, N7 at the fixed width `z√(1-η)`, then `η ↓ 0` with N6. -/
+/-- **Node N9** (paper proof, from "Therefore, by the elementary intersection lower bound"
+to "This proves the entire proposed theorem"): for any finite-design sequence, a
+standard-normal limit of the true-variance standardized statistic, eventually positive true
+variance and vanishing relative lower tails give `liminf` defined Wald coverage `≥ 1-α`.
+Use `finite_wald_coverage_bound`, N7 at the fixed width `z√(1-η)`, then `η ↓ 0` with N6. -/
 def N9 : Prop :=
   N6 → N7 → ∀ {L : ℕ → Type} [∀ n, Fintype (L n)] (P : ∀ n, Design (L n))
     (X Vhat : ∀ n, L n → ℝ) (target V : ℕ → ℝ),
@@ -212,20 +230,20 @@ def N9 : Prop :=
       1 - α ≤ liminf (fun n => probability (P n) (fun z => 0 ≤ Vhat n z ∧
         |X n z - target n| ≤ normalCritical α * Real.sqrt (Vhat n z))) atTop
 
-
-/-- **N10.** Independent fair own-assignment exposures with both potential outcomes
-`1` satisfy every corrected premise, with `V_N = V̂_N = 4/N` at every assignment.
-The finite support is relabelled using `relabelDesign`. This existence statement
-is not a hypothesis of `assemble`. -/
+/-- **Node N10** (auxiliary scope certificate, paper proof "A premise instance repairing the
+old helper's scope"; NOT a hypothesis of `assemble`): independent fair own-assignment
+exposures with both potential outcomes `1` satisfy every corrected premise, with
+`V_N = V̂_N = 4/N` at every assignment. Construct the support by relabelling
+`replicateDesign sharedDesign (n+1)` with `relabelDesign`. -/
 def N10 : Prop :=
   ∃ S : ExperimentSequence, NestedPopulationSetup S ∧ StandingPositivity S ∧
     ComparisonBounded S ∧ Condition5Genuine S ∧ Condition6 S ∧ LowerTailCondition S ∧
     ∀ n z, seqTrueVariance S n = 4 / ((n : ℝ) + 1) ∧
       seqVarianceEstimate S n z = 4 / ((n : ℝ) + 1)
 
-/-! ## Coverage implication -/
+/-! ## Assembly -/
 
-/-- C6 makes the true variance eventually positive. -/
+/-- C6 makes the true variance eventually positive (glue, proved here). -/
 theorem eventually_pos_of_condition6 (S : ExperimentSequence) (h : Condition6 S) :
     ∀ᶠ n in atTop, 0 < seqTrueVariance S n := by
   obtain ⟨c, hc, ht⟩ := h
@@ -238,7 +256,7 @@ theorem eventually_pos_of_condition6 (S : ExperimentSequence) (h : Condition6 S)
     mul_nonpos_of_nonneg_of_nonpos hn1.le (not_lt.mp hneg)
   linarith
 
-/-- The supporting statements imply the corrected coverage theorem. -/
+/-- **Assembly.** The nodes suffice for the corrected coverage theorem. -/
 theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7 : N7)
     (h8 : N8) (h9 : N9) : Target := by
   intro S _hnested hc3 hc5 hc6 hL α hα hα1
@@ -246,6 +264,24 @@ theorem assemble (h1 : N1) (h2 : N2) (h3 : N3) (h4 : N4) (h5 : N5) (h6 : N6) (h7
     (seqTrueVariance S) (h5 h1 h3 (h4 h2) S hc3 hc5 hc6) (eventually_pos_of_condition6 S hc6)
     (h8 S hc6 hL) α hα hα1
 
+/-- Nonvacuity (from the auxiliary node N10): the hypotheses of `Target` are jointly
+satisfiable by a positive-variance, bounded-degree sequence. -/
+theorem target_hypotheses_satisfiable (h : N10) :
+    ∃ S : ExperimentSequence, NestedPopulationSetup S ∧ ComparisonBounded S ∧
+      Condition5Genuine S ∧ Condition6 S ∧ LowerTailCondition S := by
+  obtain ⟨S, h1, -, h3, h4, h5, h6, -⟩ := h
+  exact ⟨S, h1, h3, h4, h5, h6⟩
+
+/-- Sanity check: `seqCoverage` is literally the defined-interval event used in N9. -/
+example (S : ExperimentSequence) (α : ℝ) (n : ℕ) :
+    seqCoverage S α n = probability (seqLaw S n) (fun z => 0 ≤ seqVarianceEstimate S n z ∧
+      |seqEstimate S n z - seqTarget S n| ≤ normalCritical α *
+        Real.sqrt (seqVarianceEstimate S n z)) := rfl
+
+/-- Fidelity check: `Target` is literally the type of the drafted corrected contract
+`AronowAudit.P013.corrected_wald_coverage` (P013-T2 corrected statement in the dossier).
+Only its type is read (`type_of%`); its unproved draft proof is not used. -/
+example : Target = type_of% @AronowAudit.P013.corrected_wald_coverage := rfl
 
 end
 

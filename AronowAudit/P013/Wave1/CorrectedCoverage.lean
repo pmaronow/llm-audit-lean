@@ -19,8 +19,8 @@ open scoped BigOperators Topology NNReal ENNReal
 
 noncomputable section
 
-/-- Corrected Proposition 6.2 under comparison-specific C3, genuine C5,
-C6 and the lower-tail condition (L), for a nested population sequence. -/
+/-- Corrected Proposition 6.2 under precisely the frozen corrected premises.
+The auxiliary N10 premise instance is independent of the general coverage proof. -/
 theorem corrected_wald_coverage_bridge :
     ∀ S : ExperimentSequence, NestedPopulationSetup S → ComparisonBounded S →
       Condition5Genuine S → Condition6 S → LowerTailCondition S →
@@ -35,6 +35,8 @@ theorem corrected_wald_coverage_bridge :
     AronowAudit.P013.Wave1.CorrectedCoverage.n7_proof
     AronowAudit.P013.Wave1.CorrectedCoverage.n8_proof
     AronowAudit.P013.Wave1.CorrectedCoverage.n9_proof
+
+example : AronowAudit.P013.Wave1.CorrectedCoverage.Target := corrected_wald_coverage_bridge
 
 end
 

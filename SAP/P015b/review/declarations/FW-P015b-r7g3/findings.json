@@ -1,0 +1,24 @@
+[
+  {
+    "target_id": "P015-T18",
+    "theorem": "SAP.P015b.T18",
+    "fingerprint": "37f5d93851b9d61adf73d5d9d84c6a669ad8a2b38708d2951fefcee24254c231",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles with an import of Defs only. It constructs every premise of LogisticMLStationarity for N=4, K=0, W=[[1,0],[1,0],[1,1],[1,1]], Y=[0,1,0,1], theta=0, including a proof of global likelihood maximality; det(W^T W)=4. It checks the square population law, an interior admissible point, its Gram matrix, all fitted cell probabilities in (0,1), and exact treatment-Hessian/perturbation entries giving 120/119. It also constructs nonnegative integer success/failure counts realizing both square likelihood families as normalized finite binary likelihoods for epsilon=1/(16m), m>=1, with total sample size 768m. The genuine maximizing-branch conditions are the comparator-certified analytic conclusion; strict concavity, the invertible Hessian and the implicit-function argument are checked independently in scratch/claim-witness-checks.md.",
+    "confidence": 0.96
+  },
+  {
+    "target_id": "P015-T17",
+    "theorem": "SAP.P015b.T17",
+    "fingerprint": "93c6191a693f85d91da01ffa1365aea70b303273c866b6c8bb016e2f2224944d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Nonvacuity.lean compiles with an import of Defs only. On the literal missingPairPopulation with X=missingPairProfile, D=missingPairTreatment, x=0, d=0, dprime=1, it constructs a probability-measure instance and every hypothesis of DiscretePositivityImplications, including measurability, L2, positive profile mass and positive endpoint probabilities. It checks the epsilon=1/4 finite law, positive effective normalizer and effective mass 3/7; the iid ordered sample [0,0,2,3] has product probability 1/256; both its control and full-regression Grams are nonsingular; its actual inverse-based OLS fit is [0,1/2], with residuals [0,0,-1/2,1/2]. It checks the fixed small-overlap IPW expectation 3/2. For MissingPairFailure the ordinary normalized weights give Q=[1/10,1/10,2/5,2/5], so Q(X=1)=4/5 and Q(D=1|X=1)=0. Bounded finite data and deterministic potential outcomes verify the remaining witness conditions, as detailed in scratch/claim-witness-checks.md.",
+    "confidence": 0.99
+  }
+]

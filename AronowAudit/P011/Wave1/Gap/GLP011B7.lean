@@ -614,5 +614,7 @@ theorem degree_only_finite_proof {n : ℕ} (hn : 0 < n) (d : Fin n → ℕ) (D :
         div_le_div_of_nonneg_right hlH hnle
       _ = _ := by ring
 
+example : type_of% @AronowAudit.P011.degree_only_finite := degree_only_finite_proof
+
 end
 end AronowAudit.P011.Wave1

@@ -5,8 +5,9 @@ import Mathlib.Order.Filter.AtTopBot.Archimedean
 import Mathlib.Order.Filter.AtTopBot.Tendsto
 import Mathlib.Topology.Algebra.Order.Field
 
-/-! Finite-sampling second moments, normalized moment bounds, balance, and
-randomization moments. -/
+/-! Draft for dd-GP0021B1. No Lean process was run while preparing this file.
+The shared finite-sampling helpers precede record 1; the five final declarations
+appear in brief order. Held declarations are used only in `type_of%` checks. -/
 
 namespace AronowAudit.P002.Wave1
 noncomputable section
@@ -23,7 +24,7 @@ open Causalean.Experimentation.DesignBased
 open Causalean.Experimentation.FinitePopulationMoments
   (E_sampleMean Var_sampleMean sampleMean)
 
-/-! Assignment-space bridge and second moment. -/
+/-! Record 1: shared carrier bridge and second moment. -/
 
 private theorem C17_expectation_congr {n} (P : Population n)
     {f g : Finset (Fin n) → ℝ}
@@ -141,7 +142,9 @@ theorem corrected_C17_proof {n} (P : Population n) (hP : ValidDesign P) (β : �
   simp_rw [C17_corrected_bracket]
   simpa only [v] using C17_sample_mean_second_moment P hP (w P true β)
 
-/-! Normalized moment, balance, and deterministic limit. -/
+example : type_of% @AronowAudit.P002.corrected_C17 := corrected_C17_proof
+
+/-! Record 2: normalized moment, balance, and deterministic limit. -/
 
 private theorem C17rate_balance (r p : ℝ) (hr : 0 < r ∧ r ≤ 1/2)
     (hlo : r ≤ p) (hhi : p ≤ 1-r) :
@@ -257,7 +260,9 @@ theorem corrected_C17_rate_proof (sizes : ℕ → ℕ) (hsizes : StrictMono size
            mul_le_mul_of_nonneg_left (hdata j).2.2 hC
          _ = C/(r*(sizes j : ℝ)) := by ring
 
-/-! Sample-mean second moment. -/
+example : type_of% @AronowAudit.P002.corrected_C17_rate := corrected_C17_rate_proof
+
+/-! Record 3: expose the already established shared second moment. -/
 
 theorem sample_mean_variance_proof {n} (P : Population n) (h : ValidDesign P)
     (q : Fin n → ℝ) :
@@ -266,7 +271,10 @@ theorem sample_mean_variance_proof {n} (P : Population n) (h : ValidDesign P)
       ∑ i, (q i - mean q)^2 := by
   exact C17_sample_mean_second_moment P h q
 
-/-! Randomization moments and (C.31). -/
+example : type_of% @AronowAudit.P002.sample_mean_variance := sample_mean_variance_proof
+
+/-! Record 4: the randomization moments are proved here as helpers, since
+C.31 precedes the public moment theorem in the requested order. -/
 
 private theorem C31_rawTau_on_support {n} (P : Population n)
     (h : ValidDesign P) (q : Fin n → ℝ)
@@ -442,7 +450,9 @@ theorem corrected_C31_proof {n} (P : Population n) (h : ValidDesign P)
            div_le_div_of_nonneg_left hD hN1 (by linarith)
   exact mul_le_mul_of_nonneg_right hcoeff (sq_nonneg d)
 
-/-! Randomization moments. -/
+example : type_of% @AronowAudit.P002.corrected_C31 := corrected_C31_proof
+
+/-! Record 5: expose the independently established randomization moments. -/
 
 theorem randomization_moments_proof {n} (P : Population n) (h : ValidDesign P)
     (q : Fin n → ℝ) :
@@ -450,6 +460,8 @@ theorem randomization_moments_proof {n} (P : Population n) (h : ValidDesign P)
     designVariance P (rawTau P q) = (fraction P)^2 * (1-fraction P)^2 *
       popVar q * (1/(P.n1 : ℝ) + 1/controlSize P) := by
   exact C31_raw_moments P h q
+
+example : type_of% @AronowAudit.P002.randomization_moments := randomization_moments_proof
 
 end
 end AronowAudit.P002.Wave1

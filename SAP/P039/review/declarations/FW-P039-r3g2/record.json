@@ -1,0 +1,75 @@
+[
+ {
+  "target_id": "P039-T6",
+  "decision": "whole",
+  "theorem": "SAP.P039.T6",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P039.corrected_extremism_margins",
+   "AronowAudit.P039.corrected_extremism_selections",
+   "AronowAudit.P039.maximum_effect_contribution",
+   "AronowAudit.P039.maximum_effect_samples",
+   "AronowAudit.P039.maximum_effect_sign",
+   "AronowAudit.P039.maximum_effect_worked_example"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P039.T6Statement",
+  "bridge": "SAP.P039.Bridge.T6_correspondence"
+ },
+ {
+  "target_id": "P039-T7",
+  "decision": "whole",
+  "theorem": "SAP.P039.T7",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P039.PaperDomains.nested_standard_error_bound",
+   "AronowAudit.P039.printed_nested_standard_errors_impossible",
+   "AronowAudit.P039.printed_standard_error_exact_gap",
+   "AronowAudit.P039.table_A1_coefficient_rounding",
+   "AronowAudit.P039.table_A1_exact_fit",
+   "AronowAudit.P039.table_A1_standard_error_rounding",
+   "AronowAudit.P039.table_A1_unique_minimizer",
+   "AronowAudit.P039.table_A2_coefficient_rounding",
+   "AronowAudit.P039.table_A2_exact_fit",
+   "AronowAudit.P039.table_A2_unique_minimizer",
+   "AronowAudit.P039.table_A3_coefficient_rounding",
+   "AronowAudit.P039.table_A3_exact_fit",
+   "AronowAudit.P039.table_A3_unique_minimizer",
+   "AronowAudit.GaussianCompletion.gaussian_squares_eq_gamma",
+   "AronowAudit.GaussianCompletion.integral_gamma_eq_setIntegral",
+   "AronowAudit.P039.GaussianCompletion.erase_zero_sum",
+   "AronowAudit.P039.GaussianCompletion.standard_pair_squares",
+   "AronowAudit.P039.StudentCompletion.gamma_rpow_integrand",
+   "SAP.P039.Bridge.T7_correspondence",
+   "SAP.P039.WH.W1.T7_L1_proof",
+   "SAP.P039.WH.W1.T7_L2_proof",
+   "SAP.P039.WH.W1.T7_assembly",
+   "SAP.P039.WH.W1.T7_whole",
+   "SAP.P039.WH.W1.alternative_rmsq",
+   "SAP.P039.WH.W1.student_six_tail",
+   "SAP.P039.WH.W1.table_income_statistics",
+   "StatLean.MultipleTesting.integral_id_gammaMeasure",
+   "StatLean.MultipleTesting.variance_gammaMeasure"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P039.nested_minimum_squares",
+    "reason": "The variational nesting conclusion is already included in PaperDomains.nested_standard_error_bound."
+   },
+   {
+    "lean_name": "AronowAudit.P039.nested_standard_error_bound_full",
+    "reason": "Use the PaperDomains version, which states geometry before the outcome is chosen."
+   },
+   {
+    "lean_name": "AronowAudit.P039.nested_standard_error_scalar",
+    "reason": "Its normalized-SE inequality is already included in the general matrix result."
+   },
+   {
+    "lean_name": "AronowAudit.P039.printed_standard_error_incompatible",
+    "reason": "The complete nested-fit contradiction already incorporates this scalar rounding lemma."
+   }
+  ],
+  "statement_definition": "SAP.P039.T7WholeStatement",
+  "bridge": "SAP.P039.Bridge.T7_correspondence"
+ }
+]

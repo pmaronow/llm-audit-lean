@@ -1,0 +1,183 @@
+import SAP.P039.Defs.WholeW1
+
+set_option autoImplicit false
+set_option maxRecDepth 4096
+set_option maxHeartbeats 2000000
+open SAP.P039
+open scoped BigOperators Matrix
+
+-- Check every finite T6 sample, winner, attained margin and sign directly.
+example : ∀ j : ExtremismMeasure,
+    magnitudeWinner j ∈ modelElections j false ∧
+    magnitudeWinner j ∈ modelElections j true ∧
+    closestCompetitor j ∈ modelElections j false ∧
+    closestCompetitor j ∈ modelElections j true ∧
+    depositedExtremism j (magnitudeWinner j) < 0 ∧
+    0 < magnitudeMargin j ∧
+    |depositedExtremism j (magnitudeWinner j)| -
+        |depositedExtremism j (closestCompetitor j)| = magnitudeMargin j ∧
+    0 < maximumEffect (-1) j ∧
+    (modelElections j false).card = (if j = 0 ∨ j = 2 then 17 else if j = 4 then 8 else 11) ∧
+    (modelElections j true).card = (if j = 0 ∨ j = 2 then 16 else if j = 4 then 8 else 11) := by
+  intro j
+  fin_cases j <;>
+    norm_num [modelElections, extremismElections, magnitudeWinner, closestCompetitor,
+      depositedExtremism, magnitudeMargin, maximumEffect]
+
+-- The exact data really have full-rank designs: prove injectivity from observed rows.
+example : FullColumnRank tableA1 := by
+  intro a b h
+  have h0 := congrFun h 0
+  have h1 := congrFun h 1
+  have h2 := congrFun h 2
+  norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_succ, tableA1, tableTwoInputs] at h0 h1 h2
+  ext j
+  fin_cases j
+  · change a 0 = b 0
+    linarith
+  · change a 1 = b 1
+    linarith
+  · change a 2 = b 2
+    linarith
+
+example : FullColumnRank tableA2 := by
+  intro a b h
+  have h0 := congrFun h 0
+  have h1 := congrFun h 1
+  have h2 := congrFun h 2
+  have h3 := congrFun h 3
+  norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_succ, tableA2, tableTwoInputs] at h0 h1 h2 h3
+  ext j
+  fin_cases j
+  · change a 0 = b 0
+    linarith
+  · change a 1 = b 1
+    linarith
+  · change a 2 = b 2
+    linarith
+  · change a 3 = b 3
+    linarith
+
+example : FullColumnRank tableA3 := by
+  intro a b h
+  have h0 := congrFun h 0
+  have h1 := congrFun h 1
+  have h2 := congrFun h 2
+  have h3 := congrFun h 3
+  have h4 := congrFun h 4
+  norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_succ, tableA3, tableTwoInputs] at h0 h1 h2 h3 h4
+  ext j
+  fin_cases j
+  · change a 0 = b 0
+    linarith
+  · change a 1 = b 1
+    linarith
+  · change a 2 = b 2
+    linarith
+  · change a 3 = b 3
+    linarith
+  · change a 4 = b 4
+    linarith
+
+namespace Audit
+
+def Z₁ : Matrix (Fin 17) (Fin 2) ℝ := fun i j => if i.val = j.val then 1 else 0
+def Z₂ : Matrix (Fin 17) (Fin 3) ℝ := fun i j => if i.val = j.val then 1 else 0
+def q : Fin 17 → ℝ := fun i => if i = 3 then 10 else 0
+def y : Fin 17 → ℝ := fun i => if i = 4 then 17 else 0
+
+lemma nested : ∀ a, ∃ b, Z₁ *ᵥ a = Z₂ *ᵥ b := by
+  intro a
+  refine ⟨![a 0, a 1, 0], ?_⟩
+  ext i
+  fin_cases i <;> norm_num [Z₁, Z₂, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+
+lemma rank₁ : FullColumnRank (fullDesign Z₁ q) := by
+  intro a b h
+  have h0 := congrFun h 0
+  have h1 := congrFun h 1
+  have h3 := congrFun h 3
+  norm_num [fullDesign, Z₁, q, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h0 h1 h3
+  ext j
+  fin_cases j
+  · change a 0 = b 0
+    linarith
+  · change a 1 = b 1
+    linarith
+  · change a 2 = b 2
+    linarith
+
+lemma rank₂ : FullColumnRank (fullDesign Z₂ q) := by
+  intro a b h
+  have h0 := congrFun h 0
+  have h1 := congrFun h 1
+  have h2 := congrFun h 2
+  have h3 := congrFun h 3
+  norm_num [fullDesign, Z₂, q, Matrix.mulVec, dotProduct, Fin.sum_univ_succ] at h0 h1 h2 h3
+  ext j
+  fin_cases j
+  · change a 0 = b 0
+    linarith
+  · change a 1 = b 1
+    linarith
+  · change a 2 = b 2
+    linarith
+  · change a 3 = b 3
+    linarith
+
+lemma cross₁ : (fullDesign Z₁ q)ᵀ *ᵥ y = 0 := by
+  ext j
+  fin_cases j <;> norm_num [fullDesign, Z₁, q, y, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+
+lemma cross₂ : (fullDesign Z₂ q)ᵀ *ᵥ y = 0 := by
+  ext j
+  fin_cases j <;> norm_num [fullDesign, Z₂, q, y, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+
+lemma sse₁ : olsSSE (fullDesign Z₁ q) y = 289 := by
+  simp only [olsSSE, olsResidual, ols, cross₁, Matrix.mulVec_zero, sub_zero]
+  norm_num [squaredLength, dotProduct, Fin.sum_univ_succ, y]
+
+lemma sse₂ : olsSSE (fullDesign Z₂ q) y = 289 := by
+  simp only [olsSSE, olsResidual, ols, cross₂, Matrix.mulVec_zero, sub_zero]
+  norm_num [squaredLength, dotProduct, Fin.sum_univ_succ, y]
+
+lemma gram₂ : (fullDesign Z₂ q)ᵀ * fullDesign Z₂ q = Matrix.diagonal ![1,1,1,(100 : ℝ)] := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul_apply, Fin.sum_univ_succ, fullDesign, Z₂, q, Matrix.diagonal]
+
+lemma inverse₂ : ((fullDesign Z₂ q)ᵀ * fullDesign Z₂ q)⁻¹ =
+    Matrix.diagonal ![1,1,1,(1/100 : ℝ)] := by
+  rw [gram₂]
+  apply Matrix.inv_eq_right_inv
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.mul_apply, Fin.sum_univ_succ, Matrix.diagonal]
+
+-- All premises of the general nested inequality hold, with strictly positive SSE.
+example : (∀ a, ∃ b, Z₁ *ᵥ a = Z₂ *ᵥ b) ∧
+    FullColumnRank (fullDesign Z₁ q) ∧ FullColumnRank (fullDesign Z₂ q) ∧
+    2 + 1 < 17 ∧ 3 + 1 < 17 ∧
+    0 < olsSSE (fullDesign Z₁ q) y ∧ 0 < olsSSE (fullDesign Z₂ q) y := by
+  exact ⟨nested, rank₁, rank₂, by norm_num, by norm_num,
+    by rw [sse₁]; norm_num, by rw [sse₂]; norm_num⟩
+
+-- The one-sided printed-cell bound also has a genuine, nonzero instance.
+example : Real.sqrt (olsSESquared (fullDesign Z₂ q) y 3) ≤ (0.965 : ℝ) ∧
+    olsResidualStandardError (fullDesign Z₁ q) y ≤ (4.625 : ℝ) ∧
+    (4.695 : ℝ) ≤ olsResidualStandardError (fullDesign Z₂ q) y := by
+  have hse : olsSESquared (fullDesign Z₂ q) y 3 = (289 / 1300 : ℝ) := by
+    rw [olsSESquared, sse₂, inverse₂]
+    norm_num [Matrix.diagonal]
+  rw [hse, olsResidualStandardError, olsResidualStandardError, sse₁, sse₂]
+  norm_num only [Nat.cast_ofNat]
+  constructor
+  · apply (Real.sqrt_le_iff).2
+    norm_num
+  constructor
+  · apply (Real.sqrt_le_iff).2
+    norm_num
+  · apply (Real.le_sqrt (by norm_num) (by norm_num)).2
+    norm_num
+
+end Audit

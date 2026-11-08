@@ -1,0 +1,116 @@
+[
+  {
+    "theorem": "SAP.P001d.T58",
+    "target_id": "P001-T58",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The even integrable signed kernel, normalization, all one-observation density identities and negative integrated value match. The strict-decrease claim and the triangular-sampling/fixed-square-root-functional example (including its interval bound and probability-one domain failure) are absent. The retained negative value already refutes the printed claim that every admitted kernel yields a CDF."
+  },
+  {
+    "theorem": "SAP.P001d.T59",
+    "target_id": "P001-T59",
+    "my_reading_vs_claim": "whole",
+    "reason": "The theorem gives all the density and CDF properties in the formal content for every positive sample size and bandwidth. Integral K=1 entails Integrable K in Mathlib, so missing explicit integrability cannot exploit the zero value of a nonintegrable Bochner integral. Almost-everywhere nonnegativity suffices; the CDF properties certify membership in the mathematical CDF domain."
+  },
+  {
+    "theorem": "SAP.P001d.T60",
+    "target_id": "P001-T60",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both the integrated-estimator change of variables and the rectangular-kernel empirical-CDF formula are present, with the same excluded observation endpoint x-h. Positive n and h are the statistical domain, and K is explicitly integrable for the integral identity."
+  },
+  {
+    "theorem": "SAP.P001d.T61",
+    "target_id": "P001-T61",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The heavy law, median odd-size distributional and conditional-bootstrap limits, and both variance obstructions match. The regular functional local identity and odd-size finite-statistic marginal limit are retained. Missing are the population tail/CDF and median-uniqueness calculations, a derivative predicate, full-size limits for T0, the regular-statistic conditional weak-bootstrap limit, and the explicit identification with T0 of the empirical CDF. On odd sizes the defined median does agree with that empirical half-quantile; its fallback is not a different counterexample."
+  },
+  {
+    "theorem": "SAP.P001d.T62",
+    "target_id": "P001-T62",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The conditional weak-limit/square-tail equivalence, square-root consequence, exact mean formula and finite-moment median case have the claimed mathematical content. However, the first branch additionally requires every T_n to be globally Borel measurable on R^n. The standing definition of a function of random variables (S2, Definition 1.2.2) requires composite measurability; the canonical claim does not impose this global condition. For IID Bernoulli data, a statistic can agree with the sample mean on every binary data vector and be non-Borel off that finite support, leaving every observed and resampled random variable unchanged but failing the Lean premise. Natural cutoffs instead of real cutoffs are cofinal and cause no loss. The limsup is of bounded probabilities, not unbounded moments."
+  },
+  {
+    "theorem": "SAP.P001d.T63",
+    "target_id": "P001-T63",
+    "my_reading_vs_claim": "whole",
+    "reason": "All sample-mean, IID cluster-average, expectation, covariance-sum variance and WLLN conclusions appear. Coordinate square integrability supplies the finite means and variances used in these formulas, as required by the standing finiteness convention. Omitting unnecessary positive coordinate variance from the WLLN premise only extends the result to degenerate cases."
+  },
+  {
+    "theorem": "SAP.P001d.T64",
+    "target_id": "P001-T64",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The actual design-effect variance, both correlation endpoints, and independent uniform intact-cluster resampling with lm positions are present. Diagonal and off-diagonal covariances are specified directly rather than derived from variances and correlations, and the intermediate diagonal/off-diagonal sum expansion is not a conclusion. The restriction to s>0 matches the positive standard deviations needed by the canonical correlation definition."
+  },
+  {
+    "theorem": "SAP.P001d.T65",
+    "target_id": "P001-T65",
+    "my_reading_vs_claim": "whole",
+    "reason": "The inverse-Gram unique minimizer and all three residual properties match, including the intercept and nonempty sample. The canonical claim note explicitly says Theorem 4.1.5 inherits Gram invertibility, so the common invertibility premise is not an additional restriction relative to this target. Residual identities for singular minimizers are true but are outside that canonical inherited setting."
+  },
+  {
+    "theorem": "SAP.P001d.T66",
+    "target_id": "P001-T66",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Only the corrected diagonal-index square-root formulas for the explicitly defined design-matrix covariance forms are asserted. They are definitional equalities for supplied e and s2, under stated domain/nonnegativity premises. The normalized outer-product/design-matrix identities and equality of the two covariance-estimator forms required by the canonical formal content are missing."
+  },
+  {
+    "theorem": "SAP.P001d.T67",
+    "target_id": "P001-T67",
+    "my_reading_vs_claim": "whole",
+    "reason": "Under the given zero conditional mean, conditional variance is by definition the conditional mean of (epsilon-0)^2, so its IsCEF certificate is a valid rendering of homoskedasticity. Removing subtraction of zero in the first conclusion is definitional, not an additional statistical assumption. Integrability and Gram invertibility guard the population moments and inverse; the substantive moment factorization and sandwich identity are asserted. Allowing arbitrary K-vectors instead of only intercept-augmented ones extends the algebra without losing the canonical case."
+  },
+  {
+    "theorem": "SAP.P001d.T68",
+    "target_id": "P001-T68",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The additive-noise CEF version follows under independence, integrability and mean zero. The additional global Borel measurability of g is stronger than the canonical requirement that g composed with X be a random variable. Event-integral conditional-mean versions are compatible with the standing formalizer note about versions."
+  },
+  {
+    "theorem": "SAP.P001d.T69",
+    "target_id": "P001-T69",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The population example, both covariate means, global first-coordinate derivative, APD=1, PDA=-1 and inequality match, for every Y with the stated CEF. The separate general APD plug-in-estimator formula and corrected label on page 166 are absent."
+  },
+  {
+    "theorem": "SAP.P001d.T70",
+    "target_id": "P001-T70",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Unboundedness and absence of an unsquared minimizer, the squared OLS identity, and the full-rank inverse-Gram unique minimizer match for every nonempty data set. The canonical parenthetical necessity of at least J+1 distinct observed covariate values for Gram invertibility is not asserted."
+  },
+  {
+    "theorem": "SAP.P001d.T71",
+    "target_id": "P001-T71",
+    "my_reading_vs_claim": "whole",
+    "reason": "The coefficient domain has K+1 entries, the slope-only penalty satisfies all seminorm axioms, the nonzero unit intercept distinguishes it from the full l1 norm, zero-penalty optimizer sets equal the OLS sets, and all nonnegative-penalty criteria are convex. Arbitrary deterministic designs include every statistical intercept design."
+  },
+  {
+    "theorem": "SAP.P001d.T72",
+    "target_id": "P001-T72",
+    "my_reading_vs_claim": "whole",
+    "reason": "For positive scale the actual normal density is nonnegative, integrable, normalized and has integrable first moment equal to x dot beta, which is the fixed-covariate CEF calculation. The explicit zero-scale mass-zero computation is a disclosed check of the totalized expression and correctly excludes it as a Lebesgue probability density; it does not identify a Dirac Gaussian with that density."
+  },
+  {
+    "theorem": "SAP.P001d.T73",
+    "target_id": "P001-T73",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The concrete four-atom model, positive conditioning masses, linear CEF values, mean-zero and X-orthogonal residual, and failed independence product equation match and suffice to refute general CEF-residual independence. The separate residual enumeration, conditional residual mean, orthogonality for arbitrary functions, conditional variances 1 and 9 and unconditional variance 5 are missing."
+  },
+  {
+    "theorem": "SAP.P001d.T74",
+    "target_id": "P001-T74",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The residual CEF and mean-zero conclusions, L2 orthogonality, conditional-square certificate transport, total variance, finite nonindependence example, and Gaussian residual law/independence are present. Orthogonality is limited to globally measurable square-integrable g(X), with globally measurable m and square-integrable Y and m(X). A conditional variance certificate is supplied instead of constructed. The Gaussian premise is an integrated translated-product joint law and no separate pointwise conditional residual-law conclusion is given."
+  },
+  {
+    "theorem": "SAP.P001d.T75",
+    "target_id": "P001-T75",
+    "my_reading_vs_claim": "whole",
+    "reason": "The conditional PMF at a fixed covariate vector is represented by its two weights, and the explicitly defined first moment is exactly 0(1-p)+1p. This equals h(x dot beta) and lies in [0,1]. This is the entire canonical fixed-PMF mean computation; no stochastic claim is gained by requiring a second copy of the same PMF as an additional random variable."
+  },
+  {
+    "theorem": "SAP.P001d.T76",
+    "target_id": "P001-T76",
+    "my_reading_vs_claim": "narrower",
+    "reason": "For every positive fixed scale, the defined Gaussian log-likelihood is the conventional sum after elementary logarithm simplification. Both optimizer-set equivalence with RSS and invariance across positive scales match. The full-rank uniqueness and explicit inverse-Gram coefficient conclusion in the canonical formal content are missing."
+  }
+]

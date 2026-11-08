@@ -13,7 +13,7 @@ universe u v
 noncomputable section
 local instance instDecidableCondP001g2 (p : Prop) : Decidable p := Classical.propDecidable p
 
-/-- Translate the event definition of CI to the sigma-field formulation of conditional independence. -/
+/-- Translate the event definition of CI to the sigma-field formulation in the literature input. -/
 lemma CondP001g2_ci_join
     (hK : AronowAudit.Literature.Kallenberg2002Prop6_6.{u})
     {Ω : Type u} {E : Type v} [mΩ : MeasurableSpace Ω] [MeasurableSpace E]

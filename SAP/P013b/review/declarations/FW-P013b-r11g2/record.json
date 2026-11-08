@@ -1,0 +1,162 @@
+[
+ {
+  "target_id": "P013-T20",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T20",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.simulation_matrices_almost_sure"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.design_matrix_entry",
+    "reason": "Not separately invoked: supporting finite infrastructure is already incorporated in the selected IID matrix-limit theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P013.integral_designMeasure",
+    "reason": "Not separately invoked: supporting finite infrastructure is already incorporated in the selected IID matrix-limit theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P013.replicate_count_expectation",
+    "reason": "Not separately invoked: supporting finite infrastructure is already incorporated in the selected IID matrix-limit theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P013.replicate_joint_strong_law",
+    "reason": "Not separately invoked: the selected simultaneous matrix-limit row incorporates this strong law under the same IID assumptions."
+   },
+   {
+    "lean_name": "AronowAudit.P013.replicate_marginal",
+    "reason": "Not separately invoked: supporting finite infrastructure is already incorporated in the selected IID matrix-limit theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P013.replicate_matrix_entry",
+    "reason": "Not separately invoked: supporting finite infrastructure is already incorporated in the selected IID matrix-limit theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P013.replicate_matrix_unbiased",
+    "reason": "Not separately invoked: supporting finite infrastructure is already incorporated in the selected IID matrix-limit theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P013.replicate_pair_marginal",
+    "reason": "Not separately invoked: supporting finite infrastructure is already incorporated in the selected IID matrix-limit theorem."
+   },
+   {
+    "lean_name": "AronowAudit.P013.smoothed_average_limit",
+    "reason": "Not separately invoked: the selected matrix-limit row already includes same-exposure identity smoothing."
+   }
+  ],
+  "statement_definition": "SAP.P013b.T20Statement",
+  "statement_summary": "Independent measurable exact-design-law replicate assignments give almost-sure convergence of both simulated exposure matrices, on one event for every exposure and every entry, including the same-exposure limit when K = 1, with the stated identity smoothing.",
+  "proof_note": "Bridge.simulation_matrices_pair instantiates AronowAudit.P013.simulation_matrices_almost_sure; Bridge.simulation_matrices_iid collects all exposures with ae_all_iff and obtains the same-exposure limit for every d (including K = 1) by relabelling exposures injectively into Fin (K + 1) and pairing d with the unused label Fin.last K. The source row has final status wrong_credit at work.json:1038 and is reused only for its actual independent exact-law sampling statement. Under the claim-relative classification rule in revise-fw7.md:13, T20 is whole: both canonical matrix limits, all exposures and entries, and identity smoothing are retained under the printed independent-replication reading. The usual measure-theoretic conditions are assumed."
+ },
+ {
+  "target_id": "P013-T22",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T22",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.differenceEffect_shift_error",
+   "AronowAudit.P013.differenceTotal_equivariance_iff",
+   "AronowAudit.P013.differenceTotal_joint_translation",
+   "AronowAudit.P013.differenceTotal_shift_change",
+   "AronowAudit.P013.differenceTotal_shift_error",
+   "AronowAudit.P013.difference_fixed_prediction_translation",
+   "AronowAudit.P013.difference_joint_translation_properties",
+   "AronowAudit.P013.exposureWeight_unbiased",
+   "AronowAudit.P013.fixed_count_calibration",
+   "AronowAudit.P013.fixed_translation_mean_zero",
+   "AronowAudit.P013.ht_fixed_translation",
+   "AronowAudit.P013.translation_error_mean_zero"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.differenceTotal_weighted",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.shift_population_objects",
+    "reason": "Exposure preservation and consistent outcome translation are encoded directly by the SAP shift definition."
+   }
+  ],
+  "statement_definition": "SAP.P013b.T22Statement"
+ },
+ {
+  "target_id": "P013-T21",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T21",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.location_counterexample_enumeration",
+   "AronowAudit.P013.location_counterexample_hypotheses",
+   "AronowAudit.P013.location_counterexample_joint_repair",
+   "AronowAudit.P013.location_counterexample_moments",
+   "AronowAudit.P013.location_counterexample_targets",
+   "AronowAudit.P013.location_translation_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P013b.T21Statement"
+ },
+ {
+  "target_id": "P013-T24",
+  "decision": "restricted",
+  "theorem": "SAP.P013b.T24",
+  "restriction": "Retains recorded-outcome estimation, all loss and identification formulas, the nonnegative sufficient condition, zero-outcome exclusion identities, unequal Hajek factors, numeric arithmetic and conditional HT scaling. Omits verification that the reconstruction has 2050 students, 342 item nonrespondents and 151 survey nonrespondents, that all 342 are scored zero, and the link to the released orange-wristband indicator. The scaling clause assumes |S|=2050, |item|=1708, |survey|=1899, item subset S, survey subset S, positive weights on S and retention of every nonzero recorded score in both sets. It neither assumes nor establishes item subset survey: containment of the 151 survey nonrespondents among the 342 item nonrespondents is omitted. Omits reproduction of all twelve rounded Table 2 point estimates and does not separately assert strictness of the comparison between the sufficient and necessary loss conditions.",
+  "rows_used": [
+   "AronowAudit.P013.corrected_recorded_outcome",
+   "AronowAudit.P013.dropping_zero_outcomes",
+   "AronowAudit.P013.hajek_exclusion_no_common_factor",
+   "AronowAudit.P013.no_lost_wearing_suffices",
+   "AronowAudit.P013.public_reconstruction_HT_scaling",
+   "AronowAudit.P013.public_reconstruction_factors"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P013.ht_positive_unbiased",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.lost_mean_zero_iff",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.observed_exposure_sum",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.recorded_mean_decomposition",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.recorded_pi",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.recorded_unbiased",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   },
+   {
+    "lean_name": "AronowAudit.P013.recorded_wearing_identification",
+    "reason": "Not separately invoked: the selected result rows supply the claim clauses and already incorporate their supporting finite identities."
+   }
+  ],
+  "statement_definition": "SAP.P013b.T24Statement"
+ },
+ {
+  "target_id": "P013-T23",
+  "decision": "whole",
+  "theorem": "SAP.P013b.T23",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P013.two_report_biases",
+   "AronowAudit.P013.two_report_data_same",
+   "AronowAudit.P013.two_report_estimator",
+   "AronowAudit.P013.two_report_hypotheses",
+   "AronowAudit.P013.two_report_moments",
+   "AronowAudit.P013.two_report_nonidentification",
+   "AronowAudit.P013.two_respondent_comparison",
+   "AronowAudit.P013.two_wearing_effects_and_losses"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P013b.T23Statement"
+ }
+]

@@ -1,0 +1,100 @@
+[
+ {
+  "target_id": "P029-T1",
+  "decision": "whole",
+  "theorem": "SAP.P029a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.ignorability_counterexample",
+   "AronowAudit.P029.potential_pair_independent_of_receipt"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P029-T2",
+  "decision": "whole",
+  "theorem": "SAP.P029a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.one_sided_ignorability_implication_proof",
+   "AronowAudit.P029.baseline_selection_counterexample",
+   "AronowAudit.P029.corrected_ignorability_incomparability",
+   "SAP.P029a.WH.W1.T2_whole",
+   "SAP.P029a.WH.W1.T2_assembly",
+   "SAP.P029a.WH.W1.T2_L1_proof",
+   "AronowAudit.P029.Wave1.LateIdentity.n1_proof",
+   "AronowAudit.P029.ignorability_counterexample"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P029a.T2WholeStatement"
+ },
+ {
+  "target_id": "P029-T3",
+  "decision": "whole",
+  "theorem": "SAP.P029a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.conditional_independence_counterexample",
+   "AronowAudit.P029.conditional_witness_not_marginally_independent",
+   "AronowAudit.P029.marginal_independence_counterexample",
+   "AronowAudit.P029.marginal_witness_nested_probabilities"
+  ],
+  "rows_not_used": []
+ },
+ {
+  "target_id": "P029-T4",
+  "decision": "whole",
+  "theorem": "SAP.P029a.T4",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.Wave1.corrected_weighted_limits_proof",
+   "AronowAudit.P029.Wave1.joint_independence_suffices_proof",
+   "AronowAudit.P029.conditional_independence_counterexample",
+   "AronowAudit.P029.marginal_independence_counterexample",
+   "SAP.P029a.WH.W1.T4_whole",
+   "SAP.P029a.WH.W1.T4_assembly",
+   "SAP.P029a.WH.W1.T4_L1_proof",
+   "SAP.P029a.WH.W1.T4_L2_proof",
+   "SAP.P029a.WH.W1.T4_L3_proof",
+   "SAP.P029a.WH.W1.T4_L4_proof",
+   "AronowAudit.P029.Wave1.LateIdentity.n1_proof",
+   "AronowAudit.P015.ConvergenceCompletion.finite_cmt",
+   "AronowAudit.P015.ConvergenceCompletion.constant_limit",
+   "SAP.P029a.Bridge.proveIndependenceWitnessMeans"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.profile_covariance_gap",
+    "reason": "The transported corrected_weighted_limits_proof already supplies the population covariance-gap identity; this finite-profile helper is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P029.profile_inverse_score_cancellation",
+    "reason": "The transported corrected_weighted_limits_proof already supplies inverse-score cancellation; this finite-profile helper is not separately invoked."
+   }
+  ],
+  "statement_definition": "SAP.P029a.T4WholeStatement"
+ },
+ {
+  "target_id": "P029-T5",
+  "decision": "whole",
+  "theorem": "SAP.P029a.T5",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P029.homogeneous_rmse_counterexample",
+   "AronowAudit.P029.rmse_design_determinant",
+   "AronowAudit.P029.rmse_positive_weight_recovery",
+   "AronowAudit.P029.rmse_witness_admissible",
+   "AronowAudit.P029.rmse_witness_outcomes"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P029.normal_equation_exact_recovery",
+    "reason": "The selected counterexample and positive-weight theorem already export coefficient recovery; the generic matrix helper is not separately invoked."
+   },
+   {
+    "lean_name": "AronowAudit.P029.rmse_design_gram",
+    "reason": "The selected homogeneous_rmse_counterexample already exports this exact Gram identity, which is used to transport the outcome cross-products."
+   }
+  ]
+ }
+]

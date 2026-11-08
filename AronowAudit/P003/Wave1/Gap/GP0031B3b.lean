@@ -5,8 +5,9 @@ import Mathlib.Data.List.Nodup
 import Mathlib.Order.ConditionallyCompleteLattice.Finset
 
 /-!
-Corrected lattice filling and the interval-length bound.
-The marked-unit identities act directly on the binomial count weights.
+Exact proofs of corrected lattice filling and the interval-length bound.
+The shared marked-unit identities act directly on the implemented binomial
+count weights. The local decidability convention is the one in P003_Audit.
 -/
 
 namespace AronowAudit.P003.Wave1
@@ -1063,6 +1064,8 @@ theorem corrected_lattice_interval_proof (o : Counts) (α : ℝ)
     refine ⟨w,hw,by omega,hp.trans ?_⟩
     exact_mod_cast hpw
 
+example : type_of% @AronowAudit.P003.corrected_lattice_interval := corrected_lattice_interval_proof
+
 private lemma GP0031B3b_t31_estimate_real (o : Counts) :
     estimate o = (o.a : ℝ)/(o.a+o.b : ℕ)-(o.c : ℝ)/(o.c+o.d : ℕ) := by
   simp [estimate,estimateQ]
@@ -1353,5 +1356,7 @@ theorem interval_length_bound_proof (o : Counts) (α : ℝ)
   have hb := GP0031B3b_moment_bound v (o.a+o.b) ho.1 hm
   rw [hctrl, ht] at hb
   exact hb
+
+example : type_of% @AronowAudit.P003.interval_length_bound := interval_length_bound_proof
 
 end AronowAudit.P003.Wave1

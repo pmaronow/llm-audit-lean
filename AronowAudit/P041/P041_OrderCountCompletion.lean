@@ -4,8 +4,8 @@ import AronowAudit.P041.P041_OrderCounting
 noncomputable section
 namespace AronowAudit.P041
 
-/-- The actual balanced sequence count, for every m≥1, expressed as a
-binomial coefficient without assuming a distribution formula. -/
+/-- The actual balanced sequence count, for every m≥1. This discharges the
+previous prefix-counting obstruction without assuming a distribution formula. -/
 theorem leading_cited_count_exact {m k : ℕ} (hm : 1 ≤ m) (hk : k ≤ m) :
     ((balancedSequences m).filter (fun z => leadingCited z = k)).card =
       (2*m-k-1).choose (m-1) := by
@@ -17,7 +17,8 @@ theorem leading_cited_count_exact {m k : ℕ} (hm : 1 ≤ m) (hk : k ≤ m) :
   simp_rw [hL]
   exact OrderCompletion.balanced_leading_count hm hk
 
-/-- Exact probability in the uniform balanced-subset law. -/
+/-- Exact probability in the original uniform balanced-subset law.
+The full target's remaining moments and scrutiny consequences stay separate. -/
 theorem leading_cited_probability_exact {m k : ℕ} (hm : 1 ≤ m) (hk : k ≤ m) :
     leadingCitedProbability m k =
       (((2*m-k-1).choose (m-1) : ℝ) / ((2*m).choose m : ℝ)) := by
@@ -26,3 +27,5 @@ theorem leading_cited_probability_exact {m k : ℕ} (hm : 1 ≤ m) (hk : k ≤ m
 
 end AronowAudit.P041
 
+#print axioms AronowAudit.P041.leading_cited_count_exact
+#print axioms AronowAudit.P041.leading_cited_probability_exact

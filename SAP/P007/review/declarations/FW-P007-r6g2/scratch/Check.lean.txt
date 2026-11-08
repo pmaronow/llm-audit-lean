@@ -1,0 +1,314 @@
+import SAP.P007.Defs
+import SAP.P007.Defs.WholeW2
+
+open scoped BigOperators
+open SAP.P007 MeasureTheory
+
+open scoped Classical
+
+lemma sumPiProd {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] (g : ι → κ → ℝ) :
+    (∑ f : ι → κ, ∏ i, g i (f i)) = ∏ i, ∑ b : κ, g i b := by
+  classical
+  simpa using (Finset.prod_univ_sum (fun _ : ι => (Finset.univ : Finset κ)) g).symm
+
+noncomputable def productLaw (n h : ℕ) (a : Fin n → Fin h → ℝ)
+    (ha : ∀ i j, 0 ≤ a i j) (ha' : ∀ i j, a i j ≤ 1) : Law (Array n h) where
+  weight := cellWeights a
+  nonneg := by
+    intro x
+    unfold cellWeights
+    apply Finset.prod_nonneg
+    intro i hi
+    apply Finset.prod_nonneg
+    intro j hj
+    split_ifs <;> linarith [ha i j, ha' i j]
+  total := by
+    unfold cellWeights
+    rw [sumPiProd (fun i (r : Row h) => ∏ j, if r j then 1-a i j else a i j)]
+    have hr (i : Fin n) :
+        (∑ r : Row h, ∏ j, if r j then 1-a i j else a i j) = 1 := by
+      rw [sumPiProd (fun j (b : Bool) => if b then 1-a i j else a i j)]
+      simp [Fintype.sum_bool]
+    simp [hr]
+
+noncomputable def oneByTwo (a b : ℝ) (ha : 0 ≤ a) (ha' : a ≤ 1)
+    (hb : 0 ≤ b) (hb' : b ≤ 1) : Law (Array 1 2) :=
+  productLaw 1 2 (fun _ => ![a,b]) (by intro i j; fin_cases j <;> simp_all)
+    (by intro i j; fin_cases j <;> simp_all)
+
+lemma sumFinOneFun {β : Type*} [Fintype β] (f : (Fin 1 → β) → ℝ) :
+    (∑ x, f x) = ∑ b : β, f (fun _ => b) := by
+  let e : (Fin 1 → β) ≃ β := {
+    toFun := fun x => x 0
+    invFun := fun b _ => b
+    left_inv := by
+      intro x
+      funext i
+      exact congrArg x (Subsingleton.elim (0 : Fin 1) i)
+    right_inv := by intro b; rfl }
+  apply Fintype.sum_equiv e
+  intro x
+  apply congrArg f
+  funext i
+  exact congrArg x (Subsingleton.elim i (0 : Fin 1))
+
+lemma sumFinTwoFun {β : Type*} [Fintype β] (f : (Fin 2 → β) → ℝ) :
+    (∑ x, f x) = ∑ a : β, ∑ b : β, f ![a,b] := by
+  calc
+    _ = ∑ p : β × β, f ![p.1,p.2] := by
+      apply Fintype.sum_equiv (finTwoArrowEquiv β)
+      intro x
+      congr 1
+      funext i
+      fin_cases i <;> rfl
+    _ = _ := Fintype.sum_prod_type _
+
+lemma singletonRowsIndependent (h : ℕ) (L : Law (Array 1 h)) : rowIndependent L := by
+  intro E
+  simp only [Fin.prod_univ_one]
+  congr 1
+  funext x
+  simp [Fin.forall_fin_one]
+
+lemma oneByTwoSurvival (a b : ℝ) (ha : 0 ≤ a) (ha' : a ≤ 1)
+    (hb : 0 ≤ b) (hb' : b ≤ 1) :
+    survival (oneByTwo a b ha ha' hb hb') 0 1 = a ∧
+    survival (oneByTwo a b ha ha' hb hb') 0 2 = a*b := by
+  norm_num [survival, probability, oneByTwo, productLaw, cellWeights,
+    sumFinOneFun, sumFinTwoFun, Fintype.sum_bool, Fin.prod_univ_succ,
+    prefixObserved, Fin.forall_fin_succ]
+  <;> ring
+
+lemma oneByTwoDeleted (a b : ℝ) (ha : 0 ≤ a) (ha' : a ≤ 1)
+    (hb : 0 ≤ b) (hb' : b ≤ 1) :
+    allDeleted (oneByTwo a b ha ha' hb hb') = 1-a*b := by
+  norm_num [allDeleted, probability, oneByTwo, productLaw, cellWeights,
+    sumFinOneFun, sumFinTwoFun, Fintype.sum_bool, Fin.prod_univ_succ,
+    prefixObserved, Fin.forall_fin_succ]
+  <;> ring
+
+lemma rowWeightTotal {n h : ℕ} (a : Fin n → Fin h → ℝ) (i : Fin n) :
+    (∑ r : Row h, ∏ j, if r j then 1-a i j else a i j) = 1 := by
+  rw [sumPiProd (fun j (b : Bool) => if b then 1-a i j else a i j)]
+  simp
+
+lemma productEvent {n h : ℕ} (a : Fin n → Fin h → ℝ)
+    (ha : ∀ i j, 0 ≤ a i j) (ha' : ∀ i j, a i j ≤ 1)
+    (E : Fin n → Row h → Prop) :
+    probability (productLaw n h a ha ha') (fun x => ∀ i, E i (x i)) =
+      ∏ i, ∑ r : Row h, if E i r then (∏ j, if r j then 1-a i j else a i j) else 0 := by
+  classical
+  unfold probability productLaw
+  dsimp only
+  unfold cellWeights
+  calc
+    _ = ∑ x : Array n h, ∏ i,
+        if E i (x i) then (∏ j, if x i j then 1-a i j else a i j) else 0 := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      simp only [Finset.prod_ite_zero, Finset.mem_univ, true_implies]
+      split_ifs <;> rfl
+    _ = _ := sumPiProd (fun i (r : Row h) =>
+      if E i r then (∏ j, if r j then 1-a i j else a i j) else 0)
+
+lemma productMarginal {n h : ℕ} (a : Fin n → Fin h → ℝ)
+    (ha : ∀ i j, 0 ≤ a i j) (ha' : ∀ i j, a i j ≤ 1)
+    (i : Fin n) (E : Row h → Prop) :
+    probability (productLaw n h a ha ha') (fun x => E (x i)) =
+      ∑ r : Row h, if E r then (∏ j, if r j then 1-a i j else a i j) else 0 := by
+  classical
+  have he : (fun x : Array n h => E (x i)) =
+      (fun x => ∀ j, j = i → E (x j)) := by
+    funext x
+    simp
+  rw [he, productEvent a ha ha' (fun j r => j = i → E r)]
+  calc
+    _ = ∏ j, if j = i then
+        (∑ r : Row h, if E r then (∏ t, if r t then 1-a j t else a j t) else 0)
+        else 1 := by
+      apply Finset.prod_congr rfl
+      intro j hj
+      by_cases hi : j = i
+      · simp [hi]
+      · simp [hi, rowWeightTotal]
+    _ = _ := by simp
+
+lemma productRowsIndependent {n h : ℕ} (a : Fin n → Fin h → ℝ)
+    (ha : ∀ i j, 0 ≤ a i j) (ha' : ∀ i j, a i j ≤ 1) :
+    rowIndependent (productLaw n h a ha ha') := by
+  intro E
+  rw [productEvent]
+  apply Finset.prod_congr rfl
+  intro i hi
+  exact (productMarginal a ha ha' i (E i)).symm
+
+-- T6/T7/T8: positive-domain admissible equal model, constructed without Challenge.
+example : equalModel 1 2 (3/4) (fun L => allDeleted L = 7/16) := by
+  let L := oneByTwo (3/4) (3/4) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hs := oneByTwoSurvival (3/4) (3/4) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  change survival L 0 1 = 3/4 ∧ survival L 0 2 = (3/4)*(3/4) at hs
+  refine ⟨L, ?_, singletonRowsIndependent _ _, ?_, ?_⟩
+  · funext x
+    rfl
+  · refine ⟨by norm_num, by norm_num, ?_⟩
+    intro i
+    fin_cases i
+    constructor
+    · intro _
+      change survival L 0 1 ≤ 3/4
+      exact hs.1.le
+    · intro j hj hj' _
+      have : j = 1 := by omega
+      subst j
+      change survival L 0 2 / survival L 0 1 ≤ 3/4
+      rw [hs.1, hs.2]
+      norm_num
+  · dsimp [L]
+    rw [oneByTwoDeleted]
+    norm_num
+
+-- T7/T8: the actual-probability upper-guarantee witness, including all assumptions.
+example : unequalModel 1 2 (fun L =>
+    lowerBound 1 (3/4) 2 ≤ 1/2 ∧ (1/2 : ℝ) < allDeleted L) := by
+  let L := oneByTwo (3/4) (1/4) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hs := oneByTwoSurvival (3/4) (1/4) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  change survival L 0 1 = 3/4 ∧ survival L 0 2 = (3/4)*(1/4) at hs
+  refine ⟨L, ?_, singletonRowsIndependent _ _, ?_, ?_⟩
+  · funext x
+    rfl
+  · refine ⟨by norm_num, by norm_num, ?_⟩
+    intro i
+    fin_cases i
+    constructor
+    · intro _
+      change survival L 0 1 ≤ 3/4
+      exact hs.1.le
+    · intro j hj hj' _
+      have : j = 1 := by omega
+      subst j
+      change survival L 0 2 / survival L 0 1 ≤ 3/4
+      rw [hs.1, hs.2]
+      norm_num
+  · constructor
+    · norm_num [lowerBound]
+    · dsimp [L]
+      rw [oneByTwoDeleted]
+      norm_num
+
+noncomputable def figureLaw : Law (Array 2 2) :=
+  productLaw 2 2 (fun _ => ![(3/4 : ℝ), 1/2])
+    (by intro i j; fin_cases j <;> norm_num)
+    (by intro i j; fin_cases j <;> norm_num)
+
+lemma figureSurvival (i : Fin 2) :
+    survival figureLaw i 1 = 3/4 ∧ survival figureLaw i 2 = 3/8 := by
+  fin_cases i <;>
+    norm_num [survival, probability, figureLaw, productLaw, cellWeights,
+      sumFinTwoFun, Fintype.sum_bool, Fin.prod_univ_succ,
+      prefixObserved, Fin.forall_fin_succ]
+
+-- T9: independently construct and verify the entire canonical counterexample.
+example : T9Statement := by
+  refine ⟨figureLaw, rfl, productRowsIndependent _ _ _, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · refine ⟨by norm_num, by norm_num, ?_⟩
+    intro i
+    constructor
+    · intro _; exact (figureSurvival i).1.le
+    · intro j hj hj' _
+      have : j = 1 := by omega
+      subst j
+      change survival figureLaw i 2 / survival figureLaw i 1 ≤ 3/4
+      rw [(figureSurvival i).1, (figureSurvival i).2]
+      norm_num
+  · intro q hq
+    have h := (hq.2.2 (0 : Fin 2)).1 (by decide)
+    rwa [(figureSurvival 0).1] at h
+  · intro i
+    rw [(figureSurvival i).1, (figureSurvival i).2]
+    norm_num
+  · intro i
+    fin_cases i <;>
+      norm_num [expectation, deletedIndicator, figureLaw, productLaw, cellWeights,
+        sumFinTwoFun, Fintype.sum_bool, Fin.prod_univ_succ,
+        prefixObserved, Fin.forall_fin_succ]
+  · norm_num [expectation, deletedFraction, deletedIndicator, figureLaw, productLaw,
+      cellWeights, sumFinTwoFun, Fintype.sum_bool, Fin.sum_univ_succ,
+      Fin.prod_univ_succ, prefixObserved, Fin.forall_fin_succ]
+  · norm_num [fractionBound]
+  · norm_num [fractionBound, expectation, deletedFraction, deletedIndicator, figureLaw,
+      productLaw, cellWeights, sumFinTwoFun, Fintype.sum_bool, Fin.sum_univ_succ,
+      Fin.prod_univ_succ, prefixObserved, Fin.forall_fin_succ]
+  · norm_num [lowerBound]
+  · norm_num [lowerBound, fractionBound]
+  · norm_num [allDeleted, probability, figureLaw, productLaw, cellWeights,
+      sumFinTwoFun, Fintype.sum_bool, Fin.prod_univ_succ,
+      prefixObserved, Fin.forall_fin_succ]
+
+-- T6: the allowed q=0 endpoint has a genuine normalized admissible law.
+example : equalModel 1 2 0 (fun L => allDeleted L = 1) := by
+  let L := oneByTwo 0 0 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hs := oneByTwoSurvival 0 0 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  change survival L 0 1 = 0 ∧ survival L 0 2 = 0*0 at hs
+  refine ⟨L, rfl, singletonRowsIndependent _ _, ?_, ?_⟩
+  · refine ⟨le_rfl, zero_lt_one, ?_⟩
+    intro i
+    fin_cases i
+    constructor
+    · intro _
+      change survival L 0 1 ≤ 0
+      exact hs.1.le
+    · intro j hj hj' hp
+      have : j = 1 := by omega
+      subst j
+      change 0 < survival L 0 1 at hp
+      rw [hs.1] at hp
+      exact (lt_irrefl 0 hp).elim
+  · dsimp [L]
+    rw [oneByTwoDeleted]
+    norm_num
+
+-- T10: a fully specified underlying probability space, measurable array,
+-- cell independence, observation bound and defined expectation (q=0).
+example : ∃ (μ : Measure (Fin 1)) (_ : IsProbabilityMeasure μ)
+    (M : Fin 1 → Array 2 2),
+    Measurable M ∧ cellsIndependentOnW2 μ M ∧
+    (∀ i j, eventOnW2 μ M (fun x => x i j = false) = 0) ∧
+    observationBoundOnW2 μ M 0 ∧
+    Integrable (fun ω => deletedFraction (M ω)) μ ∧
+    (∫ ω, deletedFraction (M ω) ∂μ) = 1 := by
+  let μ : Measure (Fin 1) := Measure.dirac 0
+  let M : Fin 1 → Array 2 2 := fun _ _ _ => true
+  haveI : IsProbabilityMeasure μ := by dsimp [μ]; infer_instance
+  have he (P : Array 2 2 → Prop) :
+      eventOnW2 μ M P = if P (fun _ _ => true) then 1 else 0 := by
+    by_cases hp : P (fun _ _ => true) <;> simp [eventOnW2, M, hp]
+  have hs (i : Fin 2) : survivalOnW2 μ M i 1 = 0 := by
+    rw [survivalOnW2, he]
+    norm_num [prefixObserved, Fin.forall_fin_succ]
+  have hf : (fun ω => deletedFraction (M ω)) = (fun _ : Fin 1 => (1 : ℝ)) := by
+    funext ω
+    norm_num [M, deletedFraction, deletedIndicator, prefixObserved,
+      Fin.sum_univ_succ, Fin.forall_fin_succ]
+  refine ⟨μ, inferInstance, M, measurable_const, ?_, ?_, ?_, ?_, ?_⟩
+  · intro E
+    simp_rw [he]
+    simp only [Finset.prod_ite_zero, Finset.mem_univ, true_implies]
+    simp
+  · intro i j
+    rw [he]
+    norm_num
+  · refine ⟨le_rfl, zero_lt_one, ?_⟩
+    intro i
+    constructor
+    · intro _; exact (hs i).le
+    · intro j hj hj' hp
+      have : j = 1 := by omega
+      subst j
+      rw [hs i] at hp
+      exact (lt_irrefl 0 hp).elim
+  · rw [hf]
+    exact integrable_const _
+  · rw [hf]
+    simp
+
+

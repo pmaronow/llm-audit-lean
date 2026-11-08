@@ -1,0 +1,211 @@
+[
+ {
+  "target_id": "P015-T1",
+  "decision": "whole",
+  "theorem": "SAP.P015a.T1",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P015.RareCounterexample_checked"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.finite_chebyshev_algebra",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.finite_unconfounded_algebra",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.iid_tensor_expectation_algebra",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.rare_ipw_tail_convergence",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.rare_ols_arithmetic",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.rare_profile_ratio_bound",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.finite_chebyshev",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.finite_unconfounded",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.iid_average_mean",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.iid_average_variance",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.iid_coordinate_cross",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.iid_coordinate_mean",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.iid_isLaw",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.iid_tensor_expectation",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.rare_ipw_all_n",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.rare_ipw_consistent",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.rare_population_ols",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.rare_profile_bound",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.rare_weight_counterexample",
+    "reason": "The fixed-law component is subsumed by the selected certificate, which also supplies the family and actual OLS conclusions missing from this row."
+   }
+  ],
+  "bridge": "SAP.P015a.Bridge.T1_correspondence",
+  "statement_definition": "SAP.P015a.T1Statement",
+  "scope_clarification": "The family refutes treating approximately no weight as a positive threshold for failure of strict endpoint positivity. The estimator moments, every-sample-size bounds, and pointwise consistency are at epsilon = 1/1000000; positivity and arbitrarily small effective-profile mass are asserted separately for every 0 < epsilon < 1/2."
+ },
+ {
+  "target_id": "P015-T2",
+  "decision": "whole",
+  "theorem": "SAP.P015a.T2",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P015.MultivaluedCounterexample_checked"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.common_support_arithmetic",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.finite_unconfounded_algebra",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.observational_equality_no_two_limits",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.finite_unconfounded",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.multivalued_support_counterexample",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.no_common_consistent_estimator",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.no_common_pair",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   }
+  ],
+  "bridge": "SAP.P015a.Bridge.T2_correspondence",
+  "statement_definition": "SAP.P015a.T2Statement",
+  "scope_clarification": "The counterexample concerns positivity for a fixed distinct treatment pair at every effective-population profile. It retains positive within-profile variance, so it does not refute positivity understood only as some within-profile treatment variation."
+ },
+ {
+  "target_id": "P015-T3",
+  "decision": "whole",
+  "theorem": "SAP.P015a.T3",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P015.FittedZeroCounterexample_checked"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P015.PaperSpecializations.zero_sample_ols_arithmetic",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.fitted_zero_actual_ols",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.fitted_zero_counterexample",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.zero_sample_link",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   }
+  ],
+  "bridge": "SAP.P015a.Bridge.T3_correspondence",
+  "statement_definition": "SAP.P015a.T3Statement",
+  "scope_clarification": "The counterexample concerns inferring population positivity failure from exactly zero estimated sample-profile weights. Its population conditional variances remain 1/4; it does not contradict the exact-zero implication for population profile weights."
+ },
+ {
+  "target_id": "P015-T13",
+  "decision": "whole",
+  "theorem": "SAP.P015a.T13",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P015.corrected_logistic_taylor"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P015.logistic_exp",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   },
+   {
+    "lean_name": "AronowAudit.P015.logistic_logit",
+    "reason": "Redundant component or alias: the selected declarations already supply the retained target statement."
+   }
+  ],
+  "bridge": "SAP.P015a.Bridge.T13_correspondence",
+  "statement_definition": "SAP.P015a.T13Statement"
+ },
+ {
+  "target_id": "P015-T12",
+  "decision": "whole",
+  "theorem": "SAP.P015a.T12",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P015.local_logistic_remainder",
+   "AronowAudit.P015.restricted_taylor_convergence"
+  ],
+  "rows_not_used": [],
+  "bridge": null,
+  "statement_definition": "SAP.P015a.T12WholeStatement",
+  "supporting_declarations": [
+   "AronowAudit.P015.corrected_logistic_taylor",
+   "SAP.P015a.WH.W1.T12_whole",
+   "SAP.P015a.WH.W1.T12_assembly",
+   "AronowAudit.P015.UniformTaylorCompletion.denominator_ne_zero",
+   "AronowAudit.P015.TaylorCompletion.differentiableAt_fc",
+   "AronowAudit.P015.extreme_grouped_data_arithmetic",
+   "AronowAudit.P015.extreme_unique_mle",
+   "AronowAudit.P015.log99_lower_bound",
+   "AronowAudit.P015.all_degree_taylor_counterexample",
+   "AronowAudit.P015.UniformTaylorCompletion.real_center_radius"
+  ],
+  "proof_declaration": "SAP.P015a.WH.W1.T12_whole"
+ }
+]

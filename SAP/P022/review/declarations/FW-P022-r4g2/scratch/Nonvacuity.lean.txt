@@ -1,0 +1,100 @@
+import SAP.P022.Defs
+import SAP.P022.Defs.WholeW1
+
+open SAP.P022 Filter MeasureTheory
+open scoped BigOperators Topology
+noncomputable section
+
+-- T4: a valid design and a nonconstant population with an interior CDF value.
+def balanced : Fin 4 → ℝ := ![0, 0, 1, 1]
+
+example : fourUnitDesign.N = 4 ∧ fourUnitDesign.m = 2 ∧ fourUnitDesign.k = 2 ∧
+    4 ≤ fourUnitDesign.N ∧ 2 ≤ fourUnitDesign.m ∧ 2 ≤ fourUnitDesign.k ∧
+    fourUnitDesign.m + fourUnitDesign.k ≤ fourUnitDesign.N := by
+  norm_num [fourUnitDesign]
+
+example : empiricalCDF balanced 0 = (1 / 2 : ℝ) := by
+  unfold empiricalCDF finiteMean Finset.expect
+  rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ]
+  norm_num [balanced, NNRat.smul_def]
+
+-- T5: independently evaluate the population and every sampled CDF at the witness.
+example : empiricalCDF (fun _ : Fin 4 => (1 : ℝ)) 0 = 0 ∧
+    finiteVariance (fun _ : Fin 4 => (if (1 : ℝ) ≤ 0 then 1 else 0)) = 0 := by
+  norm_num [empiricalCDF, finiteVariance, finiteMean]
+
+example (π : Assignment fourUnitDesign) :
+    empiricalCDF (observedTreatment fourUnitDesign (fun _ => (1 : ℝ)) π) 0 = 0 := by
+  change empiricalCDF (fun _ : Fin 2 => (1 : ℝ)) 0 = 0
+  norm_num [empiricalCDF, finiteMean]
+
+example : designVariance fourUnitDesign (fun π =>
+    empiricalCDF (observedTreatment fourUnitDesign (fun _ => (1 : ℝ)) π) 0) = 0 := by
+  change designVariance fourUnitDesign (fun _ => empiricalCDF (fun _ : Fin 2 => (1 : ℝ)) 0) = 0
+  norm_num [designVariance, designExpectation, empiricalCDF, finiteMean]
+
+example : (4 - 2 : ℝ) / (4 * (4 - 1) * 2) = 1 / 12 ∧
+    (0 : ℝ) ≠ 1 / 12 ∧ Nat.choose 4 2 = 6 := by norm_num [Nat.choose]
+
+-- T8: genuine sample data and all size assumptions, including N for substitution.
+example : ∃ (a : Fin 2 → ℝ) (b : Fin 2 → ℝ),
+    2 ≤ (2 : ℕ) ∧ 2 ≤ (2 : ℕ) ∧ 2 + 2 ≤ (4 : ℕ) ∧ a 0 ≠ a 1 ∧ b 0 ≠ b 1 := by
+  refine ⟨![0, 1], ![-1, 2], ?_⟩
+  norm_num
+
+-- T9: the refutation's observed samples and effect hold for every real assignment.
+example (π : Assignment fourUnitDesign) :
+    observedTreatment fourUnitDesign (fun _ => (1 : ℝ)) π = (fun _ => 1) ∧
+    observedControl fourUnitDesign (fun _ => (1 : ℝ)) π = (fun _ => 1) ∧
+    estimatedEffect fourUnitDesign (fun _ => 1) (fun _ => 1) π = 0 := by
+  change (fun _ : Fin 2 => (1 : ℝ)) = (fun _ => 1) ∧
+    (fun _ : Fin 2 => (1 : ℝ)) = (fun _ => 1) ∧
+    finiteMean (fun _ : Fin 2 => (1 : ℝ)) - finiteMean (fun _ : Fin 2 => (1 : ℝ)) = 0
+  simp
+
+example : trueVariance fourUnitDesign (fun _ => 1) (fun _ => 1) = 0 := by
+  change designVariance fourUnitDesign (fun _ =>
+    finiteMean (fun _ : Fin 2 => (1 : ℝ)) - finiteMean (fun _ : Fin 2 => (1 : ℝ))) = 0
+  simp [designVariance, designExpectation]
+
+example : sampleVariance (fun _ : Fin 2 => (1 : ℝ)) = 0 ∧
+    marginalVarianceEstimate 4 (fun _ : Fin 2 => (1 : ℝ)) = 0 := by
+  simp [sampleVariance, marginalVarianceEstimate, finiteMean]
+
+example : (0 : ℝ) < codeEpsilon ∧ 2 * codeEpsilon < 1 / 2 ∧
+    -(4 * codeEpsilon / 3) = -(1 / 50331648 : ℝ) ∧
+    -(1 / 50331648 : ℝ) < 0 := by
+  norm_num [codeEpsilon]
+
+-- T10: a nested population with bounded variances; arms stay fixed while N grows.
+def zeroOneSequence : ExperimentSequence where
+  design q := {
+    N := q + 4
+    m := 2
+    k := 2
+    population_min := by omega
+    treatment_min := by omega
+    control_min := by omega
+    sample_le := by omega }
+  size _ := rfl
+  y1 _ := 0
+  y0 _ := 1
+
+example :
+    (∀ᶠ q in atTop, (zeroOneSequence.design q).m = 2) ∧
+    (∀ᶠ q in atTop, (zeroOneSequence.design q).k = 2) ∧
+    (∃ M : ℝ, ∀ q, finiteVariance (rowOutcomes zeroOneSequence true q) ≤ M ∧
+      finiteVariance (rowOutcomes zeroOneSequence false q) ≤ M) := by
+  refine ⟨Filter.Eventually.of_forall (fun _ => rfl),
+    Filter.Eventually.of_forall (fun _ => rfl), 0, ?_⟩
+  intro q
+  haveI : Nonempty (Fin (q + 4)) := ⟨⟨0, by omega⟩⟩
+  change finiteVariance (fun _ : Fin (q + 4) => (0 : ℝ)) ≤ 0 ∧
+    finiteVariance (fun _ : Fin (q + 4) => (1 : ℝ)) ≤ 0
+  simp [finiteVariance, finiteMean, Fintype.expect_const]
+
+-- The fixed-sample estimator limit also admits nonconstant samples.
+example : ∃ (m k : ℕ) (a : Fin m → ℝ) (b : Fin k → ℝ),
+    2 ≤ m ∧ 2 ≤ k ∧ sampleVariance a = 1 / 2 ∧ sampleVariance b = 1 / 2 := by
+  refine ⟨2, 2, ![0, 1], ![0, 1], ?_⟩
+  norm_num [sampleVariance, finiteMean, Finset.expect, Fin.sum_univ_succ]

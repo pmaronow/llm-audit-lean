@@ -5,9 +5,10 @@ import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 /-!
-On the two intervals
+We use the density route permitted by the blueprint.  On the two intervals
 `[-2 sqrt(v), -sqrt(v)]` and `[sqrt(v), 2 sqrt(v)]`, the Gaussian density is at
 least `1 / (24 sqrt(v))`.  Their total length is `2 sqrt(v)`.
+Draft only: no Lean process has been run on this file.
 -/
 
 set_option autoImplicit false

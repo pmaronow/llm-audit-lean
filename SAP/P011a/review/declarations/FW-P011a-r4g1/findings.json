@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P011-T1",
+    "theorem": "SAP.P011a.T1",
+    "fingerprint": "ed56480683df561c97e0d7eae7daabf2879a4b1e3069d2961f09343e4d4e859a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles: independently evaluates the a=3 block and V1=-9/4, and enumerates the 16-state a=3/2 block to obtain quadratic mean 7 and variance 176. It also checks the certified negative atom has mass 1/16 and extracts the concrete Scaling/Valid instance. The theorem itself is unconditional. scratch/finite_check.py independently verifies scaled true variance and both finite oracle moments at n=4,8,12, and singleton compatibility at n=4. The printed-reading condition checks are in claim-analysis.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T2",
+    "theorem": "SAP.P011a.T2",
+    "fingerprint": "130e15c941dc691565c0799825119df3a3f35fa528576fc043b1bd933d2345ae",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles: independently checks both parameter branches of the block second moments and quadratic moments, proves the one-block OLS Gram determinant is nonzero for t=1,2, and instantiates the certified Scaling/Valid facts for each branch. The theorem itself is unconditional. scratch/finite_check.py independently checks the exact expectations, scaled true variance, and outcome bounds at K=1,2,3,4, and singleton compatibility at K=1,2. The printed-reading condition checks are in claim-analysis.md.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T3",
+    "theorem": "SAP.P011a.T3",
+    "fingerprint": "293488455e062ffa1dbe194c1b8524328997967dd9fc8a7f2211ad29a918b03c",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles an existential RowScaling instance using the explicit heterogeneous-mean cycle family, constants (7/2,2,4,2), and its certified scaling facts. Thus the general hypotheses have a nondegenerate instance. Independent fair signs, empty true graph, unit weights, and zero means also satisfy the common-mean and PSD sufficient cases: n Var(betaHat)=1, delta=0, and I+A=I. Positive sizes and bounded bias exclude empty-sample and unbounded-liminf defaults.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T4",
+    "theorem": "SAP.P011a.T4",
+    "fingerprint": "f60009d167a04652e64b8d0ccddf29275dee9649cb78b018043f9f1728fd37f7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles an instance of every deterministic-expansion premise using the explicit cycle family, constants (7/2,2,4,2), and M_k=0 with norm bound K=0; the family has positive scaled variance 4. It independently checks the sign-data matrix trace and quadratic formula at x=(1,-1). The PSD and all-admissible-covariance trace premises are jointly satisfiable for the independent fair-sign family with M=I and empty G, since M-(I+A)=0. The data-dependent witness itself is an explicit finite-support product law, with all its scaling and moment facts included in the certified statement.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P011-T5",
+    "theorem": "SAP.P011a.T5",
+    "fingerprint": "182a4400950f995ee39273523db27a6a147716890206d5531822fe400fb9c300",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles the explicit cycle family with WholeScaling_W3, Valid, and a graph selection satisfying the corrected maximizer condition for every row and sample; saturated known edges make its feasible set a singleton. It independently checks compatibility, zero correction, V1plus=1/2, and VYoung=1/2 for the empty graph on two vertices with zero caps and data (1,-1). This also checks the zero-degree convention. Feasible graph sets are finite and nonempty; choosing caps n-1 on the independent-sign empty-graph family gives a further mathematical instance with growing supplied caps and existing maximizers.",
+    "confidence": 0.99
+  }
+]

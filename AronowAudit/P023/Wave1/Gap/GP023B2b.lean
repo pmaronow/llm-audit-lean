@@ -7,8 +7,9 @@ import Mathlib.Tactic.ComputeDegree
 import Mathlib.Tactic.IntervalCases
 
 /-!
-Uniform residual symmetry, explicit residual formulas at degrees one and seven,
-and risk bounds for clustered margins.
+Compiled repairs of the GP023B2 draft for records 4 and 6.
+The source audit module supplies definitions only; none of its held population
+theorems is used below. See the accompanying report for unclosed records.
 -/
 
 namespace AronowAudit.P023.Wave1
@@ -21,7 +22,7 @@ local instance GP023B2b_decidable (p : Prop) : Decidable p := Classical.propDeci
 
 set_option maxRecDepth 2048
 
-/-! Uniform residual symmetry. -/
+/-! Record 4: uniform residual symmetry. -/
 
 private theorem GP023B2b_urs_poly_integrable (p : Polynomial ℝ) :
     Integrable (fun x => p.eval x) uniformMargins := by
@@ -361,7 +362,7 @@ private theorem GP023B2b_urs_q7_spec : IsProjection uniformMargins 7 GP023B2b_ur
       Polynomial.coeff_sub, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
       Polynomial.coeff_X, Polynomial.coeff_C]
 
-/-- P023-T4: uniform residual symmetry and explicit formulas at degrees one and seven. -/
+/-- Exact frozen type of P023-T4. -/
 theorem uniform_residual_symmetry_proof :
     (∀ J, 1 ≤ J → ∀ x, x ≠ 0 → popResidual uniformMargins J (-x) = -popResidual uniformMargins J x) ∧
     (∀ x, 0<x → popResidual uniformMargins 1 x=1/2-(3/4)*x ∧
@@ -384,7 +385,9 @@ theorem uniform_residual_symmetry_proof :
         party, if_pos hx.le]
       ring
 
-/-! Clustered fit bound. -/
+example : type_of% @AronowAudit.P023.uniform_residual_symmetry := uniform_residual_symmetry_proof
+
+/-! Record 6: clustered fit bound. -/
 
 private theorem GP023B2b_cfb_positive_bound (d x : ℝ) (hd : 0 < d) :
     |clusterPositive d x| ≤ d / 2 := by
@@ -640,7 +643,7 @@ private theorem GP023B2b_cfb_fitted_le_constant (ν : Measure (ℝ × ℝ)) (J :
   obtain ⟨a, ha⟩ := GP023B2b_cfb_constant_predictor J
   exact csInf_le hb ⟨a, by rw [ha]⟩
 
-/-- P023-T5(vi): bounds on risk improvement for clustered margins. -/
+/-- Exact frozen type of P023-T5(vi). -/
 theorem clustered_fit_bound_proof (d : ℝ) (hd : 0 < d ∧ d ≤ 1/2) :
     let ν := witnessLaw (clusteredMargins d) (clusterSmooth d)
     ProbabilityLaw ν ∧ marginLaw ν = clusteredMargins d ∧
@@ -702,6 +705,8 @@ theorem clustered_fit_bound_proof (d : ℝ) (hd : 0 < d ∧ d ≤ 1/2) :
   refine ⟨hfit, ?_⟩
   intro f hf hi
   exact (sub_le_sub_right hfit _).trans (himprove f hf hi)
+
+example : type_of% @AronowAudit.P023.clustered_fit_bound := clustered_fit_bound_proof
 
 end
 end AronowAudit.P023.Wave1

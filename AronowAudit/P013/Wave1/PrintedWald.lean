@@ -44,6 +44,8 @@ theorem printed_wald_coverage_refuted :
     PrintedWald.n9_proof PrintedWald.n10_proof PrintedWald.n11_proof PrintedWald.n12_proof
     PrintedWald.n13_proof PrintedWald.n14_proof
 
+example : AronowAudit.P013.Wave1.PrintedWald.Target := printed_wald_coverage_refuted
+
 end
 
 end AronowAudit.P013.Wave1

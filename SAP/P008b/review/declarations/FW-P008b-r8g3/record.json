@@ -1,0 +1,141 @@
+[
+ {
+  "target_id": "P008-T26",
+  "decision": "whole",
+  "theorem": "SAP.P008b.T26",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.cancelling_circle_masses",
+   "AronowAudit.P008.cancelling_schedule_all_designs",
+   "AronowAudit.P008.sharp_null_implies_weak",
+   "AronowAudit.P008.weak_not_sharp_example",
+   "SAP.P008b.WH.W1.T26_whole",
+   "SAP.P008b.WH.W1.T26_assembly",
+   "SAP.P008b.WH.W1.T26_L1_proof",
+   "AronowAudit.P008.expect_const",
+   "AronowAudit.P008.lineEmbedding",
+   "AronowAudit.P008.line_embedding_distance"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.real_rational_circle",
+    "reason": "The selected converse witness is already stated for every real radius."
+   }
+  ],
+  "statement_definition": "SAP.P008b.T26WholeStatement"
+ },
+ {
+  "target_id": "P008-T27",
+  "decision": "whole",
+  "theorem": "SAP.P008b.T27",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P008.additive_amr",
+   "AronowAudit.P008.additive_point_effect",
+   "AronowAudit.P008.homogeneous_additive_amr",
+   "SAP.P008b.WH.W2.T27_whole",
+   "SAP.P008b.WH.W2.T27_assembly",
+   "SAP.P008b.WH.W2.T27_L1_proof",
+   "AronowAudit.P008.weighted_integrable",
+   "SAP.P008b.WH.W2.P.T27_L1.selected_marginal_identity",
+   "SAP.P008b.WH.W2.P.T27_L1.selected_effect_identity"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P008b.T27WholeStatement"
+ },
+ {
+  "target_id": "P008-T28",
+  "decision": "restricted",
+  "theorem": "SAP.P008b.T28",
+  "restriction": "Retains only that explicit sufficient consistency version; omits consistency under the cited general conditions, standardized asymptotic normality, and asymptotic type-I-error conservativeness of spatial-HAC intervals. The nonnegative uniform bound is explicit.",
+  "rows_used": [
+   "AronowAudit.P008.sufficient_hajek_consistency"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P008.bernoulli_fraction_moments",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.bernoulli_good_denominator_bound",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.bernoulli_numerator_identity",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.common_numerator_means",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.covariance_le_bound_sq",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.covariance_raw",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.covariance_zero_of_fibres",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.dependency_numerator_variance_bound",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.expect_abs_bound",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.expect_add",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.expect_mul_const",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.expect_sum",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.expect_value_fibres",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.finite_chebyshev",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.finite_hajek_error_bound",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.hajek_ratio_decomposition",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.marginal_mean_abs_bound",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.prob_or_le",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.ratio_deviation_bound",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.variance_le_bound_sq",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   },
+   {
+    "lean_name": "AronowAudit.P008.variance_mul_const",
+    "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+   }
+  ]
+ }
+]

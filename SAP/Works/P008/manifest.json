@@ -1,0 +1,979 @@
+[
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the explicitly labelled 121-node observation and its within-count swap, both normalized supports, and both directions of the four-node tail discrepancy. Does not quantify over every initial 60-treated observed assignment or assert the existence of a relabelling that puts it into the recorded observation form.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P008.blocked_support",
+      "AronowAudit.P008.observed_count_does_not_identify_law",
+      "AronowAudit.P008.reference_laws_counterexample",
+      "AronowAudit.P008.six_support"
+    ],
+    "statement_definition": "SAP.P008a.T1Statement",
+    "target_id": "P008-T1",
+    "theorem": "SAP.P008a.T1"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "The spatial cumulative-test component is confined to Euclidean circles in a measurable whole field, with integrability for every assignment on every evaluated circle; positive finite circle mass and nonempty arms on the positive-probability conditional support make its averages and ratios meaningful. Imputability is asserted for the cumulative statistic on that support, rather than separately for each circle mean. The documentary seven-lottery design, its identification with a particular conditional reference law, and the empirical significance/withdrawal conclusions are not formalized. General finite-law calibration, conditioning, Bernoulli-given-count uniformity and both directions of the four-node law discrepancy are retained.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.prob_mono",
+        "reason": "Auxiliary monotonicity is already used inside the exported calibration theorem."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.bernoulli_given_count_uniform",
+      "AronowAudit.P008.conditional_tail_valid",
+      "AronowAudit.P008.design_tail_valid",
+      "AronowAudit.P008.sharp_null_cumulative_test_valid"
+    ],
+    "statement_definition": "SAP.P008a.T2Statement",
+    "supporting_declarations": [
+      "AronowAudit.P008.reference_laws_counterexample"
+    ],
+    "target_id": "P008-T2",
+    "theorem": "SAP.P008a.T2"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.finite_field_percentile_counterexample",
+        "reason": "The separate finite-field witness is unnecessary; the retained rectangle certificate establishes the prescribed spatial example."
+      },
+      {
+        "lean_name": "AronowAudit.P008.interpolated_percentile_counterexample",
+        "reason": "Its scalar quantile calculations are subsumed by the retained full spatial rectangle certificate."
+      },
+      {
+        "lean_name": "AronowAudit.P008.line_embedding_distance",
+        "reason": "The full rectangle certificate supplies the spatial witness directly; the general distance identity is separately recorded in Bridge."
+      },
+      {
+        "lean_name": "AronowAudit.P008.percentile_spatial_hypotheses",
+        "reason": "These hypotheses concern the alternative finite-field witness, rather than the retained full rectangle construction."
+      },
+      {
+        "lean_name": "AronowAudit.P008.univ_five",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.univ_four",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.univ_six",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.spatial_percentile_counterexample"
+    ],
+    "statement_definition": "SAP.P008a.T3Statement",
+    "supporting_declarations": [
+      "AronowAudit.P008.six_support",
+      "AronowAudit.P008.bernoulli_given_count_uniform"
+    ],
+    "target_id": "P008-T3",
+    "theorem": "SAP.P008a.T3"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains complementation, the one-third inclusive-tail lower bound for every linear contrast functional, the mass and level obstruction for every nonempty rejection set, general exact calibration, the IID sampled-permutation bound, and the sum 7.996 of the displayed estimates. Omits the reconstructed unrounded observed statistic 7.99649 and its asserted rounded value 8.00, the six reconstructed cumulative statistics and their exact observed p-value 1/3. The interpolated-percentile counterexample is not repeated in this theorem; it is stated in T3.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.prob_as_expect",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.prob_equiv",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.complement_contrast",
+      "AronowAudit.P008.contrast_is_hajek",
+      "AronowAudit.P008.linear_functional_complement",
+      "AronowAudit.P008.monte_carlo_rank_valid",
+      "AronowAudit.P008.six_no_five_percent_rejection",
+      "AronowAudit.P008.six_tail_lower_bound"
+    ],
+    "statement_definition": "SAP.P008a.T4Statement",
+    "supporting_declarations": [
+      "AronowAudit.P008.design_tail_valid",
+      "AronowAudit.P008.printed_toy_sums"
+    ],
+    "target_id": "P008-T4",
+    "theorem": "SAP.P008a.T4"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.replicated_cutoff_variance",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.replicated_local_outcome",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.replicated_nodes_separated",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.replicated_other_pair_far",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.replicated_sign_moments",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.replicated_spatial_cutoff_omission",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.uniform_bit_expect",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.effect_range_covariance_omission",
+      "AronowAudit.P008.effect_range_cutoff_counterexample",
+      "AronowAudit.P008.pair_circle_calculation",
+      "AronowAudit.P008.pair_support",
+      "AronowAudit.P008.replicated_circle_depends_on_pair",
+      "AronowAudit.P008.replicated_plane_circle",
+      "AronowAudit.P008.replicated_plane_cutoff_omission",
+      "AronowAudit.P008.replicated_plane_separation",
+      "AronowAudit.P008.replicated_spatial_counterexample",
+      "AronowAudit.P008.replicated_spatial_marginals"
+    ],
+    "statement_definition": "SAP.P008a.T5Statement",
+    "target_id": "P008-T5",
+    "theorem": "SAP.P008a.T5"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "The weighted-contrast, OLS weight/residual and sandwich-to-score-HAC identities hold for every nonnegative cutoff and general distance array when both arm counts are at least one; no off-diagonal separation premise restricts that representation. Only the HC0 specialization requires a zero diagonal and every off-diagonal distance to exceed the cutoff. Retains the reconstructed toy-node cutoff and interval equalities, the additive-score covariance formula, the diagonal/off-diagonal variance decomposition and exact cutoff condition. The geometric sufficient bound remains restricted to the Euclidean plane, a measurable whole field and coefficient integrands vanishing beyond the effect range on the whole plane, with positive finite circle masses. Omits the numerical smallest-distance approximation 1.4295... and reproduction of the ten printed interval pairs to three decimals. Also omits the canonical warning that cutoff c = r need not suffice; the counterexample referenced as P008-T5 is not asserted by this declaration.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.additive_vector_update",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.binary_regression_weights_residuals",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.circle_outside_effect_range",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.finite_far_coefficient_zero",
+        "reason": "Finite counting specialization is unnecessary because the retained integral result covers the stated restricted geometric domain."
+      },
+      {
+        "lean_name": "AronowAudit.P008.spatial_hac_hc0",
+        "reason": "The general distance-array HC0 declarations cover this component without the Euclidean-only restriction."
+      },
+      {
+        "lean_name": "AronowAudit.P008.uniform_average_update",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.additive_score_covariance",
+      "AronowAudit.P008.hac_equals_hc0",
+      "AronowAudit.P008.hac_group_hc0",
+      "AronowAudit.P008.hajek_weighted_contrast",
+      "AronowAudit.P008.integral_far_coefficient_zero",
+      "AronowAudit.P008.matrix_hac_reduction",
+      "AronowAudit.P008.toy_cutoff_is_hc0",
+      "AronowAudit.P008.variance_sum_covariances"
+    ],
+    "statement_definition": "SAP.P008a.T6Statement",
+    "supporting_declarations": [
+      "AronowAudit.P008.variance_mul_const",
+      "AronowAudit.P008.dependence_cutoff_identity"
+    ],
+    "target_id": "P008-T6",
+    "theorem": "SAP.P008a.T6"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_note": "Finite Dirac-sum rules are applied with an abstract index set before specialization to RiskCell. T7WholeStatement and every hypothesis are unchanged; kernel fuel and verification settings are unchanged.",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.binary_companion_counterexample",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.binary_count_mean",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.risk_sampling_probabilities",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.summed_risk_counterexample",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.binary_companion_counterexample_bernoulli",
+      "AronowAudit.P008.risk_circle_calculation",
+      "AronowAudit.P008.risk_design_and_companion_estimates",
+      "AronowAudit.P008.risk_sampling_probabilities_bernoulli",
+      "AronowAudit.P008.summed_risk_counterexample_bernoulli"
+    ],
+    "statement_definition": "SAP.P008a.T7WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P008.constant_radius_effect_for_sampling",
+      "SAP.P008a.WH.W1.T7_whole",
+      "SAP.P008a.WH.W1.T7_assembly",
+      "SAP.P008a.WH.W1.risk_counting",
+      "SAP.P008a.WH.W1.countMean_expect",
+      "SAP.P008a.WH.W1.T7_L1_proof",
+      "SAP.P008a.WH.W1.T7_L2_proof",
+      "SAP.P008a.WH.W1.T7_L3_proof",
+      "SAP.P008a.WH.W1.T7_L4_proof",
+      "SAP.P008a.WH.W1.T7_L5_proof",
+      "SAP.P008a.WH.W1.T7_L6_proof",
+      "AronowAudit.P008.expect_const",
+      "SAP.P008a.WH.W1.P.T7_L5.dirac_sum_total",
+      "SAP.P008a.WH.W1.P.T7_L5.dirac_sum_integrable",
+      "SAP.P008a.WH.W1.P.T7_L5.dirac_sum_integral"
+    ],
+    "target_id": "P008-T7",
+    "theorem": "SAP.P008a.T7"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "The fixed-radius spatial-risk component requires Euclidean circles and a measurable whole field; positive finite circle masses and integrability of exactly the positive-weight one-node overrides make the averages meaningful. Retains the generic convex-mixture probability bounds and identity, bounds against any common lower and upper effect bounds, equal-weight and constant-effect algebra, the -4 binary example, sorted finite-sample rescaling, the three reported values divided by four, and the comparisons -0.0321 < -0.0304 and -0.008025 < -0.0076. Does not explicitly state finite minimum/maximum values or a separate order-statistic characterization beyond the type-7 formula on a sorted sample, and does not construct the joint node/radius/point sampling probability space. The -4 example uses the labelled counting model of T7 and does not assert its planar realization. The numbers -0.0304, -0.0321 and 0.0336 enter only as supplied rational constants: omits the identification of -0.0321 as the actual observed sum and of -0.0304 and 0.0336 as the actual 0.025 and 0.975 sharp-null permutation percentiles of the summed AMR statistic on the stated 1-2.5 km window and grid, and hence the empirical assertion that the observed sum lies below the lower reference quantile (only the numerical comparison is stated). Also omits the specification of the actual application grid and unit weights, the identification of the actual equal-radius mean estimate with -321/40000 = -0.008025 (printed as approximately -0.0080, a 0.8 percentage-point reduction) or with the normalized sampling target, and any certification that the divided values are reconstructed permutation outputs; only exact division by four and comparison are established.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.circle_probability_bounds",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.common_rescaling",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.constant_radius_effect",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_probability_bounds",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_probability_bounds_on_support",
+        "reason": "Auxiliary or specialized result is subsumed by the retained exported certificates and is not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.spatial_risk_normalization_all_assignments",
+        "reason": "Use the weaker support-specific integrability theorem instead of adding integrability of unused schedules."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.common_rescaling_for_percentiles",
+      "AronowAudit.P008.constant_radius_effect_for_sampling",
+      "AronowAudit.P008.normalized_probability_effect",
+      "AronowAudit.P008.reported_values_divided_by_four",
+      "AronowAudit.P008.spatial_risk_normalization"
+    ],
+    "statement_definition": "SAP.P008a.T8Statement",
+    "supporting_declarations": [
+      "AronowAudit.P008.binary_companion_counterexample_bernoulli"
+    ],
+    "target_id": "P008-T8",
+    "theorem": "SAP.P008a.T8"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.archived_sixth_row_incompatible",
+        "reason": "The retained toy spatial-regression certificate includes the required normal-equation specialization."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.bandwidth_spatial_realization",
+      "AronowAudit.P008.grid_position_counterexample",
+      "AronowAudit.P008.spatial_grid_position_counterexample",
+      "AronowAudit.P008.toy_archived_sixth_row_incompatible"
+    ],
+    "statement_definition": "SAP.P008a.T9WholeStatement",
+    "supporting_declarations": [
+      "SAP.P008a.WH.W1.T9_whole",
+      "SAP.P008a.WH.W1.T9_assembly",
+      "SAP.P008a.WH.W1.T9_L1_proof",
+      "SAP.P008a.WH.W1.bandwidth_spatial",
+      "SAP.P008a.WH.W1.ols_identities",
+      "AronowAudit.P008.binary_regression_weights_residuals",
+      "AronowAudit.P008.regression_score_sum_zero",
+      "AronowAudit.P008.matrix_hac_reduction",
+      "AronowAudit.P008.univ_four",
+      "AronowAudit.P008.hac_all_pairs_zero"
+    ],
+    "target_id": "P008-T9",
+    "theorem": "SAP.P008a.T9"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.corrected_spatial_bandwidth_invariant",
+        "reason": "The general distance-array invariance theorem already covers the needed component."
+      },
+      {
+        "lean_name": "AronowAudit.P008.spatial_all_pairs_zero",
+        "reason": "The general distance-array regression theorem already covers the needed component."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.corrected_bandwidth_invariant",
+      "AronowAudit.P008.regression_all_pairs_zero",
+      "AronowAudit.P008.regression_score_sum_zero",
+      "AronowAudit.P008.hac_all_pairs_zero"
+    ],
+    "statement_definition": "SAP.P008a.T10WholeStatement",
+    "supporting_declarations": [
+      "AronowAudit.P008.grid_position_counterexample",
+      "AronowAudit.P008.toy_cutoff_is_hc0",
+      "AronowAudit.P008.hac_equals_hc0",
+      "AronowAudit.P008.toy_archived_sixth_row_incompatible",
+      "SAP.P008a.WH.W1.T10_whole",
+      "SAP.P008a.WH.W1.T10_assembly",
+      "SAP.P008a.WH.W1.T10_L1_proof",
+      "SAP.P008a.WH.W1.corrected_counting",
+      "SAP.P008a.WH.W1.ols_identities",
+      "AronowAudit.P008.binary_regression_weights_residuals",
+      "AronowAudit.P008.matrix_hac_reduction"
+    ],
+    "target_id": "P008-T10",
+    "theorem": "SAP.P008a.T10"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains the exact sums of the displayed five and eight estimates, the full rounding envelope for the five estimates, the exclusion of a displayed sum 12.38, and the strict comparison with every number displayed as 7.97. Omits the identification of the actual unrounded cumulative effect as 7.99649 and its corrected display as 8.00; the rounding envelope alone does not establish that actual display. The kept empirical permutation percentiles -7.97 and 7.97 are not certified as outputs.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P008.printed_toy_sums",
+      "AronowAudit.P008.toy_sum_rounding"
+    ],
+    "statement_definition": "SAP.P008a.T11Statement",
+    "target_id": "P008-T11",
+    "theorem": "SAP.P008a.T11"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P008.printed_grid_counterexample",
+      "AronowAudit.P008.printed_grid_empty_percentiles",
+      "AronowAudit.P008.zero_sum_quantiles"
+    ],
+    "statement_definition": "SAP.P008a.T12Statement",
+    "target_id": "P008-T12",
+    "theorem": "SAP.P008a.T12"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P008.corrected_grid"
+    ],
+    "statement_definition": "SAP.P008a.T13Statement",
+    "target_id": "P008-T13",
+    "theorem": "SAP.P008a.T13"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.amr_display",
+        "reason": "Its definitional content is expressed directly for the finite mean data by substitution, avoiding spatial assumptions unrelated to this identity."
+      },
+      {
+        "lean_name": "AronowAudit.P008.amr_display_on_valid_circles",
+        "reason": "The abstract finite-mean identity avoids this row's extra all-assignment integrability and spatial restrictions."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.amr_misprint",
+      "AronowAudit.P008.amr_misprint_witness"
+    ],
+    "statement_definition": "SAP.P008a.T14Statement",
+    "target_id": "P008-T14",
+    "theorem": "SAP.P008a.T14"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P008.band_average_display",
+      "AronowAudit.P008.band_contains_no_nodes",
+      "SAP.P008b.WH.W1.T15_whole",
+      "SAP.P008b.WH.W1.T15_assembly"
+    ],
+    "statement_definition": "SAP.P008b.T15WholeStatement",
+    "target_id": "P008-T15",
+    "theorem": "SAP.P008b.T15"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.donut_spatial_distances",
+        "reason": "The complete polygon counterexample already includes both geometry conclusions."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.donut_counterexample",
+      "AronowAudit.P008.polygon_donut_counterexample",
+      "SAP.P008b.WH.W3.T16_whole",
+      "SAP.P008b.WH.W3.T16_assembly",
+      "SAP.P008b.WH.W3.T16_L1_proof",
+      "SAP.P008b.WH.W3.T16_L2_proof",
+      "SAP.P008b.WH.W3.P.T16_L1.square_nonempty",
+      "SAP.P008b.WH.W3.P.T16_L1.square_closed",
+      "SAP.P008b.WH.W3.P.T16_L1.coord_bound",
+      "SAP.P008b.WH.W3.P.T16_L2.square_closed",
+      "SAP.P008b.WH.W3.P.T16_L2.coord_bound"
+    ],
+    "statement_definition": "SAP.P008b.T16WholeStatement_W3",
+    "target_id": "P008-T16",
+    "theorem": "SAP.P008b.T16"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.radial_band_geometry",
+        "reason": "The positive-radius geometry row includes the clipped band and width conclusion."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.distance_to_circle",
+      "AronowAudit.P008.positive_radius_band_geometry",
+      "AronowAudit.P008.nested_buffer_average",
+      "SAP.P008b.WH.W2.T17_whole",
+      "SAP.P008b.WH.W2.T17_assembly"
+    ],
+    "statement_definition": "SAP.P008b.T17WholeStatement",
+    "target_id": "P008-T17",
+    "theorem": "SAP.P008b.T17"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.additive_switch",
+        "reason": "The raster AMR row already supplies the switching and marginalized effects."
+      },
+      {
+        "lean_name": "AronowAudit.P008.spatial_toy_raster_amr_formula",
+        "reason": "The generic nonnegative-distance raster row covers all supplied centroid-distance arrays."
+      },
+      {
+        "lean_name": "AronowAudit.P008.toy_amplitude_and_bound",
+        "reason": "The raster AMR row already supplies amplitude scaling and the convex lower bound."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.toy_kernel_lower_bound",
+      "AronowAudit.P008.toy_raster_amr_formula",
+      "SAP.P008b.WH.W2.T18_whole",
+      "SAP.P008b.WH.W2.T18_assembly",
+      "SAP.P008b.WH.W2.T18_L1_proof"
+    ],
+    "statement_definition": "SAP.P008b.T18WholeStatement",
+    "target_id": "P008-T18",
+    "theorem": "SAP.P008b.T18"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.boundary_counterexample",
+        "reason": "The full 200-cell raster row supplies this target with the specified independent design."
+      },
+      {
+        "lean_name": "AronowAudit.P008.boundary_hajek_counterexample",
+        "reason": "The full raster row supplies the specified 200-cell field and independent assignment law."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.polygon_raster_counterexample",
+      "AronowAudit.P008.expect_const"
+    ],
+    "target_id": "P008-T19",
+    "theorem": "SAP.P008b.T19"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Requires nonempty raster boundaries and nonempty continuous frontiers; omits the corrected sentence about how the reported smoothed curve was fitted.",
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P008.block_boundary_is_eight_neighbour",
+      "AronowAudit.P008.raster_zero_summaries",
+      "AronowAudit.P008.zero_distance_is_boundary",
+      "AronowAudit.P008.boundary_counterexample",
+      "AronowAudit.P008.polygon_raster_counterexample"
+    ],
+    "target_id": "P008-T20",
+    "theorem": "SAP.P008b.T20"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains only the numerical comparison; omits identification of the actual assignment law and its quantiles, the significance inference, and the empirical spillover conclusions.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.sharp_null_cumulative_test_valid",
+        "reason": "wrong_credit: calibrates an inclusive absolute-tail test, not the printed percentile inference."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.uganda_printed_comparison"
+    ],
+    "target_id": "P008-T21",
+    "theorem": "SAP.P008b.T21"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "refuted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.printed_percentile_calibration_refuted",
+        "reason": "wrong_credit: refutes a larger domain of numerical arrays without a spatial-statistic witness."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.printed_toy_rule_rejects",
+      "SAP.P008b.WH.W1.T22_whole",
+      "SAP.P008b.WH.W1.T22_assembly",
+      "AronowAudit.P008.spatial_percentile_counterexample",
+      "AronowAudit.P008.contrast_is_hajek",
+      "AronowAudit.P008.six_support",
+      "AronowAudit.P008.sixAssignment",
+      "AronowAudit.P008.validatorRectangleModel",
+      "AronowAudit.P008.validatorRectangleStatistic",
+      "AronowAudit.P008.percentileExample"
+    ],
+    "statement_definition": "SAP.P008b.T22WholeStatement",
+    "target_id": "P008-T22",
+    "theorem": "SAP.P008b.T22"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains only the cutoff instruction's covariance identity; omits the reported interval table, its coverage interpretation, the assertion that cutoff 0.4 captures toy interference dependence unlike zero, and the empirical interval-width comparison.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.Wave1.toy_cutoff_equals_zero",
+        "reason": "wrong_credit: concerns reconstructed geometry and equal quadratic forms, not the printed dependence-accounting intervals."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.dependence_cutoff_identity"
+    ],
+    "target_id": "P008-T23",
+    "theorem": "SAP.P008b.T23"
+  },
+  {
+    "axioms": null,
+    "decision": "omitted",
+    "proof_plan": null,
+    "proof_status": null,
+    "restriction": "The only credited row has final status wrong_credit: it refutes a universal statement about arbitrary numerical arrays, without linking its counterexample to the reported cumulative estimate, its permutation percentiles, or a forest-loss event. The three printed values lie in [-1,1], so its range obstruction does not refute their asserted empirical interpretation.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.printed_sum_probability_gloss_refuted",
+        "reason": "wrong_credit: an unrelated array with sum minus four does not refute the empirical values or interpretation."
+      }
+    ],
+    "rows_used": [],
+    "target_id": "P008-T24",
+    "theorem": null
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.circle_measurable",
+        "reason": "A helper not needed separately for the exported integral identities."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_const",
+        "reason": "Already incorporated in the selected integral and eight-assignment identities."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_sub",
+        "reason": "The exported identities directly supply the target; subtraction of toy means is logical equality transport."
+      },
+      {
+        "lean_name": "AronowAudit.P008.weighted_integrable",
+        "reason": "Already incorporated in the exported circle integral identities."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.amr_integral_identity",
+      "AronowAudit.P008.circle_effect_identity",
+      "AronowAudit.P008.circle_marginal_identity",
+      "AronowAudit.P008.toy_eight_assignment_mean",
+      "SAP.P008b.WH.W1.T25_whole",
+      "SAP.P008b.WH.W1.T25_assembly",
+      "AronowAudit.P008.weighted_integrable"
+    ],
+    "statement_definition": "SAP.P008b.T25WholeStatement",
+    "target_id": "P008-T25",
+    "theorem": "SAP.P008b.T25"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.real_rational_circle",
+        "reason": "The selected converse witness is already stated for every real radius."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.cancelling_circle_masses",
+      "AronowAudit.P008.cancelling_schedule_all_designs",
+      "AronowAudit.P008.sharp_null_implies_weak",
+      "AronowAudit.P008.weak_not_sharp_example",
+      "SAP.P008b.WH.W1.T26_whole",
+      "SAP.P008b.WH.W1.T26_assembly",
+      "SAP.P008b.WH.W1.T26_L1_proof",
+      "AronowAudit.P008.expect_const",
+      "AronowAudit.P008.lineEmbedding",
+      "AronowAudit.P008.line_embedding_distance"
+    ],
+    "statement_definition": "SAP.P008b.T26WholeStatement",
+    "target_id": "P008-T26",
+    "theorem": "SAP.P008b.T26"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "whole",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": null,
+    "rows_not_used": [],
+    "rows_used": [
+      "AronowAudit.P008.additive_amr",
+      "AronowAudit.P008.additive_point_effect",
+      "AronowAudit.P008.homogeneous_additive_amr",
+      "SAP.P008b.WH.W2.T27_whole",
+      "SAP.P008b.WH.W2.T27_assembly",
+      "SAP.P008b.WH.W2.T27_L1_proof",
+      "AronowAudit.P008.weighted_integrable",
+      "SAP.P008b.WH.W2.P.T27_L1.selected_marginal_identity",
+      "SAP.P008b.WH.W2.P.T27_L1.selected_effect_identity"
+    ],
+    "statement_definition": "SAP.P008b.T27WholeStatement",
+    "target_id": "P008-T27",
+    "theorem": "SAP.P008b.T27"
+  },
+  {
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "decision": "restricted",
+    "proof_plan": null,
+    "proof_status": "proved",
+    "restriction": "Retains only that explicit sufficient consistency version; omits consistency under the cited general conditions, standardized asymptotic normality, and asymptotic type-I-error conservativeness of spatial-HAC intervals. The nonnegative uniform bound is explicit.",
+    "rows_not_used": [
+      {
+        "lean_name": "AronowAudit.P008.bernoulli_fraction_moments",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.bernoulli_good_denominator_bound",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.bernoulli_numerator_identity",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.common_numerator_means",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.covariance_le_bound_sq",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.covariance_raw",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.covariance_zero_of_fibres",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.dependency_numerator_variance_bound",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_abs_bound",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_add",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_mul_const",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_sum",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.expect_value_fibres",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.finite_chebyshev",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.finite_hajek_error_bound",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.hajek_ratio_decomposition",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.marginal_mean_abs_bound",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.prob_or_le",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.ratio_deviation_bound",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.variance_le_bound_sq",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      },
+      {
+        "lean_name": "AronowAudit.P008.variance_mul_const",
+        "reason": "Supporting step already incorporated in sufficient_hajek_consistency; not invoked separately."
+      }
+    ],
+    "rows_used": [
+      "AronowAudit.P008.sufficient_hajek_consistency"
+    ],
+    "target_id": "P008-T28",
+    "theorem": "SAP.P008b.T28"
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P011-T6",
+    "theorem": "SAP.P011a.T6",
+    "fingerprint": "96f8f312de29caab88c18355deebe5f1ecddc8ebdcfee047813a1eb10f16df41",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles signFamily with WholeScaling constants (1,1,1,2), positive growing sizes, and a compatible four-cycle. The common scaling fields are extracted from the already certified explicit sign witness, not reproved independently. Independently, scratch/exact_checks.py verifies the cycle eigenbasis, both alternative-majorant PSD conditions by all rational principal minors, the 3/5 versus 1 values, and clipped expectations at n=4,8. All finite laws use independent Boolean product coordinates.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T7",
+    "theorem": "SAP.P011a.T7",
+    "fingerprint": "23b08351899f6c3ccd8333f9ba0df5c88e730544be1e5fd4b29ac83584e21d43",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles the positive-variance independent signFamily, zero-cap maximizers for arbitrary objectives, finite attainment under any valid constraints, and fullCapSignFamily with supplied caps k=n-1 preserving WholeScaling and validity. Thus neither the asymptotic nor samplewise optimizer hypotheses are empty. scratch/exact_checks.py verifies both exact unscaled formulas on every sign vector for n=1,...,8. The sign scaling fields are taken from the certified SignWitnessFacts component; finite formula checks are independent.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T8",
+    "theorem": "SAP.P011a.T8",
+    "fingerprint": "a99e61adb143968e07ca6fb1ba3867fcaaed5514fc9f612ad6c439707ca05a6b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles the independent signFamily with WholeScaling and validity, checks membership examples for all four CorrectedClass alternatives, proves its meanBias identically zero, and proves finite maximizer attainment. Independent rational calculations verify the finite cycle and path witness expectations and true scaled variances. Their product-sign constructions satisfy joint dependency, true-degree bounds, bounded centered observations, positive limiting variance, valid recruitment/caps, and homoskedasticity; no dependent-replicate or undefined-quantity witness is used.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T9",
+    "theorem": "SAP.P011a.T9",
+    "fingerprint": "e3365c19a6db67b07a9bea0173c43a89121351dfc52938047cf459d0c2b88233",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles a one-dimensional intercept design D_i=1, true coefficient zero and exact coefficient estimator zero under signFamily: RowScaling, AE measurability, raw integrability, correct means, bounded design, root-n rate, bounded residuals, zero prediction error, validity, and samplewise residual maximizers all hold. It also checks bounded residuals and zero prediction error for the genuinely wrong deterministic intercept one. The OLS failure witness has nonsingular Gram matrix diag(n,n/2); independent enumeration of its 16 and 256 states gives scaled slope variance 2, intercept variances 17/8 and 65/16, and residual expectations 17/4 and 73/8. The failure does not rest only on divergent expectation: with T_n=n Vres, T_n/n converges in distribution to a chi-square(1) law, so T_n cannot converge in probability to 2.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P011-T10",
+    "theorem": "SAP.P011a.T10",
+    "fingerprint": "455db8346e668db7b9d7317f41a5a3360fff0b94374b7056ba0b7c120dd90fc0",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Take a=b=1. Fixed-pattern models have |X_i-beta_n|<=3 and n Var(betaHat)=1; the independent mixture has |X_i|<=2 and n Var(betaHat)=2, with empty graphs, caps zero and theta=1. These are probability laws on explicit finite product supports, with mutually independent coordinates and distinct positive targets. scratch/Check.lean compiles constant-statistic instances satisfying the individual fixed-pattern consistency and mixture-conservativeness premises, as well as positive distinct targets; their simultaneous demands on one statistic are the intended impossibility. Independent enumeration verifies mixture weights, means and variances for n=1,...,4 at (a,b)=(1,1),(2,1), and the design-unbiasedness example for n=1,...,6.",
+    "confidence": "high"
+  }
+]

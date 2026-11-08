@@ -1,0 +1,126 @@
+import SAP.P032.Defs
+
+set_option autoImplicit false
+set_option maxRecDepth 10000
+set_option maxHeartbeats 4000000
+
+open scoped BigOperators
+open SAP.P032
+
+-- Independent witness checks: this file does not import the Challenge theorems.
+
+lemma actual_probabilities :
+    imputationProbability false = 1/2 ∧ imputationProbability true = 3/4 := by
+  simp only [imputationProbability, imputationOutcome, imputationSuccesses,
+    Fintype.sum_prod_type, Fin.sum_univ_succ]
+  norm_num
+
+lemma actual_information :
+    imputationInformation false = 6 ∧ imputationInformation true = 9/2 := by
+  norm_num [imputationInformation, actual_probabilities.1, actual_probabilities.2]
+
+example : ∀ B : Bool, 0 < imputationProbability B ∧ imputationProbability B < 1 ∧
+    0 < imputationInformation B := by
+  intro B
+  cases B <;> norm_num [actual_probabilities.1, actual_probabilities.2,
+    actual_information.1, actual_information.2]
+
+example : ∀ (B : Bool) (r : Fin 6 × Fin 4),
+    imputationOutcome B r = 0 ∨ imputationOutcome B r = 1 := by
+  intro B r
+  unfold imputationOutcome
+  split_ifs <;> simp
+
+example : (∀ e : Fin 6, (sixDyadData e).members.card = 2) ∧
+    (∀ i : Fin 4, (Finset.univ.filter
+      (fun r : Fin 6 × Fin 4 => i ∈ (sixDyadData r.1).members)).card = 12) ∧
+    (∀ i : Fin 4, (Finset.univ.filter
+      (fun r : Fin 6 × Fin 4 => i ∉ (sixDyadData r.1).members)).card + 1 = 13) := by
+  decide
+
+example : fiveEstimates = fun (t : Fin 5) (_ : Fin 1) =>
+    imputationEstimate (if t.val < 3 then false else true) := by
+  funext t p
+  fin_cases t <;> norm_num [fiveEstimates, imputationEstimate,
+    actual_probabilities.1, actual_probabilities.2]
+
+lemma actual_records :
+    imputationRecordCovariance false = 1/6 ∧
+    imputationRecordCovariance true = 2/9 := by
+  norm_num [imputationRecordCovariance, recordScalarCovariance, imputationScore,
+    actual_information.1, actual_information.2,
+    actual_probabilities.1, actual_probabilities.2,
+    imputationOutcome, imputationSuccesses, Fintype.sum_prod_type, Fin.sum_univ_succ]
+
+lemma actual_dyads :
+    imputationDyadCovariance false = 2/9 ∧
+    imputationDyadCovariance true = 8/81 := by
+  simp only [imputationDyadCovariance, clusterScalarCovariance, imputationScore,
+    actual_information.1, actual_information.2,
+    actual_probabilities.1, actual_probabilities.2,
+    imputationOutcome, imputationSuccesses, Fintype.sum_prod_type, Fin.sum_univ_succ]
+  norm_num
+
+lemma actual_members :
+    (∀ i : Fin 4, imputationMemberCovariance false i = 7/36) ∧
+    (fun i => imputationMemberCovariance true i) = ![5/27,5/27,11/81,11/81] := by
+  constructor
+  · intro i
+    fin_cases i <;>
+      simp only [imputationMemberCovariance, memberScalarCovariance, imputationScore,
+        actual_information.1, actual_probabilities.1,
+        imputationOutcome, imputationSuccesses, sixDyadData,
+        Fintype.sum_prod_type, Fin.sum_univ_succ] <;> norm_num
+  · funext i
+    fin_cases i <;>
+      simp only [imputationMemberCovariance, memberScalarCovariance, imputationScore,
+        actual_information.2, actual_probabilities.2,
+        imputationOutcome, imputationSuccesses, sixDyadData,
+        Fintype.sum_prod_type, Fin.sum_univ_succ] <;> norm_num
+
+lemma actual_between : rubinContribution fiveEstimates 0 0 =
+    (9/25 : ℝ) * (Real.log 3)^2 := by
+  norm_num [rubinContribution, betweenCovariance, estimateAverage,
+    fiveEstimates, Fin.sum_univ_succ]
+  ring
+
+example : 0 < imputationDCR false ∧ 0 < imputationDCR true := by
+  norm_num [imputationDCR, actual_members.1, actual_members.2,
+    actual_dyads.1, actual_dyads.2, actual_records.1, actual_records.2,
+    Fin.sum_univ_succ]
+
+lemma actual_gap : codePooledVariance - correctPooledVariance =
+    -(27/1300 : ℝ) * (Real.log 3)^2 := by
+  unfold codePooledVariance correctPooledVariance averageMemberCovariance
+    averageDyadCovariance averageRecordCovariance
+  simp only [actual_members.1, actual_members.2, actual_dyads.1, actual_dyads.2,
+    actual_records.1, actual_records.2, actual_between, Fin.sum_univ_succ]
+  norm_num
+  ring
+
+example : codePooledVariance < correctPooledVariance := by
+  have hL : 0 < Real.log 3 := Real.log_pos (by norm_num)
+  have hgap : codePooledVariance - correctPooledVariance < 0 := by
+    rw [actual_gap]
+    exact mul_neg_of_neg_of_pos (by norm_num) (sq_pos_of_pos hL)
+  linarith
+
+-- The actual table has positive denominators and genuine admissible witnesses.
+example : ∀ i : Fin 22, 0 < (studyData i).n ∧ (studyData i).loss ≤ (studyData i).n := by
+  decide
+
+example : ∀ i : Fin 22,
+    |((studyData i).loss : ℚ)/((studyData i).n : ℚ) -
+      ((studyData i).lossMilli : ℚ)/1000| ≤ (1/2000 : ℚ) := by
+  intro i
+  fin_cases i <;> norm_num [studyData]
+
+example : (Finset.univ.filter (fun i : Fin 22 =>
+    (studyData i).n ≤ 2*(studyData i).loss)) = ({4,8,9,20} : Finset (Fin 22)) ∧
+    (Finset.univ.filter (fun i : Fin 22 =>
+    (studyData i).n < 2*(studyData i).loss)) = ({4,9,20} : Finset (Fin 22)) := by
+  decide
+
+example : ∃ i : Fin 22, (studyData i).n = 4 ∧ (studyData i).loss = 2 ∧
+    (studyData i).lossMilli = 500 ∧ (studyData i).serMilli = 4158 := by
+  exact ⟨8, by decide⟩

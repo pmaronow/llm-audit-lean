@@ -1,0 +1,62 @@
+[
+  {
+    "theorem": "SAP.P061b.T12",
+    "target_id": "P061-T12",
+    "my_reading_vs_claim": "whole",
+    "reason": "The factorization through arbitrary h, design invariance under global stability, positive-cell revealed values, and all household assertions reproduce the general statement and Table 3. A globally stable schedule admits such an h by choosing the common value on each nonempty fibre and any value on an empty fibre. Pointwise positive margins are equivalent to Condition 4.1 for finitely many units. Constancy on the relevant fibres supplies the required moments; no extra integrability assumption is hidden. The concrete household distributions and positive margins are nonempty instances."
+  },
+  {
+    "theorem": "SAP.P061b.T13",
+    "target_id": "P061-T13",
+    "my_reading_vs_claim": "whole",
+    "reason": "Includes supported-cell EPO and EED identities, global-implies-support stability, agreement of the full observed assignment-response laws for schedules agreeing on support, existence of a globally stable extension, and equality of the two sets of observed laws. Every predicate is quantified, so observational equivalence has its full canonical meaning. Pairwise fibre constancy is the first equality in Conditions 5.1/5.2 under the explicitly stipulated reading; the remaining equality is derived. Zero-mass assignments remain in the feasible type. The one-treated household gives a strict, nonempty example of support stability without global stability."
+  },
+  {
+    "theorem": "SAP.P061b.T14",
+    "target_id": "P061-T14",
+    "my_reading_vs_claim": "whole",
+    "reason": "The definitions give exactly the binary household assignment space, own-assignment exposures, housemate voting outcomes, and the three specified probability distributions. All two AEPOs, three AEEDs, stability assertions, and the explicit off-support witness are stated. All four feasible assignments are retained and every relevant exposure probability is 1/2. This is a closed finite example, not an implication with inconsistent hypotheses."
+  },
+  {
+    "theorem": "SAP.P061b.T15",
+    "target_id": "P061-T15",
+    "my_reading_vs_claim": "whole",
+    "reason": "Both Table 4 schedules and both designs are rendered on the complete binary square, with the four asserted contrasts and all stability assertions. The complete ternary square, positive-version coarsening, raw own-version response, and the two Table 5 designs yield the asserted contrasts 1 and 2, positive margins, support stability, failure of global stability, and no interference in the full own-version coordinate. No off-support assignment is discarded."
+  },
+  {
+    "theorem": "SAP.P061b.T16",
+    "target_id": "P061-T16",
+    "my_reading_vs_claim": "different",
+    "reason": "The theorem has opposite polarity: it refutes, rather than proves, the canonical universal assertion of ordinary HT unbiasedness under positivity alone. This is a justified refutation of that assertion itself: the standing assumptions permit countably infinite support and impose no outcome moments, and T16's definitions_needed does not assume expectations exist. The independent compiled witness in scratch/T16Counterexample.lean has N=1, Omega=Nat, p(n)=2^(-n-1), g=0, y(n)=(-1)^n/p(n), and d=e=0. Both positivity hypotheses hold with c=1 but p(n)|HT(n)|=1 for every n, so the HT estimator has no first moment and its ordinary signed expectation is undefined. GeneralHTUnbiased explicitly includes existence and does not merely exploit a default value of a divergent tsum. This stage records the polarity difference; it is not a finding that the refutation is false or unfaithful."
+  },
+  {
+    "theorem": "SAP.P061b.T17",
+    "target_id": "P061-T17",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The equal-positive-margin algebra in (a) is retained, including pointwise equality of fixed-denominator exposed sums without stability. No general survey expectation assertion (b) is present, including the census case. The experiment assertion (c) is restricted from every feasible set containing the binary cube to the binary cube itself. On that cube UniformFixedCount is exactly the stated uniform complete randomization, 0<n<N protects both denominators and the natural subtraction, and the arbitrary finite outcome schedule has all moments. The Challenge docstring explicitly discloses both omissions."
+  },
+  {
+    "theorem": "SAP.P061b.T18",
+    "target_id": "P061-T18",
+    "my_reading_vs_claim": "whole",
+    "reason": "States the supported revealed-value reduction, both forms of Equation (5), Equation (9)'s covariance and variance-of-contrast identity, and the diagonal joint-probability identities, using the correct ordered double sums and N^(-2). Requiring positive d and e margins in the combined statement loses no single-exposure assertion: set e=d to recover Equations (4) and (5) under positivity for d alone. Support stability makes each relevant unit exposure value constant and finite, hence the finite sums defining both HT estimators and all displayed moments are bounded on support. Zero joint exposure probabilities are permitted."
+  },
+  {
+    "theorem": "SAP.P061b.T19",
+    "target_id": "P061-T19",
+    "my_reading_vs_claim": "narrower",
+    "reason": "Includes the joint-positive unbiased variance estimator, the exact expectation formula, the conservative estimator with its separate zero-joint-probability branch, and the Young inequality. It omits the quoted assertion in the canonical statement that a zero joint probability precludes an unbiased estimator of the product; the quoted sentence remains part of statement even though its following Formal content enumerates only (a) and (b). The docstring expressly discloses that omission and makes no refutation claim about it. Marginal positivity protects all marginal denominators; the unbiased-estimate implication separately requires every joint probability positive. Support stability supplies every needed moment."
+  },
+  {
+    "theorem": "SAP.P061b.T20",
+    "target_id": "P061-T20",
+    "my_reading_vs_claim": "whole",
+    "reason": "The canonical definitions_needed explicitly says expectations are assumed to exist. ExposureMoment for y and first moments for F render the finite conditional means and prediction expectations used in the claim; the additional exposed-prediction moment follows already from the first moment of F. They are not restrictions inferred from the note. Calibration is exactly the canonical displayed condition, and the independence and mean-independence implications are both included with the correct direction. The outcome schedule is not required stable. A finite uniform household with housemate outcomes, own-assignment exposures, and constant predictions gives a nonvacuous example with support stability failing."
+  },
+  {
+    "theorem": "SAP.P061b.T21",
+    "target_id": "P061-T21",
+    "my_reading_vs_claim": "whole",
+    "reason": "Quantifies an arbitrary population sequence with exactly N units at size N and retains every canonical condition: nonnegative b,c, positive margins, support stability, the almost-sure reweighted bound, the exact dependence-sum equality, both little-o limits, and convergence in probability of the full centered HT error for every epsilon>0. Indexing the limits by N+1 merely enumerates the positive population sizes. The additional zero-unit population can always be appended with a one-point design and b(0)=0; it imposes no restriction on the positive-size sequence. No zero population denominator or empty asymptotic unit set proves the conclusion. A one-point design, g=0, y=1, b=0, c=1 for every positive size supplies all hypotheses; independent Bernoulli assignments with y=1, b=N/4 and c=2 give a nondegenerate alternative."
+  }
+]

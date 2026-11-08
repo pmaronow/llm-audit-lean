@@ -1,0 +1,132 @@
+[
+  {
+    "target_id": "P004-T31",
+    "theorem": "SAP.P004c.T31",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean proves both arm counts are positive for N=2 and z=(true,false), and exhibits an orthonormal spectral matrix U=I. Any real circle table and residual vector may be used. SharpNull is an explicitly defined property, not an assumed universal assertion about outcomes.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T32",
+    "theorem": "SAP.P004c.T32",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles using only SAP.P004c.Defs. It exhibits N=2, p=1/2, R_0(z)=1, R_1(z)=-1, and singleton neighborhoods B_i={i}. All entries have absolute value <2; neighborhoods contain their centers, are symmetric, and contain every shared-source pair. Direct enumeration gives Var(HT)=Var(linearHajek)=2. The sequence above also has bounded maximum neighborhood degree 1. For every N, use the N points (i,0), 0<=i<N, in the Euclidean plane, with counting measure, singleton intervention nodes and bands(d)={0} for all d. Set Y((i,0),z)=(-1)^i. Every region is one point with mass 1 and an integrable bounded outcome. Choose p=1/2, b=2, h(d)=0 and c(r)=2*r+1. Only identical nodes share a source, and every ball has at most 2*floor(r)+1 points. For N>0, Var(HT)=4/N. If m_N=N^(-1)*sum_i(-1)^i, Var(linearHajek)=4*(1-m_N^2)/N, so N*Var(linearHajek)>=3 for N>=2. Thus the Gaussian-limit premises have genuine nondegenerate instances; no empty index or zero denominator supplies them.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T33",
+    "theorem": "SAP.P004c.T33",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles using only SAP.P004c.Defs. It exhibits N=2, p=1/2, R_0(z)=1, R_1(z)=-1, and singleton neighborhoods B_i={i}. All entries have absolute value <2; neighborhoods contain their centers, are symmetric, and contain every shared-source pair. Direct enumeration gives Var(HT)=Var(linearHajek)=2. Both the locality premises and the positive-HT-variance branch are satisfied. C5 is an equivalence in the conclusion, not a premise secretly implying a desired bound.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T34",
+    "theorem": "SAP.P004c.T34",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The finite formulas admit N=2, p=1/2 and a treated count of 1 or 2. For the kernel bound take bandwidth 1, D_ij=|i-j|, K(t)=1 for t<=1 and 0 otherwise, Kmax=1, z=(true,true) and e=(1,1); the normalized off-diagonal cross sum is 1. The kernel premises and that nonzero sum are checked in scratch/Check.lean. The denominator rate uses an actual independent Bernoulli law; the omitted empty-arm event has probability (1-p)^N. Scalar arithmetic does not supply or claim an eight-node realization.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T35",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Challenge theorem or hypothesis to test. On the supplied record, the available negative declarations quantify over arbitrary metric measurable spaces and do not provide a witness in the canonical two-dimensional spatial domain. A negation of that larger universal assertion does not entail a refutation of its restricted paper-domain version. The claimed printed conjunction is not supplied as a positive theorem.",
+    "confidence": 0.91
+  },
+  {
+    "target_id": "P004-T36",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Challenge theorem or hypothesis to test. The canonical numerator is the Hajek estimator. The only declaration described in the record instead refutes a fitted-IPW coverage assertion. The canonical text itself distinguishes these and expressly says that the latter refutation does not refute the printed Hajek event.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P004-T37",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Challenge theorem or hypothesis to test. The described row negates an equality over unrestricted real tables and positive weights. No binary spatial population with a common potential-outcome field and ordered distance regions forming the required partition is supplied by that assertion. Such an unrestricted negation alone does not refute the printed interpretation. Empirical numbers are excluded from the canonical mathematical target.",
+    "confidence": 0.92
+  },
+  {
+    "target_id": "P004-T39",
+    "theorem": "SAP.P004c.T39",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean compiles using only SAP.P004c.Defs. It exhibits N=2, p=1/2, R_0(z)=1, R_1(z)=-1, and singleton neighborhoods B_i={i}. All entries have absolute value <2; neighborhoods contain their centers, are symmetric, and contain every shared-source pair. Direct enumeration gives Var(HT)=Var(linearHajek)=2. Independence makes forcing a coordinate equivalent to the canonical marginalization over the remaining assignments, with strictly positive arm probabilities.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T40",
+    "theorem": "SAP.P004c.T40",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean gives N=1, spatial space R, node {0}, measure dirac(0), bands(d)=R, and Y(x,z)=bit(z_0). Each region has mass 1 and every outcome is integrable. Take g_0(x)=1, f(x)=0 and w_0(z)=1/2 on the two assignments. The additive identity, weight normalization/nonnegativity, WellDefined and the actual circle average bit(z_0) are all checked. Thus the effect is nonzero and the spatial integral does not use a zero/infinite-mass convention.",
+    "confidence": 0.99
+  },
+  {
+    "target_id": "P004-T41",
+    "theorem": "SAP.P004c.T41",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N, use the N points (i,0), 0<=i<N, in the Euclidean plane, with counting measure, singleton intervention nodes and bands(d)={0} for all d. Set Y((i,0),z)=(-1)^i. Every region is one point with mass 1 and an integrable bounded outcome. Choose p=1/2, b=2, h(d)=0 and c(r)=2*r+1. Only identical nodes share a source, and every ball has at most 2*floor(r)+1 points. For N>0, Var(HT)=4/N. If m_N=N^(-1)*sum_i(-1)^i, Var(linearHajek)=4*(1-m_N^2)/N, so N*Var(linearHajek)>=3 for N>=2. Thus the Gaussian-limit premises have genuine nondegenerate instances; no empty index or zero denominator supplies them.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T42",
+    "theorem": "SAP.P004c.T42",
+    "verdict": "correct_whole",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N, use the N points (i,0), 0<=i<N, in the Euclidean plane, with counting measure, singleton intervention nodes and bands(d)={0} for all d. Set Y((i,0),z)=(-1)^i. Every region is one point with mass 1 and an integrable bounded outcome. Choose p=1/2, b=2, h(d)=0 and c(r)=2*r+1. Only identical nodes share a source, and every ball has at most 2*floor(r)+1 points. For N>0, Var(HT)=4/N. If m_N=N^(-1)*sum_i(-1)^i, Var(linearHajek)=4*(1-m_N^2)/N, so N*Var(linearHajek)>=3 for N>=2. Thus the Gaussian-limit premises have genuine nondegenerate instances; no empty index or zero denominator supplies them.",
+    "confidence": 0.97
+  },
+  {
+    "target_id": "P004-T43",
+    "theorem": null,
+    "verdict": "omission_ok",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "No Challenge theorem or hypothesis to test. The negative row described in the record has a larger quantified spatial domain and no exported canonical-domain witness; its negation cannot be specialized to a two-dimensional refutation. The other rows are finite oracle variance bounds, which do not establish either ordinary-limit coverage conclusion. The canonical note also distinguishes a liminf lower bound from the printed existence of a limit.",
+    "confidence": 0.91
+  },
+  {
+    "target_id": "P004-T44",
+    "theorem": "SAP.P004c.T44",
+    "verdict": "correct_restricted",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "For every N, use the N points (i,0), 0<=i<N, in the Euclidean plane, with counting measure, singleton intervention nodes and bands(d)={0} for all d. Set Y((i,0),z)=(-1)^i. Every region is one point with mass 1 and an integrable bounded outcome. Choose p=1/2, b=2, h(d)=0 and c(r)=2*r+1. Only identical nodes share a source, and every ball has at most 2*floor(r)+1 points. For N>0, Var(HT)=4/N. If m_N=N^(-1)*sum_i(-1)^i, Var(linearHajek)=4*(1-m_N^2)/N, so N*Var(linearHajek)>=3 for N>=2. Thus the Gaussian-limit premises have genuine nondegenerate instances; no empty index or zero denominator supplies them. The actual circle outcomes are deterministic, so their conditional approximation errors are exactly zero. NEDConditions holds with psi=0, g_Ni=1, G=1, exponent=5, C=0 and S=1. The node separations are the metric |i-j|. QuadraticSpacing holds for all N and all s>=0 with C_b=2, since 2*s+1<=2*(1+s^2).",
+    "confidence": 0.96
+  }
+]

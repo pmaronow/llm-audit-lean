@@ -1,4 +1,4 @@
-/- P011 T3(iv),(v): exact necessary and sufficient mean-bias conditions for oracle consistency and conservativeness under Scaling, with common-mean and PSD consequences. Neither equivalence concerns consistency of the data-selected maximum. -/
+/- Original P011 T3(iv),(v), retaining all original Scaling hypotheses: exact necessary and sufficient mean-bias conditions for oracle consistency and conservativeness, with common-mean and PSD consequences. Neither equivalence concerns consistency of the data-selected maximum. -/
 import AronowAudit.P011.P011_HomoskedasticCompletion
 
 namespace AronowAudit.P011.MeanCompletion
@@ -196,3 +196,4 @@ theorem oracle_mean_conditions (F : Family) (c1 c2 c3 c4 : ℝ)
   exact MeanCompletion.oracle_mean_conditions_completed F c1 c2 c3 c4 h
 end AronowAudit.P011
 
+#print axioms AronowAudit.P011.oracle_mean_conditions

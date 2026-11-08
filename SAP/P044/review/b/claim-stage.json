@@ -1,0 +1,68 @@
+[
+  {
+    "theorem": "SAP.P044.T1",
+    "target_id": "P044-T1",
+    "my_reading_vs_claim": "whole",
+    "reason": "All six mathematical parts of the canonical finite-bank witness are present: the complete 66-assignment design and its graph/exposure identification, marginal and joint counts, per-assignment group counts, exact-input moments, both joint observation/table laws, every fixed-table shortfall, and network-preserving permutation reduction. Zero-based unit labels are an innocuous relabeling. Independent rational arithmetic reproduces all 66 fixed-table rows and both joint-law moments. The marginal weights are positive, all subtracted event indicators are bounded by their counts, and the joint masses sum to one; neither natural subtraction nor field division supplies a spurious witness. This proves the counterexample the target actually asserts, without claiming failure of the particular chapter table or every finite simulation."
+  },
+  {
+    "theorem": "SAP.P044.T2",
+    "target_id": "P044-T2",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The structural-zero surplus identity and resulting conservativeness with exact positive marginals match (a)-(b), and the explicit two-law T1 counterexample establishes (c). However the canonical statement also contains repair/corrected-text clauses about R=10000, inclusion/seed reuse beyond this witness, separately justified approximation error, and Hajek linearization/numerical robustness. Those are not all asserted. The positive-marginal hypotheses are canonical, not hidden or conclusion-assuming; complete randomization on a four-unit matching with two treated units satisfies them for all four exposures. The Defs' finite-sample-space abstraction causes no loss for the finite assignment setting."
+  },
+  {
+    "theorem": "SAP.P044.T3",
+    "target_id": "P044-T3",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The star, complete design, marginal probabilities, identical observed data, different population effects, and impossibility for every observed-data function match (i)-(iv). The six explicit profile-to-exposure vectors are not asserted as theorem conjuncts. In (v), the HT expectations and biases are conditional on the added premise that each observed term's probability is positive, whereas the canonical witness asserts this positivity and the calculations outright. That premise is true here: it was independently checked for every supported profile, unit, and exposure, and proved in scratch/RefereeCheck.lean. Thus this is a disclosed weakening, not an impossible premise or a zero-division counterexample."
+  },
+  {
+    "theorem": "SAP.P044.T4",
+    "target_id": "P044-T4",
+    "my_reading_vs_claim": "whole",
+    "reason": "All parts (a)-(d) are covered: exact-weight unit and population unbiasedness under canonical positive support; the changed unsupported outcome entry and equal expectations for any observed-data statistic; the nonempty common-support target with its own denominator and the star subset; and the complete-randomization formulas, exact degree criterion, star failure, and N=1000 specialization. Arbitrary finite sample spaces represent every permitted assignment design and yield a harmless stronger abstraction. N>0 and 1<=M<=N-1 exclude empty averages/designs and make the natural binomial arguments faithful. Boundary enumeration of 240 (N,M,k) cases agrees with the formulas."
+  },
+  {
+    "theorem": "SAP.P044.T5",
+    "target_id": "P044-T5",
+    "my_reading_vs_claim": "whole",
+    "reason": "The triangle matrix square, distinct two-walk endpoint degree (including first neighbors), exact outcome vectors, positive-measure negative-baseline events for every nonnegative scale, explicit CDF rectangle, law inequality, moments, triangle shifts, and nonisolate mean comparison all match the canonical assertion. gaussianReal 1 (1/16) uses variance, exactly as required; it does not mistake the code's standard deviation 0.25 for a variance. Continuous pushforwards of independent Gaussian coordinates give genuine distributions and the L2 conjuncts prevent totalized-integral or infinite-variance artifacts. As the canonical statement expressly allows, identifying this ideal model with external code is provenance outside Lean."
+  },
+  {
+    "theorem": "SAP.P044.T6",
+    "target_id": "P044-T6",
+    "my_reading_vs_claim": "whole",
+    "reason": "The definitions supply the corrected independent Gaussian population model and multipliers; the theorem contains its first two baseline moments, every realized-baseline contrast and triangle value, the population mean scale formula and nonisolate lower bound, and the half-normal comparison. It also supplies integrability for the population averages and L2 for the baselines. The half-normal comparison needs only the specified coordinate laws, so dropping independence there is a valid generalization. The external generator identification is already a provenance premise in the canonical text."
+  },
+  {
+    "theorem": "SAP.P044.T7",
+    "target_id": "P044-T7",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The exhaustive cyclic design, all positive exact marginals, group and bank counts, smoothed weights and their sum, every constant HT mean/contrast/bias, exact-weight results, and the inconsistent returned joint row sum are present and agree with an independent rational enumeration. Missing explicit conjuncts are the base exposure vector, the four joint counts in (v), the individual returned entries 1/9 and 1/8, and the exact joint row identity 1/8+1/8=1/4. These missing details are true of the fixed definitions, but are not among the theorem's asserted results. All selected weights and group sizes are positive."
+  },
+  {
+    "theorem": "SAP.P044.T8",
+    "target_id": "P044-T8",
+    "my_reading_vs_claim": "whole",
+    "reason": "The count/R marginal and joint identities (equivalently the stated indicator-matrix products), arbitrary fixed-weight expectation, supported exact-weight unbiasedness, exact smoothed bias and multiplier signs, and nonnormalization cover (i)-(iii). HasLaw for a Bernoulli observation and an independent binomial count is precisely the distributional content needed in (iv); the theorem states its integrability and expectation with the correct strict p bounds. Counts-minus-R is real subtraction, not truncated natural subtraction. Abstracting the design by its indexed exposure map includes the distinct exhaustive-assignment case. The unused positive supplied weight argument can always be instantiated by w=1 and imposes no extra restriction on the weight-free conclusions."
+  },
+  {
+    "theorem": "SAP.P044.T9",
+    "target_id": "P044-T9",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The corrected universal and existential interference definitions, their equivalence to dependence only on own treatment, profile reconstruction, scalar treated-peer count, its zero-diagonal own-treatment invariance, and the four exhaustive exposure cases agree with (i)-(iii). The claim's additional syntactic diagnosis that a 1-by-N row times a 1-by-N row is undefined for N>1 is absent. Permitting N=0 in universal identities is harmless and is not what proves the nonempty instances."
+  },
+  {
+    "theorem": "SAP.P044.T10",
+    "target_id": "P044-T10",
+    "my_reading_vs_claim": "narrower",
+    "reason": "The identity-block expression is zero across communities; zero crossing-event masses imply no crossing edges on finite-law support; and graphs/laws already satisfying the no-isolate and no-crossing properties have positive edge count, within share one, both expectation ratios one, and difference 3/10. The canonical claim also derives those law properties from the independent-edge generator and the printed rejection loop. No such law or loop is constructed here: zero crossing masses or accepted-graph properties are premises. These are substantive added hypotheses but leave a nonvacuous deterministic/finite-law consequence, witnessed by a two-vertex edge with one community and a point-mass law. There is no computation of a positive-denominator ratio on an edgeless graph."
+  },
+  {
+    "theorem": "SAP.P044.T13",
+    "target_id": "P044-T13",
+    "my_reading_vs_claim": "different",
+    "reason": "The polarity is a direct refutation: for every nonempty loopless network the ideal generator cannot give half-normal baseline laws to all units. It does not assert the canonical positive description. This is an appropriate refutation of the canonical statement's own explicit absolute-standard-normal baseline assertion, rather than of a merely optional interpretation of 'conservative approximation' or other printed guidance. One false conjunct suffices to refute that description; no contradiction of the correct multipliers is claimed. The source model is specified by Defs and the external provenance explicitly referenced by definitions_needed; nonempty N is essential and is assumed. Whether the record correctly labels this refutation will be judged only in step 3."
+  }
+]

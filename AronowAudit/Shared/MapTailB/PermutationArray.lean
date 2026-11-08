@@ -176,6 +176,16 @@ theorem abs_rectangle_le (c : Matrix (Fin N) (Fin N) ℝ) {β : ℝ}
              _ ≤ _ := add_le_add (add_le_add (abs_add_le _ _) le_rfl) le_rfl
     _ ≤ 4 * β := by linarith [hβ i (π j), hβ j (π i), hβ i (π i), hβ j (π j)]
 
+theorem array_mean (c : Matrix (Fin N) (Fin N) ℝ)
+    (hr : ∀ i, ∑ j, c i j = 0) : average (statistic c) = 0 := by
+  classical
+  unfold statistic
+  rw [average_sum]
+  have h : ∀ i : Fin N, average (fun π : Equiv.Perm (Fin N) => c i (π i)) = 0 := by
+    intro i
+    have hm := StatLean.HypothesisTesting.avg_perm_apply i (c i)
+    simpa [average, hr i] using hm
+  simp only [h, Finset.sum_const_zero]
 
 theorem sum_rectangle_sq (b : Matrix (Fin N) (Fin N) ℝ)
     (hr : ∀ i, ∑ j, b i j = 0) (hc : ∀ j, ∑ i, b i j = 0) :
@@ -522,6 +532,26 @@ theorem normalizedSquare_eq_condSqIncrement (hN : 0 < N)
     Fintype.card_prod, Fintype.card_fin, Nat.cast_mul, normalizedSquare]
   field_simp <;> ring
 
+theorem average_normalizedSquare (hN : 2 ≤ N) (c : Matrix (Fin N) (Fin N) ℝ)
+    (hr : ∀ i, ∑ j, c i j = 0) (hc : ∀ j, ∑ i, c i j = 0)
+    (hq : energy c = (N : ℝ) - 1) : average (normalizedSquare c) = 1 := by
+  have hn : (N : ℝ) ≠ 0 := by
+    exact_mod_cast (lt_of_lt_of_le (by decide : 0 < 2) hN).ne'
+  have hn1 : (N : ℝ) - 1 ≠ 0 := by
+    have : (2 : ℝ) ≤ N := by exact_mod_cast hN
+    linarith
+  obtain ⟨hw, ht⟩ := array_second_moments hN c hr hc
+  change average (fun π => (energy c + (N : ℝ) * selectedEnergy c π +
+    (statistic c π)^2 + crossed c π) / (2 * (N : ℝ))) = 1
+  have he : (fun π => (energy c + (N : ℝ) * selectedEnergy c π +
+      (statistic c π)^2 + crossed c π) / (2 * (N : ℝ))) =
+      (fun π => (2 * (N : ℝ))⁻¹ * (energy c + (N : ℝ) * selectedEnergy c π +
+        (statistic c π)^2 + crossed c π)) := by funext π; ring
+  rw [he, average_const_mul]
+  simp only [average_add, average_const_mul, average_const]
+  rw [average_selectedEnergy, hw, ht, hq]
+  field_simp
+  ring
 
 theorem eigenfunctions_orthogonal (f g : Equiv.Perm (Fin N) → ℝ) {r s : ℝ}
     (hf : ∀ π, laplacian f π = -r * f π)
@@ -1037,7 +1067,7 @@ theorem array_average_cubic_increment_le (hN : 2 ≤ N) (c : Matrix (Fin N) (Fin
         exact Finset.sum_le_sum fun k _ => hp π k
     _ = _ := by rw [average_const_mul, array_average_sq_increment hN c hr hc hq]; ring
 
-/-- A finite-array bounded-Lipschitz estimate, weaker than a Bolthausen bound but sufficient
+/-- A fixed-stage bounded-Lipschitz estimate, weaker than a Bolthausen bound but sufficient
 for the max-entry CLT. -/
 theorem array_lipschitz_bound (hN : 3 ≤ N) (c : Matrix (Fin N) (Fin N) ℝ)
     (hr : ∀ i, ∑ j, c i j = 0) (hc : ∀ j, ∑ i, c i j = 0)
@@ -1152,7 +1182,7 @@ theorem array_lipschitz_clt (n : ℕ → ℕ) (hn : Tendsto n atTop atTop)
 
 end AronowAudit.MapTailB.PermutationArray
 
-/-- General max-entry permutation-array CLT. -/
+/-- General max-entry permutation-array CLT (TB-PERM). -/
 theorem TailB_permutation_array_clt
     (N : ℕ → ℕ) (hN : Tendsto N atTop atTop)
     (c : (q : ℕ) → Matrix (Fin (N q)) (Fin (N q)) ℝ)
@@ -1198,3 +1228,18 @@ theorem TailB_permutation_array_clt
     AronowAudit.MapTailB.PermutationArray.average,
     AronowAudit.MapTailB.PermutationArray.statistic, div_eq_inv_mul] using hh
 
+-- Compile-time check against the exact TB-PERM type in the program.
+example
+    (N : ℕ → ℕ) (hN : Tendsto N atTop atTop)
+    (c : (q : ℕ) → Matrix (Fin (N q)) (Fin (N q)) ℝ)
+    (β : ℕ → ℝ) (hβ : Tendsto β atTop (nhds 0))
+    (hc : ∀ᶠ q in atTop, 2 ≤ N q ∧
+      (∀ i, ∑ j, c q i j = 0) ∧ (∀ j, ∑ i, c q i j = 0) ∧
+      (∑ i, ∑ j, (c q i j)^2) = (N q : ℝ) - 1 ∧
+      (∀ i j, |c q i j| ≤ β q)) :
+    ∀ f : BoundedContinuousFunction ℝ ℝ,
+      Tendsto (fun q =>
+        (∑ π : Equiv.Perm (Fin (N q)), f (∑ i, c q i (π i))) /
+          (Fintype.card (Equiv.Perm (Fin (N q))) : ℝ)) atTop
+        (nhds (∫ x, f x ∂(gaussianReal 0 1))) :=
+  TailB_permutation_array_clt N hN c β hβ hc

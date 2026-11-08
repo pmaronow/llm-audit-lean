@@ -23,5 +23,7 @@ theorem uniform_quadratic_cef_unique_blp
         a = -5 / 3 ∧ b = 10)) :=
   QuadraticUniqueBlp.assemble QuadraticUniqueBlp.n1_proof μ X W hX hW hi hx hw
 
+example : QuadraticUniqueBlp.Target := uniform_quadratic_cef_unique_blp
+
 end
 end AronowAudit.P001.Wave1

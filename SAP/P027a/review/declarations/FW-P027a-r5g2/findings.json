@@ -1,0 +1,60 @@
+[
+  {
+    "target_id": "P027-T6",
+    "theorem": "SAP.P027a.T6",
+    "fingerprint": "974d793e32c15195c44f4c6af3479dbedae4b5d67b04d42597af3d658df52cde",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean: r=2, m=2 and alternating outcomes on the sigma-indexed units have zero total and strictly positive sampling variance. On the probability space consisting of one point, errors identically zero satisfy NoiseMoments with sigma2=0; beta=1 gives L=64>0, and the model variance, grouped expected estimator and all squared group totals are integrable. Thus both the finite formulas and the guarded outcome-ratio branch have genuine instances. The record's restriction accurately discloses the absent continuous-start identification, separate correction/preservation and mean-scale identities, original-unit ratio example, and implementation assertion. Integrability adds only usual measure-theoretic conditions.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P027-T10",
+    "theorem": "SAP.P027a.T10",
+    "fingerprint": "f47287c0b03eed3c382e09a2f1aa169fc26385448f21d434e381142b9aadce43",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional concrete witness. Compiled scratch/Nonvacuity.lean directly enumerates random8, checking validity, positive marginals, sizes at least one, A=-16 and mean sampling variance 4/3. Compiled scratch/Support.lean proves positivity of every nbMass and of the product-Dirac singleton mass of every finite count vector, including the alternating counts (0,2,...). The sizes sum to 16, their maximum is 3 and m=2 satisfies feasibility. The intervals and uniform-start identification are explicitly stated. The outcomes and all residuals y0-beta*x are finite real vectors; the canonical statement asks for this algebraic representation, while the Gaussian positive-event explanation belongs to its note. All C1-C5 clauses are retained.",
+    "confidence": "high",
+    "resolved": [
+      "Fixed: the sole earlier issue was the omitted identification of the reading challenged by the witness. SAP/P027a/Challenge/Part1.lean:47-50 and SAP/P027a/Defs/WholeW1.lean:141-144 now explicitly identify the inference from positive sizes and the noisy additive model to populationwise conservativity, and distinguish the literal proportional-outcome assertion. The current whole decision is correct relative to the canonical counterexample."
+    ]
+  },
+  {
+    "target_id": "P027-T11",
+    "theorem": "SAP.P027a.T11",
+    "fingerprint": "b24d2e920f080cef4775d4b4df2caf107463811657f9b31e6d0f791dfb5a050a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean constructs a probability measure on Unit with zero errors satisfying all UncorrelatedNoise clauses, together with the valid positive random8 design, eight-unit nonempty population and sizes at least one. Every beta is permitted; beta=3/2 gives the stated nonzero averaged coefficient. The independent direct finite calculation A(randomOutcome8)=-16 supplies the contrasting realized population. Error second moments ensure existence of the quadratic integrals; integrability of A and actual conditional sampling bias is concluded, rather than assumed. No independence or equal-variance hypothesis is added.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P027-T12",
+    "theorem": "SAP.P027a.T12",
+    "fingerprint": "a8ba12d38880d5b7ba1088704ff1e693648325962bb400ed39857116b9386c10",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "This is an unconditional concrete counterexample, not an implication with potentially inconsistent premises. Compiled scratch/Nonvacuity.lean checks that counts (29,0,...,0) produce sizes (30,1,...,1), total size 37 and first printed probability 60/37>1. Compiled scratch/Support.lean independently proves every NB mass and finite-vector singleton mass positive, proves b(29)*b(0)^7>0, and checks all six floor-division L values and strict probability violations. The theorem additionally asserts normalization and integrability of its NB coordinate moments, excluding infinite-mass toReal or undefined-integral interpretations. All C1-C4 clauses are present.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P027-T13",
+    "theorem": "SAP.P027a.T13",
+    "fingerprint": "26f5c44530f367cde52c775780d421f4f86d45c43096ff1000bc47c757a7022b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Nonvacuity.lean checks N=8,m=2 with the feasible alternating (1,3,...) sizes, and the positive infeasible (30,1,...) sizes repaired by c=1/7 with cap sum 2 and a valid positive certainty-unit design. The all-zero count vector satisfies the redraw acceptance inequalities and a sequence of accepted zero vectors returns that vector. Compiled scratch/Support.lean proves positive mass for this accepted singleton, so acceptance is genuinely possible. The general statement itself proves normalized component and sequence laws, positive acceptance, almost-sure termination, measurability and equality of the output law with the normalized restriction. Hence infinitePi's zero-measure fallback, zero-mass conditioning, and the no-acceptance default are excluded. The joints use the actual measurable selection-event intersections for the specified order.",
+    "confidence": "high"
+  }
+]

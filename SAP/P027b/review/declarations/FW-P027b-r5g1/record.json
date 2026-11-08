@@ -1,0 +1,120 @@
+[
+ {
+  "target_id": "P027-T14",
+  "decision": "whole",
+  "theorem": "SAP.P027b.T14",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.strata5_counterexample",
+   "AronowAudit.P027.Wave1.gaussian_noise_moments",
+   "AronowAudit.P027.strata_model_moments",
+   "AronowAudit.P027.shifted_noise_second_moment",
+   "AronowAudit.P027.noise_linear_moments",
+   "AronowAudit.P027.strata_finite_formulas"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P027.strata_model_numeric_witnesses",
+    "reason": "Formula arithmetic alone does not identify the actual model expectations required by C2-C3; those clauses are omitted."
+   }
+  ],
+  "bridge": "SAP.P027b.Bridge.T14_proof",
+  "bridge_module": "SAP.P027b.Bridge.Part1",
+  "statement_definition": "SAP.P027b.T14WholeStatement"
+ },
+ {
+  "target_id": "P027-T15",
+  "decision": "whole",
+  "theorem": "SAP.P027b.T15",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.strata_bias_ranking",
+   "AronowAudit.P027.strata_finite_formulas",
+   "AronowAudit.P027.strata_large_size_limits",
+   "AronowAudit.P027.strata_model_moments",
+   "AronowAudit.P027.strata_ratio_formula"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P027.noise_linear_moments",
+    "reason": "Auxiliary moment or sample identity is already incorporated in strata_model_moments or strata_finite_formulas."
+   },
+   {
+    "lean_name": "AronowAudit.P027.outcomeE_expect",
+    "reason": "Auxiliary moment or sample identity is already incorporated in strata_model_moments or strata_finite_formulas."
+   },
+   {
+    "lean_name": "AronowAudit.P027.shifted_noise_second_moment",
+    "reason": "Auxiliary moment or sample identity is already incorporated in strata_model_moments or strata_finite_formulas."
+   },
+   {
+    "lean_name": "AronowAudit.P027.strata_quadratic_values",
+    "reason": "Auxiliary moment or sample identity is already incorporated in strata_model_moments or strata_finite_formulas."
+   },
+   {
+    "lean_name": "AronowAudit.P027.strata_sample_mean",
+    "reason": "Auxiliary moment or sample identity is already incorporated in strata_model_moments or strata_finite_formulas."
+   }
+  ],
+  "bridge": "SAP.P027b.Bridge.T15_proof",
+  "bridge_module": "SAP.P027b.Bridge.Part2",
+  "statement_definition": "SAP.P027b.T15Statement"
+ },
+ {
+  "target_id": "P027-T16",
+  "decision": "whole",
+  "theorem": "SAP.P027b.T16",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.icc_counterexample",
+   "AronowAudit.P027.Wave1.GaussianMoments.n1_proof",
+   "AronowAudit.P027.Wave1.GaussianMoments.n2_proof",
+   "AronowAudit.P027.same_stratum_correlation"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P027b.Bridge.T16_proof",
+  "bridge_module": "SAP.P027b.Bridge.Part1",
+  "statement_definition": "SAP.P027b.T16WholeStatement"
+ },
+ {
+  "target_id": "P027-T17",
+  "decision": "whole",
+  "theorem": "SAP.P027b.T17",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.heterogeneity_conversion",
+   "AronowAudit.P027.heterogeneity_conversion_limit",
+   "AronowAudit.P027.heterogeneity_conversion_monotone",
+   "AronowAudit.P027.printed_icc_labels",
+   "AronowAudit.P027.same_stratum_correlation",
+   "AronowAudit.P027.stratum_means_variance"
+  ],
+  "rows_not_used": [],
+  "bridge": "SAP.P027b.Bridge.T17_proof",
+  "bridge_module": "SAP.P027b.Bridge.Part2",
+  "statement_definition": "SAP.P027b.T17Statement"
+ },
+ {
+  "target_id": "P027-T18",
+  "decision": "whole",
+  "theorem": "SAP.P027b.T18",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P027.strata_inclusion_correction",
+   "AronowAudit.P027.strata_joint_value"
+  ],
+  "rows_not_used": [
+   {
+    "lean_name": "AronowAudit.P027.strata_pi_value",
+    "reason": "The first-order inclusion formula is supplied by strata_inclusion_correction."
+   }
+  ],
+  "bridge": "SAP.P027b.Bridge.T18_proof",
+  "bridge_module": "SAP.P027b.Bridge.Part1",
+  "statement_definition": "SAP.P027b.T18Statement",
+  "supporting_declarations": [
+   "AronowAudit.P027.variance_second_moment",
+   "AronowAudit.P027.joint_self"
+  ]
+ }
+]

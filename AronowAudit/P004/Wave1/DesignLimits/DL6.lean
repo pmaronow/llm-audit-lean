@@ -5,7 +5,8 @@ import Mathlib.Analysis.Real.Sqrt
 /-!
 Normal approximation by fixed-radius arrays. The radius is chosen only after
 the CDF tolerance, and the eventual sample-size bound is then taken for that
-single radius. No uniform-in-radius sample-size threshold is assumed.
+single radius. In particular no uniform-in-radius sample-size threshold is
+assumed. This draft was written without running Lean.
 -/
 
 namespace AronowAudit.P004.Wave1.DesignLimits
@@ -17,7 +18,8 @@ open scoped BigOperators
 
 namespace DLbSupport
 
-/-- The squared-error probability bound, directly from finite expectation. -/
+/-- The squared-error half of DL1, proved directly from finite expectation.
+This keeps the present draft independent of an unwritten DL1 proof file. -/
 theorem prob_sq_tail_le {N : ℕ} (p : Fin N → ℝ)
     (hp : ∀ i, 0 < p i ∧ p i < 1) (U : Assignment N → ℝ) (ε : ℝ) (hε : 0 < ε) :
     prob p (fun z => ε < |U z|) ≤ expect p (fun z => (U z)^2) / ε^2 := by

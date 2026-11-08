@@ -1,0 +1,46 @@
+[
+  {
+    "target_id": "P008-T11",
+    "theorem": "SAP.P008a.T11",
+    "fingerprint": "29836c95a507310ea8da6caedc57d0a61c03dd79d7b7b6be1a7e5c07be35a0a7",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean (exit 0). The tuple (1.491,1.550,1.550,1.691,1.714) satisfies all five rounding hypotheses and sums to 7.996. A second compiled tuple at the lower rounding endpoints satisfies those same hypotheses, sums to 7.9935, and differs from 8 by more than 0.005. This also verifies the need for the disclosed restriction.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P008-T12",
+    "theorem": "SAP.P008a.T12",
+    "fingerprint": "31a72b6c8f59b39daf6376fe4f6d4be1492f27691ae7d5a6ba4533595510dd4b",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean (exit 0). Independently proved the printed-grid filter empty by checking all five indices. For n=2 the array M(z,j)=z.val+j.val+1 on Fin 3 x Fin 5 has every entry strictly positive, yet each selected sum is zero and quantile7 of those sums is zero for every real q. Separately checked that q=1/40 and q=39/40 satisfy the theorem domain hypotheses. No probabilistic witness or dependence assumption is required: the grid identity applies to every observed and permutation array.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P008-T13",
+    "theorem": "SAP.P008a.T13",
+    "fingerprint": "5aea8f6d5935fb19c6965db157b1825a3486990bc77cb1da76698957ddf3a5bb",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean (exit 0). Independently proved the selected corrected-grid set is {2,3,4,5} and has cardinality 4. Instantiating the arbitrary estimate function by f(k)=111*correctedGrid(k) gives the genuinely nonzero selected sum 7. There are no additional data hypotheses.",
+    "confidence": "high"
+  },
+  {
+    "target_id": "P008-T14",
+    "theorem": "SAP.P008a.T14",
+    "fingerprint": "cdc3cd5b4dbd068cf45239f895e5066ed191eab25290af8189fffe9696154c25",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "Compiled scratch/Check.lean with /home/ubuntu/sap/tools/sap-lean (exit 0). Constructed N=2, mu1=(3,7), mu0=(0,2), tau=(3,5); proved N>0 and every pointwise difference hypothesis, evaluated both averages as 4, and evaluated their product as 16 with 16 != 4. These are finite real data with no undefined expectations or division by zero.",
+    "confidence": "high"
+  }
+]

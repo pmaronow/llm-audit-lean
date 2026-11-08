@@ -1441,6 +1441,19 @@ def check_website_catalog(files, website_root):
 
 
 def check_repository(root, scan=True, website_root=None):
+    if (root / 'package/source-manifest.json').is_file():
+        # The old catalog describes its pinned historical tree. Current sources
+        # have a separate exact-source and target/declaration validator.
+        from current_package import check_current
+        current = check_current(root)
+        files = read_files(root)
+        check_apache_license(files['LICENSE'])
+        from content_hygiene import check_hygiene
+        check_hygiene(files, json.loads(files['package/source-manifest.json']))
+        if website_root is not None:
+            check_website_catalog(files, website_root)
+        return {'targets': current['counts']['targets'], 'results': current['counts']['theorems'],
+                'highlights': 0}, 0
     files = read_files(root)
     check_apache_license(files['LICENSE'])
     counts = check_catalog(files)
@@ -1467,12 +1480,17 @@ def main():
     args = parser.parse_args()
     try:
         if args.refresh_index:
+            if (args.root / 'package/source-manifest.json').is_file():
+                raise ValueError('The historical catalog is immutable; regenerate current results with scripts/current_package.py --write')
             refresh_index(args.root)
         counts, links = check_repository(args.root, website_root=args.website_root)
     except (ValueError, KeyError, OSError, UnicodeError, json.JSONDecodeError) as exc:
         print(f'ERROR: {exc}', file=sys.stderr)
         return 1
-    print(f'Checked {counts["results"]} credited associations, {counts["highlights"]} highlights and {links} repository-relative Markdown links.')
+    if (args.root / 'package/source-manifest.json').is_file():
+        print(f'Checked {counts["targets"]} current targets and {counts["results"]} statement/proof source pairs; historical catalog preserved.')
+    else:
+        print(f'Checked {counts["results"]} credited associations, {counts["highlights"]} highlights and {links} repository-relative Markdown links.')
     if args.website_root is not None:
         print(f'Checked {counts["targets"]} website target descriptions against the catalog.')
     return 0

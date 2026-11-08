@@ -1,0 +1,57 @@
+[
+  {
+    "target_id": "P037-T21",
+    "theorem": "SAP.P037b.T21",
+    "fingerprint": "1fd4b7d46d34cde166169500eea8984158981fe447a7c1a4c33844bfb490d2b4",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:50 compiles the complete existential supported 10000-draw witness from definitions: 5000 control, 5 school, 2495 nonreferent-peer and 2500 referent-peer draws, with six-element seed subsets. The supported direct/nondirect selections and their labels are also checked. scratch/finite_checks.py independently enumerates both 924-subset histograms and verifies all stated probability vectors and comparisons. There are no global hypotheses to be vacuous.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T22",
+    "theorem": "SAP.P037b.T22",
+    "fingerprint": "d12c4b9165bf70343abb3686312c412a3b084840de3589b54041bc8641fcdb57",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:66 constructs a strictly positive normalized uniform Fin 5 law realizing all five labels, with all four indirect probabilities 1/5; direct probability is 1/5 and inclusion probability is 4/5 with complete masks. scratch/Check.lean:108 constructs a legal four-block 10000-draw sequence with each indirect count 2500 for both focal students, proves positive product mass, and proves that withholding only the eligible student outcome gives the constant nonempty singleton {0}. Concrete direct/nondirect realized assignments are checked. A nonempty prediction average equals 7. All checks compile from Defs without using Challenge stubs.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T29",
+    "theorem": "SAP.P037b.T29",
+    "fingerprint": "0de0f2d18a01ac9dcb18e1422d988d9467fc8ec2fcbaa14bd9dcd7f4d4926f0d",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:157 constructs explicit legal four-block assignments realizing control, school, nonreferent-peer and referent-peer exposures; their positive masses and positive product mass of a supported 10000-sequence compile from Defs. scratch/finite_checks.py independently enumerates all 63504 first-two-block pairs, verifies the unique avoiding pair and both peer counts, the exposure vector, all 10001 frequency grid errors, both exact integer zero-hit bounds, and the moment/relative-variance arithmetic. The unconditional synthetic witness is genuine.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T30",
+    "theorem": "SAP.P037b.T30",
+    "fingerprint": "f31d3104e331d047eab4f53045baed2bec98eb18e2cec080f6382daf6a8d2b5a",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "The normalized Fin 5 law in scratch/Check.lean:66 supplies an interior-probability event and arbitrary finite event families. scratch/Check.lean:180 compiles the complete existential supported false-negative witness as the constant rare-control sequence; this is one supported outcome and does not replace the independent product law. scratch/Check.lean:192 supplies four legal 5-of-10 blocks and actual peer subsets, including a zero-avoidance case. All four numerical blocked probabilities compile at line 199. Positive J=10000, epsilon=delta=1/10 and the required precision threshold compile at line 234.",
+    "confidence": 0.98
+  },
+  {
+    "target_id": "P037-T31",
+    "theorem": "SAP.P037b.T31",
+    "fingerprint": "70a7a2ecf4eb52c32c8c538d597372245b16fd35cdac9c06ef763f0adecab2b6",
+    "verdict": "faithful",
+    "severity": "none",
+    "issues": [],
+    "fix": null,
+    "nonvacuity": "scratch/Check.lean:216 compiles data satisfying every hypothesis of the general identity with Omega=Fin 6 x Fin 6, nonnegative masses 1/36 summing to one, n=8, m=4>0, and actual independent two-of-four school selections having every marginal 1/2. Concrete blocked and unblocked support members also compile. scratch/finite_checks.py independently enumerates all 70 unblocked and 36 blocked eight-school assignments, verifies the four retained second moments and zero means, and checks the 56-school cardinalities and both retained pair probabilities.",
+    "confidence": 0.98
+  }
+]

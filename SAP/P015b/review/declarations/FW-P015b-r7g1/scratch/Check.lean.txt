@@ -1,0 +1,150 @@
+import SAP.P015b.Challenge
+
+set_option autoImplicit false
+set_option maxRecDepth 2000
+set_option maxHeartbeats 800000
+
+open SAP.P015b Matrix Finset MeasureTheory ProbabilityTheory Filter
+open scoped BigOperators Topology ENNReal
+
+noncomputable section
+
+namespace Audit
+
+-- No Challenge theorem is used in these checks.
+
+lemma firstGramInv : (firstGroupDesign.transpose * firstGroupDesign)⁻¹ =
+    (!![1, -1; -1, 3/2] : Matrix (Fin 2) (Fin 2) ℝ) := by
+  apply Matrix.inv_eq_left_inv
+  ext i j; fin_cases i <;> fin_cases j <;>
+    norm_num [firstGroupDesign, Matrix.mul_apply, Fin.sum_univ_succ]
+
+lemma secondGramInv : (secondGroupDesign.transpose * secondGroupDesign)⁻¹ =
+    (!![1/2, -1/2; -1/2, 3/2] : Matrix (Fin 2) (Fin 2) ℝ) := by
+  apply Matrix.inv_eq_left_inv
+  ext i j; fin_cases i <;> fin_cases j <;>
+    norm_num [secondGroupDesign, Matrix.mul_apply, Fin.sum_univ_succ]
+
+example : sampleCoefficients firstGroupDesign ![0, 0, 0] = ![0, 0] ∧
+    sampleCoefficients secondGroupDesign ![2, 2, 2] = ![2, 0] := by
+  unfold sampleCoefficients
+  rw [firstGramInv, secondGramInv]
+  constructor <;> ext j <;> fin_cases j <;>
+    norm_num [firstGroupDesign, secondGroupDesign, Matrix.mulVec, dotProduct,
+      Fin.sum_univ_succ]
+
+example : firstGroupPrecision =
+      (1 + (firstGroupDesign.transpose * firstGroupDesign)⁻¹)⁻¹ ∧
+    secondGroupPrecision =
+      (1 + (secondGroupDesign.transpose * secondGroupDesign)⁻¹)⁻¹ := by
+  rw [firstGramInv, secondGramInv]
+  constructor <;> symm <;> apply Matrix.inv_eq_left_inv <;>
+    ext i j <;> fin_cases i <;> fin_cases j <;>
+    norm_num [firstGroupPrecision, secondGroupPrecision, Matrix.one_apply, Matrix.mul_apply,
+      Fin.sum_univ_succ]
+
+-- T9: genuine nonsingular designs, and actual (two-sided) inverse certificates.
+example :
+    (firstGroupDesign.transpose * firstGroupDesign).det = 2 ∧
+    (secondGroupDesign.transpose * secondGroupDesign).det = 2 := by
+  norm_num [firstGroupDesign, secondGroupDesign, Matrix.det_fin_two,
+    Matrix.mul_apply, Fin.sum_univ_succ]
+
+example :
+    (firstGroupPrecision + secondGroupPrecision) * poolingInverse = 1 ∧
+    poolingInverse * (firstGroupPrecision + secondGroupPrecision) = 1 := by
+  constructor <;> ext i j <;> fin_cases i <;> fin_cases j <;>
+    norm_num [firstGroupPrecision, secondGroupPrecision, poolingInverse,
+      Matrix.mul_apply, Fin.sum_univ_succ]
+
+example :
+    poolingInverse.mulVec
+      (firstGroupPrecision.mulVec ![0, 0] + secondGroupPrecision.mulVec ![2, 0])
+      = ![68/61, -10/61] := by
+  ext i; fin_cases i <;>
+    norm_num [poolingInverse, firstGroupPrecision, secondGroupPrecision,
+      Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+
+-- An explicit centered, positive-variance, discrete law with a positive atom at 0.
+-- It can be used independently for slopes and unit errors in the T9 setting.
+def centeredMass : Fin 3 → ℝ := ![3/4, 1/8, 1/8]
+def centeredValue : Fin 3 → ℝ := ![0, -2, 2]
+
+example : IsFiniteLaw centeredMass ∧
+    finiteMean centeredMass centeredValue = 0 ∧
+    finiteMean centeredMass (fun i => centeredValue i ^ 2) = 1 ∧
+    0 < centeredMass 0 := by
+  refine ⟨⟨?_, ?_⟩, ?_, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [centeredMass]
+  all_goals norm_num [centeredMass, centeredValue, finiteMean, Fin.sum_univ_succ]
+
+-- T10: one full-rank group, unit variance, zero coefficient covariance.
+def design : Matrix (Fin 2) (Fin 2) ℝ := !![1, 0; 1, 1]
+
+example :
+    (1 : ℕ) ≤ 1 ∧ (1 : ℕ) ≤ 2 ∧
+    (0 : Matrix (Fin 2) (Fin 2) ℝ).PosSemidef ∧
+    (∀ _g : Fin 1, (0 : ℝ) < 1) ∧
+    (∀ _g : Fin 1, (design.transpose * design).det ≠ 0) := by
+  refine ⟨by decide, by decide, ?_, by intro g; norm_num, ?_⟩
+  · exact Matrix.PosSemidef.zero
+  · intro g
+    norm_num [design, Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_succ]
+
+example : UniformlyBoundedCoefficientsW3
+    (fun (_k : ℕ) (_g : Fin 1) (j : Fin 2) => if j = 1 then (1 : ℝ) else 0) := by
+  refine ⟨1, by norm_num, ?_⟩
+  intro k g j
+  change |if j = 1 then (1 : ℝ) else 0| ≤ 1
+  split_ifs <;> norm_num
+
+example : ∀ (g : Fin 1) (j : Fin 2), j ≠ 1 →
+    Tendsto (fun (_k : ℕ) => (1 : Matrix (Fin 2) (Fin 2) ℝ) 1 j) atTop (𝓝 0) := by
+  intro g j hj
+  have hz : (1 : Matrix (Fin 2) (Fin 2) ℝ) 1 j = 0 := by
+    simp [Matrix.one_apply, Ne.symm hj]
+  simpa only [hz] using (tendsto_const_nhds :
+    Tendsto (fun (_k : ℕ) => (0 : ℝ)) atTop (𝓝 0))
+
+-- T20: all cells have positive mass, and the population moment inverse is genuine.
+example : IsFiniteLaw leveragePopulation ∧
+    finiteMass leveragePopulation (fun i => binaryProfile i = 0) = 1/4 ∧
+    finiteMass leveragePopulation (fun i => binaryProfile i = 1) = 3/4 := by
+  refine ⟨⟨?_, ?_⟩, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num [leveragePopulation]
+  all_goals norm_num [leveragePopulation, binaryProfile, finiteMass, Fin.sum_univ_succ]
+
+example : leverageMoment * leverageMomentInverse = 1 ∧
+    leverageMomentInverse * leverageMoment = 1 := by
+  constructor <;> ext i j <;> fin_cases i <;> fin_cases j <;>
+    norm_num [leverageMoment, leverageMomentInverse, leverageDesign,
+      leveragePopulation, binaryProfile, binaryTreatment, finiteMean,
+      Matrix.mul_apply, Fin.sum_univ_succ]
+
+example : leverageMoment.det = 7/200 := by
+  norm_num [leverageMoment, leverageDesign, leveragePopulation,
+    binaryProfile, binaryTreatment, finiteMean, Fin.sum_univ_succ,
+    Matrix.det_fin_three]
+
+-- T14: nonzero treatment coefficient and distinct treatment arguments are compatible.
+example : (1 : ℝ) ≠ 0 ∧ (0 : ℝ) ≠ 1 := by norm_num
+
+-- T21: every hypothesis for the affine unique-root clause, plus an actual root.
+example :
+    (∀ i : Fin 2, (![0, 1] : Fin 2 → ℝ) i = 0 ∨
+      (![0, 1] : Fin 2 → ℝ) i = 1) ∧
+    (∀ i, design i 0 = 1) ∧
+    (design.transpose * design).det ≠ 0 ∧
+    (1/4 : ℝ) ≠ 0 ∧
+    residualEquation design (fun _ => 1) ![0, 1]
+      (fun a => (1/2 : ℝ) + (1/4 : ℝ) * a) ![-2, 4] = 0 ∧
+    affineCoefficients (0 : Fin 2) (1/2) (1/4) ![-2, 4] = ![0, 1] := by
+  refine ⟨?_, ?_, ?_, by norm_num, ?_, ?_⟩
+  · intro i; fin_cases i <;> norm_num
+  · intro i; fin_cases i <;> norm_num [design]
+  · norm_num [design, Matrix.det_fin_two, Matrix.mul_apply, Fin.sum_univ_succ]
+  · ext j; fin_cases j <;>
+      norm_num [residualEquation, design, Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
+  · ext j; fin_cases j <;> norm_num [affineCoefficients]
+
+end Audit

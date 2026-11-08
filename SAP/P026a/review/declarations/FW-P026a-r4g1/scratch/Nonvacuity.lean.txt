@@ -1,0 +1,175 @@
+import SAP.P026a.Defs
+
+open Finset
+open scoped BigOperators
+open SAP.P026a
+
+namespace Review
+noncomputable section
+
+lemma allTwoAllocations : (univ : Finset (Fin 2 → Bool)) =
+    {![false,false], ![false,true], ![true,false], ![true,true]} := by decide
+
+def fair : UnitLaw (Fin 2) where
+  weight := fun _ => 1/4
+  nonnegative := by intro w; norm_num
+  normalized := by norm_num [allTwoAllocations]
+  positive := by intro i; fin_cases i <;> norm_num [allTwoAllocations]
+
+def cluster : ClusterLaw (Fin 2) (Fin 2) where
+  cluster := id
+  covers := Function.surjective_id
+  assignment := fair
+
+-- All standing assumptions, directed support, and same-arm support hold together.
+example :
+    isProbability cluster.clusterAssignmentDesign ∧
+    hasPositiveMarginals cluster.clusterAssignmentDesign ∧
+    (∀ i j : Fin 2, i ≠ j →
+      0 < disagreementProbability cluster.clusterAssignmentDesign i j ∧
+      0 < jointInclusion cluster.clusterAssignmentDesign true true i j ∧
+      0 < jointInclusion cluster.clusterAssignmentDesign false false i j) ∧
+    directedSupport cluster.clusterAssignmentDesign ∧
+    0 < cluster.clusterAssignmentDesign.weight ![false,true] := by
+  norm_num [isProbability, hasPositiveMarginals, directedSupport,
+    disagreementProbability, jointInclusion, inclusion, mean, armIndicator,
+    ClusterLaw.clusterAssignmentDesign, UnitLaw.assignmentDesign, cluster, fair,
+    allTwoAllocations, Fin.forall_fin_succ]
+
+-- Mutual independence is checked for arbitrary real test functions.
+lemma fair_mutual : independentAssignments fair.assignmentDesign := by
+  intro F
+  simp [mean, fair, UnitLaw.assignmentDesign,
+    allTwoAllocations, Fin.prod_univ_two]
+  ring
+
+lemma fair_pair (i j : Fin 2) (hij : i ≠ j) :
+    finiteIndependent fair.assignmentDesign (fun w => w i) (fun w => w j) := by
+  intro u v
+  fin_cases i <;> fin_cases j <;>
+    norm_num [mean, fair, UnitLaw.assignmentDesign, allTwoAllocations] at * <;> ring
+
+lemma fair_singleton (i j : Fin 2) (hij : i ≠ j) :
+    finiteIndependent fair.assignmentDesign (fun w => w i)
+      (fittingIndicators fair.assignmentDesign {j}) := by
+  intro u v
+  have hv (w : Fin 2 → Bool) :
+      fittingIndicators fair.assignmentDesign {j} w = (fun _ => w j) := by
+    funext k
+    have hk : (k : Fin 2) = j := Finset.mem_singleton.mp k.property
+    simp [fittingIndicators, UnitLaw.assignmentDesign, hk]
+  simp_rw [hv]
+  exact fair_pair i j hij u (fun a => v (fun _ => a))
+
+-- Nonempty fitting sets satisfy the whole-vector premise for every unit.
+example : ∃ J : Fin 2 → Finset (Fin 2),
+    (∀ i, J i ≠ ∅) ∧ ∀ i, finiteIndependent fair.assignmentDesign
+      (fun w => w i) (fittingIndicators fair.assignmentDesign (J i)) := by
+  refine ⟨![{1},{0}], ?_, ?_⟩
+  · intro i; fin_cases i <;> simp
+  · intro i; fin_cases i
+    · exact fair_singleton 0 1 (by decide)
+    · exact fair_singleton 1 0 (by decide)
+
+-- Distinct singleton blocks are independent as whole Boolean vectors.
+lemma fair_blocks : independentBlocks fair.assignmentDesign (id : Fin 2 → Fin 2) := by
+  intro F
+  have hv (b : Fin 2) (w : Fin 2 → Bool) :
+      fittingIndicators fair.assignmentDesign (univ.filter (fun i => id i = b)) w =
+        (fun _ => w b) := by
+    funext j
+    have hj : (j : Fin 2) = b := (Finset.mem_filter.mp j.property).2
+    simp [fittingIndicators, UnitLaw.assignmentDesign, hj]
+  simp_rw [hv]
+  exact fair_mutual (fun b a => F b (fun _ => a))
+
+-- The response-vector premise may hold even when the focal unit is included.
+example (i : Fin 2) : finiteIndependent fair.assignmentDesign (fun w => w i)
+    (fittingResponses fair.assignmentDesign univ (fun _ => 3) (fun _ => 3)) := by
+  intro u v
+  have hv (w : Fin 2 → Bool) :
+      fittingResponses fair.assignmentDesign univ (fun _ => 3) (fun _ => 3) w =
+        (fun _ => 3) := by
+    funext j
+    change (if w j then (3 : ℝ) else 3) = 3
+    split <;> rfl
+  simp_rw [hv]
+  fin_cases i <;>
+    simp [mean, fair, UnitLaw.assignmentDesign, allTwoAllocations] <;> ring
+
+-- The unavailable-directed-pair counterexample has all its printed hypotheses.
+example : isProbability asymmetricPairLaw ∧ hasPositiveMarginals asymmetricPairLaw ∧
+    (∀ i j : Fin 2, i ≠ j →
+      0 < disagreementProbability asymmetricPairLaw i j ∧
+      0 < jointInclusion asymmetricPairLaw true true i j ∧
+      0 < jointInclusion asymmetricPairLaw false false i j) ∧
+    jointInclusion asymmetricPairLaw true false 0 1 = 0 := by
+  norm_num [isProbability, hasPositiveMarginals, disagreementProbability,
+    jointInclusion, inclusion, mean, armIndicator, asymmetricPairLaw,
+    Fin.sum_univ_succ, Fin.forall_fin_succ]
+
+-- Direct recomputation of the negative variance-estimation bias in T1.
+example : mean asymmetricPairLaw
+      (printedVarianceEstimate asymmetricPairLaw 2 (fun _ => 1) (fun _ => 1)) -
+    designVariance asymmetricPairLaw
+      (htContrast asymmetricPairLaw 2 (fun _ => 1) (fun _ => 1)) = -1/2 := by
+  norm_num [mean, printedVarianceEstimate, designVariance, designCovariance,
+    htContrast, htSum, estimatedPairTerm, unavailablePairSum,
+    orderedOffDiagonalSum, zeroAdjustment, jointInclusion, inclusion,
+    armIndicator, response, asymmetricPairLaw, Fin.sum_univ_succ,
+    Fin.univ_succ]
+
+-- The XOR assignment law is an actual positive-marginal probability law.
+example : isProbability xorThreeLaw ∧ hasPositiveMarginals xorThreeLaw := by
+  norm_num [isProbability, hasPositiveMarginals, inclusion, mean, armIndicator,
+    xorThreeLaw, Fin.sum_univ_succ, Fin.forall_fin_succ]
+
+-- The fixed-treatment-count XOR example is also a genuine law and fitted statistic.
+example : isProbability xorSixLaw ∧ hasPositiveMarginals xorSixLaw ∧
+    (∀ w : Fin 4, (∑ i : Fin 6, armIndicator xorSixLaw true w i : ℚ) = 3) ∧
+    (∀ w i, xorSixFit w i = armIndicator xorSixLaw true w i) := by
+  norm_num [isProbability, hasPositiveMarginals, inclusion, mean, armIndicator,
+    xorSixLaw, xorSixFit, xorFitPolynomial, response,
+    Fin.sum_univ_succ, Fin.forall_fin_succ] <;> decide
+
+-- Pairwise independence holds for arbitrary test functions, with nonzero fit covariance.
+lemma xor_pairwise (i j : Fin 3) (hij : i ≠ j) :
+    finiteIndependent xorThreeLaw (fun w => xorThreeLaw.treatment w i)
+      (fun w => xorThreeLaw.treatment w j) := by
+  intro u v
+  fin_cases i <;> fin_cases j <;>
+    norm_num [finiteIndependent, mean, xorThreeLaw, Fin.sum_univ_succ] at * <;> ring
+
+example : designCovariance xorThreeLaw
+    (fun w => armIndicator xorThreeLaw true w 0) (fun w => xorThreeFit w 0) = 1/4 := by
+  norm_num [designCovariance, mean, armIndicator, xorThreeFit, xorFitPolynomial,
+    response, xorThreeLaw, Fin.sum_univ_succ]
+
+-- An explicit real-valued witness for T5's nonlinear existential.
+def realXor : AssignmentDesign (Fin 4) (Fin 3) ℝ where
+  weight := fun _ => 1/4
+  treatment := xorThreeLaw.treatment
+
+def nonlinear (v : ↥({1,2} : Finset (Fin 3)) → ℝ) : ℝ :=
+  v ⟨1, by simp⟩ + v ⟨2, by simp⟩ - 2 * v ⟨1, by simp⟩ * v ⟨2, by simp⟩
+
+example : ∃ (D : AssignmentDesign (Fin 4) (Fin 3) ℝ)
+    (J : Finset (Fin 3)) (G : (↥J → ℝ) → ℝ),
+    isProbability D ∧ hasPositiveMarginals D ∧
+    (∀ j ∈ J, finiteIndependent D (fun w => D.treatment w 0)
+      (fun w => D.treatment w j)) ∧
+    designCovariance D (fun w => armIndicator D true w 0)
+      (fun w => G (fittingResponses D J (fun _ => 1) (fun _ => 0) w)) ≠ 0 := by
+  refine ⟨realXor, {1,2}, nonlinear, ?_, ?_, ?_, ?_⟩
+  · norm_num [isProbability, mean, realXor, Fin.sum_univ_succ]
+  · norm_num [hasPositiveMarginals, inclusion, mean, armIndicator, realXor,
+      xorThreeLaw, Fin.sum_univ_succ, Fin.forall_fin_succ]
+  · intro j hj u v
+    simp only [mem_insert, mem_singleton] at hj
+    rcases hj with rfl | rfl <;>
+      norm_num [mean, realXor, xorThreeLaw, Fin.sum_univ_succ] <;> ring
+  · norm_num [designCovariance, mean, nonlinear, fittingResponses, response,
+      armIndicator, realXor, xorThreeLaw, Fin.sum_univ_succ]
+
+end
+end Review

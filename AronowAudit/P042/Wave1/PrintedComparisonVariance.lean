@@ -3,7 +3,7 @@ import AronowAudit.P042.Wave1.SixAtomic.N1
 import AronowAudit.P042.Wave1.SixAtomic.N2
 import AronowAudit.P042.Wave1.PrintedComparisonVariance.N3
 
-/-! Refutation of the unrestricted comparison-variance assertion (P042-T5). -/
+/-! Refutation of the exact unrestricted comparison-variance contract. -/
 
 set_option autoImplicit false
 
@@ -24,6 +24,9 @@ theorem printed_comparison_variance_refuted :
           (∑ j ∈ N, (v j)⁻¹)⁻¹ + (∑ j ∈ A, (v j)⁻¹)⁻¹ := by
   exact PrintedComparisonVariance.assemble
     SixAtomic.n1_proof SixAtomic.n2_proof PrintedComparisonVariance.n3_proof
+
+example : AronowAudit.P042.Wave1.PrintedComparisonVariance.Target :=
+  printed_comparison_variance_refuted
 
 end
 

@@ -11,7 +11,8 @@ open scoped ENNReal NNReal Classical Topology
 
 /-! P010-T14: atomless quantile tails, extremal selection, and the potential upper bound. -/
 
-/-- The singleton-mass argument proves CDF continuity. -/
+/-- The singleton-mass argument is the general CDF continuity proof also used in
+`AronowAudit.P053.NormalCompletion.cdf_continuousAt`. -/
 lemma upper_tail_proof_corrected_cdf_continuous (F : Measure ℝ)
     [IsProbabilityMeasure F] (hc : Atomless F) : Continuous (cdf F) := by
   let instNullSingletonUpperTailCDF : NullSingletonClass F := ⟨hc⟩
@@ -362,5 +363,7 @@ theorem upper_tail_proof_corrected_proof {K d : ℕ} (μ : Measure (State K d))
       upper_tail_proof_corrected_graph _ hc hp0 hp1⟩
   · exact upper_tail_proof_corrected_monotone _ hc hiF
   · exact upper_tail_proof_corrected_potential_bound μ hp a hA hc hi
+
+example : type_of% @AronowAudit.P010.upper_tail_proof_corrected := upper_tail_proof_corrected_proof
 
 end AronowAudit.P010.Wave1

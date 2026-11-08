@@ -16,6 +16,8 @@ theorem printed_unrestricted_mixture_maximum_refuted :
       mixtureLikelihood y θ' ≤ mixtureLikelihood y θ :=
   MixtureMaximum.assemble MixtureMaximum.n1_proof
 
+example : MixtureMaximum.Target := printed_unrestricted_mixture_maximum_refuted
+
 end
 
 end AronowAudit.P001.Wave1

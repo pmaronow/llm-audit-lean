@@ -1,0 +1,116 @@
+import SAP.P006a.Challenge
+
+open MeasureTheory ProbabilityTheory
+open scoped ENNReal BigOperators
+open SAP.P006a
+
+noncomputable section
+open Classical
+
+def coinLaw (π : Unit → ℝ) : Measure Bool :=
+  if hp : Admissible π then bernoulliMeasure true false ⟨π (), hp.2 ()⟩
+  else Measure.dirac false
+
+lemma coinLaw_probability (π : Unit → ℝ) : IsProbabilityMeasure (coinLaw π) := by
+  unfold coinLaw
+  split <;> infer_instance
+
+attribute [local instance] coinLaw_probability
+
+lemma coinLaw_integral (π : Unit → ℝ) (hp : Admissible π) (f : Bool → ℝ) :
+    (∫ t, f t ∂coinLaw π) = π () * f true + (1-π ()) * f false := by
+  simp [coinLaw, hp, integral_bernoulliMeasure, smul_eq_mul]
+
+def finiteOracle : Experiment Bool Unit 1 where
+  hn := by norm_num
+  PX := Measure.dirac ()
+  μ0 := fun _ => 0
+  μ1 := fun _ => 1
+  law := coinLaw
+  X := fun _ _ => ()
+  Y0 := fun _ _ => 0
+  Y1 := fun _ _ => 1
+  T := fun _ _ t => t
+  μhat := fun _ _ _ => 0
+
+lemma finiteOracle_standing : OutcomeStanding finiteOracle := by
+  have hprob : ∀ π, IsProbabilityMeasure (coinLaw π) := coinLaw_probability
+  constructor <;> dsimp only [finiteOracle]
+  · exact inferInstance
+  · exact ⟨measurable_const, measurable_const⟩
+  · exact ⟨integrable_const _, integrable_const _⟩
+  · intro π hp
+    exact hprob π
+  · intro π hp i
+    exact ⟨measurable_const, measurable_const, measurable_const, measurable_id⟩
+  · intro π hp i
+    letI := hprob π
+    exact ⟨integrable_const _, integrable_const _⟩
+  · intro π hp i
+    letI := hprob π
+    constructor
+    · exact measurable_const.aemeasurable
+    · exact measurable_id.aemeasurable
+    · simp only [Measure.map_const, measure_univ, one_smul]
+      change Measure.dirac () = Measure.map id (Measure.dirac ())
+      rw [Measure.map_id]
+  · intro π π' hp hp' i
+    letI := hprob π
+    letI := hprob π'
+    constructor
+    · exact measurable_const.aemeasurable
+    · exact measurable_const.aemeasurable
+    · simp only [Measure.map_const, measure_univ, one_smul]
+  · intro π hp
+    letI := hprob π
+    exact iIndepFun.of_subsingleton
+  · intro π hp i j
+    exact IdentDistrib.refl (by fun_prop)
+  · intro π hp i
+    letI := hprob π
+    constructor <;> simp [finiteOracle, Experiment.covariateSigma, condExp_bot]
+  · intro π hp i
+    letI := hprob π
+    simp only [finiteOracle, Experiment.covariateSigma, MeasurableSpace.comap_const,
+      condExp_bot]
+    have h : (∫ t, bit t ∂coinLaw π) = π () := by
+      rw [coinLaw_integral π hp]
+      simp [bit]
+    exact Filter.Eventually.of_forall (fun _ => h)
+  · intro π hp i B hB
+    letI := hprob π
+    simp only [finiteOracle, Experiment.covariateSigma, MeasurableSpace.comap_const,
+      condExp_bot]
+    apply Filter.Eventually.of_forall
+    intro t
+    rw [coinLaw_integral π hp, coinLaw_integral π hp]
+    by_cases hmem : ((0,1) : ℝ × ℝ) ∈ B <;> simp [bit, Set.indicator, hmem]
+
+-- Remaining T13 hypotheses for two actual agents with a probability reference.
+example :
+    (∀ _ : Fin 2, OutcomeStanding finiteOracle) ∧
+    (∀ _ _ : Fin 2, finiteOracle.μ0 = finiteOracle.μ0) ∧
+    IsProbabilityMeasure (Measure.dirac () : Measure Unit) ∧
+    ((Measure.dirac () : Measure Unit) ≪ finiteOracle.PX) ∧
+    Integrable finiteOracle.τ (Measure.dirac ()) ∧
+    (∀ π, Admissible π → ∀ i,
+      Integrable (fun t => bit (finiteOracle.T π i t) *
+        (finiteOracle.μhat π t (finiteOracle.X i t)-finiteOracle.μ0 (finiteOracle.X i t)))
+        (finiteOracle.law π)) ∧
+    TreatedUnbiased finiteOracle finiteOracle.μ0 {π | Admissible π} ∧
+    (∀ π, Admissible π → ∀ i,
+      Integrable (fun t => (finiteOracle.observed π t i -
+        finiteOracle.μhat π t (finiteOracle.X i t)) * bit (finiteOracle.T π i t) *
+        referenceWeight 1 (Measure.dirac ()) finiteOracle.PX (finiteOracle.X i t))
+        (finiteOracle.law π)) := by
+  refine ⟨fun _ => finiteOracle_standing, fun _ _ => rfl, inferInstance,
+    Measure.absolutelyContinuous_rfl, ?_, ?_, ?_, ?_⟩
+  · simp [finiteOracle, Experiment.τ]
+  · intro π hp i
+    simp [finiteOracle]
+  · intro π hp i
+    simp [finiteOracle]
+  · intro π hp i
+    dsimp only [finiteOracle]
+    rw [coinLaw, dif_pos hp]
+    exact integrable_bernoulliMeasure _ _ _ _

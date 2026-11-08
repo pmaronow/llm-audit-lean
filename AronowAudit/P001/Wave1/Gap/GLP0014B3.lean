@@ -38,5 +38,7 @@ theorem averaged_kl_entropy_loglikelihood_proof {Ω : Type*} [MeasurableSpace Ω
   exact averaged_kl_entropy_adapter μ X Y (hX.prodMk hY) νX κ f g t
     hf hg hfn hgn hfnorm hgnorm htrue hdom hent hcross
 
+example : type_of% @AronowAudit.P001.averaged_kl_entropy_loglikelihood := averaged_kl_entropy_loglikelihood_proof
+
 end
 end AronowAudit.P001.Wave1

@@ -1,0 +1,109 @@
+import SAP.P008b.Challenge
+
+open SAP.P008b MeasureTheory
+
+/-! ## T22: arithmetic of the existential, for the explicit sorted enumeration and M_i = i -/
+
+def aT22 : Fin 6 → Assignment 4 :=
+  ![![true, true, false, false], ![true, false, true, false], ![true, false, false, true],
+    ![false, true, true, false], ![false, true, false, true], ![false, false, true, true]]
+
+noncomputable def statT22 (k : Fin 6) : ℝ := hajek (fun i (_ : Assignment 4) => (i.val : ℝ)) (aT22 k)
+
+example : statT22 = ![-2, -1, 0, 0, 1, 2] := by
+  funext k
+  fin_cases k <;>
+    simp only [statT22, hajek, nTreated, nControl, Fin.sum_univ_four] <;>
+    simp [aT22, bit] <;> norm_num
+
+example : wholeQuantile7 (![-2, -1, 0, 0, 1, 2] : Fin 6 → ℝ) (1 / 40) = -15 / 8 := by
+  have h : ⌊((5 : ℕ) : ℝ) * (1 / 40)⌋ = 0 := by
+    rw [Int.floor_eq_iff]; norm_num
+  simp only [wholeQuantile7, h]
+  norm_num
+
+example : wholeQuantile7 (![-2, -1, 0, 0, 1, 2] : Fin 6 → ℝ) (39 / 40) = 15 / 8 := by
+  have h : ⌊((5 : ℕ) : ℝ) * (39 / 40)⌋ = 4 := by
+    rw [Int.floor_eq_iff]; norm_num
+  simp only [wholeQuantile7, h]
+  norm_num
+
+-- the strict rejection set {k | s k < -15/8 ∨ 15/8 < s k} for the sorted values is {0, 5}
+example : (uniformLaw (Fin 6)).prob (fun k => (![-2, -1, 0, 0, 1, 2] : Fin 6 → ℝ) k < -15 / 8 ∨
+    15 / 8 < (![-2, -1, 0, 0, 1, 2] : Fin 6 → ℝ) k) = 1 / 3 := by
+  unfold FiniteLaw.prob
+  rw [Finset.sum_filter]
+  simp [Fin.sum_univ_succ, uniformLaw]
+  norm_num
+
+/-! ## T23: a nonvacuity instance with genuinely zero covariance across the cutoff -/
+
+noncomputable def lawT23 : FiniteLaw (Bool × Bool) := uniformLaw (Bool × Bool)
+def φT23 : Fin 2 → Bool × Bool → ℝ := fun i z => if i = 0 then bit z.1 else bit z.2
+def DT23 : Fin 2 → Fin 2 → ℝ := fun i j => if i = j then 0 else 1
+
+example : ∀ i j, (1 / 2 : ℝ) < DT23 i j → lawT23.cov (φT23 i) (φT23 j) = 0 := by
+  intro i j h
+  fin_cases i <;> fin_cases j <;>
+    simp [DT23] at h <;> norm_num at h <;>
+    simp [lawT23, φT23, FiniteLaw.cov, FiniteLaw.expect, uniformLaw, bit, Fintype.sum_prod_type] <;>
+    norm_num
+
+-- the variance of the sum is nonzero, so the identity is not 0 = 0
+example : lawT23.var (fun z => ∑ i, φT23 i z) = 1 / 2 := by
+  simp [lawT23, φT23, FiniteLaw.var, FiniteLaw.cov, FiniteLaw.expect, uniformLaw, bit,
+    Fintype.sum_prod_type, Fin.sum_univ_two]
+  norm_num
+
+-- instantiate the proved statement (checks the hypotheses are the ones above)
+example : (∑ i, ∑ j, lawT23.cov (φT23 i) (φT23 j) * (if DT23 i j ≤ 1 / 2 then 1 else 0)) =
+    lawT23.var (fun z => ∑ i, φT23 i z) := by
+  refine SAP.P008b.T23 (Bool × Bool) 2 lawT23 φT23 DT23 (1 / 2) ?_
+  intro i j h
+  fin_cases i <;> fin_cases j <;>
+    simp [DT23] at h <;> norm_num at h <;>
+    simp [lawT23, φT23, FiniteLaw.cov, FiniteLaw.expect, uniformLaw, bit, Fintype.sum_prod_type] <;>
+    norm_num
+
+/-! ## T25: a model satisfying `validCircle` at every node, with N > 0 -/
+
+noncomputable def modelT25 : MetricSpatialModel (Fin 2) 1 where
+  coord x := WithLp.toLp 2 ![(x.val : ℝ), 0]
+  coord_injective := by
+    intro x y h
+    have hc := congrArg (fun p : Plane => p 0) h
+    simp only [Matrix.cons_val_zero] at hc
+    exact Fin.ext (by exact_mod_cast hc)
+  node _ := 0
+  metric := inferInstance
+  ζ := Measure.count
+  Y x z := (x.val : ℝ) * bit (z 0) + 1
+
+-- every circle around the node that contains a field point
+theorem validT25 (Q : FiniteLaw (Assignment 1)) (d : ℝ) (hd : ∃ x, modelT25.distance (modelT25.node 0) x = d) :
+    modelT25.validCircle Q 0 d := by
+  obtain ⟨x, hx⟩ := hd
+  have hζ : modelT25.ζ = Measure.count := rfl
+  refine ⟨MeasurableSet.of_discrete, ?_, ?_, fun b z _ => by rw [hζ]; exact Integrable.of_finite⟩
+  · rw [hζ]
+    have hne : (modelT25.circle 0 d).Nonempty := ⟨x, hx⟩
+    have hfin : (modelT25.circle 0 d).Finite := Set.toFinite _
+    rw [Measure.count_apply_finite _ hfin]
+    simp only [ENNReal.toReal_natCast, Nat.cast_pos]
+    exact hfin.toFinset_nonempty.mpr hne |>.card_pos
+  · rw [hζ]; exact (Measure.count_apply_lt_top.mpr (Set.toFinite _)).ne
+
+-- with the hypotheses discharged, the proved statement yields its conclusions for this model
+example (Q : FiniteLaw (Assignment 1)) :
+    modelT25.amr Q 0 = (1 : ℝ)⁻¹ * ∑ i, modelT25.regionAverage (modelT25.circle i 0)
+      (modelT25.pointEffect Q i) := by
+  have hv : ∀ i, modelT25.validCircle Q i 0 := by
+    intro i
+    obtain rfl : i = 0 := Subsingleton.elim _ _
+    exact validT25 Q 0 ⟨0, by unfold MetricSpatialModel.distance; exact @dist_self Plane modelT25.metric.toPseudoMetricSpace _⟩
+  simpa using SAP.P008b.T25.2.1 (Fin 2) 1 modelT25 Q 0 Nat.one_pos hv
+
+example (Q : FiniteLaw (Assignment 1)) (b : Bool) :
+    modelT25.m Q 0 b 0 = modelT25.regionAverage (modelT25.circle 0 0) (modelT25.marginalY Q 0 b) :=
+  (SAP.P008b.T25.1 (Fin 2) 1 modelT25 Q 0 0
+    (validT25 Q 0 ⟨0, by unfold MetricSpatialModel.distance; exact @dist_self Plane modelT25.metric.toPseudoMetricSpace _⟩)).1 b

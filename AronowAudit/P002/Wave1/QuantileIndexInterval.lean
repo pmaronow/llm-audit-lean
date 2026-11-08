@@ -31,5 +31,7 @@ theorem quantile_index_interval_paper :
   exact AronowAudit.P002.Wave1.QuantileIndexInterval.assemble
     AlgorithmSupport.n2_proof AlgorithmSupport.n3_proof AlgorithmSupport.n4_proof
 
+example : AronowAudit.P002.Wave1.QuantileIndexInterval.Target := quantile_index_interval_paper
+
 end
 end AronowAudit.P002.Wave1

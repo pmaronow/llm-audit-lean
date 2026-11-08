@@ -18,7 +18,7 @@ import AronowAudit.P031.Wave1.LargeSampleRefutation.N16
 import AronowAudit.P031.Wave1.LargeSampleRefutation.N17
 import AronowAudit.P031.Wave1.FootnoteThreeProbability.N7
 
-/-! Counterexample to the universally quantified printed large-sample assertions. -/
+/-! Refutation of the exact universally closed printed large-sample contract. -/
 
 namespace AronowAudit.P031.Wave1
 noncomputable section
@@ -60,6 +60,9 @@ theorem printed_large_sample_contract_refuted :
     LargeSampleRefutation.n16_proof
     LargeSampleRefutation.n17_proof
     FootnoteThreeProbability.n7_proof
+
+example : AronowAudit.P031.Wave1.LargeSampleRefutation.Target :=
+  printed_large_sample_contract_refuted
 
 end
 end AronowAudit.P031.Wave1

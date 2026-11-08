@@ -1,0 +1,402 @@
+import SAP.P004c.Defs
+
+open scoped BigOperators Classical
+open SAP.P004c
+noncomputable section
+namespace ReviewMoments
+
+lemma expect_prod (N : ℕ) (f : Fin N → Bool → ℝ) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => ∏ i, f i (z i)) =
+      ∏ i, ((f i false + f i true) / 2) := by
+  unfold expect designWeight
+  simp only [coin]
+  have hc (a : Bool) : (if a then (1/2 : ℝ) else 1-1/2) = 1/2 := by
+    cases a <;> norm_num
+  simp_rw [hc, ← Finset.prod_mul_distrib]
+  rw [← Fintype.prod_sum (fun i a => (1/2 : ℝ) * f i a)]
+  congr 1
+  funext i
+  simp [Fintype.sum_bool]
+  ring
+
+lemma expect_const (N : ℕ) (a : ℝ) : expect (fun _ : Fin N => (1/2 : ℝ)) (fun _ => a) = a := by
+  have hh := expect_prod N (fun _ _ => 1)
+  simp only [Finset.prod_const_one, add_self_div_two] at hh
+  simp only [expect, ← Finset.sum_mul] at hh ⊢
+  simpa using congrArg (fun x : ℝ => x*a) hh
+
+def sign (a : Bool) : ℝ := if a then 1 else -1
+
+lemma expect_sign (N : ℕ) (i : Fin N) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => sign (z i)) = 0 := by
+  have he (z : Assignment N) :
+      sign (z i) = ∏ j : Fin N, (if j = i then sign (z j) else 1) := by simp
+  simp_rw [he]
+  rw [expect_prod N (fun j a => if j = i then sign a else 1)]
+  apply Finset.prod_eq_zero (Finset.mem_univ i)
+  norm_num [sign]
+
+lemma expect_pair (N : ℕ) (i j : Fin N) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => sign (z i) * sign (z j)) =
+      if i=j then 1 else 0 := by
+  by_cases hij : i = j
+  · subst j
+    have he (z : Assignment N) : sign (z i)*sign (z i) = 1 := by
+      cases z i <;> norm_num [sign]
+    simp_rw [he]
+    exact expect_const N 1
+  · have he (z : Assignment N) :
+        sign (z i)*sign (z j) =
+          ∏ k : Fin N, ((if k=i then sign (z k) else 1) *
+            (if k=j then sign (z k) else 1)) := by
+      rw [Finset.prod_mul_distrib]
+      simp
+    simp_rw [he]
+    rw [expect_prod N (fun k a => (if k=i then sign a else 1) *
+      (if k=j then sign a else 1)), if_neg hij]
+    apply Finset.prod_eq_zero (Finset.mem_univ i)
+    norm_num [hij, sign]
+
+lemma expect_sum {N : ℕ} (U : Fin N → Assignment N → ℝ) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => ∑ i, U i z) =
+      ∑ i, expect (fun _ => (1/2 : ℝ)) (U i) := by
+  simp only [expect, Finset.mul_sum]
+  rw [Finset.sum_comm]
+
+lemma expect_mul_const {N : ℕ} (U : Assignment N → ℝ) (a : ℝ) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => U z * a) =
+      expect (fun _ => (1/2 : ℝ)) U * a := by
+  simp only [expect, ← mul_assoc, Finset.sum_mul]
+
+lemma variance_sum_sign {N : ℕ} (a : Fin N → ℝ) :
+    variance (fun _ => (1/2 : ℝ)) (fun z => ∑ i, sign (z i) * a i) = ∑ i, (a i)^2 := by
+  have hmean : expect (fun _ => (1/2 : ℝ)) (fun z => ∑ i, sign (z i)*a i) = 0 := by
+    rw [expect_sum]
+    simp only [expect_mul_const, expect_sign, zero_mul, Finset.sum_const_zero]
+  unfold variance cov
+  rw [hmean]
+  simp only [mul_zero, sub_zero]
+  simp_rw [Finset.sum_mul, Finset.mul_sum]
+  rw [expect_sum]
+  simp_rw [expect_sum]
+  have he (i j : Fin N) (z : Assignment N) :
+      sign (z i)*a i*(sign (z j)*a j) =
+        (sign (z i)*sign (z j))*(a i*a j) := by ring
+  simp_rw [he, expect_mul_const, expect_pair]
+  simp [ite_mul, sq]
+
+lemma expect_coordinate (N : ℕ) (i : Fin N) (f : Bool → ℝ) :
+    expect (fun _ => (1/2 : ℝ)) (fun z => f (z i)) = (f false+f true)/2 := by
+  have he (z : Assignment N) : f (z i) =
+      ∏ j : Fin N, (if j=i then f (z j) else 1) := by simp
+  simp_rw [he]
+  rw [expect_prod N (fun j a => if j=i then f a else 1)]
+  have he' (j : Fin N) :
+      ((if j=i then f false else 1)+(if j=i then f true else 1))/2 =
+        if j=i then (f false+f true)/2 else 1 := by split_ifs <;> norm_num
+  simp_rw [he']
+  simp
+
+lemma prob_agree (N : ℕ) (J : Finset (Fin N)) (z : Assignment N) :
+    expect (fun _ => (1/2 : ℝ))
+      (fun z' => if ∀ j ∈ J, z' j=z j then (1 : ℝ) else 0) = (1/2 : ℝ)^J.card := by
+  have he (z' : Assignment N) :
+      (if ∀ j ∈ J, z' j=z j then (1 : ℝ) else 0) =
+        ∏ k : Fin N, (if k ∈ J then if z' k=z k then 1 else 0 else 1) := by
+    by_cases h : ∀ j ∈ J, z' j=z j
+    · simp only [if_pos h]
+      symm
+      apply Finset.prod_eq_one
+      intro k hk
+      by_cases hkj : k ∈ J
+      · simp [hkj, h k hkj]
+      · simp [hkj]
+    · simp only [if_neg h]
+      push_neg at h
+      obtain ⟨j, hj, hdiff⟩ := h
+      symm
+      apply Finset.prod_eq_zero (Finset.mem_univ j)
+      simp [hj, hdiff]
+  simp_rw [he]
+  rw [expect_prod N (fun k a => if k ∈ J then if a=z k then 1 else 0 else 1)]
+  have he' (k : Fin N) :
+      ((if k ∈ J then if false=z k then (1:ℝ) else 0 else 1) +
+       (if k ∈ J then if true=z k then (1:ℝ) else 0 else 1))/2 =
+         if k ∈ J then (1/2 : ℝ) else 1 := by
+    by_cases hk : k ∈ J <;> cases z k <;> norm_num [hk]
+  simp_rw [he']
+  simp
+
+lemma condition_const (N : ℕ) (J : Finset (Fin N)) (a : ℝ) (z : Assignment N) :
+    conditionOn (fun _ => (1/2 : ℝ)) J (fun _ => a) z = a := by
+  have he (z' : Assignment N) :
+      (if ∀ j ∈ J, z' j=z j then a else 0) =
+        (if ∀ j ∈ J, z' j=z j then (1:ℝ) else 0)*a := by split_ifs <;> simp
+  unfold conditionOn
+  simp_rw [he]
+  rw [expect_mul_const, prob_agree]
+  have hc (j : Fin N) : coin (1/2 : ℝ) (z j) = 1/2 := by cases z j <;> norm_num [coin]
+  simp_rw [hc]
+  simp only [Finset.prod_const]
+  have hpos : (0:ℝ) < (1/2 : ℝ)^J.card := by positivity
+  exact mul_div_cancel_left₀ a (ne_of_gt hpos)
+
+end ReviewMoments
+
+
+open scoped BigOperators Classical
+open MeasureTheory Filter SAP.P004c
+
+noncomputable section
+namespace Review
+
+structure Point (N : ℕ) where
+  index : Fin N
+  deriving DecidableEq, Fintype
+
+instance (N : ℕ) : MetricSpace (Point N) where
+  dist i j := if i = j then 0 else (N : ℝ) + 1
+  dist_self i := by simp
+  dist_comm i j := by simp [eq_comm]
+  dist_triangle i j k := by
+    by_cases hij : i = j <;> by_cases hjk : j = k <;>
+      by_cases hik : i = k <;> simp_all <;> positivity
+  eq_of_dist_eq_zero := by
+    intro i j h
+    by_contra hn
+    simp only [if_neg hn] at h
+    have : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+    linarith
+
+instance (N : ℕ) : MeasurableSpace (Point N) := ⊤
+instance (N : ℕ) : MeasurableSingletonClass (Point N) := ⟨fun _ => trivial⟩
+
+def coeff (N : ℕ) (i : Fin N) : ℝ :=
+  (if i.val < N / 2 then 1 else 0) -
+    (if i.val < 2 * (N / 2) then 1 else 0) +
+      (if i.val < N / 2 then 1 else 0)
+
+def population (N : ℕ) : SpatialPopulation N (Point N) where
+  node i := {Point.mk i}
+  node_nonempty i := Set.singleton_nonempty (Point.mk i)
+  zeta := Measure.count
+  outcome i _ := coeff N i.index
+  bands _ := {0}
+
+lemma region_eq (N : ℕ) (i : Fin N) (d : ℝ) :
+    region (population N) i d = {Point.mk i} := by
+  ext x
+  simp [region, nodeDistance, population, Metric.infDist_singleton]
+
+lemma circle_eq (N : ℕ) (d : ℝ) :
+    circleAverage (population N) d = fun i _ => coeff N i := by
+  funext i z
+  unfold circleAverage
+  rw [region_eq]
+  simp [population]
+
+lemma well_defined (N : ℕ) (d : ℝ) : WellDefined (population N) d := by
+  intro i
+  rw [region_eq]
+  simp [population, integrableOn_singleton]
+
+lemma separation_eq (N : ℕ) (i j : Fin N) :
+    nodeSeparation (population N) i j =
+      if i = j then 0 else (N : ℝ) + 1 := by
+  simp [nodeSeparation, population, dist]
+
+lemma sum_coeff (N : ℕ) : ∑ i, coeff N i = 0 := by
+  have hhalf : N / 2 ≤ N := Nat.div_le_self N 2
+  have htwo : 2 * (N / 2) ≤ N := Nat.mul_div_le N 2
+  simp only [coeff, Finset.sum_add_distrib, Finset.sum_sub_distrib]
+  simp only [Finset.sum_boole, Fin.card_filter_val_lt,
+    Nat.min_eq_right hhalf, Nat.min_eq_right htwo]
+  push_cast
+  ring
+
+lemma coeff_bound (N : ℕ) (i : Fin N) : |coeff N i| ≤ 1 := by
+  unfold coeff
+  split_ifs <;> norm_num <;> omega
+
+lemma sum_coeff_sq (N : ℕ) : ∑ i, (coeff N i)^2 = (2 * (N / 2) : ℕ) := by
+  have he (i : Fin N) : (coeff N i)^2 = if i.val < 2*(N/2) then 1 else 0 := by
+    unfold coeff
+    split_ifs <;> norm_num <;> omega
+  simp_rw [he]
+  have htwo : 2 * (N / 2) ≤ N := Nat.mul_div_le N 2
+  simp [Finset.sum_boole, Fin.card_filter_val_lt, Nat.min_eq_right htwo]
+
+lemma bounded : BoundedOutcomes population := by
+  refine ⟨2, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro N x z
+  exact lt_of_le_of_lt (coeff_bound N x.index) (by norm_num)
+
+lemma ball_small (N : ℕ) (i : Fin N) (s : ℝ) (hs : 0 ≤ s)
+    (hsmall : s < (N : ℝ)+1) : ball (nodeSeparation (population N)) i s = {i} := by
+  ext j
+  by_cases hij : i=j
+  · subst j; simp [ball, separation_eq, hs]
+  · simp [ball, separation_eq, hij, Ne.symm hij, not_le.mpr hsmall]
+
+lemma spacing : QuadraticSpacing population := by
+  refine ⟨1, by norm_num, Filter.Eventually.of_forall ?_⟩
+  intro N i s hs
+  by_cases hsmall : s < (N : ℝ)+1
+  · rw [ball_small N i s hs hsmall]
+    simp only [Finset.card_singleton, Nat.cast_one, one_mul]
+    nlinarith [sq_nonneg s]
+  · have hcard : (ball (nodeSeparation (population N)) i s).card ≤ N :=
+      (Finset.card_le_card (Finset.filter_subset _ _)).trans_eq (by simp)
+    have hcard' : ((ball (nodeSeparation (population N)) i s).card : ℝ) ≤ N :=
+      by exact_mod_cast hcard
+    have hlarge : (N : ℝ)+1 ≤ s := le_of_not_gt hsmall
+    nlinarith [sq_nonneg (s-1), (Nat.cast_nonneg N : (0:ℝ) ≤ N)]
+
+lemma metric_nodes : MetricNodeDistances population := by
+  intro N
+  have hd (i j : Fin N) : nodeSeparation (population N) i j =
+      dist (Point.mk i) (Point.mk j) := by simp [separation_eq, dist]
+  simp_rw [hd]
+  refine ⟨fun _ _ => dist_nonneg, ?_, fun _ _ => dist_comm _ _,
+    fun _ _ _ => dist_triangle _ _ _⟩
+  intro i j
+  simp
+
+lemma spatial_local : SpatialLocalConditions population := by
+  refine ⟨bounded, ?_, ?_⟩
+  · refine ⟨fun _ => 0, by simp, ?_⟩
+    intro d hd
+    refine Filter.Eventually.of_forall ?_
+    intro N i j hdist hsource
+    rcases hsource with ⟨l, hil, hjl⟩
+    have hi : i=l := by simpa [interferes, circle_eq] using hil
+    have hj : j=l := by simpa [interferes, circle_eq] using hjl
+    subst i; subst j
+    simpa [separation_eq] using hdist
+  · refine ⟨fun _ => 1, ?_⟩
+    intro r hr
+    obtain ⟨M, hM⟩ := exists_nat_gt r
+    filter_upwards [eventually_ge_atTop M] with N hN
+    intro i
+    have hMN : (M : ℝ) ≤ N := by exact_mod_cast hN
+    rw [ball_small N i r hr (by linarith)]
+    simp
+
+end Review
+
+namespace Review
+open ReviewMoments
+
+lemma marginal_coeff (N : ℕ) (d : ℝ) (i : Fin N) (a : Bool) :
+    marginal (fun _ => (1/2 : ℝ)) (circleAverage (population N) d) i a = coeff N i := by
+  rw [circle_eq]
+  unfold marginal
+  have he (z : Assignment N) : (if z i=a then coeff N i else 0) =
+      (if z i=a then (1:ℝ) else 0)*coeff N i := by split_ifs <;> simp
+  simp_rw [he]
+  rw [expect_mul_const, expect_coordinate N i (fun b => if b=a then 1 else 0)]
+  cases a <;> norm_num [coin] <;> ring
+
+lemma barmu_zero (N : ℕ) (d : ℝ) (a : Bool) :
+    barMu (fun _ => (1/2 : ℝ)) (circleAverage (population N) d) a = 0 := by
+  unfold barMu
+  simp_rw [marginal_coeff]
+  rw [sum_coeff]
+  simp
+
+lemma linear_eq_ht (N : ℕ) (d : ℝ) :
+    linearHajek (fun _ => (1/2 : ℝ)) (circleAverage (population N) d) =
+      ht (fun _ => (1/2 : ℝ)) (circleAverage (population N) d) := by
+  funext z
+  unfold linearHajek augmented
+  simp only [barmu_zero, sub_self, sub_zero, zero_add]
+  rfl
+
+lemma ht_sign (N : ℕ) (d : ℝ) :
+    ht (fun _ => (1/2 : ℝ)) (circleAverage (population N) d) =
+      fun z => ∑ i, sign (z i)*(2*coeff N i/(N:ℝ)) := by
+  funext z
+  rw [ht, circle_eq, Finset.sum_div]
+  apply Finset.sum_congr rfl
+  intro i hi
+  cases z i <;> norm_num [bit, sign] <;> ring
+
+lemma ht_variance (N : ℕ) (d : ℝ) :
+    variance (fun _ => (1/2 : ℝ))
+      (ht (fun _ => (1/2 : ℝ)) (circleAverage (population N) d)) =
+        4*((2*(N/2) : ℕ):ℝ)/(N:ℝ)^2 := by
+  rw [ht_sign, variance_sum_sign]
+  simp_rw [div_pow, mul_pow]
+  rw [← Finset.sum_div, ← Finset.mul_sum, sum_coeff_sq]
+  norm_num
+
+lemma nondegenerate_ht (d : ℝ) : Nondegenerate (fun N =>
+    variance (fun _ => (1/2 : ℝ))
+      (ht (fun _ => (1/2 : ℝ)) (circleAverage (population N) d))) := by
+  refine ⟨1, by norm_num, ?_⟩
+  filter_upwards [eventually_ge_atTop 2] with N hN
+  rw [ht_variance]
+  have hpos : (0:ℝ) < N := by exact_mod_cast (show 0<N by omega)
+  have he : (N:ℝ)*(4*((2*(N/2):ℕ):ℝ)/(N:ℝ)^2) =
+      4*((2*(N/2):ℕ):ℝ)/(N:ℝ) := by field_simp
+  rw [he]
+  apply (le_div_iff₀ hpos).mpr
+  have hn : N ≤ 4*(2*(N/2)) := by omega
+  have hr : (N:ℝ) ≤ 4*((2*(N/2):ℕ):ℝ) := by exact_mod_cast hn
+  simpa using hr
+
+lemma nondegenerate_linear (d : ℝ) : Nondegenerate (fun N =>
+    variance (fun _ => (1/2 : ℝ))
+      (linearHajek (fun _ => (1/2 : ℝ)) (circleAverage (population N) d))) := by
+  simp_rw [linear_eq_ht]
+  exact nondegenerate_ht d
+
+lemma ned (d : ℝ) : NEDConditions population (1/2) d := by
+  refine ⟨fun _ => 0, fun _ _ => 1, 1, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simp
+  · intro x hx y hy hxy
+    rfl
+  · exact tendsto_const_nhds
+  · refine ⟨5, by norm_num, 1, 1, by norm_num, ?_⟩
+    intro s hs
+    positivity
+  · simp
+  · intro N i s hs
+    rw [circle_eq]
+    simp_rw [condition_const]
+    simp only [l2Norm, sub_self, zero_pow (by decide : (2:ℕ) ≠ 0), mul_zero]
+    rw [ReviewMoments.expect_const N 0]
+    norm_num
+
+-- Each example constructs every premise, including the CLT's optional lower bound.
+example :
+    (0 < (1/2:ℝ) ∧ (1/2:ℝ) < 1) ∧ 0 ≤ (0:ℝ) ∧
+    SpatialLocalConditions population ∧
+    (∀ᶠ N in atTop, WellDefined (population N) 0) ∧
+    Nondegenerate (fun N => variance (fun _ => (1/2:ℝ))
+      (ht (fun _ => (1/2:ℝ)) (circleAverage (population N) 0))) := by
+  exact ⟨by norm_num, by norm_num, spatial_local,
+    Filter.Eventually.of_forall (fun N => well_defined N 0), nondegenerate_ht 0⟩
+
+example :
+    (0 < (1/2:ℝ) ∧ (1/2:ℝ) < 1) ∧ 0 ≤ (0:ℝ) ∧
+    SpatialLocalConditions population ∧
+    (∀ᶠ N in atTop, WellDefined (population N) 0) ∧
+    Nondegenerate (fun N => variance (fun _ => (1/2:ℝ))
+      (linearHajek (fun _ => (1/2:ℝ)) (circleAverage (population N) 0))) := by
+  exact ⟨by norm_num, by norm_num, spatial_local,
+    Filter.Eventually.of_forall (fun N => well_defined N 0), nondegenerate_linear 0⟩
+
+example :
+    (0 < (1/2:ℝ) ∧ (1/2:ℝ) < 1) ∧ 0 ≤ (0:ℝ) ∧
+    BoundedOutcomes population ∧
+    (∀ᶠ N in atTop, WellDefined (population N) 0) ∧
+    NEDConditions population (1/2) 0 ∧ MetricNodeDistances population ∧
+    QuadraticSpacing population ∧
+    Nondegenerate (fun N => variance (fun _ => (1/2:ℝ))
+      (linearHajek (fun _ => (1/2:ℝ)) (circleAverage (population N) 0))) := by
+  exact ⟨by norm_num, by norm_num, bounded,
+    Filter.Eventually.of_forall (fun N => well_defined N 0), ned 0, metric_nodes,
+    spacing, nondegenerate_linear 0⟩
+
+end Review

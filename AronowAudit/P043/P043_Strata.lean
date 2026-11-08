@@ -7,7 +7,7 @@ noncomputable section
 
 /-- Corrected equation (1), p. 471 (PDF p. 9): "The K-1 dummy variables for
 all strata except the reference stratum are denoted D_ik, where D_ik=1 if
-observation i belongs to stratum k and 0 otherwise" (P043-E008).
+observation i belongs to stratum k and 0 otherwise" (E008 smallest repair).
 There are `q+1=K` strata, labelled by `Fin (q+1)`; its last element is the
 reference stratum. Printed labels 1,...,K correspond to Lean labels 0,...,q. -/
 def stratumDummy {n q : ℕ} (s : Fin n → Fin (q + 1)) (i : Fin n) (k : Fin q) : ℝ :=
@@ -91,3 +91,6 @@ theorem corrected_strata {n q : ℕ} (s : Fin n → Fin (q + 1)) (γ : Fin q →
 end
 end AronowAudit.P043
 
+#print axioms AronowAudit.P043.stratum_effect_selects
+#print axioms AronowAudit.P043.stratum_dummy_sum
+#print axioms AronowAudit.P043.corrected_strata

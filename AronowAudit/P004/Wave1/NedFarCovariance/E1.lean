@@ -1,7 +1,8 @@
 import AronowAudit.P004.Wave1.NedFarCovarianceBlueprint
 import AronowAudit.P004.Wave1.FiniteConditioning.FC8
 
-/-! E1: magnitude and conditional-projection bounds for the scaled residual score. -/
+/-! E1: the magnitude and conditional-projection bounds for the scaled residual score.
+The shared FC8 proof is supplied by the finite-conditioning workstream. -/
 
 namespace AronowAudit.P004.Wave1.NedFarCovariance
 

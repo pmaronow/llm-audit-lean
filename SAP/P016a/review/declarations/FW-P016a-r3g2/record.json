@@ -1,0 +1,64 @@
+[
+ {
+  "target_id": "P016-T8",
+  "decision": "whole",
+  "theorem": "SAP.P016a.T8",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t8_additive_mapping",
+   "AronowAudit.P016.t8_corrected_comparison",
+   "AronowAudit.P016.t8_raw_mean_shift"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016a.T8Statement"
+ },
+ {
+  "target_id": "P016-T9",
+  "decision": "whole",
+  "theorem": "SAP.P016a.T9",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t9_intercept_witness",
+   "AronowAudit.P016.t9_pooled_witness",
+   "AronowAudit.P016.t9_signed_ks_witness"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016a.T9Statement",
+  "supporting_declarations": [
+   "AronowAudit.P016.t1_design_tables"
+  ],
+  "glue_note": "A constant-statistic event is true by reflexivity, so its mass and both inclusive tails equal the total weight one; the complete SSR table is projected from t1_design_tables."
+ },
+ {
+  "target_id": "P016-T10",
+  "decision": "whole",
+  "theorem": "SAP.P016a.T10",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.Wave1.t10_symmetric_network",
+   "AronowAudit.P016.t10_general_least_squares",
+   "AronowAudit.P016.t10_ks_supremum",
+   "AronowAudit.P016.t2_least_squares"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016a.T10Statement"
+ },
+ {
+  "target_id": "P016-T11",
+  "decision": "whole",
+  "theorem": "SAP.P016a.T11",
+  "restriction": null,
+  "rows_used": [
+   "AronowAudit.P016.t11_ks_witness",
+   "AronowAudit.P016.t11_rss_witness"
+  ],
+  "rows_not_used": [],
+  "statement_definition": "SAP.P016a.T11Statement",
+  "supporting_declarations": [
+   "AronowAudit.P016.t9_signed_ks_witness",
+   "AronowAudit.P016.ecdf_swap_labels",
+   "AronowAudit.P016.t12_ks_not_effect_increasing"
+  ],
+  "glue_note": "Transport the opposite-label ECDF table with ecdf_swap_labels and negate its entries; the SSR monotonicity failures follow by substituting the exported witness values into the directional condition."
+ }
+]

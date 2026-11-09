@@ -1,6 +1,6 @@
 # llm-audit-lean
 
-Lean formalizations accompanying the [self-audit of P. M. Aronow’s work](https://pmaronow.github.io/llm-audit/).
+Lean formalizations accompanying the [self-audit of P. M. Aronow’s work](https://pmaronow.github.io/llm-audit/). These formalizations were built as part of the verification effort, and are being provided without warranty as a potentially helpful resource. They have not been vetted to the standards of other posted formalizations, e.g., on Palomar.
 
 [Browse results by paper](docs/works/README.md). Each target links directly to its formal statement, proof and definitions, with any restriction or omission explained.
 

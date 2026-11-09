@@ -34,6 +34,8 @@ Challenge files intentionally contain `sorry` placeholders. The inherited suppor
 
 Some retained records describe intermediate or earlier states; the current index reports the collected target outcomes. They are evidence, not fresh executions by this checkout’s metadata checker.
 
+The index and outcome counts retain the certified release's classifications. Maintained scope notes and reader disclosures qualify their current interpretation without rewriting the certified statements or historical review packets. In particular, a recorded whole classification can accompany an explicitly disclosed restriction in correspondence to a broader published claim. Read those qualifications with the statement and its definitions.
+
 The comparator route uses the Lean 4.34.1 build/export pipeline and the Lean 4.35.0-rc2 comparator with con-ron, NanoDa and the Lean kernel. The checking paths share an exporter, so they are not wholly independent end-to-end implementations. Original tool/dependency bindings and replay limitations remain in the [trust report](../release-evidence/A7/TRUST-REPORT.md).
 
 Paper fidelity and coverage require reading the statement, definitions and hypotheses. The archived supporting library includes conditional results with explicit published-theorem premises. Current target assumptions are stated in each Challenge and its definitions. Restricted results, source/version qualifications and omissions remain disclosed in the per-work guides. The retained evidence is not a blanket claim that every printed paper assertion is proved.

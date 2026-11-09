@@ -4,7 +4,7 @@ Lean formalizations accompanying the [self-audit of P. M. Aronow’s work](https
 
 [Browse results by paper](docs/works/README.md). Each target links directly to its formal statement, proof and definitions, with any restriction or omission explained.
 
-| Scope | Results |
+| Recorded release scope | Results |
 | --- | ---: |
 | Works with formal targets | 50 |
 | Targets | 1,021 |
@@ -14,7 +14,7 @@ Lean formalizations accompanying the [self-audit of P. M. Aronow’s work](https
 | Omitted | 33 |
 | Proved formal statements | 988 |
 
-**Whole** covers the identified claim under its stated assumptions. **Restricted** proves a narrower statement or adds assumptions. **Refuted** supplies a counterexample to the precise formalized claim. **Omitted** has no current theorem. These labels do not certify an entire paper or every possible reading of its text.
+These are the certified release's recorded classifications. **Whole** records complete coverage of the selected formal target, which may itself be a counterexample; **restricted** records narrower coverage; **refuted** records a counterexample to the selected assertion or reading; **omitted** has no assigned current theorem. The selected object can be a corrected statement or a compound containing printed proof assertions. The current scope notes in the paper guides qualify correspondence to the published claim, including restrictions missed by the recorded classification. These labels do not certify an entire paper or every possible reading of its text.
 
 The code and statement reviews were produced with AI agents; adapted third-party code is credited in [NOTICE](NOTICE). A checked proof establishes its formal statement. Whether that statement captures the intended paper claim is a separate judgment. Some archived supporting results assume named published theorems; current target assumptions are stated in each Challenge and its definitions.
 

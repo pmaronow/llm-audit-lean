@@ -18,7 +18,7 @@ DISCLOSURES = {
     },
     "P001-T120": {
         "source_sha256": "cc6eda07aa807a5d247f83b499494d5571941c9f40e2ade3c0e9b0f043a4e8ac",
-        "text": "The available counterexample drops the true-model premise carried by canonical Definitions 5.2.1–5.2.2. Its misspecified Bernoulli witness fails that premise; neither a positive result nor a refutation under the canonical premises is established."
+        "text": "No separate current theorem is assigned to this target. The available auxiliary theorem refutes the fixed-covariate KL-minimizer reading under misspecification. It does not refute the intended KL minimizer averaged over the covariate distribution."
     },
     "P004-T36": {
         "source_sha256": "9f5089edf9c45d5c8353a2e70c9a24eaa51c21e08b6966c7eea999411ff57774",
@@ -26,7 +26,7 @@ DISCLOSURES = {
     },
     "P005-T8": {
         "source_sha256": "1c98024af8c01961cb40d4fc45b50be9ed95915d3adf1cad7072c00f7c8b32d9",
-        "text": "The available expansion theorem assumes Tropp2011RowSampling instead of proving it. The target claim contains no such hypothesis, so this conditional theorem does not establish its unconditional estimator expansion. The separately targeted logarithm equivalences are retained in T9."
+        "text": "No separate current theorem is assigned to this target. T9 supplies the repaired estimator expansion under the equivalent logarithmic growth condition, together with the logarithm equivalences. Its current proof has no Tropp2011RowSampling hypothesis."
     },
     "P006-T28": {
         "source_sha256": "0e44b60cf3152150fcc0d20dd79e6de6017a21f4e23ffaffd094277c8f80cdea",
@@ -40,13 +40,25 @@ DISCLOSURES = {
         "source_sha256": "10b1b75551620e51af3f20611d42c0beb5ec072ca296087e34f9f1c288b37d6d",
         "text": "The available counterexample refutes a universal statement about arbitrary numerical arrays, without linking it to the reported cumulative estimate, its permutation percentiles, or a forest-loss event. The three printed values lie in [-1,1], so its range obstruction does not refute their asserted empirical interpretation."
     },
+    "P015-T18": {
+        "source_sha256": "e52394be92fe0cfa46bda4a927679c4a9d86081f23a236ed7564aef5d02de321",
+        "text": "Retains clause (A) and an explicit counterexample to universal clause (C); omits an assessment of score substitution for every specifically listed nonlogistic family in (B), and does not assert a separate counterexample for each named family. The square-link counterexample permits a misspecified working mean model and does not refute the correctly specified conditional-probability reading."
+    },
     "P016-T5": {
         "source_sha256": "26ac0d9ddb4d0b98a55102d57d0f8c3eb4612d612e77a64d55fb46c79f11aae1",
         "text": "The target is the printed information and reference-distribution comparison. No correction replacing it with a fixed-margin existential claim has been accepted. The available T2 margin-invariance theorem negates that different existential claim, but does not refute the printed comparison: equality of full group margins is stronger than equality of the scalar KS, as the T2 scalar-KS witness shows. T1 pairing/design witnesses and T2 design identities establish their own corrected claims without proving equivalence to the printed prose. The proposed supporting refutation addresses the different fixed-margin claim and is not used as a theorem for T5; its content is already implied by T2."
     },
+    "P037-T2": {
+        "source_sha256": "ae20ab45e3de4dc322797b5ac39a06da28bb55b21a811f758515a983df9be546",
+        "text": "Replaces DM's treated-school conditional mean and variance by the exported unconditional moments under the uniform product seed law. Omits the joint school-assignment/seed-sampling construction and its conclusion E[D_i(C_i-mu_i) | D]=0. Condition (R) remains an explicit premise of the identification statements, as in the canonical claim; it is not derived from the unconditional moments. The general identification statements use full blocks of exactly four schools; no transfer to unequal analytic blocks is formalized. Retains the equal-fraction implication, unequal-strata example, response identification, decomposition, centered and uncentered orthogonality, zero-variation moment equality, positive-variation identification, augmentation equivalence and slope corollary, eligible-composition identities, and all witness regression comparisons."
+    },
     "P041-T13": {
         "source_sha256": "68f5e7fc33a5fc43a0b2b6489858bb1482204a1b80d857370e001c2a46b877e3",
         "text": "The target supplies a precise random-order/adaptive-schedule implication comparing the expected implemented contrast, expected planned contrast, and direct effect. Its counterexample and no-interference sufficient condition are covered by P041-T5 and P041-T6. No separate theorem is assigned to P041-T13; the related mathematical content is available under those two targets."
+    },
+    "P042-T5": {
+        "source_sha256": "293684e4e7b12117cabe34f3d45c3eaa7718922b4136129d94f3b7258fda67d3",
+        "text": "Refutes the two selected unconditional diagonal-variance identities. The historical point estimates, treatment counts, intervals and qualitative application assertions are outside this mathematical target and are neither reproduced nor declared false. The recorded restricted classification should not be read as confirmation of either variance identity."
     },
     "P044-T11": {
         "source_sha256": "3ee14cc0b39ef598028cfb6433259a0f3e3fe74de31bd435fc64275bc36321b5",
@@ -54,7 +66,11 @@ DISCLOSURES = {
     },
     "P044-T12": {
         "source_sha256": "7ac7a0db9b69bfc05995975bf9b93aa54220793ee657c95cd8a2d5ac42d8a955",
-        "text": "The available supporting result refutes an extension that drops zero-support contributions, outside S7's positive-marginal-input estimator domain. It also establishes none of the quoted Hajek/WLS consistency or efficiency claims."
+        "text": "No separate current theorem is assigned to this target. T3 and T4 carry the missing-support obstruction and the positive-support Horvitz–Thompson unbiasedness repair. The quoted Hajek/WLS consistency and efficiency claims are outside this target."
+    },
+    "P045-T26": {
+        "source_sha256": "ac832106d6ae3a26653f3785d8307499d0470d0d84f769debca285d6bfe08a85",
+        "text": "Refutes the canonical singleton-dropping software statistic's universal conjunction of additive-effect unbiasedness and conservativeness on 0 < m_g < n_g. It does not refute the Hudgens–Halloran estimator on its defined domain with at least two units in each required arm, or establish the printed direct-effect variance values as values of that estimator."
     }
 }
 

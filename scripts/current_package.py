@@ -23,11 +23,16 @@ CHALLENGE = re.compile(r"^SAP/P\d{3}[a-z]?/Challenge(?:/[^/]+)*\.lean$")
 # P005b: Defs/Part7 and Defs/WholeW1; P015a: Defs/WholeW1.T8WholeStatement;
 # P029b: Defs/WholeW2.T27WholeStatement.
 READER_NOTES = {
+    "P001-T6": "The population consistency theorem assumes a uniform bound on conditional residual variance. It covers that sufficient repair, not the broader finite-unconditional-residual-variance repair in P001-C04-E001. The recorded whole classification does not certify the broader repair.",
     "P005-T25": "The asymptotic result assumes invertibility of the noninteracted sample matrix for every treatment assignment at all sufficiently large sample sizes.",
     "P005-T26": "The asymptotic result assumes invertibility of the noninteracted sample matrix for every treatment assignment at all sufficiently large sample sizes.",
     "P005-T27": "The asymptotic result assumes invertibility of both arm sample matrices for every treatment assignment at all sufficiently large sample sizes.",
+    "P011-T16": "The positive asymptotic results additionally require nested observed induced graphs. Nesting of the full graphs alone, with arbitrary observed subsets, does not imply this condition. Their coverage of the paper's repair is therefore restricted despite the recorded whole classification; the explicit counterexamples are unaffected.",
+    "P011-T19": "The positive asymptotic branch additionally requires nested observed induced graphs, beyond the paper's nesting of full graphs. Its coverage is restricted by that extra condition despite the recorded whole classification. The explicit nested counterexample remains valid.",
     "P015-T8": "The square-link illustration permits misspecification of the working conditional-mean model.",
+    "P023-T12": "The theorem proves a refutation of printed Proposition 2 under the fixed-law reading. The recorded whole classification concerns completeness of that adopted refutation, not truth of the printed positive proposition.",
     "P029-T27": "The counterexample refutes only the blanket claim that failure of Assumption 1 must cause bias. It does not refute the integral-limit or constant-score identities.",
+    "P032-T5": "The theorem refutes all four stated universal lower-bound readings. The recorded whole classification concerns completeness of that negative result, not proof of the printed lower bound.",
 }
 
 
@@ -273,7 +278,7 @@ def work_guide(index, work):
         return "\n".join(lines + ["This work has no formal targets in this archive.", ""])
     counts = "; ".join(f"{n} {label}" for label, n in work["decisions"].items())
     target_label = "target" if len(rows) == 1 else "targets"
-    lines += [f"{len(rows)} {target_label}: {counts}.", "", "The formal statement includes its assumptions. Challenge files contain intentional statement stubs; import the Solution for proofs. A whole result covers the identified claim under its assumptions. A refutation concerns the precise formalized claim. Restrictions and omissions are listed below.", "", "| Target | Outcome | Sources |", "| --- | --- | --- |"]
+    lines += [f"{len(rows)} {target_label}; recorded release outcomes: {counts}.", "", "The labels reproduce the certified release's classifications. A target may formalize a corrected statement, a counterexample, or a compound containing proof assertions. Current scope notes below qualify correspondence to the paper; a recorded whole label does not establish every positive assertion in the quoted passage. Challenge files contain intentional statement stubs; import the Solution for proofs.", "", "| Target | Recorded release outcome | Sources |", "| --- | --- | --- |"]
     def link(label, item):
         return f"[{label}](../../{item['path']}#L{item['line']})"
     for row in rows:
